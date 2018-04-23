@@ -1,9 +1,8 @@
 package it.chalmers.gamma.db.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import it.chalmers.gamma.domain.Language;
+
+import javax.persistence.*;
 import java.time.Instant;
 import java.time.Year;
 import java.util.Objects;
@@ -39,7 +38,8 @@ public class ITUser {
     private String phone;
 
     @Column(name = "language", length = 5)
-    private String language;
+    @Enumerated(EnumType.STRING)
+    private Language language;
 
     @Column(name = "avatarUrl", length = 255)
     private String avatar_url;
@@ -130,11 +130,11 @@ public class ITUser {
         this.phone = phone;
     }
 
-    public String getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
@@ -224,7 +224,7 @@ public class ITUser {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", language='" + language + '\'' +
+                ", language='" + language.toString() + '\'' +
                 ", avatar_url='" + avatar_url + '\'' +
                 ", gdpr=" + gdpr +
                 ", userAgreement=" + userAgreement +
