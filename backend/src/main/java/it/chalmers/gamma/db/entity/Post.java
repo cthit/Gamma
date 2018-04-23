@@ -12,6 +12,7 @@ import java.util.UUID;
 public class Post {
 
     @Id
+    @Column(updatable = false)
     private UUID id;
 
     @Column(name = "post_name", length = 50, nullable = false, unique = true)
