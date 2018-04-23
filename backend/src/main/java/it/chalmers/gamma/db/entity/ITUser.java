@@ -14,6 +14,7 @@ import java.util.UUID;
 public class ITUser {
 
     @Id
+    @Column(updatable = false)
     private UUID id;
 
     @Column(name = "cid", length = 10, nullable = false, unique = true)

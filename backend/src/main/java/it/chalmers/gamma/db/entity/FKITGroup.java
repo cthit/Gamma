@@ -11,6 +11,7 @@ import java.util.UUID;
 public class FKITGroup {
 
     @Id
+    @Column(updatable = false)
     private UUID id;
 
     @Column(name = "name", length = 50, nullable = false)
