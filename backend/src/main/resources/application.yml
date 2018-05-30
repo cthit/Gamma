@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:example}
+    url: jdbc:postgresql://localhost:5432/postgres
+  output:
+    ansi:
+      enabled: ALWAYS
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        temp:
+          #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
+          use_jdbc_metadata_defaults: false
+
+server:
+  port: ${GAMMA_PORT:8081}
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        web: DEBUG
+      hibernate: ERROR
