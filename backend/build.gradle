@@ -7,6 +7,10 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+		classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+		classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+		classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
 	}
 }
 
@@ -28,10 +32,12 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-security')
-	//compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE')
+	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE')
 	compile('org.springframework.boot:spring-boot-starter-web')
-
+	compile('com.sun.xml.bind:jaxb-impl:2.2.11')
+	compile('com.sun.xml.bind:jaxb-core:2.2.11')
 	compile('javax.xml.bind:jaxb-api:2.3.0')
+	compile('javax.activation:activation:1.1.1')
 
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('org.postgresql:postgresql')

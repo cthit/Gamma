@@ -16,3 +16,11 @@ spring:
 
 server:
   port: ${GAMMA_PORT:8081}
+
+logging:
+  level:
+    root: WARN
+    org:
+      springframework:
+        web: DEBUG
+      hibernate: ERROR

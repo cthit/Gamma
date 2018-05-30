@@ -1,16 +1,19 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.domain.Language;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.Year;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "ituser")
-public class ITUser {
+public class ITUser implements UserDetails{
 
     @Id
     @Column(updatable = false)
@@ -42,13 +45,16 @@ public class ITUser {
     private Language language;
 
     @Column(name = "avatarUrl", length = 255)
-    private String avatar_url;
+    private String avatarUrl;
 
     @Column(name = "gdpr", nullable = false)
     private boolean gdpr;
 
     @Column(name = "user_agreement", nullable = false)
     private boolean userAgreement;
+
+    @Column(name = "account_locked", nullable = false)
+    private boolean accountLocked;
 
     @Column(name = "acceptance_year", nullable = false)
     private int acceptanceYear;
@@ -82,8 +88,38 @@ public class ITUser {
         this.cid = cid;
     }
 
+    @Override
+    public List<GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return cid;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !accountLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
@@ -138,12 +174,12 @@ public class ITUser {
         this.language = language;
     }
 
-    public String getAvatar_url() {
-        return avatar_url;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setAvatar_url(String avatar_url) {
-        this.avatar_url = avatar_url;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public boolean isGdpr() {
@@ -186,6 +222,14 @@ public class ITUser {
         this.lastModifiedAt = lastModifiedAt;
     }
 
+    public boolean isAccountLocked() {
+        return accountLocked;
+    }
+
+    public void setAccountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -202,7 +246,7 @@ public class ITUser {
                 Objects.equals(email, itUser.email) &&
                 Objects.equals(phone, itUser.phone) &&
                 Objects.equals(language, itUser.language) &&
-                Objects.equals(avatar_url, itUser.avatar_url) &&
+                Objects.equals(avatarUrl, itUser.avatarUrl) &&
                 Objects.equals(acceptanceYear, itUser.acceptanceYear) &&
                 Objects.equals(createdAt, itUser.createdAt) &&
                 Objects.equals(lastModifiedAt, itUser.lastModifiedAt);
@@ -210,7 +254,7 @@ public class ITUser {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cid, password, nick, firstName, lastName, email, phone, language, avatar_url, gdpr, userAgreement, acceptanceYear, createdAt, lastModifiedAt);
+        return Objects.hash(id, cid, password, nick, firstName, lastName, email, phone, language, avatarUrl, gdpr, userAgreement, acceptanceYear, createdAt, lastModifiedAt);
     }
 
     @Override
@@ -225,8 +269,9 @@ public class ITUser {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", language='" + language.toString() + '\'' +
-                ", avatar_url='" + avatar_url + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
                 ", gdpr=" + gdpr +
+                ", accountLocked=" + accountLocked +
                 ", userAgreement=" + userAgreement +
                 ", acceptanceYear=" + acceptanceYear +
                 ", createdAt=" + createdAt +

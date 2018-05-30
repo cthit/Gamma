@@ -7,7 +7,7 @@ create table ituser (
   last_name        varchar(50)  null,
   email            varchar(100) not null constraint ituser_email_unique unique,
   phone            varchar(15)  null,
-  language         varchar(5)   null,
+  language         varchar(10)   null,
   avatar_url       varchar(255) null,
   gdpr             boolean      not null default false,
   user_agreement   boolean      not null default false,
