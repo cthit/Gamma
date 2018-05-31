@@ -48,7 +48,7 @@ create table membership (
   year                 integer      not null constraint membership_valid_year check (year >= 2001),
   unofficial_post_name varchar(100) null,
   constraint membership_pk primary key (ituser_id, fkit_group_id)
-)
+);
 
 create table whitelist (
   id  uuid constraint whitelist_pk primary key,
