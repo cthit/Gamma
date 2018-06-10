@@ -1,5 +1,6 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab:300");
+
+* {
+  padding: 0px;
+  margin: 0px;
 }
