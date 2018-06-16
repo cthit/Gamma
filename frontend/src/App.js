@@ -7,9 +7,7 @@ class App extends Component {
     return (
       <div>
         <Switch>
-          <Route path="/" exact>
-            <CreateAccount />
-          </Route>
+          <Route path="/create-account" component={CreateAccount} />
         </Switch>
       </div>
     );
