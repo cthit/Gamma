@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 
 //color can be either: 'primary', 'secondary', 'none'
-export const Button = ({ color, raised, onClick }) => (
+export const Button = ({ children, color, raised, onClick }) => (
   <ButtonStyled
     textColor={_getTextColor(color)}
     className={_generateClasses(color, raised)}
     onClick={onClick}
   >
-    Button
+    {children}
   </ButtonStyled>
 );
 
