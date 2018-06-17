@@ -1,12 +1,17 @@
-import React from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import React, { Component } from "react";
+import { Textfield } from "styled-mdl";
+import { Button } from "styled-mdl";
 
-export const InputCidScreen = () => (
-  <div>
-    <TextField label="cid" />
-    <Button variant="contained" color="primary">
-      Skicka cid
-    </Button>
-  </div>
-);
+class InputCidScreen extends Component {
+  render() {
+    return (
+      <div>
+        <Textfield label="cid" />
+        <Button primary raised>
+          Skicka cid
+        </Button>
+      </div>
+    );
+  }
+}
+export default InputCidScreen;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import InputCidScreen from "./screens/input-cid-screen";
-import { InputDataAndCodeScreen } from "./screens/input-data-and-code-screen";
+import InputDataAndCodeScreen from "./screens/input-data-and-code-screen";
 
 class CreateAccount extends Component {
   render() {
