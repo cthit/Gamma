@@ -15,3 +15,7 @@ export const Padding = styled.div`
   flex: 1;
   flex-direction: column;
 `;
+
+export const FlexContainer = styled.div`
+  display: flex;
+`;
