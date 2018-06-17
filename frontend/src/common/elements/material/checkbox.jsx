@@ -1,14 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
-export const CheckBox = ({ children, onChange, startValue }) => (
+export const CheckBox = ({
+  children,
+  globalUniqueName,
+  onChange,
+  startValue
+}) => (
   <CheckBoxLabelStyled
     className="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-    htmlFor="checkbox-1"
+    htmlFor={globalUniqueName}
   >
     <input
       type="checkbox"
-      id="checkbox-1"
+      id={globalUniqueName}
       className="mdl-checkbox__input"
       defaultChecked={startValue}
       onChange={onChange}
