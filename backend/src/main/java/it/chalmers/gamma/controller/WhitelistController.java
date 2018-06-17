@@ -43,7 +43,7 @@ public class WhitelistController {
         }
     }
     private String generateCode(){
-
+        return "";
     }
 }
 
