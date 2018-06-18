@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
-import InputCidScreen from "./screens/input-cid-screen";
 import InputDataAndCodeScreen from "./screens/input-data-and-code-screen";
+import InputCidScreenContainer from "./container/InputCidScreenContainer";
 
 class CreateAccount extends Component {
   render() {
@@ -10,7 +10,7 @@ class CreateAccount extends Component {
         <Route
           path={this.props.match.path + ""}
           exact
-          component={InputCidScreen}
+          component={InputCidScreenContainer}
         />
         <Route
           path={this.props.match.path + "/input"}

@@ -1,7 +1,17 @@
 import styled from "styled-components";
 
+export const MarginTop = styled.div`
+  margin: 8px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`;
+
 export const Margin = styled.div`
   margin: 4px; /*Half the standard margin*/
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 `;
 
 export const Spacing = styled.div`

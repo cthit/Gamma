@@ -26,7 +26,7 @@ export function createAccount(state = {}, action) {
     case CREATE_ACCOUNT_VALIDATE_CID:
       return {
         ...state,
-        cid: action.cid,
+        cid: action.payload.cid,
         errorValidatingCid: false,
         error: null
       };

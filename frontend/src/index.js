@@ -9,7 +9,6 @@ import { ThemeProvider } from "styled-components";
 import { initGlobals, createTheme, colors } from "styled-mdl";
 
 import { configureStore } from "./redux/config/configStore";
-import { createStore } from "redux";
 
 initGlobals();
 
@@ -20,7 +19,7 @@ const theme = createTheme({
   myCustomThemeColor: "#f5f5f5"
 });
 
-const store = createStore(configureStore);
+const store = configureStore({});
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

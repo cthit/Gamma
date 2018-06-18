@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const CREATE_ACCOUNT_RESET = "create_account_reset";
 export const CREATE_ACCOUNT_VALIDATE_CID = "create_account_validate_cid";
 export const CREATE_ACCOUNT_VALIDATING_CID = "create_account_validating_cid";
@@ -25,12 +27,23 @@ export function createAccountReset() {
 }
 
 export function createAccountValidateCid(cid) {
-  return {
-    type: CREATE_ACCOUNT_VALIDATE_CID,
-    error: false,
-    payload: {
-      cid: cid
-    }
+  return dispatch => {
+    axios
+      .post(
+        "http://localhost:8081/whitelist/valid",
+        {
+          cid: cid
+        },
+        {
+          "Content-Type": "application/json"
+        }
+      )
+      .then(response => {
+        console.log(this.reponse);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 }
 

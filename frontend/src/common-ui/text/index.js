@@ -18,6 +18,18 @@ export const HeadingLevel3 = styled.h3`
   margin: 0;
 `;
 
+export const HeadingLevel4 = styled.h4`
+  color: black;
+  font-family: "Merriweather", serif;
+  margin: 0;
+`;
+
+export const HeadingLevel5 = styled.h5`
+  color: black;
+  font-family: "Merriweather", serif;
+  margin: 0;
+`;
+
 export const Text = styled.p`
   font-size: 12pt;
   color: black;
