@@ -26,6 +26,9 @@ class App extends Component {
         <DrawerNavigationLink link="/create-account/input">
           Create-account/input
         </DrawerNavigationLink>
+        <DrawerNavigationLink link="/create-account/finished">
+          Create-account/finished
+        </DrawerNavigationLink>
       </div>
     );
     return (
