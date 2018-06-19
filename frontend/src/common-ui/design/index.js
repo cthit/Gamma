@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-import { shadow2dp, shadow4dp, shadow8dp } from "styled-mdl";
+import { shadow2dp, shadow4dp, shadow8dp, Button } from "styled-mdl";
+import { GammaCardMenuElement } from "../../common/elements/gamma-card-menu-element";
 
 /** Props:
  * width, height, maxWidth, maxHeight, minWidth, minHeight
@@ -10,10 +11,8 @@ import { shadow2dp, shadow4dp, shadow8dp } from "styled-mdl";
 export const GammaCard = styled.div`
   ${shadow4dp()};
 
-  display: grid;
-
-  grid-template-columns: auto;
-  grid-template-rows: 50px auto 50px;
+  display: flex;
+  flex-direction: column;
 
   width: ${props => (props.absWidth != null ? props.absWidth : props.width)};
   height: ${props =>
@@ -47,33 +46,90 @@ export const GammaCard = styled.div`
   }
 `;
 
-export const AbsoluteCenter = styled.div`
+export const GammaCardHeader = styled.div`
+  padding: 8px;
   display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto;
+
+  grid-template-columns: ${props =>
+    props.hasIcon ? "40px auto 32px" : "0px auto 32px"}
+
+  grid-template-rows: ${props =>
+    props.hasSubTitle ? "33px 25px auto" : "33px 0px auto"};
+`;
+
+export const GammaCardHeaderImage = styled.img`
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
+
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+`;
+
+export const GammaCardIcon = styled.img`
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 3;
+
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
+export const GammaCardMenuContainer = styled.div`
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 2;
 `;
 
 export const GammaCardTitle = styled.h2`
   font-size: 20px;
+  line-height: 33px;
 
-  display: block;
+  margin: 0;
   margin-left: 8px;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 0;
-  padding: 0;
+
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+`;
+
+export const GammaCardSubTitle = styled.h3`
+  font-size: 15px;
+  line-height: 25px;
+
+  margin: 0;
+  margin-left: 8px;
+
+  grid-column-start: 2;
+  grid-column-end: 4;
+  grid-row-start: 2;
+  grid-row-end: 3;
+
+  color: ${({ theme }) => theme.textColorSecondary};
 `;
 
 export const GammaCardBody = styled.div`
+  flex: 1;
+
   display: flex;
   flex-direction: column;
   padding: 8px;
 `;
 
 export const GammaCardButtons = styled.div`
+  padding: 8px;
+  min-height: 50px;
+  height: 50px;
+  max-height: 50px;
+
   display: flex;
   flex-direction: row;
 
-  justify-content: flex-end;
   align-items: center;
 `;

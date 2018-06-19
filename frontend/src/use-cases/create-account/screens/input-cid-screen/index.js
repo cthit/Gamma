@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 
-import { Padding, MarginTop } from "../../../../common-ui/layout";
+import { Padding, MarginTop, Center } from "../../../../common-ui/layout";
 import {
   GammaCard,
   GammaCardTitle,
   GammaCardBody,
-  GammaCardButtons,
-  AbsoluteCenter
+  GammaCardButtons
 } from "../../../../common-ui/design";
 import { HeadingLevel5 } from "../../../../common-ui/text";
 
@@ -22,19 +21,21 @@ class InputCidScreen extends Component {
   render() {
     return (
       <MarginTop>
-        <AbsoluteCenter>
+        <Center>
           <GammaCard absWidth="300px" absHeight="300px">
             <GammaCardTitle>Börja skapa ditt IT-konto</GammaCardTitle>
             <GammaCardBody>
-              <CIDTextfield
-                onChange={e =>
-                  this.setState({
-                    ...this.state,
-                    cid: e.target.value
-                  })
-                }
-                label="CID"
-              />
+              <Center>
+                <CIDTextfield
+                  onChange={e =>
+                    this.setState({
+                      ...this.state,
+                      cid: e.target.value
+                    })
+                  }
+                  label="CID"
+                />
+              </Center>
             </GammaCardBody>
             <GammaCardButtons>
               <Button
@@ -46,10 +47,9 @@ class InputCidScreen extends Component {
               >
                 Skicka cid
               </Button>
-              <Button>Å nej</Button>
             </GammaCardButtons>
           </GammaCard>
-        </AbsoluteCenter>
+        </Center>
       </MarginTop>
     );
   }

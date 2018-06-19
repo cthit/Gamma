@@ -1,17 +1,20 @@
 import styled from "styled-components";
 
-export const MarginTop = styled.div`
-  margin: 8px;
-  display: flex;
-  flex: 1;
+export const Fill = styled.div`
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 1;
   flex-direction: column;
+
+  display: flex;
 `;
 
-export const Margin = styled.div`
+export const MarginTop = Fill.extend`
+  margin: 8px;
+`;
+
+export const Margin = Fill.extend`
   margin: 4px; /*Half the standard margin*/
-  display: flex;
-  flex: 1;
-  flex-direction: column;
 `;
 
 export const Spacing = styled.div`
@@ -19,13 +22,22 @@ export const Spacing = styled.div`
   height: 8px;
 `;
 
-export const Padding = styled.div`
+export const Padding = Fill.extend`
   padding: 8px;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
 `;
 
 export const FlexContainer = styled.div`
   display: flex;
+`;
+
+export const Center = styled.div`
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 1;
+
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  justify-content: center;
+  align-content: center;
 `;

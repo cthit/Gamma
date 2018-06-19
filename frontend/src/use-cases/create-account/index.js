@@ -3,10 +3,12 @@ import { Route } from "react-router-dom";
 import InputDataAndCodeScreen from "./screens/input-data-and-code-screen";
 import InputCidScreenContainer from "./container/InputCidScreenContainer";
 
+import { Fill } from "../../common-ui/layout";
+
 class CreateAccount extends Component {
   render() {
     return (
-      <div>
+      <Fill>
         <Route
           path={this.props.match.path + ""}
           exact
@@ -17,7 +19,7 @@ class CreateAccount extends Component {
           exact
           component={InputDataAndCodeScreen}
         />
-      </div>
+      </Fill>
     );
   }
 }

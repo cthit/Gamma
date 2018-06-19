@@ -14,9 +14,9 @@ initGlobals();
 
 const theme = createTheme({
   colorPrimary: colors.indigo[500],
-  colorPirmaryDark: colors.indigo[700],
+  colorPrimaryDark: colors.indigo[700],
   colorAccent: colors.pink[500],
-  myCustomThemeColor: "#f5f5f5"
+  textColorSecondary: "#808080"
 });
 
 const store = configureStore({});
