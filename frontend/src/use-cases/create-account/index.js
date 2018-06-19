@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
-import InputDataAndCodeScreen from "./screens/input-data-and-code-screen";
+import InputDataAndCodeScreenContainer from "./container/InputDataAndCodeScreenContainer";
 import InputCidScreenContainer from "./container/InputCidScreenContainer";
 
 import { Fill } from "../../common-ui/layout";
@@ -17,7 +17,7 @@ class CreateAccount extends Component {
         <Route
           path={this.props.match.path + "/input"}
           exact
-          component={InputDataAndCodeScreen}
+          component={InputDataAndCodeScreenContainer}
         />
       </Fill>
     );

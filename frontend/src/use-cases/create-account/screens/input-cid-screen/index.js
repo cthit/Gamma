@@ -5,7 +5,8 @@ import {
   GammaCard,
   GammaCardTitle,
   GammaCardBody,
-  GammaCardButtons
+  GammaCardButtons,
+  GammaCardSubTitle
 } from "../../../../common-ui/design";
 import { HeadingLevel5 } from "../../../../common-ui/text";
 
@@ -15,15 +16,19 @@ import { CIDTextfield } from "./styles";
 
 class InputCidScreen extends Component {
   state = {
-    cid: "asdf"
+    cid: ""
   };
 
   render() {
     return (
       <MarginTop>
         <Center>
-          <GammaCard absWidth="300px" absHeight="300px">
-            <GammaCardTitle>Börja skapa ditt IT-konto</GammaCardTitle>
+          <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
+            <GammaCardTitle>Skriv in ditt CID</GammaCardTitle>
+            <GammaCardSubTitle>
+              Vi kommer skicka ett mail till din studentmail för att bekräfta
+              din identitet.
+            </GammaCardSubTitle>
             <GammaCardBody>
               <Center>
                 <CIDTextfield

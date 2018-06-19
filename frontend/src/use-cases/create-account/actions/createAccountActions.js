@@ -71,12 +71,12 @@ export function createAccountValidateCidSuccessfully() {
   };
 }
 
-export function createAccountValidateCodeAndData(code, data) {
+//data includes code
+export function createAccountValidateCodeAndData(data) {
   return {
     type: CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA,
     error: false,
     payload: {
-      code: code,
       data: data
     }
   };

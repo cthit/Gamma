@@ -92,6 +92,7 @@ export const GammaCardTitle = styled.h2`
 
   margin: 0;
   margin-left: 8px;
+  margin-right: 8px;
 
   grid-column-start: 2;
   grid-column-end: 3;
@@ -105,6 +106,7 @@ export const GammaCardSubTitle = styled.h3`
 
   margin: 0;
   margin-left: 8px;
+  margin-right: 8px;
 
   grid-column-start: 2;
   grid-column-end: 4;

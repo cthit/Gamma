@@ -7,6 +7,7 @@ import { DrawerNavigationLink } from "./elements/drawer-navigation-link";
 import { NavLink } from "react-router-dom";
 import { Layout } from "./elements/layout";
 import { PageContent } from "./styles";
+import { Padding } from "../common-ui/layout";
 
 class App extends Component {
   //Makes sure that MDL is loaded correctly. See: http://quaintous.com/2015/07/09/react-components-with-mdl/
@@ -34,9 +35,11 @@ class App extends Component {
           <Drawer title={title}>{drawer}</Drawer>
           <main className="mdl-layout__content">
             <PageContent>
-              <Switch>
-                <Route path="/create-account" component={CreateAccount} />
-              </Switch>
+              <Padding>
+                <Switch>
+                  <Route path="/create-account" component={CreateAccount} />
+                </Switch>
+              </Padding>
             </PageContent>
           </main>
         </Layout>
