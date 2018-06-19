@@ -14,7 +14,7 @@ class App extends Component {
   }
 
   render() {
-    const title = "Gamma";
+    const title = "Gamma - IT-konto";
 
     const drawer = (
       <div>
