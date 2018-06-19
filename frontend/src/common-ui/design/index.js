@@ -133,3 +133,10 @@ export const GammaCardButtons = styled.div`
 
   align-items: center;
 `;
+
+export const Divider = styled.hr`
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+`;

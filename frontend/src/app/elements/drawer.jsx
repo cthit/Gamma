@@ -1,8 +1,27 @@
 import React from "react";
+import styled from "styled-components";
 
-export const Drawer = ({ children, title }) => (
+import { Divider } from "../../common-ui/design";
+import { UserInformation } from "./user-information";
+import { Spacing } from "../../common-ui/layout";
+
+export const Drawer = ({ children, title, userData, signedIn }) => (
   <div className="mdl-layout__drawer">
     <span className="mdl-layout-title">{title}</span>
-    <nav className="mdl-navigation">{children}</nav>
+    <Navigation className="mdl-navigation">
+      <Spacing />
+      <Divider />
+      <Spacing />
+      <UserInformation />
+      <Spacing />
+      <Divider />
+      <Spacing />
+      {children}
+    </Navigation>
   </div>
 );
+
+const Navigation = styled.nav`
+  margin: 0px !important;
+  padding: 0px !important;
+`;

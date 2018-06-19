@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import CreateAccount from "../use-cases/create-account";
 import { Drawer } from "./elements/drawer";
 import { Header } from "./elements/header";
+import { DrawerNavigationLink } from "./elements/drawer-navigation-link";
 import { NavLink } from "react-router-dom";
 import { Layout } from "./elements/layout";
 import { PageContent } from "./styles";
@@ -18,12 +19,12 @@ class App extends Component {
 
     const drawer = (
       <div>
-        <NavLink className="mdl-navigation__link" to="/create-account">
+        <DrawerNavigationLink link="/create-account">
           Create-account
-        </NavLink>
-        <NavLink className="mdl-navigation__link" to="/create-account/input">
+        </DrawerNavigationLink>
+        <DrawerNavigationLink link="/create-account/input">
           Create-account/input
-        </NavLink>
+        </DrawerNavigationLink>
       </div>
     );
     return (
