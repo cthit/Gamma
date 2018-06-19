@@ -15,6 +15,19 @@ class App extends Component {
     window.componentHandler.upgradeDom();
   }
 
+  componentDidMount() {
+    document.querySelector(".mdl-layout__drawer").addEventListener(
+      "click",
+      function() {
+        document
+          .querySelector(".mdl-layout__obfuscator")
+          .classList.remove("is-visible");
+        this.classList.remove("is-visible");
+      },
+      false
+    );
+  }
+
   render() {
     const title = "Gamma - IT-konto";
 
@@ -48,6 +61,10 @@ class App extends Component {
         </Layout>
       </div>
     );
+  }
+
+  _onClickedNavLink() {
+    console.log("Hej");
   }
 }
 
