@@ -24,7 +24,7 @@ class EmailHasBeenSentScreen extends React.Component {
             nu gå in på den mailen och kopiera koden. Den koden behöver du när
             du skapar ditt konto i nästa steg.
           </GammaCardBody>
-          <GammaCardButtons>
+          <GammaCardButtons reverseDirection>
             <ButtonNavLink to="/create-account/input">
               <Button raised primary>
                 Gå vidare

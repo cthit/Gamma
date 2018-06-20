@@ -131,7 +131,7 @@ export const GammaCardButtons = styled.div`
   max-height: 50px;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: ${props => (props.reverseDirection ? "row-reverse" : "row")};
 
   align-items: center;
 `;

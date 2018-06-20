@@ -42,7 +42,7 @@ class InputCidScreen extends Component {
                 />
               </Center>
             </GammaCardBody>
-            <GammaCardButtons>
+            <GammaCardButtons reverseDirection>
               <Button
                 onClick={() => {
                   this.props.sendCid(this.state.cid);

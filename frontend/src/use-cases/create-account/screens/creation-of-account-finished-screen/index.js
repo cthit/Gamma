@@ -20,8 +20,10 @@ class CreationOfAccountFinishedScreen extends React.Component {
               tjänster.
             </Center>
           </GammaCardBody>
-          <GammaCardButtons>
-            <Button>Logga in för första gången</Button>
+          <GammaCardButtons reverseDirection>
+            <Button primary raised>
+              Logga in för första gången
+            </Button>
           </GammaCardButtons>
         </GammaCard>
       </Center>

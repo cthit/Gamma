@@ -116,7 +116,7 @@ class InputDataAndCodeScreen extends React.Component {
               />
             </Center>
           </GammaCardBody>
-          <GammaCardButtons>
+          <GammaCardButtons reverseDirection>
             <Button
               raisedAcceptUserAgreementInputAcceptUserAgreementInput
               primary
