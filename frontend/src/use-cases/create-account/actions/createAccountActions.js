@@ -84,7 +84,7 @@ export function createAccountValidateCodeAndData(code, user) {
       })
       .then(response => {
         dispatch(createAccountValidateCodeAndDataSuccessfully());
-        console.log(response);
+        dispatch(redirectTo("/create-account/finished"));
       })
       .catch(error => {
         dispatch(createAccountValidateDataFailed(error));
