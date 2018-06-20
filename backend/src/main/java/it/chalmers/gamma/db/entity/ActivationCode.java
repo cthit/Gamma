@@ -11,10 +11,11 @@ public class ActivationCode {
     @Id
     @Column(updatable = false)
     private UUID id;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "whitelistCid")
-    private String whitelistedCid;    // Has a foreign key referencing the Whitelist ID
+    private Whitelist whitelisted;    // Has a foreign key referencing the Whitelist ID
 
     @Column(name = "code", length = 30)
     private String code;
@@ -35,12 +36,12 @@ public class ActivationCode {
         this.id = id;
     }
 
-    public String getWhitelistedCid() {
-        return whitelistedCid;
+    public Whitelist getWhitelisted() {
+        return whitelisted;
     }
 
-    public void setWhitelistedId(String whitelistedCid) {
-        this.whitelistedCid = whitelistedCid;
+    public void setWhitelisted(Whitelist whitelisted) {
+        this.whitelisted = whitelisted;
     }
 
     public String getCode() {
@@ -51,19 +52,18 @@ public class ActivationCode {
         this.code = code;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActivationCode that = (ActivationCode) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(whitelistedCid, that.whitelistedCid) &&
+                Objects.equals(whitelisted, that.whitelisted) &&
                 Objects.equals(code, that.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, whitelistedCid, code);
+        return Objects.hash(id, whitelisted, code);
     }
 }
