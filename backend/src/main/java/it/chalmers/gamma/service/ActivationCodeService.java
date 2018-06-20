@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class ActivationCodeService {
@@ -33,10 +34,18 @@ public class ActivationCodeService {
         return String.valueOf(code);
     }
 
-    public void generateAndSendActivationCode(Whitelist whitelist){
+    public String generateAndSaveActivationCode(Whitelist cid){
         String code = generateActivationCode();
-        ActivationCode activationCode = new ActivationCode(whitelist.getId());
+        ActivationCode activationCode = new ActivationCode(cid);
+        activationCode.setId(UUID.randomUUID());
         activationCode.setCode(code);
         activationCodeRepository.save(activationCode);
+        return code;
     }
+
+    // TODO Delete entry after 1 hour or once code has been used.
+    public void deleteCode(Whitelist cid){
+        activationCodeRepository.findByCid(cid);
+    }
+
 }

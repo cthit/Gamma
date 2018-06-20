@@ -1,13 +1,17 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.exceptions.NoCidFoundException;
+import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -17,9 +21,13 @@ public class WhitelistController {
 
     ActivationCodeService activationCodeService;
 
-    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService){
+    ITUserService itUserService;
+
+    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService){
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
+        this.itUserService = itUserService;
+
     }
     @GetMapping
     public List<Whitelist> getAllWhiteListed(){
@@ -41,9 +49,27 @@ public class WhitelistController {
     }
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
     @PostMapping
-    public void createActivationCode(@RequestBody Whitelist cid){
-        if(whitelistService.isCIDWhiteListed(cid.getCid())){    // should we check if user is not registered too? or how should this be handled?
-
+    public boolean createActivationCode(@RequestBody Whitelist cid){
+        if(itUserService.userExists(cid.getCid())){
+            try {
+                throw new UserAlreadyExistsException();
+            } catch (UserAlreadyExistsException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        if(whitelistService.isCIDWhiteListed(cid.getCid())) {    // should we check if user is not registered too? or how should this be handled?
+            Whitelist whitelist = whitelistService.findByCid(cid.getCid());
+            activationCodeService.generateAndSaveActivationCode(whitelist);
+            return true;
+        }
+        else{
+            try {
+                throw new NoCidFoundException();
+            } catch (NoCidFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
     }
 }
