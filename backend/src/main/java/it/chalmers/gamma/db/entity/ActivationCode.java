@@ -15,7 +15,7 @@ public class ActivationCode {
 
 
     @JoinColumn(name = "cid", insertable = true, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private Whitelist cid;    // Has a foreign key referencing the Whitelist ID
 
     @Column(name = "code", length = 30)

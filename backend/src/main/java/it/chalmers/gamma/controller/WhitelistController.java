@@ -58,7 +58,7 @@ public class WhitelistController {
                 return false;
             }
         }
-        if(whitelistService.isCIDWhiteListed(cid.getCid())) {    // should we check if user is not registered too? or how should this be handled?
+        if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.findByCid(cid.getCid());
             activationCodeService.generateAndSaveActivationCode(whitelist);
             return true;
