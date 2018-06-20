@@ -1,12 +1,11 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +25,18 @@ public class ITUserController {
     @GetMapping
     public List<ITUser> getAllITUsers() {
         return itUserService.findAll();
+    }
+
+    /**
+     * {
+     *     code: String,
+     *     user: ITUser
+     * }
+     */
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public String createUser(@RequestBody CreateITUserRequest createITUserRequest){
+        itUserService.createUser(createITUserRequest);
+        return "Yes!";
     }
 
 }
