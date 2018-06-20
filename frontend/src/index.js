@@ -12,8 +12,6 @@ import { configureStore } from "./redux/config/configStore";
 
 initGlobals();
 
-console.log(colors);
-
 const theme = createTheme({
   colorPrimary: colors.lightBlue[500],
   colorPrimaryDark: colors.lightBlue[700],

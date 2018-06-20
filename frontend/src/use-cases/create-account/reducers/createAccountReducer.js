@@ -14,14 +14,7 @@ import {
 
 export function createAccount(state = {}, action) {
   switch (action.type) {
-    /*case CREATE_ACCOUNT_VALIDATE_CID:
-      return {
-        ...state,
-        cid: action.payload.cid,
-        errorValidatingCid: false,
-        error: null
-      };//Never called sine React-thunk takes it.
-    */ case CREATE_ACCOUNT_VALIDATING_CID:
+    case CREATE_ACCOUNT_VALIDATING_CID:
       return {
         ...state,
         stage: 1,

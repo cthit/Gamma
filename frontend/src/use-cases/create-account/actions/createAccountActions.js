@@ -1,5 +1,6 @@
 import axios from "axios";
 import { redirectTo } from "../../../redux/actions/redirectActions";
+import { toastOpen } from "../../../redux/actions/toastActions";
 
 export const CREATE_ACCOUNT_VALIDATE_CID = "create_account_validate_cid";
 export const CREATE_ACCOUNT_VALIDATING_CID = "create_account_validating_cid";
@@ -38,8 +39,12 @@ export function createAccountValidateCid(cid) {
           dispatch(redirectTo("/create-account/email-sent"));
         } else {
           dispatch(createAccountValidateCidFailed("Wrong cid"));
+          dispatch(
+            toastOpen({
+              text: "Wrong cid"
+            })
+          );
         }
-        console.log(response);
       })
       .catch(error => {
         dispatch(
