@@ -1,6 +1,6 @@
 import axios from "axios";
+import { redirectTo } from "../../../redux/actions/redirectActions";
 
-export const CREATE_ACCOUNT_RESET = "create_account_reset";
 export const CREATE_ACCOUNT_VALIDATE_CID = "create_account_validate_cid";
 export const CREATE_ACCOUNT_VALIDATING_CID = "create_account_validating_cid";
 export const CREATE_ACCOUNT_VALIDATE_CID_FAILED =
@@ -19,15 +19,9 @@ export const CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA_SUCCESSFULLY =
   "create_account_validate_code_and_data_successfully";
 export const CREATE_ACCOUNT_COMPLETED = "create_account_completed";
 
-export function createAccountReset() {
-  return {
-    type: CREATE_ACCOUNT_RESET,
-    error: false
-  };
-}
-
 export function createAccountValidateCid(cid) {
   return dispatch => {
+    dispatch(createAccountValidatingCid());
     axios
       .post(
         "http://localhost:8081/whitelist/valid",
@@ -39,9 +33,18 @@ export function createAccountValidateCid(cid) {
         }
       )
       .then(response => {
-        console.log(this.reponse);
+        if (response.data) {
+          dispatch(createAccountValidateCidSuccessfully());
+          dispatch(redirectTo("/create-account/input"));
+        } else {
+          dispatch(createAccountValidateCidFailed("Wrong cid"));
+        }
+        console.log(response);
       })
       .catch(error => {
+        dispatch(
+          createAccountValidateCidFailed("Something went wrong. Check console")
+        );
         console.log(error);
       });
   };
@@ -71,14 +74,21 @@ export function createAccountValidateCidSuccessfully() {
   };
 }
 
-//data includes code
-export function createAccountValidateCodeAndData(data) {
-  return {
-    type: CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA,
-    error: false,
-    payload: {
-      data: data
-    }
+//data includes code. Ignore code for now
+export function createAccountValidateCodeAndData(code, user) {
+  return dispatch => {
+    dispatch(createAccountValidatingCodeAndData());
+    axios
+      .post("http://localhost:8081/users/create", user, {
+        "Content-Type": "application/json"
+      })
+      .then(response => {
+        dispatch(createAccountValidateCodeAndDataSuccessfully());
+        console.log(response);
+      })
+      .catch(error => {
+        dispatch(createAccountValidateDataFailed(error));
+      });
   };
 }
 

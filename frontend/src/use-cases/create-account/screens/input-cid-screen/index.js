@@ -45,7 +45,6 @@ class InputCidScreen extends Component {
             <GammaCardButtons>
               <Button
                 onClick={() => {
-                  console.log(this.state.cid);
                   this.props.sendCid(this.state.cid);
                 }}
                 colored

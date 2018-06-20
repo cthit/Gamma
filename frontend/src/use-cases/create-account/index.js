@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 import InputDataAndCodeScreenContainer from "./container/InputDataAndCodeScreenContainer";
 import InputCidScreenContainer from "./container/InputCidScreenContainer";
 import CreationOfAccountFinishedScreen from "./screens/creation-of-account-finished-screen";
@@ -29,4 +30,13 @@ class CreateAccount extends Component {
   }
 }
 
-export default CreateAccount;
+const mapStateToProps = (state, ownProps) => ({
+  stage: state.createAccount.stage
+});
+
+const mapDispatchToProps = (dispatch, ownProps) => ({});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateAccount);

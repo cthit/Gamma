@@ -14,25 +14,17 @@ import {
 
 export function createAccount(state = {}, action) {
   switch (action.type) {
-    case CREATE_ACCOUNT_RESET:
-      return {
-        stage: 1,
-        validatingCid: false,
-        errorValidatingCid: false,
-        validatingCodeAndData: false,
-        cid: null,
-        error: null
-      };
-    case CREATE_ACCOUNT_VALIDATE_CID:
+    /*case CREATE_ACCOUNT_VALIDATE_CID:
       return {
         ...state,
         cid: action.payload.cid,
         errorValidatingCid: false,
         error: null
-      };
-    case CREATE_ACCOUNT_VALIDATING_CID:
+      };//Never called sine React-thunk takes it.
+    */ case CREATE_ACCOUNT_VALIDATING_CID:
       return {
         ...state,
+        stage: 1,
         validatingCid: true
       };
     case CREATE_ACCOUNT_VALIDATE_CID_FAILED:
@@ -40,7 +32,6 @@ export function createAccount(state = {}, action) {
         ...state,
         validatingCid: false,
         errorValidatingCid: true,
-        cid: null,
         error: action.payload.error
       };
     case CREATE_ACCOUNT_VALIDATE_CID_SUCCESSFULLY:

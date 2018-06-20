@@ -5,7 +5,8 @@ import InputDataAndCodeScreen from "../screens/input-data-and-code-screen";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  sendDataAndCode: data => dispatch(createAccountValidateCodeAndData(data))
+  sendDataAndCode: (code, user) =>
+    dispatch(createAccountValidateCodeAndData(code, user))
 });
 
 export default connect(

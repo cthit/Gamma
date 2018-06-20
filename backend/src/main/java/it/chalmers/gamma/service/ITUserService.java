@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
+import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,4 +49,20 @@ public class ITUserService implements UserDetailsService {
         return itUserRepository.save(itUser);
     }
 
+    public void createUser(CreateITUserRequest user) {
+        ITUser itUser = new ITUser();
+        itUser.setNick(user.getNick());
+        itUser.setFirstName(user.getFirstName());
+        itUser.setLastName(user.getLastName());
+        String currentTime = String.valueOf(System.currentTimeMillis());
+        itUser.setCid("temp"); //Todo get cid from activation code
+        itUser.setAcceptanceYear(Year.of(2017));
+        itUser.setUserAgreement(user.isUserAgreement());
+        itUser.setGdpr(false);
+        itUser.setAccountLocked(false);
+        itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
+        itUser.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        itUserRepository.save(itUser);
+    }
 }

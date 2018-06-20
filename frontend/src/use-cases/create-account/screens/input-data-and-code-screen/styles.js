@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Textfield } from "styled-mdl/lib/components/textfield";
+import { Textfield, Checkbox } from "styled-mdl";
 
 export const ConfirmationCodeInput = Textfield.extend`
   width: 100px;
@@ -28,3 +28,5 @@ export const LastnameInput = Textfield.extend`
 export const AttendanceYearInput = Textfield.extend`
   width: 300px;
 `;
+
+export const AcceptUserAgreementInput = Checkbox.extend``;

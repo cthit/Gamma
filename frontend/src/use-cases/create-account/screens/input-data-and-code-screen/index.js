@@ -7,7 +7,8 @@ import {
   PasswordConfirmationInput,
   FirstnameInput,
   LastnameInput,
-  AttendanceYearInput
+  AttendanceYearInput,
+  AcceptUserAgreementInput
 } from "./styles";
 
 import {
@@ -24,10 +25,15 @@ import { Center, Spacing } from "../../../../common-ui/layout";
 class InputDataAndCodeScreen extends React.Component {
   state = {
     code: "",
-    nick: "",
-    firstName: "",
-    lastName: "",
-    attendanceYear: ""
+    user: {
+      nick: "",
+      firstName: "",
+      lastName: "",
+      attendanceYear: "",
+      password: "",
+      passwordConfirmation: "",
+      userAgreement: false
+    }
   };
 
   constructor() {
@@ -48,7 +54,7 @@ class InputDataAndCodeScreen extends React.Component {
                 <ConfirmationCodeInput
                   label="Kod"
                   onChange={e =>
-                    this._handleTextfieldChange(e.target.value, "code")
+                    this._handleInputChange(e.target.value, "code")
                   }
                 />
               </Center>
@@ -56,47 +62,63 @@ class InputDataAndCodeScreen extends React.Component {
               <NickInput
                 label="Nick"
                 onChange={e =>
-                  this._handleTextfieldChange(e.target.value, "nick")
+                  this._handleInputChange(e.target.value, "nick", true)
                 }
               />
               <PasswordInput
                 label="Ditt lösenord"
                 onChange={e =>
-                  this._handleTextfieldChange(e.target.value, "password")
+                  this._handleInputChange(e.target.value, "password", true)
                 }
               />
               <PasswordConfirmationInput
                 label="Ditt lösenord igen"
                 onChange={e =>
-                  this._handleTextfieldChange(
+                  this._handleInputChange(
                     e.target.value,
-                    "passwordConfirmation"
+                    "passwordConfirmation",
+                    true
                   )
                 }
               />
               <FirstnameInput
                 label="Förstanamn"
                 onChange={e =>
-                  this._handleTextfieldChange(e.target.value, "firstName")
+                  this._handleInputChange(e.target.value, "firstName", true)
                 }
               />
               <LastnameInput
                 label="Efternamn"
                 onChange={e =>
-                  this._handleTextfieldChange(e.target.value, "lastName")
+                  this._handleInputChange(e.target.value, "lastName", true)
                 }
               />
               <AttendanceYearInput
                 label="Vilket år började du på IT?"
                 onChange={e =>
-                  this._handleTextfieldChange(e.target.value, "attendanceYear")
+                  this._handleInputChange(
+                    e.target.value,
+                    "attendanceYear",
+                    true
+                  )
                 }
+              />
+              <AcceptUserAgreementInput
+                label="Jag accepterar användaravtalet"
+                onChange={e => {
+                  this._handleInputChange(
+                    !this.state.user.userAgreement,
+                    "userAgreement",
+                    true
+                  );
+                  e.stopPropagation(); //Otherwise it will be called twice
+                }}
               />
             </Center>
           </GammaCardBody>
           <GammaCardButtons>
             <Button
-              raised
+              raisedAcceptUserAgreementInputAcceptUserAgreementInput
               primary
               onClick={() => this._handleSendDataAndCode()}
             >
@@ -110,13 +132,44 @@ class InputDataAndCodeScreen extends React.Component {
   }
 
   _handleSendDataAndCode() {
-    this.props.sendDataAndCode(this.state);
+    if (this._validate()) {
+      this.props.sendDataAndCode(
+        this.state.code,
+        this._retrieveUserDataToSend()
+      );
+    }
   }
 
-  _handleTextfieldChange(newValue, prop) {
+  _handleInputChange(newValue, prop, isUserData) {
     const newState = this.state;
-    newState[prop] = newValue;
+    if (isUserData) {
+      newState.user[prop] = newValue;
+    } else {
+      newState[prop] = newValue;
+    }
     this.setState(newState);
+  }
+
+  _validate() {
+    return this._validatePassword();
+  }
+
+  _validatePassword() {
+    return (
+      this.state.user.password != "" &&
+      this.state.user.password == this.state.user.passwordConfirmation
+    );
+  }
+
+  _retrieveUserDataToSend() {
+    return {
+      nick: this.state.user.nick,
+      password: this.state.user.password,
+      firstName: this.state.user.firstName,
+      lastName: this.state.user.lastName,
+      attendanceYear: this.state.user.attendanceYear,
+      userAgreement: this.state.user.userAgreement
+    };
   }
 }
 
