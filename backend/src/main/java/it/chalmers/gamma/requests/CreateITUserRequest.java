@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class CreateITUserRequest {
 
+    private String code;
     private String password;
     private String nick;
     private String firstName;
@@ -11,6 +12,13 @@ public class CreateITUserRequest {
     private boolean userAgreement;
     private int acceptanceYear;
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getPassword() {
         return password;
@@ -63,7 +71,8 @@ public class CreateITUserRequest {
     @Override
     public String toString() {
         return "CreateITUserRequest{" +
-                "password='" + "<redacted>" + '\'' +
+                "code='" + code + '\'' +
+                ", password='" + password + '\'' +
                 ", nick='" + nick + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -79,6 +88,7 @@ public class CreateITUserRequest {
         CreateITUserRequest that = (CreateITUserRequest) o;
         return userAgreement == that.userAgreement &&
                 acceptanceYear == that.acceptanceYear &&
+                Objects.equals(code, that.code) &&
                 Objects.equals(password, that.password) &&
                 Objects.equals(nick, that.nick) &&
                 Objects.equals(firstName, that.firstName) &&
@@ -87,6 +97,7 @@ public class CreateITUserRequest {
 
     @Override
     public int hashCode() {
-        return Objects.hash(password, nick, firstName, lastName, userAgreement, acceptanceYear);
+
+        return Objects.hash(code, password, nick, firstName, lastName, userAgreement, acceptanceYear);
     }
 }

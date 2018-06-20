@@ -55,7 +55,7 @@ public class ITUserService implements UserDetailsService {
         itUser.setFirstName(user.getFirstName());
         itUser.setLastName(user.getLastName());
         String currentTime = String.valueOf(System.currentTimeMillis());
-        itUser.setCid("temp"); //Todo get cid from activation code
+        itUser.setCid(user.getNick()); //Todo get cid from activation code
         itUser.setAcceptanceYear(Year.of(2017));
         itUser.setUserAgreement(user.isUserAgreement());
         itUser.setGdpr(false);

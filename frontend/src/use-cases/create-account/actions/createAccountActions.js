@@ -75,11 +75,11 @@ export function createAccountValidateCidSuccessfully() {
 }
 
 //data includes code. Ignore code for now
-export function createAccountValidateCodeAndData(code, user) {
+export function createAccountValidateCodeAndData(data) {
   return dispatch => {
     dispatch(createAccountValidatingCodeAndData());
     axios
-      .post("http://localhost:8081/users/create", user, {
+      .post("http://localhost:8081/users/create", data, {
         "Content-Type": "application/json"
       })
       .then(response => {

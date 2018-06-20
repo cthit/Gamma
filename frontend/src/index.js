@@ -12,10 +12,12 @@ import { configureStore } from "./redux/config/configStore";
 
 initGlobals();
 
+console.log(colors);
+
 const theme = createTheme({
-  colorPrimary: colors.indigo[500],
-  colorPrimaryDark: colors.indigo[700],
-  colorAccent: colors.pink[500],
+  colorPrimary: colors.lightBlue[500],
+  colorPrimaryDark: colors.lightBlue[700],
+  colorAccent: colors.orange[500],
   textColorSecondary: "#808080"
 });
 

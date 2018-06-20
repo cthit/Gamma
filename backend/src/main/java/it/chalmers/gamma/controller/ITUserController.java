@@ -27,14 +27,9 @@ public class ITUserController {
         return itUserService.findAll();
     }
 
-    /**
-     * {
-     *     code: String,
-     *     user: ITUser
-     * }
-     */
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public String createUser(@RequestBody CreateITUserRequest createITUserRequest){
+        //validate createITUserRequest.getCode()
         itUserService.createUser(createITUserRequest);
         return "Yes!";
     }

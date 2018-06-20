@@ -133,10 +133,7 @@ class InputDataAndCodeScreen extends React.Component {
 
   _handleSendDataAndCode() {
     if (this._validate()) {
-      this.props.sendDataAndCode(
-        this.state.code,
-        this._retrieveUserDataToSend()
-      );
+      this.props.sendDataAndCode(this._retrieveUserDataToSend());
     }
   }
 
@@ -168,7 +165,8 @@ class InputDataAndCodeScreen extends React.Component {
       firstName: this.state.user.firstName,
       lastName: this.state.user.lastName,
       attendanceYear: this.state.user.attendanceYear,
-      userAgreement: this.state.user.userAgreement
+      userAgreement: this.state.user.userAgreement,
+      code: this.state.code
     };
   }
 }
