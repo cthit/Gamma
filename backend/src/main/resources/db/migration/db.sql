@@ -54,3 +54,9 @@ create table whitelist (
   id  uuid constraint whitelist_pk primary key,
   cid varchar(10) not null constraint whitelist_cid_unique unique
 );
+
+create table activation_code (
+  id    uuid constraint whitelist_fk primary key,
+  cid   varchar(10) not null references whitelist(cid),
+  code  varchar(30) not null
+);

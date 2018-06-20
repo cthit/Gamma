@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,11 @@ public class WhitelistController {
 
     WhitelistService whitelistService;
 
-    public WhitelistController(WhitelistService whitelistService){
+    ActivationCodeService activationCodeService;
+
+    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService){
         this.whitelistService = whitelistService;
+        this.activationCodeService = activationCodeService;
     }
     @GetMapping
     public List<Whitelist> getAllWhiteListed(){
@@ -38,12 +42,9 @@ public class WhitelistController {
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
     @PostMapping
     public void createActivationCode(@RequestBody Whitelist cid){
-        if(whitelistService.isCIDWhiteListed(cid.getCid())){
+        if(whitelistService.isCIDWhiteListed(cid.getCid())){    // should we check if user is not registered too? or how should this be handled?
 
         }
-    }
-    private String generateCode(){
-        return "";
     }
 }
 
