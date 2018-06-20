@@ -1,8 +1,10 @@
 import { combineReducers } from "redux";
 import { createAccount } from "../../use-cases/create-account/reducers/createAccountReducer";
-import { redirect } from "../../redux/reducers/redirectReducer";
+import { redirect } from "../reducers/redirectReducer";
+import { toast } from "../reducers/toastReducer";
 
 export const rootReducer = combineReducers({
   createAccount,
-  redirect
+  redirect,
+  toast
 });

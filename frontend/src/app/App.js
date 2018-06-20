@@ -9,6 +9,7 @@ import { Layout } from "./elements/layout";
 import { PageContent } from "./styles";
 import { Padding } from "../common-ui/layout";
 import GammaRedirectContainer from "./containers/GammaRedirectContainer";
+import GammaToastContainer from "./containers/GammaToastContainer";
 
 class App extends Component {
   //Makes sure that MDL is loaded correctly. See: http://quaintous.com/2015/07/09/react-components-with-mdl/
@@ -57,6 +58,7 @@ class App extends Component {
             <PageContent>
               <Padding>
                 <GammaRedirectContainer />
+                <GammaToastContainer />
                 <Switch>
                   <Route path="/create-account" component={CreateAccount} />
                 </Switch>
