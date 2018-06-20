@@ -4,7 +4,7 @@ import InputCidScreen from "../screens/input-cid-screen";
 
 const mapStateToProps = (state, ownProps) => ({});
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = dispatch => ({
   sendCid: cid => dispatch(createAccountValidateCid(cid))
 });
 

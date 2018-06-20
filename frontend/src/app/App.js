@@ -8,6 +8,7 @@ import { NavLink } from "react-router-dom";
 import { Layout } from "./elements/layout";
 import { PageContent } from "./styles";
 import { Padding } from "../common-ui/layout";
+import GammaRedirectContainer from "./containers/GammaRedirectContainer";
 
 class App extends Component {
   //Makes sure that MDL is loaded correctly. See: http://quaintous.com/2015/07/09/react-components-with-mdl/
@@ -52,6 +53,7 @@ class App extends Component {
           <main className="mdl-layout__content">
             <PageContent>
               <Padding>
+                <GammaRedirectContainer />
                 <Switch>
                   <Route path="/create-account" component={CreateAccount} />
                 </Switch>
@@ -61,10 +63,6 @@ class App extends Component {
         </Layout>
       </div>
     );
-  }
-
-  _onClickedNavLink() {
-    console.log("Hej");
   }
 }
 
