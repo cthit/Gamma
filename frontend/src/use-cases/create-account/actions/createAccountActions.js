@@ -35,7 +35,7 @@ export function createAccountValidateCid(cid) {
       .then(response => {
         if (response.data) {
           dispatch(createAccountValidateCidSuccessfully());
-          dispatch(redirectTo("/create-account/input"));
+          dispatch(redirectTo("/create-account/email-sent"));
         } else {
           dispatch(createAccountValidateCidFailed("Wrong cid"));
         }

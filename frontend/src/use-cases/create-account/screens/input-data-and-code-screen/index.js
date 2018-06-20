@@ -121,6 +121,7 @@ class InputDataAndCodeScreen extends React.Component {
               raisedAcceptUserAgreementInputAcceptUserAgreementInput
               primary
               onClick={() => this._handleSendDataAndCode()}
+              raised
             >
               Skapa konto
             </Button>

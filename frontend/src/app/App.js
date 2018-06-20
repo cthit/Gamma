@@ -37,6 +37,9 @@ class App extends Component {
         <DrawerNavigationLink link="/create-account">
           Create-account
         </DrawerNavigationLink>
+        <DrawerNavigationLink link="/create-account/email-sent">
+          Create-account/email-sent
+        </DrawerNavigationLink>
         <DrawerNavigationLink link="/create-account/input">
           Create-account/input
         </DrawerNavigationLink>

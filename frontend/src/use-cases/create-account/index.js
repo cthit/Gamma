@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import InputDataAndCodeScreenContainer from "./container/InputDataAndCodeScreenContainer";
 import InputCidScreenContainer from "./container/InputCidScreenContainer";
 import CreationOfAccountFinishedScreen from "./screens/creation-of-account-finished-screen";
+import EmailHasBeenSentScreen from "./screens/email-has-been-sent-screen";
 import { Fill } from "../../common-ui/layout";
 
 class CreateAccount extends Component {
@@ -14,6 +15,11 @@ class CreateAccount extends Component {
           path={this.props.match.path + ""}
           exact
           component={InputCidScreenContainer}
+        />
+        <Route
+          path={this.props.match.path + "/email-sent"}
+          exact
+          component={EmailHasBeenSentScreen}
         />
         <Route
           path={this.props.match.path + "/input"}

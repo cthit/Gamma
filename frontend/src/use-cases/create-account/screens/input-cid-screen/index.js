@@ -47,7 +47,8 @@ class InputCidScreen extends Component {
                 onClick={() => {
                   this.props.sendCid(this.state.cid);
                 }}
-                colored
+                primary
+                raised
               >
                 Skicka cid
               </Button>
