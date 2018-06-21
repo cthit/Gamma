@@ -6,7 +6,9 @@ import {
   GammaCardBody,
   GammaCardButtons
 } from "../../../../common-ui/design";
-import { Button } from "styled-mdl/lib/components/buttons";
+import { Text } from "../../../../common-ui/text";
+
+import { GammaButton } from "../../../../common/gui/gamma-button";
 
 class CreationOfAccountFinishedScreen extends React.Component {
   render() {
@@ -16,14 +18,19 @@ class CreationOfAccountFinishedScreen extends React.Component {
           <GammaCardTitle>Grattis! Du har skapat ett IT-konto</GammaCardTitle>
           <GammaCardBody>
             <Center>
-              Du har nu skapat ett konto hos digIT. Nu kan du använda digITs
-              tjänster.
+              <Text>
+                Du har nu skapat ett konto hos digIT. Nu kan du använda digITs
+                tjänster.
+              </Text>
             </Center>
           </GammaCardBody>
           <GammaCardButtons reverseDirection>
-            <Button primary raised>
-              Logga in för första gången
-            </Button>
+            <GammaButton
+              raised
+              primary
+              onClick={() => {}}
+              text="Logga in för första gången"
+            />
           </GammaCardButtons>
         </GammaCard>
       </Center>

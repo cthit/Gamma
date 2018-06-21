@@ -1,32 +1,34 @@
 import styled from "styled-components";
-import { Textfield, Checkbox } from "styled-mdl";
+import { GammaCheckbox } from "../../../../common/gui/gamma-checkbox";
+import { GammaTextField } from "../../../../common/gui/gamma-text-field";
+import { GammaSelect } from "../../../../common/gui/gamma-select";
 
-export const ConfirmationCodeInput = Textfield.extend`
+export const ConfirmationCodeInput = styled(GammaTextField)`
   width: 100px;
 `;
 
-export const NickInput = Textfield.extend`
+export const NickInput = styled(GammaTextField)`
   width: 300px;
 `;
 
-export const PasswordInput = Textfield.extend`
+export const PasswordInput = styled(GammaTextField)`
   width: 300px;
 `;
 
-export const PasswordConfirmationInput = Textfield.extend`
+export const PasswordConfirmationInput = styled(GammaTextField)`
   width: 300px;
 `;
 
-export const FirstnameInput = Textfield.extend`
+export const FirstnameInput = styled(GammaTextField)`
   width: 300px;
 `;
 
-export const LastnameInput = Textfield.extend`
+export const LastnameInput = styled(GammaTextField)`
   width: 300px;
 `;
 
-export const AttendanceYearInput = Textfield.extend`
+export const AttendanceYearInput = styled(GammaSelect)`
   width: 300px;
 `;
 
-export const AcceptUserAgreementInput = Checkbox.extend``;
+export const AcceptUserAgreementInput = styled(GammaCheckbox)``;

@@ -1,71 +1,100 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import CreateAccount from "../use-cases/create-account";
-import { Drawer } from "./elements/drawer";
-import { Header } from "./elements/header";
 import { DrawerNavigationLink } from "./elements/drawer-navigation-link";
-import { NavLink } from "react-router-dom";
-import { Layout } from "./elements/layout";
-import { PageContent } from "./styles";
-import { Padding } from "../common-ui/layout";
+import { Padding, Spacing } from "../common-ui/layout";
 import GammaRedirectContainer from "./containers/GammaRedirectContainer";
 import GammaToastContainer from "./containers/GammaToastContainer";
 
-class App extends Component {
-  //Makes sure that MDL is loaded correctly. See: http://quaintous.com/2015/07/09/react-components-with-mdl/
-  componentDidUpdate() {
-    window.componentHandler.upgradeDom();
-  }
+import { List, Typography, Hidden, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 
-  componentDidMount() {
-    document.querySelector(".mdl-layout__drawer").addEventListener(
-      "click",
-      function() {
-        document
-          .querySelector(".mdl-layout__obfuscator")
-          .classList.remove("is-visible");
-        this.classList.remove("is-visible");
-      },
-      false
-    );
-  }
+import {
+  StyledRoot,
+  StyledAppBar,
+  StyledMenuButton,
+  StyledDrawer,
+  StyledMain
+} from "./styles";
+import { UserInformation } from "./elements/user-information";
+
+class App extends Component {
+  state = {
+    mobileOpen: false
+  };
+
+  handleDrawerToggle = () => {
+    this.setState({ mobileOpen: !this.state.mobileOpen });
+  };
 
   render() {
     const title = "Gamma - IT-konto";
 
     const drawer = (
       <div>
-        <DrawerNavigationLink link="/create-account">
-          Create-account
-        </DrawerNavigationLink>
-        <DrawerNavigationLink link="/create-account/email-sent">
-          Create-account/email-sent
-        </DrawerNavigationLink>
-        <DrawerNavigationLink link="/create-account/input">
-          Create-account/input
-        </DrawerNavigationLink>
-        <DrawerNavigationLink link="/create-account/finished">
-          Create-account/finished
-        </DrawerNavigationLink>
+        <UserInformation />
+        <Spacing />
+        <List component="nav">
+          <DrawerNavigationLink link="/create-account">
+            Create-account
+          </DrawerNavigationLink>
+          <DrawerNavigationLink link="/create-account/email-sent">
+            Create-account/email-sent
+          </DrawerNavigationLink>
+          <DrawerNavigationLink link="/create-account/input">
+            Create-account/input
+          </DrawerNavigationLink>
+          <DrawerNavigationLink link="/create-account/finished">
+            Create-account/finished
+          </DrawerNavigationLink>
+        </List>
       </div>
     );
     return (
       <div>
-        <Layout>
-          <Header drawer={drawer} title={title} />
-          <Drawer title={title}>{drawer}</Drawer>
-          <main className="mdl-layout__content">
-            <PageContent>
-              <Padding>
-                <GammaRedirectContainer />
-                <GammaToastContainer />
-                <Switch>
-                  <Route path="/create-account" component={CreateAccount} />
-                </Switch>
-              </Padding>
-            </PageContent>
-          </main>
-        </Layout>
+        <StyledRoot>
+          <StyledAppBar>
+            <Toolbar>
+              <StyledMenuButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.handleDrawerToggle}
+              >
+                <MenuIcon />
+              </StyledMenuButton>
+              <Typography variant="title" color="inherit" noWrap>
+                {title}
+              </Typography>
+            </Toolbar>
+          </StyledAppBar>
+          <Hidden mdUp>
+            <StyledDrawer
+              variant="temporary"
+              anchor="left"
+              open={this.state.mobileOpen}
+              onClose={this.handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true // Better open performance on mobile.
+              }}
+            >
+              {drawer}
+            </StyledDrawer>
+          </Hidden>
+          <Hidden smDown implementation="css">
+            <StyledDrawer variant="permanent" open>
+              {drawer}
+            </StyledDrawer>
+          </Hidden>
+          <StyledMain>
+            <Padding>
+              <GammaRedirectContainer />
+              <GammaToastContainer />
+              <Switch>
+                <Route path="/create-account" component={CreateAccount} />
+              </Switch>
+            </Padding>
+          </StyledMain>
+        </StyledRoot>
       </div>
     );
   }

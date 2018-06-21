@@ -1,49 +1,128 @@
 import React from "react";
 
 import { ToastButton } from "./styles";
-
-import { Button } from "styled-mdl";
+import { Snackbar } from "@material-ui/core";
 
 class GammaToast extends React.Component {
   state = {
-    text: "",
-    duration: 0,
-    isOpen: false,
-    actionText: "",
-    actionHandler: null
+    open: false,
+    toastClosed: true,
+    currentText: "",
+    currentDuration: 0,
+    currentActionHandler: null,
+    currentActionText: "",
+    messages: []
   };
 
-  componentDidUpdate() {
-    const {
-      text,
-      duration,
-      actionHandler,
-      actionText
-    } = this.props.toastOptions;
-    console.log(this.props);
-    if (text != null) {
-      var snackbarContainer = document.querySelector("#toast");
-      var data = {
-        message: text,
-        timeout: duration,
-        actionHandler:
-          actionHandler != null
-            ? () => {
-                snackbarContainer.classList.remove("mdl-snackbar--active");
-                actionHandler();
-              }
-            : null,
-        actionText: actionText
-      };
-      snackbarContainer.MaterialSnackbar.showSnackbar(data);
+  handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({
+      ...this.state,
+      open: false
+    });
+  };
+
+  handleExited = () => {
+    this.setState({
+      ...this.state,
+      toastClosed: true
+    });
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.open &&
+      this.state.messages.length > 0 &&
+      !this.toastClosed
+    ) {
+      this.setState({
+        ...this.state,
+        open: false
+      });
+    } else if (
+      prevState !== this.state &&
+      !this.state.open &&
+      this.state.messages.length > 0 &&
+      this.state.toastClosed
+    ) {
+      const {
+        text,
+        duration,
+        actionHandler,
+        actionText
+      } = this.state.messages.pop();
+
+      this.setState({
+        ...this.state,
+        open: true,
+        toastClosed: false,
+        currentText: text,
+        currentDuration: duration,
+        currentActionHandler: actionHandler,
+        currentActionText: actionText
+      });
+    }
+
+    //A new message get added through props, one added, props will be ignored until next update
+    else if (prevProps !== this.props) {
+      const {
+        text,
+        duration,
+        actionHandler,
+        actionText
+      } = this.props.toastOptions;
+
+      this.setState({
+        ...this.state,
+        messages: [
+          ...this.state.messages,
+          {
+            text: text,
+            duration: duration == null ? 3000 : duration,
+            actionText: actionText,
+            actionHandler: actionHandler
+          }
+        ]
+      });
     }
   }
 
   render() {
     return (
-      <div id="toast" className="mdl-js-snackbar mdl-snackbar">
-        <div className="mdl-snackbar__text" />
-        <ToastButton accent className="mdl-snackbar__action" />
+      <div>
+        <Snackbar
+          autoHideDuration={this.state.currentDuration}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center"
+          }}
+          open={this.state.open}
+          onClose={this.handleClose}
+          onExited={this.handleExited}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">{this.state.currentText}</span>}
+          action={
+            <ToastButton
+              hide={this.state.currentActionText == null}
+              key="undo"
+              color="secondary"
+              size="small"
+              onClick={() => {
+                this.state.actionHandler();
+                this.handleClose();
+              }}
+            >
+              {this.state.currentActionText == null //Text in a button must not be null
+                ? ""
+                : this.state.currentActionText}
+            </ToastButton>
+          }
+        />
       </div>
     );
   }

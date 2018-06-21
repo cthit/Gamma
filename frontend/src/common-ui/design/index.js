@@ -1,16 +1,31 @@
+import React from "react";
 import styled from "styled-components";
 
-import { shadow2dp, shadow4dp, shadow8dp, Button } from "styled-mdl";
-import { GammaCardMenuElement } from "../../common/elements/gamma-card-menu-element";
+import { HeadingLevel2, HeadingLevel3 } from "../text";
+
+import { Paper } from "@material-ui/core";
 
 /** Props:
  * width, height, maxWidth, maxHeight, minWidth, minHeight
  * pliancy: Changes shadow when on hover and on clicked
  * absWidth, absHeight: If size, max and min will be the same. use this
  */
-export const GammaCard = styled.div`
-  ${shadow4dp()};
 
+/*${shadow4dp()};*/
+
+export const GammaCard = styled(
+  ({
+    absWidth,
+    absHeight,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight,
+    hasSubTitle,
+    hasIcon,
+    ...rest
+  }) => <Paper {...rest} />
+)`
   display: flex;
   flex-direction: column;
 
@@ -33,14 +48,14 @@ export const GammaCard = styled.div`
   &:hover {
     ${props => {
       if (props.pliancy) {
-        shadow8dp();
+        /*shadow48p();*/
       }
     }};
   }
   &:active {
     ${props => {
       if (props.pliancy) {
-        shadow2dp();
+        /*shadow2dp();*/
       }
     }};
   }
@@ -86,11 +101,12 @@ export const GammaCardMenuContainer = styled.div`
   grid-row-end: 2;
 `;
 
-export const GammaCardTitle = styled.h2`
+export const GammaCardTitle = styled(HeadingLevel2)`
   font-size: 20px;
   line-height: 33px;
 
   margin: 0;
+  margin-top: 8px;
   margin-left: 8px;
   margin-right: 8px;
 
@@ -100,7 +116,7 @@ export const GammaCardTitle = styled.h2`
   grid-row-end: 2;
 `;
 
-export const GammaCardSubTitle = styled.h3`
+export const GammaCardSubTitle = styled(HeadingLevel3)`
   font-size: 15px;
   line-height: 25px;
 

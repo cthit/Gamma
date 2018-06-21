@@ -4,9 +4,9 @@ export const Fill = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 1;
-  flex-direction: column;
 
   display: flex;
+  flex-direction: column;
 `;
 
 export const MarginTop = Fill.extend`
@@ -24,6 +24,9 @@ export const Spacing = styled.div`
 
 export const Padding = Fill.extend`
   padding: 8px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 1;
 `;
 
 export const FlexContainer = styled.div`

@@ -50,6 +50,11 @@ export function createAccountValidateCid(cid) {
         dispatch(
           createAccountValidateCidFailed("Something went wrong. Check console")
         );
+        dispatch(
+          toastOpen({
+            text: "Something went wrong"
+          })
+        );
         console.log(error);
       });
   };

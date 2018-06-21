@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { Padding, MarginTop, Center } from "../../../../common-ui/layout";
+import { MarginTop, Center, Spacing } from "../../../../common-ui/layout";
 import {
   GammaCard,
   GammaCardTitle,
@@ -8,11 +8,14 @@ import {
   GammaCardButtons,
   GammaCardSubTitle
 } from "../../../../common-ui/design";
-import { HeadingLevel5 } from "../../../../common-ui/text";
 
-import { Button } from "styled-mdl";
+import { CIDInput } from "./styles";
+import { GammaButton } from "../../../../common/gui/gamma-button";
+import { GammaIconButton } from "../../../../common/gui/gamma-icon-buitton";
+import { GammaFabButton } from "../../../../common/gui/gamma-fab-button";
 
-import { CIDTextfield } from "./styles";
+import { Add } from "@material-ui/icons";
+import { Temp } from "./temp";
 
 class InputCidScreen extends Component {
   state = {
@@ -31,29 +34,33 @@ class InputCidScreen extends Component {
             </GammaCardSubTitle>
             <GammaCardBody>
               <Center>
-                <CIDTextfield
-                  onChange={e =>
+                <CIDInput
+                  startValue="hej"
+                  onChange={value =>
                     this.setState({
                       ...this.state,
-                      cid: e.target.value
+                      cid: value
                     })
                   }
-                  label="CID"
+                  upperLabel="CID"
                 />
               </Center>
             </GammaCardBody>
             <GammaCardButtons reverseDirection>
-              <Button
+              <GammaButton
+                text="Skicka CID"
                 onClick={() => {
                   this.props.sendCid(this.state.cid);
                 }}
                 primary
                 raised
-              >
-                Skicka cid
-              </Button>
+              />
             </GammaCardButtons>
           </GammaCard>
+          <Spacing />
+          <div>
+            <Temp />
+          </div>
         </Center>
       </MarginTop>
     );

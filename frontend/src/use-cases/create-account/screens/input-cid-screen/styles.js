@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { Textfield } from "styled-mdl";
+import { GammaTextField } from "../../../../common/gui/gamma-text-field";
 
-export const CIDTextfield = styled(Textfield)`
+export const CIDInput = styled(GammaTextField)`
   width: 250px;
 `;

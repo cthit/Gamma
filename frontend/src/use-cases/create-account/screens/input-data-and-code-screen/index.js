@@ -16,11 +16,10 @@ import {
   GammaCardTitle,
   GammaCardBody,
   GammaCardButtons,
-  GammaCardSubTitle,
-  Divider
+  GammaCardSubTitle
 } from "../../../../common-ui/design";
-import Button from "styled-mdl/lib/components/buttons/Button";
 import { Center, Spacing } from "../../../../common-ui/layout";
+import { GammaButton } from "../../../../common/gui/gamma-button";
 
 class InputDataAndCodeScreen extends React.Component {
   state = {
@@ -36,10 +35,6 @@ class InputDataAndCodeScreen extends React.Component {
     }
   };
 
-  constructor() {
-    super();
-  }
-
   render() {
     return (
       <Center>
@@ -52,84 +47,101 @@ class InputDataAndCodeScreen extends React.Component {
             <Center>
               <Center>
                 <ConfirmationCodeInput
-                  label="Kod"
-                  onChange={e =>
-                    this._handleInputChange(e.target.value, "code")
-                  }
+                  upperLabel="Kod"
+                  maxLength={10}
+                  lowerLabelReflectLength
+                  onChange={value => this._handleInputChange(value, "code")}
                 />
               </Center>
-              <Divider />
+              <Spacing />
               <NickInput
-                label="Nick"
-                onChange={e =>
-                  this._handleInputChange(e.target.value, "nick", true)
-                }
+                upperLabel="Nick"
+                maxLength={20}
+                lowerLabelReflectLength
+                onChange={value => this._handleInputChange(value, "nick", true)}
               />
+              <Spacing />
               <PasswordInput
-                label="Ditt lösenord"
-                onChange={e =>
-                  this._handleInputChange(e.target.value, "password", true)
+                upperLabel="Ditt lösenord"
+                password
+                onChange={value =>
+                  this._handleInputChange(value, "password", true)
                 }
               />
+              <Spacing />
               <PasswordConfirmationInput
-                label="Ditt lösenord igen"
-                onChange={e =>
-                  this._handleInputChange(
-                    e.target.value,
-                    "passwordConfirmation",
-                    true
-                  )
+                upperLabel="Ditt lösenord igen"
+                password
+                onChange={value =>
+                  this._handleInputChange(value, "passwordConfirmation", true)
                 }
               />
+              <Spacing />
               <FirstnameInput
-                label="Förstanamn"
-                onChange={e =>
-                  this._handleInputChange(e.target.value, "firstName", true)
+                upperLabel="Förstanamn"
+                maxLength={20}
+                lowerLabelReflectLength
+                onChange={value =>
+                  this._handleInputChange(value, "firstName", true)
                 }
               />
+              <Spacing />
               <LastnameInput
-                label="Efternamn"
-                onChange={e =>
-                  this._handleInputChange(e.target.value, "lastName", true)
+                upperLabel="Efternamn"
+                maxLength={20}
+                lowerLabelReflectLength
+                onChange={value =>
+                  this._handleInputChange(value, "lastName", true)
                 }
               />
+              <Spacing />
               <AttendanceYearInput
-                label="Vilket år började du på IT?"
-                onChange={e =>
-                  this._handleInputChange(
-                    e.target.value,
-                    "attendanceYear",
-                    true
-                  )
+                upperLabel="Vilket år började du på IT?"
+                startValue={"" + this._getCurrentYear()}
+                valueToTextMap={this._generateAttendanceYears()}
+                onChange={value =>
+                  this._handleInputChange(value, "attendanceYear", true)
                 }
               />
+              <Spacing />
               <AcceptUserAgreementInput
+                primary
                 label="Jag accepterar användaravtalet"
-                onChange={e => {
-                  this._handleInputChange(
-                    !this.state.user.userAgreement,
-                    "userAgreement",
-                    true
-                  );
-                  e.stopPropagation(); //Otherwise it will be called twice
-                }}
+                onChange={checked =>
+                  this.setState({
+                    ...this.state,
+                    checked: checked
+                  })
+                }
               />
             </Center>
           </GammaCardBody>
           <GammaCardButtons reverseDirection>
-            <Button
-              raisedAcceptUserAgreementInputAcceptUserAgreementInput
-              primary
+            <GammaButton
               onClick={() => this._handleSendDataAndCode()}
+              text="Skapa konto"
+              primary
               raised
-            >
-              Skapa konto
-            </Button>
+            />
             <Spacing />
           </GammaCardButtons>
         </GammaCard>
       </Center>
     );
+  }
+
+  _getCurrentYear() {
+    return new Date().getFullYear();
+  }
+
+  _generateAttendanceYears() {
+    const output = {};
+    const startYear = 2001;
+    const currentYear = this._getCurrentYear();
+    for (var i = startYear; i <= currentYear; i++) {
+      output[i] = i;
+    }
+    return output;
   }
 
   _handleSendDataAndCode() {
@@ -154,8 +166,8 @@ class InputDataAndCodeScreen extends React.Component {
 
   _validatePassword() {
     return (
-      this.state.user.password != "" &&
-      this.state.user.password == this.state.user.passwordConfirmation
+      this.state.user.password !== "" &&
+      this.state.user.password === this.state.user.passwordConfirmation
     );
   }
 
