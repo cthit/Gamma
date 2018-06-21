@@ -48,6 +48,12 @@ public class ITUserService implements UserDetailsService {
         itUser.setPassword(passwordEncoder.encode("example"));
         return itUserRepository.save(itUser);
     }
+    public boolean userExists(String cid){
+            if(itUserRepository.findByCid(cid) == null){
+                return false;
+            }
+            return true;
+    }
 
     public void createUser(CreateITUserRequest user) {
         ITUser itUser = new ITUser();

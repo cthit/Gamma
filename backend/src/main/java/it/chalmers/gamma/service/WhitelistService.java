@@ -29,6 +29,9 @@ public class WhitelistService {
     public void removeWhiteListedCID() throws Exception{
 
     }
+    public Whitelist findByCid(String cid){
+        return whitelistRepository.findByCid(cid);
+    }
     public boolean isCIDWhiteListed(String cid){
         if(whitelistRepository.findByCid(cid) == null){
             return false;

@@ -12,21 +12,24 @@ public class ActivationCode {
     @Column(updatable = false)
     private UUID id;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "whitelistCid")
-    private Whitelist whitelisted;    // Has a foreign key referencing the Whitelist ID
+
+
+    @JoinColumn(name = "cid", insertable = true, updatable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    private Whitelist cid;    // Has a foreign key referencing the Whitelist ID
 
     @Column(name = "code", length = 30)
     private String code;
 
 
-    public ActivationCode(){
+    protected ActivationCode(){
         id = UUID.randomUUID();
     }
-    public ActivationCode(UUID id){
-        this.id = id;
+    public ActivationCode(Whitelist cid){
+        id = UUID.randomUUID();
+        this.cid = cid;
     }
+
     public UUID getId() {
 
         return id;
@@ -36,12 +39,12 @@ public class ActivationCode {
         this.id = id;
     }
 
-    public Whitelist getWhitelisted() {
-        return whitelisted;
+    public String getCid() {
+        return cid.getCid();
     }
 
-    public void setWhitelisted(Whitelist whitelisted) {
-        this.whitelisted = whitelisted;
+    public void setCid(String cid) {
+        this.cid.setCid(cid);
     }
 
     public String getCode() {
@@ -52,18 +55,28 @@ public class ActivationCode {
         this.code = code;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActivationCode that = (ActivationCode) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(whitelisted, that.whitelisted) &&
+                Objects.equals(cid, that.cid) &&
                 Objects.equals(code, that.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, whitelisted, code);
+        return Objects.hash(id, cid, code);
+    }
+
+    @Override
+    public String toString() {
+        return "ActivationCode{" +
+                "id=" + id +
+                ", whitelistedCid=" + cid +
+                ", code='" + code + '\'' +
+                '}';
     }
 }
