@@ -54,7 +54,16 @@ public class WhitelistController {
         }
         return false;
     }
-
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public void addUser(@RequestBody Whitelist cid) throws CIDAlreadyWhitelistedException, UserAlreadyExistsException {
+        if (whitelistService.isCIDWhiteListed(cid.getCid())) {
+            throw new CIDAlreadyWhitelistedException();
+        }
+        if (itUserService.userExists(cid.getCid())) {
+            throw new UserAlreadyExistsException();
+        }
+        whitelistService.addWhiteListedCID(cid.getCid());
+    }
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
     @PostMapping
     public boolean createActivationCode(@RequestBody Whitelist cid) throws UserAlreadyExistsException, NoCidFoundException {
