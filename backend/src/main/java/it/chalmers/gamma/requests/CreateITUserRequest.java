@@ -1,5 +1,7 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.db.entity.Whitelist;
+
 import java.util.Objects;
 
 public class CreateITUserRequest {
@@ -11,6 +13,15 @@ public class CreateITUserRequest {
     private String lastName;
     private boolean userAgreement;
     private int acceptanceYear;
+    private Whitelist cid;
+
+    public Whitelist getCid() {
+        return cid;
+    }
+
+    public void setCid(Whitelist cid) {
+        this.cid = cid;
+    }
 
     public String getCode() {
         return code;
@@ -78,6 +89,7 @@ public class CreateITUserRequest {
                 ", lastName='" + lastName + '\'' +
                 ", userAgreement=" + userAgreement +
                 ", acceptanceYear=" + acceptanceYear +
+                ", cid=" + cid +
                 '}';
     }
 
@@ -92,12 +104,13 @@ public class CreateITUserRequest {
                 Objects.equals(password, that.password) &&
                 Objects.equals(nick, that.nick) &&
                 Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName);
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(cid, that.cid);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(code, password, nick, firstName, lastName, userAgreement, acceptanceYear);
+        return Objects.hash(code, password, nick, firstName, lastName, userAgreement, acceptanceYear, cid);
     }
 }

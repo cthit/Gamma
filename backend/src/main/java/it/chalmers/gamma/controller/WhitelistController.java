@@ -1,32 +1,36 @@
 package it.chalmers.gamma.controller;
 
+import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.exceptions.NoCidFoundException;
 import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
+import javax.mail.MessagingException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class WhitelistController {
 
-    WhitelistService whitelistService;
+    private WhitelistService whitelistService;
 
-    ActivationCodeService activationCodeService;
+    private ActivationCodeService activationCodeService;
 
-    ITUserService itUserService;
+    private ITUserService itUserService;
 
-    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService){
+    private MailSenderService mailSenderService;
+
+    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService, MailSenderService mailSenderService){
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.itUserService = itUserService;
+        this.mailSenderService = mailSenderService;
 
     }
     @GetMapping
@@ -60,7 +64,9 @@ public class WhitelistController {
         }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.findByCid(cid.getCid());
-            activationCodeService.generateAndSaveActivationCode(whitelist);
+            String code = activationCodeService.generateActivationCode();
+            ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
+            sendEmail(activationCode);
             return true;
         }
         else{
@@ -70,6 +76,16 @@ public class WhitelistController {
                 e.printStackTrace();
                 return false;
             }
+        }
+    }
+    private void sendEmail(ActivationCode activationCode){
+        String code = activationCode.getCode();
+        String to = activationCode.getCid() + "@student.chalmers.se";
+        String message = "Your code to Gamma is: " + code;
+        try {
+            mailSenderService.sendMessage(to, "login code", message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 }
