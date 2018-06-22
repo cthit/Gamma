@@ -43,7 +43,7 @@ export class GammaSwitch extends React.Component {
   }
 }
 
-GammaSwitch.proppTypes = {
+GammaSwitch.propTypes = {
   onChange: PropTypes.func.isRequired,
   label: PropTypes.string,
   primary: PropTypes.bool,
