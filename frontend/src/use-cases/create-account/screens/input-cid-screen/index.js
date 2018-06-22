@@ -11,6 +11,7 @@ import {
 
 import { CIDInput } from "./styles";
 import { GammaButton } from "../../../../common/gui/gamma-button";
+import { GammaSwitch } from "../../../../common/gui/gamma-switch";
 
 class InputCidScreen extends Component {
   state = {
@@ -53,6 +54,43 @@ class InputCidScreen extends Component {
             </GammaCardButtons>
           </GammaCard>
         </Center>
+
+        <GammaSwitch
+          primary
+          startValue={true}
+          label="1"
+          onChange={value => {
+            console.log("New  value: " + value);
+          }}
+        />
+        <GammaSwitch
+          secondary
+          startValue={true}
+          label="2"
+          onChange={value => {
+            console.log("New  value: " + value);
+          }}
+        />
+        <GammaSwitch
+          startValue={true}
+          label="3"
+          onChange={value => {
+            console.log("New  value: " + value);
+          }}
+        />
+        <GammaSwitch
+          label="4"
+          onChange={value => {
+            console.log("New  value: " + value);
+          }}
+        />
+        <GammaSwitch
+          disabled
+          label="5"
+          onChange={value => {
+            console.log("New  value: " + value);
+          }}
+        />
       </MarginTop>
     );
   }
