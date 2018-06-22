@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.exceptions.CodeMissmatchException;
 import it.chalmers.gamma.exceptions.NoCidFoundException;
+import it.chalmers.gamma.exceptions.PasswordTooShortException;
 import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
@@ -35,7 +36,7 @@ public class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException, UserAlreadyExistsException, CodeMissmatchException {
+    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException, UserAlreadyExistsException, CodeMissmatchException, PasswordTooShortException {
         Whitelist user = whitelistService.findByCid(createITUserRequest.getCid().getCid());
         if(user == null){
             throw new NoCidFoundException();
