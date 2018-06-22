@@ -1,8 +1,10 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.exceptions.CodeMissmatchException;
+import it.chalmers.gamma.exceptions.NoCidFoundException;
+import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
@@ -32,14 +34,23 @@ public class ITUserController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String createUser(@RequestBody CreateITUserRequest createITUserRequest){
-        createITUserRequest.setCid(whitelistService.findByCid(createITUserRequest.getCid().getCid()));
-        System.out.println(createITUserRequest);
-        if(activationCodeService.codeMatches(createITUserRequest.getCode(), createITUserRequest.getCid())){
-            itUserService.createUser(createITUserRequest);
+    @ResponseBody
+    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException, UserAlreadyExistsException, CodeMissmatchException {
+        Whitelist user = whitelistService.findByCid(createITUserRequest.getCid().getCid());
+        if(user == null){
+            throw new NoCidFoundException();
         }
-        //validate createITUserRequest.getCode()
-        return "Yes!";
+        createITUserRequest.setCid(user);
+        if(itUserService.userExists(createITUserRequest.getCid().getCid())){
+            throw new UserAlreadyExistsException();
+        }
+        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), createITUserRequest.getCid())){
+            throw new CodeMissmatchException();
+        }
+        else{
+            itUserService.createUser(createITUserRequest);
+            return "User Was Created";
+        }
     }
 
 }

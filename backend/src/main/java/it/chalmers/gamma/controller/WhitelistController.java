@@ -2,16 +2,19 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.exceptions.CIDAlreadyWhitelistedException;
 import it.chalmers.gamma.exceptions.NoCidFoundException;
 import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+import org.h2.engine.User;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -51,16 +54,12 @@ public class WhitelistController {
         }
         return false;
     }
+
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
     @PostMapping
-    public boolean createActivationCode(@RequestBody Whitelist cid){
+    public boolean createActivationCode(@RequestBody Whitelist cid) throws UserAlreadyExistsException, NoCidFoundException {
         if(itUserService.userExists(cid.getCid())){
-            try {
-                throw new UserAlreadyExistsException();
-            } catch (UserAlreadyExistsException e) {
-                e.printStackTrace();
-                return false;
-            }
+            throw new UserAlreadyExistsException();
         }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.findByCid(cid.getCid());
@@ -69,14 +68,8 @@ public class WhitelistController {
             sendEmail(activationCode);
             return true;
         }
-        else{
-            try {
-                throw new NoCidFoundException();
-            } catch (NoCidFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
+        else
+            throw new NoCidFoundException();
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();
