@@ -1,4 +1,5 @@
-package it.chalmers.gamma;
+package it.chalmers.gamma.IntegrationTests;
+
 
 import it.chalmers.gamma.service.ITUserService;
 import org.junit.Assert;
@@ -14,28 +15,30 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-  //      classes = GammaApplication.class
+        //      classes = GammaApplication.class
 )
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class IntergrationTests {
-
-    @Autowired
-    MockMvc mockMvc;
+public class ITUserTests {
 
     @Autowired
     ITUserService userService;
 
+    @Autowired
+    MockMvc mockMvc;
+
     @Test
-    public void contextLoads() throws Exception {       // This is an ugly way to do this, it should probably be fixed
+    public void testCreateUser() throws Exception {
         userService.createUser("gurr", "engsmyre");
+        userService.createUser("leif", "test");
+
         MvcResult result =  mockMvc.perform
                 (MockMvcRequestBuilders.get("/users/")
                         .accept(MediaType.APPLICATION_JSON)).andReturn();
         Assert.assertTrue(result.getResponse().getContentAsString().contains("gurr"));
+        Assert.assertFalse(result.getResponse().getContentAsString().contains("sfe"));
     }
 }

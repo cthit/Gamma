@@ -29,6 +29,8 @@ public class WhitelistController {
 
     private MailSenderService mailSenderService;
 
+    private String mailPostfix = "@student.chalmers.se";
+
     public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService, MailSenderService mailSenderService){
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
@@ -49,10 +51,7 @@ public class WhitelistController {
     @RequestMapping(value = "/valid", method = RequestMethod.POST)
     public boolean isValid(@RequestBody Whitelist cid) {
         System.out.println(cid);
-        if (whitelistService.isCIDWhiteListed(cid.getCid())) {
-            return true;
-        }
-        return false;
+        return whitelistService.isCIDWhiteListed(cid.getCid());
     }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public void addUser(@RequestBody Whitelist cid) throws CIDAlreadyWhitelistedException, UserAlreadyExistsException {
@@ -65,7 +64,7 @@ public class WhitelistController {
         whitelistService.addWhiteListedCID(cid.getCid());
     }
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
-    @PostMapping
+    @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
     public boolean createActivationCode(@RequestBody Whitelist cid) throws UserAlreadyExistsException, NoCidFoundException {
         if(itUserService.userExists(cid.getCid())){
             throw new UserAlreadyExistsException();
@@ -74,7 +73,7 @@ public class WhitelistController {
             Whitelist whitelist = whitelistService.findByCid(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-            sendEmail(activationCode);
+       //     sendEmail(activationCode);
             return true;
         }
         else
@@ -82,7 +81,7 @@ public class WhitelistController {
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@student.chalmers.se";
+        String to = activationCode.getCid() + mailPostfix;
         String message = "Your code to Gamma is: " + code;
         try {
             mailSenderService.sendMessage(to, "login code", message);

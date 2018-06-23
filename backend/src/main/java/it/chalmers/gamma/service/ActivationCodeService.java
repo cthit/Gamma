@@ -12,17 +12,17 @@ public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
 
-    private String[] words = {"ITSMURFEN", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0"};        // Add some random words in here.
+    private String[] words = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};        // Add some random words in here.
 
     public ActivationCodeService(ActivationCodeRepository activationCodeRepository){
         this.activationCodeRepository = activationCodeRepository;
     }
 
     public String generateActivationCode(){
-        Random rand = new Random();
+        Random rand = new Random(10);
         StringBuilder word = new StringBuilder(words[rand.nextInt(words.length-1)]);
         char[] code = new char[word.length()];
-        for(int i = 0; i < code.length; i++){
+        for(int i = 0; i < 10; i++){
             int index = rand.nextInt(word.length());
             code[i] = word.charAt(index);
             word.replace(index, index+1, "");
@@ -31,6 +31,9 @@ public class ActivationCodeService {
     }
 
     public ActivationCode saveActivationCode(Whitelist cid, String code){
+        if(userHasCode(cid)){
+            activationCodeRepository.delete(activationCodeRepository.findByCid(cid));
+        }
         ActivationCode activationCode = new ActivationCode(cid);
         activationCode.setId(UUID.randomUUID());
         activationCode.setCode(code);
@@ -39,9 +42,10 @@ public class ActivationCodeService {
     }
 
     public boolean codeMatches(String code, Whitelist user){
-        System.out.println("user is: " + activationCodeRepository.findByCid(user));
-
-        return true;
+        return activationCodeRepository.findByCid(user).getCode().equals(code);
+    }
+    public boolean userHasCode(Whitelist code){
+        return activationCodeRepository.findByCid(code) != null;
     }
 
     // TODO Delete entry after 1 hour or once code has been used. This does not work.
