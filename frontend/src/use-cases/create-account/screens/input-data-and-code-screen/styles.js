@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { GammaCheckbox } from "../../../../common/gui/gamma-checkbox";
+import { GammaSwitch } from "../../../../common/gui/gamma-switch";
 import { GammaTextField } from "../../../../common/gui/gamma-text-field";
 import { GammaSelect } from "../../../../common/gui/gamma-select";
 
@@ -27,8 +27,10 @@ export const LastnameInput = styled(GammaTextField)`
   width: 300px;
 `;
 
+export const ConfirmCidInput = styled(GammaTextField)``;
+
 export const AttendanceYearInput = styled(GammaSelect)`
   width: 300px;
 `;
 
-export const AcceptUserAgreementInput = styled(GammaCheckbox)``;
+export const AcceptUserAgreementInput = styled(GammaSwitch)``;

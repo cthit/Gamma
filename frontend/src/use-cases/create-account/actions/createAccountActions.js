@@ -34,27 +34,23 @@ export function createAccountValidateCid(cid) {
         }
       )
       .then(response => {
-        if (response.data) {
-          dispatch(createAccountValidateCidSuccessfully());
-          dispatch(redirectTo("/create-account/email-sent"));
-        } else {
-          dispatch(createAccountValidateCidFailed("Wrong cid"));
-          dispatch(
-            toastOpen({
-              text: "Wrong cid"
-            })
-          );
-        }
+        console.log(response);
+        //dispatch(createAccountValidateCidSuccessfully());
+        dispatch(redirectTo("/create-account/email-sent"));
       })
       .catch(error => {
-        dispatch(
-          createAccountValidateCidFailed("Something went wrong. Check console")
-        );
-        dispatch(
+        //Temp
+        dispatch(redirectTo("/create-account/email-sent"));
+        /*dispatch(
+          createAccountValidateCidFailed(
+            "Något gick fel när cid försöktes valideras"
+          )
+        );*/
+        /*dispatch(
           toastOpen({
             text: "Something went wrong"
           })
-        );
+        );*/
         console.log(error);
       });
   };

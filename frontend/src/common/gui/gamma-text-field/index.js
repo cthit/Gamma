@@ -13,8 +13,7 @@ import {
 
 export class GammaTextField extends React.Component {
   state = {
-    startValue: this.props.startValue == null ? "" : this.props.startValue,
-    currentText: this.props.startValue,
+    currentText: this.props.startValue == null ? "" : this.props.startValue,
     lowerLabel: this.props.lowerLabelReflectLength
       ? this._getLowerLabelTextFromLength(
           this.props.startValue != null ? this.props.startValue : "",
@@ -25,6 +24,25 @@ export class GammaTextField extends React.Component {
     helperTextId: generateId(),
     error: false
   };
+
+  invalidate(resetText) {
+    if (this.props.validate != null) {
+      const valid = this.props.validate(this.state.currentText);
+      const text = resetText ? "" : this.state.currentText;
+      this.setState({
+        ...this.state,
+        currentText: text,
+        error: !valid
+      });
+    }
+  }
+
+  clearText() {
+    this.setState({
+      ...this.state,
+      currentText: ""
+    });
+  }
 
   render() {
     const upperLabel =
@@ -49,7 +67,7 @@ export class GammaTextField extends React.Component {
         {upperLabel}
         <Input
           id={this.state.inputId}
-          defaultValue={this.state.startValue}
+          value={this.state.currentText}
           onChange={e => {
             e.target.value = this._checkLength(
               e.target.value,
@@ -63,12 +81,15 @@ export class GammaTextField extends React.Component {
               error = !this.props.validate(value);
             }
             this.props.onChange(value);
+
+            const lowerLabel = this.props.lowerLabelReflectLength
+              ? this._getLowerLabelTextFromLength(value, this.props.maxLength)
+              : this.state.lowerLabel;
+
             this.setState({
               ...this.state,
               currentText: value,
-              lowerLabel: this.lowerLabelReflectLength
-                ? this._getLowerLabelTextFromLength(value, this.props.maxLength)
-                : this.state.lowerLabel,
+              lowerLabel: lowerLabel,
               error: error
             });
           }}

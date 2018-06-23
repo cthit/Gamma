@@ -1,7 +1,6 @@
 import React from "react";
 
-import { ToastButton } from "./styles";
-import { Snackbar } from "@material-ui/core";
+import { ToastButton, StyledSnackbar } from "./styles";
 
 class GammaToast extends React.Component {
   state = {
@@ -93,12 +92,12 @@ class GammaToast extends React.Component {
   render() {
     return (
       <div>
-        <Snackbar
-          autoHideDuration={this.state.currentDuration}
+        <StyledSnackbar
           anchorOrigin={{
             vertical: "bottom",
-            horizontal: "center"
+            horizontal: "left"
           }}
+          autoHideDuration={this.state.currentDuration}
           open={this.state.open}
           onClose={this.handleClose}
           onExited={this.handleExited}

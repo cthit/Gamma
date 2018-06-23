@@ -38,7 +38,7 @@ export class GammaSelect extends React.Component {
             <MenuItem value="">{""}</MenuItem>
           ) : null}
 
-          {Object.keys(this.props.valueToTextMap).map(value => {
+          {this._getValues(this.props.valueToTextMap).map(value => {
             const text = this.props.valueToTextMap[value];
             return (
               <MenuItem key={value} value={value}>
@@ -50,6 +50,16 @@ export class GammaSelect extends React.Component {
         {lowerLabel}
       </StyledFormControl>
     );
+  }
+
+  _getValues(valueToTextMap) {
+    var result = Object.keys(this.props.valueToTextMap);
+
+    if (this.props.reverse) {
+      result.reverse();
+    }
+
+    return result;
   }
 
   _generateUpperLabel(upperLabel) {
@@ -80,5 +90,6 @@ GammaSelect.propTypes = {
   allowToChooseNone: PropTypes.bool,
   upperLabel: PropTypes.string,
   lowerLabel: PropTypes.string,
-  startValue: PropTypes.string
+  startValue: PropTypes.string,
+  reverse: PropTypes.bool
 };

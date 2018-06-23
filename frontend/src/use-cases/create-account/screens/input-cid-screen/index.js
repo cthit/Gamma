@@ -11,6 +11,7 @@ import {
 
 import { CIDInput } from "./styles";
 import { GammaButton } from "../../../../common/gui/gamma-button";
+import { GammaStepper } from "../../../../common/gui/gamma-stepper";
 import { GammaSwitch } from "../../../../common/gui/gamma-switch";
 
 class InputCidScreen extends Component {
@@ -18,9 +19,16 @@ class InputCidScreen extends Component {
     cid: ""
   };
 
+  constructor() {
+    super();
+
+    this.cidInputRef = React.createRef();
+  }
+
   render() {
     return (
       <MarginTop>
+        {console.log(this.props)}
         <Center>
           <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
             <GammaCardTitle>Skriv in ditt CID</GammaCardTitle>
@@ -31,7 +39,12 @@ class InputCidScreen extends Component {
             <GammaCardBody>
               <Center>
                 <CIDInput
-                  startValue="hej"
+                  innerRef={this.cidInputRef}
+                  validate={value => {
+                    return value.length > 0;
+                  }}
+                  maxLength={10}
+                  lowerLabelReflectLength
                   onChange={value =>
                     this.setState({
                       ...this.state,
@@ -46,7 +59,14 @@ class InputCidScreen extends Component {
               <GammaButton
                 text="Skicka CID"
                 onClick={() => {
-                  this.props.sendCid(this.state.cid);
+                  if (this.state.cid.length == 0) {
+                    this.cidInputRef.current.invalidate();
+                    this.props.showError(
+                      "Du har inte skrivit in något cid ännu"
+                    );
+                  } else {
+                    this.props.sendCid(this.state.cid);
+                  }
                 }}
                 primary
                 raised
@@ -54,43 +74,6 @@ class InputCidScreen extends Component {
             </GammaCardButtons>
           </GammaCard>
         </Center>
-
-        <GammaSwitch
-          primary
-          startValue={true}
-          label="1"
-          onChange={value => {
-            console.log("New  value: " + value);
-          }}
-        />
-        <GammaSwitch
-          secondary
-          startValue={true}
-          label="2"
-          onChange={value => {
-            console.log("New  value: " + value);
-          }}
-        />
-        <GammaSwitch
-          startValue={true}
-          label="3"
-          onChange={value => {
-            console.log("New  value: " + value);
-          }}
-        />
-        <GammaSwitch
-          label="4"
-          onChange={value => {
-            console.log("New  value: " + value);
-          }}
-        />
-        <GammaSwitch
-          disabled
-          label="5"
-          onChange={value => {
-            console.log("New  value: " + value);
-          }}
-        />
       </MarginTop>
     );
   }

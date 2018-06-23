@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import CreateAccount from "../use-cases/create-account";
 import { DrawerNavigationLink } from "./elements/drawer-navigation-link";
 import { Padding, Spacing } from "../common-ui/layout";
 import GammaRedirectContainer from "./containers/GammaRedirectContainer";
@@ -17,6 +16,7 @@ import {
   StyledMain
 } from "./styles";
 import { UserInformation } from "./elements/user-information";
+import CreateAccountContainer from "../use-cases/create-account/container/CreateAccountContainer";
 
 class App extends Component {
   state = {
@@ -32,21 +32,11 @@ class App extends Component {
 
     const drawer = (
       <div>
-        <UserInformation />
         <Spacing />
         <List component="nav">
           <DrawerNavigationLink link="/create-account">
-            Create-account
-          </DrawerNavigationLink>
-          <DrawerNavigationLink link="/create-account/email-sent">
-            Create-account/email-sent
-          </DrawerNavigationLink>
-          <DrawerNavigationLink link="/create-account/input">
-            Create-account/input
-          </DrawerNavigationLink>
-          <DrawerNavigationLink link="/create-account/finished">
-            Create-account/finished
-          </DrawerNavigationLink>
+            Skapa konto
+          </DrawerNavigationLink>{" "}
         </List>
       </div>
     );
@@ -90,7 +80,10 @@ class App extends Component {
               <GammaRedirectContainer />
               <GammaToastContainer />
               <Switch>
-                <Route path="/create-account" component={CreateAccount} />
+                <Route
+                  path="/create-account"
+                  component={CreateAccountContainer}
+                />
               </Switch>
             </Padding>
           </StyledMain>

@@ -148,6 +148,8 @@ export const GammaCardButtons = styled.div`
 
   display: flex;
   flex-direction: ${props => (props.reverseDirection ? "row-reverse" : "row")};
+  justify-content: ${props =>
+    props.leftRight ? "space-between" : "flex-start"};
 
   align-items: center;
 `;

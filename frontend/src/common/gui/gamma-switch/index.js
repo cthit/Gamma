@@ -2,7 +2,9 @@ import React from "react";
 
 import PropTypes from "prop-types";
 
-import { FormControlLabel, Switch } from "@material-ui/core";
+import { Switch } from "@material-ui/core";
+
+import { StyledFormControlLabel } from "./styles";
 
 export class GammaSwitch extends React.Component {
   state = {
@@ -18,7 +20,8 @@ export class GammaSwitch extends React.Component {
 
   render() {
     return (
-      <FormControlLabel
+      <StyledFormControlLabel
+        error={this.props.error}
         control={
           <Switch
             checked={this.state.checked}
@@ -49,5 +52,6 @@ GammaSwitch.propTypes = {
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
   disabled: PropTypes.bool,
-  startValue: PropTypes.bool
+  startValue: PropTypes.bool,
+  error: PropTypes.bool
 };
