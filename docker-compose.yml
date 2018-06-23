@@ -5,6 +5,8 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: example
+      GAMMA_EMAIL: gustav.engsmyre@gmail.com
+      GAMMA_EMAIL_PASSWORD: glmxmanbpehkvilw
     ports:
       - 5432:5432
 

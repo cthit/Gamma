@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
+import it.chalmers.gamma.exceptions.PasswordTooShortException;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +20,8 @@ public class ITUserService implements UserDetailsService {
     private final ITUserRepository itUserRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    private int minPasswordLength = 8;
 
     private ITUserService(ITUserRepository itUserRepository) {
         this.itUserRepository = itUserRepository;
@@ -55,7 +58,10 @@ public class ITUserService implements UserDetailsService {
             return true;
     }
 
-    public void createUser(CreateITUserRequest user) {
+    public void createUser(CreateITUserRequest user) throws PasswordTooShortException {
+        if(user.getPassword().length() < 8){
+            throw new PasswordTooShortException();
+        }
         ITUser itUser = new ITUser();
         itUser.setNick(user.getNick());
         itUser.setFirstName(user.getFirstName());

@@ -2,16 +2,19 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.exceptions.CIDAlreadyWhitelistedException;
 import it.chalmers.gamma.exceptions.NoCidFoundException;
 import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+import org.h2.engine.User;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,6 +28,8 @@ public class WhitelistController {
     private ITUserService itUserService;
 
     private MailSenderService mailSenderService;
+
+    private String mailPostfix = "@student.chalmers.se";
 
     public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService, MailSenderService mailSenderService){
         this.whitelistService = whitelistService;
@@ -46,41 +51,37 @@ public class WhitelistController {
     @RequestMapping(value = "/valid", method = RequestMethod.POST)
     public boolean isValid(@RequestBody Whitelist cid) {
         System.out.println(cid);
+        return whitelistService.isCIDWhiteListed(cid.getCid());
+    }
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public void addUser(@RequestBody Whitelist cid) throws CIDAlreadyWhitelistedException, UserAlreadyExistsException {
         if (whitelistService.isCIDWhiteListed(cid.getCid())) {
-            return true;
+            throw new CIDAlreadyWhitelistedException();
         }
-        return false;
+        if (itUserService.userExists(cid.getCid())) {
+            throw new UserAlreadyExistsException();
+        }
+        whitelistService.addWhiteListedCID(cid.getCid());
     }
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
-    @PostMapping
-    public boolean createActivationCode(@RequestBody Whitelist cid){
+    @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
+    public boolean createActivationCode(@RequestBody Whitelist cid) throws UserAlreadyExistsException, NoCidFoundException {
         if(itUserService.userExists(cid.getCid())){
-            try {
-                throw new UserAlreadyExistsException();
-            } catch (UserAlreadyExistsException e) {
-                e.printStackTrace();
-                return false;
-            }
+            throw new UserAlreadyExistsException();
         }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.findByCid(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-            sendEmail(activationCode);
+       //     sendEmail(activationCode);
             return true;
         }
-        else{
-            try {
-                throw new NoCidFoundException();
-            } catch (NoCidFoundException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
+        else
+            throw new NoCidFoundException();
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@student.chalmers.se";
+        String to = activationCode.getCid() + mailPostfix;
         String message = "Your code to Gamma is: " + code;
         try {
             mailSenderService.sendMessage(to, "login code", message);
