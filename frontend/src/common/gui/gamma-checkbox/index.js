@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { FormControlLabel, Checkbox } from "@material-ui/core";
+import { getColor } from "../common/utils/color";
 
 export class GammaCheckbox extends React.Component {
   state = {
@@ -16,13 +17,7 @@ export class GammaCheckbox extends React.Component {
         disabled={this.props.disabled}
         control={
           <Checkbox
-            color={
-              this.props.primary
-                ? "primary"
-                : this.props.secondary
-                  ? "secondary"
-                  : "default"
-            }
+            color={getColor(this.props.primary, this.props.secondary)}
             checked={this.state.checked}
             onChange={e => {
               const checked = e.target.checked;

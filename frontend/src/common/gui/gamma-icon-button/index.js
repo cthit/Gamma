@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { IconButton } from "@material-ui/core";
+import { getColor } from "../common/utils/color";
 
 export class GammaIconButton extends React.Component {
   render() {
@@ -10,13 +11,7 @@ export class GammaIconButton extends React.Component {
       <IconButton
         disabled={this.props.disabled}
         onClick={this.props.onClick}
-        color={
-          this.props.primary
-            ? "primary"
-            : this.props.secondary
-              ? "secondary"
-              : "default"
-        }
+        color={getColor(this.props.primary, this.props.secondary)}
       >
         {this.props.children}
       </IconButton>

@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { DownRightFABButton } from "./styles";
+import { getColor } from "../common/utils/color";
 
 export class GammaFABButton extends React.Component {
   render() {
@@ -11,13 +12,7 @@ export class GammaFABButton extends React.Component {
         variant="fab"
         disabled={this.props.disabled}
         onClick={this.props.onClick}
-        color={
-          this.props.primary
-            ? "primary"
-            : this.props.secondary
-              ? "secondary"
-              : "default"
-        }
+        color={getColor(this.props.primary, this.props.secondary)}
       >
         {this.props.children}
       </DownRightFABButton>

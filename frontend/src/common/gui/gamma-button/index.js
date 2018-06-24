@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Button } from "@material-ui/core";
+import { getColor } from "../common/utils/color";
 
 export const GammaButton = ({
   text,
@@ -30,7 +31,7 @@ function _translateProps(onClick, primary, secondary, raised, disabled) {
   return {
     onClick: onClick,
     disabled: disabled,
-    color: primary ? "primary" : secondary ? "secondary" : "default",
+    color: getColor(primary, secondary),
     variant: raised ? "contained" : "flat"
   };
 }

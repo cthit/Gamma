@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Switch } from "@material-ui/core";
 
 import { StyledFormControlLabel } from "./styles";
+import { getColor } from "../common/utils/color";
 
 export class GammaSwitch extends React.Component {
   state = {
@@ -26,13 +27,7 @@ export class GammaSwitch extends React.Component {
           <Switch
             checked={this.state.checked}
             disabled={this.props.disabled}
-            color={
-              this.props.primary
-                ? "primary"
-                : this.props.secondary
-                  ? "secondary"
-                  : "default"
-            }
+            color={getColor(this.props.primary, this.props.secondary)}
             onChange={event => {
               const value = event.target.checked;
               this._handleChange(value);

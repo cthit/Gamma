@@ -8,6 +8,7 @@ import { GammaLowerLabel } from "../common/GammaLowerLabel";
 
 import { UpperLabel, StyledFormControl } from "./styles";
 import generateId from "../../utils/generateId";
+import { getColor } from "../common/utils/color";
 
 export class GammaRadioButtonGroup extends React.Component {
   state = {
@@ -44,17 +45,7 @@ export class GammaRadioButtonGroup extends React.Component {
                   value={value}
                   label={label}
                   disabled={disabled}
-                  control={
-                    <Radio
-                      color={
-                        primary
-                          ? "primary"
-                          : secondary
-                            ? "secondary"
-                            : "default"
-                      }
-                    />
-                  }
+                  control={<Radio color={getColor(primary, secondary)} />}
                 />
               );
             })}
