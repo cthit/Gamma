@@ -17,6 +17,13 @@ export class GammaStepper extends React.Component {
     });
   }
 
+  previousStep() {
+    this.setState({
+      ...this.state,
+      activeStep: Math.max(this.state.activeStep - 1, 0)
+    });
+  }
+
   nextStep() {
     this.setState({
       ...this.state,
@@ -45,3 +52,8 @@ export class GammaStepper extends React.Component {
     );
   }
 }
+
+GammaStepper.propTypes = {
+  steps: PropTypes.arrayOf(Object).isRequired,
+  finishedElement: PropTypes.object.isRequired
+};

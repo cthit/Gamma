@@ -17,6 +17,7 @@ import {
 } from "./styles";
 import { UserInformation } from "./elements/user-information";
 import CreateAccountContainer from "../use-cases/create-account/container/CreateAccountContainer";
+import { Demo } from "../use-cases/demo";
 
 class App extends Component {
   state = {
@@ -34,9 +35,10 @@ class App extends Component {
       <div>
         <Spacing />
         <List component="nav">
+          <DrawerNavigationLink link="/demo">Demo</DrawerNavigationLink>
           <DrawerNavigationLink link="/create-account">
             Skapa konto
-          </DrawerNavigationLink>{" "}
+          </DrawerNavigationLink>
         </List>
       </div>
     );
@@ -84,6 +86,7 @@ class App extends Component {
                   path="/create-account"
                   component={CreateAccountContainer}
                 />
+                <Route path="/demo" component={Demo} />
               </Switch>
             </Padding>
           </StyledMain>
