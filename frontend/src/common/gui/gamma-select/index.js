@@ -6,6 +6,7 @@ import generateId from "../../utils/generateId";
 import { Input, FormHelperText, InputLabel, MenuItem } from "@material-ui/core";
 
 import { StyledFormControl, StyledSelect } from "./styles";
+import { GammaLowerLabel } from "../common/GammaLowerLabel";
 
 export class GammaSelect extends React.Component {
   state = {
@@ -79,7 +80,7 @@ export class GammaSelect extends React.Component {
       return null;
     }
 
-    return <FormHelperText>{this.props.lowerLabel}</FormHelperText>;
+    return <GammaLowerLabel text={lowerLabel} />;
   }
 }
 

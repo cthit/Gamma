@@ -4,12 +4,9 @@ import PropTypes from "prop-types";
 
 import generateId from "../../utils/generateId";
 
-import {
-  FormControl,
-  InputLabel,
-  Input,
-  FormHelperText
-} from "@material-ui/core";
+import { FormControl, InputLabel, Input } from "@material-ui/core";
+
+import { GammaLowerLabel } from "../common/GammaLowerLabel";
 
 export class GammaTextField extends React.Component {
   state = {
@@ -125,7 +122,7 @@ export class GammaTextField extends React.Component {
   }
 
   _generateLowerLabel(lowerLabel, helperTextId) {
-    return <FormHelperText id={helperTextId}>{lowerLabel}</FormHelperText>;
+    return <GammaLowerLabel id={helperTextId} text={lowerLabel} />;
   }
 }
 

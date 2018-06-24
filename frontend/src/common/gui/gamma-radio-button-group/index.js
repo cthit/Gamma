@@ -2,12 +2,9 @@ import React from "react";
 
 import PropTypes from "prop-types";
 
-import {
-  Radio,
-  FormControlLabel,
-  RadioGroup,
-  FormHelperText
-} from "@material-ui/core";
+import { Radio, FormControlLabel, RadioGroup } from "@material-ui/core";
+
+import { GammaLowerLabel } from "../common/GammaLowerLabel";
 
 import { UpperLabel, StyledFormControl } from "./styles";
 import generateId from "../../utils/generateId";
@@ -62,7 +59,7 @@ export class GammaRadioButtonGroup extends React.Component {
               );
             })}
         </RadioGroup>
-        <FormHelperText>{this.props.lowerLabel}</FormHelperText>
+        <GammaLowerLabel text={this.props.lowerLabel} />
       </StyledFormControl>
     );
   }
