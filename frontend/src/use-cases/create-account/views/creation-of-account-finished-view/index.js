@@ -10,7 +10,7 @@ import { Text } from "../../../../common-ui/text";
 
 import { GammaButton } from "../../../../common/gui/gamma-button";
 
-class CreationOfAccountFinishedScreen extends React.Component {
+class CreationOfAccountFinishedView extends React.Component {
   render() {
     return (
       <Center>
@@ -38,4 +38,4 @@ class CreationOfAccountFinishedScreen extends React.Component {
   }
 }
 
-export default CreationOfAccountFinishedScreen;
+export default CreationOfAccountFinishedView;

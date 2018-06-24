@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { GammaSwitch } from "../../../../common/gui/gamma-switch";
 import { GammaTextField } from "../../../../common/gui/gamma-text-field";
 import { GammaSelect } from "../../../../common/gui/gamma-select";
+import { GammaButton } from "../../../../common/gui/gamma-button";
+
+export const CreateAccountButton = styled(GammaButton)``;
 
 export const ConfirmationCodeInput = styled(GammaTextField)`
   width: 100px;

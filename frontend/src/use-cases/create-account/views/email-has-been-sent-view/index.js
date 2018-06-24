@@ -12,7 +12,7 @@ import { ButtonNavLink } from "./styles";
 import { GammaButton } from "../../../../common/gui/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
-class EmailHasBeenSentScreen extends React.Component {
+class EmailHasBeenSentView extends React.Component {
   render() {
     return (
       <Center>
@@ -39,7 +39,6 @@ class EmailHasBeenSentScreen extends React.Component {
                 text="Jag har fått en kod"
               />
             </ButtonNavLink>
-            <Spacing />
             <ButtonNavLink to="/create-account">
               <GammaButton raised onClick={() => {}} text="Tillbaka" />
             </ButtonNavLink>
@@ -50,4 +49,4 @@ class EmailHasBeenSentScreen extends React.Component {
   }
 }
 
-export default EmailHasBeenSentScreen;
+export default EmailHasBeenSentView;

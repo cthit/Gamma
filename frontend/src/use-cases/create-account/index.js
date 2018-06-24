@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
-import InputDataAndCodeScreenContainer from "./container/InputDataAndCodeScreenContainer";
-import InputCidScreenContainer from "./container/InputCidScreenContainer";
-import CreationOfAccountFinishedScreen from "./screens/creation-of-account-finished-screen";
-import EmailHasBeenSentScreen from "./screens/email-has-been-sent-screen";
+import InputDataAndCodeViewContainer from "./container/InputDataAndCodeViewContainer";
+import InputCidViewContainer from "./container/InputCidViewContainer";
+import CreationOfAccountFinishedView from "./views/creation-of-account-finished-view";
+import EmailHasBeenSentView from "./views/email-has-been-sent-view";
 import { Fill, Spacing } from "../../common-ui/layout";
 import { GammaButton } from "../../common/gui/gamma-button";
 import { GammaStepper } from "../../common/gui/gamma-stepper";
@@ -54,18 +54,18 @@ class CreateAccount extends Component {
             steps={[
               {
                 text: "Skicka in CID",
-                element: <InputCidScreenContainer />
+                element: <InputCidViewContainer />
               },
               {
                 text: "Hämta aktiveringskod",
-                element: <EmailHasBeenSentScreen />
+                element: <EmailHasBeenSentView />
               },
               {
                 text: "Skapa konto",
-                element: <InputDataAndCodeScreenContainer />
+                element: <InputDataAndCodeViewContainer />
               }
             ]}
-            finishedElement={<CreationOfAccountFinishedScreen />}
+            finishedElement={<CreationOfAccountFinishedView />}
           />
         </Fill>
         <Spacing />
@@ -74,13 +74,4 @@ class CreateAccount extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  stage: state.createAccount.stage
-});
-
-const mapDispatchToProps = (dispatch, ownProps) => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CreateAccount);
+export default CreateAccount;

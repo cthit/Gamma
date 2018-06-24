@@ -9,7 +9,8 @@ import {
   LastnameInput,
   AttendanceYearInput,
   AcceptUserAgreementInput,
-  ConfirmCidInput
+  ConfirmCidInput,
+  CreateAccountButton
 } from "./styles";
 
 import {
@@ -22,7 +23,7 @@ import {
 import { Center, Spacing } from "../../../../common-ui/layout";
 import { GammaButton } from "../../../../common/gui/gamma-button";
 
-class InputDataAndCodeScreen extends React.Component {
+class InputDataAndCodeView extends React.Component {
   state = {
     errors: {
       cid: false,
@@ -64,7 +65,7 @@ class InputDataAndCodeScreen extends React.Component {
   render() {
     return (
       <Center>
-        <GammaCard maxWidth="600px" minWidth="300px" hasSubTitle>
+        <GammaCard minWidth="300px" maxWidth="600px" hasSubTitle>
           <GammaCardTitle>Slutför registreringen av konto</GammaCardTitle>
           <GammaCardSubTitle>
             Skriv in koden du fick på din skolmail samt följande information
@@ -175,8 +176,8 @@ class InputDataAndCodeScreen extends React.Component {
               />
             </Center>
           </GammaCardBody>
-          <GammaCardButtons reverseDirection>
-            <GammaButton
+          <GammaCardButtons leftRight reverseDirection>
+            <CreateAccountButton
               onClick={() => this._handleSendDataAndCode()}
               text="Skapa konto"
               primary
@@ -359,4 +360,4 @@ class InputDataAndCodeScreen extends React.Component {
   }
 }
 
-export default InputDataAndCodeScreen;
+export default InputDataAndCodeView;

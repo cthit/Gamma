@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { createAccountValidateCid } from "../actions/createAccountActions";
 import { toastOpen } from "../../../redux/actions/toastActions";
-import InputCidScreen from "../screens/input-cid-screen";
+import InputCidView from "../views/input-cid-view";
 
 const mapStateToProps = (state, ownProps) => ({});
 
@@ -13,4 +13,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InputCidScreen);
+)(InputCidView);

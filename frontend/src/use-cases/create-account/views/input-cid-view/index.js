@@ -14,7 +14,7 @@ import { GammaButton } from "../../../../common/gui/gamma-button";
 import { GammaStepper } from "../../../../common/gui/gamma-stepper";
 import { GammaSwitch } from "../../../../common/gui/gamma-switch";
 
-class InputCidScreen extends Component {
+class InputCidView extends Component {
   state = {
     cid: ""
   };
@@ -78,4 +78,4 @@ class InputCidScreen extends Component {
   }
 }
 
-export default InputCidScreen;
+export default InputCidView;
