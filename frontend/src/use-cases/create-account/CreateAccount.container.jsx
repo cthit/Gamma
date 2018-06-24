@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
-import { redirectTo } from "../../../redux/actions/redirectActions";
-import CreateAccount from "../index";
+import { redirectTo } from "../../redux/actions/redirectActions";
+import CreateAccount from "./CreateAccount";
 
 const mapStateToProps = (state, ownProps) => ({});
 

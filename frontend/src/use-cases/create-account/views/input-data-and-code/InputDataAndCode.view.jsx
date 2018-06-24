@@ -1,29 +1,28 @@
 import React from "react";
-
 import {
+  AcceptUserAgreementInput,
+  AttendanceYearInput,
+  ConfirmCidInput,
   ConfirmationCodeInput,
-  NickInput,
-  PasswordInput,
-  PasswordConfirmationInput,
+  CreateAccountButton,
   FirstnameInput,
   LastnameInput,
-  AttendanceYearInput,
-  AcceptUserAgreementInput,
-  ConfirmCidInput,
-  CreateAccountButton
-} from "./styles";
-
+  NickInput,
+  PasswordConfirmationInput,
+  PasswordInput
+} from "./InputDataAndCode.view.styles";
+import { Center, Spacing } from "../../../../common-ui/layout";
 import {
   GammaCard,
-  GammaCardTitle,
   GammaCardBody,
   GammaCardButtons,
-  GammaCardSubTitle
+  GammaCardSubTitle,
+  GammaCardTitle
 } from "../../../../common-ui/design";
-import { Center, Spacing } from "../../../../common-ui/layout";
+
 import { GammaButton } from "../../../../common/gui/gamma-button";
 
-class InputDataAndCodeView extends React.Component {
+class InputDataAndCode extends React.Component {
   state = {
     errors: {
       cid: false,
@@ -346,7 +345,6 @@ class InputDataAndCodeView extends React.Component {
   }
 
   _validateUserAgreement() {
-    console.log(this.state.user.userAgreement);
     if (!this.state.user.userAgreement) {
       this.setState({
         ...this.state,
@@ -360,4 +358,4 @@ class InputDataAndCodeView extends React.Component {
   }
 }
 
-export default InputDataAndCodeView;
+export default InputDataAndCode;

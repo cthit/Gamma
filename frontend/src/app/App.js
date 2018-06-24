@@ -16,7 +16,7 @@ import {
   StyledMain
 } from "./styles";
 import { UserInformation } from "./elements/user-information";
-import CreateAccountContainer from "../use-cases/create-account/container/CreateAccountContainer";
+import { CreateAccount } from "../use-cases/create-account";
 import { Demo } from "../use-cases/demo";
 
 class App extends Component {
@@ -82,10 +82,7 @@ class App extends Component {
               <GammaRedirectContainer />
               <GammaToastContainer />
               <Switch>
-                <Route
-                  path="/create-account"
-                  component={CreateAccountContainer}
-                />
+                <Route path="/create-account" component={CreateAccount} />
                 <Route path="/demo" component={Demo} />
               </Switch>
             </Padding>

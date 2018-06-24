@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { createAccount } from "../../use-cases/create-account/reducers/createAccountReducer";
+import { createAccount } from "../../use-cases/create-account/CreateAccount.reducer";
 import { redirect } from "../reducers/redirectReducer";
 import { toast } from "../reducers/toastReducer";
 

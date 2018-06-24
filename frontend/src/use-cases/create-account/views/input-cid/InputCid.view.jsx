@@ -1,20 +1,19 @@
-import React, { Component } from "react";
-
-import { MarginTop, Center } from "../../../../common-ui/layout";
+import { Center, MarginTop } from "../../../../common-ui/layout";
 import {
   GammaCard,
-  GammaCardTitle,
   GammaCardBody,
   GammaCardButtons,
-  GammaCardSubTitle
+  GammaCardSubTitle,
+  GammaCardTitle
 } from "../../../../common-ui/design";
+import React, { Component } from "react";
 
-import { CIDInput } from "./styles";
+import { CIDInput } from "./InputCid.view.styles";
 import { GammaButton } from "../../../../common/gui/gamma-button";
 import { GammaStepper } from "../../../../common/gui/gamma-stepper";
 import { GammaSwitch } from "../../../../common/gui/gamma-switch";
 
-class InputCidView extends Component {
+class InputCid extends Component {
   state = {
     cid: ""
   };
@@ -78,4 +77,4 @@ class InputCidView extends Component {
   }
 }
 
-export default InputCidView;
+export default InputCid;

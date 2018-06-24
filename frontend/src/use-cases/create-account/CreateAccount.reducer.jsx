@@ -8,7 +8,7 @@ import {
   CREATE_ACCOUNT_VALIDATE_DATA_FAILED,
   CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA_SUCCESSFULLY,
   CREATE_ACCOUNT_COMPLETED
-} from "../actions/createAccountActions";
+} from "./CreateAccount.actions";
 
 export function createAccount(state = {}, action) {
   switch (action.type) {

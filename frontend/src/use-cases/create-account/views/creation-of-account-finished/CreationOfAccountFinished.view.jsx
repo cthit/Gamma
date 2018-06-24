@@ -1,16 +1,16 @@
 import React from "react";
-import { Center } from "../../../../common-ui/layout";
 import {
   GammaCard,
-  GammaCardTitle,
   GammaCardBody,
-  GammaCardButtons
+  GammaCardButtons,
+  GammaCardTitle
 } from "../../../../common-ui/design";
+
+import { Center } from "../../../../common-ui/layout";
+import { GammaButton } from "../../../../common/gui/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
-import { GammaButton } from "../../../../common/gui/gamma-button";
-
-class CreationOfAccountFinishedView extends React.Component {
+class CreationOfAccountFinished extends React.Component {
   render() {
     return (
       <Center>
@@ -38,4 +38,4 @@ class CreationOfAccountFinishedView extends React.Component {
   }
 }
 
-export default CreationOfAccountFinishedView;
+export default CreationOfAccountFinished;

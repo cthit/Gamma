@@ -1,5 +1,4 @@
 import React from "react";
-
 import { Center, Spacing } from "../../../../common-ui/layout";
 import {
   GammaCard,
@@ -8,11 +7,11 @@ import {
   GammaCardTitle
 } from "../../../../common-ui/design";
 
-import { ButtonNavLink } from "./styles";
+import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
 import { GammaButton } from "../../../../common/gui/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
-class EmailHasBeenSentView extends React.Component {
+class EmailHasBeenSent extends React.Component {
   render() {
     return (
       <Center>
@@ -49,4 +48,4 @@ class EmailHasBeenSentView extends React.Component {
   }
 }
 
-export default EmailHasBeenSentView;
+export default EmailHasBeenSent;
