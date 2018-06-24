@@ -28,7 +28,6 @@ class InputCidScreen extends Component {
   render() {
     return (
       <MarginTop>
-        {console.log(this.props)}
         <Center>
           <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
             <GammaCardTitle>Skriv in ditt CID</GammaCardTitle>

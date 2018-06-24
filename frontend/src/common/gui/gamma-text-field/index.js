@@ -6,7 +6,7 @@ import generateId from "../../utils/generateId";
 
 import { FormControl, InputLabel, Input } from "@material-ui/core";
 
-import { GammaLowerLabel } from "../common/GammaLowerLabel";
+import { GammaLowerLabel } from "../common/elements/GammaLowerLabel";
 
 export class GammaTextField extends React.Component {
   state = {
@@ -47,13 +47,10 @@ export class GammaTextField extends React.Component {
         ? this._generateUpperLabel(this.props.upperLabel, this.state.inputId)
         : null;
 
-    const lowerLabel =
-      this.props.lowerLabel != null || this.props.lowerLabelReflectLength
-        ? this._generateLowerLabel(
-            this.state.lowerLabel,
-            this.state.helperTextId
-          )
-        : null;
+    const lowerLabelElement = this._generateLowerLabel(
+      this.state.lowerLabel,
+      this.state.helperTextId
+    );
 
     return (
       <FormControl
@@ -65,37 +62,58 @@ export class GammaTextField extends React.Component {
         <Input
           id={this.state.inputId}
           value={this.state.currentText}
-          onChange={e => {
-            e.target.value = this._checkLength(
-              e.target.value,
-              this.props.maxLength
-            );
-
-            const value = e.target.value;
-
-            var error = false;
-            if (this.props.validate != null) {
-              error = !this.props.validate(value);
-            }
-            this.props.onChange(value);
-
-            const lowerLabel = this.props.lowerLabelReflectLength
-              ? this._getLowerLabelTextFromLength(value, this.props.maxLength)
-              : this.state.lowerLabel;
-
-            this.setState({
-              ...this.state,
-              currentText: value,
-              lowerLabel: lowerLabel,
-              error: error
-            });
-          }}
+          onChange={e => this._onChange(e)}
           placeholder={this.props.promptText}
           type={this._getInputType(this.props.password, this.props.numbersOnly)}
         />
-        {lowerLabel}
+        {lowerLabelElement}
       </FormControl>
     );
+  }
+
+  _onChange(e) {
+    const maxLength = this.props.maxLength;
+
+    const newValue = this._checkLength(e.target.value, maxLength);
+    if (newValue !== e.target.value) {
+      return;
+    }
+
+    const error = !this._validateIfNeeded(
+      newValue,
+      this.props.validate != null,
+      this.props.validate
+    );
+
+    const lowerLabel = this._updateLowerLabelIfNeeded(
+      newValue,
+      maxLength,
+      this.props.lowerLabelReflectLength,
+      this.state.lowerLabel
+    );
+
+    this.props.onChange(newValue);
+    this.setState({
+      ...this.state,
+      currentText: newValue,
+      lowerLabel: lowerLabel,
+      error: error
+    });
+  }
+
+  _validateIfNeeded(newValue, needValidation, validateFunc) {
+    return !needValidation || validateFunc(newValue);
+  }
+
+  _updateLowerLabelIfNeeded(
+    newValue,
+    maxLength,
+    shouldUpdateLowerLabel,
+    currentLowerLabel
+  ) {
+    return shouldUpdateLowerLabel
+      ? this._getLowerLabelTextFromLength(newValue, maxLength)
+      : currentLowerLabel;
   }
 
   _checkLength(value, maxLength) {
@@ -122,7 +140,12 @@ export class GammaTextField extends React.Component {
   }
 
   _generateLowerLabel(lowerLabel, helperTextId) {
-    return <GammaLowerLabel id={helperTextId} text={lowerLabel} />;
+    return (
+      <GammaLowerLabel
+        id={helperTextId}
+        text={lowerLabel == null ? "" : lowerLabel}
+      />
+    );
   }
 }
 
