@@ -1,4 +1,4 @@
-import { REDIRECT_TO, REDIRECT_FINISHED } from "./GammaRedirect.actions";
+import { REDIRECT_TO, REDIRECT_FINISHED } from "./GammaRedirect.view.actions";
 
 export function redirect(state = {}, action) {
   switch (action.type) {

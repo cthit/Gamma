@@ -1,7 +1,7 @@
 import InputDataAndCode from "./InputDataAndCode.view";
 import { connect } from "react-redux";
 import { createAccountValidateCodeAndData } from "../../CreateAccount.action-creator";
-import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.action-creator";
+import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({});

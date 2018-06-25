@@ -1,6 +1,6 @@
 import axios from "axios";
-import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.action-creator";
-//import { toastOpen } from "../../app/views/gamma-toast/GammaToast.action-creator";
+import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
+//import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 import {
   CREATE_ACCOUNT_VALIDATING_CID,
