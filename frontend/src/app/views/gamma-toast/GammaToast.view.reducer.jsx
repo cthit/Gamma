@@ -1,4 +1,4 @@
-import { TOAST_OPEN } from "./GammaToast.actions";
+import { TOAST_OPEN } from "./GammaToast.view.actions";
 
 export function toast(state = {}, action) {
   switch (action.type) {

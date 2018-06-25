@@ -1,4 +1,4 @@
-import GammaToast from "./GammaToast";
+import GammaToast from "./GammaToast.view";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => ({

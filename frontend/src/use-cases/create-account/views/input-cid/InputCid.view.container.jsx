@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { createAccountValidateCid } from "../../CreateAccount.action-creator";
-import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.action-creator";
+import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 import InputCid from "./InputCid.view";
 
 const mapStateToProps = (state, ownProps) => ({});

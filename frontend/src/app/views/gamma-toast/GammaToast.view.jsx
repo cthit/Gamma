@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ToastButton, StyledSnackbar } from "./GammaToast.styles";
+import { ToastButton, StyledSnackbar } from "./GammaToast.view.styles";
 
 class GammaToast extends React.Component {
   state = {
