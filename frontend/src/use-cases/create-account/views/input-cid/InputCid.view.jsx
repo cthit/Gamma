@@ -10,8 +10,6 @@ import React, { Component } from "react";
 
 import { CIDInput } from "./InputCid.view.styles";
 import GammaButton from "../../../../common/views/gamma-button";
-import GammaStepper from "../../../../common/views/gamma-stepper";
-import GammaSwitch from "../../../../common/views/gamma-switch";
 
 class InputCid extends Component {
   state = {
@@ -57,7 +55,7 @@ class InputCid extends Component {
               <GammaButton
                 text="Skicka CID"
                 onClick={() => {
-                  if (this.state.cid.length == 0) {
+                  if (this.state.cid.length === 0) {
                     this.cidInputRef.current.invalidate();
                     this.props.showError(
                       "Du har inte skrivit in något cid ännu"

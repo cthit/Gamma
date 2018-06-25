@@ -1,5 +1,5 @@
 import React from "react";
-import { Center, Spacing } from "../../../../common-ui/layout";
+import { Center } from "../../../../common-ui/layout";
 import {
   GammaCard,
   GammaCardBody,

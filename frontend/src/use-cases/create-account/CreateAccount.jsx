@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
-import { connect } from "react-redux";
 
 import InputDataAndCode from "./views/input-data-and-code";
 import InputCid from "./views/input-cid";
@@ -8,7 +6,6 @@ import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
 
 import { Fill, Spacing } from "../../common-ui/layout";
-import GammaButton from "../../common/views/gamma-button";
 import GammaStepper from "../../common/views/gamma-stepper";
 
 class CreateAccount extends Component {
@@ -41,7 +38,7 @@ class CreateAccount extends Component {
   _getStep = path => {
     for (var step in this.stepToPathMap) {
       if (path === this.stepToPathMap[step]) {
-        return parseInt(step);
+        return parseInt(step, 10);
       }
     }
     return -1;

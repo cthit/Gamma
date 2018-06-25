@@ -1,13 +1,11 @@
 import axios from "axios";
 import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.action-creator";
-import { toastOpen } from "../../app/views/gamma-toast/GammaToast.action-creator";
+//import { toastOpen } from "../../app/views/gamma-toast/GammaToast.action-creator";
 
 import {
-  CREATE_ACCOUNT_VALIDATE_CID,
   CREATE_ACCOUNT_VALIDATING_CID,
   CREATE_ACCOUNT_VALIDATE_CID_FAILED,
   CREATE_ACCOUNT_VALIDATE_CID_SUCCESSFULLY,
-  CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA,
   CREATE_ACCOUNT_VALIDATING_CODE_AND_DATA,
   CREATE_ACCOUNT_VALIDATE_CODE_FAILED,
   CREATE_ACCOUNT_VALIDATE_DATA_FAILED,

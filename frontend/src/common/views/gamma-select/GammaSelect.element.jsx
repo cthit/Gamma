@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import generateId from "../../utils/generateId";
 
-import { Input, FormHelperText, InputLabel, MenuItem } from "@material-ui/core";
+import { Input, InputLabel, MenuItem } from "@material-ui/core";
 
 import { StyledFormControl, StyledSelect } from "./GammaSelect.element.styles";
 import GammaLowerLabel from "../common/elements/gamma-lower-label";

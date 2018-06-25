@@ -20,8 +20,6 @@ import {
   GammaCardTitle
 } from "../../../../common-ui/design";
 
-import GammaButton from "../../../../common/views/gamma-button";
-
 class InputDataAndCode extends React.Component {
   state = {
     errors: {
@@ -279,13 +277,13 @@ class InputDataAndCode extends React.Component {
       this._error(errors[i]);
     }
 
-    for (var i in elements) {
-      elements[i].invalidate(resetText);
+    for (var j in elements) {
+      elements[j].invalidate(resetText);
     }
   }
 
   _checkIfEmpty(value) {
-    return value == null || value.length == 0;
+    return value == null || value.length === 0;
   }
 
   _validateCid() {

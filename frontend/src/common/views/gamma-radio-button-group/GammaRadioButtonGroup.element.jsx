@@ -10,7 +10,6 @@ import {
   UpperLabel,
   StyledFormControl
 } from "./GammaRadioButtonGroup.element.styles";
-import generateId from "../../utils/generateId";
 import { getColor } from "../common/utils/color";
 
 class GammaRadioButtonGroup extends React.Component {
