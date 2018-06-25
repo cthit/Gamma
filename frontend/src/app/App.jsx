@@ -1,0 +1,97 @@
+import React, { Component } from "react";
+import { Switch, Route } from "react-router-dom";
+import DrawerNavigationLink from "./elements/drawer-navigation-link";
+import GammaRedirect from "./views/gamma-redirect";
+import GammaToast from "./views/gamma-toast";
+import { Padding, Spacing } from "../common-ui/layout";
+
+import { List, Typography, Hidden, Toolbar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+
+import {
+  StyledRoot,
+  StyledAppBar,
+  StyledMenuButton,
+  StyledDrawer,
+  StyledMain
+} from "./App.styles";
+import UserInformation from "./elements/user-information";
+import CreateAccount from "../use-cases/create-account";
+import Demo from "../use-cases/demo";
+
+class App extends Component {
+  state = {
+    mobileOpen: false
+  };
+
+  handleDrawerToggle = () => {
+    this.setState({ mobileOpen: !this.state.mobileOpen });
+  };
+
+  render() {
+    const title = "Gamma - IT-konto";
+
+    const drawer = (
+      <div>
+        <Spacing />
+        <List component="nav">
+          <UserInformation />
+          <DrawerNavigationLink link="/demo">Demo</DrawerNavigationLink>
+          <DrawerNavigationLink link="/create-account">
+            Skapa konto
+          </DrawerNavigationLink>
+        </List>
+      </div>
+    );
+    return (
+      <div>
+        <StyledRoot>
+          <StyledAppBar>
+            <Toolbar>
+              <StyledMenuButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={this.handleDrawerToggle}
+              >
+                <MenuIcon />
+              </StyledMenuButton>
+              <Typography variant="title" color="inherit" noWrap>
+                {title}
+              </Typography>
+            </Toolbar>
+          </StyledAppBar>
+          <Hidden mdUp>
+            <StyledDrawer
+              variant="temporary"
+              anchor="left"
+              open={this.state.mobileOpen}
+              onClose={this.handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true // Better open performance on mobile.
+              }}
+            >
+              {drawer}
+            </StyledDrawer>
+          </Hidden>
+          <Hidden smDown implementation="css">
+            <StyledDrawer variant="permanent" open>
+              {drawer}
+            </StyledDrawer>
+          </Hidden>
+          <StyledMain>
+            <Padding>
+              <GammaRedirect />
+              <GammaToast />
+              <Switch>
+                <Route path="/create-account" component={CreateAccount} />
+                <Route path="/demo" component={Demo} />
+              </Switch>
+            </Padding>
+          </StyledMain>
+        </StyledRoot>Demo
+      </div>
+    );
+  }
+}
+
+export default App;

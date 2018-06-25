@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { InputDataAndCode } from "./views/input-data-and-code";
-import { InputCid } from "./views/input-cid";
-import { CreationOfAccountFinished } from "./views/creation-of-account-finished";
-import { EmailHasBeenSent } from "./views/email-has-been-sent";
+import InputDataAndCode from "./views/input-data-and-code";
+import InputCid from "./views/input-cid";
+import CreationOfAccountFinished from "./views/creation-of-account-finished";
+import EmailHasBeenSent from "./views/email-has-been-sent";
 
 import { Fill, Spacing } from "../../common-ui/layout";
-import { GammaButton } from "../../common/gui/gamma-button";
-import { GammaStepper } from "../../common/gui/gamma-stepper";
+import GammaButton from "../../common/views/gamma-button";
+import GammaStepper from "../../common/views/gamma-stepper";
 
 class CreateAccount extends Component {
   constructor() {

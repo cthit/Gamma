@@ -8,7 +8,7 @@ import {
 } from "../../../../common-ui/design";
 
 import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
-import { GammaButton } from "../../../../common/gui/gamma-button";
+import GammaButton from "../../../../common/views/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
 class EmailHasBeenSent extends React.Component {

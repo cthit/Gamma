@@ -1,1 +1,2 @@
-export { default as InputDataAndCode } from "./InputDataAndCode.view.container";
+import { default as InputDataAndCode } from "./InputDataAndCode.view.container";
+export default InputDataAndCode;

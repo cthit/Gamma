@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { GammaSwitch } from "../../../../common/gui/gamma-switch";
-import { GammaTextField } from "../../../../common/gui/gamma-text-field";
-import { GammaSelect } from "../../../../common/gui/gamma-select";
-import { GammaButton } from "../../../../common/gui/gamma-button";
+import GammaSwitch from "../../../../common/views/gamma-switch";
+import GammaTextField from "../../../../common/views/gamma-text-field";
+import GammaSelect from "../../../../common/views/gamma-select";
+import GammaButton from "../../../../common/views/gamma-button";
 
 export const CreateAccountButton = styled(GammaButton)``;
 

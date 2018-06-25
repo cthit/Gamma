@@ -9,9 +9,9 @@ import {
 import React, { Component } from "react";
 
 import { CIDInput } from "./InputCid.view.styles";
-import { GammaButton } from "../../../../common/gui/gamma-button";
-import { GammaStepper } from "../../../../common/gui/gamma-stepper";
-import { GammaSwitch } from "../../../../common/gui/gamma-switch";
+import GammaButton from "../../../../common/views/gamma-button";
+import GammaStepper from "../../../../common/views/gamma-stepper";
+import GammaSwitch from "../../../../common/views/gamma-switch";
 
 class InputCid extends Component {
   state = {

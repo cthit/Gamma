@@ -4,10 +4,14 @@ import "./index.css";
 import registerServiceWorker from "./registerServiceWorker";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import App from "./app/App";
+import App from "./app";
 import { ThemeProvider } from "styled-components";
 
-import { configureStore } from "./redux/config/configStore";
+import { createStore, applyMiddleware } from "redux";
+import thunkMiddleware from "redux-thunk";
+import { createLogger } from "redux-logger";
+
+import { rootReducer } from "./app/App.reducer";
 
 import JssProvider from "react-jss/lib/JssProvider";
 import { create } from "jss";
@@ -27,7 +31,15 @@ const theme = {
   }
 };
 
-const store = configureStore({});
+const loggerMiddleware = createLogger();
+
+const preloadedState = {};
+
+const store = createStore(
+  rootReducer,
+  preloadedState,
+  applyMiddleware(thunkMiddleware, loggerMiddleware)
+);
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

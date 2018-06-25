@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { redirectTo } from "../../redux/actions/redirectActions";
+import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.action-creator";
 import CreateAccount from "./CreateAccount";
 
 const mapStateToProps = (state, ownProps) => ({});

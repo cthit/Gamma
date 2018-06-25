@@ -1,1 +1,1 @@
-export { default as EmailHasBeenSent } from "./EmailHasBeenSent.view";
+export { default } from "./EmailHasBeenSent.view";

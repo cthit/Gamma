@@ -20,7 +20,7 @@ import {
   GammaCardTitle
 } from "../../../../common-ui/design";
 
-import { GammaButton } from "../../../../common/gui/gamma-button";
+import GammaButton from "../../../../common/views/gamma-button";
 
 class InputDataAndCode extends React.Component {
   state = {

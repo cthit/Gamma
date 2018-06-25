@@ -1,6 +1,6 @@
 import axios from "axios";
-import { redirectTo } from "../../redux/actions/redirectActions";
-import { toastOpen } from "../../redux/actions/toastActions";
+import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.action-creator";
+import { toastOpen } from "../../app/views/gamma-toast/GammaToast.action-creator";
 
 import {
   CREATE_ACCOUNT_VALIDATE_CID,
