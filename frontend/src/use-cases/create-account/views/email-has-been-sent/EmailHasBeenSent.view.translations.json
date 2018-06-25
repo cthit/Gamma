@@ -1,0 +1,13 @@
+{
+  "EmailHasBeenSent": {
+    "AnEmailShouldBeSent": [
+      "An email should be sent to your student email",
+      "Ett mail ska ha skickats till din studentmail"
+    ],
+    "AnEmailShouldBeSentDescription": [
+      "If you have not recieved an email within a few minutes, you may have entered the wrong cid. If you're sure that you have written the correct cid and you still haven't recieved an email please contact digIT at digit@chalmers.it",
+      "Om du inte får ett mail på några minuter kan du ha råkat skriva fel cid. Om du är säker att du skriver rätt med fortfarande inte får ett mail kan det antingen bero på att mailet har hamnat i skräppost, eller så är du inte inlagd i digITs system. I det senare fallet, var vänligen och skicka ett mail till digit@chalmers.it."
+    ],
+    "HaveRecievedACode": ["I have recieved a code", "Jag har fått en kod"]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "InputCid": {
+    "EnterYourCid": ["Enter your cid", "Skriv in ditt cid"],
+    "EnterYourCidDescription": [
+      "We will send an email to your student email to confirm your identity.",
+      "Vi kommer skicka ett mail till din studentmail för att bekräfta din identitet."
+    ],
+    "SendCid": ["Send cid", "Skicka cid"],
+    "Cid": ["Cid", "Cid"]
+  }
+}

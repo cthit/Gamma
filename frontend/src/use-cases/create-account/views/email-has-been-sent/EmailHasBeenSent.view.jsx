@@ -16,18 +16,9 @@ class EmailHasBeenSent extends React.Component {
     return (
       <Center>
         <GammaCard minWidth="300px" maxWidth="500px">
-          <GammaCardTitle>
-            Ett mail ska ha skickats till din studentmail
-          </GammaCardTitle>
+          <GammaCardTitle>{this.props.text.AnEmailShouldBeSent}</GammaCardTitle>
           <GammaCardBody>
-            <Text>
-              Om du inte får ett mail på några minuter kan du ha råkat skriva
-              fel cid. Om du är säker att du skriver rätt med fortfarande inte
-              får ett mail kan det antingen bero på att mailet har hamnat i
-              skräppost, eller så är du inte inlagd i digITs system. I det
-              senare fallet, var vänligen och skicka ett mail till
-              digit@chalmers.it.
-            </Text>
+            <Text>{this.props.text.AnEmailShouldBeSentDescription}</Text>
           </GammaCardBody>
           <GammaCardButtons leftRight reverseDirection>
             <ButtonNavLink to="/create-account/input">
@@ -35,11 +26,15 @@ class EmailHasBeenSent extends React.Component {
                 primary
                 raised
                 onClick={() => {}}
-                text="Jag har fått en kod"
+                text={this.props.text.HaveRecievedACode}
               />
             </ButtonNavLink>
             <ButtonNavLink to="/create-account">
-              <GammaButton raised onClick={() => {}} text="Tillbaka" />
+              <GammaButton
+                raised
+                onClick={() => {}}
+                text={this.props.text.Back}
+              />
             </ButtonNavLink>
           </GammaCardButtons>
         </GammaCard>

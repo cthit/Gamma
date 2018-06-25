@@ -63,16 +63,16 @@ class InputDataAndCode extends React.Component {
     return (
       <Center>
         <GammaCard minWidth="300px" maxWidth="600px" hasSubTitle>
-          <GammaCardTitle>Slutför registreringen av konto</GammaCardTitle>
+          <GammaCardTitle>{this.props.text.CompleteCreation}</GammaCardTitle>
           <GammaCardSubTitle>
-            Skriv in koden du fick på din skolmail samt följande information
+            {this.props.text.CompleteCreationDescription}
           </GammaCardSubTitle>
           <GammaCardBody>
             <Center>
               <ConfirmCidInput
                 validate={value => this._inputCheckErrorAndReset("cid")}
                 innerRef={this.cidInputRef}
-                upperLabel="Ditt cid"
+                upperLabel={this.props.text.YourCid}
                 maxLength={10}
                 lowerLabelReflectLength
                 onChange={value => {
@@ -90,7 +90,7 @@ class InputDataAndCode extends React.Component {
               <ConfirmationCodeInput
                 validate={value => this._inputCheckErrorAndReset("code")}
                 innerRef={this.codeInputRef}
-                upperLabel="Kod"
+                upperLabel={this.props.text.CodeFromYourStudentEmail}
                 maxLength={10}
                 lowerLabelReflectLength
                 onChange={value => this._handleInputChange(value, "code")}
@@ -99,7 +99,7 @@ class InputDataAndCode extends React.Component {
               <NickInput
                 validate={value => this._inputCheckErrorAndReset("nick")}
                 innerRef={this.nickInputRef}
-                upperLabel="Nick"
+                upperLabel={this.props.text.Nick}
                 maxLength={20}
                 lowerLabelReflectLength
                 onChange={value => this._handleInputChange(value, "nick")}
@@ -108,7 +108,7 @@ class InputDataAndCode extends React.Component {
               <PasswordInput
                 validate={value => this._inputCheckErrorAndReset("password")}
                 innerRef={this.passwordInputRef}
-                upperLabel="Ditt lösenord"
+                upperLabel={this.props.text.Password}
                 password
                 onChange={value => this._handleInputChange(value, "password")}
               />
@@ -118,7 +118,7 @@ class InputDataAndCode extends React.Component {
                   this._inputCheckErrorAndReset("passwordConfirmation")
                 }
                 innerRef={this.passwordConfirmInputRef}
-                upperLabel="Ditt lösenord igen"
+                upperLabel={this.props.text.ConfirmPassword}
                 password
                 onChange={value =>
                   this._handleInputChange(value, "passwordConfirmation")
@@ -128,7 +128,7 @@ class InputDataAndCode extends React.Component {
               <FirstnameInput
                 validate={value => this._inputCheckErrorAndReset("firstName")}
                 innerRef={this.firstNameInputRef}
-                upperLabel="Förnamn"
+                upperLabel={this.props.text.FirstName}
                 maxLength={20}
                 lowerLabelReflectLength
                 onChange={value => this._handleInputChange(value, "firstName")}
@@ -137,7 +137,7 @@ class InputDataAndCode extends React.Component {
               <LastnameInput
                 validate={value => this._inputCheckErrorAndReset("lastName")}
                 innerRef={this.lastNameInputRef}
-                upperLabel="Efternamn"
+                upperLabel={this.props.text.LastName}
                 maxLength={20}
                 lowerLabelReflectLength
                 onChange={value => this._handleInputChange(value, "lastName")}
@@ -145,7 +145,7 @@ class InputDataAndCode extends React.Component {
               <Spacing />
               <AttendanceYearInput
                 reverse
-                upperLabel="Vilket år började du på IT?"
+                upperLabel={this.props.text.WhichYearDidYouStart}
                 startValue={"" + this._getCurrentYear()}
                 valueToTextMap={this._generateAttendanceYears()}
                 onChange={value =>
@@ -156,7 +156,7 @@ class InputDataAndCode extends React.Component {
               <AcceptUserAgreementInput
                 error={this.state.errors.userAgreement}
                 primary
-                label="Jag accepterar användaravtalet"
+                label={this.props.text.AcceptUserAgreement}
                 onChange={checked =>
                   this.setState({
                     ...this.state,
@@ -176,7 +176,7 @@ class InputDataAndCode extends React.Component {
           <GammaCardButtons leftRight reverseDirection>
             <CreateAccountButton
               onClick={() => this._handleSendDataAndCode()}
-              text="Skapa konto"
+              text={this.props.text.CreateAccount}
               primary
               raised
             />

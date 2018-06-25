@@ -3,7 +3,16 @@ import { createAccountValidateCid } from "../../CreateAccount.action-creator";
 import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 import InputCid from "./InputCid.view";
 
-const mapStateToProps = (state, ownProps) => ({});
+import loadTranslations from "../../../../common/utils/loadTranslations";
+import translations from "./InputCid.view.translations.json";
+
+const mapStateToProps = (state, ownProps) => ({
+  text: loadTranslations(
+    state.localize,
+    translations.InputCid,
+    "CreateAccount.View.InputCid."
+  )
+});
 
 const mapDispatchToProps = dispatch => ({
   showError: text => dispatch(toastOpen({ text: text })),

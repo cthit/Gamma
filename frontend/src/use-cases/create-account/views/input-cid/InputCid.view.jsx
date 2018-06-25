@@ -27,10 +27,9 @@ class InputCid extends Component {
       <MarginTop>
         <Center>
           <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-            <GammaCardTitle>Skriv in ditt CID</GammaCardTitle>
+            <GammaCardTitle>{this.props.text.EnterYourCid}</GammaCardTitle>
             <GammaCardSubTitle>
-              Vi kommer skicka ett mail till din studentmail för att bekräfta
-              din identitet.
+              {this.props.text.EnterYourCidDescription}
             </GammaCardSubTitle>
             <GammaCardBody>
               <Center>
@@ -47,13 +46,13 @@ class InputCid extends Component {
                       cid: value
                     })
                   }
-                  upperLabel="CID"
+                  upperLabel={this.props.text.Cid}
                 />
               </Center>
             </GammaCardBody>
             <GammaCardButtons reverseDirection>
               <GammaButton
-                text="Skicka CID"
+                text={this.props.text.SendCid}
                 onClick={() => {
                   if (this.state.cid.length === 0) {
                     this.cidInputRef.current.invalidate();

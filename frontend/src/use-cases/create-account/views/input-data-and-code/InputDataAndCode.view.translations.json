@@ -1,0 +1,31 @@
+{
+  "InputDataAndCode": {
+    "CompleteCreation": [
+      "Complete creation of your account",
+      "Slutför registreringen av konto"
+    ],
+    "CompleteCreationDescription": [
+      "Enter your cid and your code that you recieved from your student email along with the following information",
+      "Skriv in ditt cid och koden du fick på din skolmail samt följande information"
+    ],
+    "YourCid": ["Your cid", "Ditt cid"],
+    "CodeFromYourStudentEmail": [
+      "Code from your student email",
+      "Kod från din studentmail"
+    ],
+    "Nick": ["Nick", "Nick"],
+    "Password": ["Password", "Lösenord"],
+    "ConfirmPassword": ["Confirm password", "Bekräfta lösenord"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "WhichYearDidYouStart": [
+      "Which year did you start at IT?",
+      "Vilket år började du på IT?"
+    ],
+    "AcceptUserAgreement": [
+      "I accept the user agreements",
+      "Jag accepterar användaravtalet"
+    ],
+    "CreateAccount": ["Create account", "Skapa konto"]
+  }
+}

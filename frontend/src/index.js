@@ -17,6 +17,8 @@ import JssProvider from "react-jss/lib/JssProvider";
 import { create } from "jss";
 import { createGenerateClassName, jssPreset } from "@material-ui/core/styles";
 
+import { LocalizeProvider } from "react-localize-redux";
+
 const generateClassName = createGenerateClassName();
 const jss = create(jssPreset());
 jss.options.insertionPoint = "insertion-point-jss";
@@ -42,15 +44,17 @@ const store = createStore(
 );
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <JssProvider jss={jss} generateClassName={generateClassName}>
-      <Provider store={store}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Provider>
-    </JssProvider>
-  </ThemeProvider>,
+  <LocalizeProvider store={store}>
+    <ThemeProvider theme={theme}>
+      <JssProvider jss={jss} generateClassName={generateClassName}>
+        <Provider store={store}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </Provider>
+      </JssProvider>
+    </ThemeProvider>
+  </LocalizeProvider>,
   document.getElementById("root")
 );
 registerServiceWorker();

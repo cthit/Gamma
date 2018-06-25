@@ -19,10 +19,39 @@ import UserInformation from "./elements/user-information";
 import CreateAccount from "../use-cases/create-account";
 import Demo from "../use-cases/demo";
 
+import { renderToStaticMarkup } from "react-dom/server";
+import { withLocalize } from "react-localize-redux";
+
+import commonTranslations from "../common/translations/CommonTranslations.json";
+import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
+import demoTranslations from "../use-cases/demo/Demo.translations.json";
+
 class App extends Component {
   state = {
     mobileOpen: false
   };
+
+  constructor(props) {
+    super(props);
+
+    props.initialize({
+      languages: [
+        { name: "English", code: "en" },
+        { name: "Swedish", code: "sv" }
+      ],
+      options: {
+        renderToStaticMarkup,
+        renderInnerHtml: true,
+        defaultLanguage: "en"
+      }
+    });
+
+    props.addTranslation({
+      ...commonTranslations,
+      ...createAccountTranslations,
+      ...demoTranslations
+    });
+  }
 
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -94,4 +123,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withLocalize(App);

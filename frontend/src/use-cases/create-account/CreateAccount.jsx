@@ -52,15 +52,15 @@ class CreateAccount extends Component {
             ref={this.gammaStepperRef}
             steps={[
               {
-                text: "Skicka in CID",
+                text: this.props.text.SendCid,
                 element: <InputCid />
               },
               {
-                text: "Hämta aktiveringskod",
+                text: this.props.text.GetActivationCode,
                 element: <EmailHasBeenSent />
               },
               {
-                text: "Skapa konto",
+                text: this.props.text.CreateAccount,
                 element: <InputDataAndCode />
               }
             ]}
