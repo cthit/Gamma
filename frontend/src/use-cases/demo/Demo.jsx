@@ -15,7 +15,7 @@ import { Add } from "@material-ui/icons";
 
 import GammaButton from "../../common/elements/gamma-button";
 import GammaCheckbox from "../../common/elements/gamma-checkbox";
-import GammaIconButton from "../../common/views/gamma-icon-button";
+import GammaIconButton from "../../common/elements/gamma-icon-button";
 import GammaMenu from "../../common/views/gamma-menu";
 import GammaRadioButtonGroup from "../../common/elements/gamma-radio-button-group";
 import GammaStepper from "../../common/views/gamma-stepper";

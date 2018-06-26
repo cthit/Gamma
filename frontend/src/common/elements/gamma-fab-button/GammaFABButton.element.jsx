@@ -26,7 +26,7 @@ const GammaFABButton = ({
 
 GammaFABButton.propTypes = {
   onClick: PropTypes.func,
-  component: PropTypes.func,
+  component: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   primary: PropTypes.bool,
   secondary: PropTypes.bool
