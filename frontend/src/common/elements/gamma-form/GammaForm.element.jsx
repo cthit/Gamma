@@ -2,11 +2,12 @@ import React from "react";
 
 import { Formik, Form } from "formik";
 
-const GammaForm = ({ initialValues, onSubmit, render }) => (
+const GammaForm = ({ initialValues, onSubmit, validationSchema, render }) => (
   <Formik
+    validationSchema={validationSchema}
     initialValues={{ ...initialValues }}
     onSubmit={onSubmit}
-    render={() => <Form>{render()}</Form>}
+    render={formData => <Form>{render(formData)}</Form>}
   />
 );
 

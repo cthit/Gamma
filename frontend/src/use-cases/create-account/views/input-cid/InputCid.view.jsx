@@ -11,63 +11,57 @@ import React, { Component } from "react";
 import { CIDInput } from "./InputCid.view.styles";
 import GammaButton from "../../../../common/elements/gamma-button";
 
+import GammaForm from "../../../../common/elements/gamma-form";
+import GammaFormField from "../../../../common/elements/gamma-form-field";
+
+import * as yup from "yup";
+
 class InputCid extends Component {
-  state = {
-    cid: ""
-  };
-
-  constructor() {
-    super();
-
-    this.cidInputRef = React.createRef();
-  }
-
   render() {
+    //Functions
+    const { sendCid } = this.props;
+
+    //Texts
+    const {
+      EnterYourCid,
+      EnterYourCidDescription,
+      SendCid,
+      Cid,
+      EnterYourCidEmpty
+    } = this.props.text;
     return (
       <MarginTop>
         <Center>
-          <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-            <GammaCardTitle>{this.props.text.EnterYourCid}</GammaCardTitle>
-            <GammaCardSubTitle>
-              {this.props.text.EnterYourCidDescription}
-            </GammaCardSubTitle>
-            <GammaCardBody>
-              <Center>
-                <CIDInput
-                  innerRef={this.cidInputRef}
-                  validate={value => {
-                    return value.length > 0;
-                  }}
-                  maxLength={10}
-                  lowerLabelReflectLength
-                  onChange={value =>
-                    this.setState({
-                      ...this.state,
-                      cid: value
-                    })
-                  }
-                  upperLabel={this.props.text.Cid}
-                />
-              </Center>
-            </GammaCardBody>
-            <GammaCardButtons reverseDirection>
-              <GammaButton
-                text={this.props.text.SendCid}
-                onClick={() => {
-                  if (this.state.cid.length === 0) {
-                    this.cidInputRef.current.invalidate();
-                    this.props.showError(
-                      "Du har inte skrivit in något cid ännu"
-                    );
-                  } else {
-                    this.props.sendCid(this.state.cid);
-                  }
-                }}
-                primary
-                raised
-              />
-            </GammaCardButtons>
-          </GammaCard>
+          <GammaForm
+            validationSchema={yup.object().shape({
+              cid: yup.string().required(EnterYourCidEmpty)
+            })}
+            initialValues={{ cid: "" }}
+            onSubmit={(values, actions) => {
+              actions.resetForm();
+              sendCid(values);
+            }}
+            render={({ errors, touched }) => (
+              <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
+                <GammaCardTitle>{EnterYourCid}</GammaCardTitle>
+                <GammaCardSubTitle>{EnterYourCidDescription}</GammaCardSubTitle>
+                <GammaCardBody>
+                  <Center>
+                    <GammaFormField
+                      name="cid"
+                      component={CIDInput}
+                      componentProps={{
+                        upperLabel: Cid
+                      }}
+                    />
+                  </Center>
+                </GammaCardBody>
+                <GammaCardButtons reverseDirection>
+                  <GammaButton text={SendCid} primary raised submit />
+                </GammaCardButtons>
+              </GammaCard>
+            )}
+          />
         </Center>
       </MarginTop>
     );

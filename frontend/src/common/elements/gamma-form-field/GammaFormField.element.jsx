@@ -3,12 +3,15 @@ import { Field } from "formik";
 
 const GammaFormField = ({ name, component, componentProps }) => (
   <Field
+    type="text"
     name={name}
-    render={({ field, form }) => {
+    render={props => {
+      const { field, form } = props;
       const error = form.touched[name] && form.errors[name];
 
       return React.createElement(component, {
-        error: error,
+        error: error != null,
+        errorMessage: error,
         ...field,
         ...componentProps
       });

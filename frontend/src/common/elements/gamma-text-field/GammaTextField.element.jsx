@@ -17,7 +17,8 @@ const GammaTextField = ({
   name,
   password,
   numbersOnly,
-  error
+  error,
+  errorMessage
 }) => (
   <FormControl error={error}>
     <InputLabel>{upperLabel}</InputLabel>
@@ -26,10 +27,16 @@ const GammaTextField = ({
       value={value != null ? value : ""}
       onChange={onChange}
       onBlur={onBlur}
+      type={password ? "password" : numbersOnly ? "number" : "text"}
     />
     <GammaLowerLabel
-      type={password ? "password" : numbersOnly ? "number" : "text"}
-      text={lowerLabel != null ? lowerLabel : ""}
+      text={
+        errorMessage != null
+          ? errorMessage
+          : lowerLabel != null
+            ? lowerLabel
+            : ""
+      }
     />
   </FormControl>
 );
