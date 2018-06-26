@@ -2,9 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import breakpoint from "styled-components-breakpoint";
 
-import IconButton from "@material-ui/core/IconButton";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
+import { IconButton, AppBar, Toolbar, Drawer } from "@material-ui/core";
 
 export const StyledMenuButton = styled(IconButton)`
   ${breakpoint("md")`
@@ -14,7 +12,6 @@ export const StyledMenuButton = styled(IconButton)`
 
 export const StyledRoot = styled.div`
   flex-grow: 1;
-  height: 430;
   overflow: "hidden";
   position: "relative";
   display: "flex";
@@ -25,8 +22,13 @@ export const StyledAppBar = styled(AppBar)`
   position: "absolute";
   margin-left: 240px;
   ${breakpoint("md")`
+    padding-left:50px;
      width: calc(100vw - 240px);
   `};
+`;
+
+export const StyledToolbar = styled(Toolbar)`
+  padding-left: 0px;
 `;
 
 export const StyledDrawer = styled(({ ...rest }) => (

@@ -5,7 +5,7 @@ import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
 import { Padding, Spacing } from "../common-ui/layout";
 
-import { List, Typography, Hidden, Toolbar } from "@material-ui/core";
+import { List, Typography, Hidden } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import {
@@ -13,7 +13,8 @@ import {
   StyledAppBar,
   StyledMenuButton,
   StyledDrawer,
-  StyledMain
+  StyledMain,
+  StyledToolbar
 } from "./App.styles";
 import UserInformation from "./elements/user-information";
 import CreateAccount from "../use-cases/create-account";
@@ -57,6 +58,12 @@ class App extends Component {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
+  _closeDrawer = () => {
+    this.setState({
+      mobileOpen: false
+    });
+  };
+
   render() {
     const title = "Gamma - IT-konto";
 
@@ -65,8 +72,13 @@ class App extends Component {
         <Spacing />
         <List component="nav">
           <UserInformation />
-          <DrawerNavigationLink link="/demo">Demo</DrawerNavigationLink>
-          <DrawerNavigationLink link="/create-account">
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
+            Demo
+          </DrawerNavigationLink>
+          <DrawerNavigationLink
+            onClick={this._closeDrawer}
+            link="/create-account"
+          >
             Skapa konto
           </DrawerNavigationLink>
         </List>
@@ -76,7 +88,7 @@ class App extends Component {
       <div>
         <StyledRoot>
           <StyledAppBar>
-            <Toolbar>
+            <StyledToolbar>
               <StyledMenuButton
                 color="inherit"
                 aria-label="open drawer"
@@ -87,7 +99,7 @@ class App extends Component {
               <Typography variant="title" color="inherit" noWrap>
                 {title}
               </Typography>
-            </Toolbar>
+            </StyledToolbar>
           </StyledAppBar>
           <Hidden mdUp>
             <StyledDrawer

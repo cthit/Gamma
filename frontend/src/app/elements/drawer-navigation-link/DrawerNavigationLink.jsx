@@ -4,10 +4,10 @@ import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { ListItemText, ListItem } from "@material-ui/core";
 
-const DrawerNavigationLink = ({ children, link }) => (
+const DrawerNavigationLink = ({ children, link, onClick }) => (
   <Link to={link}>
     <ListItem button>
-      <ListItemText>{children}</ListItemText>
+      <ListItemText onClick={onClick}>{children}</ListItemText>
     </ListItem>
   </Link>
 );
