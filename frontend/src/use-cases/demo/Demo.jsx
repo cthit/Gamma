@@ -21,7 +21,7 @@ import GammaRadioButtonGroup from "../../common/views/gamma-radio-button-group";
 import GammaStepper from "../../common/views/gamma-stepper";
 import GammaSwitch from "../../common/elements/gamma-switch";
 import GammaTextField from "../../common/elements/gamma-text-field";
-import GammaSelect from "../../common/views/gamma-select";
+import GammaSelect from "../../common/elements/gamma-select";
 
 import { Formik, Field, Form } from "formik";
 

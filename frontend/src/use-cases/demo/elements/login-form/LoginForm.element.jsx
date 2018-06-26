@@ -7,6 +7,7 @@ import GammaFormField from "../../../../common/elements/gamma-form-field";
 import GammaButton from "../../../../common/elements/gamma-button/GammaButton.element";
 import GammaCheckbox from "../../../../common/elements/gamma-checkbox/GammaCheckbox.element";
 import GammaSwitch from "../../../../common/elements/gamma-switch/GammaSwitch.element";
+import GammaSelect from "../../../../common/elements/gamma-select/GammaSelect.element";
 
 const LoginForm = ({}) => (
   <div>
@@ -19,7 +20,8 @@ const LoginForm = ({}) => (
         user: "asdf",
         password: "fdas",
         userAgreement: true,
-        mySwitch: false
+        mySwitch: false,
+        icecream: "chocolate"
       }}
       render={() => (
         <div>
@@ -50,6 +52,21 @@ const LoginForm = ({}) => (
             componentProps={{
               label: "This is a switch",
               primary: true
+            }}
+          />
+
+          <GammaFormField
+            name="icecream"
+            component={GammaSelect}
+            componentProps={{
+              upperLabel: "Favorite Icecream flavor",
+              lowerLabel: "Choose the best flavor",
+              valueToTextMap: {
+                chocolate: "Chocolate",
+                vanilla: "Vanilla",
+                strawberry: "Strawberry"
+              },
+              allowToChooseNone: true
             }}
           />
 

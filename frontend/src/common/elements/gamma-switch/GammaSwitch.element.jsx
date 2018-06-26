@@ -9,14 +9,14 @@ import { getColor } from "../../views/common/utils/color";
 
 const GammaSwitch = ({
   onChange,
+  onBlur,
   value,
   error,
   disabled,
   primary,
   secondary,
   label,
-  name,
-  inputProps
+  name
 }) => (
   <StyledFormControlLabel
     error={error}
@@ -26,10 +26,8 @@ const GammaSwitch = ({
         disabled={disabled}
         color={getColor(primary, secondary)}
         onChange={onChange}
-        inputProps={{
-          name: name,
-          ...inputProps
-        }}
+        name={name}
+        onBlur={onBlur}
       />
     }
     label={label}

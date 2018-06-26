@@ -8,9 +8,9 @@ import { StyledFormControlLabel } from "./GammaCheckbox.element.styles";
 
 const GammaCheckbox = ({
   name,
-  inputProps,
   value,
   onChange,
+  onBlur,
   primary,
   secondary,
   disabled,
@@ -26,10 +26,8 @@ const GammaCheckbox = ({
         color={getColor(primary, secondary)}
         checked={value}
         onChange={onChange}
-        inputProps={{
-          name: name,
-          ...inputProps
-        }}
+        onBlur={onBlur}
+        name={name}
       />
     }
   />

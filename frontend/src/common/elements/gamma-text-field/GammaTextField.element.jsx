@@ -11,22 +11,21 @@ import GammaLowerLabel from "../../views/common/elements/gamma-lower-label";
 const GammaTextField = ({
   value,
   onChange,
+  onBlur,
   upperLabel,
   lowerLabel,
   name,
   password,
   numbersOnly,
-  error,
-  inputProps
+  error
 }) => (
   <FormControl error={error}>
     <InputLabel>{upperLabel}</InputLabel>
     <Input
+      name={name}
       value={value != null ? value : ""}
       onChange={onChange}
-      inputProps={{
-        ...inputProps
-      }}
+      onBlur={onBlur}
     />
     <GammaLowerLabel
       type={password ? "password" : numbersOnly ? "number" : "text"}
