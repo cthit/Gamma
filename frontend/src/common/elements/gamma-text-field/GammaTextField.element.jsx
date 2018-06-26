@@ -2,7 +2,7 @@ import React from "react";
 
 import PropTypes from "prop-types";
 
-import generateId from "../../utils/generateId";
+import generateId from "../../utils/generators/id.generator";
 
 import { FormControl, InputLabel, Input } from "@material-ui/core";
 

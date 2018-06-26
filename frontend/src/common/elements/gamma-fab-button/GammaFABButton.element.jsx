@@ -3,7 +3,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { DownRightFABButton } from "./GammaFABButton.element.styles";
-import { getColor } from "../../views/common/utils/color";
 
 const GammaFABButton = ({
   onClick,
@@ -18,7 +17,7 @@ const GammaFABButton = ({
     type={submit ? "submit" : "button"}
     disabled={disabled}
     onClick={onClick}
-    color={getColor(primary, secondary)}
+    color={primary ? "primary" : secondary ? "secondary" : "default"}
   >
     {React.createElement(component, null)}
   </DownRightFABButton>

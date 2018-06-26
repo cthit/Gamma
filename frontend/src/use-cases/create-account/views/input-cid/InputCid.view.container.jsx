@@ -3,7 +3,7 @@ import { createAccountValidateCid } from "../../CreateAccount.action-creator";
 import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 import InputCid from "./InputCid.view";
 
-import loadTranslations from "../../../../common/utils/loadTranslations";
+import loadTranslations from "../../../../common/utils/loaders/translations.loader";
 import translations from "./InputCid.view.translations.json";
 
 const mapStateToProps = (state, ownProps) => ({

@@ -4,8 +4,8 @@ import { createAccountValidateCodeAndData } from "../../CreateAccount.action-cre
 import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 
+import loadTranslations from "../../../../common/utils/loaders/translations.loader";
 import translations from "./InputDataAndCode.view.translations.json";
-import loadTranslations from "../../../../common/utils/loadTranslations";
 
 const mapStateToProps = (state, ownProps) => {
   return {

@@ -3,7 +3,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Button } from "@material-ui/core";
-import { getColor } from "../../views/common/utils/color";
 
 const GammaButton = ({
   text,
@@ -18,7 +17,7 @@ const GammaButton = ({
     type={submit ? "submit" : "button"}
     onClick={onClick}
     disabled={disabled}
-    color={getColor(primary, secondary)}
+    color={primary ? "primary" : secondary ? "secondary" : "default"}
     variant={raised ? "contained" : "flat"}
   >
     {text}

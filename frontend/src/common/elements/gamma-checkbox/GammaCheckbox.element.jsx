@@ -3,7 +3,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { FormControlLabel, Checkbox } from "@material-ui/core";
-import { getColor } from "../../views/common/utils/color";
 import { StyledFormControlLabel } from "./GammaCheckbox.element.styles";
 
 const GammaCheckbox = ({
@@ -23,7 +22,7 @@ const GammaCheckbox = ({
     disabled={disabled}
     control={
       <Checkbox
-        color={getColor(primary, secondary)}
+        color={primary ? "primary" : secondary ? "secondary" : "default"}
         checked={value}
         onChange={onChange}
         onBlur={onBlur}

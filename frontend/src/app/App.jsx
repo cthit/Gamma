@@ -22,7 +22,7 @@ import Demo from "../use-cases/demo";
 import { renderToStaticMarkup } from "react-dom/server";
 import { withLocalize } from "react-localize-redux";
 
-import commonTranslations from "../common/translations/CommonTranslations.json";
+import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
 import demoTranslations from "../use-cases/demo/Demo.translations.json";
 

@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 import CreateAccount from "./CreateAccount";
 
-import loadTranslations from "../../common/utils/loadTranslations";
+import loadTranslations from "../../common/utils/loaders/translations.loader";
 import translations from "./CreateAccount.translations.json";
 
 const mapStateToProps = (state, ownProps) => ({

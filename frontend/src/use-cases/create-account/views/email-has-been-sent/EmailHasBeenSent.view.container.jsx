@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import EmailHasBeenSent from "./EmailHasBeenSent.view";
 
-import loadTranslations from "../../../../common/utils/loadTranslations";
+import loadTranslations from "../../../../common/utils/loaders/translations.loader";
 import translations from "./EmailHasBeenSent.view.translations.json";
 
 const mapStateToProps = (state, ownProps) => ({

@@ -1,7 +1,7 @@
 import React from "react";
 
 import PropTypes from "prop-types";
-import generateId from "../../utils/generateId";
+import generateId from "../../utils/generators/id.generator";
 
 import { Input, InputLabel, MenuItem } from "@material-ui/core";
 
