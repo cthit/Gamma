@@ -6,7 +6,7 @@ import generateId from "../../utils/generateId";
 
 import { FormControl, InputLabel, Input } from "@material-ui/core";
 
-import GammaLowerLabel from "../../views/common/elements/gamma-lower-label";
+import GammaLowerLabel from "../gamma-lower-label";
 
 const GammaTextField = ({
   value,

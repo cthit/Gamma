@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { Radio, FormControlLabel, RadioGroup } from "@material-ui/core";
 
-import GammaLowerLabel from "../../views/common/elements/gamma-lower-label";
+import GammaLowerLabel from "../gamma-lower-label";
 
 import {
   UpperLabel,
