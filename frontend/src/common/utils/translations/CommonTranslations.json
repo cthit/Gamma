@@ -1,5 +1,9 @@
 {
   "Common": {
-    "Back": ["Back", "Tillbaka"]
+    "Back": ["Back", "Tillbaka"],
+    "FieldRequired": [
+      "This field is required",
+      "Det här fältet är obligatoriskt"
+    ]
   }
 }

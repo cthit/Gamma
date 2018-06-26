@@ -27,14 +27,15 @@ class InputCid extends Component {
       EnterYourCidDescription,
       SendCid,
       Cid,
-      EnterYourCidEmpty
+      FieldRequired
     } = this.props.text;
+
     return (
       <MarginTop>
         <Center>
           <GammaForm
             validationSchema={yup.object().shape({
-              cid: yup.string().required(EnterYourCidEmpty)
+              cid: yup.string().required(FieldRequired)
             })}
             initialValues={{ cid: "" }}
             onSubmit={(values, actions) => {

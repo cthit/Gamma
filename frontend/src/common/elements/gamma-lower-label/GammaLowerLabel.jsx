@@ -7,7 +7,7 @@ import { FormHelperText } from "@material-ui/core";
 const GammaLowerLabel = ({ text }) => <FormHelperText>{text}</FormHelperText>;
 
 GammaLowerLabel.propTypes = {
-  text: PropTypes.string.isRequired
+  text: PropTypes.string
 };
 
 export default GammaLowerLabel;

@@ -5,10 +5,6 @@
       "We will send an email to your student email to confirm your identity.",
       "Vi kommer skicka ett mail till din studentmail för att bekräfta din identitet."
     ],
-    "EnterYourCidEmpty": [
-      "This field can't be empty",
-      "Detta fält kan inte vara tomt"
-    ],
     "SendCid": ["Send cid", "Skicka cid"],
     "Cid": ["Cid", "Cid"]
   }
