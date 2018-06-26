@@ -7,64 +7,41 @@ import EmailHasBeenSent from "./views/email-has-been-sent";
 
 import { Fill, Spacing } from "../../common-ui/layout";
 import GammaStepper from "../../common/views/gamma-stepper";
+import MapPathToStep from "../../common/declaratives/map-path-to-step";
 
 class CreateAccount extends Component {
-  constructor() {
-    super();
-
-    this.gammaStepperRef = React.createRef();
-
-    //An array could be used, but this feels clearer
-    this.stepToPathMap = {
-      0: "/create-account",
-      1: "/create-account/email-sent",
-      2: "/create-account/input",
-      3: "/create-account/finished"
-    };
-  }
-
-  componentDidMount() {
-    this.gammaStepperRef.current.setStep(
-      this._getStep(this.props.location.pathname)
-    );
-  }
-
-  componentDidUpdate() {
-    this.gammaStepperRef.current.setStep(
-      this._getStep(this.props.location.pathname)
-    );
-  }
-
-  _getStep = path => {
-    for (var step in this.stepToPathMap) {
-      if (path === this.stepToPathMap[step]) {
-        return parseInt(step, 10);
-      }
-    }
-    return -1;
-  };
-
   render() {
     return (
       <div>
         <Fill>
-          <GammaStepper
-            ref={this.gammaStepperRef}
-            steps={[
-              {
-                text: this.props.text.SendCid,
-                element: <InputCid />
-              },
-              {
-                text: this.props.text.GetActivationCode,
-                element: <EmailHasBeenSent />
-              },
-              {
-                text: this.props.text.CreateAccount,
-                element: <InputDataAndCode />
-              }
-            ]}
-            finishedElement={<CreationOfAccountFinished />}
+          <MapPathToStep
+            currentPath={this.props.location.pathname}
+            pathToStepMap={{
+              "/create-account": 0,
+              "/create-account/email-sent": 1,
+              "/create-account/input": 2,
+              "/create-account/finished": 3
+            }}
+            render={step => (
+              <GammaStepper
+                activeStep={step}
+                steps={[
+                  {
+                    text: this.props.text.SendCid,
+                    element: <InputCid />
+                  },
+                  {
+                    text: this.props.text.GetActivationCode,
+                    element: <EmailHasBeenSent />
+                  },
+                  {
+                    text: this.props.text.CreateAccount,
+                    element: <InputDataAndCode />
+                  }
+                ]}
+                finishedElement={<CreationOfAccountFinished />}
+              />
+            )}
           />
         </Fill>
         <Spacing />

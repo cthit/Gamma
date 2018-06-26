@@ -5,11 +5,17 @@ import PropTypes from "prop-types";
 import { IconButton } from "@material-ui/core";
 import { getColor } from "../../views/common/utils/color";
 
-const GammaIconButton = ({}) => (
+const GammaIconButton = ({
+  disabled,
+  onClick,
+  primary,
+  secondary,
+  component
+}) => (
   <IconButton
     disabled={disabled}
     onClick={onClick}
-    color={getColor(this.props.primary, this.props.secondary)}
+    color={getColor(primary, secondary)}
   >
     {React.createElement(component, null)}
   </IconButton>

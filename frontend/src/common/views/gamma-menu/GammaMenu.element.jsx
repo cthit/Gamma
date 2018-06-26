@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { Menu, MenuItem } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
-import GammaIconButton from "../gamma-icon-button";
+import GammaIconButton from "../../elements/gamma-icon-button";
 import generateId from "../../utils/generateId";
 
 class GammaMenu extends React.Component {
