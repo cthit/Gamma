@@ -4,10 +4,11 @@ import GammaTextField from "../../../../common/elements/gamma-text-field";
 
 import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
-import GammaButton from "../../../../common/elements/gamma-button/GammaButton.element";
-import GammaCheckbox from "../../../../common/elements/gamma-checkbox/GammaCheckbox.element";
-import GammaSwitch from "../../../../common/elements/gamma-switch/GammaSwitch.element";
-import GammaSelect from "../../../../common/elements/gamma-select/GammaSelect.element";
+import GammaButton from "../../../../common/elements/gamma-button";
+import GammaCheckbox from "../../../../common/elements/gamma-checkbox";
+import GammaSwitch from "../../../../common/elements/gamma-switch";
+import GammaSelect from "../../../../common/elements/gamma-select";
+import GammaRadioButtonGroup from "../../../../common/elements/gamma-radio-button-group";
 
 const LoginForm = ({}) => (
   <div>
@@ -21,7 +22,8 @@ const LoginForm = ({}) => (
         password: "fdas",
         userAgreement: true,
         mySwitch: false,
-        icecream: "chocolate"
+        icecream: "chocolate",
+        number: "5000"
       }}
       render={() => (
         <div>
@@ -67,6 +69,32 @@ const LoginForm = ({}) => (
                 strawberry: "Strawberry"
               },
               allowToChooseNone: true
+            }}
+          />
+
+          <GammaFormField
+            name="number"
+            component={GammaRadioButtonGroup}
+            componentProps={{
+              upperLabel: "Upperlabel",
+              lowerLabel: "Lowerlabel",
+              radioButtonMap: {
+                "5000": {
+                  primary: true,
+                  label: "Primary"
+                },
+                "4000": {
+                  secondary: true,
+                  label: "Secondary"
+                },
+                "3000": {
+                  label: "Default"
+                },
+                "2000": {
+                  disabled: true,
+                  label: "Disabled"
+                }
+              }
             }}
           />
 
