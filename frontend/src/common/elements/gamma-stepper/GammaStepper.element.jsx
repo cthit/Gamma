@@ -1,7 +1,5 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import { Stepper, Step, StepLabel } from "@material-ui/core";
 
 const GammaStepper = ({ activeStep, steps, finishedElement }) => (

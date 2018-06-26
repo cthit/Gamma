@@ -1,5 +1,4 @@
 import React from "react";
-
 import { Add } from "@material-ui/icons";
 
 import GammaTextField from "../../../../common/elements/gamma-text-field";

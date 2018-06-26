@@ -1,4 +1,9 @@
 import React from "react";
+import * as yup from "yup";
+
+import GammaForm from "../../../../common/elements/gamma-form";
+import GammaFormField from "../../../../common/elements/gamma-form-field";
+
 import {
   AcceptUserAgreementInput,
   AttendanceYearInput,
@@ -11,6 +16,7 @@ import {
   PasswordConfirmationInput,
   PasswordInput
 } from "./InputDataAndCode.view.styles";
+
 import { Center, Spacing } from "../../../../common-ui/layout";
 import {
   GammaCard,
@@ -19,11 +25,6 @@ import {
   GammaCardSubTitle,
   GammaCardTitle
 } from "../../../../common-ui/design";
-
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-
-import * as yup from "yup";
 
 class InputDataAndCode extends React.Component {
   render() {

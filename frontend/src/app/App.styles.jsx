@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import breakpoint from "styled-components-breakpoint";
-
 import { IconButton, AppBar, Toolbar, Drawer } from "@material-ui/core";
 
 export const StyledMenuButton = styled(IconButton)`
@@ -16,13 +15,12 @@ export const StyledAppBar = styled(AppBar)`
   position: "absolute";
   margin-left: 240px;
   ${breakpoint("md")`
-    padding-left:50px;
      width: calc(100vw - 241px);
   `};
 `;
 
 export const StyledToolbar = styled(Toolbar)`
-  padding-left: 0px;
+  padding-left: 16px;
 `;
 
 export const StyledDrawer = styled(({ ...rest }) => (

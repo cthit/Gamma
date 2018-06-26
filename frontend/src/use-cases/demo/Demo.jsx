@@ -1,4 +1,6 @@
 import React from "react";
+import { Add } from "@material-ui/icons";
+
 import {
   ButtonsContainer,
   CheckboxesContainer,
@@ -11,7 +13,7 @@ import {
   SelectsContainer
 } from "./Demo.styles";
 
-import { Add } from "@material-ui/icons";
+import LoginForm from "./elements/login-form";
 
 import GammaButton from "../../common/elements/gamma-button";
 import GammaCheckbox from "../../common/elements/gamma-checkbox";
@@ -23,9 +25,6 @@ import GammaSwitch from "../../common/elements/gamma-switch";
 import GammaTextField from "../../common/elements/gamma-text-field";
 import GammaSelect from "../../common/elements/gamma-select";
 
-import { Formik, Field, Form } from "formik";
-
-import LoginForm from "./elements/login-form";
 import { Heading, Title, Subtitle } from "../../common-ui/text";
 
 class Demo extends React.Component {

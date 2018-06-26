@@ -1,11 +1,11 @@
 import React from "react";
+
 import {
   GammaCard,
   GammaCardBody,
   GammaCardButtons,
   GammaCardTitle
 } from "../../../../common-ui/design";
-
 import { Center } from "../../../../common-ui/layout";
 import GammaButton from "../../../../common/elements/gamma-button";
 import { Text } from "../../../../common-ui/text";

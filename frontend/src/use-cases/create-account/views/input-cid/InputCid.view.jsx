@@ -1,3 +1,12 @@
+import React, { Component } from "react";
+import * as yup from "yup";
+
+import { CIDInput } from "./InputCid.view.styles";
+
+import GammaButton from "../../../../common/elements/gamma-button";
+import GammaForm from "../../../../common/elements/gamma-form";
+import GammaFormField from "../../../../common/elements/gamma-form-field";
+
 import { Center, MarginTop } from "../../../../common-ui/layout";
 import {
   GammaCard,
@@ -6,15 +15,6 @@ import {
   GammaCardSubTitle,
   GammaCardTitle
 } from "../../../../common-ui/design";
-import React, { Component } from "react";
-
-import { CIDInput } from "./InputCid.view.styles";
-import GammaButton from "../../../../common/elements/gamma-button";
-
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-
-import * as yup from "yup";
 
 class InputCid extends Component {
   render() {

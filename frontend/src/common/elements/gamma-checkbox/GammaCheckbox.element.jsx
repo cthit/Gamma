@@ -1,8 +1,7 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import { FormControlLabel, Checkbox } from "@material-ui/core";
+
 import GammaControlLabelWithError from "../gamma-control-label-with-error";
 
 const GammaCheckbox = ({

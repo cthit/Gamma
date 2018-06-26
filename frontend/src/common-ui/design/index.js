@@ -1,14 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { Paper } from "@material-ui/core";
 
 import { HeadingLevel2, HeadingLevel3, Title, Subtitle } from "../text";
 
-import { Paper } from "@material-ui/core";
-
 /** Props:
  * width, height, maxWidth, maxHeight, minWidth, minHeight
- * pliancy: Changes shadow when on hover and on clicked
  * absWidth, absHeight: If size, max and min will be the same. use this
+ * hasSubTitle and hasIcon must be true if you have them inside your GammaCard.
  */
 
 /*${shadow4dp()};*/

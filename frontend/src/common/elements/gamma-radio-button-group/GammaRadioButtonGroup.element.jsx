@@ -1,15 +1,13 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import { Radio, FormControlLabel, RadioGroup } from "@material-ui/core";
-
-import GammaLowerLabel from "../gamma-lower-label";
 
 import {
   UpperLabel,
   StyledFormControl
 } from "./GammaRadioButtonGroup.element.styles";
+
+import GammaLowerLabel from "../gamma-lower-label";
 
 const GammaRadioButtonGroup = ({
   value,

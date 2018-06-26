@@ -1,12 +1,12 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-import generateId from "../../utils/generators/id.generator";
-
 import { Input, InputLabel, MenuItem } from "@material-ui/core";
 
 import { StyledFormControl, StyledSelect } from "./GammaSelect.element.styles";
+
 import GammaLowerLabel from "../gamma-lower-label";
+
+import generateId from "../../utils/generators/id.generator";
 
 const GammaSelect = ({
   value,

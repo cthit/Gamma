@@ -1,6 +1,4 @@
 import axios from "axios";
-import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
-//import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 import {
   CREATE_ACCOUNT_VALIDATING_CID,
@@ -12,6 +10,9 @@ import {
   CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA_SUCCESSFULLY,
   CREATE_ACCOUNT_COMPLETED
 } from "./CreateAccount.actions";
+
+import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
+//import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 export function createAccountValidateCid(cid) {
   return dispatch => {

@@ -1,4 +1,9 @@
 import React from "react";
+
+import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
+
+import GammaButton from "../../../../common/elements/gamma-button";
+
 import { Center } from "../../../../common-ui/layout";
 import {
   GammaCard,
@@ -6,9 +11,6 @@ import {
   GammaCardButtons,
   GammaCardTitle
 } from "../../../../common-ui/design";
-
-import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
-import GammaButton from "../../../../common/elements/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
 class EmailHasBeenSent extends React.Component {

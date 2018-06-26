@@ -1,12 +1,9 @@
 import React, { Component } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { Switch, Route } from "react-router-dom";
-import DrawerNavigationLink from "./elements/drawer-navigation-link";
-import GammaRedirect from "./views/gamma-redirect";
-import GammaToast from "./views/gamma-toast";
-import { Padding, Spacing } from "../common-ui/layout";
-
 import { List, Typography, Hidden } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import { withLocalize } from "react-localize-redux";
 
 import {
   StyledRoot,
@@ -16,16 +13,21 @@ import {
   StyledMain,
   StyledToolbar
 } from "./App.styles";
-import UserInformation from "./elements/user-information";
-import CreateAccount from "../use-cases/create-account";
-import Demo from "../use-cases/demo";
 
-import { renderToStaticMarkup } from "react-dom/server";
-import { withLocalize } from "react-localize-redux";
+import GammaRedirect from "./views/gamma-redirect";
+import GammaToast from "./views/gamma-toast";
+
+import DrawerNavigationLink from "./elements/drawer-navigation-link";
+import UserInformation from "./elements/user-information";
+
+import CreateAccount from "../use-cases/create-account";
+import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
+import Demo from "../use-cases/demo";
+import demoTranslations from "../use-cases/demo/Demo.translations.json";
 
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
-import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
-import demoTranslations from "../use-cases/demo/Demo.translations.json";
+
+import { Padding, Spacing } from "../common-ui/layout";
 
 class App extends Component {
   state = {

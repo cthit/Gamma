@@ -1,12 +1,10 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
-import generateId from "../../utils/generators/id.generator";
-
 import { FormControl, InputLabel, Input } from "@material-ui/core";
 
 import GammaLowerLabel from "../gamma-lower-label";
+
+import generateId from "../../utils/generators/id.generator";
 
 const GammaTextField = ({
   value,

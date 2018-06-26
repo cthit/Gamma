@@ -1,10 +1,13 @@
 import { connect } from "react-redux";
-import { createAccountValidateCid } from "../../CreateAccount.action-creator";
-import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
+
 import InputCid from "./InputCid.view";
+import translations from "./InputCid.view.translations.json";
+
+import { createAccountValidateCid } from "../../CreateAccount.action-creator";
 
 import loadTranslations from "../../../../common/utils/loaders/translations.loader";
-import translations from "./InputCid.view.translations.json";
+
+import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(

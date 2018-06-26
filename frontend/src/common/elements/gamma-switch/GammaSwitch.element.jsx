@@ -1,7 +1,5 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import { Switch } from "@material-ui/core";
 
 import GammaControlLabelWithError from "../gamma-control-label-with-error";
