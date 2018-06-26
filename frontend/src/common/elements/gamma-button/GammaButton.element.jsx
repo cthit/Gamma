@@ -11,9 +11,11 @@ const GammaButton = ({
   primary,
   secondary,
   raised,
-  disabled
+  disabled,
+  submit
 }) => (
   <Button
+    type={submit ? "submit" : "button"}
     onClick={onClick}
     disabled={disabled}
     color={getColor(primary, secondary)}
@@ -25,11 +27,12 @@ const GammaButton = ({
 
 GammaButton.propTypes = {
   text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
   raised: PropTypes.bool,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  submit: PropTypes.bool
 };
 
 export default GammaButton;

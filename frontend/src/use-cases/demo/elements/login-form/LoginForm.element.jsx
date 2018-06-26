@@ -4,6 +4,8 @@ import GammaTextField from "../../../../common/elements/gamma-text-field";
 
 import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
+import GammaButton from "../../../../common/elements/gamma-button/GammaButton.element";
+import GammaCheckbox from "../../../../common/elements/gamma-checkbox/GammaCheckbox.element";
 
 const LoginForm = ({}) => (
   <div>
@@ -27,7 +29,16 @@ const LoginForm = ({}) => (
             componentProps={{ upperLabel: "this is password yes" }}
           />
 
-          <button type="submit">Submit</button>
+          <GammaFormField
+            name="userAgreement"
+            component={GammaCheckbox}
+            componentProps={{
+              primary: true,
+              label: "Jag accepterar användaravtalen"
+            }}
+          />
+
+          <GammaButton text="Hej" primary raised submit />
         </div>
       )}
     />
