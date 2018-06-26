@@ -1,7 +1,8 @@
 import React from "react";
 
-import GammaTextField from "../../../../common/elements/gamma-text-field";
+import { Add } from "@material-ui/icons";
 
+import GammaTextField from "../../../../common/elements/gamma-text-field";
 import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
 import GammaButton from "../../../../common/elements/gamma-button";
@@ -9,6 +10,7 @@ import GammaCheckbox from "../../../../common/elements/gamma-checkbox";
 import GammaSwitch from "../../../../common/elements/gamma-switch";
 import GammaSelect from "../../../../common/elements/gamma-select";
 import GammaRadioButtonGroup from "../../../../common/elements/gamma-radio-button-group";
+import GammaFABButton from "../../../../common/elements/gamma-fab-button/GammaFABButton.element";
 
 const LoginForm = ({}) => (
   <div>
@@ -97,8 +99,7 @@ const LoginForm = ({}) => (
               }
             }}
           />
-
-          <GammaButton text="Hej" primary raised submit />
+          <GammaFABButton primary component={Add} submit />
         </div>
       )}
     />
@@ -107,6 +108,8 @@ const LoginForm = ({}) => (
 
 export default LoginForm;
 /**
+ *           <GammaButton text="Hej" primary raised submit />
+
  *       <GammaTextField
         name="user"
         upperLabel="Hello lowerLabel"
