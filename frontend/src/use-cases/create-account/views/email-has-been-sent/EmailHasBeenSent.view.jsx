@@ -13,12 +13,20 @@ import { Text } from "../../../../common-ui/text";
 
 class EmailHasBeenSent extends React.Component {
   render() {
+    //Texts
+    const {
+      AnEmailShouldBeSent,
+      AnEmailShouldBeSentDescription,
+      HaveRecievedACode,
+      Back
+    } = this.props.text;
+
     return (
       <Center>
         <GammaCard minWidth="300px" maxWidth="500px">
-          <GammaCardTitle text={this.props.text.AnEmailShouldBeSent} />
+          <GammaCardTitle text={AnEmailShouldBeSent} />
           <GammaCardBody>
-            <Text text={this.props.text.AnEmailShouldBeSentDescription} />
+            <Text text={AnEmailShouldBeSentDescription} />
           </GammaCardBody>
           <GammaCardButtons leftRight reverseDirection>
             <ButtonNavLink to="/create-account/input">
@@ -26,15 +34,11 @@ class EmailHasBeenSent extends React.Component {
                 primary
                 raised
                 onClick={() => {}}
-                text={this.props.text.HaveRecievedACode}
+                text={HaveRecievedACode}
               />
             </ButtonNavLink>
             <ButtonNavLink to="/create-account">
-              <GammaButton
-                raised
-                onClick={() => {}}
-                text={this.props.text.Back}
-              />
+              <GammaButton raised onClick={() => {}} text={Back} />
             </ButtonNavLink>
           </GammaCardButtons>
         </GammaCard>

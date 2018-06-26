@@ -30,31 +30,33 @@ class GammaMenu extends React.Component {
   };
 
   render() {
-    const { open } = this.state;
+    const { open, id, anchorElement, onClick } = this.state;
+
+    const { valueToTextMap } = this.props;
 
     return (
       <div>
         <GammaIconButton
           onClick={this._handleClick}
           aria-label="More"
-          aria-owns={open ? this.state.id : null}
+          aria-owns={open ? id : null}
           aria-haspopup="true"
         >
           <MoreVert />
         </GammaIconButton>
         <Menu
-          id={this.state.id}
-          open={this.state.open}
-          anchorEl={this.state.anchorElement}
+          id={id}
+          open={open}
+          anchorEl={anchorElement}
           onClose={this._handleClose}
         >
-          {Object.keys(this.props.valueToTextMap).map(value => {
-            const text = this.props.valueToTextMap[value];
+          {Object.keys(valueToTextMap).map(value => {
+            const text = valueToTextMap[value];
             return (
               <MenuItem
                 key={value}
                 onClick={() => {
-                  this.props.onClick(value);
+                  onClick(value);
                   this._handleClose();
                 }}
               >

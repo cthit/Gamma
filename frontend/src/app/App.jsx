@@ -84,6 +84,9 @@ class App extends Component {
         </List>
       </div>
     );
+
+    const { mobileOpen } = this.state;
+
     return (
       <div>
         <StyledRoot>
@@ -105,7 +108,7 @@ class App extends Component {
             <StyledDrawer
               variant="temporary"
               anchor="left"
-              open={this.state.mobileOpen}
+              open={mobileOpen}
               onClose={this.handleDrawerToggle}
               ModalProps={{
                 keepMounted: true // Better open performance on mobile.

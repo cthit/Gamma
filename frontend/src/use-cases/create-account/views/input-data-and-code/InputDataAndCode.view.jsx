@@ -26,32 +26,6 @@ import GammaFormField from "../../../../common/elements/gamma-form-field";
 import * as yup from "yup";
 
 class InputDataAndCode extends React.Component {
-  /*state = {
-    errors: {
-      cid: false,
-      code: false,
-      nick: false,
-      password: false,
-      passwordConfirmation: false,
-      firstName: false,
-      lastName: false,
-      userAgreement: false
-    },
-    user: {
-      code: "",
-      whitelist: {
-        cid: ""
-      },
-      nick: "",
-      firstName: "",
-      lastName: "",
-      attendanceYear: this._getCurrentYear(),
-      password: "",
-      passwordConfirmation: "",
-      userAgreement: false
-    }
-  };*/
-
   render() {
     //Functions
     const { sendDataAndCode } = this.props;

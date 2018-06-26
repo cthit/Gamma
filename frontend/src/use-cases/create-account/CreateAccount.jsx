@@ -1,21 +1,26 @@
 import React, { Component } from "react";
 
-import InputDataAndCode from "./views/input-data-and-code";
 import InputCid from "./views/input-cid";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
+import InputDataAndCode from "./views/input-data-and-code";
 
-import { Fill, Spacing } from "../../common-ui/layout";
 import GammaStepper from "../../common/elements/gamma-stepper";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
+import { Fill, Spacing } from "../../common-ui/layout";
 
 class CreateAccount extends Component {
   render() {
+    //Texts
+    const { SendCid, GetActivationCode, CreateAccount } = this.props.text;
+
+    const { pathname } = this.props.location;
+
     return (
       <div>
         <Fill>
           <MapPathToStep
-            currentPath={this.props.location.pathname}
+            currentPath={pathname}
             pathToStepMap={{
               "/create-account": 0,
               "/create-account/email-sent": 1,
@@ -27,15 +32,15 @@ class CreateAccount extends Component {
                 activeStep={step}
                 steps={[
                   {
-                    text: this.props.text.SendCid,
+                    text: SendCid,
                     element: <InputCid />
                   },
                   {
-                    text: this.props.text.GetActivationCode,
+                    text: GetActivationCode,
                     element: <EmailHasBeenSent />
                   },
                   {
-                    text: this.props.text.CreateAccount,
+                    text: CreateAccount,
                     element: <InputDataAndCode />
                   }
                 ]}
