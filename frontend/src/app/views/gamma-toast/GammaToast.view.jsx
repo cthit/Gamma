@@ -19,14 +19,12 @@ class GammaToast extends React.Component {
     }
 
     this.setState({
-      ...this.state,
       open: false
     });
   };
 
   handleExited = () => {
     this.setState({
-      ...this.state,
       toastClosed: true
     });
   };
@@ -38,7 +36,6 @@ class GammaToast extends React.Component {
       !this.toastClosed
     ) {
       this.setState({
-        ...this.state,
         open: false
       });
     } else if (
@@ -55,7 +52,6 @@ class GammaToast extends React.Component {
       } = this.state.messages.pop();
 
       this.setState({
-        ...this.state,
         open: true,
         toastClosed: false,
         currentText: text,
@@ -74,17 +70,16 @@ class GammaToast extends React.Component {
         actionText
       } = this.props.toastOptions;
 
-      this.setState({
-        ...this.state,
+      this.setState(state => {
         messages: [
-          ...this.state.messages,
+          state,
           {
             text: text,
             duration: duration == null ? 3000 : duration,
             actionText: actionText,
             actionHandler: actionHandler
           }
-        ]
+        ];
       });
     }
   }

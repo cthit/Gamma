@@ -16,14 +16,12 @@ class GammaMenu extends React.Component {
 
   _handleClose = () => {
     this.setState({
-      ...this.state,
       open: false
     });
   };
 
   _handleClick = event => {
     this.setState({
-      ...this.state,
       open: true,
       anchorElement: event.currentTarget
     });
