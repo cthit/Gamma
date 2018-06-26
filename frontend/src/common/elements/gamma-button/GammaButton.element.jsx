@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { Button } from "@material-ui/core";
-import { getColor } from "../common/utils/color";
+import { getColor } from "../../views/common/utils/color";
 
 const GammaButton = ({
   text,
@@ -13,7 +13,12 @@ const GammaButton = ({
   raised,
   disabled
 }) => (
-  <Button {..._translateProps(onClick, primary, secondary, raised, disabled)}>
+  <Button
+    onClick={onClick}
+    disabled={disabled}
+    color={getColor(primary, secondary)}
+    variant={raised ? "contained" : "flat"}
+  >
     {text}
   </Button>
 );
@@ -26,14 +31,5 @@ GammaButton.propTypes = {
   raised: PropTypes.bool,
   disabled: PropTypes.bool
 };
-
-function _translateProps(onClick, primary, secondary, raised, disabled) {
-  return {
-    onClick: onClick,
-    disabled: disabled,
-    color: getColor(primary, secondary),
-    variant: raised ? "contained" : "flat"
-  };
-}
 
 export default GammaButton;

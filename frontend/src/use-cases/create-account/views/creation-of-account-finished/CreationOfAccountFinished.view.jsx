@@ -7,7 +7,7 @@ import {
 } from "../../../../common-ui/design";
 
 import { Center } from "../../../../common-ui/layout";
-import GammaButton from "../../../../common/views/gamma-button";
+import GammaButton from "../../../../common/elements/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
 class CreationOfAccountFinished extends React.Component {

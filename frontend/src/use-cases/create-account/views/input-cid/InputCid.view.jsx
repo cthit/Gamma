@@ -9,7 +9,7 @@ import {
 import React, { Component } from "react";
 
 import { CIDInput } from "./InputCid.view.styles";
-import GammaButton from "../../../../common/views/gamma-button";
+import GammaButton from "../../../../common/elements/gamma-button";
 
 class InputCid extends Component {
   state = {

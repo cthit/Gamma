@@ -6,7 +6,37 @@ import generateId from "../../utils/generateId";
 
 import { FormControl, InputLabel, Input } from "@material-ui/core";
 
-import GammaLowerLabel from "../common/elements/gamma-lower-label";
+import GammaLowerLabel from "../../views/common/elements/gamma-lower-label";
+
+const GammaTextField = ({
+  value,
+  onChange,
+  onBlur,
+  upperLabel,
+  lowerLabel,
+  name,
+  password,
+  numbersOnly,
+  error,
+  inputProps
+}) => (
+  <FormControl error={error}>
+    <InputLabel>{upperLabel}</InputLabel>
+    <Input
+      value={value != null ? value : ""}
+      onChange={onChange}
+      inputProps={{
+        ...inputProps
+      }}
+    />
+    <GammaLowerLabel
+      type={password ? "password" : numbersOnly ? "number" : "text"}
+      text={lowerLabel != null ? lowerLabel : ""}
+    />
+  </FormControl>
+);
+
+/*
 
 class GammaTextField extends React.Component {
   state = {
@@ -160,6 +190,7 @@ class GammaTextField extends React.Component {
   }
 }
 
+
 GammaTextField.propTypes = {
   onChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
@@ -173,5 +204,7 @@ GammaTextField.propTypes = {
   maxLength: PropTypes.number,
   lowerLabelReflectLength: PropTypes.bool
 };
+
+*/
 
 export default GammaTextField;
