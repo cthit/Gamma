@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { FormControlLabel, Checkbox } from "@material-ui/core";
-import { StyledFormControlLabel } from "./GammaCheckbox.element.styles";
+import GammaControlLabelWithError from "../gamma-control-label-with-error";
 
 const GammaCheckbox = ({
   name,
@@ -16,7 +16,7 @@ const GammaCheckbox = ({
   label,
   error
 }) => (
-  <StyledFormControlLabel
+  <GammaControlLabelWithError
     error={error}
     label={label}
     disabled={disabled}

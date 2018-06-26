@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { Switch } from "@material-ui/core";
 
-import { StyledFormControlLabel } from "./GammaSwitch.element.styles";
+import GammaControlLabelWithError from "../gamma-control-label-with-error";
 
 const GammaSwitch = ({
   onChange,
@@ -17,7 +17,7 @@ const GammaSwitch = ({
   label,
   name
 }) => (
-  <StyledFormControlLabel
+  <GammaControlLabelWithError
     error={error}
     control={
       <Switch
