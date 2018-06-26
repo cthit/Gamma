@@ -142,6 +142,8 @@ class Demo extends React.Component {
         </SwitchesContainer>
         <TextFieldsContainer>
           <GammaTextField
+            lowerLabelReflectLength
+            maxLength={15}
             onChange={newValue => {
               console.log("New value: " + newValue);
             }}

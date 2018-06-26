@@ -52,6 +52,10 @@ class GammaTextField extends React.Component {
       this.state.helperTextId
     );
 
+    const { maxLength, lowerLabel, lowerLabelReflectLength } = this.props;
+
+    const { helperTextId, currentText } = this.state;
+
     return (
       <FormControl
         disabled={this.props.disabled}
@@ -66,7 +70,14 @@ class GammaTextField extends React.Component {
           placeholder={this.props.promptText}
           type={this._getInputType(this.props.password, this.props.numbersOnly)}
         />
-        {lowerLabelElement}
+        <GammaLowerLabel
+          id={this.state.helperTextId}
+          text={
+            lowerLabelReflectLength
+              ? currentText.length + "/" + maxLength
+              : lowerLabel
+          }
+        />
       </FormControl>
     );
   }
