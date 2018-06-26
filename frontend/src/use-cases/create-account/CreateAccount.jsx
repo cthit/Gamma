@@ -6,7 +6,7 @@ import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
 
 import { Fill, Spacing } from "../../common-ui/layout";
-import GammaStepper from "../../common/views/gamma-stepper";
+import GammaStepper from "../../common/elements/gamma-stepper";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 
 class CreateAccount extends Component {
