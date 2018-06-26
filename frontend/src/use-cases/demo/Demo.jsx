@@ -26,6 +26,7 @@ import GammaSelect from "../../common/elements/gamma-select";
 import { Formik, Field, Form } from "formik";
 
 import LoginForm from "./elements/login-form";
+import { Heading, Title, Subtitle } from "../../common-ui/text";
 
 class Demo extends React.Component {
   constructor(props) {
@@ -33,7 +34,14 @@ class Demo extends React.Component {
   }
 
   render() {
-    return <LoginForm />;
+    return (
+      <div>
+        <Heading text="Hej" />
+        <Title text="Det här är en title" />
+        <Subtitle text="Det här är en subtitle" />
+        <LoginForm />
+      </div>
+    );
   }
 }
 

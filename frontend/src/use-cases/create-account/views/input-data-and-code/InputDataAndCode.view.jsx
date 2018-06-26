@@ -124,10 +124,8 @@ class InputDataAndCode extends React.Component {
           })}
           render={props => (
             <GammaCard minWidth="300px" maxWidth="600px" hasSubTitle>
-              <GammaCardTitle>{CompleteCreation}</GammaCardTitle>
-              <GammaCardSubTitle>
-                {CompleteCreationDescription}
-              </GammaCardSubTitle>
+              <GammaCardTitle text={CompleteCreation} />
+              <GammaCardSubTitle text={CompleteCreationDescription} />
               <GammaCardBody>
                 <Center>
                   <GammaFormField

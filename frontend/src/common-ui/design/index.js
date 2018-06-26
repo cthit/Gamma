@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import { HeadingLevel2, HeadingLevel3 } from "../text";
+import { HeadingLevel2, HeadingLevel3, Title, Subtitle } from "../text";
 
 import { Paper } from "@material-ui/core";
 
@@ -101,7 +101,7 @@ export const GammaCardMenuContainer = styled.div`
   grid-row-end: 2;
 `;
 
-export const GammaCardTitle = styled(HeadingLevel2)`
+export const GammaCardTitle = styled(Title)`
   font-size: 20px;
   line-height: 33px;
 
@@ -116,7 +116,7 @@ export const GammaCardTitle = styled(HeadingLevel2)`
   grid-row-end: 2;
 `;
 
-export const GammaCardSubTitle = styled(HeadingLevel3)`
+export const GammaCardSubTitle = styled(Subtitle)`
   font-size: 15px;
   line-height: 25px;
 

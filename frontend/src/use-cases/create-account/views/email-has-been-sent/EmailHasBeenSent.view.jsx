@@ -16,9 +16,9 @@ class EmailHasBeenSent extends React.Component {
     return (
       <Center>
         <GammaCard minWidth="300px" maxWidth="500px">
-          <GammaCardTitle>{this.props.text.AnEmailShouldBeSent}</GammaCardTitle>
+          <GammaCardTitle text={this.props.text.AnEmailShouldBeSent} />
           <GammaCardBody>
-            <Text>{this.props.text.AnEmailShouldBeSentDescription}</Text>
+            <Text text={this.props.text.AnEmailShouldBeSentDescription} />
           </GammaCardBody>
           <GammaCardButtons leftRight reverseDirection>
             <ButtonNavLink to="/create-account/input">

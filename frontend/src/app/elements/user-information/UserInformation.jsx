@@ -1,18 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import { Spacing, Padding } from "../../../common-ui/layout";
-import { HeadingLevel2, HeadingLevel3 } from "../../../common-ui/text";
+import {
+  HeadingLevel2,
+  HeadingLevel3,
+  Title,
+  Subtitle
+} from "../../../common-ui/text";
 
 const UserInformation = ({
   userData = { nick: "Portals", firstName: "Sven", lastName: "Svensson" },
   signedIn = true
 }) => (
   <Padding>
-    <HeadingLevel2>{userData.nick}</HeadingLevel2>
+    <Title text={userData.nick} />
     <Spacing />
-    <HeadingLevel3>
-      {userData.firstName + " - " + userData.lastName}
-    </HeadingLevel3>
+    <Subtitle text={userData.firstName + " - " + userData.lastName} />
     <Spacing />
     <ProfileImage src="/digit18.png" />
   </Padding>

@@ -44,8 +44,8 @@ class InputCid extends Component {
             }}
             render={({ errors, touched }) => (
               <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-                <GammaCardTitle>{EnterYourCid}</GammaCardTitle>
-                <GammaCardSubTitle>{EnterYourCidDescription}</GammaCardSubTitle>
+                <GammaCardTitle text={EnterYourCid} />
+                <GammaCardSubTitle text={EnterYourCidDescription} />
                 <GammaCardBody>
                   <Center>
                     <GammaFormField

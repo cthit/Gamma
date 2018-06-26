@@ -129,7 +129,7 @@ class App extends Component {
               </Switch>
             </Padding>
           </StyledMain>
-        </StyledRoot>Demo
+        </StyledRoot>
       </div>
     );
   }
