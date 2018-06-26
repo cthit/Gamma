@@ -8,7 +8,7 @@ const GammaFormField = ({ name, component, componentProps }) => (
       const nameValueInForm = form.values[name];
       const value = nameValueInForm != null ? nameValueInForm : "";
 
-      const error = true; //form.touched[name] && form.errors[name]
+      const error = form.touched[name] && form.errors[name];
       const handleChange = form.handleChange;
 
       return React.createElement(component, {

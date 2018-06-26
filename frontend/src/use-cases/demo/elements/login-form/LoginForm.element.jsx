@@ -6,6 +6,7 @@ import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
 import GammaButton from "../../../../common/elements/gamma-button/GammaButton.element";
 import GammaCheckbox from "../../../../common/elements/gamma-checkbox/GammaCheckbox.element";
+import GammaSwitch from "../../../../common/elements/gamma-switch/GammaSwitch.element";
 
 const LoginForm = ({}) => (
   <div>
@@ -14,7 +15,12 @@ const LoginForm = ({}) => (
         console.log(values);
         console.log(actions);
       }}
-      initialValues={{ user: "asdf", password: "fdas" }}
+      initialValues={{
+        user: "asdf",
+        password: "fdas",
+        userAgreement: true,
+        mySwitch: false
+      }}
       render={() => (
         <div>
           <GammaFormField
@@ -35,6 +41,15 @@ const LoginForm = ({}) => (
             componentProps={{
               primary: true,
               label: "Jag accepterar användaravtalen"
+            }}
+          />
+
+          <GammaFormField
+            name="mySwitch"
+            component={GammaSwitch}
+            componentProps={{
+              label: "This is a switch",
+              primary: true
             }}
           />
 

@@ -5,8 +5,38 @@ import PropTypes from "prop-types";
 import { Switch } from "@material-ui/core";
 
 import { StyledFormControlLabel } from "./GammaSwitch.element.styles";
-import { getColor } from "../common/utils/color";
+import { getColor } from "../../views/common/utils/color";
 
+const GammaSwitch = ({
+  onChange,
+  value,
+  error,
+  disabled,
+  primary,
+  secondary,
+  label,
+  name,
+  inputProps
+}) => (
+  <StyledFormControlLabel
+    error={error}
+    control={
+      <Switch
+        checked={value}
+        disabled={disabled}
+        color={getColor(primary, secondary)}
+        onChange={onChange}
+        inputProps={{
+          name: name,
+          ...inputProps
+        }}
+      />
+    }
+    label={label}
+  />
+);
+
+/*
 class GammaSwitch extends React.Component {
   state = {
     checked: this.props.startValue != null ? this.props.startValue : false
@@ -40,7 +70,7 @@ class GammaSwitch extends React.Component {
     );
   }
 }
-
+*/
 GammaSwitch.propTypes = {
   onChange: PropTypes.func.isRequired,
   label: PropTypes.string,

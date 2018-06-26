@@ -19,7 +19,7 @@ import GammaIconButton from "../../common/views/gamma-icon-button";
 import GammaMenu from "../../common/views/gamma-menu";
 import GammaRadioButtonGroup from "../../common/views/gamma-radio-button-group";
 import GammaStepper from "../../common/views/gamma-stepper";
-import GammaSwitch from "../../common/views/gamma-switch";
+import GammaSwitch from "../../common/elements/gamma-switch";
 import GammaTextField from "../../common/elements/gamma-text-field";
 import GammaSelect from "../../common/views/gamma-select";
 
