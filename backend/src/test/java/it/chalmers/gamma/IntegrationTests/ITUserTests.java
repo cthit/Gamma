@@ -32,12 +32,13 @@ public class ITUserTests {
 
     @Test
     public void testCreateUser() throws Exception {
-        userService.createUser("gurr", "engsmyre");
-        userService.createUser("leif", "test");
+        System.out.println(userService.createUser("gurr", "engsmyre"));
+        System.out.println(userService.createUser("leif", "test"));
 
         MvcResult result =  mockMvc.perform
                 (MockMvcRequestBuilders.get("/users/")
                         .accept(MediaType.APPLICATION_JSON)).andReturn();
+        System.out.println(result.getResponse().getContentAsString());
         Assert.assertTrue(result.getResponse().getContentAsString().contains("gurr"));
         Assert.assertFalse(result.getResponse().getContentAsString().contains("sfe"));
     }

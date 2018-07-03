@@ -9,12 +9,10 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
-import org.h2.engine.User;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -38,10 +36,6 @@ public class WhitelistController {
         this.mailSenderService = mailSenderService;
 
     }
-    @GetMapping
-    public List<Whitelist> getAllWhiteListed(){
-        return whitelistService.findAll();
-    }
 
     /**
      * /whitelist/valid will be able to return whether or not a user is whitelist, without doing anything to modify the data.
@@ -50,7 +44,6 @@ public class WhitelistController {
      */
     @RequestMapping(value = "/valid", method = RequestMethod.POST)
     public boolean isValid(@RequestBody Whitelist cid) {
-        System.out.println(cid);
         return whitelistService.isCIDWhiteListed(cid.getCid());
     }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -70,10 +63,10 @@ public class WhitelistController {
             throw new UserAlreadyExistsException();
         }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
-            Whitelist whitelist = whitelistService.findByCid(cid.getCid());
+            Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-       //     sendEmail(activationCode);
+        //    sendEmail(activationCode);
             return true;
         }
         else

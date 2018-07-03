@@ -15,9 +15,6 @@ public class WhitelistService {
         this.whitelistRepository = whitelistRepository;
     }
 
-    public List<Whitelist> findAll(){
-        return whitelistRepository.findAll();
-    }
     public Whitelist addWhiteListedCID(String cid) throws CIDAlreadyWhitelistedException {
         if(isCIDWhiteListed(cid)){
             throw new CIDAlreadyWhitelistedException();
@@ -26,10 +23,11 @@ public class WhitelistService {
         System.out.println("white listed " + cid);
         return whitelistRepository.save(whitelistedCID);
     }
-    public void removeWhiteListedCID() throws Exception{
+    //TODO
+    public void removeWhiteListedCID(String cid){
 
     }
-    public Whitelist findByCid(String cid){
+    public Whitelist getWhitelist(String cid){
         return whitelistRepository.findByCid(cid);
     }
     public boolean isCIDWhiteListed(String cid){

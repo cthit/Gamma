@@ -31,13 +31,13 @@ public class ITUserController {
 
     @GetMapping
     public List<ITUser> getAllITUsers() {
-        return itUserService.findAll();
+        return itUserService.loadAllUsers();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException, UserAlreadyExistsException, CodeMissmatchException, PasswordTooShortException {
-        Whitelist user = whitelistService.findByCid(createITUserRequest.getCid().getCid());
+        Whitelist user = whitelistService.getWhitelist(createITUserRequest.getCid().getCid());
         if(user == null){
             throw new NoCidFoundException();
         }
@@ -45,7 +45,7 @@ public class ITUserController {
         if(itUserService.userExists(createITUserRequest.getCid().getCid())){
             throw new UserAlreadyExistsException();
         }
-        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), createITUserRequest.getCid())){
+        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user)){
             throw new CodeMissmatchException();
         }
         else{

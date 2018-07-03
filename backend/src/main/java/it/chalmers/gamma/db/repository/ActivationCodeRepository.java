@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface ActivationCodeRepository extends JpaRepository<ActivationCode, UUID>{
-    ActivationCode findByCid(Whitelist cid);
+    ActivationCode findByCid_Cid(String cid);
+    boolean existsActivationCodeByCid_Cid(String cid);
 }
