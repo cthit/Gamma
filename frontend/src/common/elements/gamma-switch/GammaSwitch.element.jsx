@@ -37,7 +37,7 @@ GammaSwitch.propTypes = {
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
   disabled: PropTypes.bool,
-  startValue: PropTypes.bool,
+  value: PropTypes.bool.isRequired,
   error: PropTypes.bool
 };
 

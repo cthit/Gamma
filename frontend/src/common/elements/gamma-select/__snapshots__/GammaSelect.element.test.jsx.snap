@@ -1,0 +1,383 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GammaSelect/> Shallow render of <GammaSelect/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaSelect
+    allowToChooseNone={true}
+    lowerLabel="Choose the best flavor"
+    onChange={[Function]}
+    upperLabel="Favorite Icecream flavor"
+    valueToTextMap={
+        Object {
+            "chocolate": "Chocolate",
+            "strawberry": "Strawberry",
+            "vanilla": "Vanilla",
+          }
+    }
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        <WithStyles(InputLabel)>
+          Favorite Icecream flavor
+</WithStyles(InputLabel)>,
+        <Styled(WithStyles(Select))
+          disabled={undefined}
+          displayEmpty={true}
+          inputProps={
+                    Object {
+                              "id": "id-undefined",
+                              "name": undefined,
+                            }
+          }
+          onChange={[Function]}
+          value={undefined}
+>
+          <WithStyles(MenuItem)
+                    name="Nothing"
+                    value=""
+          />
+          <WithStyles(MenuItem)
+                    name="chocolate"
+                    value="chocolate"
+          >
+                    Chocolate
+          </WithStyles(MenuItem)>
+          <WithStyles(MenuItem)
+                    name="vanilla"
+                    value="vanilla"
+          >
+                    Vanilla
+          </WithStyles(MenuItem)>
+          <WithStyles(MenuItem)
+                    name="strawberry"
+                    value="strawberry"
+          >
+                    Strawberry
+          </WithStyles(MenuItem)>
+</Styled(WithStyles(Select))>,
+        <GammaLowerLabel
+          text="Choose the best flavor"
+/>,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "Favorite Icecream flavor",
+        },
+        "ref": null,
+        "rendered": "Favorite Icecream flavor",
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": Array [
+            <WithStyles(MenuItem)
+              name="Nothing"
+              value=""
+/>,
+            Array [
+              <WithStyles(MenuItem)
+                name="chocolate"
+                value="chocolate"
+>
+                Chocolate
+</WithStyles(MenuItem)>,
+              <WithStyles(MenuItem)
+                name="vanilla"
+                value="vanilla"
+>
+                Vanilla
+</WithStyles(MenuItem)>,
+              <WithStyles(MenuItem)
+                name="strawberry"
+                value="strawberry"
+>
+                Strawberry
+</WithStyles(MenuItem)>,
+            ],
+          ],
+          "disabled": undefined,
+          "displayEmpty": true,
+          "inputProps": Object {
+            "id": "id-undefined",
+            "name": undefined,
+          },
+          "onChange": [Function],
+          "value": undefined,
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": "",
+              "name": "Nothing",
+              "value": "",
+            },
+            "ref": null,
+            "rendered": "",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "chocolate",
+            "nodeType": "class",
+            "props": Object {
+              "children": "Chocolate",
+              "name": "chocolate",
+              "value": "chocolate",
+            },
+            "ref": null,
+            "rendered": "Chocolate",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "vanilla",
+            "nodeType": "class",
+            "props": Object {
+              "children": "Vanilla",
+              "name": "vanilla",
+              "value": "vanilla",
+            },
+            "ref": null,
+            "rendered": "Vanilla",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "strawberry",
+            "nodeType": "class",
+            "props": Object {
+              "children": "Strawberry",
+              "name": "strawberry",
+              "value": "strawberry",
+            },
+            "ref": null,
+            "rendered": "Strawberry",
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "text": "Choose the best flavor",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <WithStyles(InputLabel)>
+            Favorite Icecream flavor
+</WithStyles(InputLabel)>,
+          <Styled(WithStyles(Select))
+            disabled={undefined}
+            displayEmpty={true}
+            inputProps={
+                        Object {
+                                    "id": "id-undefined",
+                                    "name": undefined,
+                                  }
+            }
+            onChange={[Function]}
+            value={undefined}
+>
+            <WithStyles(MenuItem)
+                        name="Nothing"
+                        value=""
+            />
+            <WithStyles(MenuItem)
+                        name="chocolate"
+                        value="chocolate"
+            >
+                        Chocolate
+            </WithStyles(MenuItem)>
+            <WithStyles(MenuItem)
+                        name="vanilla"
+                        value="vanilla"
+            >
+                        Vanilla
+            </WithStyles(MenuItem)>
+            <WithStyles(MenuItem)
+                        name="strawberry"
+                        value="strawberry"
+            >
+                        Strawberry
+            </WithStyles(MenuItem)>
+</Styled(WithStyles(Select))>,
+          <GammaLowerLabel
+            text="Choose the best flavor"
+/>,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "Favorite Icecream flavor",
+          },
+          "ref": null,
+          "rendered": "Favorite Icecream flavor",
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": Array [
+              <WithStyles(MenuItem)
+                name="Nothing"
+                value=""
+/>,
+              Array [
+                <WithStyles(MenuItem)
+                  name="chocolate"
+                  value="chocolate"
+>
+                  Chocolate
+</WithStyles(MenuItem)>,
+                <WithStyles(MenuItem)
+                  name="vanilla"
+                  value="vanilla"
+>
+                  Vanilla
+</WithStyles(MenuItem)>,
+                <WithStyles(MenuItem)
+                  name="strawberry"
+                  value="strawberry"
+>
+                  Strawberry
+</WithStyles(MenuItem)>,
+              ],
+            ],
+            "disabled": undefined,
+            "displayEmpty": true,
+            "inputProps": Object {
+              "id": "id-undefined",
+              "name": undefined,
+            },
+            "onChange": [Function],
+            "value": undefined,
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": "",
+                "name": "Nothing",
+                "value": "",
+              },
+              "ref": null,
+              "rendered": "",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "chocolate",
+              "nodeType": "class",
+              "props": Object {
+                "children": "Chocolate",
+                "name": "chocolate",
+                "value": "chocolate",
+              },
+              "ref": null,
+              "rendered": "Chocolate",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "vanilla",
+              "nodeType": "class",
+              "props": Object {
+                "children": "Vanilla",
+                "name": "vanilla",
+                "value": "vanilla",
+              },
+              "ref": null,
+              "rendered": "Vanilla",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "strawberry",
+              "nodeType": "class",
+              "props": Object {
+                "children": "Strawberry",
+                "name": "strawberry",
+                "value": "strawberry",
+              },
+              "ref": null,
+              "rendered": "Strawberry",
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "text": "Choose the best flavor",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

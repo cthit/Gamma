@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import breakpoint from "styled-components-breakpoint";
 import { IconButton, AppBar, Toolbar, Drawer } from "@material-ui/core";
 
 export const StyledMenuButton = styled(IconButton)`
-  ${breakpoint("md")`
-        display:none;
-    `};
+  /*Medium device (md)*/
+  @media (max-width: 960px) {
+    display: none;
+  }
 `;
 
 export const StyledRoot = styled.div``;
@@ -14,9 +14,11 @@ export const StyledRoot = styled.div``;
 export const StyledAppBar = styled(AppBar)`
   position: "absolute";
   margin-left: 240px;
-  ${breakpoint("md")`
-     width: calc(100vw - 241px);
-  `};
+
+  /*Medium device (md)*/
+  @media (max-width: 960px) {
+    width: calc(100vw - 241px);
+  }
 `;
 
 export const StyledToolbar = styled(Toolbar)`
@@ -32,10 +34,12 @@ export const StyledDrawer = styled(({ ...rest }) => (
 `;
 
 export const StyledMain = styled.main`
-  ${breakpoint("md")`
-    margin-left: 241px;
-    width: calc(100vw - 256px);
-  `};
   height: calc(100vh - 64px);
   margin-top: 64px;
+
+  /*Medium device (md)*/
+  @media (min-width: 960px) {
+    margin-left: 241px;
+    width: calc(100vw - 256px);
+  }
 `;

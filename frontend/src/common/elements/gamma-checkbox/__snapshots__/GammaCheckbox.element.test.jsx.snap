@@ -1,0 +1,281 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GammaCheckbox/> Shallow render of a <GammaCheckbox/> that doesn't have a label 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaCheckbox
+    name="error-checkbox"
+    onChange={[Function]}
+    value={false}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Checkbox)
+        checked={false}
+        color="default"
+        name="error-checkbox"
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "disabled": undefined,
+      "error": undefined,
+      "label": undefined,
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Checkbox)
+          checked={false}
+          color="default"
+          name="error-checkbox"
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "disabled": undefined,
+        "error": undefined,
+        "label": undefined,
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaCheckbox/> Shallow render of a <GammaCheckbox/> that has an error 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaCheckbox
+    error={true}
+    label="This is a checkbox that has an error"
+    name="error-checkbox"
+    onBlur={[Function]}
+    onChange={[Function]}
+    value={false}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Checkbox)
+        checked={false}
+        color="default"
+        name="error-checkbox"
+        onBlur={[Function]}
+        onChange={[Function]}
+/>,
+      "disabled": undefined,
+      "error": true,
+      "label": "This is a checkbox that has an error",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Checkbox)
+          checked={false}
+          color="default"
+          name="error-checkbox"
+          onBlur={[Function]}
+          onChange={[Function]}
+/>,
+        "disabled": undefined,
+        "error": true,
+        "label": "This is a checkbox that has an error",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaCheckbox/> Shallow render of a disabled secondary <GammaCheckbox/> that is checked 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaCheckbox
+    disabled={true}
+    label="This is a secondary checkbox"
+    name="secondary-checkbox"
+    onChange={[Function]}
+    secondary={true}
+    value={true}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Checkbox)
+        checked={true}
+        color="secondary"
+        name="secondary-checkbox"
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "disabled": true,
+      "error": undefined,
+      "label": "This is a secondary checkbox",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Checkbox)
+          checked={true}
+          color="secondary"
+          name="secondary-checkbox"
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "disabled": true,
+        "error": undefined,
+        "label": "This is a secondary checkbox",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaCheckbox/> Shallow render of a primary <GammaCheckbox/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaCheckbox
+    label="This is a primary checkbox"
+    name="checkbox"
+    onChange={[Function]}
+    primary={true}
+    value={false}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Checkbox)
+        checked={false}
+        color="primary"
+        name="checkbox"
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "disabled": undefined,
+      "error": undefined,
+      "label": "This is a primary checkbox",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Checkbox)
+          checked={false}
+          color="primary"
+          name="checkbox"
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "disabled": undefined,
+        "error": undefined,
+        "label": "This is a primary checkbox",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

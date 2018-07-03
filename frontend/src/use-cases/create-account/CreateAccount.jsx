@@ -9,50 +9,40 @@ import GammaStepper from "../../common/elements/gamma-stepper";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import { Fill, Spacing } from "../../common-ui/layout";
 
-class CreateAccount extends Component {
-  render() {
-    //Texts
-    const { SendCid, GetActivationCode, CreateAccount } = this.props.text;
-
-    const { pathname } = this.props.location;
-
-    return (
-      <div>
-        <Fill>
-          <MapPathToStep
-            currentPath={pathname}
-            pathToStepMap={{
-              "/create-account": 0,
-              "/create-account/email-sent": 1,
-              "/create-account/input": 2,
-              "/create-account/finished": 3
-            }}
-            render={step => (
-              <GammaStepper
-                activeStep={step}
-                steps={[
-                  {
-                    text: SendCid,
-                    element: <InputCid />
-                  },
-                  {
-                    text: GetActivationCode,
-                    element: <EmailHasBeenSent />
-                  },
-                  {
-                    text: CreateAccount,
-                    element: <InputDataAndCode />
-                  }
-                ]}
-                finishedElement={<CreationOfAccountFinished />}
-              />
-            )}
+const CreateAccount = ({ text, location }) => (
+  <div>
+    <Fill>
+      <MapPathToStep
+        currentPath={location.pathname}
+        pathToStepMap={{
+          "/create-account": 0,
+          "/create-account/email-sent": 1,
+          "/create-account/input": 2,
+          "/create-account/finished": 3
+        }}
+        render={step => (
+          <GammaStepper
+            activeStep={step}
+            steps={[
+              {
+                text: text.SendCid,
+                element: <InputCid />
+              },
+              {
+                text: text.GetActivationCode,
+                element: <EmailHasBeenSent />
+              },
+              {
+                text: text.CreateAccount,
+                element: <InputDataAndCode />
+              }
+            ]}
+            finishedElement={<CreationOfAccountFinished />}
           />
-        </Fill>
-        <Spacing />
-      </div>
-    );
-  }
-}
-
+        )}
+      />
+    </Fill>
+    <Spacing />
+  </div>
+);
 export default CreateAccount;

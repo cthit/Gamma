@@ -1,0 +1,475 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GammaRadioButtonGroup/> Shallow render of <GammaRadioButtonGroup/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaRadioButtonGroup
+    lowerLabel="Lowerlabel"
+    onChange={[Function]}
+    radioButtonMap={
+        Object {
+            "2000": Object {
+              "disabled": true,
+              "label": "Disabled",
+            },
+            "3000": Object {
+              "label": "Default",
+            },
+            "4000": Object {
+              "label": "Secondary",
+              "secondary": true,
+            },
+            "5000": Object {
+              "label": "Primary",
+              "primary": true,
+            },
+          }
+    }
+    startValue="5000"
+    upperLabel="Upperlabel"
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        <Styled(WithStyles(FormLabel))
+          component="legend"
+>
+          Upperlabel
+</Styled(WithStyles(FormLabel))>,
+        <RadioGroup
+          name={undefined}
+          onBlur={undefined}
+          onChange={[Function]}
+          value={undefined}
+>
+          <WithStyles(FormControlLabel)
+                    control={
+                              <WithStyles(Radio)
+                                        color="primary"
+                              />
+                    }
+                    disabled={undefined}
+                    label="Primary"
+                    value="5000"
+          />
+          <WithStyles(FormControlLabel)
+                    control={
+                              <WithStyles(Radio)
+                                        color="secondary"
+                              />
+                    }
+                    disabled={undefined}
+                    label="Secondary"
+                    value="4000"
+          />
+          <WithStyles(FormControlLabel)
+                    control={
+                              <WithStyles(Radio)
+                                        color="default"
+                              />
+                    }
+                    disabled={undefined}
+                    label="Default"
+                    value="3000"
+          />
+          <WithStyles(FormControlLabel)
+                    control={
+                              <WithStyles(Radio)
+                                        color="default"
+                              />
+                    }
+                    disabled={true}
+                    label="Disabled"
+                    value="2000"
+          />
+</RadioGroup>,
+        <GammaLowerLabel
+          text="Lowerlabel"
+/>,
+      ],
+      "component": "fieldset",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "Upperlabel",
+          "component": "legend",
+        },
+        "ref": null,
+        "rendered": "Upperlabel",
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": Array [
+            <WithStyles(FormControlLabel)
+              control={
+                            <WithStyles(Radio)
+                                          color="primary"
+                            />
+              }
+              disabled={undefined}
+              label="Primary"
+              value="5000"
+/>,
+            <WithStyles(FormControlLabel)
+              control={
+                            <WithStyles(Radio)
+                                          color="secondary"
+                            />
+              }
+              disabled={undefined}
+              label="Secondary"
+              value="4000"
+/>,
+            <WithStyles(FormControlLabel)
+              control={
+                            <WithStyles(Radio)
+                                          color="default"
+                            />
+              }
+              disabled={undefined}
+              label="Default"
+              value="3000"
+/>,
+            <WithStyles(FormControlLabel)
+              control={
+                            <WithStyles(Radio)
+                                          color="default"
+                            />
+              }
+              disabled={true}
+              label="Disabled"
+              value="2000"
+/>,
+          ],
+          "name": undefined,
+          "onBlur": undefined,
+          "onChange": [Function],
+          "value": undefined,
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": "5000",
+            "nodeType": "class",
+            "props": Object {
+              "control": <WithStyles(Radio)
+                color="primary"
+/>,
+              "disabled": undefined,
+              "label": "Primary",
+              "value": "5000",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "4000",
+            "nodeType": "class",
+            "props": Object {
+              "control": <WithStyles(Radio)
+                color="secondary"
+/>,
+              "disabled": undefined,
+              "label": "Secondary",
+              "value": "4000",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "3000",
+            "nodeType": "class",
+            "props": Object {
+              "control": <WithStyles(Radio)
+                color="default"
+/>,
+              "disabled": undefined,
+              "label": "Default",
+              "value": "3000",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "2000",
+            "nodeType": "class",
+            "props": Object {
+              "control": <WithStyles(Radio)
+                color="default"
+/>,
+              "disabled": true,
+              "label": "Disabled",
+              "value": "2000",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "text": "Lowerlabel",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <Styled(WithStyles(FormLabel))
+            component="legend"
+>
+            Upperlabel
+</Styled(WithStyles(FormLabel))>,
+          <RadioGroup
+            name={undefined}
+            onBlur={undefined}
+            onChange={[Function]}
+            value={undefined}
+>
+            <WithStyles(FormControlLabel)
+                        control={
+                                    <WithStyles(Radio)
+                                                color="primary"
+                                    />
+                        }
+                        disabled={undefined}
+                        label="Primary"
+                        value="5000"
+            />
+            <WithStyles(FormControlLabel)
+                        control={
+                                    <WithStyles(Radio)
+                                                color="secondary"
+                                    />
+                        }
+                        disabled={undefined}
+                        label="Secondary"
+                        value="4000"
+            />
+            <WithStyles(FormControlLabel)
+                        control={
+                                    <WithStyles(Radio)
+                                                color="default"
+                                    />
+                        }
+                        disabled={undefined}
+                        label="Default"
+                        value="3000"
+            />
+            <WithStyles(FormControlLabel)
+                        control={
+                                    <WithStyles(Radio)
+                                                color="default"
+                                    />
+                        }
+                        disabled={true}
+                        label="Disabled"
+                        value="2000"
+            />
+</RadioGroup>,
+          <GammaLowerLabel
+            text="Lowerlabel"
+/>,
+        ],
+        "component": "fieldset",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "Upperlabel",
+            "component": "legend",
+          },
+          "ref": null,
+          "rendered": "Upperlabel",
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": Array [
+              <WithStyles(FormControlLabel)
+                control={
+                                <WithStyles(Radio)
+                                                color="primary"
+                                />
+                }
+                disabled={undefined}
+                label="Primary"
+                value="5000"
+/>,
+              <WithStyles(FormControlLabel)
+                control={
+                                <WithStyles(Radio)
+                                                color="secondary"
+                                />
+                }
+                disabled={undefined}
+                label="Secondary"
+                value="4000"
+/>,
+              <WithStyles(FormControlLabel)
+                control={
+                                <WithStyles(Radio)
+                                                color="default"
+                                />
+                }
+                disabled={undefined}
+                label="Default"
+                value="3000"
+/>,
+              <WithStyles(FormControlLabel)
+                control={
+                                <WithStyles(Radio)
+                                                color="default"
+                                />
+                }
+                disabled={true}
+                label="Disabled"
+                value="2000"
+/>,
+            ],
+            "name": undefined,
+            "onBlur": undefined,
+            "onChange": [Function],
+            "value": undefined,
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": "5000",
+              "nodeType": "class",
+              "props": Object {
+                "control": <WithStyles(Radio)
+                  color="primary"
+/>,
+                "disabled": undefined,
+                "label": "Primary",
+                "value": "5000",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "4000",
+              "nodeType": "class",
+              "props": Object {
+                "control": <WithStyles(Radio)
+                  color="secondary"
+/>,
+                "disabled": undefined,
+                "label": "Secondary",
+                "value": "4000",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "3000",
+              "nodeType": "class",
+              "props": Object {
+                "control": <WithStyles(Radio)
+                  color="default"
+/>,
+                "disabled": undefined,
+                "label": "Default",
+                "value": "3000",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "2000",
+              "nodeType": "class",
+              "props": Object {
+                "control": <WithStyles(Radio)
+                  color="default"
+/>,
+                "disabled": true,
+                "label": "Disabled",
+                "value": "2000",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "text": "Lowerlabel",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

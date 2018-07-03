@@ -33,7 +33,7 @@ const GammaCheckbox = ({
 
 GammaCheckbox.propTypes = {
   onChange: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   startValue: PropTypes.bool,
   primary: PropTypes.bool,
   secondary: PropTypes.bool,

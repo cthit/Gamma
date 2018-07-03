@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 import { List, Typography, Hidden } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { withLocalize } from "react-localize-redux";
@@ -28,8 +28,9 @@ import demoTranslations from "../use-cases/demo/Demo.translations.json";
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
 import { Padding, Spacing } from "../common-ui/layout";
+import { ProvidersForApp } from "./ProvidersForApp";
 
-class App extends Component {
+export class App extends Component {
   state = {
     mobileOpen: false
   };
@@ -90,7 +91,7 @@ class App extends Component {
     const { mobileOpen } = this.state;
 
     return (
-      <div>
+      <BrowserRouter>
         <StyledRoot>
           <StyledAppBar>
             <StyledToolbar>
@@ -135,7 +136,7 @@ class App extends Component {
             </Padding>
           </StyledMain>
         </StyledRoot>
-      </div>
+      </BrowserRouter>
     );
   }
 }

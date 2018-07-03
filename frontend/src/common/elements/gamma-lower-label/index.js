@@ -1,1 +1,1 @@
-export { default } from "./GammaLowerLabel";
+export { default } from "./GammaLowerLabel.element";
