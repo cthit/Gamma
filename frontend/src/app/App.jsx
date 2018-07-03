@@ -92,50 +92,52 @@ export class App extends Component {
 
     return (
       <BrowserRouter>
-        <StyledRoot>
-          <StyledAppBar>
-            <StyledToolbar>
-              <StyledMenuButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerToggle}
+        <div>
+          <StyledRoot>
+            <StyledAppBar>
+              <StyledToolbar>
+                <StyledMenuButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={this.handleDrawerToggle}
+                >
+                  <MenuIcon />
+                </StyledMenuButton>
+                <Typography variant="title" color="inherit" noWrap>
+                  {title}
+                </Typography>
+              </StyledToolbar>
+            </StyledAppBar>
+            <Hidden mdUp>
+              <StyledDrawer
+                variant="temporary"
+                anchor="left"
+                open={mobileOpen}
+                onClose={this.handleDrawerToggle}
+                ModalProps={{
+                  keepMounted: true // Better open performance on mobile.
+                }}
               >
-                <MenuIcon />
-              </StyledMenuButton>
-              <Typography variant="title" color="inherit" noWrap>
-                {title}
-              </Typography>
-            </StyledToolbar>
-          </StyledAppBar>
-          <Hidden mdUp>
-            <StyledDrawer
-              variant="temporary"
-              anchor="left"
-              open={mobileOpen}
-              onClose={this.handleDrawerToggle}
-              ModalProps={{
-                keepMounted: true // Better open performance on mobile.
-              }}
-            >
-              {drawer}
-            </StyledDrawer>
-          </Hidden>
-          <Hidden smDown implementation="css">
-            <StyledDrawer variant="permanent" open>
-              {drawer}
-            </StyledDrawer>
-          </Hidden>
-          <StyledMain>
-            <Padding>
-              <GammaRedirect />
-              <GammaToast />
-              <Switch>
-                <Route path="/create-account" component={CreateAccount} />
-                <Route path="/demo" component={Demo} />
-              </Switch>
-            </Padding>
-          </StyledMain>
-        </StyledRoot>
+                {drawer}
+              </StyledDrawer>
+            </Hidden>
+            <Hidden smDown implementation="css">
+              <StyledDrawer variant="permanent" open>
+                {drawer}
+              </StyledDrawer>
+            </Hidden>
+            <StyledMain>
+              <Padding>
+                <GammaRedirect />
+                <GammaToast />
+                <Switch>
+                  <Route path="/create-account" component={CreateAccount} />
+                  <Route path="/demo" component={Demo} />
+                </Switch>
+              </Padding>
+            </StyledMain>
+          </StyledRoot>
+        </div>
       </BrowserRouter>
     );
   }

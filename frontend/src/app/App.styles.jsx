@@ -4,7 +4,7 @@ import { IconButton, AppBar, Toolbar, Drawer } from "@material-ui/core";
 
 export const StyledMenuButton = styled(IconButton)`
   /*Medium device (md)*/
-  @media (max-width: 960px) {
+  @media (min-width: 960px) {
     display: none;
   }
 `;
@@ -16,7 +16,7 @@ export const StyledAppBar = styled(AppBar)`
   margin-left: 240px;
 
   /*Medium device (md)*/
-  @media (max-width: 960px) {
+  @media (min-width: 960px) {
     width: calc(100vw - 241px);
   }
 `;
