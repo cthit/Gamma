@@ -16,57 +16,41 @@ import {
   GammaCardTitle
 } from "../../../../common-ui/design";
 
-class InputCid extends Component {
-  render() {
-    //Functions
-    const { sendCid } = this.props;
-
-    //Texts
-    const {
-      EnterYourCid,
-      EnterYourCidDescription,
-      SendCid,
-      Cid,
-      FieldRequired
-    } = this.props.text;
-
-    return (
-      <MarginTop>
-        <Center>
-          <GammaForm
-            validationSchema={yup.object().shape({
-              cid: yup.string().required(FieldRequired)
-            })}
-            initialValues={{ cid: "" }}
-            onSubmit={(values, actions) => {
-              actions.resetForm();
-              sendCid(values);
-            }}
-            render={({ errors, touched }) => (
-              <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-                <GammaCardTitle text={EnterYourCid} />
-                <GammaCardSubTitle text={EnterYourCidDescription} />
-                <GammaCardBody>
-                  <Center>
-                    <GammaFormField
-                      name="cid"
-                      component={CIDInput}
-                      componentProps={{
-                        upperLabel: Cid
-                      }}
-                    />
-                  </Center>
-                </GammaCardBody>
-                <GammaCardButtons reverseDirection>
-                  <GammaButton text={SendCid} primary raised submit />
-                </GammaCardButtons>
-              </GammaCard>
-            )}
-          />
-        </Center>
-      </MarginTop>
-    );
-  }
-}
+const InputCid = ({ sendCid, text }) => (
+  <MarginTop>
+    <Center>
+      <GammaForm
+        validationSchema={yup.object().shape({
+          cid: yup.string().required(text.FieldRequired)
+        })}
+        initialValues={{ cid: "" }}
+        onSubmit={(values, actions) => {
+          actions.resetForm();
+          sendCid(values);
+        }}
+        render={({ errors, touched }) => (
+          <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
+            <GammaCardTitle text={text.EnterYourCid} />
+            <GammaCardSubTitle text={text.EnterYourCidDescription} />
+            <GammaCardBody>
+              <Center>
+                <GammaFormField
+                  name="cid"
+                  component={CIDInput}
+                  componentProps={{
+                    upperLabel: text.Cid
+                  }}
+                />
+              </Center>
+            </GammaCardBody>
+            <GammaCardButtons reverseDirection>
+              <GammaButton text={text.SendCid} primary raised submit />
+            </GammaCardButtons>
+          </GammaCard>
+        )}
+      />
+    </Center>
+  </MarginTop>
+);
 
 export default InputCid;
