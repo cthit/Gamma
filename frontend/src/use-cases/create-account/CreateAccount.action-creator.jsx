@@ -19,7 +19,7 @@ export function createAccountValidateCid(cid) {
     dispatch(createAccountValidatingCid());
     axios
       .post(
-        "http://localhost:8081/whitelist/valid",
+        "http://localhost:8081/whitelist/activate_cid",
         {
           cid: cid
         },
