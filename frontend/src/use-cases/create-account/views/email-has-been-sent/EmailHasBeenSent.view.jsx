@@ -13,40 +13,27 @@ import {
 } from "../../../../common-ui/design";
 import { Text } from "../../../../common-ui/text";
 
-class EmailHasBeenSent extends React.Component {
-  render() {
-    //Texts
-    const {
-      AnEmailShouldBeSent,
-      AnEmailShouldBeSentDescription,
-      HaveRecievedACode,
-      Back
-    } = this.props.text;
-
-    return (
-      <Center>
-        <GammaCard minWidth="300px" maxWidth="500px">
-          <GammaCardTitle text={AnEmailShouldBeSent} />
-          <GammaCardBody>
-            <Text text={AnEmailShouldBeSentDescription} />
-          </GammaCardBody>
-          <GammaCardButtons leftRight reverseDirection>
-            <ButtonNavLink to="/create-account/input">
-              <GammaButton
-                primary
-                raised
-                onClick={() => {}}
-                text={HaveRecievedACode}
-              />
-            </ButtonNavLink>
-            <ButtonNavLink to="/create-account">
-              <GammaButton raised onClick={() => {}} text={Back} />
-            </ButtonNavLink>
-          </GammaCardButtons>
-        </GammaCard>
-      </Center>
-    );
-  }
-}
-
+const EmailHasBeenSent = ({ text }) => (
+  <Center>
+    <GammaCard minWidth="300px" maxWidth="500px">
+      <GammaCardTitle text={text.AnEmailShouldBeSent} />
+      <GammaCardBody>
+        <Text text={text.AnEmailShouldBeSentDescription} />
+      </GammaCardBody>
+      <GammaCardButtons leftRight reverseDirection>
+        <ButtonNavLink to="/create-account/input">
+          <GammaButton
+            primary
+            raised
+            onClick={() => {}}
+            text={text.HaveRecievedACode}
+          />
+        </ButtonNavLink>
+        <ButtonNavLink to="/create-account">
+          <GammaButton raised onClick={() => {}} text={text.Back} />
+        </ButtonNavLink>
+      </GammaCardButtons>
+    </GammaCard>
+  </Center>
+);
 export default EmailHasBeenSent;
