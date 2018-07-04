@@ -6,7 +6,7 @@
     "@material-ui/core": "^1.2.3",
     "@material-ui/icons": "^1.1.0",
     "axios": "^0.18.0",
-    "formik": "^1.0.0-beta.2",
+    "formik": "^1.0.0-beta.4",
     "jss": "^9.8.6",
     "lodash": "^4.17.10",
     "npm": "^6.1.0",
