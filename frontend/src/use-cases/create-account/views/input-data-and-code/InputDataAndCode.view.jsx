@@ -7,7 +7,7 @@ import GammaFormField from "../../../../common/elements/gamma-form-field";
 
 import {
   AcceptUserAgreementInput,
-  AttendanceYearInput,
+  AcceptanceYearInput,
   ConfirmCidInput,
   ConfirmationCodeInput,
   CreateAccountButton,
@@ -48,7 +48,7 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
         nick: "",
         firstName: "",
         lastName: "",
-        attendanceYear: "2018",
+        acceptanceYear: "2018",
         password: "",
         passwordConfirmation: "",
         userAgreement: false
@@ -59,7 +59,7 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
         nick: yup.string().required(text.FieldRequired),
         firstName: yup.string().required(text.FieldRequired),
         lastName: yup.string().required(text.FieldRequired),
-        attendanceYear: yup
+        acceptanceYear: yup
           .number()
           .min(2001)
           .max(_getCurrentYear())
@@ -139,10 +139,10 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
               />
               <Spacing />
               <GammaFormField
-                name="attendanceYear"
-                component={AttendanceYearInput}
+                name="acceptanceYear"
+                component={AcceptanceYearInput}
                 componentProps={{
-                  valueToTextMap: _generateAttendanceYears(),
+                  valueToTextMap: _generateAcceptanceYears(),
                   upperLabel: text.WhichYearDidYouStart,
                   reverse: true
                 }}
@@ -177,7 +177,7 @@ function _getCurrentYear() {
   return new Date().getFullYear() + "";
 }
 
-function _generateAttendanceYears() {
+function _generateAcceptanceYears() {
   const output = {};
   const startYear = 2001;
   const currentYear = _getCurrentYear();

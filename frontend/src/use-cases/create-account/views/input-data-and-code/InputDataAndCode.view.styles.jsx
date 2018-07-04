@@ -33,7 +33,7 @@ export const LastnameInput = styled(GammaTextField)`
 
 export const ConfirmCidInput = styled(GammaTextField)``;
 
-export const AttendanceYearInput = styled(GammaSelect)`
+export const AcceptanceYearInput = styled(GammaSelect)`
   width: 300px;
 `;
 

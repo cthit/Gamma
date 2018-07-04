@@ -22,7 +22,7 @@ const preloadedState = {};
 const store = createStore(
   rootReducer,
   preloadedState,
-  applyMiddleware(thunkMiddleware, loggerMiddleware)
+  applyMiddleware(loggerMiddleware, thunkMiddleware)
 );
 
 const theme = {
