@@ -19,7 +19,6 @@ export default function loadTranslations(localize, translations, baseUrl) {
     ),
     _loadCommonTranslations(localize)
   );
-
   return texts;
 }
 

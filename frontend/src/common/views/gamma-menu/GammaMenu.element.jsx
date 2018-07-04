@@ -39,9 +39,8 @@ class GammaMenu extends React.Component {
           aria-label="More"
           aria-owns={open ? id : null}
           aria-haspopup="true"
-        >
-          <MoreVert />
-        </GammaIconButton>
+          component={MoreVert}
+        />
         <Menu
           id={id}
           open={open}
