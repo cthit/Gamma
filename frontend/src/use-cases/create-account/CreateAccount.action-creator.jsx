@@ -14,19 +14,13 @@ import {
 import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 //import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 
-export function createAccountValidateCid(cid) {
+export function createAccountValidateCid(data) {
   return dispatch => {
     dispatch(createAccountValidatingCid());
     axios
-      .post(
-        "http://localhost:8081/whitelist/activate_cid",
-        {
-          cid: cid
-        },
-        {
-          "Content-Type": "application/json"
-        }
-      )
+      .post("http://localhost:8081/whitelist/activate_cid", data, {
+        "Content-Type": "application/json"
+      })
       .then(response => {
         console.log(response);
         //dispatch(createAccountValidateCidSuccessfully());
