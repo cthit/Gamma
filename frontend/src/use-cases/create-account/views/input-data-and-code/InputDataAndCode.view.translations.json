@@ -27,6 +27,13 @@
       "Jag accepterar användaravtalet"
     ],
     "CreateAccount": ["Create account", "Skapa konto"],
-    "PasswordsDoNotMatch": ["Passwords do not match", "Lösenorden matchar inte"]
+    "PasswordsDoNotMatch": [
+      "Passwords do not match",
+      "Lösenorden matchar inte"
+    ],
+    "MinimumLength": [
+      "The password must be atleast 8 characters",
+      "Lösenordet måste vara minst 8 karaktärer"
+    ]
   }
 }
