@@ -28,9 +28,9 @@ class GammaMenu extends React.Component {
   };
 
   render() {
-    const { open, id, anchorElement, onClick } = this.state;
+    const { open, id, anchorElement } = this.state;
 
-    const { valueToTextMap } = this.props;
+    const { valueToTextMap, onClick } = this.props;
 
     return (
       <div>

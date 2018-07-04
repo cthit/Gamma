@@ -48,10 +48,14 @@ const GammaRadioButtonGroup = ({
 );
 
 GammaRadioButtonGroup.propTypes = {
-  radioButtonMap: PropTypes.object.isRequired,
+  value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
+  name: PropTypes.string,
   upperLabel: PropTypes.string,
-  lowerLabel: PropTypes.string
+  lowerLabel: PropTypes.string,
+  label: PropTypes.string,
+  radioButtonMap: PropTypes.object.isRequired
 };
 
 export default GammaRadioButtonGroup;

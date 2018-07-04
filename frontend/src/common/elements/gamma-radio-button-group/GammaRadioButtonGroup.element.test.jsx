@@ -7,7 +7,7 @@ describe("<GammaRadioButtonGroup/>", () => {
     const wrapper = shallow(
       <GammaRadioButtonGroup
         onChange={value => {}}
-        startValue="5000"
+        value="5000"
         upperLabel="Upperlabel"
         lowerLabel="Lowerlabel"
         radioButtonMap={{

@@ -28,6 +28,7 @@ ShallowWrapper {
           Don't write a T
 </WithStyles(InputLabel)>,
         <WithStyles(Input)
+          disabled={undefined}
           name={undefined}
           onBlur={undefined}
           onChange={[Function]}
@@ -58,6 +59,7 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "disabled": undefined,
           "name": undefined,
           "onBlur": undefined,
           "onChange": [Function],
@@ -93,6 +95,7 @@ ShallowWrapper {
             Don't write a T
 </WithStyles(InputLabel)>,
           <WithStyles(Input)
+            disabled={undefined}
             name={undefined}
             onBlur={undefined}
             onChange={[Function]}
@@ -123,6 +126,7 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "disabled": undefined,
             "name": undefined,
             "onBlur": undefined,
             "onChange": [Function],
@@ -163,164 +167,6 @@ ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <GammaTextField
-    lowerLabel="Very secret"
-    onChange={[Function]}
-    password={true}
-    upperLabel="Your supersecret password"
-    value="secret"
-/>,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "class",
-    "props": Object {
-      "children": Array [
-        <WithStyles(InputLabel)>
-          Your supersecret password
-</WithStyles(InputLabel)>,
-        <WithStyles(Input)
-          name={undefined}
-          onBlur={undefined}
-          onChange={[Function]}
-          type="password"
-          value="secret"
-/>,
-        <GammaLowerLabel
-          text="Very secret"
-/>,
-      ],
-      "error": undefined,
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "children": "Your supersecret password",
-        },
-        "ref": null,
-        "rendered": "Your supersecret password",
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "name": undefined,
-          "onBlur": undefined,
-          "onChange": [Function],
-          "type": "password",
-          "value": "secret",
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "function",
-        "props": Object {
-          "text": "Very secret",
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": [Function],
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "class",
-      "props": Object {
-        "children": Array [
-          <WithStyles(InputLabel)>
-            Your supersecret password
-</WithStyles(InputLabel)>,
-          <WithStyles(Input)
-            name={undefined}
-            onBlur={undefined}
-            onChange={[Function]}
-            type="password"
-            value="secret"
-/>,
-          <GammaLowerLabel
-            text="Very secret"
-/>,
-        ],
-        "error": undefined,
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "children": "Your supersecret password",
-          },
-          "ref": null,
-          "rendered": "Your supersecret password",
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "name": undefined,
-            "onBlur": undefined,
-            "onChange": [Function],
-            "type": "password",
-            "value": "secret",
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "function",
-          "props": Object {
-            "text": "Very secret",
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
-      "type": [Function],
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
-`;
-
-exports[`<GammaTextField/> Shallow render of a disabled <GammaTextField/> 2`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <GammaTextField
     numbersOnly={true}
     onChange={[Function]}
     upperLabel="Only numbers"
@@ -343,6 +189,7 @@ ShallowWrapper {
           Only numbers
 </WithStyles(InputLabel)>,
         <WithStyles(Input)
+          disabled={undefined}
           name={undefined}
           onBlur={undefined}
           onChange={[Function]}
@@ -373,6 +220,7 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "disabled": undefined,
           "name": undefined,
           "onBlur": undefined,
           "onChange": [Function],
@@ -408,6 +256,7 @@ ShallowWrapper {
             Only numbers
 </WithStyles(InputLabel)>,
           <WithStyles(Input)
+            disabled={undefined}
             name={undefined}
             onBlur={undefined}
             onChange={[Function]}
@@ -438,6 +287,7 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "disabled": undefined,
             "name": undefined,
             "onBlur": undefined,
             "onChange": [Function],
@@ -454,6 +304,169 @@ ShallowWrapper {
           "nodeType": "function",
           "props": Object {
             "text": "",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaTextField/> Shallow render of a disabled <GammaTextField/> with password 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaTextField
+    disabled={true}
+    lowerLabel="Very secret"
+    onChange={[Function]}
+    password={true}
+    upperLabel="Your supersecret password"
+    value="secret"
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        <WithStyles(InputLabel)>
+          Your supersecret password
+</WithStyles(InputLabel)>,
+        <WithStyles(Input)
+          disabled={true}
+          name={undefined}
+          onBlur={undefined}
+          onChange={[Function]}
+          type="password"
+          value="secret"
+/>,
+        <GammaLowerLabel
+          text="Very secret"
+/>,
+      ],
+      "error": undefined,
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": "Your supersecret password",
+        },
+        "ref": null,
+        "rendered": "Your supersecret password",
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "disabled": true,
+          "name": undefined,
+          "onBlur": undefined,
+          "onChange": [Function],
+          "type": "password",
+          "value": "secret",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "text": "Very secret",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <WithStyles(InputLabel)>
+            Your supersecret password
+</WithStyles(InputLabel)>,
+          <WithStyles(Input)
+            disabled={true}
+            name={undefined}
+            onBlur={undefined}
+            onChange={[Function]}
+            type="password"
+            value="secret"
+/>,
+          <GammaLowerLabel
+            text="Very secret"
+/>,
+        ],
+        "error": undefined,
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": "Your supersecret password",
+          },
+          "ref": null,
+          "rendered": "Your supersecret password",
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "disabled": true,
+            "name": undefined,
+            "onBlur": undefined,
+            "onChange": [Function],
+            "type": "password",
+            "value": "secret",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "text": "Very secret",
           },
           "ref": null,
           "rendered": null,
@@ -498,6 +511,7 @@ ShallowWrapper {
       "children": Array [
         <WithStyles(InputLabel) />,
         <WithStyles(Input)
+          disabled={true}
           name={undefined}
           onBlur={undefined}
           onChange={[Function]}
@@ -528,6 +542,7 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "disabled": true,
           "name": undefined,
           "onBlur": undefined,
           "onChange": [Function],
@@ -561,6 +576,7 @@ ShallowWrapper {
         "children": Array [
           <WithStyles(InputLabel) />,
           <WithStyles(Input)
+            disabled={true}
             name={undefined}
             onBlur={undefined}
             onChange={[Function]}
@@ -591,6 +607,7 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "disabled": true,
             "name": undefined,
             "onBlur": undefined,
             "onChange": [Function],
@@ -653,6 +670,7 @@ ShallowWrapper {
           Hello lowerLabel
 </WithStyles(InputLabel)>,
         <WithStyles(Input)
+          disabled={undefined}
           name={undefined}
           onBlur={undefined}
           onChange={[Function]}
@@ -683,6 +701,7 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "disabled": undefined,
           "name": undefined,
           "onBlur": undefined,
           "onChange": [Function],
@@ -718,6 +737,7 @@ ShallowWrapper {
             Hello lowerLabel
 </WithStyles(InputLabel)>,
           <WithStyles(Input)
+            disabled={undefined}
             name={undefined}
             onBlur={undefined}
             onChange={[Function]}
@@ -748,6 +768,7 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "disabled": undefined,
             "name": undefined,
             "onBlur": undefined,
             "onChange": [Function],
@@ -812,6 +833,7 @@ ShallowWrapper {
           Your username
 </WithStyles(InputLabel)>,
         <WithStyles(Input)
+          disabled={undefined}
           name={undefined}
           onBlur={undefined}
           onChange={[Function]}
@@ -842,6 +864,7 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
+          "disabled": undefined,
           "name": undefined,
           "onBlur": undefined,
           "onChange": [Function],
@@ -877,6 +900,7 @@ ShallowWrapper {
             Your username
 </WithStyles(InputLabel)>,
           <WithStyles(Input)
+            disabled={undefined}
             name={undefined}
             onBlur={undefined}
             onChange={[Function]}
@@ -907,6 +931,7 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
+            "disabled": undefined,
             "name": undefined,
             "onBlur": undefined,
             "onChange": [Function],

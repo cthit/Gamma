@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import * as yup from "yup";
 
 import GammaForm from "../../../../common/elements/gamma-form";
@@ -185,5 +186,10 @@ function _generateAttendanceYears() {
   }
   return output;
 }
+
+InputDataAndCode.propTypes = {
+  sendDataAndCode: PropTypes.func.isRequired,
+  text: PropTypes.object.isRequired
+};
 
 export default InputDataAndCode;

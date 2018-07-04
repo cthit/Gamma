@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import * as yup from "yup";
 
 import { CIDInput } from "./InputCid.view.styles";
@@ -52,5 +53,10 @@ const InputCid = ({ sendCid, text }) => (
     </Center>
   </MarginTop>
 );
+
+InputCid.propTypes = {
+  text: PropTypes.object.isRequired,
+  sendCid: PropTypes.func.isRequired
+};
 
 export default InputCid;

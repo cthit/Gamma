@@ -32,12 +32,15 @@ const GammaCheckbox = ({
 );
 
 GammaCheckbox.propTypes = {
+  name: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
   label: PropTypes.string,
-  startValue: PropTypes.bool,
+  value: PropTypes.bool.isRequired,
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  error: PropTypes.bool
 };
 
 export default GammaCheckbox;

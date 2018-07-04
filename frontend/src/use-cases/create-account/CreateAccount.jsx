@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import InputCid from "./views/input-cid";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";
@@ -45,4 +46,10 @@ const CreateAccount = ({ text, location }) => (
     <Spacing />
   </div>
 );
+
+CreateAccount.propTypes = {
+  text: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
+};
+
 export default CreateAccount;

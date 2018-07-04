@@ -10,6 +10,7 @@ ShallowWrapper {
             "pathname": "/",
           }
     }
+    text={Object {}}
 />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],

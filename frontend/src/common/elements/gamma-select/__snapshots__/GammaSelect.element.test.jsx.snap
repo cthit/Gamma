@@ -9,6 +9,7 @@ ShallowWrapper {
     lowerLabel="Choose the best flavor"
     onChange={[Function]}
     upperLabel="Favorite Icecream flavor"
+    value="Chocolate"
     valueToTextMap={
         Object {
             "chocolate": "Chocolate",
@@ -43,7 +44,7 @@ ShallowWrapper {
                             }
           }
           onChange={[Function]}
-          value={undefined}
+          value="Chocolate"
 >
           <WithStyles(MenuItem)
                     name="Nothing"
@@ -124,7 +125,7 @@ ShallowWrapper {
             "name": undefined,
           },
           "onChange": [Function],
-          "value": undefined,
+          "value": "Chocolate",
         },
         "ref": null,
         "rendered": Array [
@@ -217,7 +218,7 @@ ShallowWrapper {
                                   }
             }
             onChange={[Function]}
-            value={undefined}
+            value="Chocolate"
 >
             <WithStyles(MenuItem)
                         name="Nothing"
@@ -298,7 +299,7 @@ ShallowWrapper {
               "name": undefined,
             },
             "onChange": [Function],
-            "value": undefined,
+            "value": "Chocolate",
           },
           "ref": null,
           "rendered": Array [

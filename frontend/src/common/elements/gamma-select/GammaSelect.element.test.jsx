@@ -17,6 +17,7 @@ describe("<GammaSelect/>", () => {
           strawberry: "Strawberry"
         }}
         allowToChooseNone
+        value="Chocolate"
       />
     );
 

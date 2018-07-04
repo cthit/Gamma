@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
 
@@ -36,4 +37,9 @@ const EmailHasBeenSent = ({ text }) => (
     </GammaCard>
   </Center>
 );
+
+EmailHasBeenSent.propTypes = {
+  text: PropTypes.object.isRequired
+};
+
 export default EmailHasBeenSent;

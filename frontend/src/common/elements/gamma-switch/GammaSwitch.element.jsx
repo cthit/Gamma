@@ -33,12 +33,14 @@ const GammaSwitch = ({
 
 GammaSwitch.propTypes = {
   onChange: PropTypes.func.isRequired,
-  label: PropTypes.string,
+  onBlur: PropTypes.func,
+  value: PropTypes.bool.isRequired,
+  error: PropTypes.bool,
+  disabled: PropTypes.bool,
   primary: PropTypes.bool,
   secondary: PropTypes.bool,
-  disabled: PropTypes.bool,
-  value: PropTypes.bool.isRequired,
-  error: PropTypes.bool
+  label: PropTypes.string,
+  name: PropTypes.string
 };
 
 export default GammaSwitch;

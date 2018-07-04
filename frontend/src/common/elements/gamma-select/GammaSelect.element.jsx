@@ -63,14 +63,15 @@ function _getValues(valueToTextMap, reverse) {
 }
 
 GammaSelect.propTypes = {
+  value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  valueToTextMap: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
+  valueToTextMap: PropTypes.object.isRequired,
   allowToChooseNone: PropTypes.bool,
   upperLabel: PropTypes.string,
   lowerLabel: PropTypes.string,
-  startValue: PropTypes.string,
-  reverse: PropTypes.bool
+  reverse: PropTypes.bool,
+  inputProps: PropTypes.object
 };
 
 export default GammaSelect;

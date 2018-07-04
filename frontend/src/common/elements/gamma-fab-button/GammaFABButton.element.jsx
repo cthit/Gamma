@@ -27,7 +27,8 @@ GammaFABButton.propTypes = {
   component: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   primary: PropTypes.bool,
-  secondary: PropTypes.bool
+  secondary: PropTypes.bool,
+  submit: PropTypes.bool
 };
 
 export default GammaFABButton;

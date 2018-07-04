@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Field } from "formik";
 
 const GammaFormField = ({ name, component, componentProps }) => (
@@ -19,5 +20,11 @@ const GammaFormField = ({ name, component, componentProps }) => (
     }}
   />
 );
+
+GammaFormField.propTypes = {
+  name: PropTypes.string.isRequired,
+  component: PropTypes.func.isRequired,
+  componentProps: PropTypes.object
+};
 
 export default GammaFormField;

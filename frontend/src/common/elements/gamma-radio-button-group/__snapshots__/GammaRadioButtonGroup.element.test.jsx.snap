@@ -26,8 +26,8 @@ ShallowWrapper {
             },
           }
     }
-    startValue="5000"
     upperLabel="Upperlabel"
+    value="5000"
 />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -51,7 +51,7 @@ ShallowWrapper {
           name={undefined}
           onBlur={undefined}
           onChange={[Function]}
-          value={undefined}
+          value="5000"
 >
           <WithStyles(FormControlLabel)
                     control={
@@ -164,7 +164,7 @@ ShallowWrapper {
           "name": undefined,
           "onBlur": undefined,
           "onChange": [Function],
-          "value": undefined,
+          "value": "5000",
         },
         "ref": null,
         "rendered": Array [
@@ -265,7 +265,7 @@ ShallowWrapper {
             name={undefined}
             onBlur={undefined}
             onChange={[Function]}
-            value={undefined}
+            value="5000"
 >
             <WithStyles(FormControlLabel)
                         control={
@@ -378,7 +378,7 @@ ShallowWrapper {
             "name": undefined,
             "onBlur": undefined,
             "onChange": [Function],
-            "value": undefined,
+            "value": "5000",
           },
           "ref": null,
           "rendered": Array [

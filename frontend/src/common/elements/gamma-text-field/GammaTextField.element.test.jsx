@@ -58,13 +58,14 @@ describe("<GammaTextField/>", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  test("Shallow render of a disabled <GammaTextField/>", () => {
+  test("Shallow render of a disabled <GammaTextField/> with password", () => {
     const wrapper = shallow(
       <GammaTextField
         onChange={() => {}}
         upperLabel="Your supersecret password"
         value="secret"
         lowerLabel="Very secret"
+        disabled
         password
       />
     );

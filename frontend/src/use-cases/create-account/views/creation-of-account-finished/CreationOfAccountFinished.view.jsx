@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import {
   GammaCard,
@@ -30,5 +31,9 @@ const CreationOfAccountFinished = ({ text }) => (
     </GammaCard>
   </Center>
 );
+
+CreationOfAccountFinished.propTypes = {
+  text: PropTypes.object.isRequired
+};
 
 export default CreationOfAccountFinished;
