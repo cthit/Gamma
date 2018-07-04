@@ -7,11 +7,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AccountTests {
+@TestPropertySource(locations = "classpath:application-test.properties")
+public class WhitelistTests {
 
     @Autowired
     WhitelistService whitelistService;
@@ -22,13 +24,24 @@ public class AccountTests {
     @Test
     public void testWhiteList(){
         try {
-            whitelistService.addWhiteListedCID("engsmyre");
-            whitelistService.addWhiteListedCID("svenel");
+            whitelistService.addWhiteListedCID("cid1");
+            whitelistService.addWhiteListedCID("cid2");
         } catch (CIDAlreadyWhitelistedException e) {
             e.printStackTrace();
         }
-        Assert.assertTrue(whitelistService.isCIDWhiteListed("engsmyre"));
+        Assert.assertTrue(whitelistService.isCIDWhiteListed("cid1"));
         Assert.assertFalse(whitelistService.isCIDWhiteListed("leif"));
+    }
+    @Test
+    public void testDeleteActivationCode(){
+        String cid = "cid1";
+        try {
+            whitelistService.addWhiteListedCID(cid);
+            whitelistService.removeWhiteListedCID(cid);
+        } catch (CIDAlreadyWhitelistedException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -38,16 +51,23 @@ public class AccountTests {
     @Test
     public void testAddWhitelistCIDMultipleTimes(){
         try {
-            whitelistService.addWhiteListedCID("engsmyre");
+            whitelistService.addWhiteListedCID("cid1");
         } catch (CIDAlreadyWhitelistedException e) {
             e.printStackTrace();
         }
         try {
-            whitelistService.addWhiteListedCID("engsmyre");
+            whitelistService.addWhiteListedCID("cid1");
             assert(false);
         } catch (CIDAlreadyWhitelistedException e) {
             e.printStackTrace();
             assert(true);
         }
+    }
+    /*
+TODO Set up test environment that specifies mail address to send from and to.
+ */
+    @Test
+    public void testSendEmail(){
+
     }
 }

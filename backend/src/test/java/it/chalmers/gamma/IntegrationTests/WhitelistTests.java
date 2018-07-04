@@ -2,6 +2,9 @@ package it.chalmers.gamma.IntegrationTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.db.repository.ActivationCodeRepository;
+import it.chalmers.gamma.db.repository.WhitelistRepository;
+import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
@@ -31,7 +34,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 )
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class WhitelistTable {
+public class WhitelistTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -45,22 +48,26 @@ public class WhitelistTable {
     @Autowired
     WhitelistService whitelistService;
 
+    @Autowired
+    ActivationCodeRepository activationCodeRepository;
 
+    @Autowired
+    WhitelistRepository whitelistRepository;
 
     @Test
     public void testCreateCode() throws Exception {
-        String cid = "account";
+        String cid = "TEST_CODE";
+        sendCreateCode(cid);
+        Whitelist whitelist = whitelistRepository.findByCid(cid);
+        Assert.assertTrue(activationCodeService.userHasCode(whitelist));
+    }
+
+    private void sendCreateCode(String cid) throws Exception {
         MockHttpServletRequestBuilder mocker = (MockMvcRequestBuilders.post("/whitelist/add/").content(asJsonString(new Whitelist(cid))).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
-        MockHttpServletRequestBuilder mocker2 = (MockMvcRequestBuilders.post("/whitelist/add/").content(asJsonString(new Whitelist(cid + "1"))).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
-        MockHttpServletRequestBuilder mocker3 = (MockMvcRequestBuilders.post("/whitelist/add/").content(asJsonString(new Whitelist(cid + "2"))).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
-
         MockHttpServletRequestBuilder mocker4 = (MockMvcRequestBuilders.post("/whitelist/activate_cid/").content(asJsonString(new Whitelist(cid))).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
-
 
         mockMvc.perform(mocker);
         mockMvc.perform(mocker4).andDo(MockMvcResultHandlers.print());
-        Whitelist whitelist = whitelistService.findByCid(cid);
-        Assert.assertTrue(activationCodeService.userHasCode(whitelist));
     }
 
     public static String asJsonString(final Object obj) {
@@ -71,12 +78,32 @@ public class WhitelistTable {
             throw new RuntimeException(e);
         }
     }
-
-    /*
-    TODO Set up test environment that specifies mail address to send from and to.
-     */
     @Test
-    public void testSendEmail(){
+    public void testCreateAccount() throws Exception {
+        String cid = "TESTACC";
+        sendCreateCode(cid);
+        CreateITUserRequest user = new CreateITUserRequest();
+        System.out.println(whitelistRepository.findAll());
+        Whitelist whitelist = whitelistRepository.findByCid(cid);
+        user.setCid(whitelistRepository.findByCid(cid));
+        System.out.println(whitelist);
+        System.out.println(activationCodeRepository.findByCid_Cid(cid));
+        user.setCode(activationCodeRepository.findByCid_Cid(cid).getCode());
+        user.setAcceptanceYear(2018);
+        user.setFirstName("me");
+        user.setLastName("alsome");
+        user.setNick("it's a me");
+        user.setPassword("examplepassword");
+        user.setUserAgreement(true);
 
-    }
+        MockHttpServletRequestBuilder mocker = (MockMvcRequestBuilders.post("/users/create").content(asJsonString(user)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(mocker).andDo(MockMvcResultHandlers.print());
+
+        Assert.assertTrue(userService.userExists(cid));
+        activationCodeRepository.deleteAll();
+        whitelistRepository.deleteAll();
+        }
 }
+
+

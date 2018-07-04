@@ -15,7 +15,7 @@ import java.time.Year;
 import java.util.List;
 
 @Service("userDetailsService")
-public class ITUserService implements UserDetailsService {
+public class ITUserService implements UserDetailsService{
 
     private final ITUserRepository itUserRepository;
 
@@ -28,14 +28,19 @@ public class ITUserService implements UserDetailsService {
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    public List<ITUser> findAll() {
-        return itUserRepository.findAll();
-    }
-
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
         System.out.println(itUserRepository.findByCid(cid));
         return itUserRepository.findByCid(cid);
+    }
+
+    public ITUser loadUser(String cid) throws UsernameNotFoundException {
+        System.out.println(itUserRepository.findByCid(cid));
+        return itUserRepository.findByCid(cid);
+    }
+
+    public List<ITUser> loadAllUsers(){
+        return itUserRepository.findAll();
     }
 
     public ITUser createUser(String nick, String cid) {
@@ -59,7 +64,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void createUser(CreateITUserRequest user) throws PasswordTooShortException {
-        if(user.getPassword().length() < 8){
+        if(user.getPassword().length() < minPasswordLength){
             throw new PasswordTooShortException();
         }
         ITUser itUser = new ITUser();
