@@ -10,32 +10,25 @@ import { Center } from "../../../../common-ui/layout";
 import GammaButton from "../../../../common/elements/gamma-button";
 import { Text } from "../../../../common-ui/text";
 
-class CreationOfAccountFinished extends React.Component {
-  render() {
-    return (
-      <Center>
-        <GammaCard>
-          <GammaCardTitle>Grattis! Du har skapat ett IT-konto</GammaCardTitle>
-          <GammaCardBody>
-            <Center>
-              <Text>
-                Du har nu skapat ett konto hos digIT. Nu kan du använda digITs
-                tjänster.
-              </Text>
-            </Center>
-          </GammaCardBody>
-          <GammaCardButtons reverseDirection>
-            <GammaButton
-              raised
-              primary
-              onClick={() => {}}
-              text="Logga in för första gången"
-            />
-          </GammaCardButtons>
-        </GammaCard>
-      </Center>
-    );
-  }
-}
+const CreationOfAccountFinished = ({ text }) => (
+  <Center>
+    <GammaCard>
+      <GammaCardTitle text={text.CongratsTitle} />
+      <GammaCardBody>
+        <Center>
+          <Text text={text.CongratsBody} />
+        </Center>
+      </GammaCardBody>
+      <GammaCardButtons reverseDirection>
+        <GammaButton
+          raised
+          primary
+          onClick={() => {}}
+          text={text.LoginForTheFirstTime}
+        />
+      </GammaCardButtons>
+    </GammaCard>
+  </Center>
+);
 
 export default CreationOfAccountFinished;

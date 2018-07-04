@@ -1,1 +1,1 @@
-export { default } from "./CreationOfAccountFinished.view";
+export { default } from "./CreationOfAccountFinished.view.container";
