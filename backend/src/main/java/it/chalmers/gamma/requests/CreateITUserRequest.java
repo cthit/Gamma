@@ -13,14 +13,13 @@ public class CreateITUserRequest {
     private String lastName;
     private boolean userAgreement;
     private int acceptanceYear;
-    private Whitelist cid;
-
-    public Whitelist getCid() {
-        return cid;
+    private Whitelist whitelist;
+    public Whitelist getWhitelist() {
+        return whitelist;
     }
 
-    public void setCid(Whitelist cid) {
-        this.cid = cid;
+    public void setWhitelist(Whitelist cid) {
+        this.whitelist = cid;
     }
 
     public String getCode() {
@@ -89,7 +88,7 @@ public class CreateITUserRequest {
                 ", lastName='" + lastName + '\'' +
                 ", userAgreement=" + userAgreement +
                 ", acceptanceYear=" + acceptanceYear +
-                ", cid=" + cid +
+                ", whitelist=" + whitelist +
                 '}';
     }
 
@@ -105,12 +104,12 @@ public class CreateITUserRequest {
                 Objects.equals(nick, that.nick) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
-                Objects.equals(cid, that.cid);
+                Objects.equals(whitelist, that.whitelist);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(code, password, nick, firstName, lastName, userAgreement, acceptanceYear, cid);
+        return Objects.hash(code, password, nick, firstName, lastName, userAgreement, acceptanceYear, whitelist);
     }
 }

@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.exceptions.CIDAlreadyWhitelistedException;
 import it.chalmers.gamma.exceptions.NoCidFoundException;
 import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
+import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
@@ -13,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -43,11 +43,11 @@ public class WhitelistController {
      * @return true if the user is whitelisted false otherwise
      */
     @RequestMapping(value = "/valid", method = RequestMethod.POST)
-    public boolean isValid(@RequestBody Whitelist cid) {
+    public boolean isValid(@RequestBody WhitelistCodeRequest cid) {
         return whitelistService.isCIDWhiteListed(cid.getCid());
     }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public void addUser(@RequestBody Whitelist cid) throws CIDAlreadyWhitelistedException, UserAlreadyExistsException {
+    public void addUser(@RequestBody WhitelistCodeRequest cid) throws CIDAlreadyWhitelistedException, UserAlreadyExistsException {
         if (whitelistService.isCIDWhiteListed(cid.getCid())) {
             throw new CIDAlreadyWhitelistedException();
         }
@@ -58,7 +58,7 @@ public class WhitelistController {
     }
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
-    public boolean createActivationCode(@RequestBody Whitelist cid) throws UserAlreadyExistsException, NoCidFoundException {
+    public boolean createActivationCode(@RequestBody WhitelistCodeRequest cid) throws UserAlreadyExistsException, NoCidFoundException {
         if(itUserService.userExists(cid.getCid())){
             throw new UserAlreadyExistsException();
         }
@@ -66,7 +66,7 @@ public class WhitelistController {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-        //    sendEmail(activationCode);
+            sendEmail(activationCode);
             return true;
         }
         else
