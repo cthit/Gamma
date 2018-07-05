@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import org.springframework.security.oauth2.provider.endpoint.WhitelabelErrorEndpoint;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,6 +43,14 @@ public class ActivationCode {
 
     public String getCid() {
         return cid.getCid();
+    }
+
+    public Whitelist getWhitelist(){
+        return cid;
+    }
+
+    public void setWhitelist(Whitelist cid){
+        this.cid = cid;
     }
 
     public void setCid(String cid) {

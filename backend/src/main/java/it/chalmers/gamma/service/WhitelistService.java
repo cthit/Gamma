@@ -25,8 +25,7 @@ public class WhitelistService {
     }
     //TODO
     public void removeWhiteListedCID(String cid){
-
-    }
+        whitelistRepository.delete(whitelistRepository.findByCid(cid));   }
     public Whitelist getWhitelist(String cid){
         return whitelistRepository.findByCid(cid);
     }

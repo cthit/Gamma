@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
+import it.chalmers.gamma.exceptions.NoCidFoundException;
 import it.chalmers.gamma.exceptions.PasswordTooShortException;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,19 +44,7 @@ public class ITUserService implements UserDetailsService{
         return itUserRepository.findAll();
     }
 
-    public ITUser createUser(String nick, String cid) {
-        ITUser itUser = new ITUser();
-        itUser.setNick(nick);
-        String currentTime = String.valueOf(System.currentTimeMillis());
-        itUser.setCid(cid);
-        itUser.setAcceptanceYear(Year.of(2017));
-        itUser.setUserAgreement(true);
-        itUser.setGdpr(false);
-        itUser.setAccountLocked(false);
-        itUser.setEmail(itUser.getCid() + "@chalmers.it");
-        itUser.setPassword(passwordEncoder.encode("example"));
-        return itUserRepository.save(itUser);
-    }
+
     public boolean userExists(String cid){
             if(itUserRepository.findByCid(cid) == null){
                 return false;
@@ -64,7 +53,7 @@ public class ITUserService implements UserDetailsService{
     }
 
     public void createUser(CreateITUserRequest user) throws PasswordTooShortException {
-        if(user.getPassword().length() < minPasswordLength){
+        if(user.getPassword().length() < minPasswordLength){        // MOVE THIS TO VALIDATE
             throw new PasswordTooShortException();
         }
         ITUser itUser = new ITUser();
@@ -81,5 +70,9 @@ public class ITUserService implements UserDetailsService{
         itUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         itUserRepository.save(itUser);
+    }
+
+    public void removeCid(CreateITUserRequest createITUserRequest) throws NoCidFoundException{
+        itUserRepository.delete(itUserRepository.findByCid(createITUserRequest.getWhitelist().getCid()));
     }
 }

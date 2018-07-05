@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.service.WhitelistService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,6 +29,9 @@ public class ActivationCodeTests {
     @Autowired
     WhitelistRepository whitelistRepository;
 
+    @Autowired
+    WhitelistService whitelistService;
+
     @Test
     public void testAddActivationCode(){
         String cid = "cid3";
@@ -49,8 +53,8 @@ public class ActivationCodeTests {
         Whitelist whitelist = whitelistRepository.save(new Whitelist(cid));
         ActivationCode activationCode = activationCodeService.
                 saveActivationCode(whitelist, activationCodeService.generateActivationCode());
-        activationCodeService.deleteCode(whitelist);
-        System.out.println(activationCodeRepository.findAll());
+        activationCodeService.deleteCode(whitelist.getCid());
+        whitelistService.removeWhiteListedCID(activationCode.getCid());
         Assert.assertFalse(activationCodeRepository.existsActivationCodeByCid_Cid(cid));
     }
 }

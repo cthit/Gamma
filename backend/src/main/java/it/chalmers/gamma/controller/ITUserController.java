@@ -48,13 +48,19 @@ public class ITUserController {
         if(itUserService.userExists(createITUserRequest.getWhitelist().getCid())){
             throw new UserAlreadyExistsException();
         }
-        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user)){
+        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())){
             throw new CodeMissmatchException();
         }
         else{
             itUserService.createUser(createITUserRequest);
+            removeCid(createITUserRequest);
             return "User Was Created";
         }
+    }
+
+    private void removeCid(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
+        activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
+        whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }
 
 }

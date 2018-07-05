@@ -1,6 +1,7 @@
 package it.chalmers.gamma.IntegrationTests;
 
 
+import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ITUserService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,8 +33,12 @@ public class ITUserTests {
 
     @Test
     public void testCreateUser() throws Exception {
-        System.out.println(userService.createUser("gurr", "engsmyre"));
-        System.out.println(userService.createUser("leif", "test"));
+        CreateITUserRequest itUser1 = new CreateITUserRequest();
+        itUser1.setNick("gurr");
+        CreateITUserRequest itUser2 = new CreateITUserRequest();
+        itUser1.setNick("leif");
+        userService.createUser(itUser1);
+        userService.createUser(itUser2);
 
         MvcResult result =  mockMvc.perform
                 (MockMvcRequestBuilders.get("/users/")

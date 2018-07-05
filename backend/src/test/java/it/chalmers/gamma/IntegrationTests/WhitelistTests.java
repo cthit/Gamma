@@ -59,7 +59,7 @@ public class WhitelistTests {
         String cid = "TEST_CODE";
         sendCreateCode(cid);
         Whitelist whitelist = whitelistRepository.findByCid(cid);
-        Assert.assertTrue(activationCodeService.userHasCode(whitelist));
+        Assert.assertTrue(activationCodeService.userHasCode(whitelist.getCid()));
     }
 
     private void sendCreateCode(String cid) throws Exception {
@@ -85,7 +85,7 @@ public class WhitelistTests {
         CreateITUserRequest user = new CreateITUserRequest();
         System.out.println(whitelistRepository.findAll());
         Whitelist whitelist = whitelistRepository.findByCid(cid);
-        user.setCid(whitelistRepository.findByCid(cid));
+        user.setWhitelist(whitelistRepository.findByCid(cid));
         System.out.println(whitelist);
         System.out.println(activationCodeRepository.findByCid_Cid(cid));
         user.setCode(activationCodeRepository.findByCid_Cid(cid).getCode());

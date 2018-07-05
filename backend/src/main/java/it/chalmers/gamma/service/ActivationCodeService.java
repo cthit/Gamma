@@ -31,7 +31,7 @@ public class ActivationCodeService {
     }
 
     public ActivationCode saveActivationCode(Whitelist cid, String code){
-        if(userHasCode(cid)){
+        if(userHasCode(cid.getCid())){
             activationCodeRepository.delete(activationCodeRepository.findByCid_Cid(cid.getCid()));
         }
         ActivationCode activationCode = new ActivationCode(cid);
@@ -40,16 +40,20 @@ public class ActivationCodeService {
         return activationCode;
     }
 
-    public boolean codeMatches(String code, Whitelist user){
-        return activationCodeRepository.findByCid_Cid(user.getCid()).getCode().equals(code);
+    public boolean codeMatches(String code, String user){
+        ActivationCode activationCode = activationCodeRepository.findByCid_Cid(user);
+        if(activationCode == null){
+            return false;
+        }
+        return activationCode.getCode().equals(code);
     }
-    public boolean userHasCode(Whitelist code){
-        return activationCodeRepository.findByCid_Cid(code.getCid()) != null;
+    public boolean userHasCode(String cid){
+        return activationCodeRepository.findByCid_Cid(cid) != null;
     }
 
     // TODO Delete entry after 1 hour or once code has been used. This does not work.
-    public void deleteCode(Whitelist cid){
-        activationCodeRepository.delete(activationCodeRepository.findByCid_Cid(cid.getCid()));
+    public void deleteCode(String cid){
+        activationCodeRepository.delete(activationCodeRepository.findByCid_Cid(cid));
     }
 
 
