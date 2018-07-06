@@ -2,10 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.exceptions.CodeMissmatchException;
-import it.chalmers.gamma.exceptions.NoCidFoundException;
-import it.chalmers.gamma.exceptions.PasswordTooShortException;
-import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
+import it.chalmers.gamma.exceptions.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
@@ -36,7 +33,8 @@ public class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException, UserAlreadyExistsException, CodeMissmatchException, PasswordTooShortException {
+    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException,
+            UserAlreadyExistsException, CodeMissmatchException, PasswordTooShortException, CodeExpiredException {
         if(createITUserRequest == null){
             throw new NullPointerException();
         }
@@ -50,6 +48,9 @@ public class ITUserController {
         }
         if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())){
             throw new CodeMissmatchException();
+        }
+        if(activationCodeService.hasCodeExpired(user.getCid(), 2)){
+            throw new CodeExpiredException();
         }
         else{
             itUserService.createUser(createITUserRequest);

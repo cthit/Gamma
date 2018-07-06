@@ -5,6 +5,11 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.util.Random;
 import java.util.UUID;
 @Service
@@ -57,4 +62,8 @@ public class ActivationCodeService {
     }
 
 
+    public boolean hasCodeExpired(String user, double hours) {
+        ActivationCode activationCode = activationCodeRepository.findByCid_Cid(user);
+        return (activationCode.getCreatedAt().getEpochSecond() + (hours * 3600) < Instant.now().getEpochSecond());
+    }
 }

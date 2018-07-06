@@ -3,6 +3,7 @@ package it.chalmers.gamma.db.entity;
 import org.springframework.security.oauth2.provider.endpoint.WhitelabelErrorEndpoint;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,12 +24,23 @@ public class ActivationCode {
     @Column(name = "code", length = 30)
     private String code;
 
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    public void setCid(Whitelist cid) {
+        this.cid = cid;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     protected ActivationCode(){
         id = UUID.randomUUID();
     }
     public ActivationCode(Whitelist cid){
         id = UUID.randomUUID();
+        createdAt = Instant.now();
         this.cid = cid;
     }
 
@@ -47,6 +59,10 @@ public class ActivationCode {
 
     public Whitelist getWhitelist(){
         return cid;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setWhitelist(Whitelist cid){
