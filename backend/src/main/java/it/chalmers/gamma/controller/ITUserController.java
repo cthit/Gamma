@@ -50,6 +50,7 @@ public class ITUserController {
             throw new CodeMissmatchException();
         }
         if(activationCodeService.hasCodeExpired(user.getCid(), 2)){
+            activationCodeService.deleteCode(user.getCid());
             throw new CodeExpiredException();
         }
         else{
