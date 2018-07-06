@@ -64,7 +64,10 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
           .min(2001)
           .max(_getCurrentYear())
           .required(text.FieldRequired),
-        password: yup.string().required(text.FieldRequired),
+        password: yup
+          .string()
+          .min(8, text.MinimumLength)
+          .required(text.FieldRequired),
         passwordConfirmation: yup
           .string()
           .oneOf([yup.ref("password")], text.PasswordsDoNotMatch)
