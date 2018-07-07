@@ -33,30 +33,29 @@ public class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException,
-            UserAlreadyExistsException, CodeMissmatchException, PasswordTooShortException, CodeExpiredException {
+    public CustomHttpStatus createUser(@RequestBody CreateITUserRequest createITUserRequest){
         if(createITUserRequest == null){
             throw new NullPointerException();
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
         if(user == null){
-            throw new NoCidFoundException();
+            return new NoCidFoundException();
         }
         createITUserRequest.setWhitelist(user);
         if(itUserService.userExists(createITUserRequest.getWhitelist().getCid())){
-            throw new UserAlreadyExistsException();
+            return new UserAlreadyExistsException();
         }
         if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())){
-            throw new CodeMissmatchException();
+            return new CodeMissmatchException();
         }
         if(activationCodeService.hasCodeExpired(user.getCid(), 2)){
             activationCodeService.deleteCode(user.getCid());
-            throw new CodeExpiredException();
+            return new CodeExpiredException();
         }
         else{
             itUserService.createUser(createITUserRequest);
             removeCid(createITUserRequest);
-            return "User Was Created";
+            return new CustomHttpStatus(200, "CREATED_USER", "User Was Created", "");
         }
     }
 

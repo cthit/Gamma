@@ -1,10 +1,12 @@
 package it.chalmers.gamma.exceptions;
 
-public class CIDAlreadyWhitelistedException extends Exception{
+import org.springframework.http.HttpStatus;
+
+public class CIDAlreadyWhitelistedException extends CustomHttpStatus{
     public CIDAlreadyWhitelistedException(){
-        this("cid already exists in the whitelist table");
+        this(460, "CID_ALREADY_FOUND", "cid already exists in the whitelist table", "cid already exists in the whitelist table");
     }
-    public CIDAlreadyWhitelistedException(String message){
-        super(message);
+    public CIDAlreadyWhitelistedException(int code, String status, String message, String error){
+        super(code, status, message, error);
     }
 }

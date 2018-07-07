@@ -15,10 +15,7 @@ public class WhitelistService {
         this.whitelistRepository = whitelistRepository;
     }
 
-    public Whitelist addWhiteListedCID(String cid) throws CIDAlreadyWhitelistedException {
-        if(isCIDWhiteListed(cid)){
-            throw new CIDAlreadyWhitelistedException();
-        }
+    public Whitelist addWhiteListedCID(String cid){
         Whitelist whitelistedCID = new Whitelist(cid);
         System.out.println("white listed " + cid);
         return whitelistRepository.save(whitelistedCID);

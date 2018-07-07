@@ -3,6 +3,7 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.exceptions.CIDAlreadyWhitelistedException;
+import it.chalmers.gamma.exceptions.CustomHttpStatus;
 import it.chalmers.gamma.exceptions.NoCidFoundException;
 import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
@@ -47,30 +48,31 @@ public class WhitelistController {
         return whitelistService.isCIDWhiteListed(cid.getCid());
     }
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public void addUser(@RequestBody WhitelistCodeRequest cid) throws CIDAlreadyWhitelistedException, UserAlreadyExistsException {
+    public CustomHttpStatus addUser(@RequestBody WhitelistCodeRequest cid) {
         if (whitelistService.isCIDWhiteListed(cid.getCid())) {
-            throw new CIDAlreadyWhitelistedException();
+            return new CIDAlreadyWhitelistedException();
         }
         if (itUserService.userExists(cid.getCid())) {
-            throw new UserAlreadyExistsException();
+            return new UserAlreadyExistsException();
         }
         whitelistService.addWhiteListedCID(cid.getCid());
+        return new CustomHttpStatus(200, "OK", "user was added successfully","");
     }
     //TODO should probably return something to tell the backend whether or not creating the account was successful.
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
-    public boolean createActivationCode(@RequestBody WhitelistCodeRequest cid) throws UserAlreadyExistsException, NoCidFoundException {
+    public CustomHttpStatus createActivationCode(@RequestBody WhitelistCodeRequest cid){
         if(itUserService.userExists(cid.getCid())){
-            throw new UserAlreadyExistsException();
+            return new UserAlreadyExistsException();
         }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
             //sendEmail(activationCode);
-            return true;
+            return new CustomHttpStatus(200, "OK", "user was added successfully","");
         }
         else
-            throw new NoCidFoundException();
+            return new NoCidFoundException();
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();

@@ -52,10 +52,7 @@ public class ITUserService implements UserDetailsService{
             return true;
     }
 
-    public void createUser(CreateITUserRequest user) throws PasswordTooShortException {
-        if(user.getPassword().length() < minPasswordLength){        // MOVE THIS TO VALIDATE
-            throw new PasswordTooShortException();
-        }
+    public void createUser(CreateITUserRequest user){
         ITUser itUser = new ITUser();
         itUser.setNick(user.getNick());
         itUser.setFirstName(user.getFirstName());
@@ -72,7 +69,7 @@ public class ITUserService implements UserDetailsService{
         itUserRepository.save(itUser);
     }
 
-    public void removeCid(CreateITUserRequest createITUserRequest) throws NoCidFoundException{
+    public void removeCid(CreateITUserRequest createITUserRequest){
         itUserRepository.delete(itUserRepository.findByCid(createITUserRequest.getWhitelist().getCid()));
     }
 }
