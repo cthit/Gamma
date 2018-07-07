@@ -27,7 +27,7 @@ const InputCid = ({ sendCid, text }) => (
         initialValues={{ cid: "" }}
         onSubmit={(values, actions) => {
           actions.resetForm();
-          sendCid(values);
+          sendCid(values, text.SomethingWentWrong);
         }}
         render={({ errors, touched }) => (
           <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>

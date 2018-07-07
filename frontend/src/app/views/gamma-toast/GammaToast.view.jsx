@@ -30,6 +30,7 @@ class GammaToast extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    console.log(JSON.stringify(this.state));
     if (
       this.state.open &&
       this.state.messages.length > 0 &&
@@ -70,16 +71,16 @@ class GammaToast extends React.Component {
         actionText
       } = this.props.toastOptions;
 
-      this.setState(state => {
+      this.setState({
         messages: [
-          state,
+          ...this.state.messages,
           {
             text: text,
             duration: duration == null ? 3000 : duration,
             actionText: actionText,
             actionHandler: actionHandler
           }
-        ];
+        ]
       });
     }
   }

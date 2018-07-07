@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   showError: text => dispatch(toastOpen({ text: text })),
-  sendCid: cid => dispatch(createAccountValidateCid(cid))
+  sendCid: (cid, errorMsg) => dispatch(createAccountValidateCid(cid, errorMsg))
 });
 
 export default connect(

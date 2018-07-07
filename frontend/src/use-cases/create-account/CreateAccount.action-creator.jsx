@@ -12,9 +12,9 @@ import {
 } from "./CreateAccount.actions";
 
 import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
-//import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
+import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 
-export function createAccountValidateCid(data) {
+export function createAccountValidateCid(data, errorMsg) {
   return dispatch => {
     dispatch(createAccountValidatingCid());
     axios
@@ -22,23 +22,17 @@ export function createAccountValidateCid(data) {
         "Content-Type": "application/json"
       })
       .then(response => {
-        console.log(response);
-        //dispatch(createAccountValidateCidSuccessfully());
+        dispatch(createAccountValidateCidSuccessfully());
         dispatch(redirectTo("/create-account/email-sent"));
       })
       .catch(error => {
-        //Temp
-        dispatch(redirectTo("/create-account/email-sent"));
-        /*dispatch(
-          createAccountValidateCidFailed(
-            "Något gick fel när cid försöktes valideras"
-          )
-        );*/
-        /*dispatch(
+        dispatch(createAccountValidateCidFailed(errorMsg));
+        dispatch(
           toastOpen({
-            text: "Something went wrong"
+            text: errorMsg,
+            duration: 10000
           })
-        );*/
+        );
         console.log(error);
       });
   };
