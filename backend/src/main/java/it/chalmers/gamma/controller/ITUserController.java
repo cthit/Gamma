@@ -39,7 +39,7 @@ public class ITUserController {
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
         if(user == null){
-            return new NoCidFoundException();
+            return new CodeMissmatchException();
         }
         createITUserRequest.setWhitelist(user);
         if(itUserService.userExists(createITUserRequest.getWhitelist().getCid())){
