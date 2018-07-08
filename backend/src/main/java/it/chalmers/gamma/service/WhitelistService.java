@@ -15,18 +15,14 @@ public class WhitelistService {
         this.whitelistRepository = whitelistRepository;
     }
 
-    public Whitelist addWhiteListedCID(String cid) throws CIDAlreadyWhitelistedException {
-        if(isCIDWhiteListed(cid)){
-            throw new CIDAlreadyWhitelistedException();
-        }
+    public Whitelist addWhiteListedCID(String cid){
         Whitelist whitelistedCID = new Whitelist(cid);
         System.out.println("white listed " + cid);
         return whitelistRepository.save(whitelistedCID);
     }
     //TODO
     public void removeWhiteListedCID(String cid){
-
-    }
+        whitelistRepository.delete(whitelistRepository.findByCid(cid));   }
     public Whitelist getWhitelist(String cid){
         return whitelistRepository.findByCid(cid);
     }

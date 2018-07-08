@@ -2,10 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.exceptions.CodeMissmatchException;
-import it.chalmers.gamma.exceptions.NoCidFoundException;
-import it.chalmers.gamma.exceptions.PasswordTooShortException;
-import it.chalmers.gamma.exceptions.UserAlreadyExistsException;
+import it.chalmers.gamma.exceptions.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
@@ -36,25 +33,35 @@ public class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public String createUser(@RequestBody CreateITUserRequest createITUserRequest) throws NoCidFoundException, UserAlreadyExistsException, CodeMissmatchException, PasswordTooShortException {
+    public CustomHttpStatus createUser(@RequestBody CreateITUserRequest createITUserRequest){
         if(createITUserRequest == null){
             throw new NullPointerException();
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
         if(user == null){
-            throw new NoCidFoundException();
+            return new CodeMissmatchException();
         }
         createITUserRequest.setWhitelist(user);
         if(itUserService.userExists(createITUserRequest.getWhitelist().getCid())){
-            throw new UserAlreadyExistsException();
+            return new UserAlreadyExistsException();
         }
-        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user)){
-            throw new CodeMissmatchException();
+        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())){
+            return new CodeMissmatchException();
+        }
+        if(activationCodeService.hasCodeExpired(user.getCid(), 2)){
+            activationCodeService.deleteCode(user.getCid());
+            return new CodeExpiredException();
         }
         else{
             itUserService.createUser(createITUserRequest);
-            return "User Was Created";
+            removeCid(createITUserRequest);
+            return new CustomHttpStatus(200, "CREATED_USER", "User Was Created", "");
         }
+    }
+
+    private void removeCid(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
+        activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
+        whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }
 
 }

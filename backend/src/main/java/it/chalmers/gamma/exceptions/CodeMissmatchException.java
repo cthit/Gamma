@@ -1,10 +1,10 @@
 package it.chalmers.gamma.exceptions;
 
-public class CodeMissmatchException extends Exception{
+public class CodeMissmatchException extends CustomHttpStatus{
     public CodeMissmatchException(){
-        this("Code did not match cid");
+        this(462, "MISSMATCHED_CODE", "Code did not match cid", "Code did not match cid");
     }
-    public CodeMissmatchException(String error){
-        super(error);
+    public CodeMissmatchException(int code, String status, String message, String error){
+        super(code, status, message, error);
     }
 }
