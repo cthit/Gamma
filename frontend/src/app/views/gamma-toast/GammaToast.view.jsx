@@ -30,7 +30,6 @@ class GammaToast extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(JSON.stringify(this.state));
     if (
       this.state.open &&
       this.state.messages.length > 0 &&

@@ -31,9 +31,13 @@
       "Passwords do not match",
       "Lösenorden matchar inte"
     ],
-    "MinimumLength": [
+    "TOO_SHORT_PASSWORD": [
       "The password must be atleast 8 characters",
       "Lösenordet måste vara minst 8 karaktärer"
+    ],
+    "CODE_OR_CID_IS_WRONG": [
+      "Your cid or code is wrong, please try again or contact digit@chalmers.it",
+      "Ditt cid eller din kod är fel, var vänlig och försök igen eller kontakta digit@chalmers.it"
     ]
   }
 }

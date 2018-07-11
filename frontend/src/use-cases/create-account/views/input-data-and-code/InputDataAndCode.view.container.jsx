@@ -28,7 +28,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       })
     ),
   redirectTo: path => dispatch(redirectTo(path)),
-  sendDataAndCode: data => dispatch(createAccountValidateCodeAndData(data))
+  sendDataAndCode: (data, errorMessages) =>
+    dispatch(createAccountValidateCodeAndData(data, errorMessages))
 });
 
 export default connect(

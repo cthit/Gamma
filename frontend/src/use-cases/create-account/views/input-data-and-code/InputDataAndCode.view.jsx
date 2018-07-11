@@ -32,26 +32,29 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
     <GammaForm
       onSubmit={(values, actions) => {
         const cid = values.cid;
-        delete values.cid;
         const user = {
           whitelist: {
             cid: cid
           },
           ...values
         };
-        sendDataAndCode(user);
+        sendDataAndCode(user, {
+          TOO_SHORT_PASSWORD: text.TOO_SHORT_PASSWORD,
+          CODE_OR_CID_IS_WRONG: text.CODE_OR_CID_IS_WRONG,
+          SomethingWentWrong: text.SomethingWentWrong
+        });
         actions.resetForm();
       }}
       initialValues={{
-        cid: "",
-        code: "",
-        nick: "",
-        firstName: "",
-        lastName: "",
+        cid: "asdf",
+        code: "asdfd",
+        nick: "asdf",
+        firstName: "asdf",
+        lastName: "asdf",
         acceptanceYear: "2018",
-        password: "",
-        passwordConfirmation: "",
-        userAgreement: false
+        password: "asdfasdf",
+        passwordConfirmation: "asdfasdf",
+        userAgreement: true
       }}
       validationSchema={yup.object().shape({
         cid: yup.string().required(text.FieldRequired),

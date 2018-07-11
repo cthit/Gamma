@@ -2,12 +2,13 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.exceptions.*;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,29 +34,29 @@ public class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public CustomHttpStatus createUser(@RequestBody CreateITUserRequest createITUserRequest){
+    public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest){
         if(createITUserRequest == null){
             throw new NullPointerException();
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
         if(user == null){
-            return new CodeMissmatchException();
+            return new CodeOrCidIsWrongResponse();
         }
         createITUserRequest.setWhitelist(user);
         if(itUserService.userExists(createITUserRequest.getWhitelist().getCid())){
-            return new UserAlreadyExistsException();
+            return new UserAlreadyExistsResponse();
         }
         if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())){
-            return new CodeMissmatchException();
+            return new CodeOrCidIsWrongResponse();
         }
         if(activationCodeService.hasCodeExpired(user.getCid(), 2)){
             activationCodeService.deleteCode(user.getCid());
-            return new CodeExpiredException();
+            return new CodeExpiredResponse();
         }
         else{
             itUserService.createUser(createITUserRequest);
             removeCid(createITUserRequest);
-            return new CustomHttpStatus(200, "CREATED_USER", "User Was Created", "");
+            return new UserCreatedResponse();
         }
     }
 

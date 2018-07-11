@@ -22,6 +22,7 @@ public class TestUtils {
     public TestUtils(MockMvc mockMvc){
         this.mockMvc = mockMvc;
     }
+
     public void sendCreateCode(String cid) throws Exception {
         MockHttpServletRequestBuilder mocker = (MockMvcRequestBuilders.post("/whitelist/add/").content(asJsonString(new Whitelist(cid))).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
         MockHttpServletRequestBuilder mocker4 = (MockMvcRequestBuilders.post("/whitelist/activate_cid/").content(asJsonString(new Whitelist(cid))).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));

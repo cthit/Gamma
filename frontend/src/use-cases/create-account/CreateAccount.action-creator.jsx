@@ -33,7 +33,6 @@ export function createAccountValidateCid(data, errorMsg) {
             duration: 10000
           })
         );
-        console.log(error);
       });
   };
 }
@@ -63,7 +62,7 @@ export function createAccountValidateCidSuccessfully() {
 }
 
 //data includes code. Ignore code for now
-export function createAccountValidateCodeAndData(data) {
+export function createAccountValidateCodeAndData(data, errorMessages) {
   return dispatch => {
     dispatch(createAccountValidatingCodeAndData());
     axios
@@ -75,7 +74,22 @@ export function createAccountValidateCodeAndData(data) {
         dispatch(redirectTo("/create-account/finished"));
       })
       .catch(error => {
-        dispatch(createAccountValidateDataFailed(error));
+        const errorStatus = error["response"].data;
+        var errorMessage = "";
+
+        if (!(errorStatus in errorMessages)) {
+          errorMessage = errorMessages["SomethingWentWrong"];
+        } else {
+          errorMessage = errorMessages[errorStatus];
+        }
+
+        dispatch(createAccountValidateDataFailed(errorMessage));
+        dispatch(
+          toastOpen({
+            text: errorMessage,
+            duration: 5000
+          })
+        );
       });
   };
 }

@@ -46,6 +46,7 @@ public class ITUserTests {
 
     TestUtils utils;
     @Before
+
     public void setup(){
         utils = new TestUtils(mockMvc);
     }

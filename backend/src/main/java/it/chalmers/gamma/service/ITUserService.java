@@ -2,8 +2,6 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
-import it.chalmers.gamma.exceptions.NoCidFoundException;
-import it.chalmers.gamma.exceptions.PasswordTooShortException;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma;
 
-import it.chalmers.gamma.exceptions.CIDAlreadyWhitelistedException;
+import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
 import it.chalmers.gamma.service.WhitelistService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,26 +22,19 @@ public class WhitelistTests {
      * Tests if adding a CID to the whitelist works, and if seeing if a non-whitelisted CID returns correct result.
      */
     @Test
-    public void testWhiteList(){
-        try {
-            whitelistService.addWhiteListedCID("cid1");
-            whitelistService.addWhiteListedCID("cid2");
-        } catch (CIDAlreadyWhitelistedException e) {
-            e.printStackTrace();
-        }
+    public void testWhiteList() {
+        whitelistService.addWhiteListedCID("cid1");
+        whitelistService.addWhiteListedCID("cid2");
         Assert.assertTrue(whitelistService.isCIDWhiteListed("cid1"));
         Assert.assertFalse(whitelistService.isCIDWhiteListed("leif"));
     }
-    @Test
-    public void testDeleteActivationCode(){
-        String cid = "cid1";
-        try {
-            whitelistService.addWhiteListedCID(cid);
-            whitelistService.removeWhiteListedCID(cid);
-        } catch (CIDAlreadyWhitelistedException e) {
-            e.printStackTrace();
-        }
 
+    @Test
+    public void testDeleteActivationCode() {
+        String cid = "cid1";
+        whitelistService.addWhiteListedCID(cid);
+        whitelistService.removeWhiteListedCID(cid);
+        Assert.assertFalse(whitelistService.isCIDWhiteListed(cid));
     }
 
 
@@ -49,25 +42,21 @@ public class WhitelistTests {
      * Tests if a CID can be added to the whitelisted database more than once.
      */
     @Test
-    public void testAddWhitelistCIDMultipleTimes(){
-        try {
+    public void testAddWhitelistCIDMultipleTimes() {
+        try{
             whitelistService.addWhiteListedCID("cid1");
-        } catch (CIDAlreadyWhitelistedException e) {
-            e.printStackTrace();
-        }
-        try {
             whitelistService.addWhiteListedCID("cid1");
             assert(false);
-        } catch (CIDAlreadyWhitelistedException e) {
-            e.printStackTrace();
+        }catch(Exception e){
             assert(true);
         }
     }
+
     /*
 TODO Set up test environment that specifies mail address to send from and to.
  */
     @Test
-    public void testSendEmail(){
+    public void testSendEmail() {
 
     }
 }
