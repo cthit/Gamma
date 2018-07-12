@@ -1,0 +1,347 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GammaSwitch/> Shallow render of <GammaSwitch/> with a name 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaSwitch
+    label="3"
+    name="Glass"
+    onBlur={[Function]}
+    onChange={[Function]}
+    value={false}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Switch)
+        checked={false}
+        color="default"
+        disabled={undefined}
+        name="Glass"
+        onBlur={[Function]}
+        onChange={[Function]}
+/>,
+      "error": undefined,
+      "label": "3",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Switch)
+          checked={false}
+          color="default"
+          disabled={undefined}
+          name="Glass"
+          onBlur={[Function]}
+          onChange={[Function]}
+/>,
+        "error": undefined,
+        "label": "3",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaSwitch/> Shallow render of a disabled <GammaSwitch/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaSwitch
+    disabled={true}
+    label="5"
+    onChange={[Function]}
+    value={false}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Switch)
+        checked={false}
+        color="default"
+        disabled={true}
+        name={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "error": undefined,
+      "label": "5",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Switch)
+          checked={false}
+          color="default"
+          disabled={true}
+          name={undefined}
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "error": undefined,
+        "label": "5",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaSwitch/> Shallow render of a normal <GammaSwitch/> with an error 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaSwitch
+    error={true}
+    label="4"
+    onChange={[Function]}
+    value={true}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Switch)
+        checked={true}
+        color="default"
+        disabled={undefined}
+        name={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "error": true,
+      "label": "4",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Switch)
+          checked={true}
+          color="default"
+          disabled={undefined}
+          name={undefined}
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "error": true,
+        "label": "4",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaSwitch/> Shallow render of primary <GammaSwitch/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaSwitch
+    label="1"
+    onChange={[Function]}
+    primary={true}
+    value={false}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Switch)
+        checked={false}
+        color="primary"
+        disabled={undefined}
+        name={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "error": undefined,
+      "label": "1",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Switch)
+          checked={false}
+          color="primary"
+          disabled={undefined}
+          name={undefined}
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "error": undefined,
+        "label": "1",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`<GammaSwitch/> Shallow render of secondary <GammaSwitch/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaSwitch
+    label="2"
+    onChange={[Function]}
+    secondary={true}
+    value={true}
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "control": <WithStyles(Switch)
+        checked={true}
+        color="secondary"
+        disabled={undefined}
+        name={undefined}
+        onBlur={undefined}
+        onChange={[Function]}
+/>,
+      "error": undefined,
+      "label": "2",
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "control": <WithStyles(Switch)
+          checked={true}
+          color="secondary"
+          disabled={undefined}
+          name={undefined}
+          onBlur={undefined}
+          onChange={[Function]}
+/>,
+        "error": undefined,
+        "label": "2",
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

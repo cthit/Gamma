@@ -40,7 +40,7 @@ public class ITUser implements UserDetails{
     @Column(name = "phone", length = 15)
     private String phone;
 
-    @Column(name = "language", length = 5)
+    @Column(name = "language", length = 15)
     @Enumerated(EnumType.STRING)
     private Language language;
 
@@ -59,7 +59,7 @@ public class ITUser implements UserDetails{
     @Column(name = "acceptance_year", nullable = false)
     private int acceptanceYear;
 
-    @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @Column(name = "last_modified_at", nullable = false)
@@ -268,7 +268,7 @@ public class ITUser implements UserDetails{
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", language='" + language.toString() + '\'' +
+                ", language='" + (language != null ? language.toString() : "No language set") + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", gdpr=" + gdpr +
                 ", accountLocked=" + accountLocked +

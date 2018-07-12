@@ -31,7 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests().anyRequest().permitAll()
                 .and()
-                .formLogin();
+                .formLogin()
+                .and()
+                .csrf().disable();
     }
 
     @Bean

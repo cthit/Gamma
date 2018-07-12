@@ -1,0 +1,239 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GammaMenu/> Shallow render of primary raised <GammaMenu/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <GammaMenu
+    onClick={[Function]}
+    valueToTextMap={
+        Object {
+            "first_option": "First option",
+            "second_option": "Second option",
+          }
+    }
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <GammaIconButton
+          aria-haspopup="true"
+          aria-label="More"
+          aria-owns={null}
+          component={[Function]}
+          onClick={[Function]}
+/>,
+        <WithStyles(Menu)
+          anchorEl={null}
+          id="id-1"
+          onClose={[Function]}
+          open={false}
+>
+          <WithStyles(MenuItem)
+                    onClick={[Function]}
+          >
+                    First option
+          </WithStyles(MenuItem)>
+          <WithStyles(MenuItem)
+                    onClick={[Function]}
+          >
+                    Second option
+          </WithStyles(MenuItem)>
+</WithStyles(Menu)>,
+      ],
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "function",
+        "props": Object {
+          "aria-haspopup": "true",
+          "aria-label": "More",
+          "aria-owns": null,
+          "component": [Function],
+          "onClick": [Function],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "anchorEl": null,
+          "children": Array [
+            <WithStyles(MenuItem)
+              onClick={[Function]}
+>
+              First option
+</WithStyles(MenuItem)>,
+            <WithStyles(MenuItem)
+              onClick={[Function]}
+>
+              Second option
+</WithStyles(MenuItem)>,
+          ],
+          "id": "id-1",
+          "onClose": [Function],
+          "open": false,
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": "first_option",
+            "nodeType": "class",
+            "props": Object {
+              "children": "First option",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": "First option",
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "second_option",
+            "nodeType": "class",
+            "props": Object {
+              "children": "Second option",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": "Second option",
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <GammaIconButton
+            aria-haspopup="true"
+            aria-label="More"
+            aria-owns={null}
+            component={[Function]}
+            onClick={[Function]}
+/>,
+          <WithStyles(Menu)
+            anchorEl={null}
+            id="id-1"
+            onClose={[Function]}
+            open={false}
+>
+            <WithStyles(MenuItem)
+                        onClick={[Function]}
+            >
+                        First option
+            </WithStyles(MenuItem)>
+            <WithStyles(MenuItem)
+                        onClick={[Function]}
+            >
+                        Second option
+            </WithStyles(MenuItem)>
+</WithStyles(Menu)>,
+        ],
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {
+            "aria-haspopup": "true",
+            "aria-label": "More",
+            "aria-owns": null,
+            "component": [Function],
+            "onClick": [Function],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "anchorEl": null,
+            "children": Array [
+              <WithStyles(MenuItem)
+                onClick={[Function]}
+>
+                First option
+</WithStyles(MenuItem)>,
+              <WithStyles(MenuItem)
+                onClick={[Function]}
+>
+                Second option
+</WithStyles(MenuItem)>,
+            ],
+            "id": "id-1",
+            "onClose": [Function],
+            "open": false,
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": "first_option",
+              "nodeType": "class",
+              "props": Object {
+                "children": "First option",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": "First option",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "second_option",
+              "nodeType": "class",
+              "props": Object {
+                "children": "Second option",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": "Second option",
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

@@ -7,7 +7,7 @@ create table ituser (
   last_name        varchar(50)  null,
   email            varchar(100) not null constraint ituser_email_unique unique,
   phone            varchar(15)  null,
-  language         varchar(10)   null,
+  language         varchar(15)   null,
   avatar_url       varchar(255) null,
   gdpr             boolean      not null default false,
   user_agreement   boolean      not null default false,
@@ -32,7 +32,7 @@ create table fkit_group (
 create table fkit_group_authorites (
   fkit_group_id uuid,
   authorites_id varchar(50),
-  constraint fkit_group_authorites._pk primary key (fkit_group_id, authorites_id)
+  constraint fkit_group_authorites_pk primary key (fkit_group_id, authorites_id)
 );
 
 create table post (
@@ -48,4 +48,16 @@ create table membership (
   year                 integer      not null constraint membership_valid_year check (year >= 2001),
   unofficial_post_name varchar(100) null,
   constraint membership_pk primary key (ituser_id, fkit_group_id)
-)
+);
+
+create table whitelist (
+  id  uuid constraint whitelist_pk primary key,
+  cid varchar(10) not null constraint whitelist_cid_unique unique
+);
+
+create table activation_code (
+  id          uuid constraint whitelist_fk primary key,
+  cid         uuid unique     not null references whitelist,
+  code        varchar(30)     not null,
+  created_at  timestamp       not null default current_timestamp
+);

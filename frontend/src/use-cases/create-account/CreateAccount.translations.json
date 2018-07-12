@@ -1,0 +1,5 @@
+{
+  "SendCid": ["Send cid", "Skicka cid"],
+  "GetActivationCode": ["Get activation code", "Hämta aktiveringskod"],
+  "CreateAccount": ["Create account", "Skapa konto"]
+}
