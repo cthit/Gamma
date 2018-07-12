@@ -23,15 +23,15 @@ public class WhitelistTests {
      */
     @Test
     public void testWhiteList() {
-        whitelistService.addWhiteListedCID("cid1");
-        whitelistService.addWhiteListedCID("cid2");
-        Assert.assertTrue(whitelistService.isCIDWhiteListed("cid1"));
+        whitelistService.addWhiteListedCID("cid3");
+        whitelistService.addWhiteListedCID("cid4");
+        Assert.assertTrue(whitelistService.isCIDWhiteListed("cid3"));
         Assert.assertFalse(whitelistService.isCIDWhiteListed("leif"));
     }
 
     @Test
     public void testDeleteActivationCode() {
-        String cid = "cid1";
+        String cid = "cid5";
         whitelistService.addWhiteListedCID(cid);
         whitelistService.removeWhiteListedCID(cid);
         Assert.assertFalse(whitelistService.isCIDWhiteListed(cid));

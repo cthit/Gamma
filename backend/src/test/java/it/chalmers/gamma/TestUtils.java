@@ -14,12 +14,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @Component
-@RunWith(SpringRunner.class)
 public class TestUtils {
 
     MockMvc mockMvc;
 
-    public TestUtils(MockMvc mockMvc){
+    public TestUtils(){}
+
+    public void setMockMvc(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
 

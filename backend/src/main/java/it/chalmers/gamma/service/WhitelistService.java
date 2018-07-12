@@ -14,7 +14,7 @@ public class WhitelistService {
 
     public Whitelist addWhiteListedCID(String cid) {
         Whitelist whitelistedCID = new Whitelist(cid);
-        System.out.println("white listed " + cid);
+        System.out.println("white listed " + whitelistedCID);
         return whitelistRepository.save(whitelistedCID);
     }
 
