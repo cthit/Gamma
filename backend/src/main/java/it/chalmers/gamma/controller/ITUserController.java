@@ -2,6 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
@@ -9,6 +10,7 @@ import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +22,17 @@ public class ITUserController {
     private final ITUserService itUserService;
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
+    private final AuthenticationManager authenticationManager;
 
-    public ITUserController(ITUserService itUserService, ActivationCodeService activationCodeService, WhitelistService whitelistService) {
+    public ITUserController(ITUserService itUserService, ActivationCodeService activationCodeService, WhitelistService whitelistService, AuthenticationManager authenticationManager) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
+        this.authenticationManager = authenticationManager;
+    }
+
+    public String login(CidPasswordRequest cidPasswordRequest){
+        return "Hej";
     }
 
     @GetMapping
