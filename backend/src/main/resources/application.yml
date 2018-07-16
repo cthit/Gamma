@@ -24,3 +24,9 @@ logging:
       springframework:
         web: DEBUG
       hibernate: ERROR
+
+security:
+  jwt:
+    token:
+      secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs=
+      expire-length: 36000
