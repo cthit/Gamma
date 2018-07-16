@@ -26,7 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private ITUserService itUserService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(ITUserService itUserService){
+    public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider){
+        this.jwtTokenProvider = jwtTokenProvider;
         this.itUserService = itUserService;
     }
 
@@ -57,5 +58,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
         return authProvider;
     }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authProvider());
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
 
 }

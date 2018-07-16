@@ -2,6 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
@@ -11,6 +12,8 @@ import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,16 +26,32 @@ public class ITUserController {
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public ITUserController(ITUserService itUserService, ActivationCodeService activationCodeService, WhitelistService whitelistService, AuthenticationManager authenticationManager) {
+    public ITUserController(ITUserService itUserService, ActivationCodeService activationCodeService,
+                            WhitelistService whitelistService, AuthenticationManager authenticationManager,
+                            JwtTokenProvider jwtTokenProvider) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public String login(CidPasswordRequest cidPasswordRequest){
-        return "Hej";
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest) {
+        System.out.println("cid: " + cidPasswordRequest.getCid());
+        System.out.println("password: " + cidPasswordRequest.getPassword());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cidPasswordRequest.getCid(), cidPasswordRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                try {
+                    return new SigninComplete(jwtTokenProvider.createToken(cidPasswordRequest.getCid()));
+                }
+                catch (Exception e) {
+                    return new IncorrectCidOrPasswordResponse();
+                }
+            }
+            return new IncorrectCidOrPasswordResponse();
     }
 
     @GetMapping
@@ -42,26 +61,25 @@ public class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest){
-        if(createITUserRequest == null){
+    public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest) {
+        if (createITUserRequest == null) {
             throw new NullPointerException();
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
-        if(user == null){
+        if (user == null) {
             return new CodeOrCidIsWrongResponse();
         }
         createITUserRequest.setWhitelist(user);
-        if(itUserService.userExists(createITUserRequest.getWhitelist().getCid())){
+        if (itUserService.userExists(createITUserRequest.getWhitelist().getCid())) {
             return new UserAlreadyExistsResponse();
         }
-        if(!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())){
+        if (!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
             return new CodeOrCidIsWrongResponse();
         }
-        if(activationCodeService.hasCodeExpired(user.getCid(), 2)){
+        if (activationCodeService.hasCodeExpired(user.getCid(), 2)) {
             activationCodeService.deleteCode(user.getCid());
             return new CodeExpiredResponse();
-        }
-        else{
+        } else {
             itUserService.createUser(createITUserRequest);
             removeCid(createITUserRequest);
             return new UserCreatedResponse();
