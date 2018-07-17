@@ -9,6 +9,7 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -39,13 +41,14 @@ public class ITUserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest) {
+    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest, HttpServletResponse response) {
         System.out.println("cid: " + cidPasswordRequest.getCid());
         System.out.println("password: " + cidPasswordRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cidPasswordRequest.getCid(), cidPasswordRequest.getPassword()));
             if (authentication.isAuthenticated()) {
                 try {
-                    return new SigninComplete(jwtTokenProvider.createToken(cidPasswordRequest.getCid()));
+                    String jwt = jwtTokenProvider.createToken(cidPasswordRequest.getCid());
+                    return new SigninComplete(jwt);
                 }
                 catch (Exception e) {
                     return new IncorrectCidOrPasswordResponse();
