@@ -36,7 +36,6 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-        System.out.println(validity.toString());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -49,15 +48,20 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String cid){
         UserDetails userDetails = itUserService.loadUserByUsername(cid);
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+
     }
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return removeBearer(bearerToken);
         }
         return null;
+    }
+
+    public String removeBearer(String token){
+        return token.substring(7, token.length());
     }
 
     public boolean validateToken(String token) {
@@ -68,13 +72,12 @@ public class JwtTokenProvider {
             return false;
         }
     }
-    public String decodeToken(String token){
+    public Jws<Claims> decodeToken(String token) throws SignatureException{
         return Jwts.parser()
                 .requireIssuer(issuer)
                 .setSigningKey(
-                        TextCodec.BASE64.decode(secretKey)
-                )
-                .parseClaimsJws(token).getSignature();
+                        secretKey)
+                .parseClaimsJws(token);
     }
 
 }

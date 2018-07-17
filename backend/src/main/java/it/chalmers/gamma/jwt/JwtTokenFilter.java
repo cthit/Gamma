@@ -23,9 +23,8 @@ public class JwtTokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         String encodedToken = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         if(encodedToken != null) {
-            String token = jwtTokenProvider.decodeToken(encodedToken);
-            System.out.println(encodedToken);
-            if (token != null && jwtTokenProvider.validateToken(token)) {
+            String token = jwtTokenProvider.decodeToken(encodedToken).getBody().getSubject();
+            if (token != null && jwtTokenProvider.validateToken(encodedToken)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
