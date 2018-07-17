@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.Language;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "ituser")
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ITUser implements UserDetails{
 
     @Id
@@ -22,6 +25,7 @@ public class ITUser implements UserDetails{
     @Column(name = "cid", length = 10, nullable = false, unique = true)
     private String cid;
 
+    @JsonIgnore
     @Column(name = "password", length = 255, nullable = false)
     private String password;
 

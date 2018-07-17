@@ -1,5 +1,8 @@
 package it.chalmers.gamma.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
@@ -79,14 +82,19 @@ public class ITUserController {
         if (activationCodeService.hasCodeExpired(user.getCid(), 2)) {
             activationCodeService.deleteCode(user.getCid());
             return new CodeExpiredResponse();
-        } else {
+        }
+        if(createITUserRequest.getPassword().length() < 10){
+            return new PasswordTooShortResponse();
+        }
+            else {
             itUserService.createUser(createITUserRequest);
-            removeCid(createITUserRequest);
+            removeCidFromWhitelist(createITUserRequest);
             return new UserCreatedResponse();
         }
     }
 
-    private void removeCid(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
+
+    private void removeCidFromWhitelist(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
         activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
         whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }

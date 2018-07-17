@@ -48,17 +48,6 @@ public class WhitelistController {
     public boolean isValid(@RequestBody WhitelistCodeRequest cid) {
         return whitelistService.isCIDWhiteListed(cid.getCid());
     }
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(@RequestBody WhitelistCodeRequest cid) {
-        if (whitelistService.isCIDWhiteListed(cid.getCid())) {
-            return new CIDAlreadyWhitelistedResponse();
-        }
-        if (itUserService.userExists(cid.getCid())) {
-            return new UserAlreadyExistsResponse();
-        }
-        whitelistService.addWhiteListedCID(cid.getCid());
-        return new UserAddedResponse();
-    }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
     public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
