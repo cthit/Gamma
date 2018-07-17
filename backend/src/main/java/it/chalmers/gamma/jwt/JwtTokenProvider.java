@@ -36,7 +36,6 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
-        System.out.println(validity.toString());
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -49,7 +48,8 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String cid){
         UserDetails userDetails = itUserService.loadUserByUsername(cid);
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+
     }
 
     public String resolveToken(HttpServletRequest req) {
@@ -68,13 +68,12 @@ public class JwtTokenProvider {
             return false;
         }
     }
-    public String decodeToken(String token){
+    public Jws<Claims> decodeToken(String token){
         return Jwts.parser()
                 .requireIssuer(issuer)
                 .setSigningKey(
-                        TextCodec.BASE64.decode(secretKey)
-                )
-                .parseClaimsJws(token).getSignature();
+                        secretKey)
+                .parseClaimsJws(token);
     }
 
 }
