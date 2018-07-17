@@ -34,7 +34,9 @@ export const StyledDrawer = styled(({ ...rest }) => (
 `;
 
 export const StyledMain = styled.main`
-  height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 72px);
   margin-top: 64px;
 
   /*Medium device (md)*/

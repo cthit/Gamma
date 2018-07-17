@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Stepper, Step, StepLabel } from "@material-ui/core";
+import { Fill } from "../../../common-ui/layout";
 
 const GammaStepper = ({ activeStep, steps, finishedElement }) => (
-  <div>
+  <Fill>
     <Stepper activeStep={activeStep} alternativeLabel>
       {Object.keys(steps).map(index => {
         return (
@@ -13,10 +14,8 @@ const GammaStepper = ({ activeStep, steps, finishedElement }) => (
         );
       })}
     </Stepper>
-    <div>
-      {activeStep >= steps.length ? finishedElement : steps[activeStep].element}
-    </div>
-  </div>
+    {activeStep >= steps.length ? finishedElement : steps[activeStep].element}
+  </Fill>
 );
 
 GammaStepper.propTypes = {

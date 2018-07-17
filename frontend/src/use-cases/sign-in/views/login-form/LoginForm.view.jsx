@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import * as yup from "yup";
-import { NavLink } from "react-router-dom";
 
 import {
   CIDInput,
@@ -21,7 +20,8 @@ import {
   GammaCardBody,
   GammaCardButtons,
   GammaCardSubTitle,
-  GammaCardTitle
+  GammaCardTitle,
+  GammaLink
 } from "../../../../common-ui/design";
 
 const LoginForm = ({ text, signIn }) => (
@@ -83,9 +83,9 @@ const LoginForm = ({ text, signIn }) => (
           </GammaCardBody>
           <GammaCardButtons reverseDirection>
             <SignInButton text={text.SignIn} primary raised submit />
-            <NavLink to="/create-account">
+            <GammaLink to="/create-account">
               <CreateAccountButton text={text.CreateAccount} />
-            </NavLink>
+            </GammaLink>
           </GammaCardButtons>
         </GammaCard>
       )}

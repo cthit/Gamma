@@ -29,7 +29,12 @@ import createAccountTranslations from "../use-cases/create-account/CreateAccount
 import Demo from "../use-cases/demo";
 import demoTranslations from "../use-cases/demo/Demo.translations.json";
 
+import Home from "../use-cases/home";
+
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
+
+import TryToRedirect from "../common/declaratives/try-to-redirect";
+import IfElseRender from "../common/declaratives/if-else-rendering";
 
 import { Padding, Spacing } from "../common-ui/layout";
 import { ProvidersForApp } from "./ProvidersForApp";
@@ -136,12 +141,36 @@ export class App extends Component {
             </Hidden>
             <StyledMain>
               <Padding>
+                {console.log(this.state)}
                 <GammaRedirect />
                 <GammaToast />
                 <Switch>
+                  <Route path="/home" component={Home} />
                   <Route path="/create-account" component={CreateAccount} />
-                  <Route path="/sign-in" component={SignIn} />CreateAccount
+                  <Route path="/sign-in" component={SignIn} />
                   <Route path="/demo" component={Demo} />
+                  <Route
+                    path="/"
+                    render={props => (
+                      <IfElseRender
+                        test={false}
+                        ifRender={() => (
+                          <TryToRedirect
+                            from="/"
+                            to="/home"
+                            currentPath={props.location.pathname}
+                          />
+                        )}
+                        elseRender={() => (
+                          <TryToRedirect
+                            from="/"
+                            to="/login"
+                            currentPath={props.location.pathname}
+                          />
+                        )}
+                      />
+                    )}
+                  />
                 </Switch>
               </Padding>
             </StyledMain>
