@@ -4,9 +4,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class SigninCompleteResponse extends ResponseEntity<String>{
+public class LoginCompleteResponse extends ResponseEntity<String>{
 
-    public SigninCompleteResponse(String jwt){
+    public LoginCompleteResponse(String jwt){
         super(jwt,  HttpStatus.ACCEPTED);
     }
 

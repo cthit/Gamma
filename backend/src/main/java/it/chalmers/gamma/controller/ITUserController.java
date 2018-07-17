@@ -12,8 +12,10 @@ import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -41,17 +43,16 @@ public class ITUserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cidPasswordRequest.getCid(), cidPasswordRequest.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cidPasswordRequest.getCid(), cidPasswordRequest.getPassword()));
             if (authentication.isAuthenticated()) {
-                try {
-                    String jwt = jwtTokenProvider.createToken(cidPasswordRequest.getCid());
-                    return new SigninCompleteResponse(jwt);
-                }
-                catch (Exception e) {
-                    return new IncorrectCidOrPasswordResponse();
-                }
+                String jwt = jwtTokenProvider.createToken(cidPasswordRequest.getCid());
+                return new LoginCompleteResponse(jwt);
             }
+        } catch (AuthenticationException e) {
             return new IncorrectCidOrPasswordResponse();
+        }
+        return new IncorrectCidOrPasswordResponse();
     }
 
     @GetMapping
@@ -90,8 +91,9 @@ public class ITUserController {
         activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
         whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }
+
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public ResponseEntity<Boolean>getMe(){
+    public ResponseEntity<Boolean> getMe() {
         return new ValidJwtResponse(true);
     }
 
