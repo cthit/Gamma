@@ -1,0 +1,9 @@
+{
+  "LoginForm": {
+    "EnterYourCid": ["Your cid", "Ditt cid"],
+    "EnterYourPassword": ["Enter your password", "Ditt lösenord"],
+    "RememberMe": ["Remember me", "Kom ihåg mig"],
+    "SignIn": ["Sign in", "Logga in"],
+    "CreateAccount": ["Create account", "Skapa konto"]
+  }
+}

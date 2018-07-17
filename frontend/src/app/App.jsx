@@ -20,8 +20,12 @@ import GammaToast from "./views/gamma-toast";
 import DrawerNavigationLink from "./elements/drawer-navigation-link";
 import UserInformation from "./elements/user-information";
 
+import SignIn from "../use-cases/sign-in";
+import signInTranslations from "../use-cases/sign-in/SignIn.translations.jsx";
+
 import CreateAccount from "../use-cases/create-account";
 import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
+
 import Demo from "../use-cases/demo";
 import demoTranslations from "../use-cases/demo/Demo.translations.json";
 
@@ -53,6 +57,7 @@ export class App extends Component {
     props.addTranslation({
       ...commonTranslations,
       ...createAccountTranslations,
+      ...signInTranslations,
       ...demoTranslations
     });
   }
@@ -83,6 +88,9 @@ export class App extends Component {
             link="/create-account"
           >
             Skapa konto
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/sign-in">
+            Sign in
           </DrawerNavigationLink>
         </List>
       </div>
@@ -132,6 +140,7 @@ export class App extends Component {
                 <GammaToast />
                 <Switch>
                   <Route path="/create-account" component={CreateAccount} />
+                  <Route path="/sign-in" component={SignIn} />CreateAccount
                   <Route path="/demo" component={Demo} />
                 </Switch>
               </Padding>

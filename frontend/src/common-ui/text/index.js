@@ -2,6 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { Typography } from "@material-ui/core";
 
+export const Display = styled(({ text, ...rest }) => (
+  <Typography {...rest} variant="display2">
+    {text}
+  </Typography>
+))``;
+
 export const Heading = styled(({ text, ...rest }) => (
   <Typography {...rest} variant="headline">
     {text}

@@ -47,7 +47,7 @@ public class ITUserController {
             if (authentication.isAuthenticated()) {
                 try {
                     String jwt = jwtTokenProvider.createToken(cidPasswordRequest.getCid());
-                    return new SigninCompleteResponse(jwt);
+                    return new LoginCompleteResponse(jwt);
                 }
                 catch (Exception e) {
                     return new IncorrectCidOrPasswordResponse();
