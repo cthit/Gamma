@@ -12,7 +12,6 @@ import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -93,8 +92,11 @@ public class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public ResponseEntity<Boolean> getMe() {
-        return new ValidJwtResponse(true);
+    public ResponseEntity<ITUser> getMe(@RequestHeader("Authorization") String jwtToken) {
+        jwtToken = jwtTokenProvider.removeBearer(jwtToken);
+        String cid = jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
+        ITUser user = itUserService.loadUser(cid);
+        return new GetUserResponse(user);
     }
 
 }
