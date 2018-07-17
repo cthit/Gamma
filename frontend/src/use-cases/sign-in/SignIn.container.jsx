@@ -14,8 +14,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
   redirectTo: path => dispatch(redirectTo(path)),
-  signIn: (data, persistant, successMsg, errorMsg) =>
-    dispatch(signIn(data, persistant, successMsg, errorMsg))
+  signIn: (data, persistant, successMsg, errorMsg, networkErrorMsg) =>
+    dispatch(signIn(data, persistant, successMsg, errorMsg, networkErrorMsg))
 });
 
 export default connect(

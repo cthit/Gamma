@@ -9,7 +9,13 @@ import {
 
 import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 
-export function signIn(data, persistant, successMsg, errorMsg) {
+export function signIn(
+  data,
+  persistant,
+  successMsg,
+  errorMsg,
+  networkErrorMsg
+) {
   return dispatch => {
     dispatch(signInValidating());
     axios
@@ -32,6 +38,7 @@ export function signIn(data, persistant, successMsg, errorMsg) {
         );
       })
       .catch(error => {
+        console.log(error.data);
         dispatch(signInValidateSuccessfully(errorMsg));
         dispatch(
           toastOpen({

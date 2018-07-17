@@ -39,7 +39,13 @@ const LoginForm = ({ text, signIn }) => (
           password: values["password"]
         };
 
-        signIn(data, values.rememberMe, "Yay", "Nay");
+        signIn(
+          data,
+          values.rememberMe,
+          text.SuccessfullLogin,
+          text.FailedLogin,
+          text.SomethingWentWrong
+        );
 
         console.log(values);
         //TODO don't send rememberMe to backend
