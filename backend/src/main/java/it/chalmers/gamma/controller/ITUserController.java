@@ -9,7 +9,6 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,7 +47,7 @@ public class ITUserController {
             if (authentication.isAuthenticated()) {
                 try {
                     String jwt = jwtTokenProvider.createToken(cidPasswordRequest.getCid());
-                    return new SigninComplete(jwt);
+                    return new SigninCompleteResponse(jwt);
                 }
                 catch (Exception e) {
                     return new IncorrectCidOrPasswordResponse();
