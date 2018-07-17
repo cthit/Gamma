@@ -43,7 +43,7 @@ const LoginForm = ({ text, signIn }) => (
           data,
           values.rememberMe,
           text.SuccessfullLogin,
-          text.FailedLogin,
+          text.IncorrectCidOrPassword,
           text.SomethingWentWrong
         );
 

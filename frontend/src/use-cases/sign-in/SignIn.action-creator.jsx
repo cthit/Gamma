@@ -38,11 +38,21 @@ export function signIn(
         );
       })
       .catch(error => {
-        console.log(error.data);
-        dispatch(signInValidateSuccessfully(errorMsg));
+        const errorStatus = error.response.data;
+        var e = "";
+        console.log(errorStatus);
+        switch (errorStatus) {
+          case "INCORRECT_CID_OR_PASSWORD":
+            e = errorMsg;
+            break;
+          default:
+            e = networkErrorMsg;
+            break;
+        }
+        dispatch(signInValidateSuccessfully(e));
         dispatch(
           toastOpen({
-            text: errorMsg,
+            text: e,
             duration: 10000
           })
         );
