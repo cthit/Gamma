@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -43,7 +44,8 @@ public class ITUserController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cidPasswordRequest.getCid(), cidPasswordRequest.getPassword()));
             if (authentication.isAuthenticated()) {
                 try {
-                    return new SigninComplete(jwtTokenProvider.createToken(cidPasswordRequest.getCid()));
+                    String jwt = jwtTokenProvider.createToken(cidPasswordRequest.getCid());
+                    return new SigninCompleteResponse(jwt);
                 }
                 catch (Exception e) {
                     return new IncorrectCidOrPasswordResponse();
