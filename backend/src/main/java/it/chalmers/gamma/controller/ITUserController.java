@@ -40,9 +40,7 @@ public class ITUserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest, HttpServletResponse response) {
-        System.out.println("cid: " + cidPasswordRequest.getCid());
-        System.out.println("password: " + cidPasswordRequest.getPassword());
+    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(cidPasswordRequest.getCid(), cidPasswordRequest.getPassword()));
             if (authentication.isAuthenticated()) {
                 try {
@@ -91,6 +89,10 @@ public class ITUserController {
     private void removeCid(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
         activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
         whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
+    }
+    @RequestMapping(value = "/me", method = RequestMethod.GET)
+    public ResponseEntity<Boolean>getMe(){
+        return new ValidJwtResponse(true);
     }
 
 }

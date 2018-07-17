@@ -30,3 +30,4 @@ security:
     token:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs=
       expire-length: 36000
+      issuer: digIT   #TODO ASK THE STUDENT DIVISION IF THIS SHOULD BE CTHIT INSTEAD

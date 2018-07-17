@@ -35,20 +35,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //Disables cross site request forgery
         http.csrf().disable();
+        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+
+        http.authorizeRequests()//
+                .antMatchers("/users/login").permitAll()
+                .antMatchers("/users/create").permitAll()
+                .antMatchers("/whitelist/activate_cid").permitAll()
+                .antMatchers("/validate_jwt").permitAll();
+
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Entry points
-        http.authorizeRequests()//
-                .antMatchers("/users/login").permitAll()
-                .antMatchers("/users/create").permitAll()
-                .antMatchers("/whitelist/activate_cid").permitAll()
+
                 // Disallow everything else..
 
-                .anyRequest().authenticated();
+        http.authorizeRequests().anyRequest().authenticated();
 
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
     }
 
     @Bean

@@ -1,9 +1,7 @@
 package it.chalmers.gamma.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.TextCodec;
 import it.chalmers.gamma.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.service.ITUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,9 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
 
+    @Value("${security.jwt.token.issuer}")
+    private String issuer;
+
     @Autowired
     private ITUserService itUserService;
 
@@ -35,9 +36,11 @@ public class JwtTokenProvider {
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
+        System.out.println(validity.toString());
 
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuer(issuer)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -46,7 +49,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String cid){
         UserDetails userDetails = itUserService.loadUserByUsername(cid);
-        return new UsernamePasswordAuthenticationToken(userDetails, "");
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
     }
 
     public String resolveToken(HttpServletRequest req) {
@@ -64,6 +67,14 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+    public String decodeToken(String token){
+        return Jwts.parser()
+                .requireIssuer(issuer)
+                .setSigningKey(
+                        TextCodec.BASE64.decode(secretKey)
+                )
+                .parseClaimsJws(token).getSignature();
     }
 
 }
