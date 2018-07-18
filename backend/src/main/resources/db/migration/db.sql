@@ -16,8 +16,8 @@ create table website_url(
 );
 create table fkit_group_website(
   id          uuid constraint fkit_group_website_pk primary key,
-  fkit_group
-  website
+  fkit_group  uuid not null references fkit_group,
+  website     uuid not null references website_url
 );
 
 create table ituser (

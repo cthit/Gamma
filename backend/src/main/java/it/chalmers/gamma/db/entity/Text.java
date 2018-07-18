@@ -13,16 +13,20 @@ public class Text {
     @Id
     @Column(updatable = false)
     private UUID id;
+    @Column(name = "sv")
     private String sv;
+    @Column(name = "sv")
     private String en;
 
     public Text(String sv, String en) {
         this.sv = sv;
         this.en = en;
+        id = UUID.randomUUID();
     }
 
     public Text(String sv) {
         this.sv = sv;
+        id = UUID.randomUUID();
     }
 
     public UUID getId() {

@@ -14,6 +14,7 @@ public class FKITGroup {
     @Column(updatable = false)
     private UUID id;
 
+    @Column(name = "avatar_url")
     private String avatarURL;
 
     @Column(name = "name", length = 50, nullable = false)
@@ -22,6 +23,7 @@ public class FKITGroup {
     @Column(name = "description")
     private Text description;
 
+    @Column(name = "function")
     private Text function;
 
     @Column(name = "email", length = 100, nullable = false)
