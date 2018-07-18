@@ -1,3 +1,25 @@
+create table text (
+  id  uuid constraint text_pk primary key,
+  sv  text not null,
+  en  text not null
+);
+
+create table website(
+  id uuid constraint websites_pk primary key,
+  name varchar(100) not null
+);
+
+create table website_url(
+  id      uuid constraint websites_url_pk primary key,
+  website uuid not null references website,
+  url     varchar(2000) not null
+);
+create table fkit_group_website(
+  id          uuid constraint fkit_group_website_pk primary key,
+  fkit_group
+  website
+);
+
 create table ituser (
   id               uuid constraint ituser_pk primary key,
   cid              varchar(10)  not null constraint ituser_cid_unique unique,
@@ -24,9 +46,11 @@ create table authorites (
 create table fkit_group (
   id          uuid constraint fkit_group_pk primary key,
   name        varchar(50)  not null constraint fkit_group_name_unique unique,
-  description text         null,
+  description uuid         null references text,
+  funtion     uuid         not null references text,
   email       varchar(100) not null constraint fkit_group_email_unique unique,
-  type        varchar(30)  not null
+  type        varchar(30)  not null,
+  avatar_url  varchar(255) null
 );
 
 create table fkit_group_authorites (
@@ -56,8 +80,9 @@ create table whitelist (
 );
 
 create table activation_code (
-  id          uuid constraint whitelist_fk primary key,
+  id          uuid constraint whitelist_pk primary key,
   cid         uuid unique     not null references whitelist,
   code        varchar(30)     not null,
   created_at  timestamp       not null default current_timestamp
 );
+

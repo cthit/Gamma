@@ -3,10 +3,8 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
-import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
-import it.chalmers.gamma.response.UserAddedResponse;
-import it.chalmers.gamma.response.UserAlreadyExistsResponse;
-import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +19,12 @@ public class AdministrationController {
 
     private ITUserService itUserService;
     private WhitelistService whitelistService;
+    private FKITService fkitService;
 
-    AdministrationController(ITUserService itUserService, WhitelistService whitelistService){
+    AdministrationController(ITUserService itUserService, WhitelistService whitelistService, FKITService fkitService){
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
+        this.fkitService = fkitService;
     }
     /**
      * Administrative function that can add user without need for user to add it personally.
@@ -54,7 +54,12 @@ public class AdministrationController {
 
     @RequestMapping(value = "/groups/new", method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest){
-        return null;
+        if(fkitService.groupExists(createGroupRequest.getName())){
+            return new GroupAlreadyExistsResponse();
+        }
+        fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
+                createGroupRequest.getEmail(), createGroupRequest.getGroupType());
+        return new GroupCreatedResponse();
     }
 
 

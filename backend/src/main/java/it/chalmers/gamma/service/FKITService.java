@@ -18,4 +18,10 @@ public class FKITService {
         FKITGroup fkitGroup = new FKITGroup();
         return repo.save(fkitGroup);
     }
+    public boolean groupExists(String name){
+        return repo.existsFKITGroupByName(name);
+    }
+    public FKITGroup getGroupInfo(String group){
+        return repo.findByName(group);
+    }
 }

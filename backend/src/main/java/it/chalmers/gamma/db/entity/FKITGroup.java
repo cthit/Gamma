@@ -14,11 +14,15 @@ public class FKITGroup {
     @Column(updatable = false)
     private UUID id;
 
+    private String avatarURL;
+
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
     @Column(name = "description")
-    private String description;
+    private Text description;
+
+    private Text function;
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
@@ -43,11 +47,11 @@ public class FKITGroup {
         this.name = name;
     }
 
-    public String getDescription() {
+    public Text getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Text description) {
         this.description = description;
     }
 
@@ -67,6 +71,22 @@ public class FKITGroup {
         this.type = type;
     }
 
+    public String getAvatarURL() {
+        return avatarURL;
+    }
+
+    public void setAvatarURL(String avatarURL) {
+        this.avatarURL = avatarURL;
+    }
+
+    public Text getFunction() {
+        return function;
+    }
+
+    public void setFunction(Text function) {
+        this.function = function;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,7 +101,7 @@ public class FKITGroup {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, email, type);
+        return Objects.hash(id, name, description, email, type, avatarURL, function);
     }
 
     @Override
@@ -92,6 +112,8 @@ public class FKITGroup {
                 ", description='" + description + '\'' +
                 ", email='" + email + '\'' +
                 ", type='" + type + '\'' +
+                ", avatarURL='" + avatarURL + '\'' +
+                ", function='" + function + '\'' +
                 '}';
     }
 }
