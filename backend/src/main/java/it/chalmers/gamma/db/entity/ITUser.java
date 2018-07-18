@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "ituser")
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ITUser implements UserDetails{
 
     @Id

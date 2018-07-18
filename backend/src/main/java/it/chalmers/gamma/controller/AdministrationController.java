@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller;
 
+import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/administration")
+@RequestMapping(value = "/admin")
 public class AdministrationController {
 
     private ITUserService itUserService;
@@ -49,6 +50,11 @@ public class AdministrationController {
         }
         whitelistService.addWhiteListedCID(cid.getCid());
         return new UserAddedResponse();
+    }
+
+    @RequestMapping(value = "/groups/new", method = RequestMethod.POST)
+    public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest){
+        return null;
     }
 
 
