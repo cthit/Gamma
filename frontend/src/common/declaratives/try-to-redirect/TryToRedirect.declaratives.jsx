@@ -16,7 +16,9 @@ class TryToRedirect extends React.Component {
     } = this.props;
 
     if (!prevProps.redirectFinished && redirectFinished) {
-      redirectSuccessfull();
+      if (redirectSuccessfull != null) {
+        redirectSuccessfull();
+      }
     } else if ((currentPath === from || redirectNow) && currentPath !== to) {
       redirectTo(to);
     }

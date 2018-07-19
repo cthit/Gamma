@@ -43,6 +43,7 @@ import { ProvidersForApp } from "./ProvidersForApp";
 import IfElseRendering from "../common/declaratives/if-else-rendering";
 import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
+import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 
 export class App extends Component {
   state = {
@@ -122,6 +123,16 @@ export class App extends Component {
     return (
       <BrowserRouter>
         <StyledRoot>
+          <Route
+            render={props => (
+              <ContainUserToAllowedPages
+                currentPath={props.location.pathname}
+                allowedBasePaths={["/create-account"]}
+                to="/login"
+              />
+            )}
+          />
+
           <StyledAppBar>
             <StyledToolbar>
               <StyledMenuButton
