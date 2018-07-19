@@ -72,12 +72,18 @@ public class JwtTokenProvider {
             return false;
         }
     }
-    public Jws<Claims> decodeToken(String token) throws SignatureException{
-        return Jwts.parser()
-                .requireIssuer(issuer)
-                .setSigningKey(
-                        secretKey)
-                .parseClaimsJws(token);
+    public Jws<Claims> decodeToken(String token){
+        try {
+            return Jwts.parser()
+                    .requireIssuer(issuer)
+                    .setSigningKey(
+                            secretKey)
+                    .parseClaimsJws(token);
+        }
+        catch (MalformedJwtException | SignatureException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
