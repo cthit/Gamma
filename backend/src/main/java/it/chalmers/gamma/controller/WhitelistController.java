@@ -11,6 +11,7 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,8 @@ public class WhitelistController {
 
     private MailSenderService mailSenderService;
 
-    private String mailPostfix = "@student.chalmers.se";
+    @Value("${mail.receiver.standard-postfix}")
+    private String mailPostfix;
 
     public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService, MailSenderService mailSenderService){
         this.whitelistService = whitelistService;
@@ -66,7 +68,7 @@ public class WhitelistController {
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + mailPostfix;
+        String to = activationCode.getCid() + "@" + mailPostfix;
         String message = "Your code to Gamma is: " + code;
         try {
             mailSenderService.sendMessage(to, "login code", message);

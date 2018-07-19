@@ -22,15 +22,28 @@ public class FKITService {
     public FKITGroup createGroup(String name, Text description, String email, GroupType type, Text function) {
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(name.toLowerCase());
+        return saveGroup(fkitGroup, name, description, email, type, function);
+    }
+
+    public FKITGroup editGroup(String name, Text description, String email, GroupType type, Text function){
+        FKITGroup group = repo.findByName(name.toLowerCase());
+        group.setSVFunction(function.getSv());
+        group.setENFunction(function.getEn());
+        if(group.getDescription() != null) {
+            group.setSVDescription(description.getSv());
+            group.setENFunction(description.getEn());
+        }
+        return saveGroup(group, name, description, email, type, function);
+    }
+
+    private FKITGroup saveGroup(FKITGroup fkitGroup, String name, Text description,
+                                String email, GroupType type, Text function){
         fkitGroup.setPrettyName(name);
         fkitGroup.setDescription(description);
         fkitGroup.setEmail(email);
         fkitGroup.setType(type);
         fkitGroup.setFunction(function);
-        if(description != null) {
-            textRepository.save(description);
-        }
-        textRepository.save(function);
+        System.out.println("function: " + fkitGroup.getFunction());
         return repo.save(fkitGroup);
     }
     public boolean groupExists(String name){

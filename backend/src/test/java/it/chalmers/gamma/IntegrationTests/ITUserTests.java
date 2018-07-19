@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.time.Year;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -62,8 +64,9 @@ public class ITUserTests {
         itUser2.setNick("leif");
         itUser2.setPassword("examplePassword");
         itUser2.setWhitelist(new Whitelist("example2"));
-        userService.createUser(itUser1);
-        userService.createUser(itUser2);
+        userService.createUser(itUser1.getNick(), itUser1.getFirstName(), itUser1.getLastName(), itUser1.getWhitelist().getCid(), Year.of(itUser1.getAcceptanceYear()), itUser1.isUserAgreement(), null, itUser1.getPassword());
+        userService.createUser(itUser2.getNick(), itUser2.getFirstName(), itUser2.getLastName(), itUser2.getWhitelist().getCid(), Year.of(itUser2.getAcceptanceYear()), itUser2.isUserAgreement(), null, itUser2.getPassword());
+
 
         MvcResult result =  mockMvc.perform
                 (MockMvcRequestBuilders.get("/users/")

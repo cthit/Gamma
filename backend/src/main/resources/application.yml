@@ -31,3 +31,9 @@ security:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs=
       expire-length: 2592000000 #One Month. Subject to change.
       issuer: digIT   #TODO ASK THE STUDENT DIVISION IF THIS SHOULD BE CTHIT INSTEAD
+mail:
+  sender:
+    mail-address: gustav.engsmyre@gmail.com
+    password: zbbhceogyjcedkwe
+  receiver:
+    standard-postfix: student.chalmers.se

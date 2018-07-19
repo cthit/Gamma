@@ -26,11 +26,11 @@ public class FKITGroup {
     private String prettyName;
 
     @JoinColumn(name = "description")
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Text description;
 
     @JoinColumn(name = "function", nullable = false)
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Text function;
 
     @Column(name = "email", length = 100, nullable = false)
@@ -100,8 +100,40 @@ public class FKITGroup {
         this.function = function;
     }
 
+
+    public String getSVFunction() {
+        return function.getSv();
+    }
+
+    public void setSVFunction(String function) {
+        this.function.setSv(function);
+    }
+
+    public String getENFunction() {
+        return function.getEn();
+    }
+
+    public void setENFunction(String function) {
+        this.function.setEn(function);
+    }
     public String getPrettyName() {
         return prettyName;
+    }
+
+    public String getSVDescription() {
+        return description.getSv();
+    }
+
+    public void setSVDescription(String description) {
+        this.description.setSv(description);
+    }
+
+    public String getENDescription() {
+        return description.getEn();
+    }
+
+    public void setENDescription(String description) {
+        this.description.setEn(description);
     }
 
     public void setPrettyName(String prettyName) {

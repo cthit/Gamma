@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface TextRepository extends JpaRepository<Text, UUID>{
+    Text findBySv(String sv);
 }

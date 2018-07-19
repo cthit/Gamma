@@ -30,7 +30,7 @@ public class AdministrationController {
     /**
      * Administrative function that can add user without need for user to add it personally.
      */
-    @RequestMapping(value = "/users/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/new", method = RequestMethod.POST)
     public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest){
         if (itUserService.userExists(createITUserRequest.getCid())){
             return new UserAlreadyExistsResponse();
@@ -74,6 +74,11 @@ public class AdministrationController {
         }
         fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
                 createGroupRequest.getEmail(), createGroupRequest.getGroupType(), createGroupRequest.getFunction());
+        return new GroupCreatedResponse();
+    }
+    @RequestMapping(value = "/groups/edit", method = RequestMethod.POST)
+    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request){
+        fkitService.editGroup(request.getName(), request.getDescription(), request.getEmail(), request.getGroupType(), request.getFunction());
         return new GroupCreatedResponse();
     }
 
