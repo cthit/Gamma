@@ -16,6 +16,8 @@ import {
   GammaTitle
 } from "./App.styles";
 
+import appTranslations from "./App.translations.json";
+
 import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
 
@@ -34,9 +36,6 @@ import demoTranslations from "../use-cases/demo/Demo.translations.json";
 import Home from "../use-cases/home";
 
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
-import userInformationTranslations from "./elements/user-information/UserInformation.element.translations.json";
-
-import TryToRedirect from "../common/declaratives/try-to-redirect";
 
 import { Padding, Spacing, Fill, Center } from "../common-ui/layout";
 import { ProvidersForApp } from "./ProvidersForApp";
@@ -66,15 +65,11 @@ export class App extends Component {
     });
 
     props.addTranslation({
+      ...appTranslations,
       ...commonTranslations,
       ...createAccountTranslations,
       ...loginTranslations,
-      ...demoTranslations,
-      App: {
-        Element: {
-          ...userInformationTranslations
-        }
-      }
+      ...demoTranslations
     });
 
     props.userUpdateMe();
@@ -118,17 +113,26 @@ export class App extends Component {
 
     const { mobileOpen } = this.state;
 
-    const { loggedIn, loaded } = this.props;
+    var { loggedIn, loaded, text } = this.props;
+
+    loggedIn = loggedIn != null ? loggedIn : false;
+    loaded = loaded != null ? loaded : false;
 
     return (
       <BrowserRouter>
         <StyledRoot>
-          <Route
-            render={props => (
-              <ContainUserToAllowedPages
-                currentPath={props.location.pathname}
-                allowedBasePaths={["/create-account"]}
-                to="/login"
+          <IfElseRendering
+            test={!loggedIn && loaded}
+            ifRender={() => (
+              <Route
+                render={props => (
+                  <ContainUserToAllowedPages
+                    currentPath={props.location.pathname}
+                    allowedBasePaths={["/create-account"]}
+                    to="/login"
+                    toastTextOnRedirect={text.YouNeedToLogin}
+                  />
+                )}
               />
             )}
           />
@@ -171,7 +175,11 @@ export class App extends Component {
             </StyledDrawer>
           </Hidden>
           <StyledMain>
-            <GammaRedirect />
+            <Route
+              render={props => (
+                <GammaRedirect currentPath={props.location.pathname} />
+              )}
+            />
             <GammaToast />
             <IfElseRendering
               test={loaded}
@@ -188,20 +196,8 @@ export class App extends Component {
                       render={props => (
                         <IfElseRendering
                           test={loggedIn}
-                          ifRender={() => (
-                            <TryToRedirect
-                              from="/"
-                              to="/home"
-                              currentPath={props.location.pathname}
-                            />
-                          )}
-                          elseRender={() => (
-                            <TryToRedirect
-                              from="/"
-                              to="/login"
-                              currentPath={props.location.pathname}
-                            />
-                          )}
+                          ifRender={() => <Redirect to="/home" />}
+                          elseRender={() => <Redirect to="/login" />}
                         />
                       )}
                     />

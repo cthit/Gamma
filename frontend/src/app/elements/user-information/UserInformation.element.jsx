@@ -5,7 +5,6 @@ import { Spacing, Padding, Fill, Center } from "../../../common-ui/layout";
 import { Title, Subtitle } from "../../../common-ui/text";
 import IfElseRendering from "../../../common/declaratives/if-else-rendering";
 import GammaButton from "../../../common/elements/gamma-button";
-import TryToRedirect from "../../../common/declaratives/try-to-redirect";
 
 const UserInformation = ({
   loaded,

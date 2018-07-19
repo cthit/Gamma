@@ -7,7 +7,9 @@ class ContainUserToAllowedPages extends React.Component {
       allowedFullPaths,
       currentPath,
       redirectTo,
-      to
+      to,
+      toastTextOnRedirect,
+      toastOpen
     } = this.props;
 
     if (allowedFullPaths == null) {
@@ -37,6 +39,9 @@ class ContainUserToAllowedPages extends React.Component {
 
     if (!allowedOnThisPage) {
       redirectTo(to);
+      toastOpen({
+        text: toastTextOnRedirect
+      });
     }
   }
 

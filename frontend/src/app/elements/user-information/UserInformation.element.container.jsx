@@ -6,15 +6,9 @@ import { userLogout } from "./UserInformation.element.action-creator";
 import loadTranslations from "../../../common/utils/loaders/translations.loader";
 import { toastOpen } from "../../views/gamma-toast/GammaToast.view.action-creator";
 
-import translations from "./UserInformation.element.translations.json";
-
 const mapStateToProps = (state, ownProps) => ({
   user: state.user,
-  text: loadTranslations(
-    state.localize,
-    translations.UserInformation,
-    "App.Element.UserInformation."
-  ),
+  text: loadTranslations(state.localize),
   loggedIn: state.user.loggedIn,
   loaded: state.user.loaded
 });

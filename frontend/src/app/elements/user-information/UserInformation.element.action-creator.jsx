@@ -33,6 +33,16 @@ export function userUpdateMe() {
         })
         .catch(error => {
           dispatch(userUpdatedFailed(error.response));
+          const statusCode =
+            error.response == null ? -1 : error.response.data.status;
+          switch (statusCode) {
+            case 403:
+              dispatch(userLogout());
+              break;
+            default:
+              //TODO DISPATCH REDIRECT TO ERROR PAGE
+              break;
+          }
         });
     };
   }
@@ -44,12 +54,14 @@ export function userLogout(loggedOutText) {
     delete sessionStorage.token;
     dispatch(userLogoutSuccessfully());
     dispatch(redirectTo("/login"));
-    dispatch(
-      toastOpen({
-        duration: 3000,
-        text: loggedOutText
-      })
-    );
+    if (loggedOutText != null) {
+      dispatch(
+        toastOpen({
+          duration: 3000,
+          text: loggedOutText
+        })
+      );
+    }
   };
 }
 
