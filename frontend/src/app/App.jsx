@@ -43,6 +43,7 @@ import IfElseRendering from "../common/declaratives/if-else-rendering";
 import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
+import Error from "../use-cases/error";
 
 export class App extends Component {
   state = {
@@ -190,6 +191,7 @@ export class App extends Component {
                     <Route path="/home" component={Home} />
                     <Route path="/create-account" component={CreateAccount} />
                     <Route path="/login" component={Login} />
+                    <Route path="/error" component={Error} />
                     <Route path="/demo" component={Demo} />
                     <Route
                       path="/"

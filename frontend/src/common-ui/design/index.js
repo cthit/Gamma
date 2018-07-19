@@ -4,7 +4,13 @@ import { Paper } from "@material-ui/core";
 
 import { NavLink } from "react-router-dom";
 
-import { HeadingLevel2, HeadingLevel3, Title, Subtitle } from "../text";
+import {
+  HeadingLevel2,
+  HeadingLevel3,
+  Title,
+  Subtitle,
+  Display
+} from "../text";
 
 /** Props:
  * width, height, maxWidth, maxHeight, minWidth, minHeight
@@ -104,6 +110,21 @@ export const GammaCardMenuContainer = styled.div`
 
 export const GammaCardTitle = styled(Title)`
   font-size: 20px;
+  line-height: 33px;
+
+  margin: 0;
+  margin-top: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
+
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+`;
+
+export const GammaCardDisplayTitle = styled(Display)`
+  font-size: 30px;
   line-height: 33px;
 
   margin: 0;
