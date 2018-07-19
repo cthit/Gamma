@@ -21,7 +21,8 @@ public class FKITService {
 
     public FKITGroup createGroup(String name, Text description, String email, GroupType type, Text function) {
         FKITGroup fkitGroup = new FKITGroup();
-        fkitGroup.setName(name);
+        fkitGroup.setName(name.toLowerCase());
+        fkitGroup.setPrettyName(name);
         fkitGroup.setDescription(description);
         fkitGroup.setEmail(email);
         fkitGroup.setType(type);

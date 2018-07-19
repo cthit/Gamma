@@ -21,6 +21,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.Year;
 import java.util.List;
 
 @RestController
@@ -87,7 +88,9 @@ public class ITUserController {
             return new PasswordTooShortResponse();
         }
             else {
-            itUserService.createUser(createITUserRequest);
+            itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
+                    createITUserRequest.getLastName(), createITUserRequest.getWhitelist().getCid(),
+                    Year.of(createITUserRequest.getAcceptanceYear()), createITUserRequest.isUserAgreement(), null, createITUserRequest.getPassword());
             removeCidFromWhitelist(createITUserRequest);
             return new UserCreatedResponse();
         }

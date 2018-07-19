@@ -1,5 +1,7 @@
 package it.chalmers.gamma.controller;
 
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
@@ -8,10 +10,9 @@ import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Year;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -29,18 +30,20 @@ public class AdministrationController {
     /**
      * Administrative function that can add user without need for user to add it personally.
      */
-    @RequestMapping(value = "/add_user", method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(@RequestBody CreateITUserRequest createITUserRequest){
-        if (itUserService.userExists(createITUserRequest.getWhitelist().getCid())) {
+    @RequestMapping(value = "/users/add", method = RequestMethod.POST)
+    public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest){
+        if (itUserService.userExists(createITUserRequest.getCid())){
             return new UserAlreadyExistsResponse();
         }
-        itUserService.createUser(createITUserRequest);
+        itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
+                createITUserRequest.getLastName(), createITUserRequest.getCid(), Year.of(createITUserRequest.getAcceptanceYear()),
+                createITUserRequest.isUserAgreement(), createITUserRequest.getEmail(), createITUserRequest.getPassword());
         return new UserCreatedResponse();
     }
     /*
     should probably change so multiple users can be added simultaneously
      */
-    @RequestMapping(value = "/add_whitelisted", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/add_whitelisted", method = RequestMethod.POST)
     public ResponseEntity<String> addWhitelistedUser(@RequestBody WhitelistCodeRequest cid) {
         if (whitelistService.isCIDWhiteListed(cid.getCid())) {
             return new CIDAlreadyWhitelistedResponse();
@@ -73,6 +76,8 @@ public class AdministrationController {
                 createGroupRequest.getEmail(), createGroupRequest.getGroupType(), createGroupRequest.getFunction());
         return new GroupCreatedResponse();
     }
+
+
 
 
 }

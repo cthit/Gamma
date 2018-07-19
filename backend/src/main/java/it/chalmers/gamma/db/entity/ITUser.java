@@ -20,6 +20,7 @@ public class ITUser implements UserDetails{
 
     @Id
     @Column(updatable = false)
+    @JsonIgnore
     private UUID id;
 
     @Column(name = "cid", length = 10, nullable = false, unique = true)

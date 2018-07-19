@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +14,7 @@ import java.util.UUID;
 public class Whitelist {
     @Id
     @Column(updatable = false, unique = true)
+    @JsonIgnore
     private UUID id;
 
     @Column(name = "cid", unique = true, length = 10, nullable = false)

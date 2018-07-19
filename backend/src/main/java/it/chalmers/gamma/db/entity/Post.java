@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,6 +15,7 @@ public class Post {
 
     @Id
     @Column(updatable = false)
+    @JsonIgnore
     private UUID id;
 
     @Column(name = "post_name", length = 50, nullable = false, unique = true)

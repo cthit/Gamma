@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
@@ -9,6 +11,7 @@ import java.util.UUID;
 public class WebsiteURL {
     @Id
     @Column(name = "id", updatable = false)
+    @JsonIgnore
     private UUID id;
 
     @OneToOne

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.domain.GroupType;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class FKITGroup {
 
     @Id
     @Column(updatable = false)
+    @JsonIgnore
     private UUID id;
 
     @Column(name = "avatar_url")
@@ -19,6 +21,10 @@ public class FKITGroup {
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
+
+    @Column(name = "pretty_name", length = 50, nullable = false)
+    private String prettyName;
+
     @JoinColumn(name = "description")
     @OneToOne
     private Text description;
@@ -94,33 +100,47 @@ public class FKITGroup {
         this.function = function;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FKITGroup fkitGroup = (FKITGroup) o;
-        return Objects.equals(id, fkitGroup.id) &&
-                Objects.equals(name, fkitGroup.name) &&
-                Objects.equals(description, fkitGroup.description) &&
-                Objects.equals(email, fkitGroup.email) &&
-                type == fkitGroup.type;
+    public String getPrettyName() {
+        return prettyName;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, email, type, avatarURL, function);
+    public void setPrettyName(String prettyName) {
+        this.prettyName = prettyName;
     }
 
     @Override
     public String toString() {
         return "FKITGroup{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", email='" + email + '\'' +
-                ", type='" + type + '\'' +
                 ", avatarURL='" + avatarURL + '\'' +
-                ", function='" + function + '\'' +
+                ", name='" + name + '\'' +
+                ", prettyName='" + prettyName + '\'' +
+                ", description=" + description +
+                ", function=" + function +
+                ", email='" + email + '\'' +
+                ", type=" + type +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FKITGroup fkitGroup = (FKITGroup) o;
+        return Objects.equals(id, fkitGroup.id) &&
+                Objects.equals(avatarURL, fkitGroup.avatarURL) &&
+                Objects.equals(name, fkitGroup.name) &&
+                Objects.equals(prettyName, fkitGroup.prettyName) &&
+                Objects.equals(description, fkitGroup.description) &&
+                Objects.equals(function, fkitGroup.function) &&
+                Objects.equals(email, fkitGroup.email) &&
+                type == fkitGroup.type;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, avatarURL, name, prettyName, description, function, email, type);
+    }
+
 }

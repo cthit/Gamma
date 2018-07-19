@@ -51,20 +51,23 @@ public class ITUserService implements UserDetailsService{
             return true;
     }
 
-    public void createUser(CreateITUserRequest user){
+    public void createUser(String nick, String firstName, String lastname,
+                           String cid, Year year, boolean userAgreement, String email, String password){
         ITUser itUser = new ITUser();
-        itUser.setNick(user.getNick());
-        itUser.setFirstName(user.getFirstName());
-        itUser.setLastName(user.getLastName());
+        itUser.setNick(nick);
+        itUser.setFirstName(firstName);
+        itUser.setLastName(lastname);
         String currentTime = String.valueOf(System.currentTimeMillis());
-        itUser.setCid(user.getWhitelist().getCid()); //Todo get cid from activation code
-        itUser.setAcceptanceYear(Year.of(2017));
-        itUser.setUserAgreement(user.isUserAgreement());
+        itUser.setCid(cid);
+        itUser.setAcceptanceYear(year);
+        itUser.setUserAgreement(userAgreement);
         itUser.setGdpr(false);
         itUser.setAccountLocked(false);
+        if(itUser.getCid() != null){
+            itUser.setEmail(email);
+        }
         itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
-        itUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        System.out.println(itUser);
+        itUser.setPassword(passwordEncoder.encode(password));
         itUserRepository.save(itUser);
     }
 

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.oauth2.provider.endpoint.WhitelabelErrorEndpoint;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ public class ActivationCode {
 
     @Id
     @Column(updatable = false)
+    @JsonIgnore
     private UUID id;
 
 

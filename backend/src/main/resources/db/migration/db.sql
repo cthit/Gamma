@@ -24,7 +24,7 @@ create table ituser (
   last_name        varchar(50)  null,
   email            varchar(100) not null constraint ituser_email_unique unique,
   phone            varchar(15)  null,
-  language         varchar(15)   null,
+  language         varchar(15)  null,
   avatar_url       varchar(255) null,
   gdpr             boolean      not null default false,
   user_agreement   boolean      not null default false,
@@ -41,8 +41,9 @@ create table authorites (
 create table fkit_group (
   id          uuid constraint fkit_group_pk primary key,
   name        varchar(50)  not null constraint fkit_group_name_unique unique,
+  pretty_name varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
   description uuid         null references text,
-  function     uuid         not null references text,
+  function    uuid         not null references text,
   email       varchar(100) not null constraint fkit_group_email_unique unique,
   type        varchar(30)  not null,
   avatar_url  varchar(255) null

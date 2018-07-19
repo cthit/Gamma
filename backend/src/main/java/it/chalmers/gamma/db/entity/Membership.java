@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Objects;
 public class Membership {
 
     @EmbeddedId
+    @JsonIgnore
     private MembershipPK id;
 
     @JoinColumn(name = "ituser_id")
