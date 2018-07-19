@@ -12,6 +12,6 @@ export const PasswordInput = styled(GammaTextField)`
 `;
 
 export const CreateAccountButton = styled(GammaButton)``;
-export const SignInButton = styled(GammaButton)``;
+export const LoginButton = styled(GammaButton)``;
 
 export const RememberMe = styled(GammaCheckbox)``;

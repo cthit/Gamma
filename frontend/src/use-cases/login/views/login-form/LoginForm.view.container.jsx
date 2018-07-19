@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(
     state.localize,
     translations.LoginForm,
-    "SignIn.View.LoginForm."
+    "Login.View.LoginForm."
   )
 });
 

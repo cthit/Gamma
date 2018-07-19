@@ -1,1 +1,1 @@
-export { default } from "./TryToRedirect.declaratives";
+export { default } from "./TryToRedirect.declaratives.container";

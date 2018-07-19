@@ -7,6 +7,7 @@ import {
   LOGIN_VALIDATE_SUCCESSFULLY
 } from "./Login.actions";
 
+import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
 
@@ -21,8 +22,10 @@ export function login(data, persistant, successMsg, errorMsg, networkErrorMsg) {
         const token = response.data;
         if (persistant) {
           localStorage.token = token;
+          delete sessionStorage.token;
         } else {
           sessionStorage.token = token;
+          delete localStorage.token;
         }
         dispatch(loginValidateSuccessfully(successMsg));
         dispatch(
@@ -31,27 +34,32 @@ export function login(data, persistant, successMsg, errorMsg, networkErrorMsg) {
             duration: 3000
           })
         );
+        dispatch(redirectTo("/home"));
         dispatch(userUpdateMe());
       })
       .catch(error => {
-        const errorStatus = error.response.data;
-        var e = "";
-        console.log(errorStatus);
-        switch (errorStatus) {
-          case "INCORRECT_CID_OR_PASSWORD":
-            e = errorMsg;
-            break;
-          default:
-            e = networkErrorMsg;
-            break;
+        if (error.response == null) {
+          console.log(error);
+        } else {
+          const errorStatus = error.response.data;
+          var e = "";
+          console.log(errorStatus);
+          switch (errorStatus) {
+            case "INCORRECT_CID_OR_PASSWORD":
+              e = errorMsg;
+              break;
+            default:
+              e = networkErrorMsg;
+              break;
+          }
+          dispatch(loginValidateFailed(e));
+          dispatch(
+            toastOpen({
+              text: e,
+              duration: 10000
+            })
+          );
         }
-        dispatch(loginValidateSuccessfully(e));
-        dispatch(
-          toastOpen({
-            text: e,
-            duration: 10000
-          })
-        );
       });
   };
 }

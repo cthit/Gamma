@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //Disables cross site request forgery
-        http.csrf().disable();
+        http.cors().and().csrf().disable().authorizeRequests();
         http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
         http.authorizeRequests()//

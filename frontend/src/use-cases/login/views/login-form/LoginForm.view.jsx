@@ -5,7 +5,7 @@ import * as yup from "yup";
 import {
   CIDInput,
   PasswordInput,
-  SignInButton,
+  LoginButton,
   CreateAccountButton,
   RememberMe
 } from "./LoginForm.view.styles";
@@ -14,7 +14,7 @@ import GammaButton from "../../../../common/elements/gamma-button";
 import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
 
-import { Center, MarginTop } from "../../../../common-ui/layout";
+import { Center, MarginTop, Fill } from "../../../../common-ui/layout";
 import {
   GammaCard,
   GammaCardBody,
@@ -24,8 +24,8 @@ import {
   GammaLink
 } from "../../../../common-ui/design";
 
-const LoginForm = ({ text, signIn }) => (
-  <div>
+const LoginForm = ({ text, login }) => (
+  <Fill>
     <GammaForm
       validationSchema={yup.object().shape({
         cid: yup.string().required(text.FieldRequired),
@@ -39,7 +39,7 @@ const LoginForm = ({ text, signIn }) => (
           password: values["password"]
         };
 
-        signIn(
+        login(
           data,
           values.rememberMe,
           text.SuccessfullLogin,
@@ -47,13 +47,11 @@ const LoginForm = ({ text, signIn }) => (
           text.SomethingWentWrong
         );
 
-        console.log(values);
-        //TODO don't send rememberMe to backend
         actions.resetForm();
       }}
       render={({ errors, touched }) => (
         <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-          <GammaCardTitle text={text.SignIn} />
+          <GammaCardTitle text={text.Login} />
           <GammaCardBody>
             <Center>
               <GammaFormField
@@ -76,13 +74,14 @@ const LoginForm = ({ text, signIn }) => (
                 name="rememberMe"
                 component={RememberMe}
                 componentProps={{
-                  label: text.RememberMe
+                  label: text.RememberMe,
+                  primary: true
                 }}
               />
             </Center>
           </GammaCardBody>
           <GammaCardButtons reverseDirection>
-            <SignInButton text={text.SignIn} primary raised submit />
+            <LoginButton text={text.Login} primary raised submit />
             <GammaLink to="/create-account">
               <CreateAccountButton text={text.CreateAccount} />
             </GammaLink>
@@ -90,7 +89,7 @@ const LoginForm = ({ text, signIn }) => (
         </GammaCard>
       )}
     />
-  </div>
+  </Fill>
 );
 
 export default LoginForm;

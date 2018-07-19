@@ -3,12 +3,28 @@ import { Redirect } from "react-router-dom";
 
 import IfElseRendering from "../if-else-rendering";
 
-const TryToRedirect = ({ from, to, currentPath }) => (
-  <IfElseRendering
-    test={currentPath === from}
-    ifRender={() => <Redirect to={to} />}
-    elseRender={() => {}}
-  />
-);
+class TryToRedirect extends React.Component {
+  componentWillUpdate(prevProps) {
+    const {
+      redirectSuccessfull,
+      currentPath,
+      from,
+      to,
+      redirectTo,
+      redirectFinished,
+      redirectNow
+    } = this.props;
+
+    if (!prevProps.redirectFinished && redirectFinished) {
+      redirectSuccessfull();
+    } else if ((currentPath === from || redirectNow) && currentPath !== to) {
+      redirectTo(to);
+    }
+  }
+
+  render() {
+    return null;
+  }
+}
 
 export default TryToRedirect;
