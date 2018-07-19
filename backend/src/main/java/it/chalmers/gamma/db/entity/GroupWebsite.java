@@ -16,9 +16,7 @@ public class GroupWebsite {
     @JoinColumn(name = "fkit_group")
     private FKITGroup group;
 
-    public GroupWebsite(WebsiteURL website, FKITGroup group) {
-        this.website = website;
-        this.group = group;
+    public GroupWebsite() {
         id = UUID.randomUUID();
     }
 

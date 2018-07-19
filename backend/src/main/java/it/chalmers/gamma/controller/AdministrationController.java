@@ -57,8 +57,20 @@ public class AdministrationController {
         if(fkitService.groupExists(createGroupRequest.getName())){
             return new GroupAlreadyExistsResponse();
         }
+        if(createGroupRequest.getName() == null){
+            return new MissingRequiredFieldResponse("name");
+        }
+        if(createGroupRequest.getEmail() == null){
+            return new MissingRequiredFieldResponse("email");
+        }
+        if(createGroupRequest.getFunction() == null){
+            return new MissingRequiredFieldResponse("function");
+        }
+        if(createGroupRequest.getGroupType() == null){
+            return new MissingRequiredFieldResponse("groupType");
+        }
         fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
-                createGroupRequest.getEmail(), createGroupRequest.getGroupType());
+                createGroupRequest.getEmail(), createGroupRequest.getGroupType(), createGroupRequest.getFunction());
         return new GroupCreatedResponse();
     }
 

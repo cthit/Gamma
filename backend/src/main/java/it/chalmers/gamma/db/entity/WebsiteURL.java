@@ -15,14 +15,11 @@ public class WebsiteURL {
     @JoinColumn(name = "website")
     private Website website;
 
-    @OneToOne
-    @JoinColumn(name = "url")
+    @Column(name = "url")
     private String url;
 
 
-    public WebsiteURL(Website website, String url){
-        this.website = website;
-        this.url = url;
+    public WebsiteURL(){
         id = UUID.randomUUID();
     }
 

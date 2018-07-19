@@ -16,6 +16,10 @@ public class Website {
     @Column(name = "name")
     private String name;
 
+    public Website() {
+        id = UUID.randomUUID();
+    }
+
     public UUID getId() {
         return id;
     }

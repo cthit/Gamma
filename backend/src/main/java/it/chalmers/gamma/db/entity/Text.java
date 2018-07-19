@@ -15,19 +15,15 @@ public class Text {
     private UUID id;
     @Column(name = "sv")
     private String sv;
-    @Column(name = "sv")
+    @Column(name = "en")
     private String en;
 
-    public Text(String sv, String en) {
-        this.sv = sv;
-        this.en = en;
+    public Text() {
+        sv = "";
+        en = "";
         id = UUID.randomUUID();
     }
 
-    public Text(String sv) {
-        this.sv = sv;
-        id = UUID.randomUUID();
-    }
 
     public UUID getId() {
         return id;

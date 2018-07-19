@@ -19,11 +19,12 @@ public class FKITGroup {
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
-
-    @Column(name = "description")
+    @JoinColumn(name = "description")
+    @OneToOne
     private Text description;
 
-    @Column(name = "function")
+    @JoinColumn(name = "function", nullable = false)
+    @OneToOne
     private Text function;
 
     @Column(name = "email", length = 100, nullable = false)
@@ -32,6 +33,10 @@ public class FKITGroup {
     @Column(name = "type", length = 30, nullable = false)
     @Enumerated(EnumType.STRING)
     private GroupType type;
+
+    public FKITGroup() {
+        id = UUID.randomUUID();
+    }
 
     public UUID getId() {
         return id;
