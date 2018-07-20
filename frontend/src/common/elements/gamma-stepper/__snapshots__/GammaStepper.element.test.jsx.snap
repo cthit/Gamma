@@ -44,7 +44,7 @@ ShallowWrapper {
   Symbol(enzyme.__node__): Object {
     "instance": null,
     "key": undefined,
-    "nodeType": "host",
+    "nodeType": "class",
     "props": Object {
       "children": Array [
         <WithStyles(Stepper)
@@ -67,11 +67,9 @@ ShallowWrapper {
                     </WithStyles(StepLabel)>
           </WithStyles(Step)>
 </WithStyles(Stepper)>,
-        <div>
-          <h1>
-                    Done
-          </h1>
-</div>,
+        <h1>
+          Done
+</h1>,
       ],
     },
     "ref": null,
@@ -180,32 +178,20 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "host",
         "props": Object {
-          "children": <h1>
-            Done
-</h1>,
+          "children": "Done",
         },
         "ref": null,
-        "rendered": Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "host",
-          "props": Object {
-            "children": "Done",
-          },
-          "ref": null,
-          "rendered": "Done",
-          "type": "h1",
-        },
-        "type": "div",
+        "rendered": "Done",
+        "type": "h1",
       },
     ],
-    "type": "div",
+    "type": [Function],
   },
   Symbol(enzyme.__nodes__): Array [
     Object {
       "instance": null,
       "key": undefined,
-      "nodeType": "host",
+      "nodeType": "class",
       "props": Object {
         "children": Array [
           <WithStyles(Stepper)
@@ -228,11 +214,9 @@ ShallowWrapper {
                         </WithStyles(StepLabel)>
             </WithStyles(Step)>
 </WithStyles(Stepper)>,
-          <div>
-            <h1>
-                        Done
-            </h1>
-</div>,
+          <h1>
+            Done
+</h1>,
         ],
       },
       "ref": null,
@@ -341,26 +325,14 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "host",
           "props": Object {
-            "children": <h1>
-              Done
-</h1>,
+            "children": "Done",
           },
           "ref": null,
-          "rendered": Object {
-            "instance": null,
-            "key": undefined,
-            "nodeType": "host",
-            "props": Object {
-              "children": "Done",
-            },
-            "ref": null,
-            "rendered": "Done",
-            "type": "h1",
-          },
-          "type": "div",
+          "rendered": "Done",
+          "type": "h1",
         },
       ],
-      "type": "div",
+      "type": [Function],
     },
   ],
   Symbol(enzyme.__options__): Object {

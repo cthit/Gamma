@@ -1,19 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<MapPathToStep/> Shallow render of primary raised <MapPathToStep/> 1`] = `
+exports[`<ContainUserToAllowedPages/> Shallow render of <ContainUserToAllowedPages/> 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <MapPathToStep
-    currentPath="/glass"
-    pathToStepMap={
-        Object {
-            "/asdf": 2,
-            "/glass": 1,
-          }
-    }
-    render={[Function]}
-/>,
+  Symbol(enzyme.__unrendered__): <ContainUserToAllowedPages />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
     "getNode": [Function],
@@ -21,9 +12,9 @@ ShallowWrapper {
     "simulateEvent": [Function],
     "unmount": [Function],
   },
-  Symbol(enzyme.__node__): undefined,
+  Symbol(enzyme.__node__): null,
   Symbol(enzyme.__nodes__): Array [
-    undefined,
+    null,
   ],
   Symbol(enzyme.__options__): Object {
     "adapter": ReactSixteenAdapter {
