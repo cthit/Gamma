@@ -12,10 +12,4 @@ public class GammaApplication {
     public static void main(String[] args) {
         SpringApplication.run(GammaApplication.class, args);
     }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void doSomethingAfterStartup() {
-
-    }
-
 }

@@ -10,9 +10,9 @@ export class GammaRedirect extends React.Component {
   }
 
   render() {
-    const { redirectPath } = this.props;
+    const { redirectPath, currentPath } = this.props;
 
-    if (redirectPath != null) {
+    if (redirectPath != null && currentPath !== redirectPath) {
       return <Redirect to={redirectPath} push={true} />;
     }
     return null;

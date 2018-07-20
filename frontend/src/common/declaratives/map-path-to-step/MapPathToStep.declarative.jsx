@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Fill } from "../../../common-ui/layout";
 
-const MapPathToStep = ({ currentPath, pathToStepMap, render }) => (
-  <div>{render(getCurrentStep(currentPath, pathToStepMap))}</div>
-);
+const MapPathToStep = ({ currentPath, pathToStepMap, render }) =>
+  render(getCurrentStep(currentPath, pathToStepMap));
 
 function getCurrentStep(currentPath, pathToStepMap) {
   if (!pathToStepMap.hasOwnProperty(currentPath)) {

@@ -29,12 +29,10 @@ public class ITUserService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
-        System.out.println(itUserRepository.findByCid(cid));
         return itUserRepository.findByCid(cid);
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
-        System.out.println(itUserRepository.findByCid(cid));
         return itUserRepository.findByCid(cid);
     }
 
@@ -63,7 +61,6 @@ public class ITUserService implements UserDetailsService{
         itUser.setAccountLocked(false);
         itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
         itUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        System.out.println(itUser);
         itUserRepository.save(itUser);
     }
 
