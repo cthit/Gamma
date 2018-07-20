@@ -1,7 +1,6 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.response.GetGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITService;
@@ -18,10 +17,10 @@ public class FKITGroupController {
     }
 
     @RequestMapping(value = "/{group}", method = RequestMethod.GET)
-    public ResponseEntity getGroupInfo(@PathVariable("group") String group){
+    public ResponseEntity<FKITGroup> getGroupInfo(@PathVariable("group") String group){
         if(!fkitService.groupExists(group)){
-            return new GroupDoesNotExistResponse();
+            return new GetGroupResponse(null);
         }
-        return new GetGroupResponse(fkitService.getGroupInfo(group));
+        return new GetGroupResponse(fkitService.getGroup(group));
     }
 }

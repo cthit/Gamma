@@ -26,7 +26,7 @@ public class FKITGroup {
     private String prettyName;
 
     @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Text description;
 
     @JoinColumn(name = "function", nullable = false)

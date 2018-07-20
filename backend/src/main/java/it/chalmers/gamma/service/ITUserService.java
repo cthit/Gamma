@@ -3,6 +3,9 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.requests.CreateITUserRequest;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +22,7 @@ public class ITUserService implements UserDetailsService{
     private final ITUserRepository itUserRepository;
 
     private final PasswordEncoder passwordEncoder;
+
 
     private int minPasswordLength = 8;
 
@@ -71,7 +75,7 @@ public class ITUserService implements UserDetailsService{
         itUserRepository.save(itUser);
     }
 
-    public void removeCid(CreateITUserRequest createITUserRequest){
-        itUserRepository.delete(itUserRepository.findByCid(createITUserRequest.getWhitelist().getCid()));
+    public void removeUser(String cid){
+        itUserRepository.delete(itUserRepository.findByCid(cid));
     }
 }

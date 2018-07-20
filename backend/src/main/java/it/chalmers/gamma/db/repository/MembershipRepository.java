@@ -1,13 +1,11 @@
 package it.chalmers.gamma.db.repository;
 
-import it.chalmers.gamma.db.entity.Post;
-import javafx.geometry.Pos;
+import it.chalmers.gamma.db.entity.Membership;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, UUID> {
-    Post getByPostName(String post);
+public interface MembershipRepository extends JpaRepository<Membership, UUID>{
 }

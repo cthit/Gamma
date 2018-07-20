@@ -21,6 +21,9 @@ public class Post {
     @Column(name = "post_name", length = 50, nullable = false, unique = true)
     private String postName;
 
+    public Post(){
+        this.id = UUID.randomUUID();
+    }
     public UUID getId() {
         return id;
     }

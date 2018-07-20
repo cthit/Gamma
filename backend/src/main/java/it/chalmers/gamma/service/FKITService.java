@@ -29,9 +29,12 @@ public class FKITService {
         FKITGroup group = repo.findByName(name.toLowerCase());
         group.setSVFunction(function.getSv());
         group.setENFunction(function.getEn());
-        if(group.getDescription() != null) {
-            group.setSVDescription(description.getSv());
-            group.setENFunction(description.getEn());
+        function = group.getFunction();
+        if(description != null) {
+            if (group.getDescription() != null) {
+                group.setSVDescription(description.getSv());
+                group.setENDescription(description.getEn());
+            }
         }
         return saveGroup(group, name, description, email, type, function);
     }
@@ -43,13 +46,15 @@ public class FKITService {
         fkitGroup.setEmail(email);
         fkitGroup.setType(type);
         fkitGroup.setFunction(function);
-        System.out.println("function: " + fkitGroup.getFunction());
         return repo.save(fkitGroup);
     }
     public boolean groupExists(String name){
         return repo.existsFKITGroupByName(name);
     }
-    public FKITGroup getGroupInfo(String group){
+    public FKITGroup getGroup(String group){
         return repo.findByName(group);
+    }
+    public void removeGroup(String group){
+        repo.delete(repo.findByName(group));
     }
 }

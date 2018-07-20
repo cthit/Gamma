@@ -1,14 +1,11 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.requests.CreateITUserRequest;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
-import it.chalmers.gamma.service.FKITService;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +18,16 @@ public class AdministrationController {
     private ITUserService itUserService;
     private WhitelistService whitelistService;
     private FKITService fkitService;
+    private MembershipService membershipService;
+    private PostService postService;
 
-    AdministrationController(ITUserService itUserService, WhitelistService whitelistService, FKITService fkitService){
+    AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
+                             FKITService fkitService, MembershipService membershipService, PostService postService){
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
+        this.membershipService = membershipService;
+        this.postService = postService;
     }
     /**
      * Administrative function that can add user without need for user to add it personally.
@@ -81,8 +83,39 @@ public class AdministrationController {
         fkitService.editGroup(request.getName(), request.getDescription(), request.getEmail(), request.getGroupType(), request.getFunction());
         return new GroupCreatedResponse();
     }
-
-
+    @RequestMapping(value = "/groups/delete", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteGroup(@RequestBody DeleteGroupRequest group){
+        if(fkitService.groupExists(group.getGroup())){
+            return new GroupDoesNotExistResponse();
+        }
+        fkitService.removeGroup(group.getGroup());
+        return new GroupDeletedResponse();
+    }
+    @RequestMapping(value = "/groups/add_user", method = RequestMethod.POST)
+    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request){
+        if(!itUserService.userExists(request.getUser())){
+            return new NoCidFoundResponse();
+        }
+        if(!fkitService.groupExists(request.getGroup())){
+            return new GroupDoesNotExistResponse();
+        }
+        if(!postService.postExists(request.getPost())){
+            return new PostDoesNotExistResponse();
+        }
+        ITUser user = itUserService.loadUser(request.getUser());
+        FKITGroup group = fkitService.getGroup(request.getGroup());
+        Post post = postService.getPost(request.getPost());
+        membershipService.addUserToGroup(group, user, post, request.getUnofficialName(), request.getYear());
+        return new UserAddedToGroupResponse();
+    }
+    @RequestMapping(value = "/groups/add_post")
+    public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request){
+        if(postService.postExists(request.getPost())){
+            return new PostAlreadyExistsResponse();
+        }
+        postService.addPost(request.getPost());
+        return new PostCreatedResponse();
+    }
 
 
 }
