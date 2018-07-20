@@ -24,7 +24,7 @@ import Hidden from "@material-ui/core/Hidden";
 import { Text, Title } from "../../common-ui/text";
 import GammaTextField from "../elements/gamma-text-field";
 import IfElseRendering from "../declaratives/if-else-rendering";
-import GammaTableHeader from "./GammaTableHeader";
+import GammaTableToolbar from "./GammaTableToolbar";
 import GammaTableBody from "./GammaTableBody";
 
 let counter = 0;
@@ -221,7 +221,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <GammaTableHeader
+        <GammaTableToolbar
           numSelected={this.state.selected.length}
           searchInput={this.state.searchInput}
           onSearchInputChange={this.onSearchInputChange}

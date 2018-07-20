@@ -34,7 +34,7 @@ const toolbarStyles = theme => ({
   }
 });
 
-const GammaTableHeader = ({
+const GammaTableToolbar = ({
   numSelected,
   searchInput,
   onSearchInputChange,
@@ -67,9 +67,9 @@ const SearchInput = styled(GammaTextField)`
   width: 400px;
 `;
 
-GammaTableHeader.propTypes = {
+GammaTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired
 };
 
-export default withStyles(toolbarStyles)(GammaTableHeader);
+export default withStyles(toolbarStyles)(GammaTableToolbar);
