@@ -1,0 +1,470 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<EmailHasBeenSent/> Shallow render of <EmailHasBeenSent/> 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <EmailHasBeenSent
+    text={
+        Object {
+            "Back": "Something",
+            "HaveRecievedACode": "Something else",
+          }
+    }
+/>,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": <Styled(Component)
+        maxWidth="500px"
+        minWidth="300px"
+>
+        <Styled(Styled(Component))
+                text={undefined}
+        />
+        <styled.div>
+                <Styled(Component)
+                        text={undefined}
+                />
+        </styled.div>
+        <styled.div
+                leftRight={true}
+                reverseDirection={true}
+        >
+                <Styled(NavLink)
+                        to="/create-account/input"
+                >
+                        <GammaButton
+                                onClick={[Function]}
+                                primary={true}
+                                raised={true}
+                                text="Something else"
+                        />
+                </Styled(NavLink)>
+                <Styled(NavLink)
+                        to="/create-account"
+                >
+                        <GammaButton
+                                onClick={[Function]}
+                                raised={true}
+                                text="Something"
+                        />
+                </Styled(NavLink)>
+        </styled.div>
+</Styled(Component)>,
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          <Styled(Styled(Component))
+            text={undefined}
+/>,
+          <styled.div>
+            <Styled(Component)
+                        text={undefined}
+            />
+</styled.div>,
+          <styled.div
+            leftRight={true}
+            reverseDirection={true}
+>
+            <Styled(NavLink)
+                        to="/create-account/input"
+            >
+                        <GammaButton
+                                    onClick={[Function]}
+                                    primary={true}
+                                    raised={true}
+                                    text="Something else"
+                        />
+            </Styled(NavLink)>
+            <Styled(NavLink)
+                        to="/create-account"
+            >
+                        <GammaButton
+                                    onClick={[Function]}
+                                    raised={true}
+                                    text="Something"
+                        />
+            </Styled(NavLink)>
+</styled.div>,
+        ],
+        "maxWidth": "500px",
+        "minWidth": "300px",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "text": undefined,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": <Styled(Component)
+              text={undefined}
+/>,
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "text": undefined,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": Array [
+              <Styled(NavLink)
+                to="/create-account/input"
+>
+                <GammaButton
+                                onClick={[Function]}
+                                primary={true}
+                                raised={true}
+                                text="Something else"
+                />
+</Styled(NavLink)>,
+              <Styled(NavLink)
+                to="/create-account"
+>
+                <GammaButton
+                                onClick={[Function]}
+                                raised={true}
+                                text="Something"
+                />
+</Styled(NavLink)>,
+            ],
+            "leftRight": true,
+            "reverseDirection": true,
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <GammaButton
+                  onClick={[Function]}
+                  primary={true}
+                  raised={true}
+                  text="Something else"
+/>,
+                "to": "/create-account/input",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {
+                  "onClick": [Function],
+                  "primary": true,
+                  "raised": true,
+                  "text": "Something else",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <GammaButton
+                  onClick={[Function]}
+                  raised={true}
+                  text="Something"
+/>,
+                "to": "/create-account",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {
+                  "onClick": [Function],
+                  "raised": true,
+                  "text": "Something",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+      ],
+      "type": [Function],
+    },
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": <Styled(Component)
+          maxWidth="500px"
+          minWidth="300px"
+>
+          <Styled(Styled(Component))
+                    text={undefined}
+          />
+          <styled.div>
+                    <Styled(Component)
+                              text={undefined}
+                    />
+          </styled.div>
+          <styled.div
+                    leftRight={true}
+                    reverseDirection={true}
+          >
+                    <Styled(NavLink)
+                              to="/create-account/input"
+                    >
+                              <GammaButton
+                                        onClick={[Function]}
+                                        primary={true}
+                                        raised={true}
+                                        text="Something else"
+                              />
+                    </Styled(NavLink)>
+                    <Styled(NavLink)
+                              to="/create-account"
+                    >
+                              <GammaButton
+                                        onClick={[Function]}
+                                        raised={true}
+                                        text="Something"
+                              />
+                    </Styled(NavLink)>
+          </styled.div>
+</Styled(Component)>,
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": Array [
+            <Styled(Styled(Component))
+              text={undefined}
+/>,
+            <styled.div>
+              <Styled(Component)
+                            text={undefined}
+              />
+</styled.div>,
+            <styled.div
+              leftRight={true}
+              reverseDirection={true}
+>
+              <Styled(NavLink)
+                            to="/create-account/input"
+              >
+                            <GammaButton
+                                          onClick={[Function]}
+                                          primary={true}
+                                          raised={true}
+                                          text="Something else"
+                            />
+              </Styled(NavLink)>
+              <Styled(NavLink)
+                            to="/create-account"
+              >
+                            <GammaButton
+                                          onClick={[Function]}
+                                          raised={true}
+                                          text="Something"
+                            />
+              </Styled(NavLink)>
+</styled.div>,
+          ],
+          "maxWidth": "500px",
+          "minWidth": "300px",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "text": undefined,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": <Styled(Component)
+                text={undefined}
+/>,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "text": undefined,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": Array [
+                <Styled(NavLink)
+                  to="/create-account/input"
+>
+                  <GammaButton
+                                    onClick={[Function]}
+                                    primary={true}
+                                    raised={true}
+                                    text="Something else"
+                  />
+</Styled(NavLink)>,
+                <Styled(NavLink)
+                  to="/create-account"
+>
+                  <GammaButton
+                                    onClick={[Function]}
+                                    raised={true}
+                                    text="Something"
+                  />
+</Styled(NavLink)>,
+              ],
+              "leftRight": true,
+              "reverseDirection": true,
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": <GammaButton
+                    onClick={[Function]}
+                    primary={true}
+                    raised={true}
+                    text="Something else"
+/>,
+                  "to": "/create-account/input",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {
+                    "onClick": [Function],
+                    "primary": true,
+                    "raised": true,
+                    "text": "Something else",
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": <GammaButton
+                    onClick={[Function]}
+                    raised={true}
+                    text="Something"
+/>,
+                  "to": "/create-account",
+                },
+                "ref": null,
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "function",
+                  "props": Object {
+                    "onClick": [Function],
+                    "raised": true,
+                    "text": "Something",
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                "type": [Function],
+              },
+            ],
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

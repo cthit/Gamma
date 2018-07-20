@@ -7,6 +7,7 @@ export const Fill = styled.div`
 
   display: flex;
   flex-direction: column;
+  padding: 0px;
 `;
 
 export const MarginTop = Fill.extend`

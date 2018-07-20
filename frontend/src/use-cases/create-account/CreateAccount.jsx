@@ -11,40 +11,37 @@ import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import { Fill, Spacing } from "../../common-ui/layout";
 
 const CreateAccount = ({ text, location }) => (
-  <div>
-    <Fill>
-      <MapPathToStep
-        currentPath={location.pathname}
-        pathToStepMap={{
-          "/create-account": 0,
-          "/create-account/email-sent": 1,
-          "/create-account/input": 2,
-          "/create-account/finished": 3
-        }}
-        render={step => (
-          <GammaStepper
-            activeStep={step}
-            steps={[
-              {
-                text: text.SendCid,
-                element: <InputCid />
-              },
-              {
-                text: text.GetActivationCode,
-                element: <EmailHasBeenSent />
-              },
-              {
-                text: text.CreateAccount,
-                element: <InputDataAndCode />
-              }
-            ]}
-            finishedElement={<CreationOfAccountFinished />}
-          />
-        )}
-      />
-    </Fill>
-    <Spacing />
-  </div>
+  <Fill>
+    <MapPathToStep
+      currentPath={location.pathname}
+      pathToStepMap={{
+        "/create-account": 0,
+        "/create-account/email-sent": 1,
+        "/create-account/input": 2,
+        "/create-account/finished": 3
+      }}
+      render={step => (
+        <GammaStepper
+          activeStep={step}
+          steps={[
+            {
+              text: text.SendCid,
+              element: <InputCid />
+            },
+            {
+              text: text.GetActivationCode,
+              element: <EmailHasBeenSent />
+            },
+            {
+              text: text.CreateAccount,
+              element: <InputDataAndCode />
+            }
+          ]}
+          finishedElement={<CreationOfAccountFinished />}
+        />
+      )}
+    />
+  </Fill>
 );
 
 CreateAccount.propTypes = {

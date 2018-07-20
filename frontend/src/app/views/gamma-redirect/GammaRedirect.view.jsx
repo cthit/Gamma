@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-export class GammaRedirect extends React.Component {
+class GammaRedirect extends React.Component {
   componentDidUpdate() {
     const { redirectPath, redirectFinished } = this.props;
     if (redirectPath != null) {
@@ -10,11 +10,13 @@ export class GammaRedirect extends React.Component {
   }
 
   render() {
-    const { redirectPath } = this.props;
+    const { redirectPath, currentPath } = this.props;
 
-    if (redirectPath != null) {
+    if (redirectPath != null && currentPath !== redirectPath) {
       return <Redirect to={redirectPath} push={true} />;
     }
     return null;
   }
 }
+
+export default GammaRedirect;

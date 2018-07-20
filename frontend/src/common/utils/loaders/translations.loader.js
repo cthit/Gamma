@@ -7,6 +7,10 @@ import _ from "lodash";
 * baseUrl must contain a dot at the end.
 */
 export default function loadTranslations(localize, translations, baseUrl) {
+  if (translations == null && baseUrl == null) {
+    return _loadCommonTranslations(localize);
+  }
+
   const translate = textId => getTranslate(localize)(baseUrl + textId);
 
   const textsToTranslate = _.keys(translations);

@@ -2,7 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import { Paper } from "@material-ui/core";
 
-import { HeadingLevel2, HeadingLevel3, Title, Subtitle } from "../text";
+import { NavLink } from "react-router-dom";
+
+import {
+  HeadingLevel2,
+  HeadingLevel3,
+  Title,
+  Subtitle,
+  Display
+} from "../text";
 
 /** Props:
  * width, height, maxWidth, maxHeight, minWidth, minHeight
@@ -115,6 +123,21 @@ export const GammaCardTitle = styled(Title)`
   grid-row-end: 2;
 `;
 
+export const GammaCardDisplayTitle = styled(Display)`
+  font-size: 30px;
+  line-height: 33px;
+
+  margin: 0;
+  margin-top: 8px;
+  margin-left: 8px;
+  margin-right: 8px;
+
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 2;
+`;
+
 export const GammaCardSubTitle = styled(Subtitle)`
   font-size: 15px;
   line-height: 25px;
@@ -158,4 +181,8 @@ export const Divider = styled.hr`
   display: block;
   margin-left: auto;
   margin-right: auto;
+`;
+
+export const GammaLink = styled(NavLink)`
+  text-decoration: none;
 `;

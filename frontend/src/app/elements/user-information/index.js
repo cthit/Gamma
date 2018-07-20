@@ -1,1 +1,1 @@
-export { default } from "./UserInformation";
+export { default } from "./UserInformation.element.container";
