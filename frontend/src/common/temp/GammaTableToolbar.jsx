@@ -5,71 +5,42 @@ import styled from "styled-components";
 import classNames from "classnames";
 import GammaTextField from "../elements/gamma-text-field";
 import Toolbar from "@material-ui/core/Toolbar";
-import { lighten } from "@material-ui/core/styles/colorManipulator";
-import { withStyles } from "@material-ui/core/styles";
 import { Text, Title } from "../../common-ui/text";
+import { Spacing } from "../../common-ui/layout";
 
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
-  spacer: {
-    flex: "1 1 100%"
-  },
-  actions: {
-    color: theme.palette.text.secondary
-  },
-  title: {
-    flex: "0 0 auto"
-  }
-});
+const Spacer = styled.div`
+  flex: 1 1 100%;
+`;
 
-const GammaTableToolbar = ({
-  numSelected,
-  searchInput,
-  onSearchInputChange,
-  classes
-}) => (
-  <Toolbar
-    className={classNames(classes.root, {
-      [classes.highlight]: numSelected > 0
-    })}
-  >
-    <div className={classes.title}>
-      {numSelected > 0 ? (
-        <Title text={numSelected + " selected"} />
-      ) : (
-        <Title text="Användare" />
-      )}
-    </div>
-    <div className={classes.spacer} />
-    <div className={classes.actions}>
-      <SearchInput
-        upperLabel="Sök efter användare"
-        value={searchInput}
-        onChange={onSearchInputChange}
-      />
-    </div>
-  </Toolbar>
-);
+const TableTitle = styled(Title)`
+  flex: 0 0 auto;
+`;
 
 const SearchInput = styled(GammaTextField)`
   width: 400px;
 `;
 
+const GammaTableToolbar = ({
+  numSelected,
+  searchInput,
+  onSearchInputChange
+}) => (
+  <Toolbar>
+    <TableTitle
+      text={numSelected > 0 ? numSelected + " selected" : "Användare"}
+    />
+    <Spacer />
+    <SearchInput
+      upperLabel="Sök efter användare"
+      value={searchInput}
+      onChange={onSearchInputChange}
+    />
+    <Spacing />
+  </Toolbar>
+);
+
 GammaTableToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired
 };
 
-export default withStyles(toolbarStyles)(GammaTableToolbar);
+export default GammaTableToolbar;
