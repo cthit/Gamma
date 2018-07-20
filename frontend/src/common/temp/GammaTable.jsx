@@ -26,97 +26,19 @@ import GammaTextField from "../elements/gamma-text-field";
 import IfElseRendering from "../declaratives/if-else-rendering";
 import GammaTableToolbar from "./GammaTableToolbar";
 import GammaTableBody from "./GammaTableBody";
-
-let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-  counter += 1;
-  return { id: counter, name, calories, fat, carbs, protein };
-}
-
-const columnData = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Dessert (100g serving)"
-  },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
-];
-
-class EnhancedTableHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
-
-  render() {
-    const {
-      onSelectAllClick,
-      order,
-      orderBy,
-      numSelected,
-      rowCount
-    } = this.props;
-
-    return (
-      <Hidden only="xs">
-        <TableHead>
-          <TableRow>
-            <TableCell padding="checkbox">
-              <Grid>
-                <Checkbox
-                  indeterminate={numSelected > 0 && numSelected < rowCount}
-                  checked={numSelected === rowCount}
-                  onChange={onSelectAllClick}
-                />
-              </Grid>
-            </TableCell>
-
-            {columnData.map(column => {
-              return (
-                <TableCell
-                  key={column.id}
-                  sortDirection={orderBy === column.id ? order : false}
-                >
-                  <Tooltip
-                    title="Sort"
-                    placement={column.numeric ? "bottom-end" : "bottom-start"}
-                    enterDelay={300}
-                  >
-                    <TableSortLabel
-                      active={orderBy === column.id}
-                      direction={order}
-                      onClick={this.createSortHandler(column.id)}
-                    >
-                      <Text text={column.label} />
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-              );
-            }, this)}
-          </TableRow>
-        </TableHead>
-      </Hidden>
-    );
-  }
-}
-
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired
-};
+import GammaTableHeader from "./GammaTableHeader";
 
 const styles = theme => ({
   root: {
     marginTop: theme.spacing.unit * 3
   }
 });
+
+let counter = 0;
+function createData(name, calories, fat, carbs, protein) {
+  counter += 1;
+  return { id: counter, name, calories, fat, carbs, protein };
+}
 
 class EnhancedTable extends React.Component {
   constructor(props, context) {
@@ -228,7 +150,7 @@ class EnhancedTable extends React.Component {
         />
 
         <Table className={classes.table} aria-labelledby="tableTitle">
-          <EnhancedTableHead
+          <GammaTableHeader
             numSelected={
               selected.filter(n => this.rowShouldBeShown(n.name)).length ///TODO OPTIMIZE
             }
