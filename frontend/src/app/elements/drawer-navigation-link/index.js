@@ -1,1 +1,1 @@
-export { default } from "./DrawerNavigationLink";
+export { default } from "./DrawerNavigationLink.element";

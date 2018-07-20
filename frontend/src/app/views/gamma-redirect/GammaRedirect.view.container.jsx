@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import { GammaRedirect } from "./GammaRedirect.view";
+import GammaRedirect from "./GammaRedirect.view";
 import { redirectFinished } from "./GammaRedirect.view.action-creator";
 
 const mapStateToProps = state => ({
