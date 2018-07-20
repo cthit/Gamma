@@ -25,6 +25,7 @@ import { Text, Title } from "../../common-ui/text";
 import GammaTextField from "../elements/gamma-text-field";
 import IfElseRendering from "../declaratives/if-else-rendering";
 import GammaTableHeader from "./GammaTableHeader";
+import GammaTableBody from "./GammaTableBody";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -114,55 +115,6 @@ EnhancedTableHead.propTypes = {
 const styles = theme => ({
   root: {
     marginTop: theme.spacing.unit * 3
-  },
-
-  tableBodyRow: {
-    //Small Screen
-    display: "block",
-    height: "auto",
-    marginTop: 10,
-    backgroundColor: "white",
-
-    [theme.breakpoints.up("sm")]: {
-      height: 48,
-      display: "table-row",
-      border: 0,
-      backgroundColor: "#ffffff"
-    }
-  },
-
-  tableCheckboxCell: {
-    [theme.breakpoints.down("sm")]: {
-      width: "999999px"
-    }
-  },
-
-  tableBodyData: {
-    display: "block",
-    padding: 12,
-    fontSize: 14,
-    textAlign: "right",
-    border: 0,
-
-    // Adding each data table head from here
-    "&:before": {
-      content: "attr(datatitle)",
-      float: "left",
-      color: "#00000"
-    },
-
-    [theme.breakpoints.up("sm")]: {
-      display: "table-cell",
-      padding: "20px 24px",
-      fontSize: 14,
-      textAlign: "left",
-      borderBottom: "1px solid rgba(224, 224, 224, 1)",
-
-      "&:before": {
-        content: "",
-        display: "none"
-      }
-    }
   }
 });
 
@@ -275,79 +227,27 @@ class EnhancedTable extends React.Component {
           onSearchInputChange={this.onSearchInputChange}
         />
 
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={
-                selected.filter(n => this.rowShouldBeShown(n.name)).length ///TODO OPTIMIZE
-              }
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
-            />
-            <TableBody>
-              {data
-                .filter(n => this.rowShouldBeShown(n.name))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      key={n.id}
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      selected={isSelected}
-                      classes={{
-                        root: classes.tableBodyRow
-                      }}
-                    >
-                      <TableCell
-                        padding="checkbox"
-                        classes={{ root: classes.tableCheckboxCell }}
-                      >
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell
-                        datatitle="Dessert (100g serving)"
-                        classes={{ root: classes.tableBodyData }}
-                      >
-                        <Text text={n.name} />
-                      </TableCell>
-                      <TableCell
-                        datatitle="Calories"
-                        classes={{ root: classes.tableBodyData }}
-                      >
-                        <Text text={n.calories} />
-                      </TableCell>
-                      <TableCell
-                        datatitle="Fat (g)"
-                        classes={{ root: classes.tableBodyData }}
-                      >
-                        <Text text={n.fat} />
-                      </TableCell>
-                      <TableCell
-                        datatitle="Carbs (g)"
-                        classes={{ root: classes.tableBodyData }}
-                      >
-                        <Text text={n.carbs} />
-                      </TableCell>
-                      <TableCell
-                        datatitle="Protein (g)"
-                        classes={{ root: classes.tableBodyData }}
-                      >
-                        <Text text={n.protein} />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </div>
+        <Table className={classes.table} aria-labelledby="tableTitle">
+          <EnhancedTableHead
+            numSelected={
+              selected.filter(n => this.rowShouldBeShown(n.name)).length ///TODO OPTIMIZE
+            }
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={this.handleSelectAllClick}
+            onRequestSort={this.handleRequestSort}
+            rowCount={data.length}
+          />
+          <GammaTableBody
+            page={this.state.page}
+            rowsPerPage={this.state.rowsPerPage}
+            data={this.state.data}
+            searchInput={this.state.searchInput}
+            isSelected={this.isSelected}
+            handleClick={this.handleClick}
+            rowShouldBeShown={this.rowShouldBeShown}
+          />
+        </Table>
 
         <TablePagination
           component="div"
