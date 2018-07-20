@@ -24,6 +24,7 @@ import Hidden from "@material-ui/core/Hidden";
 import { Text, Title } from "../../common-ui/text";
 import GammaTextField from "../elements/gamma-text-field";
 import IfElseRendering from "../declaratives/if-else-rendering";
+import GammaTableHeader from "./GammaTableHeader";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -109,70 +110,6 @@ EnhancedTableHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired
 };
-
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark
-        },
-  spacer: {
-    flex: "1 1 100%"
-  },
-  actions: {
-    color: theme.palette.text.secondary
-  },
-  title: {
-    flex: "0 0 auto"
-  }
-});
-
-let EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
-
-  return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0
-      })}
-    >
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Title text={numSelected + " selected"} />
-        ) : (
-          <Title text="Användare" />
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        <SearchInput
-          upperLabel="Sök efter användare"
-          value={props.searchInput}
-          onChange={props.onSearchInputChange}
-        />
-      </div>
-    </Toolbar>
-  );
-};
-
-const SearchInput = styled(GammaTextField)`
-  width: 400px;
-`;
-
-EnhancedTableToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired
-};
-
-EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 
 const styles = theme => ({
   root: {
@@ -332,7 +269,7 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar
+        <GammaTableHeader
           numSelected={this.state.selected.length}
           searchInput={this.state.searchInput}
           onSearchInputChange={this.onSearchInputChange}
