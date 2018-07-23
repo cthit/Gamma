@@ -9,6 +9,8 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Text, Title } from "../../common-ui/text";
 
+import GammaButton from "../elements/gamma-button";
+
 const StyledCheckbox = styled(Checkbox)``;
 
 const StyledTableRow = styled(TableRow)`
@@ -33,6 +35,7 @@ const StyledTableCell = styled(TableCell)`
 
   &:before {
     content: attr(datatitle);
+    font-weight: 500;
     float: left;
     color: #000;
   }
@@ -79,14 +82,16 @@ const GammaTableBody = ({
           <StyledTableRow
             hover
             key={n.id}
-            onClick={event => handleClick(event, n.id)}
             role="checkbox"
             aria-checked={selected}
             tabIndex={-1}
             selected={selected}
           >
             <StyledTableCell padding="checkbox">
-              <StyledCheckbox checked={selected} />
+              <StyledCheckbox
+                onClick={event => handleClick(event, n.id)}
+                checked={selected}
+              />
             </StyledTableCell>
 
             {Object.keys(headerTexts).map(key => (
@@ -94,6 +99,10 @@ const GammaTableBody = ({
                 <Text text={n[key]} />
               </StyledTableCell>
             ))}
+
+            <StyledTableCell>
+              <GammaButton text="Detaljer" raised primary />
+            </StyledTableCell>
           </StyledTableRow>
         );
       })}

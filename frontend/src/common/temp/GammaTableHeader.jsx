@@ -41,12 +41,13 @@ class GammaTableHeader extends React.Component {
                       direction={order}
                       onClick={this.createSortHandler(key)}
                     >
-                      <Text text={headerTexts[key]} />
+                      <Text bold text={headerTexts[key]} />
                     </TableSortLabel>
                   </Tooltip>
                 </TableCell>
               );
             }, this)}
+            <TableCell />
           </TableRow>
         </TableHead>
       </Hidden>

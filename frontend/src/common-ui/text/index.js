@@ -18,12 +18,13 @@ export const Heading = styled(({ text, white, ...rest }) => (
   color: ${props => (props.white ? "white" : "")};
 `;
 
-export const Title = styled(({ text, white, ...rest }) => (
+export const Title = styled(({ text, white, bold, ...rest }) => (
   <Typography {...rest} variant="title">
     {text}
   </Typography>
 ))`
-  color: ${props => (props.white ? "white" : "")};
+  color: ${props => (props.white ? "white" : "inherit")};
+  font-weight: ${props => (props.bold ? "500" : "inherit")};
 `;
 
 export const Subtitle = styled(({ text, white, ...rest }) => (
@@ -34,10 +35,11 @@ export const Subtitle = styled(({ text, white, ...rest }) => (
   color: ${props => (props.white ? "white" : "")};
 `;
 
-export const Text = styled(({ text, white, ...rest }) => (
+export const Text = styled(({ text, white, bold, ...rest }) => (
   <Typography {...rest} variant="body1">
     {text}
   </Typography>
 ))`
   color: ${props => (props.white ? "white" : "")};
+  font-weight: ${props => (props.bold ? "500" : "inherit")};
 `;
