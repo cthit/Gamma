@@ -6,7 +6,6 @@ import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
@@ -40,7 +39,7 @@ function createData(name, calories, fat, carbs, protein) {
   return { id: counter, name, calories, fat, carbs, protein };
 }
 
-class EnhancedTable extends React.Component {
+class GammaTable extends React.Component {
   constructor(props, context) {
     super(props, context);
 
@@ -67,7 +66,6 @@ class EnhancedTable extends React.Component {
       page: 0,
       rowsPerPage: 5
     };
-    console.log(this.state.data);
   }
 
   onSearchInputChange = e => {
@@ -133,23 +131,23 @@ class EnhancedTable extends React.Component {
 
   rowShouldBeShown = name =>
     this.state.searchInput === "" ||
+    name == null ||
     name.toLowerCase().includes(this.state.searchInput.toLowerCase());
 
   render() {
-    const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-      <Paper className={classes.root}>
+      <Paper>
         <GammaTableToolbar
           numSelected={this.state.selected.length}
           searchInput={this.state.searchInput}
           onSearchInputChange={this.onSearchInputChange}
         />
 
-        <Table className={classes.table} aria-labelledby="tableTitle">
+        <Table aria-labelledby="tableTitle">
           <GammaTableHeader
             numSelected={
               selected.filter(n => this.rowShouldBeShown(n.name)).length ///TODO OPTIMIZE
@@ -190,8 +188,4 @@ class EnhancedTable extends React.Component {
   }
 }
 
-EnhancedTable.propTypes = {
-  classes: PropTypes.object.isRequired
-};
-
-export default withStyles(styles)(EnhancedTable);
+export default GammaTable;
