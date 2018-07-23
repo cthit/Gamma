@@ -1,14 +1,11 @@
 package it.chalmers.gamma.controller;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
-import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
@@ -20,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.time.Year;
 import java.util.List;
 
@@ -84,7 +80,7 @@ public class ITUserController {
             activationCodeService.deleteCode(user.getCid());
             return new CodeExpiredResponse();
         }
-        if(createITUserRequest.getPassword().length() < 10){
+        if(createITUserRequest.getPassword().length() < 8){
             return new PasswordTooShortResponse();
         }
             else {

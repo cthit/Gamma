@@ -2,7 +2,6 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.repository.PostRepository;
-import javafx.geometry.Pos;
 import org.springframework.stereotype.Service;
 
 @Service
