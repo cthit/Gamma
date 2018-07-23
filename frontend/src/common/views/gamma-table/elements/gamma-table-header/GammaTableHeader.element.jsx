@@ -42,6 +42,7 @@ const GammaTableHeader = ({
         {columnsOrder.map(column => {
           return (
             <TableCell
+              key={column}
               column={column}
               sortDirection={orderBy === column ? order : false}
             >

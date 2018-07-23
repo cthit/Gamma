@@ -38,23 +38,26 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
           },
           ...values
         };
-        sendDataAndCode(user, {
-          TOO_SHORT_PASSWORD: text.TOO_SHORT_PASSWORD,
-          CODE_OR_CID_IS_WRONG: text.CODE_OR_CID_IS_WRONG,
-          SomethingWentWrong: text.SomethingWentWrong
-        });
-        actions.resetForm();
+        sendDataAndCode(
+          user,
+          {
+            TOO_SHORT_PASSWORD: text.TOO_SHORT_PASSWORD,
+            CODE_OR_CID_IS_WRONG: text.CODE_OR_CID_IS_WRONG,
+            SomethingWentWrong: text.SomethingWentWrong
+          },
+          actions.resetForm
+        );
       }}
       initialValues={{
-        cid: "asdf",
-        code: "asdfd",
-        nick: "asdf",
-        firstName: "asdf",
-        lastName: "asdf",
-        acceptanceYear: "2018",
-        password: "asdfasdf",
-        passwordConfirmation: "asdfasdf",
-        userAgreement: true
+        cid: "",
+        code: "",
+        nick: "",
+        firstName: "",
+        lastName: "",
+        acceptanceYear: "",
+        password: "",
+        passwordConfirmation: "",
+        userAgreement: false
       }}
       validationSchema={yup.object().shape({
         cid: yup.string().required(text.FieldRequired),

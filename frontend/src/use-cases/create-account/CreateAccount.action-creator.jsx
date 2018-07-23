@@ -62,7 +62,11 @@ export function createAccountValidateCidSuccessfully() {
 }
 
 //data includes code. Ignore code for now
-export function createAccountValidateCodeAndData(data, errorMessages) {
+export function createAccountValidateCodeAndData(
+  data,
+  errorMessages,
+  resetForm
+) {
   return dispatch => {
     dispatch(createAccountValidatingCodeAndData());
     axios
@@ -72,24 +76,29 @@ export function createAccountValidateCodeAndData(data, errorMessages) {
       .then(response => {
         dispatch(createAccountValidateCodeAndDataSuccessfully());
         dispatch(redirectTo("/create-account/finished"));
+        resetForm();
       })
       .catch(error => {
-        const errorStatus = error["response"].data;
-        var errorMessage = "";
+        if (error["response"] != null) {
+          const errorStatus = error["response"].data;
+          var errorMessage = "";
 
-        if (!(errorStatus in errorMessages)) {
-          errorMessage = errorMessages["SomethingWentWrong"];
+          if (!(errorStatus in errorMessages)) {
+            errorMessage = errorMessages["SomethingWentWrong"];
+          } else {
+            errorMessage = errorMessages[errorStatus];
+          }
+
+          dispatch(createAccountValidateDataFailed(errorMessage));
+          dispatch(
+            toastOpen({
+              text: errorMessage,
+              duration: 5000
+            })
+          );
         } else {
-          errorMessage = errorMessages[errorStatus];
+          console.log(error);
         }
-
-        dispatch(createAccountValidateDataFailed(errorMessage));
-        dispatch(
-          toastOpen({
-            text: errorMessage,
-            duration: 5000
-          })
-        );
       });
   };
 }

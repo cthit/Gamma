@@ -5,7 +5,8 @@ import {
   GammaCard,
   GammaCardBody,
   GammaCardButtons,
-  GammaCardTitle
+  GammaCardTitle,
+  GammaLink
 } from "../../../../common-ui/design";
 import { Center } from "../../../../common-ui/layout";
 import GammaButton from "../../../../common/elements/gamma-button";
@@ -21,12 +22,9 @@ const CreationOfAccountFinished = ({ text }) => (
         </Center>
       </GammaCardBody>
       <GammaCardButtons reverseDirection>
-        <GammaButton
-          raised
-          primary
-          onClick={() => {}}
-          text={text.LoginForTheFirstTime}
-        />
+        <GammaLink to="/login">
+          <GammaButton raised primary text={text.LoginForTheFirstTime} />
+        </GammaLink>
       </GammaCardButtons>
     </GammaCard>
   </Center>
