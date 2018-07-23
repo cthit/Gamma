@@ -27,12 +27,6 @@ import GammaTableToolbar from "./GammaTableToolbar";
 import GammaTableBody from "./GammaTableBody";
 import GammaTableHeader from "./GammaTableHeader";
 
-const styles = theme => ({
-  root: {
-    marginTop: theme.spacing.unit * 3
-  }
-});
-
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
   counter += 1;

@@ -6,7 +6,7 @@ import classNames from "classnames";
 import GammaTextField from "../elements/gamma-text-field";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Text, Title } from "../../common-ui/text";
-import { Spacing } from "../../common-ui/layout";
+import { Fill } from "../../common-ui/layout";
 
 const Spacer = styled.div`
   flex: 1 1 100%;
@@ -18,6 +18,12 @@ const TableTitle = styled(Title)`
 
 const SearchInput = styled(GammaTextField)`
   width: 400px;
+  min-width: 400px !important;
+`;
+
+const StyledToolbar = styled(Toolbar)`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const GammaTableToolbar = ({
@@ -25,18 +31,20 @@ const GammaTableToolbar = ({
   searchInput,
   onSearchInputChange
 }) => (
-  <Toolbar>
-    <TableTitle
-      text={numSelected > 0 ? numSelected + " selected" : "Användare"}
-    />
-    <Spacer />
-    <SearchInput
-      upperLabel="Sök efter användare"
-      value={searchInput}
-      onChange={onSearchInputChange}
-    />
-    <Spacing />
-  </Toolbar>
+  <StyledToolbar>
+    <Fill>
+      <TableTitle
+        text={numSelected > 0 ? numSelected + " selected" : "Användare"}
+      />
+    </Fill>
+    <Fill>
+      <SearchInput
+        upperLabel="Sök efter användare"
+        value={searchInput}
+        onChange={onSearchInputChange}
+      />
+    </Fill>
+  </StyledToolbar>
 );
 
 GammaTableToolbar.propTypes = {
