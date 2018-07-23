@@ -18,6 +18,13 @@ class Demo extends React.Component {
       <div>
         <StyledGammaTable
           startOrderBy="firstName"
+          columnsOrder={[
+            "firstName",
+            "nick",
+            "lastName",
+            "id",
+            "acceptanceYear"
+          ]}
           headerTexts={{
             firstName: "First name",
             nick: "Nick",

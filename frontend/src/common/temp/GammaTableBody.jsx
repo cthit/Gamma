@@ -72,7 +72,8 @@ const GammaTableBody = ({
   isSelected,
   handleClick,
   rowShouldBeShown,
-  headerTexts
+  headerTexts,
+  columnsOrder
 }) => (
   <TableBody>
     {data
@@ -103,14 +104,11 @@ const GammaTableBody = ({
               )}
             />
 
-            {Object.keys(headerTexts)
-              .filter(key => key !== "__link")
-              .filter(key => key !== "__checkbox")
-              .map(key => (
-                <StyledTableCell key={key} datatitle={headerTexts[key]}>
-                  <Text text={n[key]} />
-                </StyledTableCell>
-              ))}
+            {columnsOrder.map(column => (
+              <StyledTableCell key={column} datatitle={headerTexts[column]}>
+                <Text text={n[column]} />
+              </StyledTableCell>
+            ))}
 
             <IfElseRendering
               test={headerTexts.__link != null}

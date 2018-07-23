@@ -50,7 +50,8 @@ class GammaTable extends React.Component {
         (a, b) => (a[props.startOrderBy] < b[props.startOrderBy] ? -1 : 1)
       ),
       headerTexts: props.headerTexts,
-      sort: props.sort
+      sort: props.sort,
+      columnsOrder: props.columnsOrder
     };
   }
 
@@ -137,6 +138,7 @@ class GammaTable extends React.Component {
             numSelected={
               selected.filter(n => this.rowShouldBeShown(n)).length ///TODO OPTIMIZE
             }
+            columnsOrder={this.state.columnsOrder}
             order={order}
             orderBy={orderBy}
             onSelectAllClick={this.handleSelectAllClick}
@@ -145,6 +147,7 @@ class GammaTable extends React.Component {
             headerTexts={headerTexts}
           />
           <GammaTableBody
+            columnsOrder={this.state.columnsOrder}
             page={this.state.page}
             rowsPerPage={this.state.rowsPerPage}
             data={this.state.data}

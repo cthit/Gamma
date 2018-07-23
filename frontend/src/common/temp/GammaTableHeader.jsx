@@ -24,7 +24,14 @@ class GammaTableHeader extends React.Component {
   };
 
   render() {
-    const { order, orderBy, numSelected, rowCount, headerTexts } = this.props;
+    const {
+      order,
+      orderBy,
+      numSelected,
+      rowCount,
+      headerTexts,
+      columnsOrder
+    } = this.props;
 
     return (
       <Hidden only="xs">
@@ -39,27 +46,24 @@ class GammaTableHeader extends React.Component {
               )}
             />
 
-            {Object.keys(headerTexts)
-              .filter(key => key !== "__link")
-              .filter(key => key !== "__checkbox")
-              .map(key => {
-                return (
-                  <TableCell
-                    key={key}
-                    sortDirection={orderBy === key ? order : false}
-                  >
-                    <Tooltip title="Sort" enterDelay={300}>
-                      <TableSortLabel
-                        active={orderBy === key}
-                        direction={order}
-                        onClick={this.createSortHandler(key)}
-                      >
-                        <Text bold text={headerTexts[key]} />
-                      </TableSortLabel>
-                    </Tooltip>
-                  </TableCell>
-                );
-              }, this)}
+            {columnsOrder.map(column => {
+              return (
+                <TableCell
+                  column={column}
+                  sortDirection={orderBy === column ? order : false}
+                >
+                  <Tooltip title="Sort" enterDelay={300}>
+                    <TableSortLabel
+                      active={orderBy === column}
+                      direction={order}
+                      onClick={this.createSortHandler(column)}
+                    >
+                      <Text bold text={headerTexts[column]} />
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+              );
+            }, this)}
 
             <IfElseRendering
               test={headerTexts.__link != null}
