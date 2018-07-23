@@ -12,6 +12,8 @@ import { withStyles } from "@material-ui/core/styles";
 import { Text, Title } from "../../common-ui/text";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 
+import IfElseRendering from "../declaratives/if-else-rendering";
+
 const StyledCheckboxTableCell = styled(TableCell)`
   padding-left: 24px;
 `;
@@ -28,26 +30,45 @@ class GammaTableHeader extends React.Component {
       <Hidden only="xs">
         <TableHead>
           <TableRow>
-            <TableCell />
-            {Object.keys(headerTexts).map(key => {
-              return (
-                <TableCell
-                  key={key}
-                  sortDirection={orderBy === key ? order : false}
-                >
-                  <Tooltip title="Sort" enterDelay={300}>
-                    <TableSortLabel
-                      active={orderBy === key}
-                      direction={order}
-                      onClick={this.createSortHandler(key)}
-                    >
-                      <Text bold text={headerTexts[key]} />
-                    </TableSortLabel>
-                  </Tooltip>
+            <IfElseRendering
+              test={headerTexts.__checkbox != null}
+              ifRender={() => (
+                <TableCell>
+                  <Text bold text={headerTexts.__checkbox} />
                 </TableCell>
-              );
-            }, this)}
-            <TableCell />
+              )}
+            />
+
+            {Object.keys(headerTexts)
+              .filter(key => key !== "__link")
+              .filter(key => key !== "__checkbox")
+              .map(key => {
+                return (
+                  <TableCell
+                    key={key}
+                    sortDirection={orderBy === key ? order : false}
+                  >
+                    <Tooltip title="Sort" enterDelay={300}>
+                      <TableSortLabel
+                        active={orderBy === key}
+                        direction={order}
+                        onClick={this.createSortHandler(key)}
+                      >
+                        <Text bold text={headerTexts[key]} />
+                      </TableSortLabel>
+                    </Tooltip>
+                  </TableCell>
+                );
+              }, this)}
+
+            <IfElseRendering
+              test={headerTexts.__link != null}
+              ifRender={() => (
+                <TableCell>
+                  <Text bold text={headerTexts.__link} />
+                </TableCell>
+              )}
+            />
           </TableRow>
         </TableHead>
       </Hidden>

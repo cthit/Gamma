@@ -10,8 +10,12 @@ import { withStyles } from "@material-ui/core/styles";
 import { Text, Title } from "../../common-ui/text";
 
 import GammaButton from "../elements/gamma-button";
+import { GammaLink } from "../../common-ui/design";
+import IfElseRendering from "../declaratives/if-else-rendering";
 
-const StyledCheckbox = styled(Checkbox)``;
+const StyledCheckbox = styled(Checkbox)`
+  text-align: center;
+`;
 
 const StyledTableRow = styled(TableRow)`
   display: block;
@@ -87,22 +91,43 @@ const GammaTableBody = ({
             tabIndex={-1}
             selected={selected}
           >
-            <StyledTableCell padding="checkbox">
-              <StyledCheckbox
-                onClick={event => handleClick(event, n.id)}
-                checked={selected}
-              />
-            </StyledTableCell>
+            <IfElseRendering
+              test={headerTexts.__checkbox != null}
+              ifRender={() => (
+                <StyledTableCell>
+                  <StyledCheckbox
+                    onClick={event => handleClick(event, n.id)}
+                    checked={selected}
+                  />
+                </StyledTableCell>
+              )}
+            />
 
-            {Object.keys(headerTexts).map(key => (
-              <StyledTableCell key={key} datatitle={headerTexts[key]}>
-                <Text text={n[key]} />
-              </StyledTableCell>
-            ))}
+            {Object.keys(headerTexts)
+              .filter(key => key !== "__link")
+              .filter(key => key !== "__checkbox")
+              .map(key => (
+                <StyledTableCell key={key} datatitle={headerTexts[key]}>
+                  <Text text={n[key]} />
+                </StyledTableCell>
+              ))}
 
-            <StyledTableCell>
-              <GammaButton text="Detaljer" raised primary />
-            </StyledTableCell>
+            <IfElseRendering
+              test={headerTexts.__link != null}
+              ifRender={() => (
+                <IfElseRendering
+                  test={n.__link != null}
+                  ifRender={() => (
+                    <StyledTableCell datatitle={headerTexts.__link}>
+                      <GammaLink to={n.__link}>
+                        <GammaButton text="Detaljer" raised />
+                      </GammaLink>
+                    </StyledTableCell>
+                  )}
+                  elseRender={() => <StyledTableCell />}
+                />
+              )}
+            />
           </StyledTableRow>
         );
       })}
