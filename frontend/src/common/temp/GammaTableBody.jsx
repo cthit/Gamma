@@ -64,11 +64,14 @@ const GammaTableBody = ({
   searchInput,
   isSelected,
   handleClick,
-  rowShouldBeShown
+  rowShouldBeShown,
+  headerTexts
 }) => (
   <TableBody>
     {data
-      .filter(n => rowShouldBeShown(n.name))
+      .filter(n => {
+        return rowShouldBeShown(n);
+      })
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map(n => {
         const selected = isSelected(n.id);
@@ -85,21 +88,12 @@ const GammaTableBody = ({
             <StyledTableCell padding="checkbox">
               <StyledCheckbox checked={selected} />
             </StyledTableCell>
-            <StyledTableCell datatitle="Dessert (100g serving)">
-              <Text text={n.name} />
-            </StyledTableCell>
-            <StyledTableCell datatitle="Calories">
-              <Text text={n.calories} />
-            </StyledTableCell>
-            <StyledTableCell datatitle="Fat (g)">
-              <Text text={n.fat} />
-            </StyledTableCell>
-            <StyledTableCell datatitle="Carbs (g)">
-              <Text text={n.carbs} />
-            </StyledTableCell>
-            <StyledTableCell datatitle="Protein (g)">
-              <Text text={n.protein} />
-            </StyledTableCell>
+
+            {Object.keys(headerTexts).map(key => (
+              <StyledTableCell key={key} datatitle={headerTexts[key]}>
+                <Text text={n[key]} />
+              </StyledTableCell>
+            ))}
           </StyledTableRow>
         );
       })}

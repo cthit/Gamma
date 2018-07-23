@@ -7,14 +7,101 @@ import { Heading, Title, Subtitle } from "../../common-ui/text";
 import GammaTable from "../../common/temp/GammaTable";
 
 class Demo extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  state = {
+    selected: []
+  };
 
   render() {
+    const { selected } = this.state;
+
+    console.log("Selected: ");
+    console.log(selected);
+
     return (
       <div>
-        <StyledGammaTable />
+        <StyledGammaTable
+          sort={{
+            nick: (nick1, nick2) => (nick1 < nick2 ? 1 : -1),
+            firstName: (firstName1, firstName2) =>
+              firstName1 < firstName2 ? 1 : -1,
+            lastName: (lastName1, lastName2) =>
+              lastName1 < lastName2 ? 1 : -1,
+            acceptanceYear: (acceptanceYear1, acceptanceYear2) =>
+              acceptanceYear1 < acceptanceYear2 ? 1 : -1
+          }}
+          startOrderBy="firstName"
+          headerTexts={{
+            firstName: "First name",
+            nick: "Nick",
+            lastName: "Last name",
+            id: "Cid",
+            acceptanceYear: "Acceptance Year"
+          }}
+          data={[
+            {
+              id: "svensven",
+              nick: "Portals",
+              firstName: "Sven",
+              lastName: "Svensson",
+              acceptanceYear: 2018
+            },
+            {
+              id: "andand",
+              nick: "Gurr",
+              firstName: "Anders",
+              lastName: "Andersson",
+              acceptanceYear: 2015
+            },
+            {
+              id: "glasss",
+              nick: "NeonSky",
+              firstName: "Glass",
+              lastName: "Glasson",
+              acceptanceYear: 2001
+            },
+            {
+              id: "icesson",
+              nick: "Iller",
+              firstName: "Ice",
+              lastName: "Icesson",
+              acceptanceYear: 2003
+            },
+            {
+              id: "pajpaj",
+              nick: "Pi",
+              firstName: "Paj",
+              lastName: "Pajsson",
+              acceptanceYear: 2005
+            },
+            {
+              id: "asdfa",
+              nick: "LP",
+              firstName: "Asdf",
+              lastName: "Asdfsson",
+              acceptanceYear: 2007
+            },
+            {
+              id: "glads",
+              nick: "Vidde",
+              firstName: "Glad",
+              lastName: "Gladsson",
+              acceptanceYear: 2009
+            },
+            {
+              id: "hmhmm",
+              nick: "Jerge",
+              firstName: "Hmm",
+              lastName: "Hmmsson",
+              acceptanceYear: 2011
+            }
+          ]}
+          selected={selected}
+          onSelectedUpdated={newSelected =>
+            this.setState({
+              selected: newSelected
+            })
+          }
+        />
       </div>
     );
   }

@@ -40,25 +40,15 @@ class GammaTable extends React.Component {
     this.state = {
       searchInput: "",
       order: "asc",
-      orderBy: "calories",
-      selected: [],
-      data: [
-        createData("Cupcake", 305, 3.7, 67, 4.3),
-        createData("Donut", 452, 25.0, 51, 4.9),
-        createData("Eclair", 262, 16.0, 24, 6.0),
-        createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-        createData("Gingerbread", 356, 16.0, 49, 3.9),
-        createData("Honeycomb", 408, 3.2, 87, 6.5),
-        createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-        createData("Jelly Bean", 375, 0.0, 94, 0.0),
-        createData("KitKat", 518, 26.0, 65, 7.0),
-        createData("Lollipop", 392, 0.2, 98, 0.0),
-        createData("Marshmallow", 318, 0, 81, 2.0),
-        createData("Nougat", 360, 19.0, 9, 37.0),
-        createData("Oreo", 437, 18.0, 63, 4.0)
-      ].sort((a, b) => (a.calories < b.calories ? -1 : 1)),
+      orderBy: props.startOrderBy,
       page: 0,
-      rowsPerPage: 5
+      rowsPerPage: 5,
+
+      //This means that GammaTable has to be recreated to enter new data.
+      //This may need to be fixed in the future.
+      data: props.data,
+      headerTexts: props.headerTexts,
+      sort: props.sort
     };
   }
 
@@ -70,18 +60,25 @@ class GammaTable extends React.Component {
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
-    let order = "desc";
+    var order = "desc";
 
     if (this.state.orderBy === property && this.state.order === "desc") {
       order = "asc";
     }
 
-    const data =
-      order === "desc"
-        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    const { sort, data } = this.state;
 
-    this.setState({ data, order, orderBy });
+    console.log(data);
+    console.log(order);
+
+    const newData =
+      order === "desc"
+        ? data.sort(sort[orderBy])
+        : data.sort((a, b) => sort[orderBy](b, a));
+
+    console.log(data);
+
+    this.setState({ newData, order, orderBy });
   };
 
   handleSelectAllClick = (event, checked) => {
@@ -93,24 +90,16 @@ class GammaTable extends React.Component {
   };
 
   handleClick = (event, id) => {
-    const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+    var newSelected = this.props.selected.slice();
+    const selectedIndex = newSelected.indexOf(id);
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+      newSelected.push(id);
+    } else {
+      newSelected.splice(selectedIndex, 1);
     }
 
-    this.setState({ selected: newSelected });
+    this.props.onSelectedUpdated(newSelected);
   };
 
   handleChangePage = (event, page) => {
@@ -121,22 +110,28 @@ class GammaTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  isSelected = id => this.state.selected.indexOf(id) !== -1;
+  isSelected = id => this.props.selected.indexOf(id) !== -1;
 
-  rowShouldBeShown = name =>
-    this.state.searchInput === "" ||
-    name == null ||
-    name.toLowerCase().includes(this.state.searchInput.toLowerCase());
+  rowShouldBeShown = row =>
+    row != null &&
+    Object.keys(this.state.headerTexts).map(
+      key =>
+        row[key] != null &&
+        toString(row[key])
+          .toLowerCase()
+          .includes(this.state.searchInput.toLowerCase())
+    ).length > 0; //Can be optimized, escape if one result is found
 
   render() {
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { selected } = this.props;
+    const { data, order, orderBy, rowsPerPage, page, headerTexts } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <Paper>
         <GammaTableToolbar
-          numSelected={this.state.selected.length}
+          numSelected={selected.length}
           searchInput={this.state.searchInput}
           onSearchInputChange={this.onSearchInputChange}
         />
@@ -151,15 +146,16 @@ class GammaTable extends React.Component {
             onSelectAllClick={this.handleSelectAllClick}
             onRequestSort={this.handleRequestSort}
             rowCount={data.length}
+            headerTexts={headerTexts}
           />
           <GammaTableBody
             page={this.state.page}
             rowsPerPage={this.state.rowsPerPage}
             data={this.state.data}
-            searchInput={this.state.searchInput}
             isSelected={this.isSelected}
             handleClick={this.handleClick}
             rowShouldBeShown={this.rowShouldBeShown}
+            headerTexts={headerTexts}
           />
         </Table>
 

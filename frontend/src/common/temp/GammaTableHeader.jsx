@@ -12,19 +12,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { Text, Title } from "../../common-ui/text";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 
-const columnData = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Dessert (100g serving)"
-  },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
-];
-
 const StyledCheckboxTableCell = styled(TableCell)`
   padding-left: 24px;
 `;
@@ -40,7 +27,8 @@ class GammaTableHeader extends React.Component {
       order,
       orderBy,
       numSelected,
-      rowCount
+      rowCount,
+      headerTexts
     } = this.props;
 
     return (
@@ -57,23 +45,19 @@ class GammaTableHeader extends React.Component {
               </Grid>
             </StyledCheckboxTableCell>
 
-            {columnData.map(column => {
+            {Object.keys(headerTexts).map(key => {
               return (
                 <TableCell
-                  key={column.id}
-                  sortDirection={orderBy === column.id ? order : false}
+                  key={key}
+                  sortDirection={orderBy === key ? order : false}
                 >
-                  <Tooltip
-                    title="Sort"
-                    placement={column.numeric ? "bottom-end" : "bottom-start"}
-                    enterDelay={300}
-                  >
+                  <Tooltip title="Sort" enterDelay={300}>
                     <TableSortLabel
-                      active={orderBy === column.id}
+                      active={orderBy === key}
                       direction={order}
-                      onClick={this.createSortHandler(column.id)}
+                      onClick={this.createSortHandler(key)}
                     >
-                      <Text text={column.label} />
+                      <Text text={headerTexts[key]} />
                     </TableSortLabel>
                   </Tooltip>
                 </TableCell>
@@ -90,7 +74,6 @@ GammaTableHeader.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired
 };
