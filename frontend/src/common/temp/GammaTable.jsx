@@ -114,10 +114,10 @@ class GammaTable extends React.Component {
 
   rowShouldBeShown = row =>
     row != null &&
-    Object.keys(this.state.headerTexts).map(
+    Object.keys(this.state.headerTexts).filter(
       key =>
         row[key] != null &&
-        toString(row[key])
+        (row[key] + "")
           .toLowerCase()
           .includes(this.state.searchInput.toLowerCase())
     ).length > 0; //Can be optimized, escape if one result is found
@@ -127,6 +127,8 @@ class GammaTable extends React.Component {
     const { data, order, orderBy, rowsPerPage, page, headerTexts } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+
+    console.log(data.length);
 
     return (
       <Paper>
@@ -139,7 +141,7 @@ class GammaTable extends React.Component {
         <Table aria-labelledby="tableTitle">
           <GammaTableHeader
             numSelected={
-              selected.filter(n => this.rowShouldBeShown(n.name)).length ///TODO OPTIMIZE
+              selected.filter(n => this.rowShouldBeShown(n)).length ///TODO OPTIMIZE
             }
             order={order}
             orderBy={orderBy}
@@ -161,7 +163,7 @@ class GammaTable extends React.Component {
 
         <TablePagination
           component="div"
-          count={data.filter(n => this.rowShouldBeShown(n.name)).length} //TODO OPTIMIZE
+          count={data.filter(n => this.rowShouldBeShown(n)).length} //TODO OPTIMIZE
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
