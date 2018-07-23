@@ -18,67 +18,58 @@ const StyledCheckboxTableCell = styled(TableCell)`
   padding-left: 24px;
 `;
 
-class GammaTableHeader extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
+const GammaTableHeader = ({
+  order,
+  orderBy,
+  numSelected,
+  rowCount,
+  headerTexts,
+  columnsOrder,
+  onRequestSort
+}) => (
+  <Hidden only="xs">
+    <TableHead>
+      <TableRow>
+        <IfElseRendering
+          test={headerTexts.__checkbox != null}
+          ifRender={() => (
+            <TableCell>
+              <Text bold text={headerTexts.__checkbox} />
+            </TableCell>
+          )}
+        />
 
-  render() {
-    const {
-      order,
-      orderBy,
-      numSelected,
-      rowCount,
-      headerTexts,
-      columnsOrder
-    } = this.props;
-
-    return (
-      <Hidden only="xs">
-        <TableHead>
-          <TableRow>
-            <IfElseRendering
-              test={headerTexts.__checkbox != null}
-              ifRender={() => (
-                <TableCell>
-                  <Text bold text={headerTexts.__checkbox} />
-                </TableCell>
-              )}
-            />
-
-            {columnsOrder.map(column => {
-              return (
-                <TableCell
-                  column={column}
-                  sortDirection={orderBy === column ? order : false}
+        {columnsOrder.map(column => {
+          return (
+            <TableCell
+              column={column}
+              sortDirection={orderBy === column ? order : false}
+            >
+              <Tooltip title="Sort" enterDelay={300}>
+                <TableSortLabel
+                  active={orderBy === column}
+                  direction={order}
+                  onClick={event => onRequestSort(event, column)}
                 >
-                  <Tooltip title="Sort" enterDelay={300}>
-                    <TableSortLabel
-                      active={orderBy === column}
-                      direction={order}
-                      onClick={this.createSortHandler(column)}
-                    >
-                      <Text bold text={headerTexts[column]} />
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-              );
-            }, this)}
+                  <Text bold text={headerTexts[column]} />
+                </TableSortLabel>
+              </Tooltip>
+            </TableCell>
+          );
+        })}
 
-            <IfElseRendering
-              test={headerTexts.__link != null}
-              ifRender={() => (
-                <TableCell>
-                  <Text bold text={headerTexts.__link} />
-                </TableCell>
-              )}
-            />
-          </TableRow>
-        </TableHead>
-      </Hidden>
-    );
-  }
-}
+        <IfElseRendering
+          test={headerTexts.__link != null}
+          ifRender={() => (
+            <TableCell>
+              <Text bold text={headerTexts.__link} />
+            </TableCell>
+          )}
+        />
+      </TableRow>
+    </TableHead>
+  </Hidden>
+);
 
 GammaTableHeader.propTypes = {
   numSelected: PropTypes.number.isRequired,
