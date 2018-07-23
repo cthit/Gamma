@@ -4,7 +4,7 @@ import { Add } from "@material-ui/icons";
 
 import { Heading, Title, Subtitle } from "../../common-ui/text";
 
-import GammaTable from "../../common/temp/GammaTable";
+import GammaTable from "../../common/views/gamma-table";
 
 class Demo extends React.Component {
   state = {

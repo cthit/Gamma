@@ -1,17 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Checkbox from "@material-ui/core/Checkbox";
-import { withStyles } from "@material-ui/core/styles";
+import { Checkbox, TableRow, TableCell, TableBody } from "@material-ui/core";
 
-import { Text, Title } from "../../common-ui/text";
+import { Text, Title } from "../../../../../common-ui/text";
 
-import GammaButton from "../elements/gamma-button";
-import { GammaLink } from "../../common-ui/design";
-import IfElseRendering from "../declaratives/if-else-rendering";
+import GammaButton from "../../../../elements/gamma-button";
+import { GammaLink } from "../../../../../common-ui/design";
+import IfElseRendering from "../../../../declaratives/if-else-rendering";
 
 const StyledCheckbox = styled(Checkbox)`
   text-align: center;

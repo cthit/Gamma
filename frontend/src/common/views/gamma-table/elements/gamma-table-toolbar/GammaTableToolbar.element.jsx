@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import classNames from "classnames";
-import GammaTextField from "../elements/gamma-text-field";
-import Toolbar from "@material-ui/core/Toolbar";
-import { Text, Title } from "../../common-ui/text";
-import { Fill } from "../../common-ui/layout";
+import GammaTextField from "../../../../elements/gamma-text-field";
+import { Toolbar } from "@material-ui/core";
+import { Fill } from "../../../../../common-ui/layout";
+import { Text, Title } from "../../../../../common-ui/text";
 
 const Spacer = styled.div`
   flex: 1 1 100%;

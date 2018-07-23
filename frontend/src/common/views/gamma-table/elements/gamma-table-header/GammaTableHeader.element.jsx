@@ -1,18 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import Hidden from "@material-ui/core/Hidden";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox";
-import Tooltip from "@material-ui/core/Tooltip";
-import { withStyles } from "@material-ui/core/styles";
-import { Text, Title } from "../../common-ui/text";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
+import { Text, Title } from "../../../../../common-ui/text";
 
-import IfElseRendering from "../declaratives/if-else-rendering";
+import {
+  TableSortLabel,
+  Grid,
+  TableCell,
+  TableRow,
+  TableHead,
+  Hidden
+} from "@material-ui/core";
+
+import IfElseRendering from "../../../../declaratives/if-else-rendering";
 
 const StyledCheckboxTableCell = styled(TableCell)`
   padding-left: 24px;
@@ -45,15 +45,13 @@ const GammaTableHeader = ({
               column={column}
               sortDirection={orderBy === column ? order : false}
             >
-              <Tooltip title="Sort" enterDelay={300}>
-                <TableSortLabel
-                  active={orderBy === column}
-                  direction={order}
-                  onClick={event => onRequestSort(event, column)}
-                >
-                  <Text bold text={headerTexts[column]} />
-                </TableSortLabel>
-              </Tooltip>
+              <TableSortLabel
+                active={orderBy === column}
+                direction={order}
+                onClick={event => onRequestSort(event, column)}
+              >
+                <Text bold text={headerTexts[column]} />
+              </TableSortLabel>
             </TableCell>
           );
         })}
