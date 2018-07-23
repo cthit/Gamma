@@ -46,7 +46,9 @@ class GammaTable extends React.Component {
 
       //This means that GammaTable has to be recreated to enter new data.
       //This may need to be fixed in the future.
-      data: props.data,
+      data: props.data.sort(
+        (a, b) => (a[props.startOrderBy] < b[props.startOrderBy] ? -1 : 1)
+      ),
       headerTexts: props.headerTexts,
       sort: props.sort
     };
@@ -66,19 +68,12 @@ class GammaTable extends React.Component {
       order = "asc";
     }
 
-    const { sort, data } = this.state;
-
-    console.log(data);
-    console.log(order);
-
-    const newData =
+    const data =
       order === "desc"
-        ? data.sort(sort[orderBy])
-        : data.sort((a, b) => sort[orderBy](b, a));
+        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
+        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
-    console.log(data);
-
-    this.setState({ newData, order, orderBy });
+    this.setState({ data, order, orderBy });
   };
 
   handleSelectAllClick = (event, checked) => {
@@ -127,8 +122,6 @@ class GammaTable extends React.Component {
     const { data, order, orderBy, rowsPerPage, page, headerTexts } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-
-    console.log(data.length);
 
     return (
       <Paper>

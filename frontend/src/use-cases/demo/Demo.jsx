@@ -20,15 +20,6 @@ class Demo extends React.Component {
     return (
       <div>
         <StyledGammaTable
-          sort={{
-            nick: (nick1, nick2) => (nick1 < nick2 ? 1 : -1),
-            firstName: (firstName1, firstName2) =>
-              firstName1 < firstName2 ? 1 : -1,
-            lastName: (lastName1, lastName2) =>
-              lastName1 < lastName2 ? 1 : -1,
-            acceptanceYear: (acceptanceYear1, acceptanceYear2) =>
-              acceptanceYear1 < acceptanceYear2 ? 1 : -1
-          }}
           startOrderBy="firstName"
           headerTexts={{
             firstName: "First name",
