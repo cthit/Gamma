@@ -1,47 +1,116 @@
 import React from "react";
+import styled from "styled-components";
 import { Add } from "@material-ui/icons";
-
-import {
-  ButtonsContainer,
-  CheckboxesContainer,
-  IconButtonsContainer,
-  MenusContainer,
-  RadioButtonsContainer,
-  SteppersContainer,
-  SwitchesContainer,
-  TextFieldsContainer,
-  SelectsContainer
-} from "./Demo.styles";
-
-import LoginForm from "./elements/login-form";
-
-import GammaButton from "../../common/elements/gamma-button";
-import GammaCheckbox from "../../common/elements/gamma-checkbox";
-import GammaIconButton from "../../common/elements/gamma-icon-button";
-import GammaMenu from "../../common/views/gamma-menu";
-import GammaRadioButtonGroup from "../../common/elements/gamma-radio-button-group";
-import GammaStepper from "../../common/elements/gamma-stepper";
-import GammaSwitch from "../../common/elements/gamma-switch";
-import GammaTextField from "../../common/elements/gamma-text-field";
-import GammaSelect from "../../common/elements/gamma-select";
 
 import { Heading, Title, Subtitle } from "../../common-ui/text";
 
+import GammaTable from "../../common/temp/GammaTable";
+
 class Demo extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+  state = {
+    selected: []
+  };
 
   render() {
+    const { selected } = this.state;
+
     return (
       <div>
-        <Heading text="Hej" />
-        <Title text="Det här är en title" />
-        <Subtitle text="Det här är en subtitle" />
-        <LoginForm />
+        <StyledGammaTable
+          startOrderBy="firstName"
+          columnsOrder={[
+            "firstName",
+            "nick",
+            "lastName",
+            "id",
+            "acceptanceYear"
+          ]}
+          headerTexts={{
+            firstName: "First name",
+            nick: "Nick",
+            lastName: "Last name",
+            id: "Cid",
+            acceptanceYear: "Acceptance Year",
+            __link: "Detaljer",
+            __checkbox: "Välj användare"
+          }}
+          data={[
+            {
+              id: "svensven",
+              nick: "Portals",
+              firstName: "Sven",
+              lastName: "Svensson",
+              acceptanceYear: 2018,
+              __link: "/login"
+            },
+            {
+              id: "andand",
+              nick: "Gurr",
+              firstName: "Anders",
+              lastName: "Andersson",
+              acceptanceYear: 2015,
+              __link: "/login"
+            },
+            {
+              id: "glasss",
+              nick: "NeonSky",
+              firstName: "Glass",
+              lastName: "Glasson",
+              acceptanceYear: 2001,
+              __link: "/login"
+            },
+            {
+              id: "icesson",
+              nick: "Iller",
+              firstName: "Ice",
+              lastName: "Icesson",
+              acceptanceYear: 2003,
+              __link: "/login"
+            },
+            {
+              id: "pajpaj",
+              nick: "Pi",
+              firstName: "Paj",
+              lastName: "Pajsson",
+              acceptanceYear: 2005,
+              __link: "/login"
+            },
+            {
+              id: "asdfa",
+              nick: "LP",
+              firstName: "Asdf",
+              lastName: "Asdfsson",
+              acceptanceYear: 2007
+            },
+            {
+              id: "glads",
+              nick: "Vidde",
+              firstName: "Glad",
+              lastName: "Gladsson",
+              acceptanceYear: 2009,
+              __link: "/login"
+            },
+            {
+              id: "hmhmm",
+              nick: "Jerge",
+              firstName: "Hmm",
+              lastName: "Hmmsson",
+              acceptanceYear: 2011,
+              __link: "/login"
+            }
+          ]}
+          selected={selected}
+          onSelectedUpdated={newSelected =>
+            this.setState({
+              selected: newSelected
+            })
+          }
+        />
       </div>
     );
   }
 }
+
+const StyledGammaTable = styled(GammaTable)``;
 
 export default Demo;
