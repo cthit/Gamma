@@ -9,56 +9,52 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Text, Title } from "../../common-ui/text";
 
-const styles = theme => ({
-  tableBodyRow: {
-    //Small Screen
-    display: "block",
-    height: "auto",
-    marginTop: 10,
-    backgroundColor: "white",
+const StyledCheckbox = styled(Checkbox)``;
 
-    [theme.breakpoints.up("sm")]: {
-      height: 48,
-      display: "table-row",
-      border: 0,
-      backgroundColor: "#ffffff"
-    }
-  },
+const StyledTableRow = styled(TableRow)`
+  display: block;
+  height: auto;
+  margin-top: 10px;
+  background-color: white;
 
-  tableCheckboxCell: {
-    [theme.breakpoints.down("sm")]: {
-      width: "999999px"
-    }
-  },
+  @media (min-width: 600px) {
+    height: 48px;
+    display: table-row;
+    border: 0;
+  }
+`;
 
-  tableBodyData: {
-    display: "block",
-    padding: 12,
-    fontSize: 14,
-    textAlign: "right",
-    border: 0,
+const StyledTableCell = styled(TableCell)`
+  display: block;
+  padding: 12px;
+  font-size: 14px;
+  text-align: right;
+  border: 0;
 
-    // Adding each data table head from here
-    "&:before": {
-      content: "attr(datatitle)",
-      float: "left",
-      color: "#00000"
-    },
+  &:before {
+    content: attr(datatitle);
+    float: left;
+    color: #000;
+  }
 
-    [theme.breakpoints.up("sm")]: {
-      display: "table-cell",
-      padding: "20px 24px",
-      fontSize: 14,
-      textAlign: "left",
-      borderBottom: "1px solid rgba(224, 224, 224, 1)",
+  @media (min-width: 600px) {
+    display: table-cell;
+    padding: 20px 24px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px solid rgba(244, 244, 244, 1);
 
-      "&:before": {
-        content: "",
-        display: "none"
-      }
+    &:before {
+      content: "";
+      display: none;
     }
   }
-});
+
+  //For some reason TableCell likes to do this.
+  &:last-child {
+    padding-right: 12px;
+  }
+`;
 
 const GammaTableBody = ({
   page,
@@ -77,7 +73,7 @@ const GammaTableBody = ({
       .map(n => {
         const selected = isSelected(n.id);
         return (
-          <TableRow
+          <StyledTableRow
             hover
             key={n.id}
             onClick={event => handleClick(event, n.id)}
@@ -85,50 +81,29 @@ const GammaTableBody = ({
             aria-checked={selected}
             tabIndex={-1}
             selected={selected}
-            classes={{
-              root: classes.tableBodyRow
-            }}
           >
-            <TableCell
-              padding="checkbox"
-              classes={{ root: classes.tableCheckboxCell }}
-            >
-              <Checkbox checked={selected} />
-            </TableCell>
-            <TableCell
-              datatitle="Dessert (100g serving)"
-              classes={{ root: classes.tableBodyData }}
-            >
+            <StyledTableCell padding="checkbox">
+              <StyledCheckbox checked={selected} />
+            </StyledTableCell>
+            <StyledTableCell datatitle="Dessert (100g serving)">
               <Text text={n.name} />
-            </TableCell>
-            <TableCell
-              datatitle="Calories"
-              classes={{ root: classes.tableBodyData }}
-            >
+            </StyledTableCell>
+            <StyledTableCell datatitle="Calories">
               <Text text={n.calories} />
-            </TableCell>
-            <TableCell
-              datatitle="Fat (g)"
-              classes={{ root: classes.tableBodyData }}
-            >
+            </StyledTableCell>
+            <StyledTableCell datatitle="Fat (g)">
               <Text text={n.fat} />
-            </TableCell>
-            <TableCell
-              datatitle="Carbs (g)"
-              classes={{ root: classes.tableBodyData }}
-            >
+            </StyledTableCell>
+            <StyledTableCell datatitle="Carbs (g)">
               <Text text={n.carbs} />
-            </TableCell>
-            <TableCell
-              datatitle="Protein (g)"
-              classes={{ root: classes.tableBodyData }}
-            >
+            </StyledTableCell>
+            <StyledTableCell datatitle="Protein (g)">
               <Text text={n.protein} />
-            </TableCell>
-          </TableRow>
+            </StyledTableCell>
+          </StyledTableRow>
         );
       })}
   </TableBody>
 );
 
-export default withStyles(styles)(GammaTableBody);
+export default GammaTableBody;
