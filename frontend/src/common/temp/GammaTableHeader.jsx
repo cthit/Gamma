@@ -25,6 +25,10 @@ const columnData = [
   { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" }
 ];
 
+const StyledCheckboxTableCell = styled(TableCell)`
+  padding-left: 24px;
+`;
+
 class GammaTableHeader extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
@@ -43,7 +47,7 @@ class GammaTableHeader extends React.Component {
       <Hidden only="xs">
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
+            <StyledCheckboxTableCell>
               <Grid>
                 <Checkbox
                   indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -51,7 +55,7 @@ class GammaTableHeader extends React.Component {
                   onChange={onSelectAllClick}
                 />
               </Grid>
-            </TableCell>
+            </StyledCheckboxTableCell>
 
             {columnData.map(column => {
               return (
