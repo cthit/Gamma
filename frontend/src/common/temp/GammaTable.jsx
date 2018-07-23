@@ -77,11 +77,12 @@ class GammaTable extends React.Component {
   };
 
   handleSelectAllClick = (event, checked) => {
+    console.log(checked);
     if (checked) {
-      this.setState({ selected: this.state.data.map(n => n.id) });
+      this.props.onSelectedUpdated(this.state.data.map(n => n.id));
       return;
     }
-    this.setState({ selected: [] });
+    this.props.onSelectedUpdated([]);
   };
 
   handleClick = (event, id) => {

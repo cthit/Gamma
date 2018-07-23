@@ -22,29 +22,13 @@ class GammaTableHeader extends React.Component {
   };
 
   render() {
-    const {
-      onSelectAllClick,
-      order,
-      orderBy,
-      numSelected,
-      rowCount,
-      headerTexts
-    } = this.props;
+    const { order, orderBy, numSelected, rowCount, headerTexts } = this.props;
 
     return (
       <Hidden only="xs">
         <TableHead>
           <TableRow>
-            <StyledCheckboxTableCell>
-              <Grid>
-                <Checkbox
-                  indeterminate={numSelected > 0 && numSelected < rowCount}
-                  checked={numSelected === rowCount}
-                  onChange={onSelectAllClick}
-                />
-              </Grid>
-            </StyledCheckboxTableCell>
-
+            <TableCell />
             {Object.keys(headerTexts).map(key => {
               return (
                 <TableCell
