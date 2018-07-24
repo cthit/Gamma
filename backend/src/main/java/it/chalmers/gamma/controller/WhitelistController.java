@@ -2,10 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
-import it.chalmers.gamma.response.NoCidFoundResponse;
-import it.chalmers.gamma.response.UserAddedResponse;
-import it.chalmers.gamma.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -50,7 +48,10 @@ public class WhitelistController {
     public boolean isValid(@RequestBody WhitelistCodeRequest cid) {
         return whitelistService.isCIDWhiteListed(cid.getCid());
     }
-
+    @GetMapping
+    public ResponseEntity<List<String>> getAllWhiteList(){
+        return new GetWhitelistedResponse(whitelistService.getAllWhitelist());
+    }
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
     public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
         if(itUserService.userExists(cid.getCid())){

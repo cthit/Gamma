@@ -63,7 +63,7 @@ create table fkit_group_authorites (
 
 create table post (
   id        uuid constraint post_pk primary key,
-  post_name varchar(50) constraint post_name_unique unique
+  post_name uuid not null references text
   -- post_name borde nog kanske vara post_function (som i funktionen rollen fyller) för att kunna hantera översättningar på ett någorlunda vettigt sätt
 );
 

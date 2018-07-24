@@ -4,6 +4,9 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class WhitelistService {
     private final WhitelistRepository whitelistRepository;
@@ -32,5 +35,13 @@ public class WhitelistService {
             return false;
         }
         return true;
+    }
+    public List<String> getAllWhitelist(){
+        List<Whitelist> whitelists = whitelistRepository.findAll();
+        List<String> strings = new ArrayList<>();
+        for(Whitelist whitelist : whitelists){
+            strings.add(whitelist.getCid());
+        }
+        return strings;
     }
 }

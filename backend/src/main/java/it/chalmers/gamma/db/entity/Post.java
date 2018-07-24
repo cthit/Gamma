@@ -2,10 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -18,9 +15,10 @@ public class Post {
     @JsonIgnore
     private UUID id;
 
-    @Column(name = "post_name", length = 50, nullable = false, unique = true)
-    private String postName;
 
+    @JoinColumn(name = "post_name")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Text postName;
     public Post(){
         this.id = UUID.randomUUID();
     }
@@ -32,12 +30,25 @@ public class Post {
         this.id = id;
     }
 
-    public String getPostName() {
+    public Text getPostName() {
         return postName;
     }
 
-    public void setPostName(String postName) {
+    public void setPostName(Text postName) {
         this.postName = postName;
+    }
+
+    public void setSVPostName(String postName){
+        this.postName.setSv(postName);
+    }
+    public void setENPostName(String postName){
+        this.postName.setEn(postName);
+    }
+    public String getSVPostName(){
+        return postName.getSv();
+    }
+    public String getENPostName(){
+        return postName.getEn();
     }
 
     @Override
