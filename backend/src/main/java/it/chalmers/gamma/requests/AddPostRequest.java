@@ -1,14 +1,16 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.db.entity.Text;
+
 public class AddPostRequest {
-    private String post;
+    private Text post;
     //TODO ADD LEVEL OF CLEARANCE OF SOMETHING
 
-    public String getPost() {
+    public Text getPost() {
         return post;
     }
 
-    public void setPost(String post) {
+    public void setPost(Text post) {
         this.post = post;
     }
 }

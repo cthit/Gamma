@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -110,12 +111,15 @@ public class AdministrationController {
     }
     @RequestMapping(value = "/groups/add_post")
     public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request){
-        if(postService.postExists(request.getPost())){
+        if(postService.postExists(request.getPost().getSv())){
             return new PostAlreadyExistsResponse();
         }
         postService.addPost(request.getPost());
         return new PostCreatedResponse();
     }
-
-
+    @RequestMapping(value = "/groups/posts")
+    public ResponseEntity<List<Post>> getPosts(){
+        return new GetPostResponse(postService.getAllPosts());
+    }
+    
 }

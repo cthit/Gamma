@@ -4,7 +4,6 @@ import java.util.UUID;
 
 public class WhitelistCodeRequest {
     private String cid;
-    private UUID id;
 
     public String getCid() {
         return cid;
@@ -14,11 +13,4 @@ public class WhitelistCodeRequest {
         this.cid = cid;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 }
