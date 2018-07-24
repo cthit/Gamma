@@ -2,9 +2,9 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 
 import { Fill } from "../../common-ui/layout";
-import GammaTable from "../../common/views/gamma-table";
 import ShowAllUsers from "./screens/show-all-users";
 import ShowUserDetails from "./screens/show-user-details";
+import EditUserDetails from "./screens/edit-user-details";
 
 class Users extends React.Component {
   constructor(props) {
@@ -17,8 +17,9 @@ class Users extends React.Component {
     return (
       <Fill>
         <Switch>
+          <Route path="/users/:cid/edit" exact component={EditUserDetails} />
+          <Route path="/users/:cid" exact component={ShowUserDetails} />
           <Route path="/users" exact component={ShowAllUsers} />
-          <Route path="/users/:cid" component={ShowUserDetails} />
         </Switch>
       </Fill>
     );

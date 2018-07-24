@@ -53,17 +53,28 @@ class GammaTable extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.data != null) {
+      this.updateData();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (
       !_.isEqual(prevProps.data.slice().sort(), this.props.data.slice().sort())
     ) {
-      this.setState({
-        data: this.props.data.sort(
-          (a, b) => (a[this.props.orderBy] < b[this.props.orderBy] ? -1 : 1)
-        )
-      });
+      this.updateData();
     }
   }
+
+  updateData() {
+    this.setState({
+      data: this.props.data.sort(
+        (a, b) => (a[this.props.orderBy] < b[this.props.orderBy] ? -1 : 1)
+      )
+    });
+  }
+
   onSearchInputChange = e => {
     this.setState({
       searchInput: e.target.value

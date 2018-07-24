@@ -109,6 +109,9 @@ export class App extends Component {
           <DrawerNavigationLink onClick={this._closeDrawer} link="/login">
             Logga in
           </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/users">
+            Users
+          </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
             Demo
           </DrawerNavigationLink>

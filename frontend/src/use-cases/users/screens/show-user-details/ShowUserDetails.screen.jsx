@@ -4,10 +4,13 @@ import { Fill, Center, Spacing } from "../../../../common-ui/layout";
 import {
   GammaCard,
   GammaCardDisplayTitle,
-  GammaCardBody
+  GammaCardBody,
+  GammaCardButtons,
+  GammaLink
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
+import GammaButton from "../../../../common/elements/gamma-button";
 
 const UserInformationOrder = [
   "cid",
@@ -42,6 +45,11 @@ const ShowUserDetails = ({ user, text }) => (
               </LeftAlignFill>
             </VerticalContainer>
           </GammaCardBody>
+          <GammaCardButtons reverseDirection>
+            <GammaLink to={"/users/" + user.cid + "/edit"}>
+              <GammaButton text={text.Edit} primary raised />
+            </GammaLink>
+          </GammaCardButtons>
         </GammaCard>
       </Center>
     )}
