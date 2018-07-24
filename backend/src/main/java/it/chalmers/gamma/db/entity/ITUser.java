@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import it.chalmers.gamma.domain.Language;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -282,5 +283,183 @@ public class ITUser implements UserDetails{
                 ", createdAt=" + createdAt +
                 ", lastModifiedAt=" + lastModifiedAt +
                 '}';
+    }
+    public ITUserView getView(List<String> props){
+        System.out.println("props are " + props);
+        ITUserView view = new ITUserView();
+        for(String prop : props) {
+            System.out.println(prop);
+            switch (prop){
+                case "cid":
+                    view.setCid(this.cid);
+                    break;
+                case "nick":
+                    view.setNick(this.nick);
+                    break;
+                case "firstName":
+                    view.setFirstName(this.firstName);
+                    break;
+                case "lastname":
+                    view.setLastName(this.lastName);
+                    break;
+                case "email":
+                    view.setEmail(this.email);
+                    break;
+                case "phone":
+                    view.phone = this.phone;
+                    break;
+                case "language":
+                    view.language = this.language;
+                    break;
+                case "avatarURL":
+                    view.avatarUrl = this.avatarUrl;
+                    break;
+                case "gdpr":
+                    view.gdpr = this.gdpr;
+                    break;
+                case "userAgreement":
+                    view.userAgreement = this.userAgreement;
+                    break;
+                case "accountLocked":
+                    view.accountLocked = this.accountLocked;
+                    break;
+                case "acceptanceYear":
+                    view.acceptanceYear = this.acceptanceYear;
+                    break;
+                case "createdAt":
+                    view.createdAt = this.createdAt;
+                    break;
+                case "lastModifiedAt":
+                    view.lastModifiedAt = this.lastModifiedAt;
+                    break;
+            }
+        }
+        return view;
+    }
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public class ITUserView{
+        private String cid;
+        private String nick;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String phone;
+        private Language language;
+        private String avatarUrl;
+        private boolean gdpr;
+        private boolean userAgreement;
+        private boolean accountLocked;
+        private int acceptanceYear;
+        private Instant createdAt;
+        private Instant lastModifiedAt;
+        public String getCid() {
+            return cid;
+        }
+
+        public String getNick() {
+            return nick;
+        }
+        public String getFirstName() {
+            return firstName;
+        }
+        public String getLastName() {
+            return lastName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public Language getLanguage() {
+            return language;
+        }
+
+        public String getAvatarUrl() {
+            return avatarUrl;
+        }
+
+        public boolean isGdpr() {
+            return gdpr;
+        }
+
+        public boolean isUserAgreement() {
+            return userAgreement;
+        }
+
+        public boolean isAccountLocked() {
+            return accountLocked;
+        }
+
+        public int getAcceptanceYear() {
+            return acceptanceYear;
+        }
+
+        public Instant getCreatedAt() {
+            return createdAt;
+        }
+
+        public Instant getLastModifiedAt() {
+            return lastModifiedAt;
+        }
+
+        public void setCid(String cid) {
+            this.cid = cid;
+        }
+
+        public void setNick(String nick) {
+            this.nick = nick;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public void setLanguage(Language language) {
+            this.language = language;
+        }
+
+        public void setAvatarUrl(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
+        }
+
+        public void setGdpr(boolean gdpr) {
+            this.gdpr = gdpr;
+        }
+
+        public void setUserAgreement(boolean userAgreement) {
+            this.userAgreement = userAgreement;
+        }
+
+        public void setAccountLocked(boolean accountLocked) {
+            this.accountLocked = accountLocked;
+        }
+
+        public void setAcceptanceYear(int acceptanceYear) {
+            this.acceptanceYear = acceptanceYear;
+        }
+
+        public void setCreatedAt(Instant createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public void setLastModifiedAt(Instant lastModifiedAt) {
+            this.lastModifiedAt = lastModifiedAt;
+        }
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -104,6 +105,20 @@ public class ITUserController {
         String cid = jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
         ITUser user = itUserService.loadUser(cid);
         return new GetUserResponse(user);
+    }
+    @RequestMapping(value = "/minified", method = RequestMethod.GET)
+    public ResponseEntity<List<ITUser.ITUserView>> getAllUserMini(){
+        List<ITUser> itUsers = itUserService.loadAllUsers();
+        List<ITUser.ITUserView> minifiedITUsers = new ArrayList<>();
+        List<String> props = new ArrayList<>();
+        props.add("cid");
+        props.add("firstName");
+        props.add("lastName");
+        props.add("nick");
+        for(ITUser user : itUsers){
+            minifiedITUsers.add(user.getView(props));
+        }
+        return new MinifiedUsersResponse(minifiedITUsers);
     }
 
 }

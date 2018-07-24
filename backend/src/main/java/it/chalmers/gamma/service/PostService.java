@@ -21,7 +21,8 @@ public class PostService {
     }
     public Post addPost(Text postName){
         Post post = new Post();
-        post.setPostName(postName);
+        post.setSVPostName(postName.getSv());
+        post.setENPostName(postName.getEn());
         return repository.save(post);
     }
     public boolean postExists(String postName){
