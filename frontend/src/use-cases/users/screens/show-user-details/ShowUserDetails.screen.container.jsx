@@ -1,16 +1,16 @@
 import { connect } from "react-redux";
-import ShowAllUsers from "./ShowAllUsers.screen";
+import _ from "lodash";
+import ShowUserDetails from "./ShowUserDetails.screen";
 import loadTranslations from "../../../../common/utils/loaders/translations.loader";
-import translations from "./ShowAllUsers.screen.translations";
+import translations from "./ShowUserDetails.screen.translations";
 
 const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(
     state.localize,
-    translations.ShowAllUsers,
-    "Users.Screen.ShowAllUsers."
+    translations.ShowUserDetails,
+    "Users.Screen.ShowUserDetails."
   ),
-
-  users: state.users
+  user: _.find(state.users, { cid: ownProps.match.params.cid })
 });
 
 const mapDispatchToProps = dispatch => ({});
@@ -18,4 +18,4 @@ const mapDispatchToProps = dispatch => ({});
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ShowAllUsers);
+)(ShowUserDetails);

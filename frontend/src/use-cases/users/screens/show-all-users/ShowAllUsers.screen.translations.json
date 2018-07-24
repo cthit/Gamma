@@ -1,0 +1,10 @@
+{
+  "ShowAllUsers": {
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "Cid": ["Cid", "Cid"],
+    "Nick": ["Nick", "Nick"],
+    "AcceptanceYear": ["Acceptance year", "Antagningsår"],
+    "Details": ["Details", "Detaljer"]
+  }
+}

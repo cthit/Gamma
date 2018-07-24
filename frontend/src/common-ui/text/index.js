@@ -40,6 +40,7 @@ export const Text = styled(({ text, white, bold, ...rest }) => (
     {text}
   </Typography>
 ))`
+  font-size: 16px;
   color: ${props => (props.white ? "white" : "")};
   font-weight: ${props => (props.bold ? "500" : "inherit")};
 `;

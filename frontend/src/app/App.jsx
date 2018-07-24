@@ -35,6 +35,9 @@ import demoTranslations from "../use-cases/demo/Demo.translations.json";
 
 import Home from "../use-cases/home";
 
+import Users from "../use-cases/users";
+import usersTranslations from "../use-cases/users/Users.translations.jsx";
+
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
 import { Padding, Spacing, Fill, Center } from "../common-ui/layout";
@@ -44,7 +47,6 @@ import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import Error from "../use-cases/error";
-import Users from "../use-cases/users";
 
 export class App extends Component {
   state = {
@@ -71,7 +73,8 @@ export class App extends Component {
       ...commonTranslations,
       ...createAccountTranslations,
       ...loginTranslations,
-      ...demoTranslations
+      ...demoTranslations,
+      ...usersTranslations
     });
 
     props.userUpdateMe();
