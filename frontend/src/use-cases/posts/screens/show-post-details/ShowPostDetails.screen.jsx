@@ -1,62 +1,48 @@
 import React from "react";
 import styled from "styled-components";
 import { Fill, Center, Spacing } from "../../../../common-ui/layout";
+
 import {
   GammaCard,
-  GammaCardDisplayTitle,
-  GammaCardBody,
-  GammaCardButtons,
-  GammaLink
+  GammaCardTitle,
+  GammaCardBody
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
 
-const UserInformationOrder = [
-  "cid",
-  "firstName",
-  "lastName",
-  "nick",
-  "email",
-  "acceptanceYear"
-];
+const PostInformationOrder = ["id", "sv", "en"];
 
-const ShowUserDetails = ({ user, text }) => (
-  <IfElseRendering
-    test={user != null}
-    ifRender={() => (
-      <Center>
+const ShowPostDetails = ({ post, text }) => (
+  <Center>
+    <IfElseRendering
+      test={post != null}
+      ifRender={() => (
         <GammaCard minWidth="300px" maxWidth="600px">
-          <GammaCardDisplayTitle
-            text={user.firstName + " '" + user.nick + "' " + user.lastName}
-          />
           <GammaCardBody>
             <HorizontalContainer>
               <RightAlignFill>
-                {UserInformationOrder.map(prop => (
+                {PostInformationOrder.map(prop => (
                   <Text key={prop} bold text={text[prop] + ": "} />
                 ))}
               </RightAlignFill>
               <Spacing />
               <LeftAlignFill>
-                {UserInformationOrder.map(prop => (
-                  <Text key={prop} text={user[prop]} />
+                {PostInformationOrder.map(prop => (
+                  <Text
+                    key={prop}
+                    text={post[prop] == null ? "null" : post[prop]}
+                  />
                 ))}
               </LeftAlignFill>
             </HorizontalContainer>
           </GammaCardBody>
-          <GammaCardButtons reverseDirection>
-            <GammaLink to={"/users/" + user.cid + "/edit"}>
-              <GammaButton text={text.Edit} primary raised />
-            </GammaLink>
-          </GammaCardButtons>
         </GammaCard>
-      </Center>
-    )}
-  />
+      )}
+    />
+  </Center>
 );
 
-export default ShowUserDetails;
+export default ShowPostDetails;
 
 const LeftAlignFill = styled(Fill)`
   text-align: left;
