@@ -44,6 +44,7 @@ import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import Error from "../use-cases/error";
+import Users from "../use-cases/users";
 
 export class App extends Component {
   state = {
@@ -189,6 +190,7 @@ export class App extends Component {
                 <Padding>
                   <Switch>
                     <Route path="/home" component={Home} />
+                    <Route path="/users" component={Users} />
                     <Route path="/create-account" component={CreateAccount} />
                     <Route path="/login" component={Login} />
                     <Route path="/error" component={Error} />

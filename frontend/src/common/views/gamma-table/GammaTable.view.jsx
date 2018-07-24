@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 import {
   Hidden,
@@ -44,17 +45,25 @@ class GammaTable extends React.Component {
       page: 0,
       rowsPerPage: 5,
 
-      //This means that GammaTable has to be recreated to enter new data.
-      //This may need to be fixed in the future.
-      data: props.data.sort(
-        (a, b) => (a[props.startOrderBy] < b[props.startOrderBy] ? -1 : 1)
-      ),
+      data: [],
       headerTexts: props.headerTexts,
       sort: props.sort,
-      columnsOrder: props.columnsOrder
+      columnsOrder: props.columnsOrder,
+      idProp: props.idProp
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      !_.isEqual(prevProps.data.slice().sort(), this.props.data.slice().sort())
+    ) {
+      this.setState({
+        data: this.props.data.sort(
+          (a, b) => (a[this.props.orderBy] < b[this.props.orderBy] ? -1 : 1)
+        )
+      });
+    }
+  }
   onSearchInputChange = e => {
     this.setState({
       searchInput: e.target.value
@@ -80,7 +89,9 @@ class GammaTable extends React.Component {
   handleSelectAllClick = (event, checked) => {
     console.log(checked);
     if (checked) {
-      this.props.onSelectedUpdated(this.state.data.map(n => n.id));
+      this.props.onSelectedUpdated(
+        this.state.data.map(n => n[this.state.idProp])
+      );
       return;
     }
     this.props.onSelectedUpdated([]);
@@ -147,6 +158,7 @@ class GammaTable extends React.Component {
             headerTexts={headerTexts}
           />
           <GammaTableBody
+            idProp={this.state.idProp}
             columnsOrder={this.state.columnsOrder}
             page={this.state.page}
             rowsPerPage={this.state.rowsPerPage}

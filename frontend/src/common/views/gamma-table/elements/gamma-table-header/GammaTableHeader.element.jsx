@@ -39,23 +39,21 @@ const GammaTableHeader = ({
           )}
         />
 
-        {columnsOrder.map(column => {
-          return (
-            <TableCell
-              key={column}
-              column={column}
-              sortDirection={orderBy === column ? order : false}
+        {columnsOrder.map(column => (
+          <TableCell
+            key={column}
+            column={column}
+            sortDirection={orderBy === column ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === column}
+              direction={order}
+              onClick={event => onRequestSort(event, column)}
             >
-              <TableSortLabel
-                active={orderBy === column}
-                direction={order}
-                onClick={event => onRequestSort(event, column)}
-              >
-                <Text bold text={headerTexts[column]} />
-              </TableSortLabel>
-            </TableCell>
-          );
-        })}
+              <Text bold text={headerTexts[column]} />
+            </TableSortLabel>
+          </TableCell>
+        ))}
 
         <IfElseRendering
           test={headerTexts.__link != null}

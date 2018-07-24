@@ -69,7 +69,8 @@ const GammaTableBody = ({
   handleClick,
   rowShouldBeShown,
   headerTexts,
-  columnsOrder
+  columnsOrder,
+  idProp
 }) => (
   <TableBody>
     {data
@@ -78,11 +79,11 @@ const GammaTableBody = ({
       })
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map(n => {
-        const selected = isSelected(n.id);
+        const selected = isSelected(n[idProp]);
         return (
           <StyledTableRow
             hover
-            key={n.id}
+            key={n[idProp]}
             role="checkbox"
             aria-checked={selected}
             tabIndex={-1}
@@ -93,7 +94,7 @@ const GammaTableBody = ({
               ifRender={() => (
                 <StyledTableCell>
                   <StyledCheckbox
-                    onClick={event => handleClick(event, n.id)}
+                    onClick={event => handleClick(event, n[idProp])}
                     checked={selected}
                   />
                 </StyledTableCell>
