@@ -47,6 +47,7 @@ import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import Error from "../use-cases/error";
+import Posts from "../use-cases/posts";
 
 export class App extends Component {
   state = {
@@ -111,6 +112,9 @@ export class App extends Component {
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/users">
             Users
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/posts">
+            Posts
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
             Demo
@@ -201,6 +205,7 @@ export class App extends Component {
                     <Route path="/login" component={Login} />
                     <Route path="/error" component={Error} />
                     <Route path="/demo" component={Demo} />
+                    <Route path="/posts" component={Posts} />
                     <Route
                       path="/"
                       render={props => (
