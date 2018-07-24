@@ -118,7 +118,10 @@ class GammaTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  isSelected = id => this.props.selected.indexOf(id) !== -1;
+  isSelected = id =>
+    this.props.selected == null
+      ? false
+      : this.props.selected.indexOf(id) !== -1;
 
   rowShouldBeShown = row =>
     row != null &&
@@ -139,7 +142,7 @@ class GammaTable extends React.Component {
     return (
       <Paper>
         <GammaTableToolbar
-          numSelected={selected.length}
+          numSelected={selected == null ? -1 : selected.length}
           searchInput={this.state.searchInput}
           onSearchInputChange={this.onSearchInputChange}
         />
@@ -147,7 +150,9 @@ class GammaTable extends React.Component {
         <Table aria-labelledby="tableTitle">
           <GammaTableHeader
             numSelected={
-              selected.filter(n => this.rowShouldBeShown(n)).length ///TODO OPTIMIZE
+              selected == null
+                ? -1
+                : selected.filter(n => this.rowShouldBeShown(n)).length ///TODO OPTIMIZE
             }
             columnsOrder={this.state.columnsOrder}
             order={order}

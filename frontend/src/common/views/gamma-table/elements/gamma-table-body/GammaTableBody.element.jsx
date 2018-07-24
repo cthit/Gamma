@@ -115,7 +115,7 @@ const GammaTableBody = ({
                   ifRender={() => (
                     <StyledTableCell datatitle={headerTexts.__link}>
                       <GammaLink to={n.__link}>
-                        <GammaButton text="Detaljer" raised />
+                        <GammaButton text={headerTexts.__link} raised />
                       </GammaLink>
                     </StyledTableCell>
                   )}

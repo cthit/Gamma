@@ -1,52 +1,23 @@
 import React from "react";
+import { Switch, Route } from "react-router-dom";
 
 import { Fill } from "../../common-ui/layout";
 import GammaTable from "../../common/views/gamma-table";
+import ShowAllUsers from "./screens/show-all-users";
 
 class Users extends React.Component {
   constructor(props) {
     super();
 
     props.usersLoad();
-
-    this.state = {
-      selected: []
-    };
   }
 
   render() {
-    const { users } = this.props;
-    const { selected } = this.state;
-
-    console.log(users);
-
     return (
       <Fill>
-        <GammaTable
-          idProp="cid"
-          startOrderBy="firstName"
-          columnsOrder={[
-            "firstName",
-            "nick",
-            "lastName",
-            "cid",
-            "acceptanceYear"
-          ]}
-          headerTexts={{
-            firstName: "First name",
-            lastName: "Last name",
-            cid: "Cid",
-            nick: "Nick",
-            acceptanceYear: "Acceptance Year"
-          }}
-          data={users}
-          selected={selected}
-          onSelectedUpdated={newSelected =>
-            this.setState({
-              selected: newSelected
-            })
-          }
-        />
+        <Switch>
+          <Route path="/" exact component={ShowAllUsers} />
+        </Switch>
       </Fill>
     );
   }
