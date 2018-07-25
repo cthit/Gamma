@@ -14,7 +14,6 @@ import java.util.UUID;
 public class Whitelist {
     @Id
     @Column(updatable = false, unique = true)
-    @JsonIgnore
     private UUID id;
 
     @Column(name = "cid", unique = true, length = 10, nullable = false)

@@ -48,10 +48,7 @@ public class WhitelistController {
     public boolean isValid(@RequestBody WhitelistCodeRequest cid) {
         return whitelistService.isCIDWhiteListed(cid.getCid());
     }
-    @GetMapping
-    public ResponseEntity<List<String>> getAllWhiteList(){
-        return new GetWhitelistedResponse(whitelistService.getAllWhitelist());
-    }
+
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
     public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
         if(itUserService.userExists(cid.getCid())){
@@ -62,7 +59,7 @@ public class WhitelistController {
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
             //sendEmail(activationCode);
-            return new UserAddedResponse();
+            return new WhitelistAddedResponse();
         }
         else
             return new NoCidFoundResponse();

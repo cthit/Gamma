@@ -3,9 +3,9 @@ package it.chalmers.gamma.response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class UserAddedResponse extends ResponseEntity<String> {
+public class WhitelistAddedResponse extends ResponseEntity<String> {
 
-    public UserAddedResponse(){
+    public WhitelistAddedResponse(){
         super("USER_ADDED", HttpStatus.ACCEPTED);
     }
 

@@ -3,6 +3,7 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
@@ -68,25 +69,22 @@ public class AdministrationController {
         return new GroupDeletedResponse();
     }
 
-    @RequestMapping(value = "/groups/add_user", method = RequestMethod.POST)
-    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request) {
+    @RequestMapping(value = "/groups/{group}/members", method = RequestMethod.POST)
+    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request, @PathVariable("group") String group) {
         if (!itUserService.userExists(request.getUser())) {
             return new NoCidFoundResponse();
-        }
-        if (!fkitService.groupExists(request.getGroup())) {
-            return new GroupDoesNotExistResponse();
         }
         if (!postService.postExists(request.getPost())) {
             return new PostDoesNotExistResponse();
         }
         ITUser user = itUserService.loadUser(request.getUser());
-        FKITGroup group = fkitService.getGroup(request.getGroup());
+        FKITGroup fkitGroup = fkitService.getGroup(group);
         Post post = postService.getPost(request.getPost());
-        membershipService.addUserToGroup(group, user, post, request.getUnofficialName(), request.getYear());
+        membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName(), request.getYear());
         return new UserAddedToGroupResponse();
     }
 
-    @RequestMapping(value = "/groups/add_post")
+    @RequestMapping(value = "/groups/post")
     public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request) {
         if (postService.postExists(request.getPost().getSv())) {
             return new PostAlreadyExistsResponse();
@@ -130,7 +128,7 @@ public class AdministrationController {
     /*
     should probably change so multiple users can be added simultaneously
      */
-    @RequestMapping(value = "/users/add_whitelisted", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/whitelist", method = RequestMethod.POST)
     public ResponseEntity<String> addWhitelistedUser(@RequestBody WhitelistCodeRequest cid) {
         if (whitelistService.isCIDWhiteListed(cid.getCid())) {
             return new CIDAlreadyWhitelistedResponse();
@@ -139,8 +137,35 @@ public class AdministrationController {
             return new UserAlreadyExistsResponse();
         }
         whitelistService.addWhiteListedCID(cid.getCid());
-        return new UserAddedResponse();
+        return new WhitelistAddedResponse();
+    }
+    @RequestMapping(value = "/users/whitelist/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editWhitelist(@RequestBody WhitelistCodeRequest request, @PathVariable("id") String id){
+        Whitelist oldWhitelist = whitelistService.getWhitelistById(id);
+        if(!whitelistService.isCIDWhiteListed(oldWhitelist.getCid())){
+            return new NoCidFoundResponse();
+        }
+        if(whitelistService.isCIDWhiteListed(request.getCid())){
+            return new CIDAlreadyWhitelistedResponse();
+        }
+        if(request.getCid() == null){
+            return new MissingRequiredFieldResponse("cid");
+        }
+        whitelistService.editWhitelist(oldWhitelist, request.getCid());
+        return new WhitelistAddedResponse();
+    }
+    @RequestMapping(value = "/users/whitelist", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeWhitelist(WhitelistCodeRequest request){
+        if(!whitelistService.isCIDWhiteListed(request.getCid())){
+            return new NoCidFoundResponse();
+        }
+        whitelistService.removeWhiteListedCID(request.getCid());
+        return new UserDeletedResponse();
     }
 
+    @RequestMapping(value = "/users/whitelist", method = RequestMethod.GET)
+    public ResponseEntity<List<Whitelist>> getAllWhiteList(){
+        return new GetWhitelistedResponse(whitelistService.getAllWhitelist());
+    }
 
 }
