@@ -285,10 +285,8 @@ public class ITUser implements UserDetails{
                 '}';
     }
     public ITUserView getView(List<String> props){
-        System.out.println("props are " + props);
         ITUserView view = new ITUserView();
         for(String prop : props) {
-            System.out.println(prop);
             switch (prop){
                 case "cid":
                     view.setCid(this.cid);

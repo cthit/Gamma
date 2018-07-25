@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
+import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.Year;
 import java.util.List;
 
@@ -74,5 +76,18 @@ public class ITUserService implements UserDetailsService{
 
     public void removeUser(String cid){
         itUserRepository.delete(itUserRepository.findByCid(cid));
+    }
+
+    public void editUser(String user, String nick, String firstName, String lastName, String email, String phone, Language language, String avatarUrl) {
+        ITUser itUser = itUserRepository.findByCid(user);
+        itUser.setNick(nick != null ? nick : itUser.getNick());
+        itUser.setFirstName(firstName != null ? firstName : itUser.getFirstName());
+        itUser.setLastName(lastName != null ? lastName : itUser.getLastName());
+        itUser.setEmail(email != null ? email : itUser.getEmail());
+        itUser.setPhone(phone != null ? phone : itUser.getPhone());
+        itUser.setLanguage(language != null ? language : itUser.getLanguage());
+        itUser.setAvatarUrl(avatarUrl != null ? avatarUrl : itUser.getAvatarUrl());
+        itUser.setLastModifiedAt(Instant.now());
+        itUserRepository.save(itUser);
     }
 }

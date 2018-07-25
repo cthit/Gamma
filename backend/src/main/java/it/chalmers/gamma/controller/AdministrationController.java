@@ -23,19 +23,102 @@ public class AdministrationController {
     private PostService postService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
-                             FKITService fkitService, MembershipService membershipService, PostService postService){
+                             FKITService fkitService, MembershipService membershipService, PostService postService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
         this.membershipService = membershipService;
         this.postService = postService;
     }
+
+    @RequestMapping(value = "/groups/new", method = RequestMethod.POST)
+    public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
+        if (fkitService.groupExists(createGroupRequest.getName())) {
+            return new GroupAlreadyExistsResponse();
+        }
+        if (createGroupRequest.getName() == null) {
+            return new MissingRequiredFieldResponse("name");
+        }
+        if (createGroupRequest.getEmail() == null) {
+            return new MissingRequiredFieldResponse("email");
+        }
+        if (createGroupRequest.getFunction() == null) {
+            return new MissingRequiredFieldResponse("function");
+        }
+        if (createGroupRequest.getGroupType() == null) {
+            return new MissingRequiredFieldResponse("groupType");
+        }
+        fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
+                createGroupRequest.getEmail(), createGroupRequest.getGroupType(), createGroupRequest.getFunction());
+        return new GroupCreatedResponse();
+    }
+
+    @RequestMapping(value = "/groups/{group}", method = RequestMethod.POST)
+    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("group") String group) {
+        fkitService.editGroup(group, request.getDescription(), request.getEmail(), request.getGroupType(), request.getFunction());
+        return new GroupCreatedResponse();
+    }
+
+    @RequestMapping(value = "/groups/{group}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteGroup(@PathVariable("group") String group) {
+        if (fkitService.groupExists(group)) {
+            return new GroupDoesNotExistResponse();
+        }
+        fkitService.removeGroup(group);
+        return new GroupDeletedResponse();
+    }
+
+    @RequestMapping(value = "/groups/add_user", method = RequestMethod.POST)
+    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request) {
+        if (!itUserService.userExists(request.getUser())) {
+            return new NoCidFoundResponse();
+        }
+        if (!fkitService.groupExists(request.getGroup())) {
+            return new GroupDoesNotExistResponse();
+        }
+        if (!postService.postExists(request.getPost())) {
+            return new PostDoesNotExistResponse();
+        }
+        ITUser user = itUserService.loadUser(request.getUser());
+        FKITGroup group = fkitService.getGroup(request.getGroup());
+        Post post = postService.getPost(request.getPost());
+        membershipService.addUserToGroup(group, user, post, request.getUnofficialName(), request.getYear());
+        return new UserAddedToGroupResponse();
+    }
+
+    @RequestMapping(value = "/groups/add_post")
+    public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request) {
+        if (postService.postExists(request.getPost().getSv())) {
+            return new PostAlreadyExistsResponse();
+        }
+        postService.addPost(request.getPost());
+        return new PostCreatedResponse();
+    }
+
+    @RequestMapping(value = "/groups/posts", method = RequestMethod.GET)
+    public ResponseEntity<List<Post>> getPosts() {
+        return new GetPostResponse(postService.getAllPosts());
+    }
+
+    @RequestMapping(value = "/users/{cid}", method = RequestMethod.POST)
+    public ResponseEntity<String> editUser(@PathVariable("cid") String cid, @RequestBody EditITUserRequest request) {
+        itUserService.editUser(cid, request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
+                request.getPhone(), request.getLanguage(), request.getAvatarUrl());
+        return new UserEditedResponse();
+    }
+
+    @RequestMapping(value = "/users/{cid}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser(@PathVariable("cid") String cid){
+        itUserService.removeUser(cid);
+        return new UserDeletedResponse();
+    }
+
     /**
      * Administrative function that can add user without need for user to add it personally.
      */
     @RequestMapping(value = "/users/new", method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest){
-        if (itUserService.userExists(createITUserRequest.getCid())){
+    public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest) {
+        if (itUserService.userExists(createITUserRequest.getCid())) {
             return new UserAlreadyExistsResponse();
         }
         itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
@@ -43,6 +126,7 @@ public class AdministrationController {
                 createITUserRequest.isUserAgreement(), createITUserRequest.getEmail(), createITUserRequest.getPassword());
         return new UserCreatedResponse();
     }
+
     /*
     should probably change so multiple users can be added simultaneously
      */
@@ -58,68 +142,5 @@ public class AdministrationController {
         return new UserAddedResponse();
     }
 
-    @RequestMapping(value = "/groups/new", method = RequestMethod.POST)
-    public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest){
-        if(fkitService.groupExists(createGroupRequest.getName())){
-            return new GroupAlreadyExistsResponse();
-        }
-        if(createGroupRequest.getName() == null){
-            return new MissingRequiredFieldResponse("name");
-        }
-        if(createGroupRequest.getEmail() == null){
-            return new MissingRequiredFieldResponse("email");
-        }
-        if(createGroupRequest.getFunction() == null){
-            return new MissingRequiredFieldResponse("function");
-        }
-        if(createGroupRequest.getGroupType() == null){
-            return new MissingRequiredFieldResponse("groupType");
-        }
-        fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
-                createGroupRequest.getEmail(), createGroupRequest.getGroupType(), createGroupRequest.getFunction());
-        return new GroupCreatedResponse();
-    }
-    @RequestMapping(value = "/groups/edit", method = RequestMethod.POST)
-    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request){
-        fkitService.editGroup(request.getName(), request.getDescription(), request.getEmail(), request.getGroupType(), request.getFunction());
-        return new GroupCreatedResponse();
-    }
-    @RequestMapping(value = "/groups/delete", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteGroup(@RequestBody DeleteGroupRequest group){
-        if(fkitService.groupExists(group.getGroup())){
-            return new GroupDoesNotExistResponse();
-        }
-        fkitService.removeGroup(group.getGroup());
-        return new GroupDeletedResponse();
-    }
-    @RequestMapping(value = "/groups/add_user", method = RequestMethod.POST)
-    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request){
-        if(!itUserService.userExists(request.getUser())){
-            return new NoCidFoundResponse();
-        }
-        if(!fkitService.groupExists(request.getGroup())){
-            return new GroupDoesNotExistResponse();
-        }
-        if(!postService.postExists(request.getPost())){
-            return new PostDoesNotExistResponse();
-        }
-        ITUser user = itUserService.loadUser(request.getUser());
-        FKITGroup group = fkitService.getGroup(request.getGroup());
-        Post post = postService.getPost(request.getPost());
-        membershipService.addUserToGroup(group, user, post, request.getUnofficialName(), request.getYear());
-        return new UserAddedToGroupResponse();
-    }
-    @RequestMapping(value = "/groups/add_post")
-    public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request){
-        if(postService.postExists(request.getPost().getSv())){
-            return new PostAlreadyExistsResponse();
-        }
-        postService.addPost(request.getPost());
-        return new PostCreatedResponse();
-    }
-    @RequestMapping(value = "/groups/posts")
-    public ResponseEntity<List<Post>> getPosts(){
-        return new GetPostResponse(postService.getAllPosts());
-    }
-    
+
 }

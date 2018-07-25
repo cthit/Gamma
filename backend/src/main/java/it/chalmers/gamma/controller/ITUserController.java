@@ -115,10 +115,14 @@ public class ITUserController {
         props.add("firstName");
         props.add("lastName");
         props.add("nick");
+        props.add("attendanceYear");
         for(ITUser user : itUsers){
             minifiedITUsers.add(user.getView(props));
         }
         return new MinifiedUsersResponse(minifiedITUsers);
     }
-
+    @RequestMapping(value = "/{user}", method = RequestMethod.GET)
+    public ResponseEntity<ITUser> getUser(@PathVariable("user") String user){
+        return new GetUserResponse(itUserService.loadUser(user));
+    }
 }
