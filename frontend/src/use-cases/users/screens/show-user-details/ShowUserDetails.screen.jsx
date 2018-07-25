@@ -31,7 +31,7 @@ const ShowUserDetails = ({ user, text }) => (
             text={user.firstName + " '" + user.nick + "' " + user.lastName}
           />
           <GammaCardBody>
-            <VerticalContainer>
+            <HorizontalContainer>
               <RightAlignFill>
                 {UserInformationOrder.map(prop => (
                   <Text key={prop} bold text={text[prop] + ": "} />
@@ -43,7 +43,7 @@ const ShowUserDetails = ({ user, text }) => (
                   <Text key={prop} text={user[prop]} />
                 ))}
               </LeftAlignFill>
-            </VerticalContainer>
+            </HorizontalContainer>
           </GammaCardBody>
           <GammaCardButtons reverseDirection>
             <GammaLink to={"/users/" + user.cid + "/edit"}>
@@ -66,7 +66,7 @@ const RightAlignFill = styled(Fill)`
   text-align: right;
 `;
 
-const VerticalContainer = styled.div`
+const HorizontalContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;

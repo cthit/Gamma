@@ -8,6 +8,7 @@ import { createAccountValidateCid } from "../../CreateAccount.action-creator";
 import loadTranslations from "../../../../common/utils/loaders/translations.loader";
 
 import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
+import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(
@@ -18,8 +19,9 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  showError: text => dispatch(toastOpen({ text: text })),
-  sendCid: (cid, errorMsg) => dispatch(createAccountValidateCid(cid, errorMsg))
+  toastOpen: data => dispatch(toastOpen(data)),
+  redirectTo: to => dispatch(redirectTo(to)),
+  sendCid: cid => dispatch(createAccountValidateCid(cid))
 });
 
 export default connect(

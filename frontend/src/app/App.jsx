@@ -47,7 +47,9 @@ import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import Error from "../use-cases/error";
+
 import Posts from "../use-cases/posts";
+import postsTranslations from "../use-cases/posts/Posts.translations.jsx";
 
 export class App extends Component {
   state = {
@@ -69,13 +71,16 @@ export class App extends Component {
       }
     });
 
+    console.log(postsTranslations);
+
     props.addTranslation({
       ...appTranslations,
       ...commonTranslations,
       ...createAccountTranslations,
       ...loginTranslations,
       ...demoTranslations,
-      ...usersTranslations
+      ...usersTranslations,
+      ...postsTranslations
     });
 
     props.userUpdateMe();

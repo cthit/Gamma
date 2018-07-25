@@ -27,7 +27,10 @@ import {
   GammaCardTitle
 } from "../../../../common-ui/design";
 
-const InputDataAndCode = ({ sendDataAndCode, text }) => (
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
+
+const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo, text }) => (
   <Center>
     <GammaForm
       onSubmit={(values, actions) => {
@@ -46,7 +49,32 @@ const InputDataAndCode = ({ sendDataAndCode, text }) => (
             SomethingWentWrong: text.SomethingWentWrong
           },
           actions.resetForm
-        );
+        )
+          .then(response => {
+            redirectTo("/create-account/finished");
+            actions.resetForm();
+          })
+          .catch(error => {
+            const code = statusCode(error);
+            const message = statusMessage(error);
+            var errorMessage = text.SomethingWentWrong;
+            switch (code) {
+              case 422:
+                switch (message) {
+                  case "TOO_SHORT_PASSWORD":
+                    errorMessage = text.TOO_SHORT_PASSWORD;
+                    break;
+                  case "TOO_SHORT_PASSWORD":
+                    errorMessage = text.TOO_SHORT_PASSWORD;
+                    break;
+                }
+                break;
+            }
+            toastOpen({
+              text: errorMessage,
+              duration: 5000
+            });
+          });
       }}
       initialValues={{
         cid: "",

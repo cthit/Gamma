@@ -21,15 +21,9 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  showError: textString =>
-    dispatch(
-      toastOpen({
-        text: textString
-      })
-    ),
+  toastOpen: toastData => dispatch(toastOpen(toastData)),
   redirectTo: path => dispatch(redirectTo(path)),
-  sendDataAndCode: (data, errorMessages, resetForm) =>
-    dispatch(createAccountValidateCodeAndData(data, errorMessages, resetForm))
+  sendDataAndCode: data => dispatch(createAccountValidateCodeAndData(data))
 });
 
 export default connect(

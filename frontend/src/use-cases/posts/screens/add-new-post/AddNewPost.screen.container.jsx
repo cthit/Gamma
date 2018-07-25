@@ -1,27 +1,26 @@
+import AddNewPost from "./AddNewPost.screen";
 import { connect } from "react-redux";
 
-import LoginForm from "./LoginForm.view";
-import translations from "./LoginForm.view.translations.json";
-
 import loadTranslations from "../../../../common/utils/loaders/translations.loader";
+import translations from "./AddNewPost.screen.translations.json";
 
+import { postsAdd } from "../../Posts.action-creator";
 import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
-import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(
     state.localize,
-    translations.LoginForm,
-    "Login.View.LoginForm."
+    translations.AddNewPost,
+    "Posts.Screen.AddNewPost."
   )
 });
 
 const mapDispatchToProps = dispatch => ({
-  toastOpen: data => dispatch(toastOpen(data)),
-  redirectTo: path => dispatch(redirectTo(path))
+  postsAdd: post => dispatch(postsAdd(post)),
+  toastOpen: toastData => dispatch(toastOpen(toastData))
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginForm);
+)(AddNewPost);
