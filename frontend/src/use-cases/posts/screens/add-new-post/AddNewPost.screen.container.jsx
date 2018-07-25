@@ -5,6 +5,7 @@ import loadTranslations from "../../../../common/utils/loaders/translations.load
 import translations from "./AddNewPost.screen.translations.json";
 
 import { postsAdd } from "../../Posts.action-creator";
+import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(
@@ -15,7 +16,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  postsAdd: post => dispatch(postsAdd(post))
+  postsAdd: post => dispatch(postsAdd(post)),
+  toastOpen: toastData => dispatch(toastOpen(toastData))
 });
 
 export default connect(

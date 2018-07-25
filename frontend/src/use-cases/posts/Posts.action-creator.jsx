@@ -18,15 +18,11 @@ export function postsLoad() {
 
 export function postsAdd(post) {
   return dispatch => {
-    axios
-      .post("http://localhost:8081/admin/groups/add_post", post, {
-        headers: {
-          Authorization: "Bearer " + token()
-        }
-      })
-      .then(response => {
-        console.log("yay");
-      });
+    return axios.post("http://localhost:8081/admin/groups/add_post", post, {
+      headers: {
+        Authorization: "Bearer " + token()
+      }
+    });
   };
 }
 
