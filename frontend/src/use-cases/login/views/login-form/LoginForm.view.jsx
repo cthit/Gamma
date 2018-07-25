@@ -24,7 +24,10 @@ import {
   GammaLink
 } from "../../../../common-ui/design";
 
-const LoginForm = ({ text, login }) => (
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
+
+const LoginForm = ({ text, login, toastOpen, redirectTo }) => (
   <Fill>
     <GammaForm
       validationSchema={yup.object().shape({
@@ -39,13 +42,34 @@ const LoginForm = ({ text, login }) => (
           password: values["password"]
         };
 
-        login(
-          data,
-          values.rememberMe,
-          text.SuccessfullLogin,
-          text.IncorrectCidOrPassword,
-          text.SomethingWentWrong
-        );
+        login(data, values.rememberMe)
+          .then(response => {
+            redirectTo("/home");
+            toastOpen({
+              text: text.SuccessfullLogin,
+              duration: 3000
+            });
+          })
+          .catch(error => {
+            const code = statusCode(error);
+            const message = statusMessage(error);
+            switch (code) {
+              case 422:
+                switch (message) {
+                  case "INCORRECT_CID_OR_PASSWORD":
+                    toastOpen({
+                      text: text.IncorrectCidOrPassword,
+                      duration: 3000
+                    });
+                }
+                break;
+              default:
+                toastOpen({
+                  text: text.SomethingWentWrong,
+                  duration: 3000
+                });
+            }
+          });
 
         actions.resetForm();
       }}

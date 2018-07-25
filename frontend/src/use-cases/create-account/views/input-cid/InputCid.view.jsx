@@ -17,7 +17,7 @@ import {
   GammaCardTitle
 } from "../../../../common-ui/design";
 
-const InputCid = ({ sendCid, text }) => (
+const InputCid = ({ sendCid, redirectTo, toastOpen, text }) => (
   <MarginTop>
     <Center>
       <GammaForm
@@ -26,8 +26,17 @@ const InputCid = ({ sendCid, text }) => (
         })}
         initialValues={{ cid: "" }}
         onSubmit={(values, actions) => {
-          actions.resetForm();
-          sendCid(values, text.SomethingWentWrong);
+          sendCid(values)
+            .then(response => {
+              redirectTo("/create-account/email-sent");
+              actions.resetForm();
+            })
+            .catch(error => {
+              toastOpen({
+                text: text.SomethingWentWrong,
+                duration: 10000
+              });
+            });
         }}
         render={({ errors, touched }) => (
           <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>

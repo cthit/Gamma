@@ -11,56 +11,32 @@ import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.ac
 import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-creator";
 import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
 
-export function login(data, persistant, successMsg, errorMsg, networkErrorMsg) {
+export function login(data, persistant) {
   return dispatch => {
     dispatch(loginValidating());
-    axios
-      .post("http://localhost:8081/users/login", data, {
-        "Content-Type": "application/json"
-      })
-      .then(response => {
-        const token = response.data;
-        if (persistant) {
-          localStorage.token = token;
-          delete sessionStorage.token;
-        } else {
-          sessionStorage.token = token;
-          delete localStorage.token;
-        }
-        dispatch(loginValidateSuccessfully(successMsg));
-        dispatch(
-          toastOpen({
-            text: successMsg,
-            duration: 3000
-          })
-        );
-        dispatch(redirectTo("/home"));
-        dispatch(userUpdateMe());
-      })
-      .catch(error => {
-        if (error.response == null) {
-          console.log(error);
-        } else {
-          const errorStatus = error.response.data;
-          var e = "";
-          console.log(errorStatus);
-          switch (errorStatus) {
-            case "INCORRECT_CID_OR_PASSWORD":
-              e = errorMsg;
-              break;
-            default:
-              e = networkErrorMsg;
-              break;
+    return new Promise((resolve, reject) => {
+      axios
+        .post("http://localhost:8081/users/login", data, {
+          "Content-Type": "application/json"
+        })
+        .then(response => {
+          const token = response.data;
+          if (persistant) {
+            localStorage.token = token;
+            delete sessionStorage.token;
+          } else {
+            sessionStorage.token = token;
+            delete localStorage.token;
           }
-          dispatch(loginValidateFailed(e));
-          dispatch(
-            toastOpen({
-              text: e,
-              duration: 10000
-            })
-          );
-        }
-      });
+          dispatch(loginValidateSuccessfully());
+          dispatch(userUpdateMe());
+          resolve(response);
+        })
+        .catch(error => {
+          dispatch(loginValidateFailed(error));
+          reject(error);
+        });
+    });
   };
 }
 
