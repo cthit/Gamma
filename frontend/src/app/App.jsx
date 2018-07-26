@@ -51,6 +51,9 @@ import Error from "../use-cases/error";
 import Posts from "../use-cases/posts";
 import postsTranslations from "../use-cases/posts/Posts.translations.jsx";
 
+import Whitelist from "../use-cases/whitelist";
+import whitelistTranslations from "../use-cases/whitelist/Whitelist.translations.jsx";
+
 export class App extends Component {
   state = {
     mobileOpen: false
@@ -80,7 +83,8 @@ export class App extends Component {
       ...loginTranslations,
       ...demoTranslations,
       ...usersTranslations,
-      ...postsTranslations
+      ...postsTranslations,
+      ...whitelistTranslations
     });
 
     props.userUpdateMe();
@@ -120,6 +124,9 @@ export class App extends Component {
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/posts">
             Posts
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/whitelist">
+            Whitelist
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
             Demo
@@ -208,6 +215,7 @@ export class App extends Component {
                     <Route path="/users" component={Users} />
                     <Route path="/create-account" component={CreateAccount} />
                     <Route path="/login" component={Login} />
+                    <Route path="/whitelist" component={Whitelist} />
                     <Route path="/error" component={Error} />
                     <Route path="/demo" component={Demo} />
                     <Route path="/posts" component={Posts} />
