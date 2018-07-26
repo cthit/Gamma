@@ -84,7 +84,7 @@ public class AdministrationController {
         return new UserAddedToGroupResponse();
     }
 
-    @RequestMapping(value = "/groups/post")
+    @RequestMapping(value = "/groups/posts", method = RequestMethod.POST)
     public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request) {
         if (postService.postExists(request.getPost().getSv())) {
             return new PostAlreadyExistsResponse();
@@ -92,10 +92,25 @@ public class AdministrationController {
         postService.addPost(request.getPost());
         return new PostCreatedResponse();
     }
+    @RequestMapping(value = "/groups/posts/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editPost(@RequestBody AddPostRequest request, @PathVariable("id") String id){
+        Post post = postService.getPostById(id);
+        if(post == null){
+            return new MissingRequiredFieldResponse("post");
+        }
+        postService.editPost(post, request.getPost());
+        return new EditedPostResponse();
+    }
+    @RequestMapping(value = "/groups/posts/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Post> getPost(@PathVariable("id") String id){
+        Post post = postService.getPostById(id);
+        return new GetPostResponse(post);
+    }
+
 
     @RequestMapping(value = "/groups/posts", method = RequestMethod.GET)
     public ResponseEntity<List<Post>> getPosts() {
-        return new GetPostResponse(postService.getAllPosts());
+        return new GetMultiplePostsResponse(postService.getAllPosts());
     }
 
     @RequestMapping(value = "/users/{cid}", method = RequestMethod.POST)
@@ -152,14 +167,15 @@ public class AdministrationController {
             return new MissingRequiredFieldResponse("cid");
         }
         whitelistService.editWhitelist(oldWhitelist, request.getCid());
-        return new WhitelistAddedResponse();
+        return new EditedWhitelistResponse();
     }
-    @RequestMapping(value = "/users/whitelist", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeWhitelist(WhitelistCodeRequest request){
-        if(!whitelistService.isCIDWhiteListed(request.getCid())){
+    @RequestMapping(value = "/users/whitelist/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeWhitelist(@PathVariable("id") String id){
+        Whitelist whitelist = whitelistService.getWhitelistById(id);
+        if(whitelist == null){
             return new NoCidFoundResponse();
         }
-        whitelistService.removeWhiteListedCID(request.getCid());
+        whitelistService.removeWhiteListedCID(whitelist.getCid());
         return new UserDeletedResponse();
     }
 

@@ -6,6 +6,8 @@ import it.chalmers.gamma.db.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PostService {
@@ -21,6 +23,12 @@ public class PostService {
     }
     public Post addPost(Text postName){
         Post post = new Post();
+        return setPost(post, postName);
+    }
+    public Post editPost(Post post, Text text){
+        return setPost(post, text);
+    }
+    private Post setPost(Post post, Text postName){
         post.setSVPostName(postName.getSv());
         post.setENPostName(postName.getEn());
         return repository.save(post);
@@ -30,5 +38,9 @@ public class PostService {
     }
     public List<Post> getAllPosts(){
         return repository.findAll();
+    }
+    public Post getPostById(String id){
+        Optional<Post> post = repository.findById(UUID.fromString(id));
+        return post.orElse(null);
     }
 }
