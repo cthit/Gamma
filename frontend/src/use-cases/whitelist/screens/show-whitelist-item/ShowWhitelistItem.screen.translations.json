@@ -1,0 +1,6 @@
+{
+  "ShowWhitelistItem": {
+    "id": ["Id", "Id"],
+    "cid": ["Cid", "Cid"]
+  }
+}
