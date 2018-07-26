@@ -14,14 +14,14 @@ import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import EditPost from "../common-views/edit-post-view";
 
-const EditPostDetails = ({ post, text }) => (
+const EditPostDetails = ({ postsChange, post, text, match }) => (
   <IfElseRendering
     test={post != null}
     ifRender={() => (
       <Center>
         <EditPost
           onSubmit={(values, actions) => {
-            console.log(values);
+            postsChange(values, match.params.id);
           }}
           initialValues={{
             sv: post.sv == null ? "" : post.sv,

@@ -5,6 +5,8 @@ import loadTranslations from "../../../../common/utils/loaders/translations.load
 
 import EditPostDetails from "./EditPostDetails.screen";
 
+import { postsChange } from "../../Posts.action-creator";
+
 const mapStateToProps = (state, ownProps) => ({
   text: loadTranslations(
     state.localize,
@@ -14,7 +16,9 @@ const mapStateToProps = (state, ownProps) => ({
   post: _.find(state.posts, { id: ownProps.match.params.id })
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  postsChange: (postData, postId) => dispatch(postsChange(postData, postId))
+});
 
 export default connect(
   mapStateToProps,
