@@ -11,7 +11,6 @@ import java.util.UUID;
 public class WebsiteURL {
     @Id
     @Column(name = "id", updatable = false)
-    @JsonIgnore
     private UUID id;
 
     @OneToOne

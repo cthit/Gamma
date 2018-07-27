@@ -14,7 +14,6 @@ import java.util.UUID;
 public class Website {
     @Id
     @Column(updatable = false)
-    @JsonIgnore
     private UUID id;
     @Column(name = "name")
     private String name;
