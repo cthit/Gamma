@@ -2,11 +2,7 @@ import axios from "axios";
 
 import token from "../../common/utils/retrievers/token.retrieve";
 
-import {
-  USERS_LOAD,
-  USERS_LOAD_SUCCESSFULLY,
-  USERS_LOAD_FAILED
-} from "./Users.actions";
+import { USERS_LOAD_SUCCESSFULLY, USERS_LOAD_FAILED } from "./Users.actions";
 
 export function usersLoad() {
   return dispatch => {
@@ -22,6 +18,17 @@ export function usersLoad() {
           dispatch(usersLoadFailed(error));
           reject(error);
         });
+    });
+  };
+}
+
+export function usersChange(user, userId) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios
+        .put("http://localhost:8081/users/" + userId)
+        .then(response => {})
+        .catch(error => {});
     });
   };
 }
@@ -44,4 +51,8 @@ function usersLoadSuccessfully(data) {
       ...data
     }
   };
+}
+
+function usersChangeSuccessfully() {
+  return {};
 }

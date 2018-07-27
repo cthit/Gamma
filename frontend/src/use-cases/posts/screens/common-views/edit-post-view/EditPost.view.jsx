@@ -47,7 +47,7 @@ const EditPost = ({
       },
       en: {
         component: GammaTextField,
-        componnetProps: {
+        componentProps: {
           upperLabel: englishInputText
         }
       }
