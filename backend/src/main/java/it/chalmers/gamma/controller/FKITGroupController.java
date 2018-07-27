@@ -4,23 +4,37 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.response.GetGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.GroupWebsiteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/groups")
 public class FKITGroupController {
 
     private FKITService fkitService;
-    public FKITGroupController(FKITService fkitService){
+    private GroupWebsiteService groupWebsiteService;
+    public FKITGroupController(FKITService fkitService, GroupWebsiteService groupWebsiteService){
         this.fkitService = fkitService;
+        this.groupWebsiteService = groupWebsiteService;
     }
 
     @RequestMapping(value = "/{group}", method = RequestMethod.GET)
-    public ResponseEntity<FKITGroup> getGroupInfo(@PathVariable("group") String group){
-        if(!fkitService.groupExists(group)){
-            return new GetGroupResponse(null);
-        }
-        return new GetGroupResponse(fkitService.getGroup(group));
+    public ResponseEntity<FKITGroup.FKITGroupView> getGroup(@PathVariable("group") String groupId){
+        FKITGroup group = fkitService.getGroup(groupId);
+        List<String> props = new ArrayList<>();
+        props.add("avatarURL");
+        props.add("name");
+        props.add("prettyName");
+        props.add("description");
+        props.add("func");
+        props.add("email");
+        props.add("type");
+        FKITGroup.FKITGroupView groupView = group.getView(props);
+        groupView.setWebsites(groupWebsiteService.getWebsites(group));
+        return new GetGroupResponse(groupView);
     }
 }

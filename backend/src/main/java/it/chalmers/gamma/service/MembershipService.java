@@ -25,7 +25,6 @@ public class MembershipService {
         membership.setPost(post);
         membership.setUnofficialPostName(postname);
         membership.setYear(year);
-        System.out.println("trying to add: " + membership.toString());
         membershipRepository.save(membership);
     }
 }

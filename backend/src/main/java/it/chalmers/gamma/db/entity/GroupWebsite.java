@@ -12,11 +12,14 @@ public class GroupWebsite {
     @Id
     @JsonIgnore
     private UUID id;
-    @OneToOne
+
     @JoinColumn(name = "website")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private WebsiteURL website;
+
     @OneToOne
     @JoinColumn(name = "fkit_group")
+    @JsonIgnore
     private FKITGroup group;
 
     public GroupWebsite() {

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller;
 
+import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,20 +22,23 @@ public class AdministrationController {
     private MembershipService membershipService;
     private PostService postService;
     private WebsiteService websiteService;
+    private GroupWebsiteService groupWebsiteService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
                              FKITService fkitService, MembershipService membershipService, PostService postService,
-                             WebsiteService websiteService) {
+                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
         this.membershipService = membershipService;
         this.postService = postService;
         this.websiteService = websiteService;
+        this.groupWebsiteService = groupWebsiteService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
     public ResponseEntity<List<FKITGroup>> getGroups(){
+        System.out.println(fkitService.getGroups());
         return new GroupsResponse(fkitService.getGroups());
     }
 
@@ -54,15 +59,20 @@ public class AdministrationController {
         if (createGroupRequest.getType() == null) {
             return new MissingRequiredFieldResponse("groupType");
         }
-        fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
-                createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc());
+        FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
+                createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc(), createGroupRequest.getAvatarURL());
+        List<WebsiteURL> websiteURL = createGroupRequest.getWebsites();
+        for (WebsiteURL website : websiteURL){
+            websiteService.getWebsite(website.getWebsite().getName());
+        }
+        groupWebsiteService.addGroupWebsites(group, websiteURL);
         return new GroupCreatedResponse();
     }
 
-    @RequestMapping(value = "/groups/{group}", method = RequestMethod.POST)
+    @RequestMapping(value = "/groups/{group}", method = RequestMethod.PUT)
     public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("group") String group) {
-        fkitService.editGroup(group, request.getDescription(), request.getEmail(), request.getType(), request.getFunc());
-        return new GroupCreatedResponse();
+        fkitService.editGroup(group, request.getDescription(), request.getEmail(), request.getType(), request.getFunc(), request.getAvatarURL());
+        return new GroupEditedResponse();
     }
 
     @RequestMapping(value = "/groups/{group}", method = RequestMethod.DELETE)
@@ -203,6 +213,9 @@ public class AdministrationController {
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editWebsite(@PathVariable("id") String id, @RequestBody CreateWebsiteRequest request){
         Website website = websiteService.getWebsiteById(id);
+        if(website == null){
+            return new WebsiteNotFoundResponse();
+        }
         websiteService.editWebsite(website, request.getWebsite());
         return new EditedWebsiteResponse();
     }

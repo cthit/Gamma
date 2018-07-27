@@ -11,10 +11,11 @@ import java.util.UUID;
 public class WebsiteURL {
     @Id
     @Column(name = "id", updatable = false)
+    @JsonIgnore
     private UUID id;
 
-    @OneToOne
     @JoinColumn(name = "website")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Website website;
 
     @Column(name = "url")
@@ -32,9 +33,13 @@ public class WebsiteURL {
     public void setId(UUID id) {
         this.id = id;
     }
-
+    @JsonIgnore
     public Website getWebsite() {
         return website;
+    }
+
+    public String getWebsiteName(){
+        return website.getName();
     }
 
     public void setWebsite(Website website) {

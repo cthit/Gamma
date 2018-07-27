@@ -1,7 +1,10 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.domain.GroupType;
+
+import java.util.List;
 
 public class CreateGroupRequest {
     private String name;
@@ -10,6 +13,16 @@ public class CreateGroupRequest {
     private GroupType type;
     private Text func;
     private String avatarURL;
+    private List<WebsiteURL> websites;
+
+    public List<WebsiteURL> getWebsites() {
+        return websites;
+    }
+
+    public void setWebsites(List<WebsiteURL> websites) {
+        this.websites = websites;
+    }
+
 
     public void setDescription(Text description) {
         this.description = description;

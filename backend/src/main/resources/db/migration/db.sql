@@ -6,7 +6,8 @@ create table text (
 
 create table website(
   id uuid constraint websites_pk primary key,
-  name varchar(100) not null
+  name varchar(100) not null,
+  pretty_name varchar(100) not null
 );
 
 create table website_url(
@@ -16,7 +17,7 @@ create table website_url(
 );
 
 create table ituser (
-  id               uuid constraint ituser_pk primary key,8
+  id               uuid constraint ituser_pk primary key,
   cid              varchar(10)  not null constraint ituser_cid_unique unique,
   password         varchar(255) not null,
   nick             varchar(50)  not null,

@@ -17,15 +17,16 @@ public class WebsiteService {
 
     public void addPossibleWebsite(String websiteName){
         Website website = new Website();
-        website.setName(websiteName);
+        website.setPrettyName(websiteName);
+        website.setName(websiteName.toLowerCase());
         repository.save(website);
     }
-    public Website getWebsite(String id){
-        Optional<Website> website = repository.findById(UUID.fromString(id));
-        return website.orElse(null);
+    public Website getWebsite(String websiteName){
+        return repository.findByName(websiteName);
     }
     public void editWebsite(Website website, String newWebsite){
-        website.setName(newWebsite);
+        website.setPrettyName(newWebsite);
+        website.setName(newWebsite.toLowerCase());
         repository.save(website);
     }
     public void deleteWebsite(String id){

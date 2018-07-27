@@ -1,8 +1,12 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.GroupType;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -119,6 +123,9 @@ public class FKITGroup {
     }
 
     public String getSVDescription() {
+        if(description == null){
+            return null;
+        }
         return description.getSv();
     }
 
@@ -127,6 +134,9 @@ public class FKITGroup {
     }
 
     public String getENDescription() {
+        if(description == null){
+            return null;
+        }
         return description.getEn();
     }
 
@@ -171,6 +181,121 @@ public class FKITGroup {
     public int hashCode() {
 
         return Objects.hash(id, avatarURL, name, prettyName, description, func, email, type);
+    }
+
+    public FKITGroupView getView(List<String> props) {
+        FKITGroupView view = new FKITGroupView();
+        for (String prop : props) {
+            switch (prop) {
+                case "avatarURL":
+                    view.avatarURL = this.avatarURL;
+                    break;
+                case "name":
+                    view.name = this.name;
+                    break;
+                case "prettyName":
+                    view.prettyName = this.prettyName;
+                    break;
+                case "description":
+                    view.description = this.description;
+                    break;
+                case "func":
+                    view.func = this.func;
+                    break;
+                case "email":
+                    view.email = this.email;
+                    break;
+                case "type":
+                    view.type = this.type;
+                    break;
+            }
+        }
+        return view;
+    }
+
+      public class FKITGroupView{
+
+        private UUID id;
+        private String avatarURL;
+        private String name;
+        private String prettyName;
+        private Text description;
+        private Text func;
+
+          public Text getDescription() {
+              return description;
+          }
+
+          public void setDescription(Text description) {
+              this.description = description;
+          }
+
+          public Text getFunc() {
+              return func;
+          }
+
+          public void setFunc(Text func) {
+              this.func = func;
+          }
+
+          private String email;
+        private GroupType type;
+        private List<GroupWebsite> websites;
+
+        public UUID getId() {
+            return id;
+        }
+
+        public void setId(UUID id) {
+            this.id = id;
+        }
+
+        public String getAvatarURL() {
+            return avatarURL;
+        }
+
+        public void setAvatarURL(String avatarURL) {
+            this.avatarURL = avatarURL;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPrettyName() {
+            return prettyName;
+        }
+
+        public void setPrettyName(String prettyName) {
+            this.prettyName = prettyName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public GroupType getType() {
+            return type;
+        }
+
+        public void setType(GroupType type) {
+            this.type = type;
+        }
+        public List<GroupWebsite> getWebsites() {
+            return websites;
+        }
+
+        public void setWebsites(List<GroupWebsite> websites) {
+            this.websites = websites;
+        }
     }
 
 }

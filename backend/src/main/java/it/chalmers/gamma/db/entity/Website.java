@@ -17,9 +17,15 @@ public class Website {
     private UUID id;
     @Column(name = "name")
     private String name;
+    @Column(name = "pretty_name")
+    private String prettyName;
 
     public Website() {
         id = UUID.randomUUID();
+    }
+
+    public Website(String name){
+        this.name = name;
     }
 
     public UUID getId() {
@@ -36,6 +42,14 @@ public class Website {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPrettyName() {
+        return prettyName;
+    }
+
+    public void setPrettyName(String prettyName) {
+        this.prettyName = prettyName;
     }
 
     @Override
