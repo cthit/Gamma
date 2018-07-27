@@ -8,14 +8,15 @@ import {
   GammaCardButtons
 } from "../../../../../common-ui/design";
 
-import GammaForm from "../../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../../common/elements/gamma-form-field";
+import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaButton from "../../../../../common/elements/gamma-button";
 import GammaSelect from "../../../../../common/elements/gamma-select";
 
 const EditGroupInformation = ({ initialValues, onSubmit }) => (
-  <GammaForm
+  <GammaEditData
+    titleText="Grupp"
+    submitText="Spara"
     validationSchema={yup.object().shape({
       name: yup.string().required(),
       description: yup
@@ -37,64 +38,64 @@ const EditGroupInformation = ({ initialValues, onSubmit }) => (
     })}
     onSubmit={onSubmit}
     initialValues={initialValues}
-    render={() => (
-      <GammaCard>
-        <GammaCardBody>
-          <GammaFormField
-            name="name"
-            component={GammaTextField}
-            componentProps={{ upperLabel: "Name" }}
-          />
-
-          <GammaFormField
-            name="description.sv"
-            component={GammaTextField}
-            componentProps={{ upperLabel: "Description Sv" }}
-          />
-
-          <GammaFormField
-            name="description.en"
-            component={GammaTextField}
-            componentProps={{ upperLabel: "Description En" }}
-          />
-
-          <GammaFormField
-            name="email"
-            component={GammaTextField}
-            componentProps={{ upperLabel: "Email" }}
-          />
-
-          <GammaFormField
-            name="func.sv"
-            component={GammaTextField}
-            componentProps={{ upperLabel: "Function Sv" }}
-          />
-
-          <GammaFormField
-            name="func.en"
-            component={GammaTextField}
-            componentProps={{ upperLabel: "Function En" }}
-          />
-
-          <GammaFormField
-            name="groupType"
-            component={GammaSelect}
-            componentProps={{
-              valueToTextMap: {
-                SOCIETY: "Förening",
-                COMMITTEE: "Kommittée",
-                BOARD: "Board"
-              },
-              upperLabel: "Type"
-            }}
-          />
-
-          <GammaCardButtons reverseDirection>
-            <GammaButton text="Create group" submit raised primary />
-          </GammaCardButtons>
-        </GammaCardBody>
-      </GammaCard>
-    )}
+    keysOrder={[
+      "name",
+      "description.sv",
+      "description.en",
+      "email",
+      "func.sv",
+      "func.en",
+      "groupType"
+    ]}
+    keysComponentData={{
+      name: {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: "Name"
+        }
+      },
+      "description.sv": {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: "Description SV"
+        }
+      },
+      "description.en": {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: "Description EN"
+        }
+      },
+      email: {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: "Email"
+        }
+      },
+      "func.sv": {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: "Function SV"
+        }
+      },
+      "func.en": {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: "Function EN"
+        }
+      },
+      groupType: {
+        component: GammaSelect,
+        componentProps: {
+          upperLabel: "Group Type",
+          valueToTextMap: {
+            SOCIETY: "Förening",
+            COMMITTEE: "Kommittée",
+            BOARD: "Board"
+          }
+        }
+      }
+    }}
   />
 );
 

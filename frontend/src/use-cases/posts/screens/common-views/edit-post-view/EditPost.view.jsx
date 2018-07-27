@@ -10,6 +10,7 @@ import {
 import GammaFormField from "../../../../../common/elements/gamma-form-field";
 import GammaButton from "../../../../../common/elements/gamma-button";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
+import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 
 const EditPost = ({
   initialValues,
@@ -20,11 +21,7 @@ const EditPost = ({
   submitText,
   fieldRequiredText
 }) => (
-  <GammaForm
-    validationSchema={yup.object().shape({
-      sv: yup.string().required(fieldRequiredText),
-      en: yup.string().required(fieldRequiredText)
-    })}
+  <GammaEditData
     initialValues={initialValues}
     onSubmit={(values, actions) => {
       const wrapped = {
@@ -32,30 +29,29 @@ const EditPost = ({
           ...values
         }
       };
-
       onSubmit(wrapped, actions);
     }}
-    render={({ errors, touched }) => (
-      <GammaCard minWidth="300px" maxWidth="600px">
-        <GammaCardTitle text={titleText} />
-        <GammaCardBody>
-          <GammaFormField
-            name="sv"
-            component={GammaTextField}
-            componentProps={{ upperLabel: swedishInputText }}
-          />
-
-          <GammaFormField
-            name="en"
-            component={GammaTextField}
-            componentProps={{ upperLabel: englishInputText }}
-          />
-        </GammaCardBody>
-        <GammaCardButtons reverseDirection>
-          <GammaButton submit text={submitText} raised primary />
-        </GammaCardButtons>
-      </GammaCard>
-    )}
+    validationSchema={yup.object().shape({
+      sv: yup.string().required(fieldRequiredText),
+      en: yup.string().required(fieldRequiredText)
+    })}
+    titleText={titleText}
+    submitText={submitText}
+    keysOrder={["sv", "en"]}
+    keysComponentData={{
+      sv: {
+        component: GammaTextField,
+        componentProps: {
+          upperLabel: swedishInputText
+        }
+      },
+      en: {
+        component: GammaTextField,
+        componnetProps: {
+          upperLabel: englishInputText
+        }
+      }
+    }}
   />
 );
 
