@@ -11,15 +11,7 @@ import {
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
 import GammaButton from "../../../../common/elements/gamma-button";
-
-const UserInformationOrder = [
-  "cid",
-  "firstName",
-  "lastName",
-  "nick",
-  "email",
-  "acceptanceYear"
-];
+import GammaDisplayData from "../../../../common/elements/gamma-display-data";
 
 const ShowUserDetails = ({ user, text }) => (
   <IfElseRendering
@@ -31,19 +23,25 @@ const ShowUserDetails = ({ user, text }) => (
             text={user.firstName + " '" + user.nick + "' " + user.lastName}
           />
           <GammaCardBody>
-            <HorizontalContainer>
-              <RightAlignFill>
-                {UserInformationOrder.map(prop => (
-                  <Text key={prop} bold text={text[prop] + ": "} />
-                ))}
-              </RightAlignFill>
-              <Spacing />
-              <LeftAlignFill>
-                {UserInformationOrder.map(prop => (
-                  <Text key={prop} text={user[prop]} />
-                ))}
-              </LeftAlignFill>
-            </HorizontalContainer>
+            <GammaDisplayData
+              data={user}
+              keysText={{
+                cid: text.cid,
+                firstName: text.firstName,
+                lastName: text.lastName,
+                nick: text.nick,
+                email: text.email,
+                acceptanceYear: text.acceptanceYear
+              }}
+              keysOrder={[
+                "cid",
+                "firstName",
+                "lastName",
+                "nick",
+                "email",
+                "acceptanceYear"
+              ]}
+            />
           </GammaCardBody>
           <GammaCardButtons reverseDirection>
             <GammaLink to={"/users/" + user.cid + "/edit"}>
@@ -57,16 +55,3 @@ const ShowUserDetails = ({ user, text }) => (
 );
 
 export default ShowUserDetails;
-
-const LeftAlignFill = styled(Fill)`
-  text-align: left;
-`;
-
-const RightAlignFill = styled(Fill)`
-  text-align: right;
-`;
-
-const HorizontalContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;

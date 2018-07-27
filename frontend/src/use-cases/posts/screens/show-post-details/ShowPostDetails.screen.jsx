@@ -12,8 +12,7 @@ import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
 import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Edit } from "@material-ui/icons";
-
-const PostInformationOrder = ["id", "sv", "en"];
+import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
 
 const ShowPostDetails = ({ post, text }) => (
   <IfElseRendering
@@ -23,22 +22,11 @@ const ShowPostDetails = ({ post, text }) => (
         <Center>
           <GammaCard minWidth="300px" maxWidth="600px">
             <GammaCardBody>
-              <HorizontalContainer>
-                <RightAlignFill>
-                  {PostInformationOrder.map(prop => (
-                    <Text key={prop} bold text={text[prop] + ": "} />
-                  ))}
-                </RightAlignFill>
-                <Spacing />
-                <LeftAlignFill>
-                  {PostInformationOrder.map(prop => (
-                    <Text
-                      key={prop}
-                      text={post[prop] == null ? "null" : post[prop]}
-                    />
-                  ))}
-                </LeftAlignFill>
-              </HorizontalContainer>
+              <GammaDisplayData
+                data={post}
+                keysText={{ id: text.id, sv: text.sv, en: text.en }}
+                keysOrder={["id", "sv", "en"]}
+              />
             </GammaCardBody>
           </GammaCard>
         </Center>
@@ -51,16 +39,3 @@ const ShowPostDetails = ({ post, text }) => (
 );
 
 export default ShowPostDetails;
-
-const LeftAlignFill = styled(Fill)`
-  text-align: left;
-`;
-
-const RightAlignFill = styled(Fill)`
-  text-align: right;
-`;
-
-const HorizontalContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;

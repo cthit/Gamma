@@ -11,9 +11,8 @@ import {
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
 import GammaFABButton from "../../../../common/elements/gamma-fab-button";
+import GammaDisplayData from "../../../../common/elements/gamma-display-data";
 import { Edit } from "@material-ui/icons";
-
-const WhitelistInformationOrder = ["id", "cid"];
 
 const ShowWhitelistItem = ({ whitelistItem, text }) => (
   <IfElseRendering
@@ -23,26 +22,11 @@ const ShowWhitelistItem = ({ whitelistItem, text }) => (
         <Center>
           <GammaCard minWidth="300px" maxWidth="600px">
             <GammaCardBody>
-              <HorizontalContainer>
-                <RightAlignFill>
-                  {WhitelistInformationOrder.map(prop => (
-                    <Text key={prop} bold text={text[prop] + ": "} />
-                  ))}
-                </RightAlignFill>
-                <Spacing />
-                <LeftAlignFill>
-                  {WhitelistInformationOrder.map(prop => (
-                    <Text
-                      key={prop}
-                      text={
-                        whitelistItem[prop] == null
-                          ? "null"
-                          : whitelistItem[prop]
-                      }
-                    />
-                  ))}
-                </LeftAlignFill>
-              </HorizontalContainer>
+              <GammaDisplayData
+                data={whitelistItem}
+                keysOrder={["id", "cid"]}
+                keysText={{ id: text.id, cid: text.cid }}
+              />
             </GammaCardBody>
           </GammaCard>
         </Center>
@@ -55,16 +39,3 @@ const ShowWhitelistItem = ({ whitelistItem, text }) => (
 );
 
 export default ShowWhitelistItem;
-
-const LeftAlignFill = styled(Fill)`
-  text-align: left;
-`;
-
-const RightAlignFill = styled(Fill)`
-  text-align: right;
-`;
-
-const HorizontalContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
