@@ -51,17 +51,17 @@ public class AdministrationController {
         if (createGroupRequest.getFunc() == null) {
             return new MissingRequiredFieldResponse("function");
         }
-        if (createGroupRequest.getGroupType() == null) {
+        if (createGroupRequest.getType() == null) {
             return new MissingRequiredFieldResponse("groupType");
         }
         fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
-                createGroupRequest.getEmail(), createGroupRequest.getGroupType(), createGroupRequest.getFunc());
+                createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc());
         return new GroupCreatedResponse();
     }
 
     @RequestMapping(value = "/groups/{group}", method = RequestMethod.POST)
     public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("group") String group) {
-        fkitService.editGroup(group, request.getDescription(), request.getEmail(), request.getGroupType(), request.getFunc());
+        fkitService.editGroup(group, request.getDescription(), request.getEmail(), request.getType(), request.getFunc());
         return new GroupCreatedResponse();
     }
 

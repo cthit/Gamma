@@ -61,6 +61,23 @@ export function groupsAdd(group) {
   };
 }
 
+export function groupsChange(group, groupId) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios
+        .put("http://localhost:8081/admin/groups/" + groupId)
+        .then(response => {
+          dispatch(groupsChangeSuccessfully());
+          resolve(response);
+        })
+        .catch(error => {
+          dispatch(groupsChangeFailed(error));
+          reject(error);
+        });
+    });
+  };
+}
+
 export function groupsRemove() {
   return dispatch => {
     return new Promise((resolve, reject) => {});
@@ -115,6 +132,23 @@ function groupsLoadSuccessfully(data) {
 function groupsLoadFailed(error) {
   return {
     type: GROUPS_LOAD_FAILED,
+    error: true,
+    payload: {
+      error: error
+    }
+  };
+}
+
+function groupsChangeSuccessfully() {
+  return {
+    type: GROUPS_CHANGE_SUCCESSFULLY,
+    error: false
+  };
+}
+
+function groupsChangeFailed(error) {
+  return {
+    type: GROUPS_CHANGE_FAILED,
     error: true,
     payload: {
       error: error

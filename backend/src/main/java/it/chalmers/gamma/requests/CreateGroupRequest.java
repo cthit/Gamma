@@ -7,7 +7,7 @@ public class CreateGroupRequest {
     private String name;
     private Text description;
     private String email;
-    private GroupType groupType;
+    private GroupType type;
     private Text func;
     private String avatarURL;
 
@@ -51,11 +51,11 @@ public class CreateGroupRequest {
         this.email = email;
     }
 
-    public GroupType getGroupType() {
-        return groupType;
+    public GroupType getType() {
+        return type;
     }
 
-    public void setGroupType(GroupType groupType) {
-        this.groupType = groupType;
+    public void setType(GroupType type) {
+        this.type = type;
     }
 }
