@@ -1,9 +1,7 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.Whitelist;
+import com.sun.mail.iap.Response;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
@@ -22,14 +20,17 @@ public class AdministrationController {
     private FKITService fkitService;
     private MembershipService membershipService;
     private PostService postService;
+    private WebsiteService websiteService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
-                             FKITService fkitService, MembershipService membershipService, PostService postService) {
+                             FKITService fkitService, MembershipService membershipService, PostService postService,
+                             WebsiteService websiteService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
         this.membershipService = membershipService;
         this.postService = postService;
+        this.websiteService = websiteService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -187,6 +188,33 @@ public class AdministrationController {
     @RequestMapping(value = "/users/whitelist", method = RequestMethod.GET)
     public ResponseEntity<List<Whitelist>> getAllWhiteList(){
         return new GetWhitelistedResponse(whitelistService.getAllWhitelist());
+    }
+    @RequestMapping(value = "/websites", method = RequestMethod.POST)
+    public ResponseEntity<String> addWebsite(@RequestBody CreateWebsiteRequest request){
+        if(request.getWebsite() == null){
+            return new MissingRequiredFieldResponse("website");
+        }
+        websiteService.addPossibleWebsite(request.getWebsite());
+        return new WebsiteAddedResponse();
+    }
+    @RequestMapping(value = "/websites/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Website> getWebsite(@PathVariable("id") String id){
+        return new GetWebsiteResponse(websiteService.getWebsiteById(id));
+    }
+    @RequestMapping(value = "/websites/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editWebsite(@PathVariable("id") String id, @RequestBody CreateWebsiteRequest request){
+        Website website = websiteService.getWebsiteById(id);
+        websiteService.editWebsite(website, request.getWebsite());
+        return new EditedWebsiteResponse();
+    }
+    @RequestMapping(value = "/websites/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteWebsite(@PathVariable("id") String id){
+        websiteService.deleteWebsite(id);
+        return new WebsiteDeletedResponse();
+    }
+    @RequestMapping(value = "/websites", method = RequestMethod.GET)
+    public ResponseEntity<List<Website>> getAllWebsites(){
+        return new GetAllWebsitesResponse(websiteService.getAllWebsites());
     }
 
 }
