@@ -1,6 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.domain.GroupType;
 
 import javax.persistence.*;
@@ -13,7 +12,6 @@ public class FKITGroup {
 
     @Id
     @Column(updatable = false)
-    @JsonIgnore
     private UUID id;
 
     @Column(name = "avatar_url")
@@ -31,7 +29,7 @@ public class FKITGroup {
 
     @JoinColumn(name = "function", nullable = false)
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Text function;
+    private Text func;
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
@@ -92,29 +90,29 @@ public class FKITGroup {
         this.avatarURL = avatarURL;
     }
 
-    public Text getFunction() {
-        return function;
+    public Text getFunc() {
+        return func;
     }
 
-    public void setFunction(Text function) {
-        this.function = function;
+    public void setFunc(Text func) {
+        this.func = func;
     }
 
 
     public String getSVFunction() {
-        return function.getSv();
+        return func.getSv();
     }
 
     public void setSVFunction(String function) {
-        this.function.setSv(function);
+        this.func.setSv(function);
     }
 
     public String getENFunction() {
-        return function.getEn();
+        return func.getEn();
     }
 
     public void setENFunction(String function) {
-        this.function.setEn(function);
+        this.func.setEn(function);
     }
     public String getPrettyName() {
         return prettyName;
@@ -148,7 +146,7 @@ public class FKITGroup {
                 ", name='" + name + '\'' +
                 ", prettyName='" + prettyName + '\'' +
                 ", description=" + description +
-                ", function=" + function +
+                ", func=" + func +
                 ", email='" + email + '\'' +
                 ", type=" + type +
                 '}';
@@ -164,7 +162,7 @@ public class FKITGroup {
                 Objects.equals(name, fkitGroup.name) &&
                 Objects.equals(prettyName, fkitGroup.prettyName) &&
                 Objects.equals(description, fkitGroup.description) &&
-                Objects.equals(function, fkitGroup.function) &&
+                Objects.equals(func, fkitGroup.func) &&
                 Objects.equals(email, fkitGroup.email) &&
                 type == fkitGroup.type;
     }
@@ -172,7 +170,7 @@ public class FKITGroup {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, avatarURL, name, prettyName, description, function, email, type);
+        return Objects.hash(id, avatarURL, name, prettyName, description, func, email, type);
     }
 
 }

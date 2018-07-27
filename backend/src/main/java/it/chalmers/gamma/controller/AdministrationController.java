@@ -32,6 +32,11 @@ public class AdministrationController {
         this.postService = postService;
     }
 
+    @RequestMapping(value = "/groups", method = RequestMethod.GET)
+    public ResponseEntity<List<FKITGroup>> getGroups(){
+        return new GroupsResponse(fkitService.getGroups());
+    }
+
     @RequestMapping(value = "/groups/new", method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
         if (fkitService.groupExists(createGroupRequest.getName())) {

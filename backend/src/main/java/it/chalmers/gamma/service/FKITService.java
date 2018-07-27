@@ -7,6 +7,8 @@ import it.chalmers.gamma.db.repository.TextRepository;
 import it.chalmers.gamma.domain.GroupType;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FKITService {
 
@@ -29,7 +31,7 @@ public class FKITService {
         FKITGroup group = repo.findByName(name.toLowerCase());
         group.setSVFunction(function.getSv());
         group.setENFunction(function.getEn());
-        function = group.getFunction();
+        function = group.getFunc();
         if(description != null) {
             if (group.getDescription() != null) {
                 group.setSVDescription(description.getSv());
@@ -45,7 +47,7 @@ public class FKITService {
         fkitGroup.setDescription(description);
         fkitGroup.setEmail(email);
         fkitGroup.setType(type);
-        fkitGroup.setFunction(function);
+        fkitGroup.setFunc(function);
         return repo.save(fkitGroup);
     }
     public boolean groupExists(String name){
@@ -56,5 +58,9 @@ public class FKITService {
     }
     public void removeGroup(String group){
         repo.delete(repo.findByName(group));
+    }
+
+    public List<FKITGroup> getGroups() {
+        return repo.findAll();
     }
 }
