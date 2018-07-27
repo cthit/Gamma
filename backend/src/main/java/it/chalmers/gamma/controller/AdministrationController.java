@@ -119,7 +119,7 @@ public class AdministrationController {
         return new GetMultiplePostsResponse(postService.getAllPosts());
     }
 
-    @RequestMapping(value = "/users/{cid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/{cid}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("cid") String cid, @RequestBody EditITUserRequest request) {
         itUserService.editUser(cid, request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
                 request.getPhone(), request.getLanguage(), request.getAvatarUrl());
