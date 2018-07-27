@@ -8,7 +8,7 @@ public class CreateGroupRequest {
     private Text description;
     private String email;
     private GroupType groupType;
-    private Text function;
+    private Text func;
     private String avatarURL;
 
     public void setDescription(Text description) {
@@ -19,12 +19,12 @@ public class CreateGroupRequest {
         return description;
     }
 
-    public Text getFunction() {
-        return function;
+    public Text getFunc() {
+        return func;
     }
 
-    public void setFunction(Text function) {
-        this.function = function;
+    public void setFunc(Text func) {
+        this.func = func;
     }
 
     public String getAvatarURL() {

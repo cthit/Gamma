@@ -54,6 +54,9 @@ import postsTranslations from "../use-cases/posts/Posts.translations.jsx";
 import Whitelist from "../use-cases/whitelist";
 import whitelistTranslations from "../use-cases/whitelist/Whitelist.translations.jsx";
 
+import Groups from "../use-cases/groups";
+import groupsTranslations from "../use-cases/groups/Groups.translations.json";
+
 export class App extends Component {
   state = {
     mobileOpen: false
@@ -84,7 +87,8 @@ export class App extends Component {
       ...demoTranslations,
       ...usersTranslations,
       ...postsTranslations,
-      ...whitelistTranslations
+      ...whitelistTranslations,
+      ...groupsTranslations
     });
 
     props.userUpdateMe();
@@ -121,6 +125,9 @@ export class App extends Component {
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/users">
             Users
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/groups">
+            Groups
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/posts">
             Posts
@@ -213,6 +220,7 @@ export class App extends Component {
                   <Switch>
                     <Route path="/home" component={Home} />
                     <Route path="/users" component={Users} />
+                    <Route path="/groups" component={Groups} />
                     <Route path="/create-account" component={CreateAccount} />
                     <Route path="/login" component={Login} />
                     <Route path="/whitelist" component={Whitelist} />

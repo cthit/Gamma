@@ -41,15 +41,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo, text }) => (
           },
           ...values
         };
-        sendDataAndCode(
-          user,
-          {
-            TOO_SHORT_PASSWORD: text.TOO_SHORT_PASSWORD,
-            CODE_OR_CID_IS_WRONG: text.CODE_OR_CID_IS_WRONG,
-            SomethingWentWrong: text.SomethingWentWrong
-          },
-          actions.resetForm
-        )
+        sendDataAndCode(user)
           .then(response => {
             redirectTo("/create-account/finished");
             actions.resetForm();
