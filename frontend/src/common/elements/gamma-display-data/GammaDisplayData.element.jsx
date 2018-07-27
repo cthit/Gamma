@@ -7,7 +7,7 @@ import { Text } from "../../../common-ui/text";
 const GammaDisplayData = ({ data, keysText, keysOrder }) => (
   <Fill>
     {keysOrder.map(key => (
-      <Padding>
+      <Padding key={key}>
         <HorizontalFill>
           <FixedWidth>
             <Text bold text={keysText[key]} />

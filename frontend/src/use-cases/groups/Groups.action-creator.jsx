@@ -22,11 +22,20 @@ import token from "../../common/utils/retrievers/token.retrieve";
 export function groupsLoad() {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      axios.get("http://localhost:8081/admin/groups", {
-        headers: {
-          Authorization: "Bearer " + token()
-        }
-      });
+      axios
+        .get("http://localhost:8081/admin/groups", {
+          headers: {
+            Authorization: "Bearer " + token()
+          }
+        })
+        .then(response => {
+          dispatch(groupsLoadSuccessfully(response.data));
+          resolve(response);
+        })
+        .catch(error => {
+          dispatch(groupsLoadFailed(error));
+          reject(error);
+        });
     });
   };
 }
@@ -86,6 +95,26 @@ function groupsAddSuccessfully() {
 function groupsAddFailed(error) {
   return {
     type: GROUPS_ADD_FAILED,
+    error: true,
+    payload: {
+      error: error
+    }
+  };
+}
+
+function groupsLoadSuccessfully(data) {
+  return {
+    type: GROUPS_LOAD_SUCCESSFULLY,
+    error: false,
+    payload: {
+      data: data
+    }
+  };
+}
+
+function groupsLoadFailed(error) {
+  return {
+    type: GROUPS_LOAD_FAILED,
     error: true,
     payload: {
       error: error

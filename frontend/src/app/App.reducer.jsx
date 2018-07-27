@@ -9,6 +9,7 @@ import { users } from "../use-cases/users/Users.reducer";
 import { createAccount } from "../use-cases/create-account/CreateAccount.reducer";
 import { posts } from "../use-cases/posts/Posts.reducer";
 import { whitelist } from "../use-cases/whitelist/Whitelist.reducer";
+import { groups } from "../use-cases/groups/Groups.reducer";
 
 export const rootReducer = combineReducers({
   createAccount,
@@ -18,5 +19,6 @@ export const rootReducer = combineReducers({
   user,
   users,
   posts,
-  whitelist
+  whitelist,
+  groups
 });

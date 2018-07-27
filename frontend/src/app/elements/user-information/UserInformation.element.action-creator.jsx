@@ -32,7 +32,7 @@ export function userUpdateMe() {
           dispatch(userUpdatedSuccessfully(response.data));
         })
         .catch(error => {
-          dispatch(userUpdatedFailed(error.response));
+          dispatch(userUpdatedFailed(error));
           const statusCode =
             error.response == null ? -1 : error.response.data.status;
           switch (statusCode) {
