@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
