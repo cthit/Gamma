@@ -198,10 +198,13 @@ public class AdministrationController {
     }
     @RequestMapping(value = "/websites", method = RequestMethod.POST)
     public ResponseEntity<String> addWebsite(@RequestBody CreateWebsiteRequest request){
-        if(request.getWebsite() == null){
-            return new MissingRequiredFieldResponse("website");
+        if(request.getName() == null){
+            return new MissingRequiredFieldResponse("name");
         }
-        websiteService.addPossibleWebsite(request.getWebsite());
+        if(request.getPrettyName() == null){
+            return new MissingRequiredFieldResponse("prettyName");
+        }
+        websiteService.addPossibleWebsite(request.getName(), request.getPrettyName());
         return new WebsiteAddedResponse();
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.GET)
@@ -214,7 +217,7 @@ public class AdministrationController {
         if(website == null){
             return new WebsiteNotFoundResponse();
         }
-        websiteService.editWebsite(website, request.getWebsite());
+        websiteService.editWebsite(website, request.getName(), request.getPrettyName());
         return new EditedWebsiteResponse();
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.DELETE)

@@ -1,9 +1,14 @@
 package it.chalmers.gamma.requests;
 
 public class CreateWebsiteRequest {
-    private String website;
+    private String name;
+    private String prettyName;
 
-    public String getWebsite() {
-        return website;
+    public String getName() {
+        return name;
+    }
+
+    public String getPrettyName() {
+        return prettyName;
     }
 }

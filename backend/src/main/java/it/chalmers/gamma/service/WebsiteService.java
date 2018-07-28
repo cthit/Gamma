@@ -5,7 +5,6 @@ import it.chalmers.gamma.db.repository.WebsiteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,18 +14,18 @@ public class WebsiteService {
         this.repository = repository;
     }
 
-    public void addPossibleWebsite(String websiteName){
+    public void addPossibleWebsite(String name, String prettyName){
         Website website = new Website();
-        website.setPrettyName(websiteName);
-        website.setName(websiteName.toLowerCase());
+        website.setPrettyName(prettyName);
+        website.setName(name);
         repository.save(website);
     }
     public Website getWebsite(String websiteName){
         return repository.findByName(websiteName);
     }
-    public void editWebsite(Website website, String newWebsite){
-        website.setPrettyName(newWebsite);
-        website.setName(newWebsite.toLowerCase());
+    public void editWebsite(Website website, String name, String prettyName){
+        website.setName(name);
+        website.setPrettyName(prettyName);
         repository.save(website);
     }
     public void deleteWebsite(String id){

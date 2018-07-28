@@ -11,11 +11,11 @@ const ShowAllWebsites = ({ websites }) => (
     <GammaTable
       idProp="id"
       startOrderBy="name"
-      columnsOrder={["id", "name", "pretty_name"]}
+      columnsOrder={["id", "name", "prettyName"]}
       headerTexts={{
         id: "Id",
         name: "Name",
-        pretty_name: "Pretty name",
+        prettyName: "Pretty name",
         __link: "Detaljer"
       }}
       data={websites.map(website => {

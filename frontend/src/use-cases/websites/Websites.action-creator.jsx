@@ -37,7 +37,7 @@ export function websitesAdd(data) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:8081/admin/whitelist", data, {
+        .post("http://localhost:8081/admin/websites", data, {
           headers: {
             Authorization: "Bearer " + token()
           }
@@ -53,11 +53,11 @@ export function websitesAdd(data) {
     });
   };
 }
-export function websitesRemove() {
+export function websitesRemove(websiteId) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .delete("http://localhost:8081/admin/whitelist", {
+        .delete("http://localhost:8081/admin/websites/" + websiteId, {
           headers: {
             Authorization: "Bearer " + token()
           }
@@ -73,11 +73,11 @@ export function websitesRemove() {
     });
   };
 }
-export function websitesChange(data) {
+export function websitesChange(data, websiteId) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .put("http://localhost:8081/admin/whitelist", data, {
+        .put("http://localhost:8081/admin/websites/" + websiteId, data, {
           headers: {
             Authorization: "Bearer " + token()
           }
