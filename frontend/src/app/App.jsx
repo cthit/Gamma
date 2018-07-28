@@ -57,6 +57,8 @@ import whitelistTranslations from "../use-cases/whitelist/Whitelist.translations
 import Groups from "../use-cases/groups";
 import groupsTranslations from "../use-cases/groups/Groups.translations.json";
 
+import Websites from "../use-cases/websites";
+
 export class App extends Component {
   state = {
     mobileOpen: false
@@ -134,6 +136,9 @@ export class App extends Component {
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/whitelist">
             Whitelist
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/websites">
+            Websites
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
             Demo
@@ -227,6 +232,7 @@ export class App extends Component {
                     <Route path="/error" component={Error} />
                     <Route path="/demo" component={Demo} />
                     <Route path="/posts" component={Posts} />
+                    <Route path="/websites" component={Websites} />
                     <Route
                       path="/"
                       render={props => (

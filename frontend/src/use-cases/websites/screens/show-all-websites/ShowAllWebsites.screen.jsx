@@ -1,33 +1,35 @@
 import React from "react";
+
 import { Fill } from "../../../../common-ui/layout";
 import GammaTable from "../../../../common/views/gamma-table";
+import { GammaLink } from "../../../../common-ui/design";
 import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Add } from "@material-ui/icons";
-import { GammaLink } from "../../../../common-ui/design";
 
-const ShowWhitelist = ({ whitelist, text }) => (
+const ShowAllWebsites = ({ websites }) => (
   <Fill>
     <GammaTable
       idProp="id"
-      startOrderBy="cid"
-      columnsOrder={["id", "cid"]}
+      startOrderBy="name"
+      columnsOrder={["id", "name", "pretty_name"]}
       headerTexts={{
         id: "Id",
-        cid: "Cid",
+        name: "Name",
+        pretty_name: "Pretty name",
         __link: "Detaljer"
       }}
-      data={whitelist.map(whitelistItem => {
+      data={websites.map(website => {
         return {
-          ...whitelistItem,
-          __link: "/whitelist/" + whitelistItem.id
+          ...website,
+          __link: "/websites/" + website.id
         };
       })}
-      emptyTableText="Det finns på whitelisten"
+      emptyTableText="Det finns inga hemsidor"
     />
-    <GammaLink to="/whitelist/add">
+    <GammaLink to="/websites/add">
       <GammaFABButton component={Add} secondary />
     </GammaLink>
   </Fill>
 );
 
-export default ShowWhitelist;
+export default ShowAllWebsites;

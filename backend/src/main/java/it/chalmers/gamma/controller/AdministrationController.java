@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
