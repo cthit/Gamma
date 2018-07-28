@@ -23,6 +23,7 @@ const ShowAllPosts = ({ posts, text }) => (
           __link: "/posts/" + post.id
         };
       })}
+      emptyTableText="Det finns inga poster"
     />
     <GammaLink to="/posts/add">
       <GammaFABButton component={Add} secondary />

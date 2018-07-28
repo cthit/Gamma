@@ -21,12 +21,13 @@ import {
   Table
 } from "@material-ui/core";
 
-import { Text, Title } from "../../../common-ui/text";
+import { Text, Title, Display } from "../../../common-ui/text";
 import GammaTextField from "../../elements/gamma-text-field";
 import IfElseRendering from "../../declaratives/if-else-rendering";
 import GammaTableToolbar from "./elements/gamma-table-toolbar";
 import GammaTableBody from "./elements/gamma-table-body";
 import GammaTableHeader from "./elements/gamma-table-header";
+import { Center, Padding } from "../../../common-ui/layout";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -145,7 +146,7 @@ class GammaTable extends React.Component {
     ).length > 0; //Can be optimized, escape if one result is found
 
   render() {
-    const { selected } = this.props;
+    const { selected, emptyTableText } = this.props;
     const { data, order, orderBy, rowsPerPage, page, headerTexts } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -173,16 +174,34 @@ class GammaTable extends React.Component {
             rowCount={data.length}
             headerTexts={headerTexts}
           />
-          <GammaTableBody
-            idProp={this.state.idProp}
-            columnsOrder={this.state.columnsOrder}
-            page={this.state.page}
-            rowsPerPage={this.state.rowsPerPage}
-            data={this.state.data}
-            isSelected={this.isSelected}
-            handleClick={this.handleClick}
-            rowShouldBeShown={this.rowShouldBeShown}
-            headerTexts={headerTexts}
+          <IfElseRendering
+            test={this.state.data.length > 0}
+            ifRender={() => (
+              <GammaTableBody
+                idProp={this.state.idProp}
+                columnsOrder={this.state.columnsOrder}
+                page={this.state.page}
+                rowsPerPage={this.state.rowsPerPage}
+                data={this.state.data}
+                isSelected={this.isSelected}
+                handleClick={this.handleClick}
+                rowShouldBeShown={this.rowShouldBeShown}
+                headerTexts={headerTexts}
+              />
+            )}
+            elseRender={() => (
+              <TableBody>
+                <tr>
+                  <td colSpan="100">
+                    <Center>
+                      <Padding>
+                        <Display text={emptyTableText} />
+                      </Padding>
+                    </Center>
+                  </td>
+                </tr>
+              </TableBody>
+            )}
           />
         </Table>
 

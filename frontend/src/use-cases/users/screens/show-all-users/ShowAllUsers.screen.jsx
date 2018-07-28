@@ -18,6 +18,7 @@ const ShowAllUsers = ({ users, text }) => (
     data={users.map(user => {
       return { ...user, __link: "/users/" + user.cid };
     })}
+    emptyTableText="Det finns inga användare, wait hur är du inloggad?"
   />
 );
 

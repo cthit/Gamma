@@ -29,6 +29,7 @@ const ShowAllGroups = ({ groups }) => (
           __link: "/groups/" + group.id
         };
       })}
+      emptyTableText="Det finns inga grupper"
     />
     <GammaLink to="/groups/new">
       <GammaFABButton component={Add} secondary />
