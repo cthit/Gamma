@@ -11,27 +11,33 @@ import {
 import { Center } from "../../../../common-ui/layout";
 import GammaButton from "../../../../common/elements/gamma-button";
 import { Text } from "../../../../common-ui/text";
+import GammaTranslations from "../../../../common/declaratives/gamma-translations";
+import translations from "./CreationOfAccountFinished.view.translations.json";
 
-const CreationOfAccountFinished = ({ text }) => (
-  <Center>
-    <GammaCard>
-      <GammaCardTitle text={text.CongratsTitle} />
-      <GammaCardBody>
-        <Center>
-          <Text text={text.CongratsBody} />
-        </Center>
-      </GammaCardBody>
-      <GammaCardButtons reverseDirection>
-        <GammaLink to="/login">
-          <GammaButton raised primary text={text.LoginForTheFirstTime} />
-        </GammaLink>
-      </GammaCardButtons>
-    </GammaCard>
-  </Center>
+const CreationOfAccountFinished = ({}) => (
+  <GammaTranslations
+    translations={translations}
+    uniquePath="CreateAccount.View.CreationOfAccountFinished"
+    render={text => (
+      <Center>
+        <GammaCard>
+          <GammaCardTitle text={text.CongratsTitle} />
+          <GammaCardBody>
+            <Center>
+              <Text text={text.CongratsBody} />
+            </Center>
+          </GammaCardBody>
+          <GammaCardButtons reverseDirection>
+            <GammaLink to="/login">
+              <GammaButton raised primary text={text.LoginForTheFirstTime} />
+            </GammaLink>
+          </GammaCardButtons>
+        </GammaCard>
+      </Center>
+    )}
+  />
 );
 
-CreationOfAccountFinished.propTypes = {
-  text: PropTypes.object.isRequired
-};
+CreationOfAccountFinished.propTypes = {};
 
 export default CreationOfAccountFinished;

@@ -25,18 +25,16 @@ import DrawerNavigationLink from "./elements/drawer-navigation-link";
 import UserInformation from "./elements/user-information";
 
 import Login from "../use-cases/login";
-import loginTranslations from "../use-cases/login/Login.translations.jsx";
-
 import CreateAccount from "../use-cases/create-account";
-import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
-
 import Demo from "../use-cases/demo";
-import demoTranslations from "../use-cases/demo/Demo.translations.json";
-
 import Home from "../use-cases/home";
-
 import Users from "../use-cases/users";
-import usersTranslations from "../use-cases/users/Users.translations.jsx";
+import Error from "../use-cases/error";
+import Posts from "../use-cases/posts";
+import Whitelist from "../use-cases/whitelist";
+import Groups from "../use-cases/groups";
+import Websites from "../use-cases/websites";
+import ActivationCodes from "../use-cases/activation-codes";
 
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
@@ -46,19 +44,7 @@ import IfElseRendering from "../common/declaratives/if-else-rendering";
 import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
-import Error from "../use-cases/error";
-
-import Posts from "../use-cases/posts";
-import postsTranslations from "../use-cases/posts/Posts.translations.jsx";
-
-import Whitelist from "../use-cases/whitelist";
-import whitelistTranslations from "../use-cases/whitelist/Whitelist.translations.jsx";
-
-import Groups from "../use-cases/groups";
-import groupsTranslations from "../use-cases/groups/Groups.translations.jsx";
-
-import Websites from "../use-cases/websites";
-import websitesTranslations from "../use-cases/websites/Websites.translations.jsx";
+import GammaTranslations from "../common/declaratives/gamma-translations";
 
 export class App extends Component {
   state = {
@@ -80,20 +66,7 @@ export class App extends Component {
       }
     });
 
-    console.log(postsTranslations);
-
-    props.addTranslation({
-      ...appTranslations,
-      ...commonTranslations,
-      ...createAccountTranslations,
-      ...loginTranslations,
-      ...demoTranslations,
-      ...usersTranslations,
-      ...postsTranslations,
-      ...whitelistTranslations,
-      ...groupsTranslations,
-      ...websitesTranslations
-    });
+    props.addTranslation({ ...appTranslations, ...commonTranslations });
 
     props.userUpdateMe();
   }
@@ -142,6 +115,12 @@ export class App extends Component {
           <DrawerNavigationLink onClick={this._closeDrawer} link="/websites">
             Websites
           </DrawerNavigationLink>
+          <DrawerNavigationLink
+            onClick={this._closeDrawer}
+            link="/activation-codes"
+          >
+            Activation codes
+          </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
             Demo
           </DrawerNavigationLink>
@@ -151,7 +130,7 @@ export class App extends Component {
 
     const { mobileOpen } = this.state;
 
-    var { loggedIn, loaded, text } = this.props;
+    var { loggedIn, loaded } = this.props;
 
     loggedIn = loggedIn != null ? loggedIn : false;
     loaded = loaded != null ? loaded : false;
@@ -159,16 +138,22 @@ export class App extends Component {
     return (
       <BrowserRouter>
         <StyledRoot>
-          <IfElseRendering
-            test={!loggedIn && loaded}
-            ifRender={() => (
-              <Route
-                render={props => (
-                  <ContainUserToAllowedPages
-                    currentPath={props.location.pathname}
-                    allowedBasePaths={["/create-account"]}
-                    to="/login"
-                    toastTextOnRedirect={text.YouNeedToLogin}
+          <GammaTranslations
+            translations={appTranslations}
+            uniquePath="App"
+            render={text => (
+              <IfElseRendering
+                test={!loggedIn && loaded}
+                ifRender={() => (
+                  <Route
+                    render={props => (
+                      <ContainUserToAllowedPages
+                        currentPath={props.location.pathname}
+                        allowedBasePaths={["/create-account"]}
+                        to="/login"
+                        toastTextOnRedirect={text.YouNeedToLogin}
+                      />
+                    )}
                   />
                 )}
               />
@@ -235,6 +220,10 @@ export class App extends Component {
                     <Route path="/demo" component={Demo} />
                     <Route path="/posts" component={Posts} />
                     <Route path="/websites" component={Websites} />
+                    <Route
+                      path="/activation-codes"
+                      component={ActivationCodes}
+                    />
                     <Route
                       path="/"
                       render={props => (

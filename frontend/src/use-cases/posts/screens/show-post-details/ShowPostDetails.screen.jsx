@@ -12,27 +12,35 @@ import { Text } from "../../../../common-ui/text";
 import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Edit } from "@material-ui/icons";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
+import GammaTranslations from "../../../../common/declaratives/gamma-translations";
+import translations from "./ShowPostDetails.screen.translations.json";
 
-const ShowPostDetails = ({ post, text }) => (
+const ShowPostDetails = ({ post }) => (
   <IfElseRendering
     test={post != null}
     ifRender={() => (
-      <Fill>
-        <Center>
-          <GammaCard minWidth="300px" maxWidth="600px">
-            <GammaCardBody>
-              <GammaDisplayData
-                data={post}
-                keysText={{ id: text.id, sv: text.sv, en: text.en }}
-                keysOrder={["id", "sv", "en"]}
-              />
-            </GammaCardBody>
-          </GammaCard>
-        </Center>
-        <GammaLink to={"/posts/" + post.id + "/edit"}>
-          <GammaFABButton component={Edit} secondary />
-        </GammaLink>
-      </Fill>
+      <GammaTranslations
+        translations={translations}
+        uniquePath="Posts.Screen.ShowPostDetails"
+        render={text => (
+          <Fill>
+            <Center>
+              <GammaCard minWidth="300px" maxWidth="600px">
+                <GammaCardBody>
+                  <GammaDisplayData
+                    data={post}
+                    keysText={{ id: text.Id, sv: text.Sv, en: text.En }}
+                    keysOrder={["id", "sv", "en"]}
+                  />
+                </GammaCardBody>
+              </GammaCard>
+            </Center>
+            <GammaLink to={"/posts/" + post.id + "/edit"}>
+              <GammaFABButton component={Edit} secondary />
+            </GammaLink>
+          </Fill>
+        )}
+      />
     )}
   />
 );

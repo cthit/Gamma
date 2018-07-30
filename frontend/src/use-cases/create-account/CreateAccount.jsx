@@ -10,42 +10,50 @@ import GammaStepper from "../../common/elements/gamma-stepper";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import { Fill, Spacing } from "../../common-ui/layout";
 
-const CreateAccount = ({ text, location }) => (
-  <Fill>
-    <MapPathToStep
-      currentPath={location.pathname}
-      pathToStepMap={{
-        "/create-account": 0,
-        "/create-account/email-sent": 1,
-        "/create-account/input": 2,
-        "/create-account/finished": 3
-      }}
-      render={step => (
-        <GammaStepper
-          activeStep={step}
-          steps={[
-            {
-              text: text.SendCid,
-              element: <InputCid />
-            },
-            {
-              text: text.GetActivationCode,
-              element: <EmailHasBeenSent />
-            },
-            {
-              text: text.CreateAccount,
-              element: <InputDataAndCode />
-            }
-          ]}
-          finishedElement={<CreationOfAccountFinished />}
+import GammaTranslations from "../../common/declaratives/gamma-translations";
+import translations from "./CreateAccount.translations.json";
+
+const CreateAccount = ({ location }) => (
+  <GammaTranslations
+    translations={translations}
+    uniquePath="CreateAccount"
+    render={text => (
+      <Fill>
+        <MapPathToStep
+          currentPath={location.pathname}
+          pathToStepMap={{
+            "/create-account": 0,
+            "/create-account/email-sent": 1,
+            "/create-account/input": 2,
+            "/create-account/finished": 3
+          }}
+          render={step => (
+            <GammaStepper
+              activeStep={step}
+              steps={[
+                {
+                  text: text.SendCid,
+                  element: <InputCid />
+                },
+                {
+                  text: text.GetActivationCode,
+                  element: <EmailHasBeenSent />
+                },
+                {
+                  text: text.CreateAccount,
+                  element: <InputDataAndCode />
+                }
+              ]}
+              finishedElement={<CreationOfAccountFinished />}
+            />
+          )}
         />
-      )}
-    />
-  </Fill>
+      </Fill>
+    )}
+  />
 );
 
 CreateAccount.propTypes = {
-  text: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 

@@ -1,0 +1,11 @@
+{
+  "Id": ["Id", "Id"],
+  "Cid": ["Cid", "Cid"],
+  "Code": ["Code", "Kod"],
+  "CreatedAt": ["Created at", "Skapad"],
+  "Details": ["Details", "Detaljer"],
+  "NoActivationCodes": [
+    "There's no activation codes",
+    "Det finns inga aktiveringskoder"
+  ]
+}

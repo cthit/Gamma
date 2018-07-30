@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import EditWebsite from "./EditWebsite.view";
+import ShowActivationCodeDetails from "./ShowActivationCodeDetails.screen";
 
 const mapStateToProps = (state, ownProps) => ({});
 
@@ -9,4 +9,4 @@ const mapDispatchToProps = dispatch => ({});
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditWebsite);
+)(ShowActivationCodeDetails);

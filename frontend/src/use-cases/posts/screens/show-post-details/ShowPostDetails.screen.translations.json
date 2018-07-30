@@ -1,7 +1,5 @@
 {
-  "ShowPostDetails": {
-    "id": ["Id", "Id"],
-    "sv": ["Swedish", "Svenska"],
-    "en": ["English", "Engelska"]
-  }
+  "Id": ["Id", "Id"],
+  "Sv": ["Swedish", "Svenska"],
+  "En": ["English", "Engelska"]
 }

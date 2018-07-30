@@ -10,6 +10,8 @@ import GammaButton from "../../../../../common/elements/gamma-button";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaSelect from "../../../../../common/elements/gamma-select";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
+import GammaTranslations from "../../../../../common/declaratives/gamma-translations";
+import translations from "../../../../../common/declaratives/gamma-translations";
 
 function _getCurrentYear() {
   return new Date().getFullYear() + "";
@@ -23,7 +25,6 @@ function _generateAcceptanceYears() {
     output[i] = i + "";
   }
 
-  console.log(output);
   return output;
 }
 
@@ -33,75 +34,81 @@ const EditUserInformation = ({
   titleText,
   submitText
 }) => (
-  <GammaEditData
-    submitText="Spara"
-    titleText="Ändra  användare"
-    initialValues={initialValues}
-    onSubmit={(values, actions) => {
-      const wrapped = {
-        post: {
-          ...values
-        }
-      };
-      onSubmit(wrapped, actions);
-    }}
-    validationSchema={yup.object().shape({
-      cid: yup.string().required(),
-      firstName: yup.string().required(),
-      lastName: yup.string().required(),
-      nick: yup.string().required(),
-      email: yup.string().required(),
-      acceptanceYear: yup.string().required()
-    })}
-    keysOrder={[
-      "cid",
-      "firstName",
-      "lastName",
-      "nick",
-      "email",
-      "acceptanceYear"
-    ]}
-    keysComponentData={{
-      cid: {
-        component: GammaTextField,
-        componentProps: {
-          upperLabel: "cid"
-        }
-      },
-      firstName: {
-        component: GammaTextField,
-        componentProps: {
-          upperLabel: "First name"
-        }
-      },
+  <GammaTranslations
+    translations={translations}
+    uniquePath="Users.Screen.CommonViews.EditUserInformation"
+    render={text => (
+      <GammaEditData
+        titleText={titleText}
+        submitText={submitText}
+        initialValues={initialValues}
+        onSubmit={(values, actions) => {
+          const wrapped = {
+            post: {
+              ...values
+            }
+          };
+          onSubmit(wrapped, actions);
+        }}
+        validationSchema={yup.object().shape({
+          cid: yup.string().required(),
+          firstName: yup.string().required(),
+          lastName: yup.string().required(),
+          nick: yup.string().required(),
+          email: yup.string().required(),
+          acceptanceYear: yup.string().required()
+        })}
+        keysOrder={[
+          "cid",
+          "firstName",
+          "lastName",
+          "nick",
+          "email",
+          "acceptanceYear"
+        ]}
+        keysComponentData={{
+          cid: {
+            component: GammaTextField,
+            componentProps: {
+              upperLabel: text.Cid
+            }
+          },
+          firstName: {
+            component: GammaTextField,
+            componentProps: {
+              upperLabel: text.FirstName
+            }
+          },
 
-      lastName: {
-        component: GammaTextField,
-        componentProps: {
-          upperLabel: "Last name"
-        }
-      },
-      nick: {
-        component: GammaTextField,
-        componentProps: {
-          upperLabel: "nick"
-        }
-      },
-      email: {
-        component: GammaTextField,
-        componentProps: {
-          upperLabel: "email"
-        }
-      },
-      acceptanceYear: {
-        component: GammaSelect,
-        componentProps: {
-          upperLabel: "Acceptance Year",
-          valueToTextMap: _generateAcceptanceYears(),
-          reverse: true
-        }
-      }
-    }}
+          lastName: {
+            component: GammaTextField,
+            componentProps: {
+              upperLabel: text.LastName
+            }
+          },
+          nick: {
+            component: GammaTextField,
+            componentProps: {
+              upperLabel: text.Nick
+            }
+          },
+          email: {
+            component: GammaTextField,
+            componentProps: {
+              upperLabel: text.Email
+            }
+          },
+          acceptanceYear: {
+            component: GammaSelect,
+            componentProps: {
+              upperLabel: text.AcceptanceYear,
+              valueToTextMap: _generateAcceptanceYears(),
+              reverse: true
+            }
+          }
+        }}
+      />
+    )}
   />
 );
 

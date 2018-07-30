@@ -1,13 +1,11 @@
 {
-  "ShowUserDetails": {
-    "cid": ["Cid", "Cid"],
-    "firstName": ["First name", "Förnamn"],
-    "lastName": ["Last name", "Efternamn"],
-    "nick": ["Nick", "Nick"],
-    "email": ["Email", "Email"],
-    "acceptanceYear": ["Acceptance Year", "Antagningsår"],
-    "createdAt": ["Account created at", "Konto skapat"],
-    "lastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
-    "Edit": ["Edit account", "Redigera konto"]
-  }
+  "cid": ["Cid", "Cid"],
+  "firstName": ["First name", "Förnamn"],
+  "lastName": ["Last name", "Efternamn"],
+  "nick": ["Nick", "Nick"],
+  "email": ["Email", "Email"],
+  "acceptanceYear": ["Acceptance Year", "Antagningsår"],
+  "createdAt": ["Account created at", "Konto skapat"],
+  "lastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
+  "Edit": ["Edit account", "Redigera konto"]
 }

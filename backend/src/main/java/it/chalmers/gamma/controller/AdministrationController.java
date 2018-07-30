@@ -21,10 +21,11 @@ public class AdministrationController {
     private PostService postService;
     private WebsiteService websiteService;
     private GroupWebsiteService groupWebsiteService;
+    private ActivationCodeService activationCodeService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
                              FKITService fkitService, MembershipService membershipService, PostService postService,
-                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService) {
+                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
@@ -32,6 +33,7 @@ public class AdministrationController {
         this.postService = postService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
+        this.activationCodeService = activationCodeService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -228,6 +230,11 @@ public class AdministrationController {
     @RequestMapping(value = "/websites", method = RequestMethod.GET)
     public ResponseEntity<List<Website>> getAllWebsites(){
         return new GetAllWebsitesResponse(websiteService.getAllWebsites());
+    }
+
+    @RequestMapping(value = "/activation_codes", method = RequestMethod.GET)
+    public ResponseEntity<List<ActivationCode>> getAllActivationCodes(){
+        return new GetAllActivationCodesResponse(activationCodeService.getAllActivationCodes());
     }
 
 }

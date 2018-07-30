@@ -1,2 +1,2 @@
-import { default as EmailHasBeenSent } from "./EmailHasBeenSent.view.container";
+import { default as EmailHasBeenSent } from "./EmailHasBeenSent.view";
 export default EmailHasBeenSent;

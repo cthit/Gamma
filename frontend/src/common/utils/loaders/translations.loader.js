@@ -11,13 +11,13 @@ export default function loadTranslations(localize, translations, baseUrl) {
     return _loadCommonTranslations(localize);
   }
 
-  const translate = textId => getTranslate(localize)(baseUrl + textId);
+  const translate = textId => getTranslate(localize)(baseUrl + "." + textId);
 
-  const textsToTranslate = _.keys(translations);
+  const textsToTranslate = _.keys(_.at(translations, baseUrl)[0]);
 
   const texts = _.merge(
     {},
-    _.zipObject(
+    _.zipObjectDeep(
       textsToTranslate,
       _.map(textsToTranslate, text => translate(text))
     ),

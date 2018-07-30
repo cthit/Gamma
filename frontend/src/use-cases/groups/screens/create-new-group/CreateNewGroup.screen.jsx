@@ -9,7 +9,6 @@ const CreateNewGroup = ({ groupsAdd }) => (
     <Center>
       <EditGroupInformation
         onSubmit={(values, actions) => {
-          console.log(groupsAdd);
           groupsAdd(values);
         }}
         initialValues={{

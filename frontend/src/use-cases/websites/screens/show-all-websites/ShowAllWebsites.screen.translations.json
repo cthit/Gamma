@@ -1,1 +1,7 @@
-{}
+{
+  "Id": ["Id", "Id"],
+  "Name": ["Name", "Namn"],
+  "PrettyName": ["Pretty name", "Pretty name"],
+  "Details": ["Details", "Detaljer"],
+  "NoWebsites": ["There's no websites", "Det finns inga hemsidor"]
+}

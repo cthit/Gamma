@@ -1,1 +1,1 @@
-export { default } from "./EditWebsite.view.container";
+export { default } from "./EditWebsite.view";

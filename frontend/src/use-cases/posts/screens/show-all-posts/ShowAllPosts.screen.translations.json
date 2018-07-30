@@ -1,3 +1,7 @@
 {
-  "ShowAllPosts": {}
+  "Id": ["Id", "Id"],
+  "Swedish": ["Swedish", "Svenska"],
+  "English": ["English", "Engelska"],
+  "Details": ["Details", "Detaljer"],
+  "NoPosts": ["There's no posts", "Det finns inga poster"]
 }

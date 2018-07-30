@@ -1,0 +1,14 @@
+{
+  "Group": ["Group", "Grupp"],
+  "SaveGroup": ["Save group", "Spara grupp"],
+  "Name": ["Name", "Namn"],
+  "DescriptionSv": ["Description swedish", "Beskrivning svenska"],
+  "DescriptionEn": ["Description english", "Beskrivning engelska"],
+  "Email": ["Email", "Email"],
+  "FunctionSv": ["Function swedish", "Uppdrag svenska"],
+  "FunctionEn": ["Function english", "Uppdrag engelska"],
+  "Type": ["Group type", "Grupp typ"],
+  "Society": ["Society", "Förening"],
+  "Committee": ["Committee", "Kommitté"],
+  "Board": ["Board", "Nämnd"]
+}

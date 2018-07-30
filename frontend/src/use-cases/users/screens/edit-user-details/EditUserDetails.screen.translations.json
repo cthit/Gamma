@@ -1,3 +1,4 @@
 {
-  "EditUserDetails": {}
+  "EditGroups": ["Edit group", "Redigera grupp"],
+  "SaveGroups": ["Save group", "Spara grupp"]
 }

@@ -1,0 +1,6 @@
+{
+  "Id": ["Id", "Id"],
+  "Cid": ["Cid", "Cid"],
+  "Details": ["Details", "Detaljer"],
+  "EmptyWhitelist": ["The whitelist is empty", "Whitelist är tom"]
+}

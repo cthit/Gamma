@@ -1,6 +1,5 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.jwt.JwtTokenFilterConfigurer;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.service.ITUserService;
@@ -13,9 +12,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @Configuration
@@ -46,10 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Entry points
-
-                // Disallow everything else..
 
         http.authorizeRequests().anyRequest().authenticated();
 

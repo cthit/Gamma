@@ -1,7 +1,5 @@
 {
-  "EditWhitelistItemDetails": {
-    "EditCid": ["Edit whitelist item", "Redigera"],
-    "Cid": ["Cid", "Cid"],
-    "SaveCid": ["Save cid", "Spara cid"]
-  }
+  "EditCid": ["Edit whitelist item", "Redigera"],
+  "Cid": ["Cid", "Cid"],
+  "SaveCid": ["Save cid", "Spara cid"]
 }

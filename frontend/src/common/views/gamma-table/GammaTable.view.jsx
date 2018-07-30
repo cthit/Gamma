@@ -28,6 +28,8 @@ import GammaTableToolbar from "./elements/gamma-table-toolbar";
 import GammaTableBody from "./elements/gamma-table-body";
 import GammaTableHeader from "./elements/gamma-table-header";
 import { Center, Padding } from "../../../common-ui/layout";
+import GammaTranslations from "../../declaratives/gamma-translations";
+import translations from "./GammaTable.view.translations.json";
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -47,7 +49,6 @@ class GammaTable extends React.Component {
       rowsPerPage: 5,
 
       data: [],
-      headerTexts: props.headerTexts,
       sort: props.sort,
       columnsOrder: props.columnsOrder,
       idProp: props.idProp
@@ -137,7 +138,7 @@ class GammaTable extends React.Component {
 
   rowShouldBeShown = row =>
     row != null &&
-    Object.keys(this.state.headerTexts).filter(
+    Object.keys(this.props.headerTexts).filter(
       key =>
         row[key] != null &&
         (row[key] + "")
@@ -146,80 +147,87 @@ class GammaTable extends React.Component {
     ).length > 0; //Can be optimized, escape if one result is found
 
   render() {
-    const { selected, emptyTableText } = this.props;
-    const { data, order, orderBy, rowsPerPage, page, headerTexts } = this.state;
+    const { selected, emptyTableText, headerTexts } = this.props;
+    const { data, order, orderBy, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
-      <Paper>
-        <GammaTableToolbar
-          numSelected={selected == null ? -1 : selected.length}
-          searchInput={this.state.searchInput}
-          onSearchInputChange={this.onSearchInputChange}
-        />
+      <GammaTranslations
+        translations={translations}
+        uniquePath="Common.View.GammaTable"
+        render={text => (
+          <Paper>
+            <GammaTableToolbar
+              numSelected={selected == null ? -1 : selected.length}
+              searchInput={this.state.searchInput}
+              onSearchInputChange={this.onSearchInputChange}
+            />
 
-        <Table aria-labelledby="tableTitle">
-          <GammaTableHeader
-            numSelected={
-              selected == null
-                ? -1
-                : selected.filter(n => this.rowShouldBeShown(n)).length ///TODO OPTIMIZE
-            }
-            columnsOrder={this.state.columnsOrder}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={this.handleSelectAllClick}
-            onRequestSort={this.handleRequestSort}
-            rowCount={data.length}
-            headerTexts={headerTexts}
-          />
-          <IfElseRendering
-            test={this.state.data.length > 0}
-            ifRender={() => (
-              <GammaTableBody
-                idProp={this.state.idProp}
+            <Table aria-labelledby="tableTitle">
+              <GammaTableHeader
+                numSelected={
+                  selected == null
+                    ? -1
+                    : selected.filter(n => this.rowShouldBeShown(n)).length ///TODO OPTIMIZE
+                }
                 columnsOrder={this.state.columnsOrder}
-                page={this.state.page}
-                rowsPerPage={this.state.rowsPerPage}
-                data={this.state.data}
-                isSelected={this.isSelected}
-                handleClick={this.handleClick}
-                rowShouldBeShown={this.rowShouldBeShown}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+                rowCount={data.length}
                 headerTexts={headerTexts}
               />
-            )}
-            elseRender={() => (
-              <TableBody>
-                <tr>
-                  <td colSpan="100">
-                    <Center>
-                      <Padding>
-                        <Display text={emptyTableText} />
-                      </Padding>
-                    </Center>
-                  </td>
-                </tr>
-              </TableBody>
-            )}
-          />
-        </Table>
+              <IfElseRendering
+                test={this.state.data.length > 0}
+                ifRender={() => (
+                  <GammaTableBody
+                    idProp={this.state.idProp}
+                    columnsOrder={this.state.columnsOrder}
+                    page={this.state.page}
+                    rowsPerPage={this.state.rowsPerPage}
+                    data={this.state.data}
+                    isSelected={this.isSelected}
+                    handleClick={this.handleClick}
+                    rowShouldBeShown={this.rowShouldBeShown}
+                    headerTexts={headerTexts}
+                  />
+                )}
+                elseRender={() => (
+                  <TableBody>
+                    <tr>
+                      <td colSpan="100">
+                        <Center>
+                          <Padding>
+                            <Display text={emptyTableText} />
+                          </Padding>
+                        </Center>
+                      </td>
+                    </tr>
+                  </TableBody>
+                )}
+              />
+            </Table>
 
-        <TablePagination
-          component="div"
-          count={data.filter(n => this.rowShouldBeShown(n)).length} //TODO OPTIMIZE
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            "aria-label": "Previous Page"
-          }}
-          nextIconButtonProps={{
-            "aria-label": "Next Page"
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-      </Paper>
+            <TablePagination
+              component="div"
+              count={data.filter(n => this.rowShouldBeShown(n)).length} //TODO OPTIMIZE
+              rowsPerPage={rowsPerPage}
+              page={page}
+              backIconButtonProps={{
+                "aria-label": text.PreviousPage
+              }}
+              nextIconButtonProps={{
+                "aria-label": text.NextPage
+              }}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              labelRowsPerPage={text.RowsPerPage}
+            />
+          </Paper>
+        )}
+      />
     );
   }
 }

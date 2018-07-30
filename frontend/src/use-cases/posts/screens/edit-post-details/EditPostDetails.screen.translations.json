@@ -1,14 +1,12 @@
 {
-  "EditPostDetails": {
-    "UpdatePost": ["Update post", "Uppdatera post"],
-    "SwedishInput": [
-      "The swedish name of the post",
-      "Det svenska namnet för posten"
-    ],
-    "EnglishInput": [
-      "The english name of the post",
-      "Det engelska namnet för posten"
-    ],
-    "SavePost": ["Save post", "Spara post"]
-  }
+  "UpdatePost": ["Update post", "Uppdatera post"],
+  "SwedishInput": [
+    "The swedish name of the post",
+    "Det svenska namnet för posten"
+  ],
+  "EnglishInput": [
+    "The english name of the post",
+    "Det engelska namnet för posten"
+  ],
+  "SavePost": ["Save post", "Spara post"]
 }

@@ -17,9 +17,9 @@ class Users extends React.Component {
     return (
       <Fill>
         <Switch>
-          <Route path="/users/:cid/edit" exact component={EditUserDetails} />
-          <Route path="/users/:cid" exact component={ShowUserDetails} />
           <Route path="/users" exact component={ShowAllUsers} />
+          <Route path="/users/:cid" exact component={ShowUserDetails} />
+          <Route path="/users/:cid/edit" exact component={EditUserDetails} />
         </Switch>
       </Fill>
     );
