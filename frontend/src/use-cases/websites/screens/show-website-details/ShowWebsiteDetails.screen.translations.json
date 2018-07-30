@@ -1,0 +1,7 @@
+{
+  "ShowWebsiteDetails": {
+    "Id": ["Id", "Id"],
+    "Name": ["Name", "Namn"],
+    "PrettyName": ["Pretty name", "Pretty name"]
+  }
+}

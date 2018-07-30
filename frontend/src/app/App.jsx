@@ -55,9 +55,10 @@ import Whitelist from "../use-cases/whitelist";
 import whitelistTranslations from "../use-cases/whitelist/Whitelist.translations.jsx";
 
 import Groups from "../use-cases/groups";
-import groupsTranslations from "../use-cases/groups/Groups.translations.json";
+import groupsTranslations from "../use-cases/groups/Groups.translations.jsx";
 
 import Websites from "../use-cases/websites";
+import websitesTranslations from "../use-cases/websites/Websites.translations.jsx";
 
 export class App extends Component {
   state = {
@@ -90,7 +91,8 @@ export class App extends Component {
       ...usersTranslations,
       ...postsTranslations,
       ...whitelistTranslations,
-      ...groupsTranslations
+      ...groupsTranslations,
+      ...websitesTranslations
     });
 
     props.userUpdateMe();
