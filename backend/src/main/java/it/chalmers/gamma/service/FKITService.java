@@ -64,5 +64,4 @@ public class FKITService {
     public List<FKITGroup> getGroups() {
         return repo.findAll();
     }
-    public List<ITUser> et
 }
