@@ -52,7 +52,7 @@ public class WhitelistController {
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
     public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
         if(itUserService.userExists(cid.getCid())){
-            return new UserAlreadyExistsResponse();
+            return new WhitelistAddedResponse();
         }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
@@ -62,7 +62,7 @@ public class WhitelistController {
             return new WhitelistAddedResponse();
         }
         else
-            return new NoCidFoundResponse();
+            return new WhitelistAddedResponse();
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();

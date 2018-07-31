@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -24,17 +25,25 @@ public class FKITGroupController {
 
     @RequestMapping(value = "/{group}", method = RequestMethod.GET)
     public ResponseEntity<FKITGroup.FKITGroupView> getGroup(@PathVariable("group") String groupId){
+        String[] properties = {"avatarURL", "name", "prettyName", "description","func", "email", "type"};
         FKITGroup group = fkitService.getGroup(groupId);
-        List<String> props = new ArrayList<>();
-        props.add("avatarURL");
-        props.add("name");
-        props.add("prettyName");
-        props.add("description");
-        props.add("func");
-        props.add("email");
-        props.add("type");
+        if(group == null){
+            return new GetGroupResponse(null);
+        }
+        List<String> props = new ArrayList<>(Arrays.asList(properties));
         FKITGroup.FKITGroupView groupView = group.getView(props);
         groupView.setWebsites(groupWebsiteService.getWebsites(group));
+        return new GetGroupResponse(groupView);
+    }
+    @RequestMapping(value = "/{groups}/minified", method = RequestMethod.GET)
+    public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("groups") String groupId){
+        String[] properties = {"name", "enFunc", "svFunc", "id", "type"};
+        FKITGroup group = fkitService.getGroup(groupId);
+        if(group == null){
+            return new GetGroupResponse(null);
+        }
+        List<String> props = new ArrayList<>(Arrays.asList(properties));
+        FKITGroup.FKITGroupView groupView = group.getView(props);
         return new GetGroupResponse(groupView);
     }
 }

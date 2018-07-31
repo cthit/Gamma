@@ -6,7 +6,7 @@ create table text (
 
 create table website(
   id uuid constraint websites_pk primary key,
-  name varchar(100) not null,
+  name varchar(100) not null constraint website_name unique,
   pretty_name varchar(100) not null
 );
 
