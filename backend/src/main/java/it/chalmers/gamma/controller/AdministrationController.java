@@ -45,8 +45,19 @@ public class AdministrationController {
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
     public ResponseEntity<List<FKITGroup>> getGroups(){
-        System.out.println(fkitService.getGroups());
         return new GroupsResponse(fkitService.getGroups());
+    }
+
+    @RequestMapping(value = "/groups/{group}/minified", method = RequestMethod.GET)
+    public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("group") String groupId){
+        String[] properties = {"name", "enFunc", "svFunc", "id", "type"};
+        FKITGroup group = fkitService.getGroup(groupId);
+        if(group == null){
+            return new GetGroupResponse(null);
+        }
+        List<String> props = new ArrayList<>(Arrays.asList(properties));
+        FKITGroup.FKITGroupView groupView = group.getView(props);
+        return new GetGroupResponse(groupView);
     }
 
     @RequestMapping(value = "/groups/new", method = RequestMethod.POST)

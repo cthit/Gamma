@@ -56,11 +56,6 @@ public class ITUserController {
         return new IncorrectCidOrPasswordResponse();
     }
 
-    @GetMapping
-    public List<ITUser> getAllITUsers() {
-        return itUserService.loadAllUsers();
-    }
-
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest) {

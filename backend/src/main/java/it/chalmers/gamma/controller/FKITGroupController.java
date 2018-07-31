@@ -35,15 +35,5 @@ public class FKITGroupController {
         groupView.setWebsites(groupWebsiteService.getWebsites(group));
         return new GetGroupResponse(groupView);
     }
-    @RequestMapping(value = "/{groups}/minified", method = RequestMethod.GET)
-    public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("groups") String groupId){
-        String[] properties = {"name", "enFunc", "svFunc", "id", "type"};
-        FKITGroup group = fkitService.getGroup(groupId);
-        if(group == null){
-            return new GetGroupResponse(null);
-        }
-        List<String> props = new ArrayList<>(Arrays.asList(properties));
-        FKITGroup.FKITGroupView groupView = group.getView(props);
-        return new GetGroupResponse(groupView);
-    }
+
 }
