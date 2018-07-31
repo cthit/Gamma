@@ -3,5 +3,6 @@
   "Name": ["Name", "Namn"],
   "PrettyName": ["Pretty name", "Pretty name"],
   "Details": ["Details", "Detaljer"],
-  "NoWebsites": ["There's no websites", "Det finns inga hemsidor"]
+  "NoWebsites": ["There's no websites", "Det finns inga hemsidor"],
+  "Websites": ["Websites", "Hemsidor"]
 }

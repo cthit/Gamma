@@ -162,6 +162,7 @@ class GammaTable extends React.Component {
               numSelected={selected == null ? -1 : selected.length}
               searchInput={this.state.searchInput}
               onSearchInputChange={this.onSearchInputChange}
+              titleText={this.props.titleText}
             />
 
             <Table aria-labelledby="tableTitle">

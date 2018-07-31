@@ -14,6 +14,7 @@ const ShowAllPosts = ({ posts }) => (
     render={text => (
       <Fill>
         <GammaTable
+          titleText={text.Posts}
           idProp="id"
           startOrderBy="sv"
           columnsOrder={["id", "sv", "en"]}

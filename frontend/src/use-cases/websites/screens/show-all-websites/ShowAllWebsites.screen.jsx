@@ -15,6 +15,7 @@ const ShowAllWebsites = ({ websites }) => (
     render={text => (
       <Fill>
         <GammaTable
+          titleText={text.Websites}
           idProp="id"
           startOrderBy="name"
           columnsOrder={["id", "name", "prettyName"]}

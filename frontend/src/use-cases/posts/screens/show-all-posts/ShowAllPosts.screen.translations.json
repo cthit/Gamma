@@ -3,5 +3,6 @@
   "Swedish": ["Swedish", "Svenska"],
   "English": ["English", "Engelska"],
   "Details": ["Details", "Detaljer"],
-  "NoPosts": ["There's no posts", "Det finns inga poster"]
+  "NoPosts": ["There's no posts", "Det finns inga poster"],
+  "Posts": ["Posts", "Poster"]
 }

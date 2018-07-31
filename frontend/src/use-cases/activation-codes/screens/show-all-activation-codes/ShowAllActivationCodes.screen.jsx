@@ -11,6 +11,7 @@ const ShowAllActivationCodes = ({ activationCodes, text }) => (
       uniquePath="ActivationCodes.Screen.ShowAllActivationCodes"
       render={text => (
         <GammaTable
+          titleText={text.ActivationCodes}
           idProp="id"
           startOrderBy="cid"
           columnsOrder={["id", "cid", "code", "createdAt"]}

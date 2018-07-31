@@ -14,6 +14,7 @@ const ShowWhitelist = ({ whitelist }) => (
     render={text => (
       <Fill>
         <GammaTable
+          titleText={text.Whitelist}
           idProp="id"
           startOrderBy="cid"
           columnsOrder={["id", "cid"]}

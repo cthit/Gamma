@@ -13,9 +13,8 @@ const ShowAllGroups = ({ groups }) => (
     uniquePath="Groups.Screen.ShowAllGroups"
     render={(text, activeLanguage) => (
       <Fill>
-        {console.log(text)}
-        {console.log(activeLanguage)}
         <GammaTable
+          titleText={text.Groups}
           idProp="id"
           startOrderBy="name"
           columnsOrder={["id", "name", "description", "email", "func", "type"]}

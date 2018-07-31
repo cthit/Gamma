@@ -10,6 +10,7 @@ const ShowAllUsers = ({ users }) => (
     uniquePath="Users.Screen.ShowAllUsers"
     render={text => (
       <GammaTable
+        titleText={text.Users}
         idProp="cid"
         startOrderBy="firstName"
         columnsOrder={[
@@ -30,7 +31,7 @@ const ShowAllUsers = ({ users }) => (
         data={users.map(user => {
           return { ...user, __link: "/users/" + user.cid };
         })}
-        emptyTableText="Det finns inga användare, wait hur är du inloggad?"
+        emptyTableText={text.NoUsers}
       />
     )}
   />

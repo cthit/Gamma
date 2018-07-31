@@ -7,6 +7,8 @@ import GammaTextField from "../../../../elements/gamma-text-field";
 import { Toolbar } from "@material-ui/core";
 import { Fill } from "../../../../../common-ui/layout";
 import { Text, Title } from "../../../../../common-ui/text";
+import GammaTranslations from "../../../../../common/declaratives/gamma-translations";
+import translations from "./GammaTableToolbar.element.translations.json";
 
 const Spacer = styled.div`
   flex: 1 1 100%;
@@ -29,22 +31,29 @@ const StyledToolbar = styled(Toolbar)`
 const GammaTableToolbar = ({
   numSelected,
   searchInput,
-  onSearchInputChange
+  onSearchInputChange,
+  titleText
 }) => (
-  <StyledToolbar>
-    <Fill>
-      <TableTitle
-        text={numSelected > 0 ? numSelected + " selected" : "Användare"}
-      />
-    </Fill>
-    <Fill>
-      <SearchInput
-        upperLabel="Sök efter användare"
-        value={searchInput}
-        onChange={onSearchInputChange}
-      />
-    </Fill>
-  </StyledToolbar>
+  <GammaTranslations
+    translations={translations}
+    uniquePath="Common.View.GammaTable.Element.GammaTableToolbar"
+    render={text => (
+      <StyledToolbar>
+        <Fill>
+          <TableTitle
+            text={numSelected > 0 ? numSelected + text.Selected : titleText}
+          />
+        </Fill>
+        <Fill>
+          <SearchInput
+            upperLabel="Sök efter användare"
+            value={searchInput}
+            onChange={onSearchInputChange}
+          />
+        </Fill>
+      </StyledToolbar>
+    )}
+  />
 );
 
 GammaTableToolbar.propTypes = {
