@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
+import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
@@ -125,4 +126,11 @@ public class ITUserController {
     public ResponseEntity<ITUser> getUser(@PathVariable("user") String user){
         return new GetUserResponse(itUserService.loadUser(user));
     }
+
+    //TODO I DON'T EVEN FUCKING KNOW AT THIS POINT:::::::::::::::
+  /*  @RequestMapping(value = "/{user}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editUser(@PathVariable("user") String user){
+        ITUser itUser = itUserService.loadUser(user);
+        itUserService.editUser();
+    }*/
 }

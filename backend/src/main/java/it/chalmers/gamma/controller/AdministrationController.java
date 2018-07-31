@@ -26,10 +26,12 @@ public class AdministrationController {
     private WebsiteService websiteService;
     private GroupWebsiteService groupWebsiteService;
     private ActivationCodeService activationCodeService;
+    private UserWebsiteService userWebsiteService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
                              FKITService fkitService, MembershipService membershipService, PostService postService,
-                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService) {
+                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService,
+                             UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
@@ -38,6 +40,7 @@ public class AdministrationController {
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.activationCodeService = activationCodeService;
+        this.userWebsiteService = userWebsiteService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -161,6 +164,29 @@ public class AdministrationController {
     public ResponseEntity<String> editUser(@PathVariable("cid") String cid, @RequestBody EditITUserRequest request) {
         itUserService.editUser(cid, request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
                 request.getPhone(), request.getLanguage(), request.getAvatarUrl());
+        ITUser user = itUserService.loadUser(cid);
+        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsite();
+        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        List<UserWebsite> userWebsite = userWebsiteService.getWebsites(user);
+        for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
+            boolean websiteExists = false;
+            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
+            WebsiteURL websiteURL = null;
+            for(UserWebsite duplicateCheck : userWebsite){
+                if(duplicateCheck.getWebsite().getWebsite().equals(website)) {
+                    websiteURL = userWebsiteService.getUserWebsiteByWebsite(website).getWebsite();
+                    websiteExists = true;
+                    break;
+                }
+            }
+            if(!websiteExists) {
+                websiteURL = new WebsiteURL();
+            }
+            websiteURL.setWebsite(website);
+            websiteURL.setUrl(websiteInfo.getUrl());
+            websiteURLs.add(websiteURL);
+        }
+        userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
