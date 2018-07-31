@@ -48,6 +48,7 @@ const ShowWebsiteDetails = ({
                   <GammaLink to={"/websites/" + website.id + "/edit"}>
                     <GammaButton text={text.EditWebsite} primary raised />
                   </GammaLink>
+                  <Spacing />
                   <GammaButton
                     onClick={() => {
                       gammaDialogOpen({

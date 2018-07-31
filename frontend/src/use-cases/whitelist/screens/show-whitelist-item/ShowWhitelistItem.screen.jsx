@@ -6,17 +6,23 @@ import {
   GammaCard,
   GammaCardTitle,
   GammaCardBody,
-  GammaLink
+  GammaLink,
+  GammaCardButtons
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
+import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data";
-import { Edit } from "@material-ui/icons";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./ShowWhitelistItem.screen.translations.json";
 
-const ShowWhitelistItem = ({ whitelistItem, text }) => (
+const ShowWhitelistItem = ({
+  whitelistItem,
+  whitelistDelete,
+  redirectTo,
+  toastOpen,
+  gammaDialogOpen
+}) => (
   <IfElseRendering
     test={whitelistItem != null}
     ifRender={() => (
@@ -34,11 +40,45 @@ const ShowWhitelistItem = ({ whitelistItem, text }) => (
                     keysText={{ id: text.Id, cid: text.Cid }}
                   />
                 </GammaCardBody>
+                <GammaCardButtons reversedDirection>
+                  <GammaButton
+                    text={text.DeleteWhitelistItem}
+                    onClick={() => {
+                      gammaDialogOpen({
+                        title:
+                          text.WouldYouLikeToDelete +
+                          " " +
+                          whitelistItem.cid +
+                          "?",
+                        confirmButtonText: text.DeleteWhitelistItem,
+                        cancelButtonText: text.Cancel,
+                        onConfirm: () => {
+                          whitelistDelete(whitelistItem.id)
+                            .then(response => {
+                              toastOpen({
+                                text:
+                                  text.DeleteSuccessfully +
+                                  " " +
+                                  whitelistItem.cid
+                              });
+                              redirectTo("/whitelist");
+                            })
+                            .catch(error => {
+                              toastOpen({
+                                text: text.SomethingWentWrong
+                              });
+                            });
+                        }
+                      });
+                    }}
+                  />
+                  <Spacing />
+                  <GammaLink to={"/whitelist/" + whitelistItem.id + "/edit"}>
+                    <GammaButton text={text.EditWhitelistItem} primary raised />
+                  </GammaLink>
+                </GammaCardButtons>
               </GammaCard>
             </Center>
-            <GammaLink to={"/whitelist/" + whitelistItem.id + "/edit"}>
-              <GammaFABButton component={Edit} secondary />
-            </GammaLink>
           </Fill>
         )}
       />
