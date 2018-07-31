@@ -36,7 +36,7 @@ const ShowGroupDetails = ({ group }) => (
                       email: group.email,
                       func_sv: group.func.sv,
                       func_en: group.func.en,
-                      type: group.type
+                      type: _getTypeText(group.type, text)
                     }}
                     keysText={{
                       id: text.Id,
