@@ -102,7 +102,6 @@ public class FKITGroup {
         this.func = func;
     }
 
-
     public String getSVFunction() {
         return func.getSv();
     }
@@ -185,8 +184,21 @@ public class FKITGroup {
 
     public FKITGroupView getView(List<String> props) {
         FKITGroupView view = new FKITGroupView();
+        view.func = new Text();
+        view.description = new Text();
         for (String prop : props) {
             switch (prop) {
+                case "id":
+                    view.id = this.id;
+                    break;
+                case "enDescription":
+                    view.setENDescription(this.getENDescription());
+                case "svDescription":
+                    view.setSVDescription(this.getSVDescription());
+                case "svFunc":
+                    view.setSVFunction(this.getSVFunction());
+                case "enFunc":
+                    view.setENFunction(this.getENFunction());
                 case "avatarURL":
                     view.avatarURL = this.avatarURL;
                     break;
@@ -212,8 +224,8 @@ public class FKITGroup {
         }
         return view;
     }
-
-      public class FKITGroupView{
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
+    public class FKITGroupView{
 
         private UUID id;
         private String avatarURL;
@@ -221,26 +233,47 @@ public class FKITGroup {
         private String prettyName;
         private Text description;
         private Text func;
-
-          public Text getDescription() {
-              return description;
-          }
-
-          public void setDescription(Text description) {
-              this.description = description;
-          }
-
-          public Text getFunc() {
-              return func;
-          }
-
-          public void setFunc(Text func) {
-              this.func = func;
-          }
-
-          private String email;
+        private String email;
         private GroupType type;
         private List<GroupWebsite> websites;
+
+        public String getSVDescription() {
+            if(description == null){
+                return null;
+            }
+            return description.getSv();
+        }
+
+        public void setSVDescription(String description) {
+            this.description.setSv(description);
+        }
+
+        public String getENDescription() {
+            if(description == null){
+                return null;
+            }
+            return description.getEn();
+        }
+
+        public void setENDescription(String description) {
+            this.description.setEn(description);
+        }
+
+        public String getSVFunction() {
+            return func.getSv();
+        }
+
+        public void setSVFunction(String function) {
+            this.func.setSv(function);
+        }
+
+        public String getENFunction() {
+            return func.getEn();
+        }
+
+        public void setENFunction(String function) {
+            this.func.setEn(function);
+        }
 
         public UUID getId() {
             return id;

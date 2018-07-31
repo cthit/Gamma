@@ -13,13 +13,13 @@ public class CreateGroupRequest {
     private GroupType type;
     private Text func;
     private String avatarURL;
-    private List<WebsiteURL> websites;
+    private List<WebsiteInfo> websites;
 
-    public List<WebsiteURL> getWebsites() {
+    public List<WebsiteInfo> getWebsites() {
         return websites;
     }
 
-    public void setWebsites(List<WebsiteURL> websites) {
+    public void setWebsites(List<WebsiteInfo> websites) {
         this.websites = websites;
     }
 
@@ -70,5 +70,26 @@ public class CreateGroupRequest {
 
     public void setType(GroupType type) {
         this.type = type;
+    }
+
+    public static class WebsiteInfo{
+        String website;
+        String url;
+
+        public String getWebsite() {
+            return website;
+        }
+
+        public void setWebsite(String website) {
+            this.website = website;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
     }
 }

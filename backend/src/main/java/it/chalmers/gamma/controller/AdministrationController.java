@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -61,11 +62,16 @@ public class AdministrationController {
         }
         FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
                 createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc(), createGroupRequest.getAvatarURL());
-        List<WebsiteURL> websiteURL = createGroupRequest.getWebsites();
-        for (WebsiteURL website : websiteURL){
-            websiteService.getWebsite(website.getWebsite().getName());
+        List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
+        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        for(CreateGroupRequest.WebsiteInfo websiteInfo : websites){
+            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
+            WebsiteURL websiteURL = new WebsiteURL();
+            websiteURL.setWebsite(website);
+            websiteURL.setUrl(websiteInfo.getUrl());
+            websiteURLs.add(websiteURL);
         }
-        groupWebsiteService.addGroupWebsites(group, websiteURL);
+        groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupCreatedResponse();
     }
 
@@ -77,7 +83,7 @@ public class AdministrationController {
 
     @RequestMapping(value = "/groups/{group}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteGroup(@PathVariable("group") String group) {
-        if (fkitService.groupExists(group)) {
+        if (!fkitService.groupExists(group)) {
             return new GroupDoesNotExistResponse();
         }
         fkitService.removeGroup(group);
@@ -203,10 +209,7 @@ public class AdministrationController {
         if(request.getName() == null){
             return new MissingRequiredFieldResponse("name");
         }
-        if(request.getPrettyName() == null){
-            return new MissingRequiredFieldResponse("prettyName");
-        }
-        websiteService.addPossibleWebsite(request.getName(), request.getPrettyName());
+        websiteService.addPossibleWebsite(request.getName());
         return new WebsiteAddedResponse();
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.GET)
@@ -219,7 +222,7 @@ public class AdministrationController {
         if(website == null){
             return new WebsiteNotFoundResponse();
         }
-        websiteService.editWebsite(website, request.getName(), request.getPrettyName());
+        websiteService.editWebsite(website, request.getName());
         return new EditedWebsiteResponse();
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.DELETE)

@@ -22,6 +22,9 @@ public class FKITService {
     }
 
     public FKITGroup createGroup(String name, Text description, String email, GroupType type, Text function, String avatarURL) {
+        if(description == null){
+            description = new Text();
+        }
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(name.toLowerCase());
         return saveGroup(fkitGroup, name, description, email, type, function, avatarURL);

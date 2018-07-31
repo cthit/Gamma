@@ -15,7 +15,7 @@ public class Website {
     @Id
     @Column(updatable = false)
     private UUID id;
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
     @Column(name = "pretty_name")
     private String prettyName;
