@@ -1,9 +1,6 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.db.repository.TextRepository;
 import it.chalmers.gamma.domain.GroupType;
@@ -67,4 +64,5 @@ public class FKITService {
     public List<FKITGroup> getGroups() {
         return repo.findAll();
     }
+    public List<ITUser> et
 }
