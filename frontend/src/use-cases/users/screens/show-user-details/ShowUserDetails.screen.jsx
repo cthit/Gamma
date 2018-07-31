@@ -14,8 +14,16 @@ import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./ShowUserDetails.screen.translations.json";
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
-const ShowUserDetails = ({ user, gammaDialogOpen, usersDelete }) => (
+const ShowUserDetails = ({
+  user,
+  gammaDialogOpen,
+  usersDelete,
+  redirectTo,
+  toastOpen
+}) => (
   <IfElseRendering
     test={user != null}
     ifRender={() => (
@@ -58,16 +66,35 @@ const ShowUserDetails = ({ user, gammaDialogOpen, usersDelete }) => (
                   onClick={() =>
                     gammaDialogOpen({
                       title:
-                        "Vill du radera användare " +
+                        text.WouldYouLikeToDelete +
+                        " " +
                         user.firstName +
                         " '" +
                         user.nick +
                         "' " +
                         user.lastName,
-                      confirmButtonText: "Radera användare",
-                      cancelButtonText: "Avbryt",
+                      confirmButtonText: text.DeleteUser,
+                      cancelButtonText: text.Cancel,
                       onConfirm: () => {
-                        usersDelete(user.cid);
+                        usersDelete(user.cid)
+                          .then(response => {
+                            toastOpen({
+                              text:
+                                text.DeleteSuccessfully +
+                                " " +
+                                user.firstName +
+                                " '" +
+                                user.nick +
+                                "' " +
+                                user.lastName
+                            });
+                            redirectTo("/users");
+                          })
+                          .catch(error => {
+                            toastOpen({
+                              text: text.SomethingWentWrong
+                            });
+                          });
                       }
                     })
                   }

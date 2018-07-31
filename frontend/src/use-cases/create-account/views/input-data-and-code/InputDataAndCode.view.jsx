@@ -50,8 +50,8 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
             };
             sendDataAndCode(user)
               .then(response => {
-                redirectTo("/create-account/finished");
                 actions.resetForm();
+                redirectTo("/create-account/finished");
               })
               .catch(error => {
                 const code = statusCode(error);

@@ -8,5 +8,14 @@
   "createdAt": ["Account created at", "Konto skapat"],
   "lastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
   "Edit": ["Edit account", "Redigera konto"],
-  "Delete": ["Delete account", "Radera  konto"]
+  "Delete": ["Delete account", "Radera  konto"],
+  "DeleteSuccessfully": [
+    "You have delete the user",
+    "Du har raderat användaren"
+  ],
+  "DeleteUser": ["Delete user", "Radera användare"],
+  "WouldYouLikeToDelete": [
+    "Would you like to delete the user",
+    "Vill du radera användaren"
+  ]
 }
