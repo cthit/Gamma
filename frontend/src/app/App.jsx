@@ -20,6 +20,7 @@ import appTranslations from "./App.translations.json";
 
 import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
+import GammaDialog from "./views/gamma-dialog";
 
 import DrawerNavigationLink from "./elements/drawer-navigation-link";
 import UserInformation from "./elements/user-information";
@@ -203,6 +204,7 @@ export class App extends Component {
                 <GammaRedirect currentPath={props.location.pathname} />
               )}
             />
+            <GammaDialog />
             <GammaToast />
             <IfElseRendering
               test={loaded}

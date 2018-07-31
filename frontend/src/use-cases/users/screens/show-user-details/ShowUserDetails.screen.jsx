@@ -15,7 +15,7 @@ import GammaDisplayData from "../../../../common/elements/gamma-display-data";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./ShowUserDetails.screen.translations.json";
 
-const ShowUserDetails = ({ user }) => (
+const ShowUserDetails = ({ user, gammaDialogOpen, usersDelete }) => (
   <IfElseRendering
     test={user != null}
     ifRender={() => (
@@ -53,6 +53,26 @@ const ShowUserDetails = ({ user }) => (
                 <GammaLink to={"/users/" + user.cid + "/edit"}>
                   <GammaButton text={text.Edit} primary raised />
                 </GammaLink>
+                <Spacing />
+                <GammaButton
+                  onClick={() =>
+                    gammaDialogOpen({
+                      title:
+                        "Vill du radera användare " +
+                        user.firstName +
+                        " '" +
+                        user.nick +
+                        "' " +
+                        user.lastName,
+                      confirmButtonText: "Radera användare",
+                      cancelButtonText: "Avbryt",
+                      onConfirm: () => {
+                        usersDelete(user.cid);
+                      }
+                    })
+                  }
+                  text={text.Delete}
+                />
               </GammaCardButtons>
             </GammaCard>
           </Center>
