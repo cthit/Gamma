@@ -188,14 +188,17 @@ public class AdministrationController {
     should probably change so multiple users can be added simultaneously
      */
     @RequestMapping(value = "/users/whitelist", method = RequestMethod.POST)
-    public ResponseEntity<String> addWhitelistedUser(@RequestBody WhitelistCodeRequest cid) {
-        if (whitelistService.isCIDWhiteListed(cid.getCid())) {
-            return new CIDAlreadyWhitelistedResponse();
+    public ResponseEntity<String> addWhitelistedUser(@RequestBody AddListOfWhitelistedRequest request) {
+        List<String> cids = request.getCids();
+        for(String cid : cids) {
+            if (whitelistService.isCIDWhiteListed(cid)) {
+                return new CIDAlreadyWhitelistedResponse();
+            }
+            if (itUserService.userExists(cid)) {
+                return new UserAlreadyExistsResponse();
+            }
+            whitelistService.addWhiteListedCID(cid);
         }
-        if (itUserService.userExists(cid.getCid())) {
-            return new UserAlreadyExistsResponse();
-        }
-        whitelistService.addWhiteListedCID(cid.getCid());
         return new WhitelistAddedResponse();
     }
     @RequestMapping(value = "/users/whitelist/{id}", method = RequestMethod.PUT)
