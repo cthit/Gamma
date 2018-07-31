@@ -60,8 +60,8 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                 switch (code) {
                   case 422:
                     switch (message) {
-                      case "TOO_SHORT_PASSWORD":
-                        errorMessage = text.TOO_SHORT_PASSWORD;
+                      case "CODE_OR_CID_IS_WRONG":
+                        errorMessage = text.CODE_OR_CID_IS_WRONG;
                         break;
                       case "TOO_SHORT_PASSWORD":
                         errorMessage = text.TOO_SHORT_PASSWORD;

@@ -7,5 +7,6 @@
   "acceptanceYear": ["Acceptance Year", "Antagningsår"],
   "createdAt": ["Account created at", "Konto skapat"],
   "lastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
-  "Edit": ["Edit account", "Redigera konto"]
+  "Edit": ["Edit account", "Redigera konto"],
+  "Delete": ["Delete account", "Radera  konto"]
 }
