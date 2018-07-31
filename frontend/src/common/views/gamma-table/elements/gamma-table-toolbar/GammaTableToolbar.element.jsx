@@ -32,7 +32,9 @@ const GammaTableToolbar = ({
   numSelected,
   searchInput,
   onSearchInputChange,
-  titleText
+  headerTexts,
+  titleText,
+  searchText
 }) => (
   <GammaTranslations
     translations={translations}
@@ -46,7 +48,9 @@ const GammaTableToolbar = ({
         </Fill>
         <Fill>
           <SearchInput
-            upperLabel="Sök efter användare"
+            upperLabel={
+              searchText + " " + _getAllPossibleThingsToSearchFor(headerTexts)
+            }
             value={searchInput}
             onChange={onSearchInputChange}
           />
@@ -59,5 +63,30 @@ const GammaTableToolbar = ({
 GammaTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired
 };
+
+function _getAllPossibleThingsToSearchFor(headerTexts) {
+  var output = "(";
+
+  const texts = Object.keys(headerTexts)
+    .filter(key => !key.startsWith("__"))
+    .map(key => headerTexts[key]);
+
+  var first = true;
+
+  for (const key in texts) {
+    if (texts.hasOwnProperty(key)) {
+      const element = texts[key];
+      if (!first) {
+        output = output.concat(", " + element);
+      } else {
+        first = false;
+        output = output.concat(element);
+      }
+    }
+  }
+
+  output = output.concat(")");
+  return output;
+}
 
 export default GammaTableToolbar;

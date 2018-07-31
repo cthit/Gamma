@@ -10,5 +10,6 @@
   "Board": ["Board", "Nämnd"],
   "Id": ["Id", "Id"],
   "Details": ["Details", "Detaljer"],
-  "NoGroups": ["There's no groups", "Det finns inga grupper"]
+  "NoGroups": ["There's no groups", "Det finns inga grupper"],
+  "SearchForGroups": ["Search for groups", "Sök efter grupper"]
 }

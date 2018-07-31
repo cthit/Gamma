@@ -15,6 +15,7 @@ const ShowAllPosts = ({ posts }) => (
       <Fill>
         <GammaTable
           titleText={text.Posts}
+          searchText={text.SearchForPosts}
           idProp="id"
           startOrderBy="sv"
           columnsOrder={["id", "sv", "en"]}

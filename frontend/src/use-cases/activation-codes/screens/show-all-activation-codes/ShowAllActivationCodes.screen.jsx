@@ -12,6 +12,7 @@ const ShowAllActivationCodes = ({ activationCodes, text }) => (
       render={text => (
         <GammaTable
           titleText={text.ActivationCodes}
+          searchText={text.SearchForActivationCodes}
           idProp="id"
           startOrderBy="cid"
           columnsOrder={["id", "cid", "code", "createdAt"]}

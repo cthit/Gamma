@@ -11,6 +11,7 @@ const ShowAllUsers = ({ users }) => (
     render={text => (
       <GammaTable
         titleText={text.Users}
+        searchText={text.SearchForUsers}
         idProp="cid"
         startOrderBy="firstName"
         columnsOrder={[

@@ -8,5 +8,9 @@
     "There's no activation codes",
     "Det finns inga aktiveringskoder"
   ],
-  "ActivationCodes": ["Activation codes", "Aktiveringskoder"]
+  "ActivationCodes": ["Activation codes", "Aktiveringskoder"],
+  "SearchForActivationCodes": [
+    "Search for activation codes",
+    "Sök efter aktiveringskoder"
+  ]
 }

@@ -15,6 +15,7 @@ const ShowAllGroups = ({ groups }) => (
       <Fill>
         <GammaTable
           titleText={text.Groups}
+          searchText={text.SearchForGroups}
           idProp="id"
           startOrderBy="name"
           columnsOrder={["id", "name", "description", "email", "func", "type"]}

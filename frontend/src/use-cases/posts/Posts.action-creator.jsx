@@ -38,7 +38,7 @@ export function postsAdd(post) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .post("http://localhost:8081/admin/groups/add_post", post, {
+        .post("http://localhost:8081/admin/groups/posts", post, {
           headers: {
             Authorization: "Bearer " + token()
           }

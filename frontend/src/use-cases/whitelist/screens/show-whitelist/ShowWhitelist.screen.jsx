@@ -15,6 +15,7 @@ const ShowWhitelist = ({ whitelist }) => (
       <Fill>
         <GammaTable
           titleText={text.Whitelist}
+          searchText={text.SearchForWhitelistItem}
           idProp="id"
           startOrderBy="cid"
           columnsOrder={["id", "cid"]}
