@@ -4,12 +4,15 @@ import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
+import org.h2.engine.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -132,6 +135,26 @@ public class AdministrationController {
     @RequestMapping(value = "/groups/posts", method = RequestMethod.GET)
     public ResponseEntity<List<Post>> getPosts() {
         return new GetMultiplePostsResponse(postService.getAllPosts());
+    }
+    @RequestMapping(value = "posts/{postId}/usage")
+    public ResponseEntity<List<FKITGroup.FKITGroupView>> getPostUsages(@PathVariable("postId") String postId){
+        String[] properties = {"id", "name", "prettyName"};
+        List<String> props = new ArrayList<>(Arrays.asList(properties));
+        Post post = postService.getPostById(postId);
+        List<UUID> groups = membershipService.getGroupsWithPost(post);
+        List<FKITGroup.FKITGroupView> groupAndUser = new ArrayList<>();
+        for(UUID groupId : groups) {
+            FKITGroup group = fkitService.getGroupById(groupId);
+            FKITGroup.FKITGroupView groupView = group.getView(props);
+            List<ITUser> users = new ArrayList<>();
+            List<UUID> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
+            for(UUID userId: userIDs){
+                users.add(itUserService.getUserById(userId));
+            }
+            groupView.setUsers(users);
+            groupAndUser.add(groupView);
+        }
+        return new PostUsageResponse(groupAndUser);
     }
 
     @RequestMapping(value = "/users/{cid}", method = RequestMethod.PUT)
