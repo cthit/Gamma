@@ -7,9 +7,9 @@ export const WHITELIST_ADD = "whitelist_add";
 export const WHITELIST_ADD_SUCCESSFULLY = "whitelist_add_successfully";
 export const WHITELIST_ADD_FAILED = "whitelist_add_failed";
 
-export const WHITELIST_REMOVE = "whitelist_remove";
-export const WHITELIST_REMOVE_SUCCESSFULLY = "whitelist_remove_successfully";
-export const WHITELIST_REMOVE_FAILED = "whitelist_remove_failed";
+export const WHITELIST_REMOVE = "whitelist_delete";
+export const WHITELIST_DELETE_SUCCESSFULLY = "whitelist_delete_successfully";
+export const WHITELIST_DELETE_FAILED = "whitelist_delete_failed";
 
 export const WHITELIST_CHANGE = "whitelist_change";
 export const WHITELIST_CHANGE_SUCCESSFULLY = "whitelist_change-successfully";

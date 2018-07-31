@@ -9,8 +9,8 @@ import {
   WHITELIST_ADD_SUCCESSFULLY,
   WHITELIST_ADD_FAILED,
   WHITELIST_REMOVE,
-  WHITELIST_REMOVE_SUCCESSFULLY,
-  WHITELIST_REMOVE_FAILED,
+  WHITELIST_DELETE_SUCCESSFULLY,
+  WHITELIST_DELETE_FAILED,
   WHITELIST_CHANGE,
   WHITELIST_CHANGE_SUCCESSFULLY,
   WHITELIST_CHANGE_FAILED
@@ -61,7 +61,7 @@ export function whitelistAdd(whitelist) {
   };
 }
 
-export function whitelistRemove(whitelistId) {
+export function whitelistDelete(whitelistId) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
@@ -71,11 +71,11 @@ export function whitelistRemove(whitelistId) {
           }
         })
         .then(response => {
-          dispatch(whitelistRemoveSuccessfully());
+          dispatch(whitelistDeleteSuccessfully());
           resolve(response);
         })
         .catch(error => {
-          dispatch(whitelistRemoveFailed(error));
+          dispatch(whitelistDeleteFailed(error));
           reject(error);
         });
     });
@@ -143,7 +143,7 @@ function whitelistAddSuccessfully() {
 
 function whitelistAddFailed(error) {
   return {
-    type: WHITELIST_REMOVE_FAILED,
+    type: WHITELIST_DELETE_FAILED,
     error: true,
     payload: {
       error: error
@@ -151,16 +151,16 @@ function whitelistAddFailed(error) {
   };
 }
 
-function whitelistRemoveSuccessfully() {
+function whitelistDeleteSuccessfully() {
   return {
-    type: WHITELIST_REMOVE_SUCCESSFULLY,
+    type: WHITELIST_DELETE_SUCCESSFULLY,
     error: false
   };
 }
 
-function whitelistRemoveFailed(error) {
+function whitelistDeleteFailed(error) {
   return {
-    type: WHITELIST_REMOVE_FAILED,
+    type: WHITELIST_DELETE_FAILED,
     error: true,
     payload: {
       error: error
