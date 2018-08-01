@@ -3,12 +3,12 @@ import * as yup from "yup";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaTranslations from "../../../../../common/declaratives/gamma-translations";
-import translations from "./EditWebsite.view.translations.json";
+import translations from "./WebsiteForm.view.translations.json";
 
-const EditWebsite = ({ initialValues, onSubmit, titleText, submitText }) => (
+const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
   <GammaTranslations
     translations={translations}
-    uniquePath="Websites.Screen.CommonView.EditWebsite"
+    uniquePath="Websites.Screen.CommonView.WebsiteForm"
     render={text => (
       <GammaEditData
         initialValues={initialValues}
@@ -39,4 +39,4 @@ const EditWebsite = ({ initialValues, onSubmit, titleText, submitText }) => (
   />
 );
 
-export default EditWebsite;
+export default WebsiteForm;

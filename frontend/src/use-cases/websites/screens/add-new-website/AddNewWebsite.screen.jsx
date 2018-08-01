@@ -1,5 +1,5 @@
 import React from "react";
-import EditWebsite from "../common-views/edit-website";
+import WebsiteForm from "../common-views/website-form";
 import { Center } from "../../../../common-ui/layout";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./AddNewWebsite.screen.translations.json";
@@ -10,7 +10,7 @@ const AddNewWebsite = ({ websitesAdd }) => (
     uniquePath="Websites.Screen.AddNewWebsite"
     render={text => (
       <Center>
-        <EditWebsite
+        <WebsiteForm
           initialValues={{ name: "", prettyName: "" }}
           onSubmit={(values, actions) => {
             websitesAdd(values);
