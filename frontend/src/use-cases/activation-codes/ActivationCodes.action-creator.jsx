@@ -4,11 +4,12 @@ import token from "../../common/utils/retrievers/token.retrieve";
 
 import {
   ACTIVATION_CODES_LOAD_SUCCESSFULLY,
-  ACTIVATION_CODES_LOAD_FAILED
+  ACTIVATION_CODES_LOAD_FAILED,
+  ACTIVATION_CODES_DELETE_FAILED,
+  ACTIVATION_CODES_DELETE_SUCCESSFULLY
 } from "./ActivationCodes.actions";
 
 export function activationCodesLoad() {
-  console.log("Hej");
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
@@ -29,6 +30,27 @@ export function activationCodesLoad() {
   };
 }
 
+export function activationCodesDelete(activationCodeId) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios
+        .delete("http://localhost:8081/admin/activation_codes", {
+          headers: {
+            Authorization: "Bearer " + token()
+          }
+        })
+        .then(response => {
+          dispatch(activationCodesDeleteSuccessfully());
+          resolve(response);
+        })
+        .catch(error => {
+          dispatch(activationCodesDeleteFailed());
+          reject(error);
+        });
+    });
+  };
+}
+
 function activationCodesLoadSuccessfully(data) {
   return {
     type: ACTIVATION_CODES_LOAD_SUCCESSFULLY,
@@ -42,6 +64,23 @@ function activationCodesLoadSuccessfully(data) {
 function activationCodesLoadFailed(error) {
   return {
     type: ACTIVATION_CODES_LOAD_FAILED,
+    error: true,
+    payload: {
+      error: error
+    }
+  };
+}
+
+function activationCodesDeleteSuccessfully() {
+  return {
+    type: ACTIVATION_CODES_DELETE_SUCCESSFULLY,
+    error: false
+  };
+}
+
+function activationCodesDeleteFailed(error) {
+  return {
+    type: ACTIVATION_CODES_DELETE_FAILED,
     error: true,
     payload: {
       error: error
