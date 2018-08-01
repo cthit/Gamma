@@ -5,6 +5,7 @@ import { redirect } from "./views/gamma-redirect/GammaRedirect.view.reducer";
 import { toast } from "./views/gamma-toast/GammaToast.view.reducer";
 import { user } from "./elements/user-information/UserInformation.element.reducer";
 import { dialog } from "./views/gamma-dialog/GammaDialog.view.reducer";
+import { loading } from "./views/gamma-loading/GammaLoading.view.reducer";
 
 import { users } from "../use-cases/users/Users.reducer";
 import { createAccount } from "../use-cases/create-account/CreateAccount.reducer";
@@ -26,5 +27,6 @@ export const rootReducer = combineReducers({
   groups,
   websites,
   activationCodes,
-  dialog
+  dialog,
+  loading
 });

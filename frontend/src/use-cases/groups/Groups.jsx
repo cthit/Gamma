@@ -11,7 +11,9 @@ class Groups extends React.Component {
   constructor(props) {
     super();
 
-    props.groupsLoad();
+    props.groupsLoad().then(response => {
+      props.gammaLoadingFinished();
+    });
   }
 
   render() {

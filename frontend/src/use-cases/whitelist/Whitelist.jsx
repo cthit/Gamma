@@ -10,7 +10,9 @@ class Whitelist extends React.Component {
   constructor(props) {
     super();
 
-    props.whitelistLoad();
+    props.whitelistLoad().then(response => {
+      props.gammaLoadingFinished();
+    });
   }
 
   render() {
