@@ -164,7 +164,10 @@ export class App extends Component {
                     render={props => (
                       <ContainUserToAllowedPages
                         currentPath={props.location.pathname}
-                        allowedBasePaths={["/create-account"]}
+                        allowedBasePaths={[
+                          "/create-account",
+                          "/reset-password"
+                        ]}
                         to="/login"
                         toastTextOnRedirect={text.YouNeedToLogin}
                       />
