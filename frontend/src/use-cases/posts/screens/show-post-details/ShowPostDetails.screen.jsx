@@ -5,24 +5,41 @@ import {
   GammaCard,
   GammaCardTitle,
   GammaCardBody,
-  GammaLink
+  GammaLink,
+  GammaCardButtons
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
-import { Edit } from "@material-ui/icons";
+import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./ShowPostDetails.screen.translations.json";
 
-const ShowPostDetails = ({ post }) => (
+function getPostName(post, activeLanguage) {
+  switch (activeLanguage.code.toLowerCase()) {
+    case "en":
+      return post.en;
+    case "sv":
+      return post.sv;
+    default:
+      post.en + "/" + post.sv;
+  }
+}
+
+const ShowPostDetails = ({
+  post,
+  gammaDialogOpen,
+  toastOpen,
+  redirectTo,
+  postsDelete
+}) => (
   <IfElseRendering
     test={post != null}
     ifRender={() => (
       <GammaTranslations
         translations={translations}
         uniquePath="Posts.Screen.ShowPostDetails"
-        render={text => (
+        render={(text, activeLanguage) => (
           <Fill>
             <Center>
               <GammaCard minWidth="300px" maxWidth="600px">
@@ -33,11 +50,44 @@ const ShowPostDetails = ({ post }) => (
                     keysOrder={["id", "sv", "en"]}
                   />
                 </GammaCardBody>
+                <GammaCardButtons reverseDirection>
+                  <GammaLink to={"/posts/" + post.id + "/edit"}>
+                    <GammaButton text="Redigera" primary raised />
+                  </GammaLink>
+                  <Spacing />
+                  <GammaButton
+                    text={text.DeletePost}
+                    onClick={() => {
+                      gammaDialogOpen({
+                        title:
+                          text.WouldYouLikeToDelete +
+                          " " +
+                          getPostName(post, activeLanguage),
+                        confirmButtonText: text.DeletePost,
+                        cancelButtonText: text.Cancel,
+                        onConfirm: () => {
+                          postsDelete(post.id)
+                            .then(response => {
+                              toastOpen({
+                                text:
+                                  text.YouHaveDeleted +
+                                  " " +
+                                  getPostName(post, activeLanguage)
+                              });
+                              redirectTo("/posts");
+                            })
+                            .catch(error => {
+                              toastOpen({
+                                text: text.SomethingWentWrong
+                              });
+                            });
+                        }
+                      });
+                    }}
+                  />
+                </GammaCardButtons>
               </GammaCard>
             </Center>
-            <GammaLink to={"/posts/" + post.id + "/edit"}>
-              <GammaFABButton component={Edit} secondary />
-            </GammaLink>
           </Fill>
         )}
       />
