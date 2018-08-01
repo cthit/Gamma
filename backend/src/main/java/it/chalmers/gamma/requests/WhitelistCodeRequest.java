@@ -12,5 +12,4 @@ public class WhitelistCodeRequest {
     public void setCid(String cid) {
         this.cid = cid;
     }
-
 }

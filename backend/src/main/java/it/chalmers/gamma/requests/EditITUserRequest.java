@@ -2,14 +2,53 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.domain.Language;
 
+import java.util.List;
+
 public class EditITUserRequest {
-    String nick;
-    String firstName;
-    String lastName;
-    String email;
-    String phone;
-    Language language;
-    String avatarUrl;
+    private String nick;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private Language language;
+    private String avatarUrl;
+    private List<CreateGroupRequest.WebsiteInfo> website;
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public List<CreateGroupRequest.WebsiteInfo> getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(List<CreateGroupRequest.WebsiteInfo> website) {
+        this.website = website;
+    }
 
     public String getNick() {
         return nick;

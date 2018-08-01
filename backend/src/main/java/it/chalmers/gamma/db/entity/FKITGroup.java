@@ -236,6 +236,7 @@ public class FKITGroup {
         private String email;
         private GroupType type;
         private List<GroupWebsite> websites;
+        private List<ITUser> users;
 
         public String getSVDescription() {
             if(description == null){
@@ -328,6 +329,12 @@ public class FKITGroup {
 
         public void setWebsites(List<GroupWebsite> websites) {
             this.websites = websites;
+        }
+        public void setUsers(List<ITUser> users){
+            this.users = users;
+        }
+        public List<ITUser> getUsers(){
+            return users;
         }
     }
 

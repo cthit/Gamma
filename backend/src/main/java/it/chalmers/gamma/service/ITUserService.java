@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 
 @Service("userDetailsService")
 public class ITUserService implements UserDetailsService{
@@ -89,5 +90,8 @@ public class ITUserService implements UserDetailsService{
         itUser.setAvatarUrl(avatarUrl != null ? avatarUrl : itUser.getAvatarUrl());
         itUser.setLastModifiedAt(Instant.now());
         itUserRepository.save(itUser);
+    }
+    public ITUser getUserById(UUID id){
+        return itUserRepository.findById(id).orElse(null);
     }
 }

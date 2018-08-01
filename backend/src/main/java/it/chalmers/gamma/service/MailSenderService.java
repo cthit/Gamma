@@ -6,7 +6,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import java.util.Properties;
 
@@ -29,7 +28,6 @@ public class MailSenderService{
     private String mail;
 
 
-    @PostConstruct
     private void setupMailSender(){
         mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);

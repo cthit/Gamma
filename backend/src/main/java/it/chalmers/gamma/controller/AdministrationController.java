@@ -4,12 +4,15 @@ import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
+import org.h2.engine.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/admin")
@@ -23,10 +26,12 @@ public class AdministrationController {
     private WebsiteService websiteService;
     private GroupWebsiteService groupWebsiteService;
     private ActivationCodeService activationCodeService;
+    private UserWebsiteService userWebsiteService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
                              FKITService fkitService, MembershipService membershipService, PostService postService,
-                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService) {
+                             WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService,
+                             UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
@@ -35,6 +40,7 @@ public class AdministrationController {
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.activationCodeService = activationCodeService;
+        this.userWebsiteService = userWebsiteService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -133,11 +139,54 @@ public class AdministrationController {
     public ResponseEntity<List<Post>> getPosts() {
         return new GetMultiplePostsResponse(postService.getAllPosts());
     }
+    @RequestMapping(value = "posts/{postId}/usage")
+    public ResponseEntity<List<FKITGroup.FKITGroupView>> getPostUsages(@PathVariable("postId") String postId){
+        String[] properties = {"id", "name", "prettyName"};
+        List<String> props = new ArrayList<>(Arrays.asList(properties));
+        Post post = postService.getPostById(postId);
+        List<UUID> groups = membershipService.getGroupsWithPost(post);
+        List<FKITGroup.FKITGroupView> groupAndUser = new ArrayList<>();
+        for(UUID groupId : groups) {
+            FKITGroup group = fkitService.getGroupById(groupId);
+            FKITGroup.FKITGroupView groupView = group.getView(props);
+            List<ITUser> users = new ArrayList<>();
+            List<UUID> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
+            for(UUID userId: userIDs){
+                users.add(itUserService.getUserById(userId));
+            }
+            groupView.setUsers(users);
+            groupAndUser.add(groupView);
+        }
+        return new PostUsageResponse(groupAndUser);
+    }
 
     @RequestMapping(value = "/users/{cid}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("cid") String cid, @RequestBody EditITUserRequest request) {
         itUserService.editUser(cid, request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
                 request.getPhone(), request.getLanguage(), request.getAvatarUrl());
+        ITUser user = itUserService.loadUser(cid);
+        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsite();
+        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        List<UserWebsite> userWebsite = userWebsiteService.getWebsites(user);
+        for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
+            boolean websiteExists = false;
+            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
+            WebsiteURL websiteURL = null;
+            for(UserWebsite duplicateCheck : userWebsite){
+                if(duplicateCheck.getWebsite().getWebsite().equals(website)) {
+                    websiteURL = userWebsiteService.getUserWebsiteByWebsite(website).getWebsite();
+                    websiteExists = true;
+                    break;
+                }
+            }
+            if(!websiteExists) {
+                websiteURL = new WebsiteURL();
+            }
+            websiteURL.setWebsite(website);
+            websiteURL.setUrl(websiteInfo.getUrl());
+            websiteURLs.add(websiteURL);
+        }
+        userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
@@ -165,14 +214,17 @@ public class AdministrationController {
     should probably change so multiple users can be added simultaneously
      */
     @RequestMapping(value = "/users/whitelist", method = RequestMethod.POST)
-    public ResponseEntity<String> addWhitelistedUser(@RequestBody WhitelistCodeRequest cid) {
-        if (whitelistService.isCIDWhiteListed(cid.getCid())) {
-            return new CIDAlreadyWhitelistedResponse();
+    public ResponseEntity<String> addWhitelistedUser(@RequestBody AddListOfWhitelistedRequest request) {
+        List<String> cids = request.getCids();
+        for(String cid : cids) {
+            if (whitelistService.isCIDWhiteListed(cid)) {
+                return new CIDAlreadyWhitelistedResponse();
+            }
+            if (itUserService.userExists(cid)) {
+                return new UserAlreadyExistsResponse();
+            }
+            whitelistService.addWhiteListedCID(cid);
         }
-        if (itUserService.userExists(cid.getCid())) {
-            return new UserAlreadyExistsResponse();
-        }
-        whitelistService.addWhiteListedCID(cid.getCid());
         return new WhitelistAddedResponse();
     }
     @RequestMapping(value = "/users/whitelist/{id}", method = RequestMethod.PUT)

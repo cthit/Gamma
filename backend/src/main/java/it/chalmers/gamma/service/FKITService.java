@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.GroupType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FKITService {
@@ -63,5 +64,9 @@ public class FKITService {
 
     public List<FKITGroup> getGroups() {
         return repo.findAll();
+    }
+
+    public FKITGroup getGroupById(UUID id){
+        return repo.findById(id).orElse(null);
     }
 }

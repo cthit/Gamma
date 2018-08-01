@@ -35,6 +35,12 @@ create table ituser (
   last_modified_at timestamp    not null default current_timestamp
 );
 
+create table ituser_website (
+  id          uuid constraint ituser_website_pk primary key,
+  ituser      uuid not null references ituser,
+  website     uuid not null references website_url
+);
+
 create table authorites (
   authority varchar(50) constraint authorites_pk primary key
 );
