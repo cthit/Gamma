@@ -9,8 +9,8 @@ import {
   POSTS_ADD_FAILED,
   POSTS_CHANGE_SUCCESSFULLY,
   POSTS_CHANGE_FAILED,
-  POSTS_REMOVE_SUCCESSFULLY,
-  POSTS_REMOVE_FAILED
+  POSTS_DELETE_SUCCESSFULLY,
+  POSTS_DELETE_FAILED
 } from "./Posts.actions";
 
 export function postsLoad() {
@@ -77,7 +77,7 @@ export function postsChange(post, postId) {
   };
 }
 
-export function postsRemove(postId) {
+export function postsDelete(postId) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
@@ -87,11 +87,11 @@ export function postsRemove(postId) {
           }
         })
         .then(response => {
-          dispatch(postsRemoveSuccessfully());
+          dispatch(postsDeleteSuccessfully());
           resolve(response);
         })
         .catch(error => {
-          dispatch(postsRemoveFailed(error));
+          dispatch(postsDeleteFailed(error));
           reject(error);
         });
     });
@@ -146,16 +146,16 @@ function postsChangeFailed(error) {
   };
 }
 
-function postsRemoveSuccessfully() {
+function postsDeleteSuccessfully() {
   return {
-    type: POSTS_REMOVE_SUCCESSFULLY,
+    type: POSTS_DELETE_SUCCESSFULLY,
     error: false
   };
 }
 
-function postsRemoveFailed(error) {
+function postsDeleteFailed(error) {
   return {
-    type: POSTS_REMOVE_FAILED,
+    type: POSTS_DELETE_FAILED,
     error: true,
     payload: {
       error: error

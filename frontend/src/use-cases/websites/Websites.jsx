@@ -11,7 +11,9 @@ class Websites extends React.Component {
   constructor(props) {
     super();
 
-    props.websitesLoad();
+    props.websitesLoad().then(response => {
+      props.gammaLoadingFinished();
+    });
   }
 
   render() {

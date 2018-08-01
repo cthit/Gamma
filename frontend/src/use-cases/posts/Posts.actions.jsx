@@ -8,5 +8,5 @@ export const POSTS_ADD_SUCCESSFULLY = "posts_add_successfully";
 export const POSTS_CHANGE_SUCCESSFULLY = "posts_change_successfully";
 export const POSTS_CHANGE_FAILED = "posts_change_failed";
 
-export const POSTS_REMOVE_SUCCESSFULLY = "posts_remove_successfully";
-export const POSTS_REMOVE_FAILED = "posts_remove_failed";
+export const POSTS_DELETE_SUCCESSFULLY = "posts_delete_successfully";
+export const POSTS_DELETE_FAILED = "posts_delete_failed";

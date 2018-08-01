@@ -1,6 +1,6 @@
 import React from "react";
 
-import EditWebsite from "../common-views/edit-website";
+import WebsiteForm from "../common-views/website-form";
 import { Center } from "../../../../common-ui/layout";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditWebsiteDetails.screen.translations.json";
@@ -8,10 +8,10 @@ import translations from "./EditWebsiteDetails.screen.translations.json";
 const EditWebsiteDetails = ({ website }) => (
   <GammaTranslations
     translations={translations}
-    uniquePath="Websites.Screen.EditWebsite"
+    uniquePath="Websites.Screen.WebsiteForm"
     render={text => (
       <Center>
-        <EditWebsite
+        <WebsiteForm
           initialValues={website}
           onSubmit={(values, actions) => {
             console.log(values);

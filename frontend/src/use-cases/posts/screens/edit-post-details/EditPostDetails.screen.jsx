@@ -12,7 +12,7 @@ import GammaTextField from "../../../../common/elements/gamma-text-field";
 import GammaButton from "../../../../common/elements/gamma-button";
 import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import EditPost from "../common-views/edit-post-view";
+import PostForm from "../common-views/post-form";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditPostDetails.screen.translations.json";
 
@@ -25,7 +25,7 @@ const EditPostDetails = ({ postsChange, post, match }) => (
         uniquePath="Posts.Screen.EditPostDetails"
         render={text => (
           <Center>
-            <EditPost
+            <PostForm
               onSubmit={(values, actions) => {
                 postsChange(values, match.params.id);
               }}

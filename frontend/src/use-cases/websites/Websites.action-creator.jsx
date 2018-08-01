@@ -7,8 +7,8 @@ import {
   WEBSITES_LOAD_FAILED,
   WEBSITES_ADD_SUCCESSFULLY,
   WEBSITES_ADD_FAILED,
-  WEBSITES_REMOVE_SUCCESSFULLY,
-  WEBSITES_REMOVE_FAILED,
+  WEBSITES_DELETE_SUCCESSFULLY,
+  WEBSITES_DELETE_FAILED,
   WEBSITES_CHANGE_SUCCESSFULLY,
   WEBSITES_CHANGE_FAILED
 } from "./Websites.actions";
@@ -53,7 +53,7 @@ export function websitesAdd(data) {
     });
   };
 }
-export function websitesRemove(websiteId) {
+export function websitesDelete(websiteId) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
@@ -63,11 +63,11 @@ export function websitesRemove(websiteId) {
           }
         })
         .then(response => {
-          dispatch(websitesRemoveSuccessfully());
+          dispatch(websitesDeleteSuccessfully());
           resolve(response);
         })
         .catch(error => {
-          dispatch(websitesRemoveFailed(error));
+          dispatch(websitesDeleteFailed(error));
           reject(error);
         });
     });
@@ -131,16 +131,16 @@ function websitesAddFailed(error) {
   };
 }
 
-function websitesRemoveSuccessfully() {
+function websitesDeleteSuccessfully() {
   return {
-    type: WEBSITES_REMOVE_SUCCESSFULLY,
+    type: WEBSITES_DELETE_SUCCESSFULLY,
     error: false
   };
 }
 
-function websitesRemoveFailed(error) {
+function websitesDeleteFailed(error) {
   return {
-    type: WEBSITES_REMOVE_FAILED,
+    type: WEBSITES_DELETE_FAILED,
     error: true,
     payload: {
       error: error
@@ -150,7 +150,7 @@ function websitesRemoveFailed(error) {
 
 function websitesChangeSuccessfully() {
   return {
-    type: WEBSITES_REMOVE_SUCCESSFULLY,
+    type: WEBSITES_DELETE_SUCCESSFULLY,
     error: false
   };
 }

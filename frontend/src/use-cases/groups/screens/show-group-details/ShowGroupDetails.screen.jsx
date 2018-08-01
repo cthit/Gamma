@@ -5,17 +5,24 @@ import {
   GammaCard,
   GammaCardTitle,
   GammaCardBody,
-  GammaLink
+  GammaLink,
+  GammaCardButtons
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
+import GammaButton from "../../../../common/elements/gamma-button";
 import { Edit } from "@material-ui/icons";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./ShowGroupDetails.screen.translations.json";
 
-const ShowGroupDetails = ({ group }) => (
+const ShowGroupDetails = ({
+  group,
+  groupsDelete,
+  gammaDialogOpen,
+  toastOpen,
+  redirectTo
+}) => (
   <IfElseRendering
     test={group != null}
     ifRender={() => (
@@ -36,7 +43,7 @@ const ShowGroupDetails = ({ group }) => (
                       email: group.email,
                       func_sv: group.func.sv,
                       func_en: group.func.en,
-                      type: group.type
+                      type: _getTypeText(group.type, text)
                     }}
                     keysText={{
                       id: text.Id,
@@ -60,11 +67,38 @@ const ShowGroupDetails = ({ group }) => (
                     ]}
                   />
                 </GammaCardBody>
+                <GammaCardButtons reverseDirection>
+                  <GammaLink to={"/groups/" + group.id + "/edit"}>
+                    <GammaButton primary raised text="Redigera" />
+                  </GammaLink>
+                  <GammaButton
+                    text="Radera"
+                    onClick={() => {
+                      gammaDialogOpen({
+                        title: "Radera?",
+                        confirmButtonText: "Radera",
+                        cancelButtonText: text.Cancel,
+                        onConfirm: () => {
+                          groupsDelete(group.id)
+                            .then(response => {
+                              toastOpen({
+                                text: "Du har raderat"
+                              });
+
+                              redirectTo("/groups");
+                            })
+                            .catch(error => {
+                              toastOpen({
+                                text: text.SomethingWentWrong
+                              });
+                            });
+                        }
+                      });
+                    }}
+                  />
+                </GammaCardButtons>
               </GammaCard>
             </Center>
-            <GammaLink to={"/groups/" + group.id + "/edit"}>
-              <GammaFABButton component={Edit} secondary />
-            </GammaLink>
           </Fill>
         )}
       />

@@ -1,5 +1,5 @@
 import React from "react";
-import EditPost from "../common-views/edit-post-view";
+import PostForm from "../common-views/post-form";
 import { Center } from "../../../../common-ui/layout";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
@@ -13,7 +13,7 @@ const AddNewPost = ({ postsAdd, toastOpen }) => (
     uniquePath="Posts.Screen.AddNewPost"
     render={text => (
       <Center>
-        <EditPost
+        <PostForm
           onSubmit={(values, actions) => {
             postsAdd(values)
               .then(response => {

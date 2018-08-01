@@ -35,8 +35,8 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
             onSubmit={(values, actions) => {
               sendCid(values)
                 .then(response => {
-                  redirectTo("/create-account/email-sent");
                   actions.resetForm();
+                  redirectTo("/create-account/email-sent");
                 })
                 .catch(error => {
                   toastOpen({

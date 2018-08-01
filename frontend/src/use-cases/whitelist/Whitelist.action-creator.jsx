@@ -9,11 +9,13 @@ import {
   WHITELIST_ADD_SUCCESSFULLY,
   WHITELIST_ADD_FAILED,
   WHITELIST_REMOVE,
-  WHITELIST_REMOVE_SUCCESSFULLY,
-  WHITELIST_REMOVE_FAILED,
+  WHITELIST_DELETE_SUCCESSFULLY,
+  WHITELIST_DELETE_FAILED,
   WHITELIST_CHANGE,
   WHITELIST_CHANGE_SUCCESSFULLY,
-  WHITELIST_CHANGE_FAILED
+  WHITELIST_CHANGE_FAILED,
+  WHITELIST_VALIDATE_FAILED,
+  WHITELIST_VALIDATE_SUCCESSFULLY
 } from "./Whitelist.actions";
 
 import token from "../../common/utils/retrievers/token.retrieve";
@@ -61,7 +63,7 @@ export function whitelistAdd(whitelist) {
   };
 }
 
-export function whitelistRemove(whitelistId) {
+export function whitelistDelete(whitelistId) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
@@ -71,11 +73,11 @@ export function whitelistRemove(whitelistId) {
           }
         })
         .then(response => {
-          dispatch(whitelistRemoveSuccessfully());
+          dispatch(whitelistDeleteSuccessfully());
           resolve(response);
         })
         .catch(error => {
-          dispatch(whitelistRemoveFailed(error));
+          dispatch(whitelistDeleteFailed(error));
           reject(error);
         });
     });
@@ -101,6 +103,33 @@ export function whitelistChange(whitelist, whitelistId) {
         })
         .catch(error => {
           dispatch(whitelistChangeFailed());
+          reject(error);
+        });
+    });
+  };
+}
+
+export function whitelistValidate(cid) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          "http://localhost:8081/admin/users/whitelist/valid",
+          {
+            cid: cid
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token()
+            }
+          }
+        )
+        .then(response => {
+          dispatch(whitelistValidateSuccessfully(response.data));
+          resolve(response.data);
+        })
+        .catch(error => {
+          dispatch(whitelistValidateFailed(error));
           reject(error);
         });
     });
@@ -143,7 +172,7 @@ function whitelistAddSuccessfully() {
 
 function whitelistAddFailed(error) {
   return {
-    type: WHITELIST_REMOVE_FAILED,
+    type: WHITELIST_DELETE_FAILED,
     error: true,
     payload: {
       error: error
@@ -151,16 +180,16 @@ function whitelistAddFailed(error) {
   };
 }
 
-function whitelistRemoveSuccessfully() {
+function whitelistDeleteSuccessfully() {
   return {
-    type: WHITELIST_REMOVE_SUCCESSFULLY,
+    type: WHITELIST_DELETE_SUCCESSFULLY,
     error: false
   };
 }
 
-function whitelistRemoveFailed(error) {
+function whitelistDeleteFailed(error) {
   return {
-    type: WHITELIST_REMOVE_FAILED,
+    type: WHITELIST_DELETE_FAILED,
     error: true,
     payload: {
       error: error
@@ -178,6 +207,26 @@ function whitelistChangeSuccessfully() {
 function whitelistChangeFailed(error) {
   return {
     type: WHITELIST_CHANGE_FAILED,
+    error: true,
+    payload: {
+      error: error
+    }
+  };
+}
+
+function whitelistValidateSuccessfully(valid) {
+  return {
+    type: WHITELIST_VALIDATE_SUCCESSFULLY,
+    error: false,
+    payload: {
+      valid: valid
+    }
+  };
+}
+
+function whitelistValidateFailed(error) {
+  return {
+    type: WHITELIST_VALIDATE_FAILED,
     error: true,
     payload: {
       error: error

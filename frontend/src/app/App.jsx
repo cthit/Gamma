@@ -13,20 +13,21 @@ import {
   StyledMain,
   StyledToolbar,
   HorizontalFill,
-  GammaTitle
+  GammaTitle,
+  Hide
 } from "./App.styles";
 
 import appTranslations from "./App.translations.json";
 
 import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
+import GammaDialog from "./views/gamma-dialog";
 
 import DrawerNavigationLink from "./elements/drawer-navigation-link";
 import UserInformation from "./elements/user-information";
 
 import Login from "../use-cases/login";
 import CreateAccount from "../use-cases/create-account";
-import Demo from "../use-cases/demo";
 import Home from "../use-cases/home";
 import Users from "../use-cases/users";
 import Error from "../use-cases/error";
@@ -45,10 +46,12 @@ import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import GammaTranslations from "../common/declaratives/gamma-translations";
+import GammaLoading from "./views/gamma-loading";
 
 export class App extends Component {
   state = {
-    mobileOpen: false
+    mobileOpen: false,
+    lastPath: "/"
   };
 
   constructor(props) {
@@ -80,6 +83,21 @@ export class App extends Component {
       mobileOpen: false
     });
   };
+
+  onRouteChanged(data) {
+    if (data.location.pathname !== this.state.lastPath) {
+      const lastBaseUrl = this.state.lastPath.split("/")[1];
+      const currentBaseUrl = data.location.pathname.split("/")[1];
+
+      if (lastBaseUrl !== currentBaseUrl) {
+        this.props.gammaLoadingStart();
+      }
+
+      this.setState({
+        lastPath: data.location.pathname
+      });
+    }
+  }
 
   render() {
     const title = "Gamma - IT-konto";
@@ -121,19 +139,16 @@ export class App extends Component {
           >
             Activation codes
           </DrawerNavigationLink>
-          <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
-            Demo
-          </DrawerNavigationLink>
         </List>
       </div>
     );
 
     const { mobileOpen } = this.state;
 
-    var { loggedIn, loaded } = this.props;
+    var { loggedIn, userLoaded, loading } = this.props;
 
     loggedIn = loggedIn != null ? loggedIn : false;
-    loaded = loaded != null ? loaded : false;
+    userLoaded = userLoaded != null ? userLoaded : false;
 
     return (
       <BrowserRouter>
@@ -143,13 +158,17 @@ export class App extends Component {
             uniquePath="App"
             render={text => (
               <IfElseRendering
-                test={!loggedIn && loaded}
+                test={!loggedIn && userLoaded}
                 ifRender={() => (
                   <Route
                     render={props => (
                       <ContainUserToAllowedPages
                         currentPath={props.location.pathname}
-                        allowedBasePaths={["/create-account"]}
+                        allowedBasePaths={[
+                          "/create-account",
+                          "/reset-password",
+                          "/login"
+                        ]}
                         to="/login"
                         toastTextOnRedirect={text.YouNeedToLogin}
                       />
@@ -203,41 +222,46 @@ export class App extends Component {
                 <GammaRedirect currentPath={props.location.pathname} />
               )}
             />
+            <GammaDialog />
             <GammaToast />
-            <IfElseRendering
-              test={loaded}
-              elseRender={() => <GammaLinearProgress />}
-              ifRender={() => (
-                <Padding>
-                  <Switch>
-                    <Route path="/home" component={Home} />
-                    <Route path="/users" component={Users} />
-                    <Route path="/groups" component={Groups} />
-                    <Route path="/create-account" component={CreateAccount} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/whitelist" component={Whitelist} />
-                    <Route path="/error" component={Error} />
-                    <Route path="/demo" component={Demo} />
-                    <Route path="/posts" component={Posts} />
-                    <Route path="/websites" component={Websites} />
-                    <Route
-                      path="/activation-codes"
-                      component={ActivationCodes}
-                    />
-                    <Route
-                      path="/"
-                      render={props => (
-                        <IfElseRendering
-                          test={loggedIn}
-                          ifRender={() => <Redirect to="/home" />}
-                          elseRender={() => <Redirect to="/login" />}
-                        />
-                      )}
-                    />
-                  </Switch>
-                </Padding>
-              )}
+
+            <Hide hidden={!loading}>
+              <GammaLoading />
+            </Hide>
+
+            <Route
+              render={props => {
+                this.onRouteChanged(props);
+                return null;
+              }}
             />
+
+            <Hide hidden={loading}>
+              <Padding>
+                <Switch>
+                  <Route path="/home" component={Home} />
+                  <Route path="/users" component={Users} />
+                  <Route path="/groups" component={Groups} />
+                  <Route path="/create-account" component={CreateAccount} />
+                  <Route path="/login" component={Login} />
+                  <Route path="/whitelist" component={Whitelist} />
+                  <Route path="/error" component={Error} />
+                  <Route path="/posts" component={Posts} />
+                  <Route path="/websites" component={Websites} />
+                  <Route path="/activation-codes" component={ActivationCodes} />
+                  <Route
+                    path="/"
+                    render={props => (
+                      <IfElseRendering
+                        test={loggedIn}
+                        ifRender={() => <Redirect to="/home" />}
+                        elseRender={() => <Redirect to="/login" />}
+                      />
+                    )}
+                  />
+                </Switch>
+              </Padding>
+            </Hide>
           </StyledMain>
         </StyledRoot>
       </BrowserRouter>

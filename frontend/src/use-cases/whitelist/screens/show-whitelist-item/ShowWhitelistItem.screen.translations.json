@@ -1,4 +1,11 @@
 {
   "Id": ["Id", "Id"],
-  "Cid": ["Cid", "Cid"]
+  "Cid": ["Cid", "Cid"],
+  "DeleteWhitelistItem": ["Delete whitelist item", "Radera whitelist inlägg"],
+  "EditWhitelistItem": ["Edit whitelist item", "Redigera whitelist inlägg"],
+  "WouldYouLikeToDelete": [
+    "Would you like to delete the whitelist item ",
+    "Vill du radera whitelist inlägget"
+  ],
+  "DeleteSuccessfully": ["You have deleted", "Du har raderat"]
 }

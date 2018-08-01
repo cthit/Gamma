@@ -2,8 +2,8 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
@@ -11,10 +11,12 @@ import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -37,16 +39,6 @@ public class WhitelistController {
         this.itUserService = itUserService;
         this.mailSenderService = mailSenderService;
 
-    }
-
-    /**
-     * /whitelist/valid will be able to return whether or not a user is whitelist, without doing anything to modify the data.
-     * @param cid CID of a user.
-     * @return true if the user is whitelisted false otherwise
-     */
-    @RequestMapping(value = "/valid", method = RequestMethod.POST)
-    public boolean isValid(@RequestBody WhitelistCodeRequest cid) {
-        return whitelistService.isCIDWhiteListed(cid.getCid());
     }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)

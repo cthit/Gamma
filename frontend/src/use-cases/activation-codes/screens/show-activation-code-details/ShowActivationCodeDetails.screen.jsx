@@ -5,17 +5,23 @@ import {
   GammaCard,
   GammaCardTitle,
   GammaCardBody,
-  GammaLink
+  GammaLink,
+  GammaCardButtons
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
-import { Edit } from "@material-ui/icons";
+import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
 
-const ShowActivationCodeDetails = ({ activationCode }) => (
+const ShowActivationCodeDetails = ({
+  activationCode,
+  activationCodesDelete,
+  gammaDialogOpen,
+  redirectTo,
+  toastOpen
+}) => (
   <IfElseRendering
     test={activationCode != null}
     ifRender={() => (
@@ -38,11 +44,45 @@ const ShowActivationCodeDetails = ({ activationCode }) => (
                     keysOrder={["id", "cid", "code", "createdAt"]}
                   />
                 </GammaCardBody>
+                <GammaCardButtons reverseDirection>
+                  <GammaLink
+                    to={"/activation-codes/" + activationCode.id + "/edit"}
+                  >
+                    <GammaButton
+                      text={text.EditActivationCode}
+                      primary
+                      raised
+                    />
+                  </GammaLink>
+                  <GammaButton
+                    text={text.DeleteActivationCode}
+                    onClick={() => {
+                      gammaDialogOpen({
+                        title:
+                          text.WouldYouLikeToDelete + " " + activationCode.cid,
+                        confirmButtonText: text.DeleteActivationCode,
+                        cancelButtonText: text.Cancel,
+                        onConfirm: () => {
+                          activationCodesDelete(activationCode.id)
+                            .then(response => {
+                              toastOpen({
+                                text:
+                                  text.YouHaveDeleted + " " + activationCode.cid
+                              });
+                              redirectTo("/activation-codes");
+                            })
+                            .catch(error => {
+                              toastOpen({
+                                text: text.SomethingWentWrong
+                              });
+                            });
+                        }
+                      });
+                    }}
+                  />
+                </GammaCardButtons>
               </GammaCard>
             </Center>
-            <GammaLink to={"/activation-codes/" + activationCode.id + "/edit"}>
-              <GammaFABButton component={Edit} secondary />
-            </GammaLink>
           </Fill>
         )}
       />

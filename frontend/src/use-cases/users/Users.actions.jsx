@@ -7,5 +7,5 @@ export const USERS_CHANGE_FAILED = "users_change_failed";
 export const USERS_ADD_SUCCESSFULLY = "users_add_succcessfully";
 export const USERS_ADD_FAILED = "users_add_failed";
 
-export const USERS_REMOVE_SUCCESSFULLY = "users_remove_successfully";
-export const USERS_REMOVE_FAILED = "users_remove_failed";
+export const USERS_DELETE_SUCCESSFULLY = "users_delete_successfully";
+export const USERS_DELETE_FAILED = "users_delete_failed";

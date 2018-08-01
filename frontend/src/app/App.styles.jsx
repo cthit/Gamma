@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { IconButton, AppBar, Toolbar, Drawer } from "@material-ui/core";
 import { Title } from "../common-ui/text";
+import { Fill } from "../common-ui/layout";
 
 export const StyledMenuButton = styled(IconButton)`
   /*Medium device (md)*/
@@ -61,4 +62,8 @@ export const StyledMain = styled.main`
     margin-left: 241px;
     width: calc(100vw - 241px);
   }
+`;
+
+export const Hide = styled(Fill)`
+  display: ${props => (props.hidden ? "none" : "inherit")};
 `;

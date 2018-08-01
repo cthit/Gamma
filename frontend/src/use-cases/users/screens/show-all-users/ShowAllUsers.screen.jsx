@@ -23,7 +23,7 @@ const ShowAllUsers = ({ users }) => (
         ]}
         headerTexts={{
           firstName: text.FirstName,
-          lastName: text.lastName,
+          lastName: text.LastName,
           cid: text.Cid,
           nick: text.Nick,
           acceptanceYear: text.AcceptanceYear,

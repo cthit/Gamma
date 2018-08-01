@@ -2,11 +2,11 @@ import React from "react";
 
 import { Center } from "../../../../common-ui/layout";
 
-import EditGroupInformation from "../common-views/edit-group-information";
+import GroupForm from "../common-views/group-form";
 
 const EditGroupDetails = ({ group, groupsChange, match }) => (
   <Center>
-    <EditGroupInformation
+    <GroupForm
       onSubmit={(values, actions) => {
         groupsChange(values, match.params.id);
       }}

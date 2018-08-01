@@ -1,6 +1,6 @@
 import React from "react";
 import { Fill, Center } from "../../../../common-ui/layout";
-import EditWhitelistItem from "../common-views/edit-whitelist-item";
+import WhitelistItemForm from "../common-views/whitelist-item-form";
 
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./AddNewWhitelistItem.screen.translations.json";
@@ -12,9 +12,8 @@ const AddNewWhitelistItem = ({ whitelistAdd }) => (
     render={text => (
       <Fill>
         <Center>
-          <EditWhitelistItem
+          <WhitelistItemForm
             onSubmit={(values, actions) => {
-              console.log("hej");
               whitelistAdd(values)
                 .then(response => {
                   console.log(response);

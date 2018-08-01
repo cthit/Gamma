@@ -10,7 +10,9 @@ class Users extends React.Component {
   constructor(props) {
     super();
 
-    props.usersLoad();
+    props.usersLoad().then(response => {
+      props.gammaLoadingFinished();
+    });
   }
 
   render() {
