@@ -35,5 +35,4 @@ public class FKITGroupController {
         groupView.setWebsites(groupWebsiteService.getWebsites(group));
         return new GetGroupResponse(groupView);
     }
-
 }

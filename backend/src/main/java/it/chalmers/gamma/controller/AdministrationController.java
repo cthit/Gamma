@@ -99,18 +99,18 @@ public class AdministrationController {
         return new GroupCreatedResponse();
     }
 
-    @RequestMapping(value = "/groups/{group}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("group") String group) {
-        fkitService.editGroup(group, request.getDescription(), request.getEmail(), request.getType(), request.getFunc(), request.getAvatarURL());
+    @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("groupId") String groupId) {
+        fkitService.editGroup(UUID.fromString(groupId), request.getDescription(), request.getEmail(), request.getType(), request.getFunc(), request.getAvatarURL());
         return new GroupEditedResponse();
     }
 
-    @RequestMapping(value = "/groups/{group}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteGroup(@PathVariable("group") String group) {
-        if (!fkitService.groupExists(group)) {
+    @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteGroup(@PathVariable("groupId") String groupId) {
+        if (!fkitService.groupExists(UUID.fromString(groupId))) {
             return new GroupDoesNotExistResponse();
         }
-        fkitService.removeGroup(group);
+        fkitService.removeGroup(UUID.fromString(groupId));
         return new GroupDeletedResponse();
     }
 
