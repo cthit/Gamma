@@ -4,7 +4,7 @@ import * as yup from "yup";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
 
-const EditWhitelistItem = ({
+const WhitelistItemForm = ({
   onSubmit,
   initialValues,
   titleText,
@@ -32,4 +32,4 @@ const EditWhitelistItem = ({
   />
 );
 
-export default EditWhitelistItem;
+export default WhitelistItemForm;

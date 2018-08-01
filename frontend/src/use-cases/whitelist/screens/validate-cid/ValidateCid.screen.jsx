@@ -1,5 +1,5 @@
 import React from "react";
-import EditWhitelistItem from "../common-views/edit-whitelist-item/EditWhitelistItem.view";
+import WhitelistItemForm from "../common-views/whitelist-item-form/WhitelistItemForm.view";
 import translations from "./ValidateCid.screen.translations.json";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import { Center } from "../../../../common-ui/layout";
@@ -10,7 +10,7 @@ const ValidateCid = ({ whitelistValidate, toastOpen }) => (
     uniquePath="Whitelist.Screen.ValdiateCid"
     render={text => (
       <Center>
-        <EditWhitelistItem
+        <WhitelistItemForm
           initialValues={{ cid: "" }}
           onSubmit={(values, actions) => {
             whitelistValidate(values.cid)

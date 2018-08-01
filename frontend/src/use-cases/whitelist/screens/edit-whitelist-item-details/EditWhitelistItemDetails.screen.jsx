@@ -1,6 +1,6 @@
 import React from "react";
 import { Fill, Center } from "../../../../common-ui/layout";
-import EditWhitelistItem from "../common-views/edit-whitelist-item";
+import WhitelistItemForm from "../common-views/whitelist-item-form";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditWhitelistItemDetails.screen.translations.json";
@@ -19,7 +19,7 @@ const EditWhitelistItemDetails = ({
         render={text => (
           <Fill>
             <Center>
-              <EditWhitelistItem
+              <WhitelistItemForm
                 onSubmit={(values, actions) => {
                   whitelistChange(values, match.params.id)
                     .then(response => {
