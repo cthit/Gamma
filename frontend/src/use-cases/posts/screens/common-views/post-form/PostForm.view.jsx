@@ -12,7 +12,7 @@ import GammaButton from "../../../../../common/elements/gamma-button";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 
-const EditPost = ({
+const PostForm = ({
   initialValues,
   onSubmit,
   titleText,
@@ -55,4 +55,4 @@ const EditPost = ({
   />
 );
 
-export default EditPost;
+export default PostForm;
