@@ -12,7 +12,7 @@ import UserForm from "../common-views/user-form/UserForm.view";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditUserDetails.screen.translations.json";
 
-const EditUserDetails = ({ user }) => (
+const EditUserDetails = ({ user, usersChange }) => (
   <IfElseRendering
     test={user != null}
     ifRender={() => (
@@ -22,14 +22,14 @@ const EditUserDetails = ({ user }) => (
         render={text => (
           <Center>
             <UserForm
-              titleText={text.EditGroups}
-              submitText={text.SaveGroups}
+              titleText={text.EditUser}
+              submitText={text.SaveUser}
               initialValues={{
                 ...user,
                 acceptanceYear: user.acceptanceYear + ""
               }}
               onSubmit={(values, actions) => {
-                console.log(values);
+                usersChange(values, user.cid).then(response => {});
               }}
             />
           </Center>

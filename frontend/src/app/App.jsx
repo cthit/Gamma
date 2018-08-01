@@ -166,7 +166,8 @@ export class App extends Component {
                         currentPath={props.location.pathname}
                         allowedBasePaths={[
                           "/create-account",
-                          "/reset-password"
+                          "/reset-password",
+                          "/login"
                         ]}
                         to="/login"
                         toastTextOnRedirect={text.YouNeedToLogin}

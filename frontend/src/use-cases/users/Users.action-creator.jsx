@@ -34,11 +34,11 @@ export function usersLoad() {
   };
 }
 
-export function usersChange(user, userId) {
+export function usersChange(user, cid) {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .put("http://localhost:8081/admin/users/" + userId, {
+        .put("http://localhost:8081/admin/users/" + cid, {
           headers: {
             Authorization: "Bearer " + token()
           }
