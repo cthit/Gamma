@@ -45,6 +45,12 @@ create table authorites (
   authority varchar(50) constraint authorites_pk primary key
 );
 
+create table password_reset_token(
+  id      uuid constraint password_reset_token_pk primary key,
+  token   varchar(100) not null,
+  ituser  uuid references ituser
+);
+
 create table fkit_group (
   id          uuid constraint fkit_group_pk primary key,
   name        varchar(50)  not null constraint fkit_group_name_unique unique,

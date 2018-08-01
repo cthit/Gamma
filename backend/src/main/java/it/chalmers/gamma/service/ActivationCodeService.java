@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
+
 @Service
 public class ActivationCodeService {
 
@@ -55,6 +57,13 @@ public class ActivationCodeService {
     // TODO Delete entry after 1 hour or once code has been used. This does not work.
     public void deleteCode(String cid){
         activationCodeRepository.delete(activationCodeRepository.findByCid_Cid(cid));
+    }
+    public void deleteCode(UUID id){
+        activationCodeRepository.deleteById(id);
+    }
+
+    public boolean codeExists(UUID id){
+        return activationCodeRepository.existsById(id);
     }
 
 

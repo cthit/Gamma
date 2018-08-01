@@ -1,12 +1,16 @@
 package it.chalmers.gamma.controller;
 
+import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
+import it.chalmers.gamma.util.TokenGenerator;
+import org.h2.engine.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +30,13 @@ public class AdministrationController {
     private GroupWebsiteService groupWebsiteService;
     private ActivationCodeService activationCodeService;
     private UserWebsiteService userWebsiteService;
+    private MailSenderService mailSenderService;
+    private PasswordResetService passwordResetService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
                              FKITService fkitService, MembershipService membershipService, PostService postService,
                              WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService,
-                             UserWebsiteService userWebsiteService) {
+                             UserWebsiteService userWebsiteService, MailSenderService mailSenderService, PasswordResetService passwordResetService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
@@ -40,6 +46,8 @@ public class AdministrationController {
         this.groupWebsiteService = groupWebsiteService;
         this.activationCodeService = activationCodeService;
         this.userWebsiteService = userWebsiteService;
+        this.mailSenderService = mailSenderService;
+        this.passwordResetService = passwordResetService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -219,12 +227,43 @@ public class AdministrationController {
                 createITUserRequest.isUserAgreement(), createITUserRequest.getEmail(), createITUserRequest.getPassword());
         return new UserCreatedResponse();
     }
+    @RequestMapping(value = "/users/reset_password", method = RequestMethod.POST)
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request){
+        if(!itUserService.userExists(UUID.fromString(request.getId()))){
+            return new NoCidFoundResponse();
+        }
+        ITUser user = itUserService.getUserById(UUID.fromString(request.getId()));
+        String token = TokenGenerator.generateToken();
+        if(passwordResetService.userHasActiveReset(user)){
+            passwordResetService.editToken(user, token);
+        }
+        else {
+            passwordResetService.addToken(user, token);
+        }
+        try {
+            mailSenderService.sendPasswordReset(user, token);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return new PasswordResetResponse();
+    }
+    @RequestMapping(value = "/users/reset_password/finish", method = RequestMethod.PUT)
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordFinishRequest request){
+        if(!itUserService.userExists(request.getCid())){
+            return new NoCidFoundResponse();
+        }
+        ITUser user = itUserService.loadUser(request.getCid());
+        if(!passwordResetService.userHasActiveReset(user) || !passwordResetService.tokenMatchesUser(user, request.getToken())){
+            return new CodeOrCidIsWrongResponse();
+        }
+        itUserService.setPassword(user, request.getPassword());
+        passwordResetService.removeToken(user);
+            return new PasswordChangedResponse();
+    }
 
-    /*
-    should probably change so multiple users can be added simultaneously
-     */
+
     @RequestMapping(value = "/users/whitelist", method = RequestMethod.POST)
-    public ResponseEntity<String> addWhitelistedUser(@RequestBody AddListOfWhitelistedRequest request) {
+    public ResponseEntity<String> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request) {
         List<String> cids = request.getCids();
         for(String cid : cids) {
             if (whitelistService.isCIDWhiteListed(cid)) {
@@ -313,5 +352,12 @@ public class AdministrationController {
     public ResponseEntity<List<ActivationCode>> getAllActivationCodes(){
         return new GetAllActivationCodesResponse(activationCodeService.getAllActivationCodes());
     }
-
+    @RequestMapping(value = "/activation_codes/{activationCode}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeActivationCode(@PathVariable("activationCode") String activationCode){
+        if(!activationCodeService.codeExists(UUID.fromString(activationCode))){
+            return new ActivationCodeDeletedResponse();
+        }
+        activationCodeService.deleteCode(UUID.fromString(activationCode));
+        return new ActivationCodeDeletedResponse();
+    }
 }

@@ -112,6 +112,7 @@ public class ITUserController {
         props.add("lastName");
         props.add("nick");
         props.add("attendanceYear");
+        props.add("id");
         for(ITUser user : itUsers){
             minifiedITUsers.add(user.getView(props));
         }

@@ -288,6 +288,9 @@ public class ITUser implements UserDetails{
         ITUserView view = new ITUserView();
         for(String prop : props) {
             switch (prop){
+                case "id":
+                    view.setId(this.id);
+                    break;
                 case "cid":
                     view.setCid(this.cid);
                     break;
@@ -336,6 +339,7 @@ public class ITUser implements UserDetails{
     }
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public class ITUserView{
+        private UUID id;
         private String cid;
         private String nick;
         private String firstName;
@@ -350,6 +354,16 @@ public class ITUser implements UserDetails{
         private int acceptanceYear;
         private Instant createdAt;
         private Instant lastModifiedAt;
+
+
+        public UUID getId() {
+            return id;
+        }
+
+        public void setId(UUID id) {
+            this.id = id;
+        }
+
         public String getCid() {
             return cid;
         }

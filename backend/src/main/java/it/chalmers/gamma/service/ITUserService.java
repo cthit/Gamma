@@ -49,10 +49,10 @@ public class ITUserService implements UserDetailsService{
 
 
     public boolean userExists(String cid){
-            if(itUserRepository.findByCid(cid) == null){
-                return false;
-            }
-            return true;
+        return itUserRepository.existsByCid(cid);
+    }
+    public boolean userExists(UUID id){
+        return itUserRepository.existsById(id);
     }
 
     public void createUser(String nick, String firstName, String lastname,
@@ -93,5 +93,9 @@ public class ITUserService implements UserDetailsService{
     }
     public ITUser getUserById(UUID id){
         return itUserRepository.findById(id).orElse(null);
+    }
+    public void setPassword(ITUser user, String password){
+        user.setPassword(passwordEncoder.encode(password));
+        itUserRepository.save(user);
     }
 }

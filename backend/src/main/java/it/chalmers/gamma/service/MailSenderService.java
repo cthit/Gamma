@@ -1,5 +1,6 @@
 package it.chalmers.gamma.service;
 
+import it.chalmers.gamma.db.entity.ITUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,6 +28,12 @@ public class MailSenderService{
     @Value("${email.username}")
     private String mail;
 
+    @Value("${email.base_url}")
+    private String baseUrl;
+
+    public MailSenderService(){
+        setupMailSender();
+    }
 
     private void setupMailSender(){
         mailSender = new JavaMailSenderImpl();
@@ -43,6 +50,12 @@ public class MailSenderService{
         props.put("mail.debug", "true");
 
         mailSender.setJavaMailProperties(props);
+    }
+    public void sendPasswordReset(ITUser user, String token) throws MessagingException{
+        String subject = "Reset Password for IT-Account";
+        String link = baseUrl + "/users/reset_password/finish/" + token;
+        String message = "to reset your password press the link and follow the instructions \nlink: " + link;
+        sendMessage(user.getEmail(), subject, message);
     }
     public void sendMessage(String to, String subject, String message) throws MessagingException {
         mailSender.testConnection();
