@@ -14,3 +14,7 @@ export const WHITELIST_DELETE_FAILED = "whitelist_delete_failed";
 export const WHITELIST_CHANGE = "whitelist_change";
 export const WHITELIST_CHANGE_SUCCESSFULLY = "whitelist_change-successfully";
 export const WHITELIST_CHANGE_FAILED = "whitelist_change_failed";
+
+export const WHITELIST_VALIDATE_SUCCESSFULLY =
+  "whitelist_validate_successfully";
+export const WHITELIST_VALIDATE_FAILED = "whitelist_validate_failed";

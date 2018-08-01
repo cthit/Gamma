@@ -13,7 +13,9 @@ import {
   WHITELIST_DELETE_FAILED,
   WHITELIST_CHANGE,
   WHITELIST_CHANGE_SUCCESSFULLY,
-  WHITELIST_CHANGE_FAILED
+  WHITELIST_CHANGE_FAILED,
+  WHITELIST_VALIDATE_FAILED,
+  WHITELIST_VALIDATE_SUCCESSFULLY
 } from "./Whitelist.actions";
 
 import token from "../../common/utils/retrievers/token.retrieve";
@@ -107,6 +109,33 @@ export function whitelistChange(whitelist, whitelistId) {
   };
 }
 
+export function whitelistValidate(cid) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          "http://localhost:8081/admin/users/whitelist/valid",
+          {
+            cid: cid
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token()
+            }
+          }
+        )
+        .then(response => {
+          dispatch(whitelistValidateSuccessfully(response.data));
+          resolve(response.data);
+        })
+        .catch(error => {
+          dispatch(whitelistValidateFailed(error));
+          reject(error);
+        });
+    });
+  };
+}
+
 function whitelistLoading() {
   return {
     type: WHITELIST_LOADING,
@@ -178,6 +207,26 @@ function whitelistChangeSuccessfully() {
 function whitelistChangeFailed(error) {
   return {
     type: WHITELIST_CHANGE_FAILED,
+    error: true,
+    payload: {
+      error: error
+    }
+  };
+}
+
+function whitelistValidateSuccessfully(valid) {
+  return {
+    type: WHITELIST_VALIDATE_SUCCESSFULLY,
+    error: false,
+    payload: {
+      valid: valid
+    }
+  };
+}
+
+function whitelistValidateFailed(error) {
+  return {
+    type: WHITELIST_VALIDATE_FAILED,
     error: true,
     payload: {
       error: error
