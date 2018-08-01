@@ -87,6 +87,9 @@ public class AdministrationController {
         FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
                 createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc(), createGroupRequest.getAvatarURL());
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
+        if(websites.isEmpty()){
+            return new GroupCreatedResponse();
+        }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         for(CreateGroupRequest.WebsiteInfo websiteInfo : websites){
             Website website = websiteService.getWebsite(websiteInfo.getWebsite());
@@ -101,7 +104,8 @@ public class AdministrationController {
 
     @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.PUT)
     public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("groupId") String groupId) {
-        fkitService.editGroup(UUID.fromString(groupId), request.getDescription(), request.getEmail(), request.getType(), request.getFunc(), request.getAvatarURL());
+        fkitService.editGroup(UUID.fromString(groupId), request.getDescription(), request.getEmail(),
+                request.getType(), request.getFunc(), request.getAvatarURL());
         return new GroupEditedResponse();
     }
 

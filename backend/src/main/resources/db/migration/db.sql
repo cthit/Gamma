@@ -46,7 +46,7 @@ create table authorites (
 );
 
 create table password_reset_token(
-  id      uuid constraint password_reset_token_pk primary key,
+  id      uuid constraint password_reset_toke7n_pk primary key,
   token   varchar(100) not null,
   ituser  uuid references ituser
 );
