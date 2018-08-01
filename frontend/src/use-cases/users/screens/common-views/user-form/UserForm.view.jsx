@@ -28,51 +28,27 @@ function _generateAcceptanceYears() {
   return output;
 }
 
-const EditUserInformation = ({
-  initialValues,
-  onSubmit,
-  titleText,
-  submitText
-}) => (
+const UserForm = ({ initialValues, onSubmit, titleText, submitText }) => (
   <GammaTranslations
     translations={translations}
-    uniquePath="Users.Screen.CommonViews.EditUserInformation"
+    uniquePath="Users.Screen.CommonViews.UserForm"
     render={text => (
       <GammaEditData
         titleText={titleText}
         submitText={submitText}
         initialValues={initialValues}
         onSubmit={(values, actions) => {
-          const wrapped = {
-            post: {
-              ...values
-            }
-          };
-          onSubmit(wrapped, actions);
+          onSubmit(values, actions);
         }}
         validationSchema={yup.object().shape({
-          cid: yup.string().required(),
           firstName: yup.string().required(),
           lastName: yup.string().required(),
           nick: yup.string().required(),
           email: yup.string().required(),
           acceptanceYear: yup.string().required()
         })}
-        keysOrder={[
-          "cid",
-          "firstName",
-          "lastName",
-          "nick",
-          "email",
-          "acceptanceYear"
-        ]}
+        keysOrder={["firstName", "lastName", "nick", "email", "acceptanceYear"]}
         keysComponentData={{
-          cid: {
-            component: GammaTextField,
-            componentProps: {
-              upperLabel: text.Cid
-            }
-          },
           firstName: {
             component: GammaTextField,
             componentProps: {
@@ -112,4 +88,4 @@ const EditUserInformation = ({
   />
 );
 
-export default EditUserInformation;
+export default UserForm;

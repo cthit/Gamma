@@ -8,7 +8,7 @@ import {
 import GammaTextField from "../../../../common/elements/gamma-text-field";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Center } from "../../../../common-ui/layout";
-import EditUserInformation from "../common-views/edit-user-information/EditUserInformation.view";
+import UserForm from "../common-views/user-form/UserForm.view";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditUserDetails.screen.translations.json";
 
@@ -21,7 +21,7 @@ const EditUserDetails = ({ user }) => (
         uniquePath="Users.Screen.EditUserDetails"
         render={text => (
           <Center>
-            <EditUserInformation
+            <UserForm
               titleText={text.EditGroups}
               submitText={text.SaveGroups}
               initialValues={{
