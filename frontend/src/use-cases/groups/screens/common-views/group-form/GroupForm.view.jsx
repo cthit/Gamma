@@ -12,14 +12,14 @@ import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaButton from "../../../../../common/elements/gamma-button";
 import GammaSelect from "../../../../../common/elements/gamma-select";
-import GammaTranslations from "../../../../../common/declaratives/if-else-rendering";
+import GammaTranslations from "../../../../../common/declaratives/gamma-translations";
 
-import translations from "./EditGroupInformation.view.translations";
+import translations from "./GroupForm.view.translations";
 
-const EditGroupInformation = ({ initialValues, onSubmit }) => (
+const GroupForm = ({ initialValues, onSubmit }) => (
   <GammaTranslations
     translations={translations}
-    uniquePath="Groups.Screen.EditGroupInformation"
+    uniquePath="Groups.Screen.GroupForm"
     render={text => (
       <GammaEditData
         titleText={text.Group}
@@ -108,4 +108,4 @@ const EditGroupInformation = ({ initialValues, onSubmit }) => (
   />
 );
 
-export default EditGroupInformation;
+export default GroupForm;

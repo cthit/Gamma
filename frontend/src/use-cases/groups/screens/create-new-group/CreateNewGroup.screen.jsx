@@ -2,12 +2,12 @@ import React from "react";
 
 import { Fill, Center } from "../../../../common-ui/layout";
 
-import EditGroupInformation from "../common-views/edit-group-information";
+import GroupForm from "../common-views/group-form";
 
 const CreateNewGroup = ({ groupsAdd }) => (
   <Fill>
     <Center>
-      <EditGroupInformation
+      <GroupForm
         onSubmit={(values, actions) => {
           groupsAdd(values);
         }}
