@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface GroupWebsiteRepository extends JpaRepository<GroupWebsite, UUID> {
-    public List<GroupWebsite> findAllByGroup(FKITGroup group);
+    List<GroupWebsite> findAllByGroup(FKITGroup group);
     GroupWebsite findByWebsite_Website(Website website);
+    void deleteAllByGroup(FKITGroup group);
 }

@@ -7,6 +7,7 @@ import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +50,10 @@ public class GroupWebsiteService {
 
     public GroupWebsite getGroupWebsiteByWebsite(Website website){
         return repository.findByWebsite_Website(website);
+    }
+    @Transactional
+    public void deleteWebsitesConnectedToGroup(FKITGroup group){
+        repository.deleteAllByGroup(group);
     }
 
 }

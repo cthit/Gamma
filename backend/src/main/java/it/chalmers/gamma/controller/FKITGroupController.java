@@ -25,7 +25,7 @@ public class FKITGroupController {
 
     @RequestMapping(value = "/{group}", method = RequestMethod.GET)
     public ResponseEntity<FKITGroup.FKITGroupView> getGroup(@PathVariable("group") String groupId){
-        String[] properties = {"avatarURL", "name", "prettyName", "enDescription", "svDescription", "svFunc","enFunc", "email", "type"};
+        String[] properties = {"avatarURL", "name", "prettyName", "description", "func", "email", "type"};
         FKITGroup group = fkitService.getGroup(groupId);
         if(group == null){
             return new GetGroupResponse(null);

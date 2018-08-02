@@ -106,12 +106,12 @@ public class AdministrationController {
         FKITGroup group = fkitService.getGroup(UUID.fromString(groupId));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<GroupWebsite> userWebsite = groupWebsiteService.getWebsites(group);
+        List<GroupWebsite> groupWebsite = groupWebsiteService.getWebsites(group);
         for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
             boolean websiteExists = false;
             Website website = websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL = null;
-            for(GroupWebsite duplicateCheck : userWebsite){
+            WebsiteURL websiteURL;
+            for(GroupWebsite duplicateCheck : groupWebsite){
                 if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
                     websiteExists = true;
                     break;
@@ -133,6 +133,7 @@ public class AdministrationController {
         if (!fkitService.groupExists(UUID.fromString(groupId))) {
             return new GroupDoesNotExistResponse();
         }
+        groupWebsiteService.deleteWebsitesConnectedToGroup(fkitService.getGroup(UUID.fromString(groupId)));
         fkitService.removeGroup(UUID.fromString(groupId));
         return new GroupDeletedResponse();
     }
@@ -226,18 +227,17 @@ public class AdministrationController {
             Website website = websiteService.getWebsite(websiteInfo.getWebsite());
             WebsiteURL websiteURL = null;
             for(UserWebsite duplicateCheck : userWebsite){
-                if(duplicateCheck.getWebsite().getWebsite().equals(website)) {
-                    websiteURL = userWebsiteService.getUserWebsiteByWebsite(website).getWebsite();
+                if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
                     websiteExists = true;
                     break;
                 }
             }
             if(!websiteExists) {
                 websiteURL = new WebsiteURL();
+                websiteURL.setWebsite(website);
+                websiteURL.setUrl(websiteInfo.getUrl());
+                websiteURLs.add(websiteURL);
             }
-            websiteURL.setWebsite(website);
-            websiteURL.setUrl(websiteInfo.getUrl());
-            websiteURLs.add(websiteURL);
         }
         userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
@@ -357,7 +357,7 @@ public class AdministrationController {
         if(request.getName() == null){
             return new MissingRequiredFieldResponse("name");
         }
-        websiteService.addPossibleWebsite(request.getName());
+        websiteService.addPossibleWebsite(request.getName(), request.getPrettyName());
         return new WebsiteAddedResponse();
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.GET)
@@ -370,7 +370,7 @@ public class AdministrationController {
         if(website == null){
             return new WebsiteNotFoundResponse();
         }
-        websiteService.editWebsite(website, request.getName());
+        websiteService.editWebsite(website, request.getName(), request.getPrettyName());
         return new EditedWebsiteResponse();
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.DELETE)

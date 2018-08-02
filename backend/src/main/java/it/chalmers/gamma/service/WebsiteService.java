@@ -14,18 +14,18 @@ public class WebsiteService {
         this.repository = repository;
     }
 
-    public void addPossibleWebsite(String prettyName){
+    public void addPossibleWebsite(String name, String prettyName){
         Website website = new Website();
-        website.setPrettyName(prettyName);
-        website.setName(prettyName.toLowerCase());
+        website.setPrettyName(prettyName != null ? prettyName : name.toLowerCase());
+        website.setName(name);
         repository.save(website);
     }
     public Website getWebsite(String websiteName){
         return repository.findByName(websiteName);
     }
-    public void editWebsite(Website website, String name){
+    public void editWebsite(Website website, String name, String prettyName){
         website.setName(name.toLowerCase());
-        website.setPrettyName(name);
+        website.setPrettyName(prettyName != null ? prettyName : name.toLowerCase());
         repository.save(website);
     }
     public void deleteWebsite(String id){

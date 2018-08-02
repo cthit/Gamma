@@ -26,11 +26,11 @@ public class FKITGroup {
     private String prettyName;
 
     @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
     @JoinColumn(name = "function", nullable = false)
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text func;
 
     @Column(name = "email", length = 100, nullable = false)
@@ -188,14 +188,6 @@ public class FKITGroup {
                 case "id":
                     view.id = this.id;
                     break;
-                case "enDescription":
-                    view.setENDescription(this.getENDescription());
-                case "svDescription":
-                    view.setSVDescription(this.getSVDescription());
-                case "svFunc":
-                    view.setSVFunction(this.getSVFunction());
-                case "enFunc":
-                    view.setENFunction(this.getENFunction());
                 case "avatarURL":
                     view.avatarURL = this.avatarURL;
                     break;
@@ -228,14 +220,20 @@ public class FKITGroup {
         private String avatarURL;
         private String name;
         private String prettyName;
-        @JsonIgnore
         private Text description;
-        @JsonIgnore
         private Text func;
         private String email;
         private GroupType type;
         private List<GroupWebsite> websites;
         private List<ITUser> users;
+
+        public Text getDescription() {
+            return description;
+        }
+
+        public Text getFunc() {
+            return func;
+        }
 
         public String getSVDescription() {
             if(description == null){

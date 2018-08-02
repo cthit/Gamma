@@ -16,7 +16,7 @@ public class GroupWebsite {
     private UUID id;
 
     @JoinColumn(name = "website")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     private WebsiteURL website;
 
     @OneToOne
