@@ -1,15 +1,12 @@
 package it.chalmers.gamma.controller;
 
-import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
 import it.chalmers.gamma.util.TokenGenerator;
-import org.h2.engine.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.mail.MessagingException;
 import java.time.Year;
 import java.util.ArrayList;
@@ -84,7 +81,7 @@ public class AdministrationController {
         if (createGroupRequest.getType() == null) {
             return new MissingRequiredFieldResponse("groupType");
         }
-        FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getDescription(),
+        FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getPrettyName(), createGroupRequest.getDescription(),
                 createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc(), createGroupRequest.getAvatarURL());
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
         if(websites.isEmpty()){
@@ -104,8 +101,30 @@ public class AdministrationController {
 
     @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.PUT)
     public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("groupId") String groupId) {
-        fkitService.editGroup(UUID.fromString(groupId), request.getDescription(), request.getEmail(),
+        fkitService.editGroup(UUID.fromString(groupId), request.getPrettyName(), request.getDescription(), request.getEmail(),
                 request.getType(), request.getFunc(), request.getAvatarURL());
+        FKITGroup group = fkitService.getGroup(UUID.fromString(groupId));
+        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
+        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        List<GroupWebsite> userWebsite = groupWebsiteService.getWebsites(group);
+        for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
+            boolean websiteExists = false;
+            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
+            WebsiteURL websiteURL = null;
+            for(GroupWebsite duplicateCheck : userWebsite){
+                if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
+                    websiteExists = true;
+                    break;
+                }
+            }
+            if(!websiteExists) {
+                websiteURL = new WebsiteURL();
+                websiteURL.setWebsite(website);
+                websiteURL.setUrl(websiteInfo.getUrl());
+                websiteURLs.add(websiteURL);
+            }
+        }
+        groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupEditedResponse();
     }
 
@@ -155,7 +174,11 @@ public class AdministrationController {
         Post post = postService.getPostById(id);
         return new GetPostResponse(post);
     }
-
+    @RequestMapping(value = "/groups/posts/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deletePost(@PathVariable("id") String id){
+        postService.deletePost(UUID.fromString(id));
+        return new PostDeletedResponse();
+    }
 
     @RequestMapping(value = "/groups/posts", method = RequestMethod.GET)
     public ResponseEntity<List<Post>> getPosts() {
@@ -169,7 +192,7 @@ public class AdministrationController {
         List<UUID> groups = membershipService.getGroupsWithPost(post);
         List<FKITGroup.FKITGroupView> groupAndUser = new ArrayList<>();
         for(UUID groupId : groups) {
-            FKITGroup group = fkitService.getGroupById(groupId);
+            FKITGroup group = fkitService.getGroup(groupId);
             FKITGroup.FKITGroupView groupView = group.getView(props);
             List<ITUser> users = new ArrayList<>();
             List<UUID> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
@@ -181,7 +204,15 @@ public class AdministrationController {
         }
         return new PostUsageResponse(groupAndUser);
     }
-
+    @RequestMapping(value = "users/{cid}/change_password", method = RequestMethod.PUT)
+    public ResponseEntity<String> changePassword(@PathVariable("cid") String cid,@RequestBody AdminChangePasswordRequest request){
+        if(!itUserService.userExists(cid)){
+            return new NoCidFoundResponse();
+        }
+        ITUser user = itUserService.loadUser(cid);
+        itUserService.setPassword(user, request.getPassword());
+        return new PasswordChangedResponse();
+    }
     @RequestMapping(value = "/users/{cid}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("cid") String cid, @RequestBody EditITUserRequest request) {
         itUserService.editUser(cid, request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),

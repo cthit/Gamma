@@ -8,6 +8,7 @@ import java.util.List;
 
 public class CreateGroupRequest {
     private String name;
+    private String prettyName;
     private Text description;
     private String email;
     private GroupType type;
@@ -66,6 +67,14 @@ public class CreateGroupRequest {
 
     public GroupType getType() {
         return type;
+    }
+
+    public String getPrettyName() {
+        return prettyName;
+    }
+
+    public void setPrettyName(String prettyName) {
+        this.prettyName = prettyName;
     }
 
     public void setType(GroupType type) {

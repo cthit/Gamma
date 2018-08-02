@@ -1,8 +1,10 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -70,5 +72,34 @@ public class GroupWebsite {
                 ", website=" + website +
                 ", group=" + group +
                 '}';
+    }
+    public class GroupWebsiteview{
+        private UUID id;
+        private WebsiteURL website;
+        private FKITGroup group;
+
+        public UUID getId() {
+            return id;
+        }
+
+        public void setId(UUID id) {
+            this.id = id;
+        }
+
+        public WebsiteURL getWebsite() {
+            return website;
+        }
+
+        public void setWebsite(WebsiteURL website) {
+            this.website = website;
+        }
+
+        public FKITGroup getGroup() {
+            return group;
+        }
+
+        public void setGroup(FKITGroup group) {
+            this.group = group;
+        }
     }
 }

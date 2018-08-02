@@ -43,4 +43,7 @@ public class PostService {
         Optional<Post> post = repository.findById(UUID.fromString(id));
         return post.orElse(null);
     }
+    public void deletePost(UUID id){
+        repository.deleteById(id);
+    }
 }

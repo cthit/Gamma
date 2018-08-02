@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.GroupWebsite;
+import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,10 @@ public class GroupWebsiteService {
     }
     public List<GroupWebsite> getWebsites(FKITGroup group){
         return repository.findAllByGroup(group);
+    }
+
+    public GroupWebsite getGroupWebsiteByWebsite(Website website){
+        return repository.findByWebsite_Website(website);
     }
 
 }
