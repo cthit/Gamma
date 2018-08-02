@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.repository.UserWebsiteRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,5 +41,8 @@ public class UserWebsiteService {
     public UserWebsite getUserWebsiteByWebsite(Website website){
         return repository.findByWebsite(website);
     }
-
+    @Transactional
+    public void deleteWebsitesConnectedToGroup(ITUser user){
+        repository.deleteAllByItUser(user);
+    }
 }

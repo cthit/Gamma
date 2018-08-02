@@ -325,7 +325,7 @@ public class FKITGroup {
             return websites;
         }
         @JsonProperty("websites")
-        public List<Website.WebsiteView> getWebsitesOrdered(){     // TODO CHECK IF THIS WORKS.
+        public List<Website.WebsiteView> getWebsitesOrdered(){
             String[] properties = {"id", "name", "prettyName"};
             List<String> props = new ArrayList<>(Arrays.asList(properties));
             List<Website> websiteTypes = new ArrayList<>();

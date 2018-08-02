@@ -243,9 +243,10 @@ public class AdministrationController {
         return new UserEditedResponse();
     }
 
-    @RequestMapping(value = "/users/{cid}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUser(@PathVariable("cid") String cid){
-        itUserService.removeUser(cid);
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
+        userWebsiteService.deleteWebsitesConnectedToGroup(itUserService.getUserById(UUID.fromString(id)));
+        itUserService.removeUser(UUID.fromString(id));
         return new UserDeletedResponse();
     }
 

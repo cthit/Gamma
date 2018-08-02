@@ -2,6 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
@@ -9,6 +10,7 @@ import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -31,15 +36,17 @@ public class ITUserController {
     private final WhitelistService whitelistService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserWebsiteService userWebsiteService;
 
     public ITUserController(ITUserService itUserService, ActivationCodeService activationCodeService,
                             WhitelistService whitelistService, AuthenticationManager authenticationManager,
-                            JwtTokenProvider jwtTokenProvider) {
+                            JwtTokenProvider jwtTokenProvider, UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userWebsiteService = userWebsiteService;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -118,9 +125,14 @@ public class ITUserController {
         }
         return new MinifiedUsersResponse(minifiedITUsers);
     }
-    @RequestMapping(value = "/{user}", method = RequestMethod.GET)
-    public ResponseEntity<ITUser> getUser(@PathVariable("user") String user){
-        return new GetUserResponse(itUserService.loadUser(user));
+    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
+    public ResponseEntity<ITUser.ITUserView> getUser(@PathVariable("cid") String cid){
+        String[] properties = {"id", "cid", "nick", "firstName", "lastName", "email", "phone", "language", "avatarURL", "acceptanceYear"};
+        List<String> props = new ArrayList<>(Arrays.asList(properties));
+        ITUser user = itUserService.loadUser(cid);
+        ITUser.ITUserView view = user.getView(props);
+        view.setWebsites(userWebsiteService.getWebsites(user));
+        return new UsersViewResponse(view);
     }
 
     //TODO I DON'T EVEN FUCKING KNOW AT THIS POINT:::::::::::::::

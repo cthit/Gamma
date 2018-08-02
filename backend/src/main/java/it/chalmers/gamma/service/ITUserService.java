@@ -78,6 +78,9 @@ public class ITUserService implements UserDetailsService{
     public void removeUser(String cid){
         itUserRepository.delete(itUserRepository.findByCid(cid));
     }
+    public void removeUser(UUID id){
+        itUserRepository.deleteById(id);
+    }
 
     public void editUser(String user, String nick, String firstName, String lastName, String email, String phone, Language language, String avatarUrl) {
         ITUser itUser = itUserRepository.findByCid(user);
