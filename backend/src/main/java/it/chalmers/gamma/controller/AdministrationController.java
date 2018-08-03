@@ -29,11 +29,13 @@ public class AdministrationController {
     private UserWebsiteService userWebsiteService;
     private MailSenderService mailSenderService;
     private PasswordResetService passwordResetService;
+    private WebsiteURLService websiteURLService;
 
     AdministrationController(ITUserService itUserService, WhitelistService whitelistService,
                              FKITService fkitService, MembershipService membershipService, PostService postService,
                              WebsiteService websiteService, GroupWebsiteService groupWebsiteService, ActivationCodeService activationCodeService,
-                             UserWebsiteService userWebsiteService, MailSenderService mailSenderService, PasswordResetService passwordResetService) {
+                             UserWebsiteService userWebsiteService, MailSenderService mailSenderService, PasswordResetService passwordResetService,
+                             WebsiteURLService websiteURLService) {
         this.itUserService = itUserService;
         this.whitelistService = whitelistService;
         this.fkitService = fkitService;
@@ -45,6 +47,7 @@ public class AdministrationController {
         this.userWebsiteService = userWebsiteService;
         this.mailSenderService = mailSenderService;
         this.passwordResetService = passwordResetService;
+        this.websiteURLService = websiteURLService;
     }
 
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -376,6 +379,8 @@ public class AdministrationController {
     }
     @RequestMapping(value = "/websites/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteWebsite(@PathVariable("id") String id){
+        groupWebsiteService.deleteGroupWebsiteByWebsite(websiteService.getWebsiteById(id));
+        userWebsiteService.deleteUserWebsiteByWebsite(websiteService.getWebsiteById(id));
         websiteService.deleteWebsite(id);
         return new WebsiteDeletedResponse();
     }

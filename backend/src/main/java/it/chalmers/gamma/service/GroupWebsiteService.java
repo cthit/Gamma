@@ -34,6 +34,10 @@ public class GroupWebsiteService {
             repository.save(groupWebsite);
         }
     }
+    @Transactional
+    public void deleteGroupWebsiteByWebsite(Website website){
+        repository.deleteAllByWebsite_Website(website);
+    }
     public List<GroupWebsite> getAllGroupWebsites(){
         return repository.findAll();
     }

@@ -14,4 +14,5 @@ public interface UserWebsiteRepository extends JpaRepository<UserWebsite, UUID> 
     List<UserWebsite> findAllByItUser(ITUser user);
     UserWebsite findByWebsite(Website website);
     void deleteAllByItUser(ITUser user);
+    void deleteAllByWebsite_Website(Website website);
 }

@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.repository.UserWebsiteRepository;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -44,5 +45,9 @@ public class UserWebsiteService {
     @Transactional
     public void deleteWebsitesConnectedToGroup(ITUser user){
         repository.deleteAllByItUser(user);
+    }
+    @Transactional
+    public void deleteUserWebsiteByWebsite(Website website){
+        repository.deleteAllByWebsite_Website(website);
     }
 }
