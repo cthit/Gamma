@@ -9,14 +9,15 @@ const GammaButton = ({
   secondary,
   raised,
   disabled,
-  submit
+  submit,
+  outline
 }) => (
   <Button
     type={submit ? "submit" : "button"}
     onClick={onClick}
     disabled={disabled}
     color={primary ? "primary" : secondary ? "secondary" : "default"}
-    variant={raised ? "contained" : "flat"}
+    variant={raised ? "contained" : outline ? "outlined" : "flat"}
   >
     {text}
   </Button>

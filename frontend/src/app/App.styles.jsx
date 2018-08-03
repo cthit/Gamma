@@ -63,7 +63,3 @@ export const StyledMain = styled.main`
     width: calc(100vw - 241px);
   }
 `;
-
-export const Hide = styled(Fill)`
-  display: ${props => (props.hidden ? "none" : "inherit")};
-`;

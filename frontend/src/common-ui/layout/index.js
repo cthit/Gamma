@@ -10,6 +10,11 @@ export const Fill = styled.div`
   padding: 0px;
 `;
 
+export const VerticalFill = styled(Fill)`
+  flex-direction: row;
+  align-items: center;
+`;
+
 export const MarginTop = Fill.extend`
   margin: 8px;
 `;
@@ -44,4 +49,30 @@ export const Center = styled.div`
   grid-template-rows: auto;
   justify-content: center;
   align-content: center;
+`;
+
+export const HideFill = styled(Fill)`
+  display: ${props => (props.hidden ? "none" : "inherit")};
+`;
+
+export const Hide = styled.div`
+  display: ${props => (props.hidden ? "none" : "inherit")};
+`;
+
+export const Size = styled.div`
+  display: flex;
+
+  width: ${props => (props.absWidth != null ? props.absWidth : props.width)};
+  height: ${props =>
+    props.absHeight != null ? props.absHeight : props.height};
+
+  max-width: ${props =>
+    props.absWidth != null ? props.absWidth : props.maxWidth};
+  max-height: ${props =>
+    props.absHeight != null ? props.absHeight : props.maxHeight};
+
+  min-width: ${props =>
+    props.absWidth != null ? props.absWidth : props.minWidth};
+  min-height: ${props =>
+    props.absHeight != null ? props.absHeight : props.minHeight};
 `;

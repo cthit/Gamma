@@ -35,10 +35,12 @@ export function usersLoad() {
 }
 
 export function usersChange(user, cid) {
+  console.log("Hej");
+  console.log(user);
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .put("http://localhost:8081/admin/users/" + cid, {
+        .put("http://localhost:8081/admin/users/" + cid, user, {
           headers: {
             Authorization: "Bearer " + token()
           }

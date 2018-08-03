@@ -2,11 +2,9 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
-import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
@@ -20,12 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -134,6 +130,8 @@ public class ITUserController {
         view.setWebsites(userWebsiteService.getWebsites(user));
         return new UsersViewResponse(view);
     }
+
+    
 
     //TODO I DON'T EVEN FUCKING KNOW AT THIS POINT:::::::::::::::
   /*  @RequestMapping(value = "/{user}", method = RequestMethod.PUT)

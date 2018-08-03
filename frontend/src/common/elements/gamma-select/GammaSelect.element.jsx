@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, InputLabel, MenuItem } from "@material-ui/core";
+import { FormControl, Input, InputLabel, MenuItem } from "@material-ui/core";
 
 import { StyledFormControl, StyledSelect } from "./GammaSelect.element.styles";
 
 import GammaLowerLabel from "../gamma-lower-label";
 
 import generateId from "../../utils/generators/id.generator";
+import { Fill } from "../../../common-ui/layout";
 
 const GammaSelect = ({
   value,
@@ -20,36 +21,38 @@ const GammaSelect = ({
   reverse,
   inputProps
 }) => (
-  <StyledFormControl>
-    <InputLabel>{upperLabel}</InputLabel>
-    <StyledSelect
-      onChange={onChange}
-      disabled={disabled}
-      displayEmpty={allowToChooseNone}
-      value={value}
-      inputProps={{
-        id: "id-" + name,
-        name: name,
-        ...inputProps
-      }}
-    >
-      {allowToChooseNone ? (
-        <MenuItem value="" name="Nothing">
-          {""}
-        </MenuItem>
-      ) : null}
-
-      {_getValues(valueToTextMap, reverse).map(value => {
-        const text = valueToTextMap[value];
-        return (
-          <MenuItem name={value} key={value} value={value}>
-            {text}
+  <Fill>
+    <StyledFormControl>
+      <InputLabel>{upperLabel}</InputLabel>
+      <StyledSelect
+        onChange={onChange}
+        disabled={disabled}
+        displayEmpty={allowToChooseNone}
+        value={value}
+        inputProps={{
+          id: "id-" + name,
+          name: name,
+          ...inputProps
+        }}
+      >
+        {allowToChooseNone ? (
+          <MenuItem value="" name="Nothing">
+            {""}
           </MenuItem>
-        );
-      })}
-    </StyledSelect>
-    <GammaLowerLabel text={lowerLabel} />
-  </StyledFormControl>
+        ) : null}
+
+        {_getValues(valueToTextMap, reverse).map(value => {
+          const text = valueToTextMap[value];
+          return (
+            <MenuItem name={value} key={value} value={value}>
+              {text}
+            </MenuItem>
+          );
+        })}
+      </StyledSelect>
+      <GammaLowerLabel text={lowerLabel} />
+    </StyledFormControl>
+  </Fill>
 );
 
 function _getValues(valueToTextMap, reverse) {

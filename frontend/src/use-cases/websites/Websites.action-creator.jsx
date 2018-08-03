@@ -150,7 +150,7 @@ function websitesDeleteFailed(error) {
 
 function websitesChangeSuccessfully() {
   return {
-    type: WEBSITES_DELETE_SUCCESSFULLY,
+    type: WEBSITES_CHANGE_SUCCESSFULLY,
     error: false
   };
 }

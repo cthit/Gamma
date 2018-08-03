@@ -5,7 +5,7 @@ import { Center } from "../../../../common-ui/layout";
 import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditWebsiteDetails.screen.translations.json";
 
-const EditWebsiteDetails = ({ website }) => (
+const EditWebsiteDetails = ({ website, websiteId, websitesChange }) => (
   <GammaTranslations
     translations={translations}
     uniquePath="Websites.Screen.WebsiteForm"
@@ -14,7 +14,13 @@ const EditWebsiteDetails = ({ website }) => (
         <WebsiteForm
           initialValues={website}
           onSubmit={(values, actions) => {
-            console.log(values);
+            websitesChange(
+              {
+                name: values.name,
+                prettyName: values.prettyName
+              },
+              websiteId
+            ).then(response => {});
           }}
           titleText={text.EditWebsite}
           submitText={text.SaveWebsite}

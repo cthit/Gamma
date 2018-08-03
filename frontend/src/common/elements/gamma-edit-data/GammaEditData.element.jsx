@@ -5,11 +5,14 @@ import {
   GammaCard,
   GammaCardTitle,
   GammaCardButtons,
-  GammaCardBody
+  GammaCardBody,
+  GammaCardSubTitle
 } from "../../../common-ui/design";
 import GammaFormField from "../gamma-form-field";
+import GammaFormFieldArray from "../gamma-form-field-array";
 import GammaButton from "../gamma-button";
 import IfElseRendering from "../../declaratives/if-else-rendering";
+import { FieldArray } from "formik";
 const GammaEditData = ({
   initialValues,
   validationSchema,
@@ -26,24 +29,41 @@ const GammaEditData = ({
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={onSubmit}
-        render={({ errors, touched }) => (
+        render={({ isSubmitting, isValid }) => (
           <GammaCard minWidth="300px" maxWidth="600px">
             <GammaCardTitle text={titleText} />
             <GammaCardBody>
               {keysOrder.map(key => {
                 const keyComponentData = keysComponentData[key];
-                return (
-                  <GammaFormField
-                    key={key}
-                    name={key}
-                    component={keyComponentData.component}
-                    componentProps={keyComponentData.componentProps}
-                  />
-                );
+                if (keyComponentData.array == null || !keyComponentData.array) {
+                  return (
+                    <GammaFormField
+                      key={key}
+                      name={key}
+                      component={keyComponentData.component}
+                      componentProps={keyComponentData.componentProps}
+                    />
+                  );
+                } else {
+                  return (
+                    <GammaFormFieldArray
+                      key={key}
+                      name={key}
+                      component={keyComponentData.component}
+                      componentProps={keyComponentData.componentProps}
+                    />
+                  );
+                }
               })}
             </GammaCardBody>
             <GammaCardButtons reverseDirection>
-              <GammaButton submit text={submitText} raised primary />
+              <GammaButton
+                disabled={isSubmitting || !isValid}
+                submit
+                text={submitText}
+                raised
+                primary
+              />
             </GammaCardButtons>
           </GammaCard>
         )}

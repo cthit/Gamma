@@ -12,7 +12,7 @@ public class EditITUserRequest {
     private String phone;
     private Language language;
     private String avatarUrl;
-    private List<CreateGroupRequest.WebsiteInfo> website;
+    private List<CreateGroupRequest.WebsiteInfo> websites;
 
     public void setNick(String nick) {
         this.nick = nick;
@@ -42,12 +42,12 @@ public class EditITUserRequest {
         this.avatarUrl = avatarUrl;
     }
 
-    public List<CreateGroupRequest.WebsiteInfo> getWebsite() {
-        return website;
+    public List<CreateGroupRequest.WebsiteInfo> getWebsites() {
+        return websites;
     }
 
-    public void setWebsite(List<CreateGroupRequest.WebsiteInfo> website) {
-        this.website = website;
+    public void setWebsites(List<CreateGroupRequest.WebsiteInfo> websites) {
+        this.websites = websites;
     }
 
     public String getNick() {

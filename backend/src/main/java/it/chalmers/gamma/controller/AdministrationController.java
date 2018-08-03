@@ -219,7 +219,7 @@ public class AdministrationController {
         itUserService.editUser(cid, request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
                 request.getPhone(), request.getLanguage(), request.getAvatarUrl());
         ITUser user = itUserService.loadUser(cid);
-        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsite();
+        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         List<UserWebsite> userWebsite = userWebsiteService.getWebsites(user);
         for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){

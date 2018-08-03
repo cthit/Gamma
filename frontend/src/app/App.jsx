@@ -13,8 +13,7 @@ import {
   StyledMain,
   StyledToolbar,
   HorizontalFill,
-  GammaTitle,
-  Hide
+  GammaTitle
 } from "./App.styles";
 
 import appTranslations from "./App.translations.json";
@@ -39,7 +38,14 @@ import ActivationCodes from "../use-cases/activation-codes";
 
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
-import { Padding, Spacing, Fill, Center } from "../common-ui/layout";
+import {
+  Padding,
+  Spacing,
+  Fill,
+  Center,
+  Hide,
+  HideFill
+} from "../common-ui/layout";
 import { ProvidersForApp } from "./ProvidersForApp";
 import IfElseRendering from "../common/declaratives/if-else-rendering";
 import GammaLinearProgress from "../common/elements/gamma-linear-progress";
@@ -225,9 +231,9 @@ export class App extends Component {
             <GammaDialog />
             <GammaToast />
 
-            <Hide hidden={!loading}>
+            <HideFill hidden={!loading}>
               <GammaLoading />
-            </Hide>
+            </HideFill>
 
             <Route
               render={props => {
@@ -236,7 +242,7 @@ export class App extends Component {
               }}
             />
 
-            <Hide hidden={loading}>
+            <HideFill hidden={loading}>
               <Padding>
                 <Switch>
                   <Route path="/home" component={Home} />
@@ -261,7 +267,7 @@ export class App extends Component {
                   />
                 </Switch>
               </Padding>
-            </Hide>
+            </HideFill>
           </StyledMain>
         </StyledRoot>
       </BrowserRouter>

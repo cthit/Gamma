@@ -11,7 +11,8 @@ import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaSelect from "../../../../../common/elements/gamma-select";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import GammaTranslations from "../../../../../common/declaratives/gamma-translations";
-import translations from "../../../../../common/declaratives/gamma-translations";
+import EditWebsites from "../../../../../common/views/edit-websites";
+import translations from "./UserForm.view.translations.json";
 
 function _getCurrentYear() {
   return new Date().getFullYear() + "";
@@ -28,7 +29,13 @@ function _generateAcceptanceYears() {
   return output;
 }
 
-const UserForm = ({ initialValues, onSubmit, titleText, submitText }) => (
+const UserForm = ({
+  initialValues,
+  onSubmit,
+  titleText,
+  submitText,
+  availableWebsites
+}) => (
   <GammaTranslations
     translations={translations}
     uniquePath="Users.Screen.CommonViews.UserForm"
@@ -41,13 +48,21 @@ const UserForm = ({ initialValues, onSubmit, titleText, submitText }) => (
           onSubmit(values, actions);
         }}
         validationSchema={yup.object().shape({
-          firstName: yup.string().required(),
-          lastName: yup.string().required(),
-          nick: yup.string().required(),
-          email: yup.string().required(),
-          acceptanceYear: yup.string().required()
+          firstName: yup.string().required(text.FieldRequired),
+          lastName: yup.string().required(text.FieldRequired),
+          nick: yup.string().required(text.FieldRequired),
+          email: yup.string().required(text.FieldRequired),
+          acceptanceYear: yup.string().required(text.FieldRequired),
+          websites: yup.array().of(yup.object())
         })}
-        keysOrder={["firstName", "lastName", "nick", "email", "acceptanceYear"]}
+        keysOrder={[
+          "firstName",
+          "lastName",
+          "nick",
+          "email",
+          "acceptanceYear",
+          "websites"
+        ]}
         keysComponentData={{
           firstName: {
             component: GammaTextField,
@@ -80,6 +95,13 @@ const UserForm = ({ initialValues, onSubmit, titleText, submitText }) => (
               upperLabel: text.AcceptanceYear,
               valueToTextMap: _generateAcceptanceYears(),
               reverse: true
+            }
+          },
+          websites: {
+            array: true,
+            component: EditWebsites,
+            componentProps: {
+              availableWebsites: availableWebsites
             }
           }
         }}
