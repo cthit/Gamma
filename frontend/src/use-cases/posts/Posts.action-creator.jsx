@@ -10,7 +10,9 @@ import {
   POSTS_CHANGE_SUCCESSFULLY,
   POSTS_CHANGE_FAILED,
   POSTS_DELETE_SUCCESSFULLY,
-  POSTS_DELETE_FAILED
+  POSTS_DELETE_FAILED,
+  POSTS_LOAD_USAGE_SUCCESSFULLY,
+  POSTS_LOAD_USAGE_FAILED
 } from "./Posts.actions";
 
 export function postsLoad() {
@@ -91,7 +93,28 @@ export function postsDelete(postId) {
           resolve(response);
         })
         .catch(error => {
-          dispatch(postsDeleteFailed(error));
+          dispatch(postsLoadUsageFailed(error));
+          reject(error);
+        });
+    });
+  };
+}
+
+export function postsLoadUsage(postId) {
+  return dispatch => {
+    return new Promise((resolve, reject) => {
+      axios
+        .get("http://localhost:8081/admin/posts/" + postId + "/usage", {
+          headers: {
+            Authorization: "Bearer " + token()
+          }
+        })
+        .then(response => {
+          dispatch(postsLoadUsageSuccessfully(response.data, postId));
+          resolve(response.data);
+        })
+        .catch(error => {
+          dispatch(postsLoadUsageFailed());
           reject(error);
         });
     });
@@ -156,6 +179,27 @@ function postsDeleteSuccessfully() {
 function postsDeleteFailed(error) {
   return {
     type: POSTS_DELETE_FAILED,
+    error: true,
+    payload: {
+      error: error
+    }
+  };
+}
+
+function postsLoadUsageSuccessfully(data, postId) {
+  return {
+    type: POSTS_LOAD_USAGE_SUCCESSFULLY,
+    error: false,
+    payload: {
+      data: data,
+      postId: postId
+    }
+  };
+}
+
+function postsLoadUsageFailed(error) {
+  return {
+    type: POSTS_LOAD_USAGE_FAILED,
     error: true,
     payload: {
       error: error

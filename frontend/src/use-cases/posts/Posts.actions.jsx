@@ -10,3 +10,6 @@ export const POSTS_CHANGE_FAILED = "posts_change_failed";
 
 export const POSTS_DELETE_SUCCESSFULLY = "posts_delete_successfully";
 export const POSTS_DELETE_FAILED = "posts_delete_failed";
+
+export const POSTS_LOAD_USAGE_SUCCESSFULLY = "posts_load_usage_successfully";
+export const POSTS_LOAD_USAGE_FAILED = "posts_load_usage_failed";
