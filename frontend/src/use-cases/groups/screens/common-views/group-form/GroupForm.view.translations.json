@@ -2,6 +2,7 @@
   "Group": ["Group", "Grupp"],
   "SaveGroup": ["Save group", "Spara grupp"],
   "Name": ["Name", "Namn"],
+  "PrettyName": ["Pretty name", "Pretty name"],
   "DescriptionSv": ["Description swedish", "Beskrivning svenska"],
   "DescriptionEn": ["Description english", "Beskrivning engelska"],
   "Email": ["Email", "Email"],

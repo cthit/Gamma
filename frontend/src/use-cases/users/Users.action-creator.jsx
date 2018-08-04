@@ -17,7 +17,7 @@ export function usersLoad() {
   return dispatch => {
     return new Promise((resolve, reject) => {
       axios
-        .get("http://localhost:8081/users", {
+        .get("http://localhost:8081/users/minified", {
           headers: {
             Authorization: "Bearer " + token()
           }

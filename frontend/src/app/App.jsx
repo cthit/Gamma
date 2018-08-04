@@ -35,6 +35,7 @@ import Whitelist from "../use-cases/whitelist";
 import Groups from "../use-cases/groups";
 import Websites from "../use-cases/websites";
 import ActivationCodes from "../use-cases/activation-codes";
+import Gdpr from "../use-cases/gdpr";
 
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
@@ -138,6 +139,9 @@ export class App extends Component {
           </DrawerNavigationLink>
           <DrawerNavigationLink onClick={this._closeDrawer} link="/websites">
             Websites
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/gdpr">
+            GDPR
           </DrawerNavigationLink>
           <DrawerNavigationLink
             onClick={this._closeDrawer}
@@ -255,6 +259,7 @@ export class App extends Component {
                   <Route path="/posts" component={Posts} />
                   <Route path="/websites" component={Websites} />
                   <Route path="/activation-codes" component={ActivationCodes} />
+                  <Route path="/gdpr" component={Gdpr} />
                   <Route
                     path="/"
                     render={props => (

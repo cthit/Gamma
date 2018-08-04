@@ -26,6 +26,7 @@ const GroupForm = ({ initialValues, onSubmit }) => (
         submitText={text.SaveGroup}
         validationSchema={yup.object().shape({
           name: yup.string().required(),
+          prettyName: yup.string().required(),
           description: yup
             .object()
             .shape({
@@ -47,6 +48,7 @@ const GroupForm = ({ initialValues, onSubmit }) => (
         initialValues={initialValues}
         keysOrder={[
           "name",
+          "prettyName",
           "description.sv",
           "description.en",
           "email",
@@ -59,6 +61,12 @@ const GroupForm = ({ initialValues, onSubmit }) => (
             component: GammaTextField,
             componentProps: {
               upperLabel: text.Name
+            }
+          },
+          prettyName: {
+            component: GammaTextField,
+            componentProps: {
+              upperLabel: text.PrettyName
             }
           },
           "description.sv": {
