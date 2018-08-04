@@ -27,7 +27,7 @@ public class FKITService {
         fkitGroup.setName(name.toLowerCase());
         fkitGroup.setFunc(function);
         fkitGroup.setDescription(description);
-        return saveGroup(fkitGroup, prettyName, description, email, type, function, avatarURL);
+        return saveGroup(fkitGroup, prettyName != null ? prettyName : name, description, email, type, function, avatarURL);
     }
 
     public FKITGroup editGroup(UUID id, String prettyName, Text description, String email, GroupType type, Text function, String avatarURL){ //TODO if no info, don't change value.

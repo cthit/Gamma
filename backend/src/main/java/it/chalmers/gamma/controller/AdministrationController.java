@@ -79,12 +79,12 @@ public class AdministrationController {
             return new MissingRequiredFieldResponse("function");
         }
         if (createGroupRequest.getType() == null) {
-            return new MissingRequiredFieldResponse("groupType");
+            return new MissingRequiredFieldResponse("type");
         }
         FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getPrettyName(), createGroupRequest.getDescription(),
                 createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc(), createGroupRequest.getAvatarURL());
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
-        if(websites.isEmpty()){
+        if(websites == null || websites.isEmpty()){
             return new GroupCreatedResponse();
         }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
