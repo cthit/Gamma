@@ -15,4 +15,5 @@ public interface GroupWebsiteRepository extends JpaRepository<GroupWebsite, UUID
     List<GroupWebsite> findAllByGroup(FKITGroup group);
     GroupWebsite findByWebsite_Website(Website website);
     void deleteAllByGroup(FKITGroup group);
+    void deleteAllByWebsite_Website(Website website);
 }

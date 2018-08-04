@@ -16,7 +16,7 @@ public class UserWebsite {
     private ITUser itUser;
 
     @JoinColumn(name = "website")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private WebsiteURL website;
 
     public UserWebsite(){

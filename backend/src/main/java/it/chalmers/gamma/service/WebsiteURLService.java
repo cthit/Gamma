@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.WebsiteURLRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,5 +35,9 @@ public class WebsiteURLService {
         websiteURL.setWebsite(website);
         websiteURL.setUrl(url);
         repository.save(websiteURL);
+    }
+    @Transactional
+    public void deleteAllWebsites(Website website){
+        repository.deleteAllByWebsite(website);
     }
 }
