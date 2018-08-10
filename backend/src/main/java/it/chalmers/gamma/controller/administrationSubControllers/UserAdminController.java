@@ -101,7 +101,7 @@ public class UserAdminController {
     /**
      * Administrative function that can add user without need for user to add it personally.
      */
-    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest) {
         if (itUserService.userExists(createITUserRequest.getCid())) {
             return new UserAlreadyExistsResponse();

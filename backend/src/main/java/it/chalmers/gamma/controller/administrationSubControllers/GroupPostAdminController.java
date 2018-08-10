@@ -66,11 +66,11 @@ public class GroupPostAdminController {
     public ResponseEntity<List<Post>> getPosts() {
         return new GetMultiplePostsResponse(postService.getAllPosts());
     }
-    @RequestMapping(value = "/{postId}/usage")
-    public ResponseEntity<List<FKITGroup.FKITGroupView>> getPostUsages(@PathVariable("postId") String postId){
+    @RequestMapping(value = "/{id}/usage")
+    public ResponseEntity<List<FKITGroup.FKITGroupView>> getPostUsages(@PathVariable("id") String id){
         String[] properties = {"id", "name", "prettyName"};
         List<String> props = new ArrayList<>(Arrays.asList(properties));
-        Post post = postService.getPostById(postId);
+        Post post = postService.getPostById(id);
         List<UUID> groups = membershipService.getGroupsWithPost(post);
         List<FKITGroup.FKITGroupView> groupAndUser = new ArrayList<>();
         for(UUID groupId : groups) {

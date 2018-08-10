@@ -14,6 +14,8 @@ import it.chalmers.gamma.service.PostService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/admin/groups")
 public class GroupMemberAdminController {
@@ -29,8 +31,8 @@ public class GroupMemberAdminController {
         this.membershipService = membershipService;
     }
 
-    @RequestMapping(value = "/{group}/members", method = RequestMethod.POST)
-    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request, @PathVariable("group") String group) {
+    @RequestMapping(value = "/{id}/members", method = RequestMethod.POST)
+    public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request, @PathVariable("id") String id) {
         if (!itUserService.userExists(request.getUser())) {
             return new NoCidFoundResponse();
         }
@@ -38,7 +40,7 @@ public class GroupMemberAdminController {
             return new PostDoesNotExistResponse();
         }
         ITUser user = itUserService.loadUser(request.getUser());
-        FKITGroup fkitGroup = fkitService.getGroup(group);
+        FKITGroup fkitGroup = fkitService.getGroup(UUID.fromString(id));
         Post post = postService.getPost(request.getPost());
         membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName(), request.getYear());
         return new UserAddedToGroupResponse();

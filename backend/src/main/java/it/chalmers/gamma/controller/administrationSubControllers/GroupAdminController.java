@@ -34,10 +34,10 @@ public class GroupAdminController {
         return new GroupsResponse(fkitService.getGroups());
     }
 
-    @RequestMapping(value = "/{group}/minified", method = RequestMethod.GET)
-    public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("group") String groupId){
+    @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
+    public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("id") String id){
         String[] properties = {"name", "enFunc", "svFunc", "id", "type"};
-        FKITGroup group = fkitService.getGroup(groupId);
+        FKITGroup group = fkitService.getGroup(id);
         if(group == null){
             return new GetGroupResponse(null);
         }
@@ -46,7 +46,7 @@ public class GroupAdminController {
         return new GetGroupResponse(groupView);
     }
 
-    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
         if (fkitService.groupExists(createGroupRequest.getName())) {
             return new GroupAlreadyExistsResponse();
@@ -81,11 +81,11 @@ public class GroupAdminController {
         return new GroupCreatedResponse();
     }
 
-    @RequestMapping(value = "/{groupId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("groupId") String groupId) {
-        fkitService.editGroup(UUID.fromString(groupId), request.getPrettyName(), request.getDescription(), request.getEmail(),
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editGroup(@RequestBody CreateGroupRequest request, @PathVariable("id") String id) {
+        fkitService.editGroup(UUID.fromString(id), request.getPrettyName(), request.getDescription(), request.getEmail(),
                 request.getType(), request.getFunc(), request.getAvatarURL());
-        FKITGroup group = fkitService.getGroup(UUID.fromString(groupId));
+        FKITGroup group = fkitService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         List<GroupWebsite> groupWebsite = groupWebsiteService.getWebsites(group);
@@ -110,13 +110,13 @@ public class GroupAdminController {
         return new GroupEditedResponse();
     }
 
-    @RequestMapping(value = "/{groupId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteGroup(@PathVariable("groupId") String groupId) {
-        if (!fkitService.groupExists(UUID.fromString(groupId))) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
+        if (!fkitService.groupExists(UUID.fromString(id))) {
             return new GroupDoesNotExistResponse();
         }
-        groupWebsiteService.deleteWebsitesConnectedToGroup(fkitService.getGroup(UUID.fromString(groupId)));
-        fkitService.removeGroup(UUID.fromString(groupId));
+        groupWebsiteService.deleteWebsitesConnectedToGroup(fkitService.getGroup(UUID.fromString(id)));
+        fkitService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
