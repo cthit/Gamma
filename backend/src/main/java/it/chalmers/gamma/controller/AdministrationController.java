@@ -5,6 +5,7 @@ import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
 import it.chalmers.gamma.util.TokenGenerator;
+import org.bouncycastle.LICENSE;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
@@ -228,7 +229,7 @@ public class AdministrationController {
         for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
             boolean websiteExists = false;
             Website website = websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL = null;
+            WebsiteURL websiteURL;
             for(UserWebsite duplicateCheck : userWebsite){
                 if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
                     websiteExists = true;
@@ -251,6 +252,21 @@ public class AdministrationController {
         userWebsiteService.deleteWebsitesConnectedToGroup(itUserService.getUserById(UUID.fromString(id)));
         itUserService.removeUser(UUID.fromString(id));
         return new UserDeletedResponse();
+    }
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity<List<ITUser.ITUserView>>getAllUsers(){
+        String[] properties = {"id", "cid", "nick", "firstname", "lastname", "email", "phone", "language", "avatarURL", "gdpr", "acceptanceYear"};
+        List<String> props = Arrays.asList(properties);
+        List<ITUser> users = itUserService.loadAllUsers();
+        List<ITUser.ITUserView> userViewList = new ArrayList<>();
+        for(ITUser user : users){
+            ITUser.ITUserView userView = user.getView(props);
+            List<UserWebsite> websites = userWebsiteService.getWebsites(user);
+            userView.setWebsites(websites);
+            userViewList.add(userView);
+        }
+        return new UsersViewListResponse(userViewList);
     }
 
     /**
