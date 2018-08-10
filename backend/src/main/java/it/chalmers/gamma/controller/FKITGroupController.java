@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/groups")
@@ -23,10 +24,10 @@ public class FKITGroupController {
         this.groupWebsiteService = groupWebsiteService;
     }
 
-    @RequestMapping(value = "/{group}", method = RequestMethod.GET)
-    public ResponseEntity<FKITGroup.FKITGroupView> getGroup(@PathVariable("group") String groupId){
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<FKITGroup.FKITGroupView> getGroup(@PathVariable("id") String id){
         String[] properties = {"avatarURL", "name", "prettyName", "description", "func", "email", "type"};
-        FKITGroup group = fkitService.getGroup(groupId);
+        FKITGroup group = fkitService.getGroup(UUID.fromString(id));
         if(group == null){
             return new GetGroupResponse(null);
         }

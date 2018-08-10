@@ -1,9 +1,6 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.UserWebsite;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
@@ -54,24 +51,8 @@ public class UserAdminController {
         ITUser user = itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<UserWebsite> userWebsite = userWebsiteService.getWebsites(user);
-        for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
-            boolean websiteExists = false;
-            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL;
-            for(UserWebsite duplicateCheck : userWebsite){
-                if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
-                    websiteExists = true;
-                    break;
-                }
-            }
-            if(!websiteExists) {
-                websiteURL = new WebsiteURL();
-                websiteURL.setWebsite(website);
-                websiteURL.setUrl(websiteInfo.getUrl());
-                websiteURLs.add(websiteURL);
-            }
-        }
+        List<WebsiteInterface> userWebsite = new ArrayList<>(userWebsiteService.getWebsites(user));
+        userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
         userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }

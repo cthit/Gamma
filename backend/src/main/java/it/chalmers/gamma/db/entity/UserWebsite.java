@@ -5,7 +5,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "ituser_website")
-public class UserWebsite {
+public class UserWebsite implements WebsiteInterface{
 
     @Id
     @Column(updatable = false)

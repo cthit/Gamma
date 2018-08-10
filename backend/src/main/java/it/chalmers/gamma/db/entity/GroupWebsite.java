@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fkit_group_website")
-public class GroupWebsite {
+public class GroupWebsite implements WebsiteInterface{
     @Id
     @JsonIgnore
     private UUID id;

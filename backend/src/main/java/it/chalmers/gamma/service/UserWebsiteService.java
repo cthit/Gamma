@@ -10,11 +10,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserWebsiteService {
+public class UserWebsiteService extends EntityWebsiteService{
 
     private UserWebsiteRepository repository;
 
-    public UserWebsiteService(UserWebsiteRepository repository){
+    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
+        super(websiteService);
         this.repository = repository;
     }
 

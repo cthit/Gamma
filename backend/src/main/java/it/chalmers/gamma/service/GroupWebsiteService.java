@@ -1,9 +1,6 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.GroupWebsite;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +15,12 @@ import java.util.UUID;
  */
 
 @Service
-public class GroupWebsiteService {
+public class GroupWebsiteService extends EntityWebsiteService{
 
     private GroupWebsiteRepository repository;
 
-    public GroupWebsiteService(GroupWebsiteRepository repository){
+    public GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService){
+        super(websiteService);
         this.repository = repository;
     }
 

@@ -1,9 +1,6 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.GroupWebsite;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.FKITService;
@@ -37,7 +34,7 @@ public class GroupAdminController {
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("id") String id){
         String[] properties = {"name", "enFunc", "svFunc", "id", "type"};
-        FKITGroup group = fkitService.getGroup(id);
+        FKITGroup group = fkitService.getGroup(UUID.fromString(id));
         if(group == null){
             return new GetGroupResponse(null);
         }
@@ -87,25 +84,8 @@ public class GroupAdminController {
                 request.getType(), request.getFunc(), request.getAvatarURL());
         FKITGroup group = fkitService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
-        List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<GroupWebsite> groupWebsite = groupWebsiteService.getWebsites(group);
-        for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
-            boolean websiteExists = false;
-            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL;
-            for(GroupWebsite duplicateCheck : groupWebsite){
-                if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
-                    websiteExists = true;
-                    break;
-                }
-            }
-            if(!websiteExists) {
-                websiteURL = new WebsiteURL();
-                websiteURL.setWebsite(website);
-                websiteURL.setUrl(websiteInfo.getUrl());
-                websiteURLs.add(websiteURL);
-            }
-        }
+        List<WebsiteInterface> entityWebsites = new ArrayList<>(groupWebsiteService.getWebsites(group));
+        List<WebsiteURL> websiteURLs = groupWebsiteService.addWebsiteToEntity(websiteInfos, entityWebsites);
         groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupEditedResponse();
     }
