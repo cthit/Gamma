@@ -37,7 +37,8 @@ public class WhitelistController {
     @Value("${mail.receiver.standard-postfix}")
     private String mailPostfix;
 
-    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService){
+    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService,
+                               ITUserService itUserService, MailSenderService mailSenderService){
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.itUserService = itUserService;
@@ -64,15 +65,7 @@ public class WhitelistController {
         String code = activationCode.getCode();
         String to = activationCode.getCid() + "@" + mailPostfix;
         String message = "Your code to Gamma is: " + code;
-        try {
-            MimeMessage message1 = MailSenderService.createEmail("engsmyre@gmail.com", "admin@chalmers.it", "test", "test");
-            System.out.println(message1);
-            Gmail gmail = MailSenderService.getService();
-            System.out.println(gmail);
-            MailSenderService.sendMessage(Objects.requireNonNull(gmail), "admin@chalmers.it", message1);
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace();
-        }
+        mailSenderService.sendMail(to, "Chalmers activation code", message);
     }
 }
 
