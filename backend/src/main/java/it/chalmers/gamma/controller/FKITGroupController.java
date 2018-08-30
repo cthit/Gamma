@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.response.GetGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITService;
@@ -33,7 +34,8 @@ public class FKITGroupController {
         }
         List<String> props = new ArrayList<>(Arrays.asList(properties));
         FKITGroup.FKITGroupView groupView = group.getView(props);
-        groupView.setWebsites(groupWebsiteService.getWebsites(group));
+        List<Website.WebsiteView> websiteViews = groupWebsiteService.getWebsitesOrdered(groupWebsiteService.getWebsites(group));
+        groupView.setWebsites(websiteViews);
         return new GetGroupResponse(groupView);
     }
 }

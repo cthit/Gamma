@@ -1,6 +1,8 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Website;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
@@ -127,7 +129,8 @@ public class ITUserController {
         List<String> props = new ArrayList<>(Arrays.asList(properties));
         ITUser user = itUserService.loadUser(cid);
         ITUser.ITUserView view = user.getView(props);
-        view.setWebsites(userWebsiteService.getWebsites(user));
+        List<Website.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+        view.setWebsites(websiteViews);
         return new UsersViewResponse(view);
     }
 

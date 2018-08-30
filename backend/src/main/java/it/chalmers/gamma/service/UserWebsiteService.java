@@ -6,6 +6,7 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,8 +38,9 @@ public class UserWebsiteService extends EntityWebsiteService{
     public void deleteUserWebsite(String id){
 
     }
-    public List<UserWebsite> getWebsites(ITUser user){
-        return repository.findAllByItUser(user);
+    public List<WebsiteInterface> getWebsites(ITUser user){
+        List<UserWebsite> userWebsites = repository.findAllByItUser(user);
+        return new ArrayList<>(userWebsites);
     }
     public UserWebsite getUserWebsiteByWebsite(Website website){
         return repository.findByWebsite(website);

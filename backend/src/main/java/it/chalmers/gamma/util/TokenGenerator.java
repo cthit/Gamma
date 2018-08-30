@@ -1,7 +1,5 @@
 package it.chalmers.gamma.util;
 
-import java.security.KeyStore;
-import java.util.List;
 import java.util.Random;
 
 public class TokenGenerator {

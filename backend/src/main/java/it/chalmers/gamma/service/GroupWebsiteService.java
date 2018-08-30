@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,8 +47,9 @@ public class GroupWebsiteService extends EntityWebsiteService{
     public void deleteGroupWebsite(String id){
 
     }
-    public List<GroupWebsite> getWebsites(FKITGroup group){
-        return repository.findAllByGroup(group);
+    public List<WebsiteInterface> getWebsites(FKITGroup group){
+        List<GroupWebsite> groupWebsites = repository.findAllByGroup(group);
+        return new ArrayList<>(groupWebsites);
     }
 
     public GroupWebsite getGroupWebsiteByWebsite(Website website){

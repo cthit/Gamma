@@ -136,5 +136,15 @@ public class Website {
         public void setUrl(List<String> url) {
             this.url = url;
         }
+
+        @Override
+        public String toString() {
+            return "WebsiteView{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", prettyName='" + prettyName + '\'' +
+                    ", url=" + url +
+                    '}';
+        }
     }
 }

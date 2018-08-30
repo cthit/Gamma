@@ -224,7 +224,7 @@ public class FKITGroup {
         private Text func;
         private String email;
         private GroupType type;
-        private List<GroupWebsite> websites;
+        private List<Website.WebsiteView> websites;
         private List<ITUser> users;
 
         public Text getDescription() {
@@ -320,37 +320,11 @@ public class FKITGroup {
         public void setType(GroupType type) {
             this.type = type;
         }
-        @JsonIgnore
-        public List<GroupWebsite> getWebsites() {
+
+        public List<Website.WebsiteView> getWebsites() {
             return websites;
         }
-        @JsonProperty("websites")
-        public List<Website.WebsiteView> getWebsitesOrdered(){
-            String[] properties = {"id", "name", "prettyName"};
-            List<String> props = new ArrayList<>(Arrays.asList(properties));
-            List<Website> websiteTypes = new ArrayList<>();
-            List<Website.WebsiteView> groupedWebsites = new ArrayList<>();
-
-            for(GroupWebsite website : websites){       //loops through all websites added to group.
-                boolean websiteFound = false;
-                for(int y = 0; y < websiteTypes.size(); y++){   //loops through all added website types.
-                    if(websiteTypes.get(y).equals(website.getWebsite().getWebsite())){  // checks if the website has been added to found types.
-                        groupedWebsites.get(y).getUrl().add(website.getWebsite().getUrl()); // if website has been found before the url is added to a list of websites connected to that.
-                        websiteFound = true;
-                    }
-                }
-                if(!websiteFound) {
-                    websiteTypes.add(website.getWebsite().getWebsite());    // if the websitetype is not found, it is added.
-                    Website.WebsiteView newGroup = website.getWebsite().getWebsite().getView(props);
-                    newGroup.setUrl(new ArrayList<>());
-                    newGroup.getUrl().add(website.getWebsite().getUrl());
-                    groupedWebsites.add(newGroup);
-                }
-            }
-            return groupedWebsites;
-        }
-
-        public void setWebsites(List<GroupWebsite> websites) {
+        public void setWebsites(List<Website.WebsiteView> websites) {
             this.websites = websites;
         }
         public void setUsers(List<ITUser> users){

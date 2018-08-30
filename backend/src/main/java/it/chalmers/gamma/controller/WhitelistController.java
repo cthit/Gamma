@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller;
 
+import com.google.api.services.gmail.Gmail;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -33,7 +37,7 @@ public class WhitelistController {
     @Value("${mail.receiver.standard-postfix}")
     private String mailPostfix;
 
-    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService, MailSenderService mailSenderService){
+    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService, ITUserService itUserService){
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.itUserService = itUserService;
@@ -50,7 +54,7 @@ public class WhitelistController {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-            //sendEmail(activationCode);
+            sendEmail(activationCode);
             return new WhitelistAddedResponse();
         }
         else
@@ -61,8 +65,12 @@ public class WhitelistController {
         String to = activationCode.getCid() + "@" + mailPostfix;
         String message = "Your code to Gamma is: " + code;
         try {
-            mailSenderService.sendMessage(to, "login code", message);
-        } catch (MessagingException e) {
+            MimeMessage message1 = MailSenderService.createEmail("engsmyre@gmail.com", "admin@chalmers.it", "test", "test");
+            System.out.println(message1);
+            Gmail gmail = MailSenderService.getService();
+            System.out.println(gmail);
+            MailSenderService.sendMessage(Objects.requireNonNull(gmail), "admin@chalmers.it", message1);
+        } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
     }

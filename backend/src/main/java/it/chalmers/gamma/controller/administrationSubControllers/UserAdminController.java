@@ -21,16 +21,12 @@ public class UserAdminController {
 
     private ITUserService itUserService;
     private UserWebsiteService userWebsiteService;
-    private WebsiteService websiteService;
     private PasswordResetService passwordResetService;
-    private MailSenderService mailSenderService;
 
-    private UserAdminController(ITUserService itUserService, UserWebsiteService userWebsiteService, WebsiteService websiteService, PasswordResetService passwordResetService, MailSenderService mailSenderService){
+    private UserAdminController(ITUserService itUserService, UserWebsiteService userWebsiteService, WebsiteService websiteService, PasswordResetService passwordResetService){
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
-        this.websiteService = websiteService;
         this.passwordResetService = passwordResetService;
-        this.mailSenderService = mailSenderService;
     }
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
@@ -72,8 +68,8 @@ public class UserAdminController {
         List<ITUser.ITUserView> userViewList = new ArrayList<>();
         for(ITUser user : users){
             ITUser.ITUserView userView = user.getView(props);
-            List<UserWebsite> websites = userWebsiteService.getWebsites(user);
-            userView.setWebsites(websites);
+            List<Website.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+            userView.setWebsites(websiteViews);
             userViewList.add(userView);
         }
         return new UsersViewListResponse(userViewList);
@@ -105,11 +101,11 @@ public class UserAdminController {
         else {
             passwordResetService.addToken(user, token);
         }
-        try {
-            mailSenderService.sendPasswordReset(user, token);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+  //      try {
+       //     mailSenderService.sendPasswordReset(user, token);
+      //  } catch (MessagingException e) {
+        //    e.printStackTrace();
+       // }
         return new PasswordResetResponse();
     }
     @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
