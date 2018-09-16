@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import com.google.api.services.gmail.Gmail;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
@@ -16,11 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -48,18 +42,19 @@ public class WhitelistController {
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
     public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
-        if(itUserService.userExists(cid.getCid())){
-            return new WhitelistAddedResponse();
-        }
         if(whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
-            return new WhitelistAddedResponse();
         }
-        else
-            return new WhitelistAddedResponse();
+
+        /*
+        We always want to send the same response, for security reasons.
+        If the responses would vary, brute force attacks could be made
+        to find out real CID values.
+         */
+        return new WhitelistAddedResponse();
     }
     private void sendEmail(ActivationCode activationCode){
         String code = activationCode.getCode();
