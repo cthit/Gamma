@@ -1,11 +1,13 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
 import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,15 +34,14 @@ public class GroupAdminController {
     }
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
-    public ResponseEntity<FKITGroup.FKITGroupView> getGroupMinified(@PathVariable("id") String id){
-        String[] properties = {"name", "enFunc", "svFunc", "id", "type"};
+    public JSONObject getGroupMinified(@PathVariable("id") String id){
+        List<FKITGroupSerializer.Properties> properties = FKITGroupSerializer.Properties.getAllProperties();
         FKITGroup group = fkitService.getGroup(UUID.fromString(id));
         if(group == null){
-            return new GetGroupResponse(null);
+            return null;
         }
-        List<String> props = new ArrayList<>(Arrays.asList(properties));
-        FKITGroup.FKITGroupView groupView = group.getView(props);
-        return new GetGroupResponse(groupView);
+        FKITGroupSerializer serializer = new FKITGroupSerializer(properties, null, null);
+        return serializer.serialize(group);
     }
 
     @RequestMapping(method = RequestMethod.POST)

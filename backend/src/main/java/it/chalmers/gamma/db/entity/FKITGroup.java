@@ -59,6 +59,7 @@ public class FKITGroup {
     public void setName(String name) {
         this.name = name;
     }
+
     public Text getDescription() {
         return description;
     }
@@ -98,6 +99,7 @@ public class FKITGroup {
     public void setFunc(Text func) {
         this.func = func;
     }
+
     @JsonIgnore
     public String getSVFunction() {
         return func.getSv();
@@ -106,6 +108,7 @@ public class FKITGroup {
     public void setSVFunction(String function) {
         this.func.setSv(function);
     }
+
     @JsonIgnore
     public String getENFunction() {
         return func.getEn();
@@ -114,12 +117,14 @@ public class FKITGroup {
     public void setENFunction(String function) {
         this.func.setEn(function);
     }
+
     public String getPrettyName() {
         return prettyName;
     }
+
     @JsonIgnore
     public String getSVDescription() {
-        if(description == null){
+        if (description == null) {
             return null;
         }
         return description.getSv();
@@ -128,9 +133,10 @@ public class FKITGroup {
     public void setSVDescription(String description) {
         this.description.setSv(description);
     }
+
     @JsonIgnore
     public String getENDescription() {
-        if(description == null){
+        if (description == null) {
             return null;
         }
         return description.getEn();
@@ -178,161 +184,4 @@ public class FKITGroup {
 
         return Objects.hash(id, avatarURL, name, prettyName, description, func, email, type);
     }
-
-    public FKITGroupView getView(List<String> props) {
-        FKITGroupView view = new FKITGroupView();
-        view.func = new Text();
-        view.description = new Text();
-        for (String prop : props) {
-            switch (prop) {
-                case "id":
-                    view.id = this.id;
-                    break;
-                case "avatarURL":
-                    view.avatarURL = this.avatarURL;
-                    break;
-                case "name":
-                    view.name = this.name;
-                    break;
-                case "prettyName":
-                    view.prettyName = this.prettyName;
-                    break;
-                case "description":
-                    view.description = this.description;
-                    break;
-                case "func":
-                    view.func = this.func;
-                    break;
-                case "email":
-                    view.email = this.email;
-                    break;
-                case "type":
-                    view.type = this.type;
-                    break;
-            }
-        }
-        return view;
-    }
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public class FKITGroupView{
-
-        private UUID id;
-        private String avatarURL;
-        private String name;
-        private String prettyName;
-        private Text description;
-        private Text func;
-        private String email;
-        private GroupType type;
-        private List<Website.WebsiteView> websites;
-        private List<ITUser> users;
-
-        public Text getDescription() {
-            return description;
-        }
-
-        public Text getFunc() {
-            return func;
-        }
-
-        public String getSVDescription() {
-            if(description == null){
-                return null;
-            }
-            return description.getSv();
-        }
-
-        public void setSVDescription(String description) {
-            this.description.setSv(description);
-        }
-
-        public String getENDescription() {
-            if(description == null){
-                return null;
-            }
-            return description.getEn();
-        }
-
-        public void setENDescription(String description) {
-            this.description.setEn(description);
-        }
-        @JsonIgnore
-        public String getSVFunction() {
-            return func.getSv();
-        }
-
-        public void setSVFunction(String function) {
-            this.func.setSv(function);
-        }
-        @JsonIgnore
-        public String getENFunction() {
-            return func.getEn();
-        }
-
-        public void setENFunction(String function) {
-            this.func.setEn(function);
-        }
-
-        public UUID getId() {
-            return id;
-        }
-
-        public void setId(UUID id) {
-            this.id = id;
-        }
-
-        public String getAvatarURL() {
-            return avatarURL;
-        }
-
-        public void setAvatarURL(String avatarURL) {
-            this.avatarURL = avatarURL;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPrettyName() {
-            return prettyName;
-        }
-
-        public void setPrettyName(String prettyName) {
-            this.prettyName = prettyName;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public GroupType getType() {
-            return type;
-        }
-
-        public void setType(GroupType type) {
-            this.type = type;
-        }
-
-        public List<Website.WebsiteView> getWebsites() {
-            return websites;
-        }
-        public void setWebsites(List<Website.WebsiteView> websites) {
-            this.websites = websites;
-        }
-        public void setUsers(List<ITUser> users){
-            this.users = users;
-        }
-        public List<ITUser> getUsers(){
-            return users;
-        }
-    }
-
 }

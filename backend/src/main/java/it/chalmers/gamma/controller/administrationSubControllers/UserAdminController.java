@@ -60,7 +60,7 @@ public class UserAdminController {
         return new UserDeletedResponse();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+/*    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ITUser.ITUserView>>getAllUsers(){
         String[] properties = {"id", "cid", "nick", "firstname", "lastname", "email", "phone", "language", "avatarURL", "gdpr", "acceptanceYear"};
         List<String> props = Arrays.asList(properties);
@@ -73,7 +73,7 @@ public class UserAdminController {
             userViewList.add(userView);
         }
         return new UsersViewListResponse(userViewList);
-    }
+    }*/
 
     /**
      * Administrative function that can add user without need for user to add it personally.

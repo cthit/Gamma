@@ -4,12 +4,14 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.requests.AddPostRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,13 +68,11 @@ public class GroupPostAdminController {
     public ResponseEntity<List<Post>> getPosts() {
         return new GetMultiplePostsResponse(postService.getAllPosts());
     }
-    @RequestMapping(value = "/{id}/usage")
-    public ResponseEntity<List<FKITGroup.FKITGroupView>> getPostUsages(@PathVariable("id") String id){
-        String[] properties = {"id", "name", "prettyName"};
-        List<String> props = new ArrayList<>(Arrays.asList(properties));
+ /*   @RequestMapping(value = "/{id}/usage")
+    public List<JSONObject> getPostUsages(@PathVariable("id") String id){
+        List<FKITGroupSerializer.Properties> properties = FKITGroupSerializer.Properties.getAllProperties();
         Post post = postService.getPostById(id);
         List<UUID> groups = membershipService.getGroupsWithPost(post);
-        List<FKITGroup.FKITGroupView> groupAndUser = new ArrayList<>();
         for(UUID groupId : groups) {
             FKITGroup group = fkitService.getGroup(groupId);
             FKITGroup.FKITGroupView groupView = group.getView(props);
@@ -85,5 +85,5 @@ public class GroupPostAdminController {
             groupAndUser.add(groupView);
         }
         return new PostUsageResponse(groupAndUser);
-    }
+    }*/
 }

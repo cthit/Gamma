@@ -27,7 +27,7 @@ public class Website {
         id = UUID.randomUUID();
     }
 
-    public Website(String name){
+    public Website(String name) {
         this.name = name;
     }
 
@@ -76,75 +76,5 @@ public class Website {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
-    }
-    public WebsiteView getView(List<String> websites){
-        WebsiteView view = new WebsiteView();
-        for(String website : websites) {
-            switch (website){
-                case "id":
-                    view.setId(this.id);
-                    break;
-                case "name":
-                    view.setName(this.name);
-                    break;
-                case "prettyName":
-                    view.setPrettyName(this.prettyName);
-                    break;
-            }
-        }
-        return view;
-    }
-    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    public class WebsiteView{
-        private UUID id;
-        private String name;
-        private String prettyName;
-        private List<String> url;
-
-        private WebsiteView(){
-
-        }
-
-        public UUID getId() {
-            return id;
-        }
-
-        public void setId(UUID id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPrettyName() {
-            return prettyName;
-        }
-
-        public void setPrettyName(String prettyName) {
-            this.prettyName = prettyName;
-        }
-
-        public List<String> getUrl() {
-            return url;
-        }
-
-        public void setUrl(List<String> url) {
-            this.url = url;
-        }
-
-        @Override
-        public String toString() {
-            return "WebsiteView{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", prettyName='" + prettyName + '\'' +
-                    ", url=" + url +
-                    '}';
-        }
     }
 }

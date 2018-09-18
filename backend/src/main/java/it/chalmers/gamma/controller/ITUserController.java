@@ -123,7 +123,7 @@ public class ITUserController {
         }
         return new MinifiedUsersResponse(minifiedITUsers);
     }
-    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
+/*    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
     public ResponseEntity<ITUser.ITUserView> getUser(@PathVariable("cid") String cid){
         String[] properties = {"id", "cid", "nick", "firstName", "lastName", "email", "phone", "language", "avatarURL", "acceptanceYear"};
         List<String> props = new ArrayList<>(Arrays.asList(properties));
@@ -132,7 +132,7 @@ public class ITUserController {
         List<Website.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
         view.setWebsites(websiteViews);
         return new UsersViewResponse(view);
-    }
+    }*/
 
     
 

@@ -17,22 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
-@PropertySource("classpath:development.properties")
 @PropertySource("classpath:secrets.properties")
 @Service
 public class MailSenderService{
-
-    @Value("${email.password}")
-    private String password;
-
-    @Value("${email.username}")
-    private String mail;
-
-    @Value("${email.base_url}")
-    private String baseUrl;
-
-    @Value("client_email")
-    private String clientEmail;
 
     @Value("${gotify.key}")
     private String gotifyApiKey;
@@ -62,9 +49,6 @@ public class MailSenderService{
         HttpEntity<JSONObject> entity = new HttpEntity<JSONObject>(object, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-
-        System.out.println(mail);
-        System.out.println(baseUrl);
         ResponseEntity<String> response = restTemplate.postForEntity(gotifyURL, entity, String.class);
 
         System.out.println(response.toString());
