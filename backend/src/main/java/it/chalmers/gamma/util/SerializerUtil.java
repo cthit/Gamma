@@ -7,10 +7,11 @@ import java.util.List;
 
 public class SerializerUtil {
 
-    public static JSONObject serialize(List<SerializerValue> values){
+    public static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields){
         JSONObject json = new JSONObject();
         for(SerializerValue value : values){
-            if(value.isEnabled()) {
+            if(value.isEnabled() && !(!includeNullFields && value.getValue() == null)) {
+                System.out.println(json.toJSONString());
                 json.put(value.getName(), value.getValue());
             }
         }

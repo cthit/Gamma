@@ -1,10 +1,12 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
 import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
 import it.chalmers.gamma.util.TokenGenerator;
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,20 +62,20 @@ public class UserAdminController {
         return new UserDeletedResponse();
     }
 
-/*    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<ITUser.ITUserView>>getAllUsers(){
-        String[] properties = {"id", "cid", "nick", "firstname", "lastname", "email", "phone", "language", "avatarURL", "gdpr", "acceptanceYear"};
-        List<String> props = Arrays.asList(properties);
+    @RequestMapping(method = RequestMethod.GET)
+    public List<JSONObject> getAllUsers(){
+        List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
+        ITUserSerializer serializer = new ITUserSerializer(props);
         List<ITUser> users = itUserService.loadAllUsers();
-        List<ITUser.ITUserView> userViewList = new ArrayList<>();
+        List<JSONObject> userViewList = new ArrayList<>();
         for(ITUser user : users){
-            ITUser.ITUserView userView = user.getView(props);
-            List<Website.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
-            userView.setWebsites(websiteViews);
+            List<EntityWebsiteService.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+            JSONObject userView = serializer.serialize(user, websiteViews);
             userViewList.add(userView);
+
         }
-        return new UsersViewListResponse(userViewList);
-    }*/
+        return userViewList;
+    }
 
     /**
      * Administrative function that can add user without need for user to add it personally.

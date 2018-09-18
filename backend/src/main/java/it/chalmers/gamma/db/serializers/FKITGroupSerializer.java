@@ -34,31 +34,17 @@ public class FKITGroupSerializer {
             return new ArrayList<>(Arrays.asList(props));
         }
     }
-
-
-    private List<ITUser> groupMembers;
-    private List<EntityWebsiteService.WebsiteView> websites;
     private List<Properties> properties;
 
-    public FKITGroupSerializer(List<Properties> properties, @Nullable List<ITUser> groupMembers, @Nullable List<EntityWebsiteService.WebsiteView> websites){
+    public FKITGroupSerializer(List<Properties> properties){
         this.properties = new ArrayList<>(properties);
-        if(groupMembers != null) {
-            this.groupMembers = new ArrayList<>(groupMembers);
-        }
-        if(websites != null){
-            this.websites = new ArrayList<>(websites);
-        }
     }
 
     public void selectValues(List<Properties> props){
         properties = new ArrayList<>(props);
     }
 
-    public void setGroupUsers(List<ITUser> groupMembers){
-        this.groupMembers = new ArrayList<>(groupMembers);
-    }
-
-    public JSONObject serialize(FKITGroup value){
+    public JSONObject serialize(FKITGroup value, @Nullable List<ITUser> groupMembers, @Nullable List<EntityWebsiteService.WebsiteView> websites){
         List<SerializerValue> values = new ArrayList<>();
         values.add(new SerializerValue(properties.contains(Properties.ID), value.getId(), "id"));
         values.add(new SerializerValue(properties.contains(Properties.NAME), value.getName(), "name"));
@@ -69,7 +55,7 @@ public class FKITGroupSerializer {
         values.add(new SerializerValue(properties.contains(Properties.AVATAR_URL), value.getAvatarURL(), "avatar_url"));
         values.add(new SerializerValue(properties.contains(Properties.USERS), groupMembers, "group_members"));
         values.add(new SerializerValue(properties.contains(Properties.WEBSITES), websites, "websites"));
-        return SerializerUtil.serialize(values);
+        return SerializerUtil.serialize(values, false);
 
     }
 }

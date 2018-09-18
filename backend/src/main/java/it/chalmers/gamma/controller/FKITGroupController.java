@@ -31,8 +31,8 @@ public class FKITGroupController {
             return null;
         }
         List<EntityWebsiteService.WebsiteView> websiteViews = groupWebsiteService.getWebsitesOrdered(groupWebsiteService.getWebsites(group));
-        FKITGroupSerializer serializer = new FKITGroupSerializer(properties, null, websiteViews);
-        return serializer.serialize(group);
+        FKITGroupSerializer serializer = new FKITGroupSerializer(properties);
+        return serializer.serialize(group, null, websiteViews);
 
     }
 }

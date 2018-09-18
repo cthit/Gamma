@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.*;
+
 @RestController
 @RequestMapping(value = "/admin/groups")
 public class GroupAdminController {
@@ -35,13 +37,13 @@ public class GroupAdminController {
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public JSONObject getGroupMinified(@PathVariable("id") String id){
-        List<FKITGroupSerializer.Properties> properties = FKITGroupSerializer.Properties.getAllProperties();
+        List<FKITGroupSerializer.Properties> properties = Arrays.asList(NAME, FUNC, ID, TYPE);
         FKITGroup group = fkitService.getGroup(UUID.fromString(id));
         if(group == null){
             return null;
         }
-        FKITGroupSerializer serializer = new FKITGroupSerializer(properties, null, null);
-        return serializer.serialize(group);
+        FKITGroupSerializer serializer = new FKITGroupSerializer(properties);
+        return serializer.serialize(group, null, null);
     }
 
     @RequestMapping(method = RequestMethod.POST)

@@ -1,17 +1,14 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
+import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.response.*;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.service.*;
+import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +21,8 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.*;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -101,27 +100,24 @@ public class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public ResponseEntity<ITUser> getMe(@RequestHeader("Authorization") String jwtToken) {
+    public JSONObject getMe(@RequestHeader("Authorization") String jwtToken) {
         jwtToken = jwtTokenProvider.removeBearer(jwtToken);
         String cid = jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
         ITUser user = itUserService.loadUser(cid);
-        return new GetUserResponse(user);
+        ITUserSerializer serializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        List<EntityWebsiteService.WebsiteView> websites = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+        return serializer.serialize(user, websites);
     }
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
-    public ResponseEntity<List<ITUser.ITUserView>> getAllUserMini(){
+    public List<JSONObject> getAllUserMini(){
         List<ITUser> itUsers = itUserService.loadAllUsers();
-        List<ITUser.ITUserView> minifiedITUsers = new ArrayList<>();
-        List<String> props = new ArrayList<>();
-        props.add("cid");
-        props.add("firstName");
-        props.add("lastName");
-        props.add("nick");
-        props.add("attendanceYear");
-        props.add("id");
+        List<ITUserSerializer.Properties> props = new ArrayList<>(Arrays.asList(CID, FIRST_NAME, LAST_NAME, NICK, ACCEPTANCE_YEAR, ID));
+        List<JSONObject> minifiedITUsers = new ArrayList<>();
+        ITUserSerializer serializer = new ITUserSerializer(props);
         for(ITUser user : itUsers){
-            minifiedITUsers.add(user.getView(props));
+            minifiedITUsers.add(serializer.serialize(user, null));
         }
-        return new MinifiedUsersResponse(minifiedITUsers);
+        return minifiedITUsers;
     }
 /*    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
     public ResponseEntity<ITUser.ITUserView> getUser(@PathVariable("cid") String cid){
