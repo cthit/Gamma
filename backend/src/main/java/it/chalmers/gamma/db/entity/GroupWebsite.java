@@ -1,16 +1,15 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import it.chalmers.gamma.db.repository.WebsiteInterface;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "fkit_group_website")
-public class GroupWebsite implements WebsiteInterface{
+public class GroupWebsite implements WebsiteInterface {
     @Id
     @JsonIgnore
     private UUID id;

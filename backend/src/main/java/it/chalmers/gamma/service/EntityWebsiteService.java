@@ -1,14 +1,12 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.GroupWebsite;
 import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
+import it.chalmers.gamma.db.repository.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

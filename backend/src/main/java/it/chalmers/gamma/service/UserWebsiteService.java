@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.repository.UserWebsiteRepository;
-import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties;
+import it.chalmers.gamma.db.repository.WebsiteInterface;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

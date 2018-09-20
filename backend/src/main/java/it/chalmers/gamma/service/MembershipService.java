@@ -19,6 +19,19 @@ public class MembershipService {
     public MembershipService(MembershipRepository membershipRepository){
         this.membershipRepository = membershipRepository;
     }
+
+
+    //TODO check which methods should be left in this class, many are probably never going to be used.
+
+
+    /**
+     * adds a user to the group
+     * @param group group the user should be added to
+     * @param user  which user is added
+     * @param post  what post the user has in group
+     * @param postname  what the unoficial-post name is
+     * @param year      which group-year the user is added in
+     */
     public void addUserToGroup(FKITGroup group, ITUser user, Post post, String postname, Year year){
         Membership membership = new Membership();
         MembershipPK pk = new MembershipPK();
@@ -30,7 +43,13 @@ public class MembershipService {
         membership.setYear(year);
         membershipRepository.save(membership);
     }
-    public List<UUID> getPostHoldersIds(Post post){
+
+    /**
+     * finds all users that has a specific post
+     * @param post which post that should be looked for
+     * @return the users UUID, the identifier for the user
+     */
+    public List<UUID> getPostHoldersIds(Post post){     //should this return UUID? and not ITUser?
         List<Membership> memberships = membershipRepository.findAllByPost_Id(post.getId());
         List<UUID> usersId = new ArrayList<>();
         for(Membership membership : memberships){
@@ -38,7 +57,21 @@ public class MembershipService {
         }
         return usersId;
     }
-    public List<UUID> getUsersGroupIds(ITUser user){
+    public List<UUID> getUsersInGroup(FKITGroup group){
+        List<Membership> memberships = membershipRepository.findAllById_FkitGroupId(group.getId());
+        List<UUID> groupIds = new ArrayList<>();
+        for (Membership membership : memberships){
+            groupIds.add(membership.getId().getITUserId());
+        }
+        return groupIds;
+    }
+
+    /**
+     * gets which groups a user is a part of
+     * @param user which user which group membersships should be queried
+     * @return  The UUIDs of the groups the user is a part of
+     */
+    public List<UUID> getUsersGroupIds(ITUser user){    // should this return UUID? and not FKITGroup?
         List<Membership> memberships = membershipRepository.findAllById_ItuserId(user.getId());
         List<UUID> groups = new ArrayList<>();
         for(Membership membership : memberships){
@@ -46,6 +79,13 @@ public class MembershipService {
         }
         return groups;
     }
+
+    /**
+     * finds which group the user has a specific post in
+     * @param user
+     * @param post
+     * @return
+     */
     public UUID getGroupIdByUserAndPost(ITUser user, Post post){
         Membership membership = membershipRepository.findById_ItuserIdAndPost(user.getId(), post);
         return membership.getId().getFKITGroupId();

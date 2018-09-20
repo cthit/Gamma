@@ -15,4 +15,5 @@ public interface MembershipRepository extends JpaRepository<Membership, UUID>{
     List<Membership> findAllById_ItuserId(UUID id);
     Membership findById_ItuserIdAndPost(UUID userId, Post post);
     List<Membership> findAllById_FkitGroupIdAndPost(UUID groupId, Post post);
+    List<Membership> findAllById_FkitGroupId(UUID groupId);
 }

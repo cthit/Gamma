@@ -1,11 +1,13 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.db.repository.WebsiteInterface;
+
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 @Table(name = "ituser_website")
-public class UserWebsite implements WebsiteInterface{
+public class UserWebsite implements WebsiteInterface {
 
     @Id
     @Column(updatable = false)

@@ -2,7 +2,6 @@ package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.util.SerializerUtil;
 import org.json.simple.JSONObject;

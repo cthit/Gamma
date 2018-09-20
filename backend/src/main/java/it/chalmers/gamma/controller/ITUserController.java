@@ -119,23 +119,12 @@ public class ITUserController {
         }
         return minifiedITUsers;
     }
-/*    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
-    public ResponseEntity<ITUser.ITUserView> getUser(@PathVariable("cid") String cid){
-        String[] properties = {"id", "cid", "nick", "firstName", "lastName", "email", "phone", "language", "avatarURL", "acceptanceYear"};
-        List<String> props = new ArrayList<>(Arrays.asList(properties));
+    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
+    public JSONObject getUser(@PathVariable("cid") String cid){
+        List<ITUserSerializer.Properties> properties = ITUserSerializer.Properties.getAllProperties();
         ITUser user = itUserService.loadUser(cid);
-        ITUser.ITUserView view = user.getView(props);
-        List<Website.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
-        view.setWebsites(websiteViews);
-        return new UsersViewResponse(view);
-    }*/
-
-    
-
-    //TODO I DON'T EVEN FUCKING KNOW AT THIS POINT:::::::::::::::
-  /*  @RequestMapping(value = "/{user}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editUser(@PathVariable("user") String user){
-        ITUser itUser = itUserService.loadUser(user);
-        itUserService.editUser();
-    }*/
+        ITUserSerializer serializer = new ITUserSerializer(properties);
+        List<EntityWebsiteService.WebsiteView> websites = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+        return serializer.serialize(user, websites);
+    }
 }

@@ -69,7 +69,7 @@ create table fkit_group_website(
 );
 
 create table fkit_group_authorites (
-  fkit_group_id uuid,
+  fkit_group_id uuid,getId().getITUserId()
   authorites_id varchar(50),
   constraint fkit_group_authorites_pk primary key (fkit_group_id, authorites_id)
 );
@@ -80,7 +80,7 @@ create table post (
   -- post_name borde nog kanske vara post_function (som i funktionen rollen fyller) för att kunna hantera översättningar på ett någorlunda vettigt sätt
 );
 
-create table membership (
+create table membership (   -- Should this be rebuilt to look like all other tables? probably
   ituser_id            uuid constraint membership_ituser_fk references ituser,
   fkit_group_id        uuid constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         not null constraint membership_post_fk references post,

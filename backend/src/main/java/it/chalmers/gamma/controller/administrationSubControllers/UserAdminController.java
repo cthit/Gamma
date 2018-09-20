@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
 import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.repository.WebsiteInterface;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
@@ -10,10 +11,8 @@ import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
