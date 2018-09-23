@@ -39,7 +39,7 @@ public class FKITGroupController {
         }
         List<EntityWebsiteService.WebsiteView> websiteViews = groupWebsiteService.
                 getWebsitesOrdered(groupWebsiteService.getWebsites(group));     // Retrieves all websites associated with a group ordered after website-type I.E. facebook pages
-        List<UUID> membersUUIDs = membershipService.getUsersInGroup(group); // This should change the database setup probably.
+        List<ITUser> membersUUIDs = membershipService.getUsersInGroup(group); // This should change the database setup probably.
         FKITGroupSerializer serializer = new FKITGroupSerializer(properties);
         return serializer.serialize(group, null, websiteViews);    // serializes all selected data from the group
 

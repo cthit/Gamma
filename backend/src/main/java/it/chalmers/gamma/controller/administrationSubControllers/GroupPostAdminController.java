@@ -102,16 +102,14 @@ public class GroupPostAdminController {
         List<FKITGroupSerializer.Properties> FKITGroupProperties = Arrays.asList(FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.NAME, FKITGroupSerializer.Properties.ID, FKITGroupSerializer.Properties.USERS);
         Post post = postService.getPostById(id);
-        List<UUID> groups = membershipService.getGroupsWithPost(post);
+        List<FKITGroup> groups = membershipService.getGroupsWithPost(post);
         ITUserSerializer itUserSerializer = new ITUserSerializer(ITUserProperties);
         FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(FKITGroupProperties);
         List<JSONObject> groupAndUser = new ArrayList<>();
-        for(UUID groupId : groups) {
-            FKITGroup group = fkitService.getGroup(groupId);
-            List<UUID> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
+        for(FKITGroup group : groups) {
+            List<ITUser> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
             List<JSONObject> users = new ArrayList<>();
-            for(UUID userId: userIDs){
-                ITUser user = itUserService.getUserById(userId);
+            for(ITUser user: userIDs){
                 users.add(itUserSerializer.serialize(user, null));
             }
             groupAndUser.add(fkitGroupSerializer.serialize(group, users, null));

@@ -1,34 +1,37 @@
 package it.chalmers.gamma.db.entity.pk;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.ITUser;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 @Embeddable
 public class MembershipPK implements Serializable {
 
-    @Column(name = "ituser_id")
-    private UUID ituserId;
+    @ManyToOne
+    @JoinColumn(name = "ituser_id")
+    private ITUser itUser;
 
-    @Column(name = "fkit_group_id")
-    private UUID fkitGroupId;
+    @ManyToOne
+    @JoinColumn(name = "fkit_group_id")
+    private FKITGroup fkitGroup;
 
-    public UUID getITUserId() {
-        return ituserId;
+    public ITUser getITUser() {
+        return itUser;
     }
 
-    public void setITUserId(UUID ituserId) {
-        this.ituserId = ituserId;
+    public void setITUser(ITUser ituserId) {
+        this.itUser = ituserId;
     }
 
-    public UUID getFKITGroupId() {
-        return fkitGroupId;
+    public FKITGroup getFKITGroup() {
+        return fkitGroup;
     }
 
-    public void setFKITGroupId(UUID fkitGroupId) {
-        this.fkitGroupId = fkitGroupId;
+    public void setFKITGroup(FKITGroup fkitGroupId) {
+        this.fkitGroup = fkitGroupId;
     }
 
     @Override
@@ -36,20 +39,20 @@ public class MembershipPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MembershipPK that = (MembershipPK) o;
-        return Objects.equals(ituserId, that.ituserId) &&
-                Objects.equals(fkitGroupId, that.fkitGroupId);
+        return Objects.equals(itUser, that.itUser) &&
+                Objects.equals(fkitGroup, that.fkitGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ituserId, fkitGroupId);
+        return Objects.hash(itUser, fkitGroup);
     }
 
     @Override
     public String toString() {
         return "MembershipPK{" +
-                "ituserId=" + ituserId +
-                ", fkitGroupId=" + fkitGroupId +
+                "itUser=" + itUser +
+                ", fkitGroup=" + fkitGroup +
                 '}';
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class MembershipService {
@@ -36,8 +35,8 @@ public class MembershipService {
     public void addUserToGroup(FKITGroup group, ITUser user, Post post, String postname, Year year){
         Membership membership = new Membership();
         MembershipPK pk = new MembershipPK();
-        pk.setFKITGroupId(group.getId());
-        pk.setITUserId(user.getId());
+        pk.setFKITGroup(group);
+        pk.setITUser(user);
         membership.setId(pk);
         membership.setPost(post);
         membership.setUnofficialPostName(postname);
@@ -50,19 +49,19 @@ public class MembershipService {
      * @param post which post that should be looked for
      * @return the users UUID, the identifier for the user
      */
-    public List<UUID> getPostHoldersIds(Post post){     //should this return UUID? and not ITUser?
-        List<Membership> memberships = membershipRepository.findAllByPost_Id(post.getId());
-        List<UUID> usersId = new ArrayList<>();
+    public List<ITUser> getPostHoldersIds(Post post){     //should this return UUID? and not ITUser?
+        List<Membership> memberships = membershipRepository.findAllByPost(post);
+        List<ITUser> usersId = new ArrayList<>();
         for(Membership membership : memberships){
-            usersId.add(membership.getId().getITUserId());
+            usersId.add(membership.getId().getITUser());
         }
         return usersId;
     }
-    public List<UUID> getUsersInGroup(FKITGroup group){
-        List<Membership> memberships = membershipRepository.findAllById_FkitGroupId(group.getId());
-        List<UUID> groupIds = new ArrayList<>();
+    public List<ITUser> getUsersInGroup(FKITGroup group){
+        List<Membership> memberships = membershipRepository.findAllById_FkitGroup(group);
+        List<ITUser> groupIds = new ArrayList<>();
         for (Membership membership : memberships){
-            groupIds.add(membership.getId().getITUserId());
+            groupIds.add(membership.getId().getITUser());
         }
         return groupIds;
     }
@@ -72,11 +71,11 @@ public class MembershipService {
      * @param user which user which group membersships should be queried
      * @return  The UUIDs of the groups the user is a part of
      */
-    public List<UUID> getUsersGroupIds(ITUser user){    // should this return UUID? and not FKITGroup?
-        List<Membership> memberships = membershipRepository.findAllById_ItuserId(user.getId());
-        List<UUID> groups = new ArrayList<>();
+    public List<FKITGroup> getUsersGroupIds(ITUser user){    // should this return UUID? and not FKITGroup?
+        List<Membership> memberships = membershipRepository.findAllById_ItUser(user);
+        List<FKITGroup> groups = new ArrayList<>();
         for(Membership membership : memberships){
-            groups.add(membership.getId().getFKITGroupId());
+            groups.add(membership.getId().getFKITGroup());
         }
         return groups;
     }
@@ -87,24 +86,24 @@ public class MembershipService {
      * @param post
      * @return
      */
-    public UUID getGroupIdByUserAndPost(ITUser user, Post post){
-        Membership membership = membershipRepository.findById_ItuserIdAndPost(user.getId(), post);
-        return membership.getId().getFKITGroupId();
+    public FKITGroup getGroupIdByUserAndPost(ITUser user, Post post){
+        Membership membership = membershipRepository.findById_ItUserAndPost(user, post);
+        return membership.getId().getFKITGroup();
     }
-    public List<UUID>getUserIdsByGroupAndPost(FKITGroup group, Post post){
-        List<Membership> memberships = membershipRepository.findAllById_FkitGroupIdAndPost(group.getId(), post);
-        List<UUID> users = new ArrayList<>();
+    public List<ITUser>getUserIdsByGroupAndPost(FKITGroup group, Post post){
+        List<Membership> memberships = membershipRepository.findAllById_FkitGroupAndPost(group, post);
+        List<ITUser> users = new ArrayList<>();
         for(Membership membership : memberships){
-            users.add(membership.getId().getITUserId());
+            users.add(membership.getId().getITUser());
         }
         return users;
     }
-    public List<UUID> getGroupsWithPost(Post post){
-        List<Membership> memberships = membershipRepository.findAllByPost_Id(post.getId());
-        List<UUID> groups = new ArrayList<>();
+    public List<FKITGroup> getGroupsWithPost(Post post){
+        List<Membership> memberships = membershipRepository.findAllByPost(post);
+        List<FKITGroup> groups = new ArrayList<>();
         for(Membership membership : memberships){
-            if(!groups.contains(membership.getId().getFKITGroupId())) {
-                groups.add(membership.getId().getFKITGroupId());
+            if(!groups.contains(membership.getId().getFKITGroup())) {
+                groups.add(membership.getId().getFKITGroup());
             }
         }
         return groups;

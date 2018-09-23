@@ -12,7 +12,6 @@ import java.util.Objects;
 public class Membership {
 
     @EmbeddedId
-    @JsonIgnore
     private MembershipPK id;
 
     @ManyToOne
