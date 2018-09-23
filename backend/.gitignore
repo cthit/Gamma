@@ -27,3 +27,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+secrets.properties
