@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+
+/**
+ * A class to handle all database access to memberships between users and groups in the system
+ */
 @Service
 public class PostService {
 

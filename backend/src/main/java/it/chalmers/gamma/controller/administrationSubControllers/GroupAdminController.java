@@ -1,7 +1,7 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
 import it.chalmers.gamma.db.entity.*;
-import it.chalmers.gamma.db.repository.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.*;

@@ -15,6 +15,8 @@ public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
 
+    //TODO should probably change to some other words, or a new system of creating codes
+
     private String[] words = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};        // Add some random words in here.
 
     public ActivationCodeService(ActivationCodeRepository activationCodeRepository){
@@ -33,6 +35,12 @@ public class ActivationCodeService {
         return code.toString();
     }
 
+    /**
+     * connects and places a whitelisted user and a code in the database
+     * @param cid the already whiteslisted user
+     * @param code the code that is associated with a user
+     * @return a copy of the ActivationCode object added to the database
+     */
     public ActivationCode saveActivationCode(Whitelist cid, String code){
         if(userHasCode(cid.getCid())){
             activationCodeRepository.delete(activationCodeRepository.findByCid_Cid(cid.getCid()));
@@ -66,7 +74,12 @@ public class ActivationCodeService {
         return activationCodeRepository.existsById(id);
     }
 
-
+    /**
+     * checks if a user has an expired code connected to their account
+     * @param user the name of the user to check
+     * @param hours the expiration time currently set by the system
+     * @return true of the code has expired, false if not
+     */
     public boolean hasCodeExpired(String user, double hours) {
         ActivationCode activationCode = activationCodeRepository.findByCid_Cid(user);
         return (activationCode.getCreatedAt().getEpochSecond() + (hours * 3600) < Instant.now().getEpochSecond());

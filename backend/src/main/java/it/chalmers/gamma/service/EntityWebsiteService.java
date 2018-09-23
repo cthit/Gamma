@@ -1,7 +1,7 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.repository.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import org.springframework.stereotype.Service;
@@ -17,28 +17,39 @@ public class EntityWebsiteService{
         this.websiteService = websiteService;
     }
 
-
-    public List<WebsiteURL> addWebsiteToEntity(List<CreateGroupRequest.WebsiteInfo> websiteInfos, List<WebsiteInterface> entityWebsite){
+    /**
+     * creates a list of websiteURLs from a list of websiteinfo and makes sure that no duplicates are made
+     * @param websiteInfos a list of websiteinfo, meaning a type of website and a url
+     * @param entityWebsites a list of objects that extends EntityWebsites IE either GroupWebsites or UserWebsites
+     * @return a list of websiteURLs created from the added website info
+     */
+    public List<WebsiteURL> addWebsiteToEntity(List<CreateGroupRequest.WebsiteInfo> websiteInfos, List<WebsiteInterface> entityWebsites){
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         for(CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos){
-        boolean websiteExists = false;
-        Website website = websiteService.getWebsite(websiteInfo.getWebsite());
-        WebsiteURL websiteURL;
-        for(WebsiteInterface duplicateCheck : entityWebsite){
-            if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
-                websiteExists = true;
-                break;
+            boolean websiteExists = false;
+            Website website = websiteService.getWebsite(websiteInfo.getWebsite());
+            WebsiteURL websiteURL;
+            for(WebsiteInterface duplicateCheck : entityWebsites){      //makes sure that the URL has not been added to the entity already
+                if(duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
+                    websiteExists = true;
+                    break;
+                }
+            }
+            if(!websiteExists) {
+                websiteURL = new WebsiteURL();
+                websiteURL.setWebsite(website);
+                websiteURL.setUrl(websiteInfo.getUrl());
+                websiteURLs.add(websiteURL);
             }
         }
-        if(!websiteExists) {
-            websiteURL = new WebsiteURL();
-            websiteURL.setWebsite(website);
-            websiteURL.setUrl(websiteInfo.getUrl());
-            websiteURLs.add(websiteURL);
-        }
-    }
         return websiteURLs;
     }
+
+    /**
+     * gets all websites ordered after type I.E all facebook pages are subpages of type facebook
+     * @param websites a list of websites to be ordered
+     * @return a list of websites in an ordered fashion
+     */
     public List<WebsiteView> getWebsitesOrdered(List<WebsiteInterface> websites){
         List<Website> websiteTypes = new ArrayList<>();
         List<WebsiteView> groupedWebsites = new ArrayList<>();
@@ -62,6 +73,9 @@ public class EntityWebsiteService{
         return groupedWebsites;
     }
 
+    /**
+     * object to store websites in ordered way, used by getWebsitesOrdered method
+     */
     public class WebsiteView{
         private UUID id;
         private String name;

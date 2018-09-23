@@ -1,4 +1,4 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.WebsiteURL;
 

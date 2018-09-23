@@ -1,7 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import it.chalmers.gamma.db.repository.WebsiteInterface;
 
 import javax.persistence.*;
 import java.util.Objects;

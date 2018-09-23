@@ -1,7 +1,7 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
 import it.chalmers.gamma.db.entity.*;
-import it.chalmers.gamma.db.repository.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.*;
 import it.chalmers.gamma.response.*;
@@ -39,6 +39,8 @@ public class UserAdminController {
         itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
+
+    //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
         if(!itUserService.editUser(UUID.fromString(id), request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
@@ -56,7 +58,7 @@ public class UserAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
-        userWebsiteService.deleteWebsitesConnectedToGroup(itUserService.getUserById(UUID.fromString(id)));
+        userWebsiteService.deleteWebsitesConnectedToUser(itUserService.getUserById(UUID.fromString(id)));
         itUserService.removeUser(UUID.fromString(id));
         return new UserDeletedResponse();
     }

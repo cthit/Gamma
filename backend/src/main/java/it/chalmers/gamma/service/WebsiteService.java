@@ -14,6 +14,11 @@ public class WebsiteService {
         this.repository = repository;
     }
 
+    /**
+     * adds a possible website to the database
+     * @param name the name of the website
+     * @param prettyName the display-name of the website
+     */
     public void addPossibleWebsite(String name, String prettyName){
         Website website = new Website();
         website.setPrettyName(prettyName != null ? prettyName : name.toLowerCase());

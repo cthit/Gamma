@@ -1,7 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import it.chalmers.gamma.db.repository.WebsiteInterface;
-
 import javax.persistence.*;
 import java.util.UUID;
 

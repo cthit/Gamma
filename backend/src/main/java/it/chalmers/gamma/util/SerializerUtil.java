@@ -11,7 +11,6 @@ public class SerializerUtil {
         JSONObject json = new JSONObject();
         for(SerializerValue value : values){
             if(value.isEnabled() && !(!includeNullFields && value.getValue() == null)) {
-                System.out.println(json.toJSONString());
                 json.put(value.getName(), value.getValue());
             }
         }

@@ -43,7 +43,14 @@ public class FKITGroupSerializer {
         properties = new ArrayList<>(props);
     }
 
-    public JSONObject serialize(FKITGroup value, @Nullable List<ITUser> groupMembers, @Nullable List<EntityWebsiteService.WebsiteView> websites){
+    /**
+     *
+     */
+    public void setITUserProperties(){  // TODO find another way of doing this
+
+    }
+
+    public JSONObject serialize(FKITGroup value, @Nullable List<JSONObject> groupMembers, @Nullable List<EntityWebsiteService.WebsiteView> websites){
         List<SerializerValue> values = new ArrayList<>();
         values.add(new SerializerValue(properties.contains(Properties.ID), value.getId(), "id"));
         values.add(new SerializerValue(properties.contains(Properties.NAME), value.getName(), "name"));
