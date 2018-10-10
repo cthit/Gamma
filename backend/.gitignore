@@ -1,6 +1,7 @@
-.gradle
+.gradle/
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+/src/main/resources/secrets.properties
 
 ### STS ###
 .apt_generated
@@ -17,6 +18,7 @@
 *.iml
 *.ipr
 /out/
+.idea/
 
 ### NetBeans ###
 /nbproject/private/
@@ -25,3 +27,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+secrets.properties

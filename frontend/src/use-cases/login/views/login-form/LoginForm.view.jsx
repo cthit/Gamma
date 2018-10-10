@@ -24,72 +24,105 @@ import {
   GammaLink
 } from "../../../../common-ui/design";
 
-const LoginForm = ({ text, login }) => (
-  <Fill>
-    <GammaForm
-      validationSchema={yup.object().shape({
-        cid: yup.string().required(text.FieldRequired),
-        password: yup.string().required(text.FieldRequired),
-        rememberMe: yup.boolean()
-      })}
-      initialValues={{ cid: "", password: "", rememberMe: false }}
-      onSubmit={(values, actions) => {
-        const data = {
-          cid: values["cid"],
-          password: values["password"]
-        };
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
-        login(
-          data,
-          values.rememberMe,
-          text.SuccessfullLogin,
-          text.IncorrectCidOrPassword,
-          text.SomethingWentWrong
-        );
+import translations from "./LoginForm.view.translations.json";
+import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 
-        actions.resetForm();
-      }}
-      render={({ errors, touched }) => (
-        <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-          <GammaCardTitle text={text.Login} />
-          <GammaCardBody>
-            <Center>
-              <GammaFormField
-                name="cid"
-                component={CIDInput}
-                componentProps={{
-                  upperLabel: text.EnterYourCid
-                }}
-              />
-              <GammaFormField
-                name="password"
-                component={PasswordInput}
-                componentProps={{
-                  upperLabel: text.EnterYourPassword,
-                  password: true
-                }}
-              />
+const LoginForm = ({ login, toastOpen, redirectTo }) => (
+  <GammaTranslations
+    translations={translations}
+    uniquePath="Login.View.LoginForm"
+    render={text => (
+      <Fill>
+        <GammaForm
+          validationSchema={yup.object().shape({
+            cid: yup.string().required(text.FieldRequired),
+            password: yup.string().required(text.FieldRequired),
+            rememberMe: yup.boolean()
+          })}
+          initialValues={{ cid: "", password: "", rememberMe: false }}
+          onSubmit={(values, actions) => {
+            const data = {
+              cid: values["cid"],
+              password: values["password"]
+            };
 
-              <GammaFormField
-                name="rememberMe"
-                component={RememberMe}
-                componentProps={{
-                  label: text.RememberMe,
-                  primary: true
-                }}
-              />
-            </Center>
-          </GammaCardBody>
-          <GammaCardButtons reverseDirection>
-            <LoginButton text={text.Login} primary raised submit />
-            <GammaLink to="/create-account">
-              <CreateAccountButton text={text.CreateAccount} />
-            </GammaLink>
-          </GammaCardButtons>
-        </GammaCard>
-      )}
-    />
-  </Fill>
+            login(data, values.rememberMe)
+              .then(response => {
+                redirectTo("/home");
+                toastOpen({
+                  text: text.SuccessfullLogin,
+                  duration: 3000
+                });
+              })
+              .catch(error => {
+                const code = statusCode(error);
+                const message = statusMessage(error);
+                switch (code) {
+                  case 422:
+                    switch (message) {
+                      case "INCORRECT_CID_OR_PASSWORD":
+                        toastOpen({
+                          text: text.IncorrectCidOrPassword,
+                          duration: 3000
+                        });
+                    }
+                    break;
+                  default:
+                    toastOpen({
+                      text: text.SomethingWentWrong,
+                      duration: 3000
+                    });
+                }
+              });
+
+            actions.resetForm();
+          }}
+          render={({ errors, touched }) => (
+            <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
+              <GammaCardTitle text={text.Login} />
+              <GammaCardBody>
+                <Center>
+                  <GammaFormField
+                    name="cid"
+                    component={CIDInput}
+                    componentProps={{
+                      upperLabel: text.EnterYourCid
+                    }}
+                  />
+                  <GammaFormField
+                    name="password"
+                    component={PasswordInput}
+                    componentProps={{
+                      upperLabel: text.EnterYourPassword,
+                      password: true
+                    }}
+                  />
+
+                  <GammaFormField
+                    name="rememberMe"
+                    component={RememberMe}
+                    componentProps={{
+                      label: text.RememberMe,
+                      primary: true
+                    }}
+                  />
+                </Center>
+              </GammaCardBody>
+              <GammaCardButtons reverseDirection>
+                <LoginButton text={text.Login} primary raised submit />
+                <GammaLink to="/create-account">
+                  <CreateAccountButton text={text.CreateAccount} />
+                </GammaLink>
+              </GammaCardButtons>
+            </GammaCard>
+          )}
+        />
+      </Fill>
+    )}
+  />
 );
 
 export default LoginForm;

@@ -1,14 +1,15 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
+import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
-import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.requests.CreateITUserRequest;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.service.*;
+import org.json.simple.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,9 +17,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletResponse;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.*;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -29,15 +35,17 @@ public class ITUserController {
     private final WhitelistService whitelistService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserWebsiteService userWebsiteService;
 
     public ITUserController(ITUserService itUserService, ActivationCodeService activationCodeService,
                             WhitelistService whitelistService, AuthenticationManager authenticationManager,
-                            JwtTokenProvider jwtTokenProvider) {
+                            JwtTokenProvider jwtTokenProvider, UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userWebsiteService = userWebsiteService;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -49,14 +57,9 @@ public class ITUserController {
                 return new LoginCompleteResponse(jwt);
             }
         } catch (AuthenticationException e) {
-            return new IncorrectCidOrPasswordResponse();
+            throw new IncorrectCidOrPasswordResponse();
         }
-        return new IncorrectCidOrPasswordResponse();
-    }
-
-    @GetMapping
-    public List<ITUser> getAllITUsers() {
-        return itUserService.loadAllUsers();
+        throw new IncorrectCidOrPasswordResponse();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -67,36 +70,66 @@ public class ITUserController {
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
         if (user == null) {
-            return new CodeOrCidIsWrongResponse();
+            throw new CodeOrCidIsWrongResponse();
         }
         createITUserRequest.setWhitelist(user);
         if (itUserService.userExists(createITUserRequest.getWhitelist().getCid())) {
-            return new UserAlreadyExistsResponse();
+            throw new UserAlreadyExistsResponse();
         }
         if (!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
-            return new CodeOrCidIsWrongResponse();
+            throw new CodeOrCidIsWrongResponse();
         }
         if (activationCodeService.hasCodeExpired(user.getCid(), 2)) {
             activationCodeService.deleteCode(user.getCid());
-            return new CodeExpiredResponse();
-        } else {
-            itUserService.createUser(createITUserRequest);
-            removeCid(createITUserRequest);
+            throw new CodeExpiredResponse();
+        }
+        if(createITUserRequest.getPassword().length() < 8){
+            throw new PasswordTooShortResponse();
+        }
+            else {
+            itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
+                    createITUserRequest.getLastName(), createITUserRequest.getWhitelist().getCid(),
+                    Year.of(createITUserRequest.getAcceptanceYear()), createITUserRequest.isUserAgreement(), null, createITUserRequest.getPassword());
+            removeCidFromWhitelist(createITUserRequest);
             return new UserCreatedResponse();
         }
     }
 
-    private void removeCid(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
+
+    private void removeCidFromWhitelist(CreateITUserRequest createITUserRequest) {       // Check if this cascades automatically
         activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
         whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public ResponseEntity<ITUser> getMe(@RequestHeader("Authorization") String jwtToken) {
+    public JSONObject getMe(@RequestHeader("Authorization") String jwtToken) {
         jwtToken = jwtTokenProvider.removeBearer(jwtToken);
         String cid = jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
         ITUser user = itUserService.loadUser(cid);
-        return new GetUserResponse(user);
+        ITUserSerializer serializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        List<EntityWebsiteService.WebsiteView> websites = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+        return serializer.serialize(user, websites);
     }
-
+    @RequestMapping(value = "/minified", method = RequestMethod.GET)
+    public List<JSONObject> getAllUserMini(){
+        List<ITUser> itUsers = itUserService.loadAllUsers();
+        List<ITUserSerializer.Properties> props = new ArrayList<>(Arrays.asList(CID, FIRST_NAME, LAST_NAME, NICK, ACCEPTANCE_YEAR, ID));
+        List<JSONObject> minifiedITUsers = new ArrayList<>();
+        ITUserSerializer serializer = new ITUserSerializer(props);
+        for(ITUser user : itUsers){
+            minifiedITUsers.add(serializer.serialize(user, null));
+        }
+        return minifiedITUsers;
+    }
+    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
+    public JSONObject getUser(@PathVariable("cid") String cid){
+        List<ITUserSerializer.Properties> properties = ITUserSerializer.Properties.getAllProperties();
+        ITUser user = itUserService.loadUser(cid);
+        if(user == null){
+            throw new CidNotFoundResponse();
+        }
+        ITUserSerializer serializer = new ITUserSerializer(properties);
+        List<EntityWebsiteService.WebsiteView> websites = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+        return serializer.serialize(user, websites);
+    }
 }

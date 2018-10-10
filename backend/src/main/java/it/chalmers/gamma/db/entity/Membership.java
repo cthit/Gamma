@@ -1,8 +1,10 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 
 import javax.persistence.*;
+import java.time.Year;
 import java.util.Objects;
 
 @Entity
@@ -12,21 +14,22 @@ public class Membership {
     @EmbeddedId
     private MembershipPK id;
 
-    @JoinColumn(name = "ituser_id")
-    @MapsId("ituserId")
-    @ManyToOne
-    private ITUser itUser;
-
-    @JoinColumn(name = "fkit_group_id")
-    @MapsId("fkit_group")
-    @ManyToOne
-    private FKITGroup fkitGroup;
-
     @ManyToOne
     private Post post;
 
     @Column(name = "unofficial_post_name", length = 100)
     private String unofficialPostName;
+
+    @Column(name = "year")
+    private int year;
+
+    public Year getYear() {
+        return Year.of(year);
+    }
+
+    public void setYear(Year year) {
+        this.year = year.getValue();
+    }
 
     public MembershipPK getId() {
         return id;

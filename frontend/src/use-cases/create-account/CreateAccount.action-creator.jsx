@@ -17,23 +17,20 @@ import { toastOpen } from "../../app/views/gamma-toast/GammaToast.view.action-cr
 export function createAccountValidateCid(data, errorMsg) {
   return dispatch => {
     dispatch(createAccountValidatingCid());
-    axios
-      .post("http://localhost:8081/whitelist/activate_cid", data, {
-        "Content-Type": "application/json"
-      })
-      .then(response => {
-        dispatch(createAccountValidateCidSuccessfully());
-        dispatch(redirectTo("/create-account/email-sent"));
-      })
-      .catch(error => {
-        dispatch(createAccountValidateCidFailed(errorMsg));
-        dispatch(
-          toastOpen({
-            text: errorMsg,
-            duration: 10000
-          })
-        );
-      });
+    return new Promise((resolve, reject) => {
+      axios
+        .post("http://localhost:8081/whitelist/activate_cid", data, {
+          "Content-Type": "application/json"
+        })
+        .then(response => {
+          dispatch(createAccountValidateCidSuccessfully());
+          resolve(response);
+        })
+        .catch(error => {
+          dispatch(createAccountValidateCidFailed(errorMsg));
+          reject(error);
+        });
+    });
   };
 }
 
@@ -62,35 +59,24 @@ export function createAccountValidateCidSuccessfully() {
 }
 
 //data includes code. Ignore code for now
-export function createAccountValidateCodeAndData(data, errorMessages) {
+export function createAccountValidateCodeAndData(data) {
   return dispatch => {
     dispatch(createAccountValidatingCodeAndData());
-    axios
-      .post("http://localhost:8081/users/create", data, {
-        "Content-Type": "application/json"
-      })
-      .then(response => {
-        dispatch(createAccountValidateCodeAndDataSuccessfully());
-        dispatch(redirectTo("/create-account/finished"));
-      })
-      .catch(error => {
-        const errorStatus = error["response"].data;
-        var errorMessage = "";
+    return new Promise((resolve, reject) => {
+      axios
+        .post("http://localhost:8081/users/create", data, {
+          "Content-Type": "application/json"
+        })
+        .then(response => {
+          dispatch(createAccountValidateCodeAndDataSuccessfully());
 
-        if (!(errorStatus in errorMessages)) {
-          errorMessage = errorMessages["SomethingWentWrong"];
-        } else {
-          errorMessage = errorMessages[errorStatus];
-        }
-
-        dispatch(createAccountValidateDataFailed(errorMessage));
-        dispatch(
-          toastOpen({
-            text: errorMessage,
-            duration: 5000
-          })
-        );
-      });
+          resolve(response);
+        })
+        .catch(error => {
+          dispatch(createAccountValidateDataFailed(error));
+          reject(error);
+        });
+    });
   };
 }
 

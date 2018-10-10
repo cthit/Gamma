@@ -3,17 +3,18 @@ import { connect } from "react-redux";
 import App from "./App";
 
 import { userUpdateMe } from "./elements/user-information/UserInformation.element.action-creator";
-import loadTranslations from "../common/utils/loaders/translations.loader";
-import appTranslations from "./App.translations.json";
+
+import { gammaLoadingStart } from "./views/gamma-loading/GammaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
-  loaded: state.user.loaded,
-  loggedIn: state.user.loggedIn,
-  text: loadTranslations(state.localize, appTranslations.App, "App.")
+  loading: state.loading,
+  userLoaded: state.user.loaded,
+  loggedIn: state.user.loggedIn
 });
 
 const mapDispatchToProps = dispatch => ({
-  userUpdateMe: () => dispatch(userUpdateMe())
+  userUpdateMe: () => dispatch(userUpdateMe()),
+  gammaLoadingStart: () => dispatch(gammaLoadingStart())
 });
 
 export default connect(

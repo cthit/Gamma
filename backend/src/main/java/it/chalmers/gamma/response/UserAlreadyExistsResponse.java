@@ -2,9 +2,10 @@ package it.chalmers.gamma.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
-public class UserAlreadyExistsResponse extends ResponseEntity<String> {
+public class UserAlreadyExistsResponse extends ResponseStatusException {
     public UserAlreadyExistsResponse(){
-        super("USER_ALREADY_REGISTERED", HttpStatus.UNPROCESSABLE_ENTITY);
+        super(HttpStatus.UNPROCESSABLE_ENTITY, "USER_ALREADY_REGISTERED");
     }
 }

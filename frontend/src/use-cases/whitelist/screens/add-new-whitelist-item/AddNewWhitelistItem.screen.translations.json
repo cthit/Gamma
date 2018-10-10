@@ -1,0 +1,8 @@
+{
+  "SaveCidToWhitelist": [
+    "Add cid to the whitelist",
+    "Lägg till cid till whitelist"
+  ],
+  "Cid": ["Cid", "Cid"],
+  "SaveCid": ["Save cid", "Spara cid"]
+}

@@ -8,5 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface FKITGroupRepository extends JpaRepository<FKITGroup, UUID> {
-
+    boolean existsFKITGroupByName(String name);
+    FKITGroup findByName(String name);
 }

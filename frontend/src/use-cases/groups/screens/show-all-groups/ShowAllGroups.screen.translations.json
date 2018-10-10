@@ -1,0 +1,15 @@
+{
+  "Groups": ["Groups", "Grupper"],
+  "Name": ["Name", "Namn"],
+  "Description": ["Description", "Beskrivning"],
+  "Email": ["Email", "Email"],
+  "Function": ["Function", "Uppdrag"],
+  "Type": ["Group type", "Grupp typ"],
+  "Society": ["Society", "Förening"],
+  "Committee": ["Committee", "Kommitté"],
+  "Board": ["Board", "Nämnd"],
+  "Id": ["Id", "Id"],
+  "Details": ["Details", "Detaljer"],
+  "NoGroups": ["There's no groups", "Det finns inga grupper"],
+  "SearchForGroups": ["Search for groups", "Sök efter grupper"]
+}

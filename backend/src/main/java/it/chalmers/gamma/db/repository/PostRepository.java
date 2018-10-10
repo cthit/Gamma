@@ -8,5 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, UUID> {
-
+    Post getByPostName_Sv(String post);
 }

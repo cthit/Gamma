@@ -1,43 +1,38 @@
 {
-  "InputDataAndCode": {
-    "CompleteCreation": [
-      "Complete creation of your account",
-      "Slutför registreringen av konto"
-    ],
-    "CompleteCreationDescription": [
-      "Enter your cid and your code that you recieved from your student email along with the following information",
-      "Skriv in ditt cid och koden du fick på din skolmail samt följande information"
-    ],
-    "YourCid": ["Your cid", "Ditt cid"],
-    "CodeFromYourStudentEmail": [
-      "Code from your student email",
-      "Kod från din studentmail"
-    ],
-    "Nick": ["Nick", "Nick"],
-    "Password": ["Password", "Lösenord"],
-    "ConfirmPassword": ["Confirm password", "Bekräfta lösenord"],
-    "FirstName": ["First name", "Förnamn"],
-    "LastName": ["Last name", "Efternamn"],
-    "WhichYearDidYouStart": [
-      "Which year did you start at IT?",
-      "Vilket år började du på IT?"
-    ],
-    "AcceptUserAgreement": [
-      "I accept the user agreements",
-      "Jag accepterar användaravtalet"
-    ],
-    "CreateAccount": ["Create account", "Skapa konto"],
-    "PasswordsDoNotMatch": [
-      "Passwords do not match",
-      "Lösenorden matchar inte"
-    ],
-    "TOO_SHORT_PASSWORD": [
-      "The password must be atleast 8 characters",
-      "Lösenordet måste vara minst 8 karaktärer"
-    ],
-    "CODE_OR_CID_IS_WRONG": [
-      "Your cid or code is wrong, please try again or contact digit@chalmers.it",
-      "Ditt cid eller din kod är fel, var vänlig och försök igen eller kontakta digit@chalmers.it"
-    ]
-  }
+  "CompleteCreation": [
+    "Complete creation of your account",
+    "Slutför registreringen av konto"
+  ],
+  "CompleteCreationDescription": [
+    "Enter your cid and your code that you recieved from your student email along with the following information",
+    "Skriv in ditt cid och koden du fick på din skolmail samt följande information"
+  ],
+  "YourCid": ["Your cid", "Ditt cid"],
+  "CodeFromYourStudentEmail": [
+    "Code from your student email",
+    "Kod från din studentmail"
+  ],
+  "Nick": ["Nick", "Nick"],
+  "Password": ["Password", "Lösenord"],
+  "ConfirmPassword": ["Confirm password", "Bekräfta lösenord"],
+  "FirstName": ["First name", "Förnamn"],
+  "LastName": ["Last name", "Efternamn"],
+  "WhichYearDidYouStart": [
+    "Which year did you start at IT?",
+    "Vilket år började du på IT?"
+  ],
+  "AcceptUserAgreement": [
+    "I accept the user agreements",
+    "Jag accepterar användaravtalet"
+  ],
+  "CreateAccount": ["Create account", "Skapa konto"],
+  "PasswordsDoNotMatch": ["Passwords do not match", "Lösenorden matchar inte"],
+  "TOO_SHORT_PASSWORD": [
+    "The password must be atleast 8 characters",
+    "Lösenordet måste vara minst 8 karaktärer"
+  ],
+  "CODE_OR_CID_IS_WRONG": [
+    "Your cid or code is wrong, please try again or contact digit@chalmers.it",
+    "Ditt cid eller din kod är fel, var vänlig och försök igen eller kontakta digit@chalmers.it"
+  ]
 }

@@ -9,6 +9,6 @@ import java.util.UUID;
 @Repository
 public interface ITUserRepository extends JpaRepository<ITUser, UUID> {
 
-    public ITUser findByCid(String cid);
-
+    ITUser findByCid(String cid);
+    boolean existsByCid(String cid);
 }

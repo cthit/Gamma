@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { IconButton, AppBar, Toolbar, Drawer } from "@material-ui/core";
 import { Title } from "../common-ui/text";
+import { Fill } from "../common-ui/layout";
 
 export const StyledMenuButton = styled(IconButton)`
   /*Medium device (md)*/

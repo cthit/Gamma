@@ -1,59 +1,58 @@
 package it.chalmers.gamma.service;
 
+import com.google.api.client.json.Json;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.map.util.JSONPObject;
+import org.json.simple.JSONObject;
+import org.mortbay.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import javax.mail.MessagingException;
-import java.util.Properties;
 
+@PropertySource("classpath:secrets.properties")
 @Service
-@PropertySource("classpath:development.properties")
 public class MailSenderService{
-    private JavaMailSenderImpl mailSender;
 
-    /*
-     * All Mail settings.
-     */
+    @Value("${gotify.key}")
+    private String gotifyApiKey;
 
-    private int port = 587;
-    private String host = "smtp.gmail.com";
+    @Value("${gotify.url}")
+    private String gotifyURL;
 
-    @Value("${email.password}")
-    private String password;
+    public MailSenderService() {
 
-    @Value("${email.username}")
-    private String mail;
-
-
-    @PostConstruct
-    private void setupMailSender(){
-        mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(host);
-        mailSender.setPort(port);
-        mailSender.setUsername(mail);
-        mailSender.setPassword(password);
-
-        Properties props = mailSender.getJavaMailProperties();
-
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
-
-        mailSender.setJavaMailProperties(props);
     }
-    public void sendMessage(String to, String subject, String message) throws MessagingException {
-        mailSender.testConnection();
-        SimpleMailMessage email = new SimpleMailMessage();
-        System.out.println(mailSender.getUsername());
-        email.setTo(to);
-        email.setSubject(subject);
-        email.setText(message);
-        email.setFrom("no-reply.GammaLogin@chalmers.it");
-        mailSender.send(email);
+
+    /**
+     * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
+     * @return true if message was successfully sent false if not
+     */
+    public boolean sendMail(String cid, String subject, String body){
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + gotifyApiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject object = new JSONObject();
+        object.put("to", cid);
+        object.put("from", "no-reply@chalmers.it");
+        object.put("subject", subject);
+        object.put("body",body);
+
+        HttpEntity<JSONObject> entity = new HttpEntity<JSONObject>(object, headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<String> response = restTemplate.postForEntity(gotifyURL, entity, String.class);
+
+        System.out.println(response.toString());
+
+        return true;
     }
 }

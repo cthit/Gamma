@@ -1,7 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import org.springframework.security.oauth2.provider.endpoint.WhitelabelErrorEndpoint;
-
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;

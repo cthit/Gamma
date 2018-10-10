@@ -20,34 +20,45 @@ import appTranslations from "./App.translations.json";
 
 import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
+import GammaDialog from "./views/gamma-dialog";
 
 import DrawerNavigationLink from "./elements/drawer-navigation-link";
 import UserInformation from "./elements/user-information";
 
 import Login from "../use-cases/login";
-import loginTranslations from "../use-cases/login/Login.translations.jsx";
-
 import CreateAccount from "../use-cases/create-account";
-import createAccountTranslations from "../use-cases/create-account/CreateAccount.translations.jsx";
-
-import Demo from "../use-cases/demo";
-import demoTranslations from "../use-cases/demo/Demo.translations.json";
-
 import Home from "../use-cases/home";
+import Users from "../use-cases/users";
+import Error from "../use-cases/error";
+import Posts from "../use-cases/posts";
+import Whitelist from "../use-cases/whitelist";
+import Groups from "../use-cases/groups";
+import Websites from "../use-cases/websites";
+import ActivationCodes from "../use-cases/activation-codes";
+import Gdpr from "../use-cases/gdpr";
 
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
-import { Padding, Spacing, Fill, Center } from "../common-ui/layout";
+import {
+  Padding,
+  Spacing,
+  Fill,
+  Center,
+  Hide,
+  HideFill
+} from "../common-ui/layout";
 import { ProvidersForApp } from "./ProvidersForApp";
 import IfElseRendering from "../common/declaratives/if-else-rendering";
 import GammaLinearProgress from "../common/elements/gamma-linear-progress";
 import { Title, Text } from "../common-ui/text";
 import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
-import Error from "../use-cases/error";
+import GammaTranslations from "../common/declaratives/gamma-translations";
+import GammaLoading from "./views/gamma-loading";
 
 export class App extends Component {
   state = {
-    mobileOpen: false
+    mobileOpen: false,
+    lastPath: "/"
   };
 
   constructor(props) {
@@ -65,13 +76,7 @@ export class App extends Component {
       }
     });
 
-    props.addTranslation({
-      ...appTranslations,
-      ...commonTranslations,
-      ...createAccountTranslations,
-      ...loginTranslations,
-      ...demoTranslations
-    });
+    props.addTranslation({ ...appTranslations, ...commonTranslations });
 
     props.userUpdateMe();
   }
@@ -85,6 +90,21 @@ export class App extends Component {
       mobileOpen: false
     });
   };
+
+  onRouteChanged(data) {
+    if (data.location.pathname !== this.state.lastPath) {
+      const lastBaseUrl = this.state.lastPath.split("/")[1];
+      const currentBaseUrl = data.location.pathname.split("/")[1];
+
+      if (lastBaseUrl !== currentBaseUrl) {
+        this.props.gammaLoadingStart();
+      }
+
+      this.setState({
+        lastPath: data.location.pathname
+      });
+    }
+  }
 
   render() {
     const title = "Gamma - IT-konto";
@@ -105,8 +125,29 @@ export class App extends Component {
           <DrawerNavigationLink onClick={this._closeDrawer} link="/login">
             Logga in
           </DrawerNavigationLink>
-          <DrawerNavigationLink onClick={this._closeDrawer} link="/demo">
-            Demo
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/users">
+            Users
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/groups">
+            Groups
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/posts">
+            Posts
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/whitelist">
+            Whitelist
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/websites">
+            Websites
+          </DrawerNavigationLink>
+          <DrawerNavigationLink onClick={this._closeDrawer} link="/gdpr">
+            GDPR
+          </DrawerNavigationLink>
+          <DrawerNavigationLink
+            onClick={this._closeDrawer}
+            link="/activation-codes"
+          >
+            Activation codes
           </DrawerNavigationLink>
         </List>
       </div>
@@ -114,24 +155,34 @@ export class App extends Component {
 
     const { mobileOpen } = this.state;
 
-    var { loggedIn, loaded, text } = this.props;
+    var { loggedIn, userLoaded, loading } = this.props;
 
     loggedIn = loggedIn != null ? loggedIn : false;
-    loaded = loaded != null ? loaded : false;
+    userLoaded = userLoaded != null ? userLoaded : false;
 
     return (
       <BrowserRouter>
         <StyledRoot>
-          <IfElseRendering
-            test={!loggedIn && loaded}
-            ifRender={() => (
-              <Route
-                render={props => (
-                  <ContainUserToAllowedPages
-                    currentPath={props.location.pathname}
-                    allowedBasePaths={["/create-account"]}
-                    to="/login"
-                    toastTextOnRedirect={text.YouNeedToLogin}
+          <GammaTranslations
+            translations={appTranslations}
+            uniquePath="App"
+            render={text => (
+              <IfElseRendering
+                test={!loggedIn && userLoaded}
+                ifRender={() => (
+                  <Route
+                    render={props => (
+                      <ContainUserToAllowedPages
+                        currentPath={props.location.pathname}
+                        allowedBasePaths={[
+                          "/create-account",
+                          "/reset-password",
+                          "/login"
+                        ]}
+                        to="/login"
+                        toastTextOnRedirect={text.YouNeedToLogin}
+                      />
+                    )}
                   />
                 )}
               />
@@ -181,32 +232,47 @@ export class App extends Component {
                 <GammaRedirect currentPath={props.location.pathname} />
               )}
             />
+            <GammaDialog />
             <GammaToast />
-            <IfElseRendering
-              test={loaded}
-              elseRender={() => <GammaLinearProgress />}
-              ifRender={() => (
-                <Padding>
-                  <Switch>
-                    <Route path="/home" component={Home} />
-                    <Route path="/create-account" component={CreateAccount} />
-                    <Route path="/login" component={Login} />
-                    <Route path="/error" component={Error} />
-                    <Route path="/demo" component={Demo} />
-                    <Route
-                      path="/"
-                      render={props => (
-                        <IfElseRendering
-                          test={loggedIn}
-                          ifRender={() => <Redirect to="/home" />}
-                          elseRender={() => <Redirect to="/login" />}
-                        />
-                      )}
-                    />
-                  </Switch>
-                </Padding>
-              )}
+
+            <HideFill hidden={!loading}>
+              <GammaLoading />
+            </HideFill>
+
+            <Route
+              render={props => {
+                this.onRouteChanged(props);
+                return null;
+              }}
             />
+
+            <HideFill hidden={loading}>
+              <Padding>
+                <Switch>
+                  <Route path="/home" component={Home} />
+                  <Route path="/users" component={Users} />
+                  <Route path="/groups" component={Groups} />
+                  <Route path="/create-account" component={CreateAccount} />
+                  <Route path="/login" component={Login} />
+                  <Route path="/whitelist" component={Whitelist} />
+                  <Route path="/error" component={Error} />
+                  <Route path="/posts" component={Posts} />
+                  <Route path="/websites" component={Websites} />
+                  <Route path="/activation-codes" component={ActivationCodes} />
+                  <Route path="/gdpr" component={Gdpr} />
+                  <Route
+                    path="/"
+                    render={props => (
+                      <IfElseRendering
+                        test={loggedIn}
+                        ifRender={() => <Redirect to="/home" />}
+                        elseRender={() => <Redirect to="/login" />}
+                      />
+                    )}
+                  />
+                </Switch>
+              </Padding>
+            </HideFill>
           </StyledMain>
         </StyledRoot>
       </BrowserRouter>

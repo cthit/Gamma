@@ -10,42 +10,62 @@ import GammaStepper from "../../common/elements/gamma-stepper";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import { Fill, Spacing } from "../../common-ui/layout";
 
-const CreateAccount = ({ text, location }) => (
-  <Fill>
-    <MapPathToStep
-      currentPath={location.pathname}
-      pathToStepMap={{
-        "/create-account": 0,
-        "/create-account/email-sent": 1,
-        "/create-account/input": 2,
-        "/create-account/finished": 3
-      }}
-      render={step => (
-        <GammaStepper
-          activeStep={step}
-          steps={[
-            {
-              text: text.SendCid,
-              element: <InputCid />
-            },
-            {
-              text: text.GetActivationCode,
-              element: <EmailHasBeenSent />
-            },
-            {
-              text: text.CreateAccount,
-              element: <InputDataAndCode />
-            }
-          ]}
-          finishedElement={<CreationOfAccountFinished />}
-        />
-      )}
-    />
-  </Fill>
-);
+import GammaTranslations from "../../common/declaratives/gamma-translations";
+import translations from "./CreateAccount.translations.json";
+
+class CreateAccount extends React.Component {
+  constructor(props) {
+    super();
+
+    props.gammaLoadingFinished();
+  }
+
+  render() {
+    const { location } = this.props;
+
+    return (
+      <GammaTranslations
+        translations={translations}
+        uniquePath="CreateAccount"
+        render={text => (
+          <Fill>
+            <MapPathToStep
+              currentPath={location.pathname}
+              pathToStepMap={{
+                "/create-account": 0,
+                "/create-account/email-sent": 1,
+                "/create-account/input": 2,
+                "/create-account/finished": 3
+              }}
+              render={step => (
+                <GammaStepper
+                  activeStep={step}
+                  steps={[
+                    {
+                      text: text.SendCid,
+                      element: <InputCid />
+                    },
+                    {
+                      text: text.GetActivationCode,
+                      element: <EmailHasBeenSent />
+                    },
+                    {
+                      text: text.CreateAccount,
+                      element: <InputDataAndCode />
+                    }
+                  ]}
+                  finishedElement={<CreationOfAccountFinished />}
+                />
+              )}
+            />
+          </Fill>
+        )}
+      />
+    );
+  }
+}
 
 CreateAccount.propTypes = {
-  text: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 

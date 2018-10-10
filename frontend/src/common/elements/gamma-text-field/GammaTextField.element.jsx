@@ -5,6 +5,7 @@ import { FormControl, InputLabel, Input } from "@material-ui/core";
 import GammaLowerLabel from "../gamma-lower-label";
 
 import generateId from "../../utils/generators/id.generator";
+import { Fill } from "../../../common-ui/layout";
 
 const GammaTextField = ({
   value,
@@ -19,26 +20,28 @@ const GammaTextField = ({
   errorMessage,
   disabled
 }) => (
-  <FormControl error={error}>
-    <InputLabel>{upperLabel}</InputLabel>
-    <Input
-      name={name}
-      value={value != null ? value : ""}
-      onChange={onChange}
-      onBlur={onBlur}
-      type={password ? "password" : numbersOnly ? "number" : "text"}
-      disabled={disabled}
-    />
-    <GammaLowerLabel
-      text={
-        errorMessage != null
-          ? errorMessage
-          : lowerLabel != null
-            ? lowerLabel
-            : ""
-      }
-    />
-  </FormControl>
+  <Fill>
+    <FormControl error={error}>
+      <InputLabel>{upperLabel}</InputLabel>
+      <Input
+        name={name}
+        value={value != null ? value : ""}
+        onChange={onChange}
+        onBlur={onBlur}
+        type={password ? "password" : numbersOnly ? "number" : "text"}
+        disabled={disabled}
+      />
+      <GammaLowerLabel
+        text={
+          errorMessage != null
+            ? errorMessage
+            : lowerLabel != null
+              ? lowerLabel
+              : ""
+        }
+      />
+    </FormControl>
+  </Fill>
 );
 
 GammaTextField.propTypes = {

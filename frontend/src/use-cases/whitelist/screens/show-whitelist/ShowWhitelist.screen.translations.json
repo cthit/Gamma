@@ -1,0 +1,11 @@
+{
+  "Id": ["Id", "Id"],
+  "Cid": ["Cid", "Cid"],
+  "Details": ["Details", "Detaljer"],
+  "EmptyWhitelist": ["The whitelist is empty", "Whitelist är tom"],
+  "Whitelist": ["Whitelist", "Whitelist"],
+  "SearchForWhitelistItem": [
+    "Search for whitelist item",
+    "Sök efter whitelist inlägg"
+  ]
+}

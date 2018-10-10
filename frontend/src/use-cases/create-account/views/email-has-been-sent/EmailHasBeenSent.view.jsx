@@ -14,32 +14,39 @@ import {
 } from "../../../../common-ui/design";
 import { Text } from "../../../../common-ui/text";
 
-const EmailHasBeenSent = ({ text }) => (
-  <Center>
-    <GammaCard minWidth="300px" maxWidth="500px">
-      <GammaCardTitle text={text.AnEmailShouldBeSent} />
-      <GammaCardBody>
-        <Text text={text.AnEmailShouldBeSentDescription} />
-      </GammaCardBody>
-      <GammaCardButtons leftRight reverseDirection>
-        <ButtonNavLink to="/create-account/input">
-          <GammaButton
-            primary
-            raised
-            onClick={() => {}}
-            text={text.HaveRecievedACode}
-          />
-        </ButtonNavLink>
-        <ButtonNavLink to="/create-account">
-          <GammaButton raised onClick={() => {}} text={text.Back} />
-        </ButtonNavLink>
-      </GammaCardButtons>
-    </GammaCard>
-  </Center>
+import GammaTranslations from "../../../../common/declaratives/gamma-translations";
+import translations from "./EmailHasBeenSent.view.translations.json";
+
+const EmailHasBeenSent = ({}) => (
+  <GammaTranslations
+    translations={translations}
+    uniquePath="CreateAccount.View.EmailHasBeenSent"
+    render={text => (
+      <Center>
+        <GammaCard minWidth="300px" maxWidth="500px">
+          <GammaCardTitle text={text.AnEmailShouldBeSent} />
+          <GammaCardBody>
+            <Text text={text.AnEmailShouldBeSentDescription} />
+          </GammaCardBody>
+          <GammaCardButtons leftRight reverseDirection>
+            <ButtonNavLink to="/create-account/input">
+              <GammaButton
+                primary
+                raised
+                onClick={() => {}}
+                text={text.HaveRecievedACode}
+              />
+            </ButtonNavLink>
+            <ButtonNavLink to="/create-account">
+              <GammaButton raised onClick={() => {}} text={text.Back} />
+            </ButtonNavLink>
+          </GammaCardButtons>
+        </GammaCard>
+      </Center>
+    )}
+  />
 );
 
-EmailHasBeenSent.propTypes = {
-  text: PropTypes.object.isRequired
-};
+EmailHasBeenSent.propTypes = {};
 
 export default EmailHasBeenSent;
