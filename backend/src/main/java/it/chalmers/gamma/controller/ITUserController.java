@@ -9,6 +9,7 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
 import org.json.simple.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -55,9 +57,9 @@ public class ITUserController {
                 return new LoginCompleteResponse(jwt);
             }
         } catch (AuthenticationException e) {
-            return new IncorrectCidOrPasswordResponse();
+            throw new IncorrectCidOrPasswordResponse();
         }
-        return new IncorrectCidOrPasswordResponse();
+        throw new IncorrectCidOrPasswordResponse();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -68,21 +70,21 @@ public class ITUserController {
         }
         Whitelist user = whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
         if (user == null) {
-            return new CodeOrCidIsWrongResponse();
+            throw new CodeOrCidIsWrongResponse();
         }
         createITUserRequest.setWhitelist(user);
         if (itUserService.userExists(createITUserRequest.getWhitelist().getCid())) {
-            return new UserAlreadyExistsResponse();
+            throw new UserAlreadyExistsResponse();
         }
         if (!activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
-            return new CodeOrCidIsWrongResponse();
+            throw new CodeOrCidIsWrongResponse();
         }
         if (activationCodeService.hasCodeExpired(user.getCid(), 2)) {
             activationCodeService.deleteCode(user.getCid());
-            return new CodeExpiredResponse();
+            throw new CodeExpiredResponse();
         }
         if(createITUserRequest.getPassword().length() < 8){
-            return new PasswordTooShortResponse();
+            throw new PasswordTooShortResponse();
         }
             else {
             itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
@@ -123,6 +125,9 @@ public class ITUserController {
     public JSONObject getUser(@PathVariable("cid") String cid){
         List<ITUserSerializer.Properties> properties = ITUserSerializer.Properties.getAllProperties();
         ITUser user = itUserService.loadUser(cid);
+        if(user == null){
+            throw new CidNotFoundResponse();
+        }
         ITUserSerializer serializer = new ITUserSerializer(properties);
         List<EntityWebsiteService.WebsiteView> websites = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
         return serializer.serialize(user, websites);

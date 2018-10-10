@@ -48,7 +48,7 @@ public class GroupPostAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request) {
         if (postService.postExists(request.getPost().getSv())) {
-            return new PostAlreadyExistsResponse();
+            throw new PostAlreadyExistsResponse();
         }
         postService.addPost(request.getPost());
         return new PostCreatedResponse();
@@ -64,7 +64,7 @@ public class GroupPostAdminController {
     public ResponseEntity<String> editPost(@RequestBody AddPostRequest request, @PathVariable("id") String id){
         Post post = postService.getPostById(id);
         if(post == null){
-            return new MissingRequiredFieldResponse("post");
+            throw new MissingRequiredFieldResponse("post");
         }
         postService.editPost(post, request.getPost());
         return new EditedPostResponse();

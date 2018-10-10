@@ -2,9 +2,10 @@ package it.chalmers.gamma.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
-public class PostDoesNotExistResponse extends ResponseEntity<String>{
+public class PostDoesNotExistResponse extends ResponseStatusException {
     public PostDoesNotExistResponse() {
-        super("POST_DOES_NOT_EXIST", HttpStatus.UNPROCESSABLE_ENTITY);
+        super(HttpStatus.NOT_FOUND, "POST_DOES_NOT_EXIST");
     }
 }

@@ -4,7 +4,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
-import it.chalmers.gamma.response.NoCidFoundResponse;
+import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.response.UserAddedToGroupResponse;
 import it.chalmers.gamma.service.FKITService;
@@ -34,10 +34,10 @@ public class GroupMemberAdminController {
     @RequestMapping(value = "/{id}/members", method = RequestMethod.POST)
     public ResponseEntity<String> addUserToGroup(@RequestBody AddUserGroupRequest request, @PathVariable("id") String id) {
         if (!itUserService.userExists(request.getUser())) {
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         if (!postService.postExists(request.getPost())) {
-            return new PostDoesNotExistResponse();
+            throw new PostDoesNotExistResponse();
         }
         ITUser user = itUserService.loadUser(request.getUser());
         FKITGroup fkitGroup = fkitService.getGroup(UUID.fromString(id));

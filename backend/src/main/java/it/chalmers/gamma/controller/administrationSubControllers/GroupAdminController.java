@@ -50,19 +50,19 @@ public class GroupAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
         if (fkitService.groupExists(createGroupRequest.getName())) {
-            return new GroupAlreadyExistsResponse();
+            throw new GroupAlreadyExistsResponse();
         }
         if (createGroupRequest.getName() == null) {
-            return new MissingRequiredFieldResponse("name");
+            throw new MissingRequiredFieldResponse("name");
         }
         if (createGroupRequest.getEmail() == null) {
-            return new MissingRequiredFieldResponse("email");
+            throw new MissingRequiredFieldResponse("email");
         }
         if (createGroupRequest.getFunc() == null) {
-            return new MissingRequiredFieldResponse("function");
+            throw new MissingRequiredFieldResponse("function");
         }
         if (createGroupRequest.getType() == null) {
-            return new MissingRequiredFieldResponse("type");
+            throw new MissingRequiredFieldResponse("type");
         }
         FKITGroup group = fkitService.createGroup(createGroupRequest.getName(), createGroupRequest.getPrettyName(), createGroupRequest.getDescription(),
                 createGroupRequest.getEmail(), createGroupRequest.getType(), createGroupRequest.getFunc(), createGroupRequest.getAvatarURL());
@@ -97,7 +97,7 @@ public class GroupAdminController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
         if (!fkitService.groupExists(UUID.fromString(id))) {
-            return new GroupDoesNotExistResponse();
+            throw new GroupDoesNotExistResponse();
         }
         groupWebsiteService.deleteWebsitesConnectedToGroup(fkitService.getGroup(UUID.fromString(id)));
         fkitService.removeGroup(UUID.fromString(id));

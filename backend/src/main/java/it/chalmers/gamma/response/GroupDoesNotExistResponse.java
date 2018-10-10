@@ -2,9 +2,10 @@ package it.chalmers.gamma.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
-public class GroupDoesNotExistResponse extends ResponseEntity<String>{
+public class GroupDoesNotExistResponse extends ResponseStatusException {
     public GroupDoesNotExistResponse() {
-        super("NO_SUCH_GROUP_EXISTS", HttpStatus.NOT_FOUND);
+        super( HttpStatus.NOT_FOUND,"NO_SUCH_GROUP_EXISTS");
     }
 }

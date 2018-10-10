@@ -33,20 +33,24 @@ public class WebsiteAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addWebsite(@RequestBody CreateWebsiteRequest request){
         if(request.getName() == null){
-            return new MissingRequiredFieldResponse("name");
+            throw new MissingRequiredFieldResponse("name");
         }
         websiteService.addPossibleWebsite(request.getName(), request.getPrettyName());
         return new WebsiteAddedResponse();
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Website> getWebsite(@PathVariable("id") String id){
-        return new GetWebsiteResponse(websiteService.getWebsiteById(id));
+        Website website = websiteService.getWebsiteById(id);
+        if(website == null){
+            throw new WebsiteNotFoundResponse();
+        }
+        return new GetWebsiteResponse(website);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editWebsite(@PathVariable("id") String id, @RequestBody CreateWebsiteRequest request){
         Website website = websiteService.getWebsiteById(id);
         if(website == null){
-            return new WebsiteNotFoundResponse();
+            throw new WebsiteNotFoundResponse();
         }
         websiteService.editWebsite(website, request.getName(), request.getPrettyName());
         return new EditedWebsiteResponse();

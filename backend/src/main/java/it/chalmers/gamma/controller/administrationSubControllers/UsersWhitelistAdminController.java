@@ -28,10 +28,10 @@ public class UsersWhitelistAdminController {
         List<String> cids = request.getCids();
         for(String cid : cids) {
             if (whitelistService.isCIDWhiteListed(cid)) {
-                return new CIDAlreadyWhitelistedResponse();
+                throw new CIDAlreadyWhitelistedResponse();
             }
             if (itUserService.userExists(cid)) {
-                return new UserAlreadyExistsResponse();
+                throw new UserAlreadyExistsResponse();
             }
             whitelistService.addWhiteListedCID(cid);
         }
@@ -41,13 +41,13 @@ public class UsersWhitelistAdminController {
     public ResponseEntity<String> editWhitelist(@RequestBody WhitelistCodeRequest request, @PathVariable("id") String id){
         Whitelist oldWhitelist = whitelistService.getWhitelistById(id);
         if(!whitelistService.isCIDWhiteListed(oldWhitelist.getCid())){
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         if(whitelistService.isCIDWhiteListed(request.getCid())){
-            return new CIDAlreadyWhitelistedResponse();
+            throw new CIDAlreadyWhitelistedResponse();
         }
         if(request.getCid() == null){
-            return new MissingRequiredFieldResponse("cid");
+            throw new MissingRequiredFieldResponse("cid");
         }
         whitelistService.editWhitelist(oldWhitelist, request.getCid());
         return new EditedWhitelistResponse();
@@ -56,7 +56,7 @@ public class UsersWhitelistAdminController {
     public ResponseEntity<String> removeWhitelist(@PathVariable("id") String id){
         Whitelist whitelist = whitelistService.getWhitelistById(id);
         if(whitelist == null){
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         whitelistService.removeWhiteListedCID(whitelist.getCid());
         return new UserDeletedResponse();

@@ -33,7 +33,7 @@ public class UserAdminController {
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
     public ResponseEntity<String> changePassword(@PathVariable("id") String id, @RequestBody AdminChangePasswordRequest request){
         if(!itUserService.userExists(UUID.fromString(id))){
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         ITUser user = itUserService.getUserById(UUID.fromString(id));
         itUserService.setPassword(user, request.getPassword());
@@ -45,7 +45,7 @@ public class UserAdminController {
     public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
         if(!itUserService.editUser(UUID.fromString(id), request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
                 request.getPhone(), request.getLanguage(), request.getAvatarUrl())){
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         ITUser user = itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
@@ -84,7 +84,7 @@ public class UserAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest) {
         if (itUserService.userExists(createITUserRequest.getCid())) {
-            return new UserAlreadyExistsResponse();
+            throw new UserAlreadyExistsResponse();
         }
         itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
                 createITUserRequest.getLastName(), createITUserRequest.getCid(), Year.of(createITUserRequest.getAcceptanceYear()),
@@ -94,7 +94,7 @@ public class UserAdminController {
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request){
         if(!itUserService.userExists(UUID.fromString(request.getId()))){
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         ITUser user = itUserService.getUserById(UUID.fromString(request.getId()));
         String token = TokenGenerator.generateToken();
@@ -114,11 +114,11 @@ public class UserAdminController {
     @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordFinishRequest request){
         if(!itUserService.userExists(request.getCid())){
-            return new NoCidFoundResponse();
+            throw new CidNotFoundResponse();
         }
         ITUser user = itUserService.loadUser(request.getCid());
         if(!passwordResetService.userHasActiveReset(user) || !passwordResetService.tokenMatchesUser(user, request.getToken())){
-            return new CodeOrCidIsWrongResponse();
+            throw new CodeOrCidIsWrongResponse();
         }
         itUserService.setPassword(user, request.getPassword());
         passwordResetService.removeToken(user);
