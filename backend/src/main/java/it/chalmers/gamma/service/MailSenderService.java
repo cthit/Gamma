@@ -1,18 +1,12 @@
 package it.chalmers.gamma.service;
 
-import com.google.api.client.json.Json;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.map.util.JSONPObject;
 import org.json.simple.JSONObject;
-import org.mortbay.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
