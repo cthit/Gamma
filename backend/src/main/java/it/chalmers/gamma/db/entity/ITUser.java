@@ -7,9 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.time.Instant;
 import java.time.Year;
 import java.util.*;
+import java.util.List;
 
 @Entity
 @Table(name = "ituser")
@@ -68,6 +70,9 @@ public class ITUser implements UserDetails{
     @Column(name = "last_modified_at", nullable = false)
     private Instant lastModifiedAt;
 
+    @Transient
+    private List<GrantedAuthority> authorities;
+
 
     public ITUser() {
         id = UUID.randomUUID();
@@ -93,7 +98,7 @@ public class ITUser implements UserDetails{
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
-        return null;
+        return new ArrayList<>();
     }
 
     public String getPassword() {
@@ -233,6 +238,10 @@ public class ITUser implements UserDetails{
         this.accountLocked = accountLocked;
     }
 
+    public void setAuthority(List<GrantedAuthority> authority){
+        authorities = new ArrayList<>(authority);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -281,4 +290,5 @@ public class ITUser implements UserDetails{
                 ", lastModifiedAt=" + lastModifiedAt +
                 '}';
     }
+
 }

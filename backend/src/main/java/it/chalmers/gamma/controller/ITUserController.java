@@ -57,8 +57,10 @@ public class ITUserController {
                 return new LoginCompleteResponse(jwt);
             }
         } catch (AuthenticationException e) {
+            e.printStackTrace();
             throw new IncorrectCidOrPasswordResponse();
         }
+        System.out.println("got here");
         throw new IncorrectCidOrPasswordResponse();
     }
 

@@ -108,4 +108,7 @@ public class MembershipService {
         }
         return groups;
     }
+    public List<Membership> getMembershipsByUser(ITUser user){
+        return membershipRepository.findAllById_ItUser(user);
+    }
 }

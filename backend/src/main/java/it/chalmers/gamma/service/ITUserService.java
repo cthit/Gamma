@@ -1,12 +1,14 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,21 +28,43 @@ public class ITUserService implements UserDetailsService{
 
     private final PasswordEncoder passwordEncoder;
 
+    private final MembershipService membershipService;
+
 
     private int minPasswordLength = 8;
 
-    private ITUserService(ITUserRepository itUserRepository) {
+    private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        this.membershipService = membershipService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
+        ITUser details = itUserRepository.findByCid(cid);
+        List<Membership> memberships = membershipService.getMembershipsByUser(details);
+        List<GrantedAuthority> authority = details.getAuthorities();
+        authority.add(getHighestRole(memberships));
+        details.setAuthority(authority);
         return itUserRepository.findByCid(cid);
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
         return itUserRepository.findByCid(cid);
+    }
+
+    private Membership getHighestRole(List<Membership> memberships){
+        int highest = 0;
+        if(memberships.size() == 0){
+            return null;
+        }
+        for(int i = 0; i < memberships.size(); i++){
+            if(memberships.get(i).getPriority() > highest){
+                highest = i;
+            }
+        }
+        System.out.println("getHighest");
+        return memberships.get(highest);
     }
 
     public List<ITUser> loadAllUsers(){
