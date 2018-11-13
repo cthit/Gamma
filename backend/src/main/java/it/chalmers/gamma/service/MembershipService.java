@@ -111,4 +111,7 @@ public class MembershipService {
     public List<Membership> getMembershipsByUser(ITUser user){
         return membershipRepository.findAllById_ItUser(user);
     }
+    public Membership getMembershipByUserAndGroup(ITUser user, FKITGroup group){
+        return membershipRepository.findById_ItUserAndId_FkitGroup(user, group);
+    }
 }

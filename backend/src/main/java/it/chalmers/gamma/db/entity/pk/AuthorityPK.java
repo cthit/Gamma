@@ -4,11 +4,14 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 
+import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class AuthorityPK {
+@Embeddable
+public class AuthorityPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
     private FKITGroup fkitGroup;

@@ -8,6 +8,8 @@ import it.chalmers.gamma.db.repository.AuthorityRepository;
 import org.codehaus.jackson.schema.JsonSerializableSchema;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthorityService {
 
@@ -18,11 +20,14 @@ public class AuthorityService {
     }
 
     public void setAuthorityLevel(FKITGroup group, Post post, Authority.Authorities authorityLevel){
-        Authority authority = new Authority();
-        AuthorityPK pk = new AuthorityPK();
-        pk.setFkitGroup(group);
-        pk.setPost(post);
-        authority.setId(pk);
+        Authority authority = authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
+        if(authority == null) {
+            authority = new Authority();
+            AuthorityPK pk = new AuthorityPK();
+            pk.setFkitGroup(group);
+            pk.setPost(post);
+            authority.setId(pk);
+        }
         authority.setAuthorityLevel(authorityLevel);
         authorityRepository.save(authority);
     }
@@ -30,4 +35,11 @@ public class AuthorityService {
     public Authority getAuthorityLevel(FKITGroup group, Post post){
         return authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
     }
+
+    public void removeAuthority(FKITGroup group, Post post){
+        Authority authority = authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
+        authorityRepository.delete(authority);
+    }
+
+
 }

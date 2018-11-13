@@ -58,12 +58,13 @@ public class ITUserService implements UserDetailsService{
         if(memberships.size() == 0){
             return null;
         }
+        System.out.println(memberships);
         for(int i = 0; i < memberships.size(); i++){
+            System.out.println(memberships.get(i));
             if(memberships.get(i).getPriority() > highest){
                 highest = i;
             }
         }
-        System.out.println("getHighest");
         return memberships.get(highest);
     }
 

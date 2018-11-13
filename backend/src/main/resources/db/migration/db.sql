@@ -1,7 +1,7 @@
 create table text (
   id  uuid constraint text_pk primary key,
   sv  text not null,
-  en  text
+  es  text
 );
 
 create table website(
@@ -43,13 +43,18 @@ create table ituser_website (
 
 create table authority (
   fkit_group_id   uuid  constraint authority_fkit_group_fk references fkit_group,
-  post_id         uuid  constraint authority_post          references post
-  authority_level varchar(30),
+  post_id         uuid  constraint authority_post          references post,
+  authority_level uuid  constraint authority_level          references authority_level,
   constraint      membership_pk primary key (post_id, fkit_group_id)
 );
 
+create table authority_level (
+  id  uuid constraint authority_level_pk primary key,
+  authority_level varchar(30)
+);
+
 create table password_reset_token(
-  id      uuid constraint password_reset_toke7n_pk primary key,
+  id      uuid constraint password_reset_token_pk primary key,
   token   varchar(100) not null,
   ituser  uuid references ituser
 );

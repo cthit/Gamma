@@ -62,7 +62,7 @@ public class GroupPostAdminController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editPost(@RequestBody AddPostRequest request, @PathVariable("id") String id){
-        Post post = postService.getPostById(id);
+        Post post = postService.getPost(UUID.fromString(id));
         if(post == null){
             throw new MissingRequiredFieldResponse("post");
         }
@@ -71,7 +71,7 @@ public class GroupPostAdminController {
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Post> getPost(@PathVariable("id") String id){
-        Post post = postService.getPostById(id);
+        Post post = postService.getPost(UUID.fromString(id));
         return new GetPostResponse(post);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -101,11 +101,11 @@ public class GroupPostAdminController {
                 ITUserSerializer.Properties.LAST_NAME);
         List<FKITGroupSerializer.Properties> FKITGroupProperties = Arrays.asList(FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.NAME, FKITGroupSerializer.Properties.ID, FKITGroupSerializer.Properties.USERS);
-        Post post = postService.getPostById(id);
+        Post post = postService.getPost(UUID.fromString(id));
         List<FKITGroup> groups = membershipService.getGroupsWithPost(post);
         ITUserSerializer itUserSerializer = new ITUserSerializer(ITUserProperties);
         FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(FKITGroupProperties);
-        List<JSONObject> groupAndUser = new ArrayList<>();
+        List<JSONObject> groupAndUser = new ArrayList<>();  // Everything above this is just initialization things.
         for(FKITGroup group : groups) {
             List<ITUser> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
             List<JSONObject> users = new ArrayList<>();

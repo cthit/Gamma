@@ -67,10 +67,14 @@ public class Membership implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
+        /* TODO THIS SHOULD NOT BE RETURNING A FIELD, BUT CALCULATING USING AUTHORITIES  */
         return authority;
     }
 
     public int getPriority(){
+        if(authority == null){
+            return 0;
+        }
         return Authority.Authorities.valueOf(authority).getPriority();
     }
 
