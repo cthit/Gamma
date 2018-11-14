@@ -1,13 +1,11 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.Authority;
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
-import org.codehaus.jackson.schema.JsonSerializableSchema;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,7 +17,7 @@ public class AuthorityService {
         this.authorityRepository = authorityRepository;
     }
 
-    public void setAuthorityLevel(FKITGroup group, Post post, Authority.Authorities authorityLevel){
+    public void setAuthorityLevel(FKITGroup group, Post post, AuthorityLevel authorityLevel){
         Authority authority = authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
         if(authority == null) {
             authority = new Authority();
@@ -28,7 +26,9 @@ public class AuthorityService {
             pk.setPost(post);
             authority.setId(pk);
         }
-        authority.setAuthorityLevel(authorityLevel);
+        System.out.println(authorityLevel);
+        authority.setAuthorityLevel((AuthorityLevel) authorityLevel);
+        System.out.println(authority);
         authorityRepository.save(authority);
     }
 
@@ -40,6 +40,16 @@ public class AuthorityService {
         Authority authority = authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
         authorityRepository.delete(authority);
     }
-
+    public List<AuthorityLevel> getAuthorities(List<Membership> memberships){
+        List<AuthorityLevel> authorityLevels = new ArrayList<>();
+        for(Membership membership : memberships){
+            System.out.println(authorityRepository.findAll());
+            Authority authority = getAuthorityLevel(membership.getId().getFKITGroup(), membership.getPost());
+            if(authority != null) {
+                authorityLevels.add(authority.getAuthorityLevel());
+            }
+        }
+        return authorityLevels;
+    }
 
 }

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.service;
 
+import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,42 +32,30 @@ public class ITUserService implements UserDetailsService{
 
     private final MembershipService membershipService;
 
+    private final AuthorityService authorityService;
+
 
     private int minPasswordLength = 8;
 
-    private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService) {
+    private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService, AuthorityService authorityService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         this.membershipService = membershipService;
+        this.authorityService = authorityService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
         ITUser details = itUserRepository.findByCid(cid);
         List<Membership> memberships = membershipService.getMembershipsByUser(details);
-        List<GrantedAuthority> authority = details.getAuthorities();
-        authority.add(getHighestRole(memberships));
+        List<GrantedAuthority> authority = new ArrayList<>(authorityService.getAuthorities(memberships));
         details.setAuthority(authority);
-        return itUserRepository.findByCid(cid);
+        System.out.println(details);
+        return details;
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
         return itUserRepository.findByCid(cid);
-    }
-
-    private Membership getHighestRole(List<Membership> memberships){
-        int highest = 0;
-        if(memberships.size() == 0){
-            return null;
-        }
-        System.out.println(memberships);
-        for(int i = 0; i < memberships.size(); i++){
-            System.out.println(memberships.get(i));
-            if(memberships.get(i).getPriority() > highest){
-                highest = i;
-            }
-        }
-        return memberships.get(highest);
     }
 
     public List<ITUser> loadAllUsers(){

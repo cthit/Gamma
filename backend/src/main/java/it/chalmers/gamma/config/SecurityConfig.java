@@ -38,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/create").permitAll()
                 .antMatchers("/whitelist/activate_cid").permitAll()
-                .antMatchers("/validate_jwt").permitAll();
+                .antMatchers("/validate_jwt").permitAll()
+                .antMatchers("/admin/groups").hasAuthority("admin");
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

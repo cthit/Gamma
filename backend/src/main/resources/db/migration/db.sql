@@ -41,16 +41,16 @@ create table ituser_website (
   website     uuid not null references website_url
 );
 
-create table authority (
-  fkit_group_id   uuid  constraint authority_fkit_group_fk references fkit_group,
-  post_id         uuid  constraint authority_post          references post,
-  authority_level uuid  constraint authority_level          references authority_level,
-  constraint      membership_pk primary key (post_id, fkit_group_id)
-);
-
 create table authority_level (
   id  uuid constraint authority_level_pk primary key,
   authority_level varchar(30)
+);
+
+create table authority (
+  fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
+  post_id         uuid  constraint authority_post                     references post,
+  authority_level uuid  constraint authority_authority_level          references authority_level,
+  constraint      authority_pk primary key (post_id, fkit_group_id)
 );
 
 create table password_reset_token(

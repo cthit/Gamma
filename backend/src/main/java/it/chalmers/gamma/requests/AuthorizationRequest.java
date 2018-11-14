@@ -3,7 +3,7 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 
 public class AuthorizationRequest {
-    private String Post;
+    private String post;
     private String group;
     private String authority;
 
@@ -16,11 +16,11 @@ public class AuthorizationRequest {
     }
 
     public String getPost() {
-        return Post;
+        return post;
     }
 
     public void setPost(String post) {
-        Post = post;
+        this.post = post;
     }
 
     public String getGroup() {
@@ -34,8 +34,9 @@ public class AuthorizationRequest {
     @Override
     public String toString() {
         return "AuthorizationRequest{" +
-                "Post='" + Post + '\'' +
+                "post='" + post + '\'' +
                 ", group='" + group + '\'' +
+                ", authority'" + authority + '\'' +
                 '}';
     }
     @Override
@@ -43,7 +44,7 @@ public class AuthorizationRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthorizationRequest that = (AuthorizationRequest) o;
-        return Objects.equals(Post, that.Post) &&
+        return Objects.equals(post, that.post) &&
                 Objects.equals(group, that.group) &&
                 Objects.equals(authority, that.authority);
     }
@@ -51,6 +52,6 @@ public class AuthorizationRequest {
     @Override
     public int hashCode() {
 
-        return Objects.hash(Post, group, authority);
+        return Objects.hash(post, group, authority);
     }
 }

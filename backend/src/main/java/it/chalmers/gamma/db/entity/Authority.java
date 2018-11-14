@@ -3,30 +3,18 @@ package it.chalmers.gamma.db.entity;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "authority")
 public class Authority {
-    public enum Authorities{
-        USER(0), ADMIN(1);
-        private int priority;
-        Authorities(int priority){
-        this.priority = priority;
-    }
-        public int getPriority(){
-        return priority;
-    }
-    }
     @EmbeddedId
     AuthorityPK id;
 
-    @Column(name = "authority_level")
-    private Authorities authorityLevel;
+    @JoinColumn(name = "authority_level")
+    @OneToOne
+    private AuthorityLevel authorityLevel;
 
     public AuthorityPK getId() {
         return id;
@@ -36,11 +24,11 @@ public class Authority {
         this.id = id;
     }
 
-    public Authorities getAuthorityLevel() {
+    public AuthorityLevel getAuthorityLevel() {
         return authorityLevel;
     }
 
-    public void setAuthorityLevel(Authorities authorityLevel) {
+    public void setAuthorityLevel(AuthorityLevel authorityLevel) {
         this.authorityLevel = authorityLevel;
     }
 

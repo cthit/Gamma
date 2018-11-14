@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "membership")
-public class Membership implements GrantedAuthority {
+public class Membership{
 
 
     @EmbeddedId
@@ -24,9 +24,6 @@ public class Membership implements GrantedAuthority {
 
     @Column(name = "year")
     private int year;
-
-    @Column(name = "authority")
-    private String authority;
 
 
     public Year getYear() {
@@ -64,25 +61,6 @@ public class Membership implements GrantedAuthority {
     public void setYear(int year) {
         this.year = year;
     }
-
-    @Override
-    public String getAuthority() {
-        /* TODO THIS SHOULD NOT BE RETURNING A FIELD, BUT CALCULATING USING AUTHORITIES  */
-        return authority;
-    }
-
-    public int getPriority(){
-        if(authority == null){
-            return 0;
-        }
-        return Authority.Authorities.valueOf(authority).getPriority();
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-
 
     @Override
     public boolean equals(Object o) {

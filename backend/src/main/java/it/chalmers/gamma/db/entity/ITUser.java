@@ -98,7 +98,7 @@ public class ITUser implements UserDetails{
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        return new ArrayList<>(authorities);
     }
 
     public String getPassword() {
@@ -274,21 +274,21 @@ public class ITUser implements UserDetails{
         return "ITUser{" +
                 "id=" + id +
                 ", cid='" + cid + '\'' +
-                ", pass='<redacted>'" +
+                ", password='" + password + '\'' +
                 ", nick='" + nick + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", language='" + (language != null ? language.toString() : "No language set") + '\'' +
+                ", language=" + language +
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", gdpr=" + gdpr +
-                ", accountLocked=" + accountLocked +
                 ", userAgreement=" + userAgreement +
+                ", accountLocked=" + accountLocked +
                 ", acceptanceYear=" + acceptanceYear +
                 ", createdAt=" + createdAt +
                 ", lastModifiedAt=" + lastModifiedAt +
+                ", authorities=" + authorities +
                 '}';
     }
-
 }
