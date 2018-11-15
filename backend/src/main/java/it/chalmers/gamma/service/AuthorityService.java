@@ -51,5 +51,11 @@ public class AuthorityService {
         }
         return authorityLevels;
     }
+    public List<Authority> getAllAuthorities(){
+        return authorityRepository.findAll();
+    }
+    public List<Authority> getAllAuthoritiesWithAuthorityLevel(AuthorityLevel authorityLevel){
+        return authorityRepository.findAllByAuthorityLevel(authorityLevel);
+    }
 
 }

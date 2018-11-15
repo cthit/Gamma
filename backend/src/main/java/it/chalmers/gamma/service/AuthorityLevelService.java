@@ -4,6 +4,9 @@ import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class AuthorityLevelService {
     AuthorityLevelRepository authorityLevelRepository;
@@ -24,8 +27,12 @@ public class AuthorityLevelService {
         return true;
     }
 
-    public AuthorityLevel getAuthorityLevel(String authorityLevel){
-        return authorityLevelRepository.findByAuthorityLevel(authorityLevel);
+    public AuthorityLevel getAuthorityLevel(UUID authorityLevel){
+        return authorityLevelRepository.findById(authorityLevel).orElse(null);
+    }
+
+    public List<AuthorityLevel> getAllAuthorityLevels(){
+        return authorityLevelRepository.findAll();
     }
 
 }

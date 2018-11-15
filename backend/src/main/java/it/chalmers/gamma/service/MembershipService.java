@@ -90,7 +90,7 @@ public class MembershipService {
         Membership membership = membershipRepository.findById_ItUserAndPost(user, post);
         return membership.getId().getFKITGroup();
     }
-    public List<ITUser>getUserIdsByGroupAndPost(FKITGroup group, Post post){
+    public List<ITUser> getUserByGroupAndPost(FKITGroup group, Post post){
         List<Membership> memberships = membershipRepository.findAllById_FkitGroupAndPost(group, post);
         List<ITUser> users = new ArrayList<>();
         for(Membership membership : memberships){

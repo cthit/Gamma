@@ -60,7 +60,6 @@ public class ITUserController {
             e.printStackTrace();
             throw new IncorrectCidOrPasswordResponse();
         }
-        System.out.println("got here");
         throw new IncorrectCidOrPasswordResponse();
     }
 
