@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AuthorityService {
@@ -40,6 +41,10 @@ public class AuthorityService {
         Authority authority = authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
         authorityRepository.delete(authority);
     }
+
+    public void removeAuthority(UUID id){
+        authorityRepository.deleteById(id);
+    }
     public List<AuthorityLevel> getAuthorities(List<Membership> memberships){
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for(Membership membership : memberships){
@@ -56,6 +61,10 @@ public class AuthorityService {
     }
     public List<Authority> getAllAuthoritiesWithAuthorityLevel(AuthorityLevel authorityLevel){
         return authorityRepository.findAllByAuthorityLevel(authorityLevel);
+    }
+
+    public Authority getAuthority(UUID id){
+        return authorityRepository.findByInternalId(id);
     }
 
 }

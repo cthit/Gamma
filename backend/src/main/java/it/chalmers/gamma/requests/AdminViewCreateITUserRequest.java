@@ -1,7 +1,5 @@
 package it.chalmers.gamma.requests;
 
-import it.chalmers.gamma.db.entity.Whitelist;
-
 public class AdminViewCreateITUserRequest {
     private String cid;
     private String password;

@@ -24,7 +24,7 @@ public class UserAdminController {
     private UserWebsiteService userWebsiteService;
     private PasswordResetService passwordResetService;
 
-    private UserAdminController(ITUserService itUserService, UserWebsiteService userWebsiteService, WebsiteService websiteService, PasswordResetService passwordResetService){
+    private UserAdminController(ITUserService itUserService, UserWebsiteService userWebsiteService, PasswordResetService passwordResetService){
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
         this.passwordResetService = passwordResetService;
@@ -92,7 +92,7 @@ public class UserAdminController {
         return new UserCreatedResponse();
     }
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
-    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request){
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request){      //TODO MOVE THIS TO ITUSERCONTROLLER
         if(!itUserService.userExists(UUID.fromString(request.getId()))){
             throw new CidNotFoundResponse();
         }
@@ -112,7 +112,7 @@ public class UserAdminController {
         return new PasswordResetResponse();
     }
     @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordFinishRequest request){
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordFinishRequest request){     //TODO MOVE THIS TO ITUSERCONTROLLER
         if(!itUserService.userExists(request.getCid())){
             throw new CidNotFoundResponse();
         }

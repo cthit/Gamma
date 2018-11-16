@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller.administrationSubControllers;
 
+import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.AuthorizationLevelRequest;
@@ -39,7 +40,7 @@ public class AuthorityAdminController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addAuthority(@RequestBody AuthorizationRequest request){
+    public ResponseEntity<String> addAuthority(@RequestBody AuthorizationRequest request){      // TODO CHECK IF EXISTS
         Post post = postService.getPost(UUID.fromString(request.getPost()));
         if(post == null){
             throw new PostDoesNotExistResponse();
@@ -55,7 +56,6 @@ public class AuthorityAdminController {
         authorityService.setAuthorityLevel(group, post, level);
         return new AuthorityAddedResponse();
     }
-
 
     @RequestMapping(value = "/user_authorities/{authorityLevel}", method = RequestMethod.GET)
     public List<JSONObject> getUsersWithAuthority(@PathVariable("authorityLevel") String level){
@@ -75,35 +75,44 @@ public class AuthorityAdminController {
         return users;
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)  // TODO change this to use URL id instead
-    public ResponseEntity<String> removeAuthorization(@RequestBody AuthorizationRequest request){
-        Post post = postService.getPost(UUID.fromString(request.getPost()));
-        if(post == null){
-            throw new PostDoesNotExistResponse();
-        }
-        FKITGroup group = fkitService.getGroup(UUID.fromString(request.getGroup()));
-        if(group == null){
-            throw new GroupDoesNotExistResponse();
-        }
-        authorityService.removeAuthority(group, post);
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeAuthorization(@PathVariable("id") String id){
+        authorityService.removeAuthority(UUID.fromString(id));
         return new AuthorityRemovedResponse();
     }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Authority>> getAllAuthorities(){
         List<Authority> authorities = authorityService.getAllAuthorities();
         return new GetAllAuthoritiesResponse(authorities);
     }
-    // EVERYTHING BELOW THIS SHOULD MAYBE BE MOVED TO A DIFFERENT FILE
+
+    // BELOW THIS SHOULD MAYBE BE MOVED TO A DIFFERENT FILE
     @RequestMapping(value = "/level", method = RequestMethod.POST)
     public ResponseEntity<String> addAuthorityLevel(@RequestBody AuthorizationLevelRequest request){
         if(request.getAuthorityLevel() == null){
-            throw new MissingRequiredFieldResponse("AuthorityLevel");
+            throw new MissingRequiredFieldResponse("authorityLevel");
         }
         if(authorityLevelService.authorityLevelExists(request.getAuthorityLevel())){
             throw new AuthorityLevelAlreadyExists();
         }
         authorityLevelService.addAuthorityLevel(request.getAuthorityLevel());
         return new AuthorityLevelAddedResponse();
+    }
+
+    @RequestMapping(value = "/level", method = RequestMethod.GET)
+    public ResponseEntity<List<AuthorityLevel>> getAllAuthorityLevels(){
+        List<AuthorityLevel> authorityLevels = authorityLevelService.getAllAuthorityLevels();
+        return new GetAllAuthorityLevelsResponse(authorityLevels);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Authority> getAuthority(@PathVariable("id") String id){
+        Authority authority = authorityService.getAuthority(UUID.fromString(id));
+        if(authority == null){
+            throw new AuthorityNotFoundResponse();
+        }
+        return new GetAuthorityResponse(authority);
     }
 
 }

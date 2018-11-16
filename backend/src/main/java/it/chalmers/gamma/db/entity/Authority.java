@@ -5,12 +5,16 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "authority")
 public class Authority {
     @EmbeddedId
     AuthorityPK id;
+
+    @Column(name = "id")
+    private UUID internalId;
 
     @JoinColumn(name = "authority_level")
     @OneToOne
@@ -31,6 +35,15 @@ public class Authority {
     public void setAuthorityLevel(AuthorityLevel authorityLevel) {
         this.authorityLevel = authorityLevel;
     }
+
+    public UUID getInternal_id() { return internalId; }
+
+    public void setInternal_id(UUID internal_id) { this.internalId = internal_id; }
+
+    public Authority(){
+        this.internalId = UUID.randomUUID();
+    }
+
 
     @Override
     public boolean equals(Object o) {

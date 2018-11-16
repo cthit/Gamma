@@ -47,6 +47,7 @@ create table authority_level (
 );
 
 create table authority (
+  id              uuid  constraint authority_unique unique,
   fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level uuid  constraint authority_authority_level          references authority_level,

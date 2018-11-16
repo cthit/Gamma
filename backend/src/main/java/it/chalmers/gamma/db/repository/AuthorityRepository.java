@@ -14,4 +14,5 @@ import java.util.UUID;
 public interface AuthorityRepository extends JpaRepository<Authority, UUID> {
     Authority findById_FkitGroupAndAndId_Post(FKITGroup group, Post post);
     List<Authority> findAllByAuthorityLevel(AuthorityLevel authorityLevel);
+    Authority findByInternalId(UUID id);
 }

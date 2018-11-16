@@ -3,14 +3,14 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 
 public class AuthorizationLevelRequest {
-    String AuthorityLevel;
+    private String authorityLevel;
 
     public String getAuthorityLevel() {
-        return AuthorityLevel;
+        return authorityLevel;
     }
 
     public void setAuthorityLevel(String authorityLevel) {
-        AuthorityLevel = authorityLevel;
+        this.authorityLevel = authorityLevel;
     }
 
     @Override
@@ -18,18 +18,18 @@ public class AuthorizationLevelRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AuthorizationLevelRequest that = (AuthorizationLevelRequest) o;
-        return Objects.equals(AuthorityLevel, that.AuthorityLevel);
+        return Objects.equals(authorityLevel, that.authorityLevel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(AuthorityLevel);
+        return Objects.hash(authorityLevel);
     }
 
     @Override
     public String toString() {
         return "AuthorizationLevelRequest{" +
-                "AuthorityLevel='" + AuthorityLevel + '\'' +
+                "AuthorityLevel='" + authorityLevel + '\'' +
                 '}';
     }
 }
