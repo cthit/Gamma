@@ -33,7 +33,10 @@ public class ITUserService implements UserDetailsService{
     private final MembershipService membershipService;
 
     private final AuthorityService authorityService;
-
+    /*
+     * These dependencies are needed for the authentication system to work, since that does not go through the controller layer.
+     * Can be fixed later, and probably should, to minimize dependencies between services.
+     */
 
     private int minPasswordLength = 8;
 

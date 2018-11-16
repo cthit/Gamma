@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,9 +28,7 @@ public class AuthorityService {
             pk.setPost(post);
             authority.setId(pk);
         }
-        System.out.println(authorityLevel);
-        authority.setAuthorityLevel((AuthorityLevel) authorityLevel);
-        System.out.println(authority);
+        authority.setAuthorityLevel(authorityLevel);
         authorityRepository.save(authority);
     }
 
@@ -41,10 +40,11 @@ public class AuthorityService {
         Authority authority = authorityRepository.findById_FkitGroupAndAndId_Post(group, post);
         authorityRepository.delete(authority);
     }
-
+    @Transactional
     public void removeAuthority(UUID id){
-        authorityRepository.deleteById(id);
+        authorityRepository.deleteByInternalId(id);
     }
+
     public List<AuthorityLevel> getAuthorities(List<Membership> memberships){
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for(Membership membership : memberships){

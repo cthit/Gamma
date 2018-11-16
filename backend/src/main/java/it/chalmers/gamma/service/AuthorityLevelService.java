@@ -35,4 +35,7 @@ public class AuthorityLevelService {
         return authorityLevelRepository.findAll();
     }
 
+    public void removeAuthorityLevel(UUID id){
+        authorityLevelRepository.deleteById(id);
+    }
 }

@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -105,6 +106,11 @@ public class AuthorityAdminController {
         List<AuthorityLevel> authorityLevels = authorityLevelService.getAllAuthorityLevels();
         return new GetAllAuthorityLevelsResponse(authorityLevels);
     }
+    @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeAuthorityLevel(@PathVariable("id") String id){
+        authorityLevelService.removeAuthorityLevel(UUID.fromString(id));
+        return new AuthorityLevelRemovedResponse();
+    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Authority> getAuthority(@PathVariable("id") String id){
@@ -116,3 +122,4 @@ public class AuthorityAdminController {
     }
 
 }
+
