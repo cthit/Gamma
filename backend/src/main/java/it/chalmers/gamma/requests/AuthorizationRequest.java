@@ -51,7 +51,6 @@ public class AuthorizationRequest {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(post, group, authority);
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/admin/authorization")
+@RequestMapping("/admin/authority")
 public class AuthorityAdminController {
 
     private final AuthorityService authorityService;

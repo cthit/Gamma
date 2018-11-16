@@ -274,7 +274,7 @@ public class ITUser implements UserDetails{
         return "ITUser{" +
                 "id=" + id +
                 ", cid='" + cid + '\'' +
-                ", password='" + password + '\'' +
+                ", password='" + "<redacted>" + '\'' +
                 ", nick='" + nick + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

@@ -56,7 +56,6 @@ public class Authority {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, authorityLevel);
     }
 

@@ -1,7 +1,7 @@
 create table text (
   id  uuid constraint text_pk primary key,
   sv  text not null,
-  es  text
+  en  text
 );
 
 create table website(

@@ -47,7 +47,6 @@ public class AuthorityPK implements Serializable {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(fkitGroup, post);
     }
 
