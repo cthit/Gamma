@@ -38,11 +38,9 @@ public class FKITService {
         group.setSVFunction(function != null ? function.getSv() : group.getSVFunction());
         group.setENFunction(function != null ? function.getEn() : group.getENFunction());
         function = group.getFunc();
-        if(description != null) {
-            if (group.getDescription() != null) {
-                group.setSVDescription(description.getSv());
-                group.setENDescription(description.getEn());
-            }
+        if(description != null && group.getDescription() != null) {
+            group.setSVDescription(description.getSv());
+            group.setENDescription(description.getEn());
         }
         return saveGroup(group, prettyName, description, email, type, function, avatarURL);
     }
