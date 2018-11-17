@@ -41,7 +41,7 @@ public class AuthorityAdminController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addAuthority(@RequestBody AuthorizationRequest request){      // TODO CHECK IF EXISTS
+    public ResponseEntity<String> addAuthority(@RequestBody AuthorizationRequest request){
         Post post = postService.getPost(UUID.fromString(request.getPost()));
         if(post == null){
             throw new PostDoesNotExistResponse();
