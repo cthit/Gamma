@@ -1,15 +1,12 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,31 +26,17 @@ public class ITUserService implements UserDetailsService{
 
     private final PasswordEncoder passwordEncoder;
 
-    private final MembershipService membershipService;
-
-    private final AuthorityService authorityService;
-    /*
-     * These dependencies are needed for the authentication system to work, since that does not go through the controller layer.
-     * Can be fixed later, and probably should, to minimize dependencies between services.
-     */
 
     private int minPasswordLength = 8;
 
-    private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService, AuthorityService authorityService) {
+    private ITUserService(ITUserRepository itUserRepository) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        this.membershipService = membershipService;
-        this.authorityService = authorityService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
-        ITUser details = itUserRepository.findByCid(cid);
-        List<Membership> memberships = membershipService.getMembershipsByUser(details);
-        List<GrantedAuthority> authority = new ArrayList<>(authorityService.getAuthorities(memberships));
-        details.setAuthority(authority);
-        System.out.println(details);
-        return details;
+        return itUserRepository.findByCid(cid);
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {

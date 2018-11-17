@@ -43,8 +43,8 @@ public class PostService {
     public List<Post> getAllPosts(){
         return repository.findAll();
     }
-    public Post getPost(UUID id){
-        Optional<Post> post = repository.findById(id);
+    public Post getPostById(String id){
+        Optional<Post> post = repository.findById(UUID.fromString(id));
         return post.orElse(null);
     }
     public void deletePost(UUID id){

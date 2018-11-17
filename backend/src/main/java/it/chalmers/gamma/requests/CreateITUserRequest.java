@@ -4,7 +4,7 @@ import it.chalmers.gamma.db.entity.Whitelist;
 
 import java.util.Objects;
 
-public class CreateITUserRequest{
+public class CreateITUserRequest {
 
     private String code;
     private String password;
