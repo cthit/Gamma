@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.time.Year;
@@ -9,7 +10,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "membership")
-public class Membership {
+public class Membership{
+
 
     @EmbeddedId
     private MembershipPK id;
@@ -22,6 +24,7 @@ public class Membership {
 
     @Column(name = "year")
     private int year;
+
 
     public Year getYear() {
         return Year.of(year);
@@ -53,6 +56,10 @@ public class Membership {
 
     public void setUnofficialPostName(String unofficialPostName) {
         this.unofficialPostName = unofficialPostName;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     @Override

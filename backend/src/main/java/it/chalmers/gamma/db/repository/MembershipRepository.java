@@ -18,4 +18,5 @@ public interface MembershipRepository extends JpaRepository<Membership, UUID>{
     Membership findById_ItUserAndPost(ITUser user, Post post);
     List<Membership> findAllById_FkitGroupAndPost(FKITGroup group, Post post);
     List<Membership> findAllById_FkitGroup(FKITGroup group);
+    Membership findById_ItUserAndId_FkitGroup(ITUser user, FKITGroup group);
 }

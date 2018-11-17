@@ -2,19 +2,15 @@ package it.chalmers.gamma.controller.administrationSubControllers;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.db.serializers.SerializerValue;
 import it.chalmers.gamma.requests.AddPostRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
-import it.chalmers.gamma.util.SerializerUtil;
-import org.bouncycastle.LICENSE;
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +58,7 @@ public class GroupPostAdminController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editPost(@RequestBody AddPostRequest request, @PathVariable("id") String id){
-        Post post = postService.getPostById(id);
+        Post post = postService.getPost(UUID.fromString(id));
         if(post == null){
             throw new MissingRequiredFieldResponse("post");
         }
@@ -71,7 +67,7 @@ public class GroupPostAdminController {
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Post> getPost(@PathVariable("id") String id){
-        Post post = postService.getPostById(id);
+        Post post = postService.getPost(UUID.fromString(id));
         return new GetPostResponse(post);
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -101,13 +97,14 @@ public class GroupPostAdminController {
                 ITUserSerializer.Properties.LAST_NAME);
         List<FKITGroupSerializer.Properties> FKITGroupProperties = Arrays.asList(FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.NAME, FKITGroupSerializer.Properties.ID, FKITGroupSerializer.Properties.USERS);
-        Post post = postService.getPostById(id);
+        Post post = postService.getPost(UUID.fromString(id));
         List<FKITGroup> groups = membershipService.getGroupsWithPost(post);
         ITUserSerializer itUserSerializer = new ITUserSerializer(ITUserProperties);
         FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(FKITGroupProperties);
-        List<JSONObject> groupAndUser = new ArrayList<>();
+        List<JSONObject> groupAndUser = new ArrayList<>();  // Everything above this is just initialization things.
         for(FKITGroup group : groups) {
-            List<ITUser> userIDs = membershipService.getUserIdsByGroupAndPost(group, post);
+            List<ITUser> userIDs = membershipService.getUserByGroupAndPost(group, post);
+            System.out.println(userIDs);
             List<JSONObject> users = new ArrayList<>();
             for(ITUser user: userIDs){
                 users.add(itUserSerializer.serialize(user, null));

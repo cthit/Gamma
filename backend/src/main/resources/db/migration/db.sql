@@ -41,12 +41,21 @@ create table ituser_website (
   website     uuid not null references website_url
 );
 
-create table authorites (
-  authority varchar(50) constraint authorites_pk primary key
+create table authority_level (
+  id  uuid constraint authority_level_pk primary key,
+  authority_level varchar(30)
+);
+
+create table authority (
+  id              uuid  constraint authority_unique unique,
+  fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
+  post_id         uuid  constraint authority_post                     references post,
+  authority_level uuid  constraint authority_authority_level          references authority_level,
+  constraint      authority_pk primary key (post_id, fkit_group_id)
 );
 
 create table password_reset_token(
-  id      uuid constraint password_reset_toke7n_pk primary key,
+  id      uuid constraint password_reset_token_pk primary key,
   token   varchar(100) not null,
   ituser  uuid references ituser
 );
@@ -68,21 +77,14 @@ create table fkit_group_website(
   website     uuid not null references website_url
 );
 
-create table fkit_group_authorites (
-  fkit_group_id uuid,getId().getITUserId()
-  authorites_id varchar(50),
-  constraint fkit_group_authorites_pk primary key (fkit_group_id, authorites_id)
-);
-
 create table post (
   id        uuid constraint post_pk primary key,
   post_name uuid not null references text
-  -- post_name borde nog kanske vara post_function (som i funktionen rollen fyller) för att kunna hantera översättningar på ett någorlunda vettigt sätt
 );
 
 create table membership (   -- Should this be rebuilt to look like all other tables? probably
-  ituser_id            uuid constraint membership_ituser_fk references ituser,
-  fkit_group_id        uuid constraint membership_fkit_group_fk references fkit_group,
+  ituser_id            uuid         constraint membership_ituser_fk references ituser,
+  fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         not null constraint membership_post_fk references post,
   year                 integer      not null constraint membership_valid_year check (year >= 2001),
   unofficial_post_name varchar(100) null,
