@@ -7,6 +7,7 @@ USER node
 WORKDIR /usr/src/app
 
 RUN yarn
+RUN yarn global add react-scripts
 
 EXPOSE 3000
 

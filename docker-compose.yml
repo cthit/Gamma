@@ -21,3 +21,13 @@ services:
       - 3000:3000
     volumes: 
       - ./frontend:/usr/src/app
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: dev.dockerfile
+    ports:
+      - 8081:8081
+    environment:
+      GAMMA_PORT: 8081
+    volumes:
+      - ./backend:/app

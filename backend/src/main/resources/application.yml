@@ -30,11 +30,4 @@ security:
     token:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs= # This is only for Development, should also be a secret one for Production
       expire-length: 2592000000 #One Month. Subject to change.
-      issuer: digIT   #TODO ASK THE STUDENT DIVISION IF THIS SHOULD BE CTHIT INSTEAD
-mail:
-  sender:
-    mail-address: gustav.engsmyre@gmail.com
-    password: zbbhceogyjcedkwe
-    base_url: https://localhost:3000
-  receiver:
-    standard-postfix: student.chalmers.se
+      issuer: CTHIT
