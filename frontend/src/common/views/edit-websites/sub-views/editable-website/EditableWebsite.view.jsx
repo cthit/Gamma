@@ -1,13 +1,32 @@
-import { DigitTextField, DigitTranslations, DigitIconButton } from "@cthit/react-digit-components";
+import {
+    DigitIconButton,
+    DigitTextField,
+    DigitTranslations,
+    DigitTooltip
+} from "@cthit/react-digit-components";
 import { Cancel, Delete, Edit, Save } from "@material-ui/icons";
 import React from "react";
-import { Hide, Size, Spacing, VerticalFill } from "../../../../../common-ui/layout";
+import {
+    Hide,
+    Size,
+    Spacing,
+    VerticalFill
+} from "../../../../../common-ui/layout";
 import { Text } from "../../../../../common-ui/text";
-import GammaTooltip from "../../../../elements/gamma-tooltip";
-import { CustomVerticalFill, CustomVerticalFillRightAlign } from "./EditableWebsite.view.styles";
+import {
+    CustomVerticalFill,
+    CustomVerticalFillRightAlign
+} from "./EditableWebsite.view.styles";
 import translations from "./EditableWebsite.view.translations.json";
+
+class EditableWebsite extends React.Component {
+    state = {
+        editing: false,
+        newUrl: this.props.url
     };
     render() {
+        const { prettyWebsite, url, website, onChange, onDelete } = this.props;
+        const { editing, newUrl } = this.state;
         return (
             <DigitTranslations
                 translations={translations}
@@ -36,7 +55,7 @@ import translations from "./EditableWebsite.view.translations.json";
                         </VerticalFill>
                         <CustomVerticalFillRightAlign>
                             <Hide hidden={editing}>
-                                <GammaTooltip text={text.Edit}>
+                                <DigitTooltip text={text.Edit}>
                                     <DigitIconButton
                                         component={Edit}
                                         onClick={() =>
@@ -45,10 +64,10 @@ import translations from "./EditableWebsite.view.translations.json";
                                             })
                                         }
                                     />
-                                </GammaTooltip>
+                                </DigitTooltip>
                             </Hide>
                             <Hide hidden={!editing}>
-                                <GammaTooltip text={text.Cancel}>
+                                <DigitTooltip text={text.Cancel}>
                                     <DigitIconButton
                                         component={Cancel}
                                         onClick={() =>
@@ -58,8 +77,8 @@ import translations from "./EditableWebsite.view.translations.json";
                                             })
                                         }
                                     />
-                                </GammaTooltip>
-                                <GammaTooltip text={text.Save}>
+                                </DigitTooltip>
+                                <DigitTooltip text={text.Save}>
                                     <DigitIconButton
                                         component={Save}
                                         onClick={() => {
@@ -72,15 +91,15 @@ import translations from "./EditableWebsite.view.translations.json";
                                             });
                                         }}
                                     />
-                                </GammaTooltip>
+                                </DigitTooltip>
                             </Hide>
                             <div>
-                                <GammaTooltip text={text.Delete}>
+                                <DigitTooltip text={text.Delete}>
                                     <DigitIconButton
                                         component={Delete}
                                         onClick={() => onDelete()}
                                     />
-                                </GammaTooltip>
+                                </DigitTooltip>
                             </div>
                         </CustomVerticalFillRightAlign>
                     </CustomVerticalFill>
