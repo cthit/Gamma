@@ -1,4 +1,9 @@
-import { DigitButton, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitButton,
+    DigitTranslations,
+    DigitForm,
+    DigitFormField
+} from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
 import React from "react";
 import * as yup from "yup";
