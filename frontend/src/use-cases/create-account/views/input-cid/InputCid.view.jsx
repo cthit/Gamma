@@ -1,13 +1,7 @@
-import React, { Component } from "react";
+import { DigitButton, DigitTranslations } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
+import React from "react";
 import * as yup from "yup";
-
-import { CIDInput } from "./InputCid.view.styles";
-
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-
-import { Center, MarginTop } from "../../../../common-ui/layout";
 import {
     GammaCard,
     GammaCardBody,
@@ -15,9 +9,9 @@ import {
     GammaCardSubTitle,
     GammaCardTitle
 } from "../../../../common-ui/design";
-
+import { Center, MarginTop } from "../../../../common-ui/layout";
+import { CIDInput } from "./InputCid.view.styles";
 import translations from "./InputCid.view.translations";
-import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 
 const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
     <DigitTranslations
@@ -26,7 +20,7 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
         render={text => (
             <MarginTop>
                 <Center>
-                    <GammaForm
+                    <DigitForm
                         validationSchema={yup.object().shape({
                             cid: yup.string().required(text.FieldRequired)
                         })}
@@ -56,7 +50,7 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                 />
                                 <GammaCardBody>
                                     <Center>
-                                        <GammaFormField
+                                        <DigitFormField
                                             name="cid"
                                             component={CIDInput}
                                             componentProps={{

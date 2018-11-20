@@ -1,15 +1,6 @@
+import { DigitEditData, DigitTextField } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import GammaForm from "../../../../../common/elements/gamma-form";
-import {
-    GammaCard,
-    GammaCardTitle,
-    GammaCardButtons,
-    GammaCardBody
-} from "../../../../../common-ui/design";
-import GammaFormField from "../../../../../common/elements/gamma-form-field";
-
-import { DigitTextField, DigitEditData } from "@cthit/react-digit-components";
 
 const PostForm = ({
     initialValues,

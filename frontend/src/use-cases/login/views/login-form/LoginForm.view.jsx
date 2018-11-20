@@ -1,19 +1,6 @@
+import { DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import PropTypes from "prop-types";
 import * as yup from "yup";
-
-import {
-    CIDInput,
-    PasswordInput,
-    LoginButton,
-    CreateAccountButton,
-    RememberMe
-} from "./LoginForm.view.styles";
-
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-
-import { Center, MarginTop, Fill } from "../../../../common-ui/layout";
 import {
     GammaCard,
     GammaCardBody,
@@ -21,13 +8,19 @@ import {
     GammaCardTitle,
     GammaLink
 } from "../../../../common-ui/design";
-
+import { Center, Fill } from "../../../../common-ui/layout";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-
+import {
+    CIDInput,
+    CreateAccountButton,
+    LoginButton,
+    PasswordInput,
+    RememberMe
+} from "./LoginForm.view.styles";
 import translations from "./LoginForm.view.translations.json";
 
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitForm, DigitFormField } from "@cthit/react-digit-components";
 
 const LoginForm = ({ login, toastOpen, redirectTo }) => (
     <DigitTranslations
@@ -36,7 +29,7 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
         render={text => (
             <Fill>
                 {console.log(text)}
-                <GammaForm
+                <DigitForm
                     validationSchema={yup.object().shape({
                         cid: yup.string().required(text.FieldRequired),
                         password: yup.string().required(text.FieldRequired),
@@ -90,14 +83,14 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                             <GammaCardTitle text={text.Login} />
                             <GammaCardBody>
                                 <Center>
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="cid"
                                         component={CIDInput}
                                         componentProps={{
                                             upperLabel: text.EnterYourCid
                                         }}
                                     />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="password"
                                         component={PasswordInput}
                                         componentProps={{
@@ -106,7 +99,7 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                                         }}
                                     />
 
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="rememberMe"
                                         component={RememberMe}
                                         componentProps={{

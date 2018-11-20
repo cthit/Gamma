@@ -1,17 +1,8 @@
+import { DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import * as yup from "yup";
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-import {
-    GammaCard,
-    GammaCardTitle,
-    GammaCardBody,
-    GammaCardButtons
-} from "../../../../common-ui/design";
 import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import PostForm from "../common-views/post-form";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./EditPostDetails.screen.translations.json";
 
 const EditPostDetails = ({ postsChange, post, match }) => (

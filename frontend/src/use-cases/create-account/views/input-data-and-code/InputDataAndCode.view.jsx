@@ -2,9 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-
 import {
     AcceptUserAgreementInput,
     AcceptanceYearInput,
@@ -31,7 +28,11 @@ import statusCode from "../../../../common/utils/formatters/statusCode.formatter
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
 import translations from "./InputDataAndCode.view.translations.json";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitTranslations,
+    DigitForm,
+    DigitFormField
+} from "@cthit/react-digit-components";
 
 const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
     <DigitTranslations
@@ -39,7 +40,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
         uniquePath="CreateAccount"
         render={text => (
             <Center>
-                <GammaForm
+                <DigitForm
                     onSubmit={(values, actions) => {
                         const cid = values.cid;
                         const user = {
@@ -127,7 +128,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                             />
                             <GammaCardBody>
                                 <Center>
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="cid"
                                         component={ConfirmCidInput}
                                         componentProps={{
@@ -135,7 +136,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="code"
                                         component={ConfirmationCodeInput}
                                         componentProps={{
@@ -144,7 +145,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="nick"
                                         component={NickInput}
                                         componentProps={{
@@ -152,7 +153,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="password"
                                         component={PasswordInput}
                                         componentProps={{
@@ -161,7 +162,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="passwordConfirmation"
                                         component={PasswordConfirmationInput}
                                         componentProps={{
@@ -170,7 +171,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="firstName"
                                         component={FirstnameInput}
                                         componentProps={{
@@ -178,7 +179,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="lastName"
                                         component={LastnameInput}
                                         componentProps={{
@@ -186,7 +187,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="acceptanceYear"
                                         component={AcceptanceYearInput}
                                         componentProps={{
@@ -197,7 +198,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaFormField
+                                    <DigitFormField
                                         name="userAgreement"
                                         component={AcceptUserAgreementInput}
                                         componentProps={{
