@@ -25,6 +25,7 @@ import GammaDialog from "./views/gamma-dialog";
 import GammaLoading from "./views/gamma-loading";
 import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
+import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 
 export class App extends Component {
     state = {
@@ -138,6 +139,37 @@ export class App extends Component {
                         renderHeader={header}
                         renderMain={() => (
                             <div>
+                                <DigitTranslations
+                                    translations={appTranslations}
+                                    uniquePath="App"
+                                    render={text => (
+                                        <IfElseRendering
+                                            test={!loggedIn && userLoaded}
+                                            ifRender={() => (
+                                                <Route
+                                                    render={props => (
+                                                        <ContainUserToAllowedPages
+                                                            currentPath={
+                                                                props.location
+                                                                    .pathname
+                                                            }
+                                                            allowedBasePaths={[
+                                                                "/create-account",
+                                                                "/reset-password",
+                                                                "/login"
+                                                            ]}
+                                                            to="/login"
+                                                            toastTextOnRedirect={
+                                                                text.YouNeedToLogin
+                                                            }
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    )}
+                                />
+
                                 <Route
                                     render={props => (
                                         <GammaRedirect
@@ -232,36 +264,6 @@ export class App extends Component {
             />
             // <BrowserRouter>
             //     <StyledRoot>
-            //         <DigitTranslations
-            //             translations={appTranslations}
-            //             uniquePath="App"
-            //             render={text => (
-            //                 <IfElseRendering
-            //                     test={!loggedIn && userLoaded}
-            //                     ifRender={() => (
-            //                         <Route
-            //                             render={props => (
-            //                                 <ContainUserToAllowedPages
-            //                                     currentPath={
-            //                                         props.location.pathname
-            //                                     }
-            //                                     allowedBasePaths={[
-            //                                         "/create-account",
-            //                                         "/reset-password",
-            //                                         "/login"
-            //                                     ]}
-            //                                     to="/login"
-            //                                     toastTextOnRedirect={
-            //                                         text.YouNeedToLogin
-            //                                     }
-            //                                 />
-            //                             )}
-            //                         />
-            //                     )}
-            //                 />
-            //             )}
-            //         />
-
             //         <StyledAppBar>
             //             <StyledToolbar>
             //                 <StyledMenuButton

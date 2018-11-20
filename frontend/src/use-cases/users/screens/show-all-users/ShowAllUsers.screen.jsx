@@ -7,31 +7,35 @@ const ShowAllUsers = ({ users }) => (
         translations={translations}
         uniquePath="Users.Screen.ShowAllUsers"
         render={text => (
-            <DigitTable
-                titleText={text.Users}
-                searchText={text.SearchForUsers}
-                idProp="cid"
-                startOrderBy="firstName"
-                columnsOrder={[
-                    "firstName",
-                    "nick",
-                    "lastName",
-                    "cid",
-                    "acceptanceYear"
-                ]}
-                headerTexts={{
-                    firstName: text.FirstName,
-                    lastName: text.LastName,
-                    cid: text.Cid,
-                    nick: text.Nick,
-                    acceptanceYear: text.AcceptanceYear,
-                    __link: text.Details
-                }}
-                data={users.map(user => {
-                    return { ...user, __link: "/users/" + user.cid };
-                })}
-                emptyTableText={text.NoUsers}
-            />
+            <div>
+                {console.log(users)}
+
+                <DigitTable
+                    titleText={text.Users}
+                    searchText={text.SearchForUsers}
+                    idProp="cid"
+                    startOrderBy="firstName"
+                    columnsOrder={[
+                        "first_name",
+                        "nickname",
+                        "last_name",
+                        "cid",
+                        "acceptance_year"
+                    ]}
+                    headerTexts={{
+                        firstName: text.FirstName,
+                        lastName: text.LastName,
+                        cid: text.Cid,
+                        nick: text.Nick,
+                        acceptanceYear: text.AcceptanceYear,
+                        __link: text.Details
+                    }}
+                    data={users.map(user => {
+                        return { ...user, __link: "/users/" + user.cid };
+                    })}
+                    emptyTableText={text.NoUsers}
+                />
+            </div>
         )}
     />
 );
