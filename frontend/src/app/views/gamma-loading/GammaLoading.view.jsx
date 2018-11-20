@@ -1,6 +1,6 @@
 import React from "react";
-import GammaLinearProgress from "../../../common/elements/gamma-linear-progress";
+import { DigitLoading } from "@cthit/react-digit-components";
 
-const GammaLoading = ({}) => <GammaLinearProgress />;
+const GammaLoading = ({}) => <DigitLoading loading />;
 
 export default GammaLoading;

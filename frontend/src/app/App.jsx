@@ -1,63 +1,30 @@
-import React, { Component } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { Switch, Route, withRouter, Redirect } from "react-router-dom";
-import { List, Typography, Hidden } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import { withLocalize } from "react-localize-redux";
-
-import {
-    StyledRoot,
-    StyledAppBar,
-    StyledMenuButton,
-    StyledDrawer,
-    StyledMain,
-    StyledToolbar,
-    HorizontalFill,
-    GammaTitle
-} from "./App.styles";
-
-import appTranslations from "./App.translations.json";
-
-import GammaRedirect from "./views/gamma-redirect";
-import GammaToast from "./views/gamma-toast";
-import GammaDialog from "./views/gamma-dialog";
-
-import DrawerNavigationLink from "./elements/drawer-navigation-link";
-import UserInformation from "./elements/user-information";
-
-import Login from "../use-cases/login";
-import CreateAccount from "../use-cases/create-account";
-import Home from "../use-cases/home";
-import Users from "../use-cases/users";
-import Error from "../use-cases/error";
-import Posts from "../use-cases/posts";
-import Whitelist from "../use-cases/whitelist";
-import Groups from "../use-cases/groups";
-import Websites from "../use-cases/websites";
-import ActivationCodes from "../use-cases/activation-codes";
-import Gdpr from "../use-cases/gdpr";
-
-import {
-    Padding,
-    Spacing,
-    Fill,
-    Center,
-    Hide,
-    HideFill
-} from "../common-ui/layout";
-import { ProvidersForApp } from "./ProvidersForApp";
-import IfElseRendering from "../common/declaratives/if-else-rendering";
-import GammaLinearProgress from "../common/elements/gamma-linear-progress";
-import { Title, Text } from "../common-ui/text";
-import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
-import GammaLoading from "./views/gamma-loading";
-
 import {
     DigitHeader,
-    DigitNavLink,
     DigitLayout,
+    DigitNavLink,
     DigitTranslations
 } from "@cthit/react-digit-components";
+import React, { Component } from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
+import { HideFill, Padding } from "../common-ui/layout";
+import IfElseRendering from "../common/declaratives/if-else-rendering";
+import ActivationCodes from "../use-cases/activation-codes";
+import CreateAccount from "../use-cases/create-account";
+import Error from "../use-cases/error";
+import Gdpr from "../use-cases/gdpr";
+import Groups from "../use-cases/groups";
+import Home from "../use-cases/home";
+import Login from "../use-cases/login";
+import Posts from "../use-cases/posts";
+import Users from "../use-cases/users";
+import Websites from "../use-cases/websites";
+import Whitelist from "../use-cases/whitelist";
+import appTranslations from "./App.translations.json";
+import UserInformation from "./elements/user-information";
+import GammaDialog from "./views/gamma-dialog";
+import GammaLoading from "./views/gamma-loading";
+import GammaRedirect from "./views/gamma-redirect";
+import GammaToast from "./views/gamma-toast";
 
 export class App extends Component {
     state = {
