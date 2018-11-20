@@ -1,6 +1,4 @@
 version: '2'
-volumes:
-  node_modules:
 services:
   db:
     image: postgres
@@ -24,7 +22,6 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/usr/src/app
-      - node_modules:/usr/src/app/node_modules
 
   backend:
     build:

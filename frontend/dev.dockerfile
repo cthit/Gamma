@@ -1,14 +1,16 @@
-FROM node:8.12-jessie
+FROM node:9.11.1
 
-RUN mkdir -p /usr/src/app
-RUN chown node /usr/src/app
-USER node
+RUN mkdir -p /usr/src/app/node_modules
+RUN chown -R node /usr/src/app
+USER root
 
 WORKDIR /usr/src/app
 
-RUN yarn
-RUN yarn global add react-scripts
+RUN chmod -R 777 /usr/src/app/node_modules
 
-CMD yarn start
+RUN yarn install --verbose
+RUN yarn global add react-scripts --verbose
+
+CMD yarn start --verbose
 
 EXPOSE 3000
