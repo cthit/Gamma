@@ -1,16 +1,20 @@
-FROM node:9.11.1
+FROM node:11.2
 
-RUN mkdir -p /usr/src/app/node_modules
+RUN mkdir -p /usr/src/app/
 RUN chown -R node /usr/src/app
-USER root
+
+USER node
+
 
 WORKDIR /usr/src/app
 
-RUN chmod -R 777 /usr/src/app/node_modules
+COPY package.json .
 
-RUN yarn install --verbose
-RUN yarn global add react-scripts --verbose
-
-CMD yarn start --verbose
+RUN yarn install
+RUN yarn global add react-scripts
 
 EXPOSE 3000
+
+
+CMD yarn start
+

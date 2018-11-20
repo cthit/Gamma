@@ -21,7 +21,8 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./frontend:/usr/src/app
+      - ./frontend/src:/usr/src/app/src
+      - ./frontend/public:/usr/src/app/public
 
   backend:
     build:
