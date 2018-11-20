@@ -1,10 +1,9 @@
 import styled from "styled-components";
 
-import GammaSwitch from "../../../../common/elements/gamma-switch";
 import GammaTextField from "../../../../common/elements/gamma-text-field";
 import GammaSelect from "../../../../common/elements/gamma-select";
 
-import { DigitButton } from "@cthit/react-digit-components";
+import { DigitButton, DigitSwitch } from "@cthit/react-digit-components";
 
 export const CreateAccountButton = styled(DigitButton)``;
 
@@ -38,4 +37,4 @@ export const AcceptanceYearInput = styled(GammaSelect)`
     width: 300px;
 `;
 
-export const AcceptUserAgreementInput = styled(GammaSwitch)``;
+export const AcceptUserAgreementInput = styled(DigitSwitch)``;
