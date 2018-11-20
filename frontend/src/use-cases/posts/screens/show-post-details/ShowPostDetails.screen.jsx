@@ -22,7 +22,7 @@ function getPostName(post, activeLanguage) {
     case "sv":
       return post.sv;
     default:
-      post.en + "/" + post.sv;
+      return post.en + "/" + post.sv;
   }
 }
 

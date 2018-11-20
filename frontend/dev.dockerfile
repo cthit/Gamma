@@ -9,6 +9,6 @@ WORKDIR /usr/src/app
 RUN yarn
 RUN yarn global add react-scripts
 
-EXPOSE 3000
-
 CMD yarn start
+
+EXPOSE 3000
