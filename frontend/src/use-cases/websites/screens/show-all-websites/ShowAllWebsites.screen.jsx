@@ -3,9 +3,8 @@ import React from "react";
 import { Fill } from "../../../../common-ui/layout";
 import GammaTable from "../../../../common/views/gamma-table";
 import { GammaLink } from "../../../../common-ui/design";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Add } from "@material-ui/icons";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitFAB } from "@cthit/react-digit-components";
 import translations from "./ShowAllWebsites.screen.translations.json";
 
 const ShowAllWebsites = ({ websites }) => (
@@ -35,7 +34,7 @@ const ShowAllWebsites = ({ websites }) => (
                     emptyTableText={text.NoWebsites}
                 />
                 <GammaLink to="/websites/add">
-                    <GammaFABButton component={Add} secondary />
+                    <DigitFAB component={Add} secondary />
                 </GammaLink>
             </Fill>
         )}

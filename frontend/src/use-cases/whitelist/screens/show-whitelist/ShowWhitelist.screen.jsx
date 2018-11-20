@@ -1,10 +1,9 @@
 import React from "react";
 import { Fill } from "../../../../common-ui/layout";
 import GammaTable from "../../../../common/views/gamma-table";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Add } from "@material-ui/icons";
 import { GammaLink } from "../../../../common-ui/design";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitFAB } from "@cthit/react-digit-components";
 import translations from "./ShowWhitelist.screen.translations.json";
 
 const ShowWhitelist = ({ whitelist }) => (
@@ -33,7 +32,7 @@ const ShowWhitelist = ({ whitelist }) => (
                     emptyTableText={text.EmptyWhitelist}
                 />
                 <GammaLink to="/whitelist/add">
-                    <GammaFABButton component={Add} secondary />
+                    <DigitFAB component={Add} secondary />
                 </GammaLink>
             </Fill>
         )}

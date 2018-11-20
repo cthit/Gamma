@@ -1,11 +1,11 @@
 import React from "react";
 import GammaTable from "../../../../common/views/gamma-table";
 import { Fill } from "../../../../common-ui/layout";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Add } from "@material-ui/icons";
 import { GammaLink } from "../../../../common-ui/design";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowAllPosts.screen.translations.json";
+
+import { DigitTranslations, DigitFAB } from "@cthit/react-digit-components";
 
 const ShowAllPosts = ({ posts }) => (
     <DigitTranslations
@@ -34,7 +34,7 @@ const ShowAllPosts = ({ posts }) => (
                     emptyTableText={text.NoPosts}
                 />
                 <GammaLink to="/posts/add">
-                    <GammaFABButton component={Add} secondary />
+                    <DigitFAB component={Add} secondary />
                 </GammaLink>
             </Fill>
         )}

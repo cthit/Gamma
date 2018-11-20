@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 import GammaForm from "./";
 
-import { DigitCheckbox } from "@cthit/react-digit-components";
+import { DigitCheckbox, DigitFAB } from "@cthit/react-digit-components";
 
 describe("<GammaForm/>", () => {
     test("Shallow render of <GammaForm/>", () => {
@@ -94,7 +94,7 @@ describe("<GammaForm/>", () => {
                                 }
                             }}
                         />
-                        <GammaFABButton primary component={Add} submit />
+                        <DigitFAB primary component={Add} submit />
                     </div>
                 )}
             />

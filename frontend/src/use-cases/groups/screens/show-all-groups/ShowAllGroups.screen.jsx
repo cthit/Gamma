@@ -1,11 +1,11 @@
 import React from "react";
 import GammaTable from "../../../../common/views/gamma-table";
 import { Fill } from "../../../../common-ui/layout";
-import GammaFABButton from "../../../../common/elements/gamma-fab-button";
 import { Add } from "@material-ui/icons";
 import { GammaLink } from "../../../../common-ui/design";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowAllGroups.screen.translations.json";
+
+import { DigitTranslations, DigitFAB } from "@cthit/react-digit-components";
 
 const ShowAllGroups = ({ groups }) => (
     <DigitTranslations
@@ -49,7 +49,7 @@ const ShowAllGroups = ({ groups }) => (
                     emptyTableText={text.NoGroups}
                 />
                 <GammaLink to="/groups/new">
-                    <GammaFABButton component={Add} secondary />
+                    <DigitFAB component={Add} secondary />
                 </GammaLink>
             </Fill>
         )}
