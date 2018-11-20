@@ -8,9 +8,8 @@ import {
     GammaCardBody
 } from "../../../../../common-ui/design";
 import GammaFormField from "../../../../../common/elements/gamma-form-field";
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 
-import { DigitTextField } from "@cthit/react-digit-components";
+import { DigitTextField, DigitEditData } from "@cthit/react-digit-components";
 
 const PostForm = ({
     initialValues,
@@ -21,7 +20,7 @@ const PostForm = ({
     submitText,
     fieldRequiredText
 }) => (
-    <GammaEditData
+    <DigitEditData
         initialValues={initialValues}
         onSubmit={(values, actions) => {
             const wrapped = {

@@ -1,11 +1,9 @@
+import { DigitButton, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
 import styled from "styled-components";
-
-import { Spacing, Padding, Fill, Center } from "../../../common-ui/layout";
-import { Title, Subtitle } from "../../../common-ui/text";
+import { Center, Spacing } from "../../../common-ui/layout";
+import { Title } from "../../../common-ui/text";
 import IfElseRendering from "../../../common/declaratives/if-else-rendering";
-
-import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 
 const UserInformation = ({
     loaded,

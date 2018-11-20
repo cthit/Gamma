@@ -7,13 +7,13 @@ import {
     GammaCardBody
 } from "../../../../../common-ui/design";
 import GammaSelect from "../../../../../common/elements/gamma-select";
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 
 import {
     DigitTranslations,
-    DigitTextField
+    DigitTextField,
+    DigitEditData
 } from "@cthit/react-digit-components";
 
 function _getCurrentYear() {
@@ -42,7 +42,7 @@ const UserForm = ({
         translations={translations}
         uniquePath="Users.Screen.CommonViews.UserForm"
         render={text => (
-            <GammaEditData
+            <DigitEditData
                 titleText={titleText}
                 submitText={submitText}
                 initialValues={initialValues}

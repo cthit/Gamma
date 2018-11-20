@@ -1,9 +1,7 @@
 import React from "react";
 import * as yup from "yup";
 
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-
-import { DigitTextField } from "@cthit/react-digit-components";
+import { DigitTextField, DigitEditData } from "@cthit/react-digit-components";
 
 const WhitelistItemForm = ({
     onSubmit,
@@ -13,7 +11,7 @@ const WhitelistItemForm = ({
     fieldRequiredText,
     submitText
 }) => (
-    <GammaEditData
+    <DigitEditData
         validationSchema={yup.object().shape({
             cid: yup.string().required(fieldRequiredText)
         })}

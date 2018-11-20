@@ -1,20 +1,11 @@
-import React from "react";
-
-import * as yup from "yup";
-
 import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons
-} from "../../../../../common-ui/design";
-
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-import GammaSelect from "../../../../../common/elements/gamma-select";
-import {
+    DigitTextField,
     DigitTranslations,
-    DigitTextField
+    DigitEditData
 } from "@cthit/react-digit-components";
-
+import React from "react";
+import * as yup from "yup";
+import GammaSelect from "../../../../../common/elements/gamma-select";
 import translations from "./GroupForm.view.translations";
 
 const GroupForm = ({ initialValues, onSubmit }) => (
@@ -22,7 +13,7 @@ const GroupForm = ({ initialValues, onSubmit }) => (
         translations={translations}
         uniquePath="Groups.Screen.GroupForm"
         render={text => (
-            <GammaEditData
+            <DigitEditData
                 titleText={text.Group}
                 submitText={text.SaveGroup}
                 validationSchema={yup.object().shape({

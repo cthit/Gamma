@@ -1,20 +1,14 @@
+import {
+    DigitTextField,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import GammaForm from "../../../../common/elements/gamma-form";
-import {
-    GammaCard,
-    GammaCardTitle,
-    GammaCardBody
-} from "../../../../common-ui/design";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-import GammaEditData from "../../../../common/elements/gamma-edit-data";
-import {
-    DigitTranslations,
-    DigitTextField
-} from "@cthit/react-digit-components";
-import translations from "./EditActivationCodeDetails.screen.translations.json";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Center } from "../../../../common-ui/layout";
+import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
+import translations from "./EditActivationCodeDetails.screen.translations.json";
+
+import { DigitEditData } from "@cthit/react-digit-components";
 
 const EditActivationCodeDetails = ({
     activationCode,
@@ -28,7 +22,7 @@ const EditActivationCodeDetails = ({
                 uniquePath="ActivationCodes.Screen.EditActivationCodeDetails"
                 render={text => (
                     <Center>
-                        <GammaEditData
+                        <DigitEditData
                             initialValues={activationCode}
                             onSubmit={(values, actions) => {
                                 console.log(values);

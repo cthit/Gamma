@@ -1,16 +1,8 @@
-import React from "react";
-import * as yup from "yup";
-
-import { Fill, VerticalFill, Size, Spacing } from "../../../common-ui/layout";
-import GammaSelect from "../../elements/gamma-select";
-import GammaForm from "../../elements/gamma-form";
-import GammaFormField from "../../elements/gamma-form-field";
-import GammaEditData from "../../elements/gamma-edit-data";
-
-import EditableWebsite from "./sub-views/editable-website";
-import { TypeSelect } from "./EditWebsites.view.styles";
-
 import { DigitButton, DigitTextField } from "@cthit/react-digit-components";
+import React from "react";
+import { Fill, Size, Spacing, VerticalFill } from "../../../common-ui/layout";
+import GammaSelect from "../../elements/gamma-select";
+import EditableWebsite from "./sub-views/editable-website";
 
 class EditWebsites extends React.Component {
     state = {

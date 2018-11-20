@@ -1,10 +1,10 @@
 import React from "react";
 import * as yup from "yup";
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import translations from "./WebsiteForm.view.translations.json";
 import {
     DigitTranslations,
-    DigitTextField
+    DigitTextField,
+    DigitEditData
 } from "@cthit/react-digit-components";
 
 const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
@@ -12,7 +12,7 @@ const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
         translations={translations}
         uniquePath="Websites.Screen.CommonView.WebsiteForm"
         render={text => (
-            <GammaEditData
+            <DigitEditData
                 initialValues={initialValues}
                 onSubmit={onSubmit}
                 validationSchema={yup.object().shape({
