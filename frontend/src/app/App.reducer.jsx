@@ -15,18 +15,18 @@ import { groups } from "../use-cases/groups/Groups.reducer";
 import { websites } from "../use-cases/websites/Websites.reducer";
 import { activationCodes } from "../use-cases/activation-codes/ActivationCodes.reducer";
 
-export const rootReducer = combineReducers({
-  createAccount,
-  redirect,
-  toast,
-  localize,
-  user,
-  users,
-  posts,
-  whitelist,
-  groups,
-  websites,
-  activationCodes,
-  dialog,
-  loading
-});
+export const rootReducer = {
+    createAccount,
+    redirect,
+    toast,
+    localize,
+    user,
+    users,
+    posts,
+    whitelist,
+    groups,
+    websites,
+    activationCodes,
+    dialog,
+    loading
+};

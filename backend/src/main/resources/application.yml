@@ -15,7 +15,7 @@ spring:
           use_jdbc_metadata_defaults: false
 
 server:
-  port: ${GAMMA_PORT:8081}
+  port: ${GAMMA_PORT:8082}
 
 logging:
   level:
