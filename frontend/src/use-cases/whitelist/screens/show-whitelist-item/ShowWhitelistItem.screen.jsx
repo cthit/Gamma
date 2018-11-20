@@ -11,9 +11,8 @@ import {
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 import translations from "./ShowWhitelistItem.screen.translations.json";
 
 const ShowWhitelistItem = ({
@@ -44,7 +43,7 @@ const ShowWhitelistItem = ({
                                     />
                                 </GammaCardBody>
                                 <GammaCardButtons reversedDirection>
-                                    <GammaButton
+                                    <DigitButton
                                         text={text.DeleteWhitelistItem}
                                         onClick={() => {
                                             gammaDialogOpen({
@@ -89,7 +88,7 @@ const ShowWhitelistItem = ({
                                             "/edit"
                                         }
                                     >
-                                        <GammaButton
+                                        <DigitButton
                                             text={text.EditWhitelistItem}
                                             primary
                                             raised

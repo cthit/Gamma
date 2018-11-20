@@ -4,7 +4,6 @@ import * as yup from "yup";
 
 import { CIDInput } from "./InputCid.view.styles";
 
-import GammaButton from "../../../../common/elements/gamma-button";
 import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
 
@@ -18,7 +17,7 @@ import {
 } from "../../../../common-ui/design";
 
 import translations from "./InputCid.view.translations";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 
 const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
     <DigitTranslations
@@ -67,7 +66,7 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                     </Center>
                                 </GammaCardBody>
                                 <GammaCardButtons reverseDirection>
-                                    <GammaButton
+                                    <DigitButton
                                         text={text.SendCid}
                                         primary
                                         raised

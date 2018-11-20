@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 
 import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
 
-import GammaButton from "../../../../common/elements/gamma-button";
-
 import { Center } from "../../../../common-ui/layout";
 import {
     GammaCard,
@@ -16,6 +14,8 @@ import { Text } from "../../../../common-ui/text";
 
 import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./EmailHasBeenSent.view.translations.json";
+
+import { DigitButton } from "@cthit/react-digit-components";
 
 const EmailHasBeenSent = ({}) => (
     <DigitTranslations
@@ -30,7 +30,7 @@ const EmailHasBeenSent = ({}) => (
                     </GammaCardBody>
                     <GammaCardButtons leftRight reverseDirection>
                         <ButtonNavLink to="/create-account/input">
-                            <GammaButton
+                            <DigitButton
                                 primary
                                 raised
                                 onClick={() => {}}
@@ -38,7 +38,7 @@ const EmailHasBeenSent = ({}) => (
                             />
                         </ButtonNavLink>
                         <ButtonNavLink to="/create-account">
-                            <GammaButton
+                            <DigitButton
                                 raised
                                 onClick={() => {}}
                                 text={text.Back}

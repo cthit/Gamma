@@ -1,17 +1,15 @@
 {
-  "Common": {
     "Cancel": ["Cancel", "Avbryt"],
     "Back": ["Back", "Tillbaka"],
     "FieldRequired": [
-      "This field is required",
-      "Det här fältet är obligatoriskt"
+        "This field is required",
+        "Det här fältet är obligatoriskt"
     ],
     "SomethingWentWrong": [
-      "Something went wrong when trying to send the data, please try again or contact digit@chalmers.it",
-      "Någonting gick snett när vi försökte skicka ditt data, var vänlig och försök igen eller kontakta digit@chalmers.it"
+        "Something went wrong when trying to send the data, please try again or contact digit@chalmers.it",
+        "Någonting gick snett när vi försökte skicka ditt data, var vänlig och försök igen eller kontakta digit@chalmers.it"
     ],
     "Logout": ["Logout", "Logga ut"],
     "LoggedOut": ["You have logged out", "Du har loggat ut"],
     "Save": ["Save", "Spara"]
-  }
 }

@@ -9,10 +9,11 @@ import {
     GammaLink
 } from "../../../../common-ui/design";
 import { Center } from "../../../../common-ui/layout";
-import GammaButton from "../../../../common/elements/gamma-button";
 import { Text } from "../../../../common-ui/text";
 import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./CreationOfAccountFinished.view.translations.json";
+
+import { DigitButton } from "@cthit/react-digit-components";
 
 const CreationOfAccountFinished = ({}) => (
     <DigitTranslations
@@ -29,7 +30,7 @@ const CreationOfAccountFinished = ({}) => (
                     </GammaCardBody>
                     <GammaCardButtons reverseDirection>
                         <GammaLink to="/login">
-                            <GammaButton
+                            <DigitButton
                                 raised
                                 primary
                                 text={text.LoginForTheFirstTime}

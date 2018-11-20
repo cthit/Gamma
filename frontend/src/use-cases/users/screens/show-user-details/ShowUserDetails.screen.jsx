@@ -10,12 +10,13 @@ import {
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data";
 import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowUserDetails.screen.translations.json";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
+
+import { DigitButton } from "@cthit/react-digit-components";
 
 const ShowUserDetails = ({
     user,
@@ -65,14 +66,14 @@ const ShowUserDetails = ({
                             </GammaCardBody>
                             <GammaCardButtons reverseDirection>
                                 <GammaLink to={"/users/" + user.cid + "/edit"}>
-                                    <GammaButton
+                                    <DigitButton
                                         text={text.Edit}
                                         primary
                                         raised
                                     />
                                 </GammaLink>
                                 <Spacing />
-                                <GammaButton
+                                <DigitButton
                                     onClick={() =>
                                         gammaDialogOpen({
                                             title:

@@ -10,7 +10,6 @@ import {
 
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
 import GammaTextField from "../../../../../common/elements/gamma-text-field";
-import GammaButton from "../../../../../common/elements/gamma-button";
 import GammaSelect from "../../../../../common/elements/gamma-select";
 import { DigitTranslations } from "@cthit/react-digit-components";
 

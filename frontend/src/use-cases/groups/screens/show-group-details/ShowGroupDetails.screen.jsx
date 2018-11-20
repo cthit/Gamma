@@ -10,10 +10,9 @@ import {
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
 import { Edit } from "@material-ui/icons";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 import translations from "./ShowGroupDetails.screen.translations.json";
 
 const ShowGroupDetails = ({
@@ -73,13 +72,13 @@ const ShowGroupDetails = ({
                                     <GammaLink
                                         to={"/groups/" + group.id + "/edit"}
                                     >
-                                        <GammaButton
+                                        <DigitButton
                                             primary
                                             raised
                                             text="Redigera"
                                         />
                                     </GammaLink>
-                                    <GammaButton
+                                    <DigitButton
                                         text="Radera"
                                         onClick={() => {
                                             gammaDialogOpen({

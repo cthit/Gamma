@@ -10,7 +10,6 @@ import {
     RememberMe
 } from "./LoginForm.view.styles";
 
-import GammaButton from "../../../../common/elements/gamma-button";
 import GammaForm from "../../../../common/elements/gamma-form";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
 

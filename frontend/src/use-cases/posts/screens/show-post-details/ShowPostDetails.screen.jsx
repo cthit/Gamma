@@ -10,9 +10,8 @@ import {
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text, Display } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 import translations from "./ShowPostDetails.screen.translations.json";
 
 function getPostName(post, activeLanguage) {
@@ -77,14 +76,14 @@ class ShowPostDetails extends React.Component {
                                                     "/edit"
                                                 }
                                             >
-                                                <GammaButton
+                                                <DigitButton
                                                     text="Redigera"
                                                     primary
                                                     raised
                                                 />
                                             </GammaLink>
                                             <Spacing />
-                                            <GammaButton
+                                            <DigitButton
                                                 text={text.DeletePost}
                                                 onClick={() => {
                                                     gammaDialogOpen({

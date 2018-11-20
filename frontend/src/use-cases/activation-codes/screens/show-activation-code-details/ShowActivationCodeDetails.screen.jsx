@@ -10,10 +10,11 @@ import {
 } from "../../../../common-ui/design";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
 import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
 import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
+
+import { DigitButton } from "@cthit/react-digit-components";
 
 const ShowActivationCodeDetails = ({
     activationCode,
@@ -57,13 +58,13 @@ const ShowActivationCodeDetails = ({
                                             "/edit"
                                         }
                                     >
-                                        <GammaButton
+                                        <DigitButton
                                             text={text.EditActivationCode}
                                             primary
                                             raised
                                         />
                                     </GammaLink>
-                                    <GammaButton
+                                    <DigitButton
                                         text={text.DeleteActivationCode}
                                         onClick={() => {
                                             gammaDialogOpen({
