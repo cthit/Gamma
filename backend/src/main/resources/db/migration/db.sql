@@ -69,7 +69,7 @@ create table fkit_group_website(
 );
 
 create table fkit_group_authorites (
-  fkit_group_id uuid,getId().getITUserId()
+  fkit_group_id uuid,
   authorites_id varchar(50),
   constraint fkit_group_authorites_pk primary key (fkit_group_id, authorites_id)
 );

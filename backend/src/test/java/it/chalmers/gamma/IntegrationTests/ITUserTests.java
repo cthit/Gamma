@@ -61,28 +61,28 @@ public class ITUserTests {
 
     public void setup(){
         utils = new TestUtils();
-        utils.setMockMvc(mockMvc);
+        utils.setMockMvc(mockMvc, jwtTokenProvider, userService);
     }
 
     @Test
     public void testDisplayUsers() throws Exception {
+        String nick1 = "gurr";
+        String cid1 = "example";
         CreateITUserRequest itUser1 = new CreateITUserRequest();
-        itUser1.setNick("gurr");
+        itUser1.setNick(nick1);
         itUser1.setPassword("examplePassword");
-        itUser1.setWhitelist(new Whitelist("example"));
+        itUser1.setWhitelist(new Whitelist(cid1));
         CreateITUserRequest itUser2 = new CreateITUserRequest();
         itUser2.setNick("leif");
         itUser2.setPassword("examplePassword");
         itUser2.setWhitelist(new Whitelist("example2"));
         userService.createUser(itUser1.getNick(), itUser1.getFirstName(), itUser1.getLastName(), itUser1.getWhitelist().getCid(), Year.of(itUser1.getAcceptanceYear()), itUser1.isUserAgreement(), null, itUser1.getPassword());
         userService.createUser(itUser2.getNick(), itUser2.getFirstName(), itUser2.getLastName(), itUser2.getWhitelist().getCid(), Year.of(itUser2.getAcceptanceYear()), itUser2.isUserAgreement(), null, itUser2.getPassword());
-
-        String token = jwtTokenProvider.createToken("gurr");
+        String token = jwtTokenProvider.createToken(cid1);
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get("/users/").header("Authorization", "Bearer " + token)
+                MockMvcRequestBuilders.get("/users/" + cid1).header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)).andReturn();
-
-        Assert.assertTrue(result.getResponse().getContentAsString().contains("gurr"));
+        Assert.assertTrue(result.getResponse().getContentAsString().contains(nick1));
         Assert.assertFalse(result.getResponse().getContentAsString().contains("sfe"));
     }
     @Test
@@ -93,7 +93,7 @@ public class ITUserTests {
         Whitelist wl = new Whitelist(cid);
         whitelistRepository.save(wl);
         ActivationCode activationCode = new ActivationCode(wl);
-        activationCode.setCode(TokenGenerator.generateToken());
+        activationCode.setCode("Test Code");
         activationCodeService.saveActivationCode(wl, activationCode.getCode());
 
         CreateITUserRequest user = createAccount(cid);

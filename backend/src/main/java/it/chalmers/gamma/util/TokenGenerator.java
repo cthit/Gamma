@@ -3,7 +3,7 @@ package it.chalmers.gamma.util;
 import java.util.Random;
 
 public class TokenGenerator {
-    private static int length = 100;
+    private static int length = 100;        // TODO Add length as argument
     private static String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static String NUMBERS = "123456789";

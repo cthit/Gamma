@@ -46,7 +46,7 @@ public class WhitelistController {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-            sendEmail(activationCode);
+        //    sendEmail(activationCode);
         }
 
         /*
