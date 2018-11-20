@@ -44,7 +44,7 @@ public class TestUtils {
         this.userService = userService;
     }
 
-    public void addAdminUser(){
+    public String addAdminUser(){
         String nick1 = "admin";
         String cid1 = "admin";
         CreateITUserRequest itUser1 = new CreateITUserRequest();
@@ -53,6 +53,7 @@ public class TestUtils {
         itUser1.setWhitelist(new Whitelist(cid1));
         userService.createUser(itUser1.getNick(), null, null, cid1, Year.of(2018), false, "", itUser1.getPassword());
         token = tokenProvider.createToken(cid1);
+        return token;
     }
 
     public void sendCreateCode(String cid) throws Exception {

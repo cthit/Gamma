@@ -48,8 +48,10 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String cid){
         UserDetails userDetails = itUserService.loadUserByUsername(cid);
+        if(userDetails == null){
+            throw new InvalidJWTTokenResponse();
+        }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
-
     }
 
     public String resolveToken(HttpServletRequest req) {
