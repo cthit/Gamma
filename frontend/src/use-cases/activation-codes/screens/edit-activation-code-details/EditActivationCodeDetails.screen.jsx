@@ -7,9 +7,11 @@ import {
     GammaCardBody
 } from "../../../../common-ui/design";
 import GammaFormField from "../../../../common/elements/gamma-form-field";
-import GammaTextField from "../../../../common/elements/gamma-text-field";
 import GammaEditData from "../../../../common/elements/gamma-edit-data";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitTranslations,
+    DigitTextField
+} from "@cthit/react-digit-components";
 import translations from "./EditActivationCodeDetails.screen.translations.json";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import { Center } from "../../../../common-ui/layout";
@@ -39,7 +41,7 @@ const EditActivationCodeDetails = ({
                             keysOrder={["code"]}
                             keysComponentData={{
                                 code: {
-                                    component: GammaTextField,
+                                    component: DigitTextField,
                                     componentProps: {
                                         upperLabel: text.Code
                                     }

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import GammaTextField from "../../../../common/elements/gamma-text-field";
+import { DigitTextField } from "@cthit/react-digit-components";
 
-export const CIDInput = styled(GammaTextField)`
-  width: 250px;
+export const CIDInput = styled(DigitTextField)`
+    width: 250px;
 `;

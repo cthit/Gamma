@@ -9,9 +9,11 @@ import {
 } from "../../../../../common-ui/design";
 
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaSelect from "../../../../../common/elements/gamma-select";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitTranslations,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 import translations from "./GroupForm.view.translations";
 
@@ -57,43 +59,43 @@ const GroupForm = ({ initialValues, onSubmit }) => (
                 ]}
                 keysComponentData={{
                     name: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.Name
                         }
                     },
                     prettyName: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.PrettyName
                         }
                     },
                     "description.sv": {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.DescriptionSv
                         }
                     },
                     "description.en": {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.DescriptionEn
                         }
                     },
                     email: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.Email
                         }
                     },
                     "func.sv": {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.FunctionSv
                         }
                     },
                     "func.en": {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.FunctionEn
                         }

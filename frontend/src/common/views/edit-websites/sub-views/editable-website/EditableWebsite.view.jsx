@@ -9,9 +9,11 @@ import {
 import { Text } from "../../../../../common-ui/text";
 import GammaIconButton from "../../../../elements/gamma-icon-button";
 import { Edit, Delete, Save, Cancel } from "@material-ui/icons";
-import GammaTextField from "../../../../elements/gamma-text-field";
 import GammaTooltip from "../../../../elements/gamma-tooltip";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitTranslations,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 import translations from "./EditableWebsite.view.translations.json";
 
@@ -46,7 +48,7 @@ class EditableWebsite extends React.Component {
                                 <Text text={url} />
                             </Hide>
                             <Hide hidden={!editing}>
-                                <GammaTextField
+                                <DigitTextField
                                     upperLabel={text.Url}
                                     value={newUrl}
                                     onChange={e => {

@@ -8,8 +8,9 @@ import {
     GammaCardBody
 } from "../../../../../common-ui/design";
 import GammaFormField from "../../../../../common/elements/gamma-form-field";
-import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
+
+import { DigitTextField } from "@cthit/react-digit-components";
 
 const PostForm = ({
     initialValues,
@@ -39,13 +40,13 @@ const PostForm = ({
         keysOrder={["sv", "en"]}
         keysComponentData={{
             sv: {
-                component: GammaTextField,
+                component: DigitTextField,
                 componentProps: {
                     upperLabel: swedishInputText
                 }
             },
             en: {
-                component: GammaTextField,
+                component: DigitTextField,
                 componentProps: {
                     upperLabel: englishInputText
                 }

@@ -22,7 +22,6 @@ import {
 } from "@material-ui/core";
 
 import { Text, Title, Display } from "../../../common-ui/text";
-import GammaTextField from "../../elements/gamma-text-field";
 import IfElseRendering from "../../declaratives/if-else-rendering";
 import GammaTableToolbar from "./elements/gamma-table-toolbar";
 import GammaTableBody from "./elements/gamma-table-body";

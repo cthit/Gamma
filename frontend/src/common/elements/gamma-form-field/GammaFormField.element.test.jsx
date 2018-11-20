@@ -1,16 +1,15 @@
 import React from "react";
 import { shallow } from "enzyme";
 import GammaFormField from "./";
-import GammaTextField from "../gamma-text-field";
 
-import { DigitCheckbox } from "@cthit/react-digit-components";
+import { DigitCheckbox, DigitTextField } from "@cthit/react-digit-components";
 
 describe("<GammaFormField/>", () => {
-    test("Shallow render of <GammaFormField/> with a GammaTextField", () => {
+    test("Shallow render of <GammaFormField/> with a DigitTextField", () => {
         const wrapper = shallow(
             <GammaFormField
                 name="password"
-                component={GammaTextField}
+                component={DigitTextField}
                 componentProps={{ upperLabel: "this is password yes" }}
             />
         );

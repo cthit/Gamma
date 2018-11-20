@@ -1,9 +1,11 @@
 import React from "react";
 import * as yup from "yup";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-import GammaTextField from "../../../../../common/elements/gamma-text-field";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./WebsiteForm.view.translations.json";
+import {
+    DigitTranslations,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
     <DigitTranslations
@@ -22,13 +24,13 @@ const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
                 keysOrder={["name", "prettyName"]}
                 keysComponentData={{
                     name: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.Name
                         }
                     },
                     prettyName: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.PrettyName
                         }

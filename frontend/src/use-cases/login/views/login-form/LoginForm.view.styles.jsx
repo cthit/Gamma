@@ -1,13 +1,15 @@
 import styled from "styled-components";
 
-import GammaTextField from "../../../../common/elements/gamma-text-field";
+import {
+    DigitButton,
+    DigitCheckbox,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
-import { DigitButton, DigitCheckbox } from "@cthit/react-digit-components";
-
-export const CIDInput = styled(GammaTextField)`
+export const CIDInput = styled(DigitTextField)`
     width: 280p;
 `;
-export const PasswordInput = styled(GammaTextField)`
+export const PasswordInput = styled(DigitTextField)`
     width: 280px;
 `;
 

@@ -8,7 +8,6 @@ import {
     GammaCardBody,
     GammaCardButtons
 } from "../../../../common-ui/design";
-import GammaTextField from "../../../../common/elements/gamma-text-field";
 import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import PostForm from "../common-views/post-form";

@@ -5,13 +5,12 @@ import { Fill, VerticalFill, Size, Spacing } from "../../../common-ui/layout";
 import GammaSelect from "../../elements/gamma-select";
 import GammaForm from "../../elements/gamma-form";
 import GammaFormField from "../../elements/gamma-form-field";
-import GammaTextField from "../../elements/gamma-text-field";
 import GammaEditData from "../../elements/gamma-edit-data";
 
 import EditableWebsite from "./sub-views/editable-website";
 import { TypeSelect } from "./EditWebsites.view.styles";
 
-import { DigitButton } from "@cthit/react-digit-components";
+import { DigitButton, DigitTextField } from "@cthit/react-digit-components";
 
 class EditWebsites extends React.Component {
     state = {
@@ -63,7 +62,7 @@ class EditWebsites extends React.Component {
 
                     <Spacing />
 
-                    <GammaTextField
+                    <DigitTextField
                         upperLabel="URL"
                         value={this.state.newWebsiteUrl}
                         onChange={e => {

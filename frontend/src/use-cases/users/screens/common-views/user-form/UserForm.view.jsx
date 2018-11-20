@@ -6,12 +6,15 @@ import {
     GammaCardButtons,
     GammaCardBody
 } from "../../../../../common-ui/design";
-import GammaTextField from "../../../../../common/elements/gamma-text-field";
 import GammaSelect from "../../../../../common/elements/gamma-select";
 import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
+
+import {
+    DigitTranslations,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";
@@ -64,26 +67,26 @@ const UserForm = ({
                 ]}
                 keysComponentData={{
                     firstName: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.FirstName
                         }
                     },
 
                     lastName: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.LastName
                         }
                     },
                     nick: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.Nick
                         }
                     },
                     email: {
-                        component: GammaTextField,
+                        component: DigitTextField,
                         componentProps: {
                             upperLabel: text.Email
                         }

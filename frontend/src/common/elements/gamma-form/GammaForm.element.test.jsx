@@ -2,7 +2,11 @@ import React from "react";
 import { shallow } from "enzyme";
 import GammaForm from "./";
 
-import { DigitCheckbox, DigitFAB } from "@cthit/react-digit-components";
+import {
+    DigitCheckbox,
+    DigitFAB,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 describe("<GammaForm/>", () => {
     test("Shallow render of <GammaForm/>", () => {
@@ -24,13 +28,13 @@ describe("<GammaForm/>", () => {
                     <div>
                         <GammaFormField
                             name="user"
-                            component={GammaTextField}
+                            component={DigitTextField}
                             componentProps={{ lowerLabel: "User" }}
                         />
 
                         <GammaFormField
                             name="password"
-                            component={GammaTextField}
+                            component={DigitTextField}
                             componentProps={{
                                 upperLabel: "this is password yes"
                             }}

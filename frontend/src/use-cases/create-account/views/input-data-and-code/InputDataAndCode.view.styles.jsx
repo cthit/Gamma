@@ -1,37 +1,40 @@
 import styled from "styled-components";
 
-import GammaTextField from "../../../../common/elements/gamma-text-field";
 import GammaSelect from "../../../../common/elements/gamma-select";
 
-import { DigitButton, DigitSwitch } from "@cthit/react-digit-components";
+import {
+    DigitButton,
+    DigitSwitch,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 export const CreateAccountButton = styled(DigitButton)``;
 
-export const ConfirmationCodeInput = styled(GammaTextField)`
+export const ConfirmationCodeInput = styled(DigitTextField)`
     width: 100px;
 `;
 
-export const NickInput = styled(GammaTextField)`
+export const NickInput = styled(DigitTextField)`
     width: 300px;
 `;
 
-export const PasswordInput = styled(GammaTextField)`
+export const PasswordInput = styled(DigitTextField)`
     width: 300px;
 `;
 
-export const PasswordConfirmationInput = styled(GammaTextField)`
+export const PasswordConfirmationInput = styled(DigitTextField)`
     width: 300px;
 `;
 
-export const FirstnameInput = styled(GammaTextField)`
+export const FirstnameInput = styled(DigitTextField)`
     width: 300px;
 `;
 
-export const LastnameInput = styled(GammaTextField)`
+export const LastnameInput = styled(DigitTextField)`
     width: 300px;
 `;
 
-export const ConfirmCidInput = styled(GammaTextField)``;
+export const ConfirmCidInput = styled(DigitTextField)``;
 
 export const AcceptanceYearInput = styled(GammaSelect)`
     width: 300px;
