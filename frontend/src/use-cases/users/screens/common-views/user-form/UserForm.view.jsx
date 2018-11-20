@@ -6,14 +6,14 @@ import {
     GammaCardButtons,
     GammaCardBody
 } from "../../../../../common-ui/design";
-import GammaSelect from "../../../../../common/elements/gamma-select";
 import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 
 import {
     DigitTranslations,
     DigitTextField,
-    DigitEditData
+    DigitEditData,
+    DigitSelects
 } from "@cthit/react-digit-components";
 
 function _getCurrentYear() {
@@ -92,7 +92,7 @@ const UserForm = ({
                         }
                     },
                     acceptanceYear: {
-                        component: GammaSelect,
+                        component: DigitSelect,
                         componentProps: {
                             upperLabel: text.AcceptanceYear,
                             valueToTextMap: _generateAcceptanceYears(),

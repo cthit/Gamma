@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
-import GammaSelect from "../../../../common/elements/gamma-select";
-
 import {
     DigitButton,
     DigitSwitch,
-    DigitTextField
+    DigitTextField,
+    DigitSelect
 } from "@cthit/react-digit-components";
 
 export const CreateAccountButton = styled(DigitButton)``;
@@ -36,7 +35,7 @@ export const LastnameInput = styled(DigitTextField)`
 
 export const ConfirmCidInput = styled(DigitTextField)``;
 
-export const AcceptanceYearInput = styled(GammaSelect)`
+export const AcceptanceYearInput = styled(DigitSelect)`
     width: 300px;
 `;
 

@@ -1,11 +1,11 @@
 import {
     DigitTextField,
     DigitTranslations,
-    DigitEditData
+    DigitEditData,
+    DigitSelect
 } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import GammaSelect from "../../../../../common/elements/gamma-select";
 import translations from "./GroupForm.view.translations";
 
 const GroupForm = ({ initialValues, onSubmit }) => (
@@ -92,7 +92,7 @@ const GroupForm = ({ initialValues, onSubmit }) => (
                         }
                     },
                     type: {
-                        component: GammaSelect,
+                        component: DigitSelect,
                         componentProps: {
                             upperLabel: text.Type,
                             valueToTextMap: {

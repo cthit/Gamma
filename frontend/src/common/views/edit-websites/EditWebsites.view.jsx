@@ -1,7 +1,10 @@
-import { DigitButton, DigitTextField } from "@cthit/react-digit-components";
+import {
+    DigitButton,
+    DigitTextField,
+    DigitSelect
+} from "@cthit/react-digit-components";
 import React from "react";
 import { Fill, Size, Spacing, VerticalFill } from "../../../common-ui/layout";
-import GammaSelect from "../../elements/gamma-select";
 import EditableWebsite from "./sub-views/editable-website";
 
 class EditWebsites extends React.Component {
@@ -38,7 +41,7 @@ class EditWebsites extends React.Component {
             <Fill>
                 <VerticalFill>
                     <Size minWidth="150px">
-                        <GammaSelect
+                        <DigitSelect
                             valueToTextMap={this._getValueToTextMap(
                                 availableWebsites
                             )}
