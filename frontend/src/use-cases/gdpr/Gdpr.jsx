@@ -1,9 +1,6 @@
+import { DigitTable, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-
 import translations from "./Gdpr.translations.json";
-
-import { DigitTranslations } from "@cthit/react-digit-components";
-import GammaTable from "../../common/views/gamma-table";
 
 class Gdpr extends React.Component {
     constructor(props) {
@@ -22,7 +19,7 @@ class Gdpr extends React.Component {
                 translations={translations}
                 uniquePath="Gdpr"
                 render={text => (
-                    <GammaTable
+                    <DigitTable
                         titleText="Användare"
                         searchText="Sök efter användare"
                         idProp="cid"

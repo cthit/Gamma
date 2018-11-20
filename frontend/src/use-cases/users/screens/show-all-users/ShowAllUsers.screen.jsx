@@ -1,7 +1,5 @@
+import { DigitTable, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-
-import GammaTable from "../../../../common/views/gamma-table";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowAllUsers.screen.translations.json";
 
 const ShowAllUsers = ({ users }) => (
@@ -9,7 +7,7 @@ const ShowAllUsers = ({ users }) => (
         translations={translations}
         uniquePath="Users.Screen.ShowAllUsers"
         render={text => (
-            <GammaTable
+            <DigitTable
                 titleText={text.Users}
                 searchText={text.SearchForUsers}
                 idProp="cid"

@@ -1,11 +1,13 @@
-import React from "react";
-import GammaTable from "../../../../common/views/gamma-table";
-import { Fill } from "../../../../common-ui/layout";
+import {
+    DigitFAB,
+    DigitTable,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
+import React from "react";
 import { GammaLink } from "../../../../common-ui/design";
+import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllPosts.screen.translations.json";
-
-import { DigitTranslations, DigitFAB } from "@cthit/react-digit-components";
 
 const ShowAllPosts = ({ posts }) => (
     <DigitTranslations
@@ -13,7 +15,7 @@ const ShowAllPosts = ({ posts }) => (
         uniquePath="Posts.Screen.ShowAllPosts"
         render={text => (
             <Fill>
-                <GammaTable
+                <DigitTable
                     titleText={text.Posts}
                     searchText={text.SearchForPosts}
                     idProp="id"
@@ -34,7 +36,7 @@ const ShowAllPosts = ({ posts }) => (
                     emptyTableText={text.NoPosts}
                 />
                 <GammaLink to="/posts/add">
-                    <DigitFAB component={Add} secondary />
+                    <DigitFAB icon={Add} secondary />
                 </GammaLink>
             </Fill>
         )}

@@ -57,7 +57,7 @@ class EditableWebsite extends React.Component {
                             <Hide hidden={editing}>
                                 <DigitTooltip text={text.Edit}>
                                     <DigitIconButton
-                                        component={Edit}
+                                        icon={Edit}
                                         onClick={() =>
                                             this.setState({
                                                 editing: true
@@ -69,7 +69,7 @@ class EditableWebsite extends React.Component {
                             <Hide hidden={!editing}>
                                 <DigitTooltip text={text.Cancel}>
                                     <DigitIconButton
-                                        component={Cancel}
+                                        icon={Cancel}
                                         onClick={() =>
                                             this.setState({
                                                 editing: false,
@@ -80,7 +80,7 @@ class EditableWebsite extends React.Component {
                                 </DigitTooltip>
                                 <DigitTooltip text={text.Save}>
                                     <DigitIconButton
-                                        component={Save}
+                                        icon={Save}
                                         onClick={() => {
                                             this.setState({
                                                 editing: false
@@ -96,7 +96,7 @@ class EditableWebsite extends React.Component {
                             <div>
                                 <DigitTooltip text={text.Delete}>
                                     <DigitIconButton
-                                        component={Delete}
+                                        icon={Delete}
                                         onClick={() => onDelete()}
                                     />
                                 </DigitTooltip>

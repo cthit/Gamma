@@ -1,8 +1,7 @@
+import { DigitTranslations, DigitTable } from "@cthit/react-digit-components";
 import React from "react";
-import GammaTable from "../../../../common/views/gamma-table";
 import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllActivationCodes.screen.translations.json";
-import { DigitTranslations } from "@cthit/react-digit-components";
 
 const ShowAllActivationCodes = ({ activationCodes, text }) => (
     <Fill>
@@ -10,7 +9,7 @@ const ShowAllActivationCodes = ({ activationCodes, text }) => (
             translations={translations}
             uniquePath="ActivationCodes.Screen.ShowAllActivationCodes"
             render={text => (
-                <GammaTable
+                <DigitTable
                     titleText={text.ActivationCodes}
                     searchText={text.SearchForActivationCodes}
                     idProp="id"

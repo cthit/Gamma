@@ -1,10 +1,12 @@
-import React from "react";
-
-import { Fill } from "../../../../common-ui/layout";
-import GammaTable from "../../../../common/views/gamma-table";
-import { GammaLink } from "../../../../common-ui/design";
+import {
+    DigitFAB,
+    DigitTable,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
-import { DigitTranslations, DigitFAB } from "@cthit/react-digit-components";
+import React from "react";
+import { GammaLink } from "../../../../common-ui/design";
+import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllWebsites.screen.translations.json";
 
 const ShowAllWebsites = ({ websites }) => (
@@ -13,7 +15,7 @@ const ShowAllWebsites = ({ websites }) => (
         uniquePath="Websites.Screen.ShowAllWebsites"
         render={text => (
             <Fill>
-                <GammaTable
+                <DigitTable
                     titleText={text.Websites}
                     searchText={text.SearchForWebsites}
                     idProp="id"
@@ -34,7 +36,7 @@ const ShowAllWebsites = ({ websites }) => (
                     emptyTableText={text.NoWebsites}
                 />
                 <GammaLink to="/websites/add">
-                    <DigitFAB component={Add} secondary />
+                    <DigitFAB icon={Add} secondary />
                 </GammaLink>
             </Fill>
         )}
