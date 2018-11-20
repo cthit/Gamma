@@ -265,7 +265,7 @@ export class App extends Component {
             />
             // <BrowserRouter>
             //     <StyledRoot>
-            //         <GammaTranslations
+            //         <DigitTranslations
             //             translations={appTranslations}
             //             uniquePath="App"
             //             render={text => (
@@ -345,4 +345,4 @@ export class App extends Component {
     }
 }
 
-export default withRouter(App);
+export default App;

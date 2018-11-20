@@ -19,7 +19,6 @@ import {
     GammaCard,
     GammaCardBody,
     GammaCardButtons,
-    GammaCardSubTitle,
     GammaCardTitle,
     GammaLink
 } from "../../../../common-ui/design";
@@ -34,9 +33,10 @@ import { DigitTranslations } from "@cthit/react-digit-components";
 const LoginForm = ({ login, toastOpen, redirectTo }) => (
     <DigitTranslations
         translations={translations}
-        uniquePath="Login.View.LoginForm"
+        uniquePath="Login"
         render={text => (
             <Fill>
+                {console.log(text)}
                 <GammaForm
                     validationSchema={yup.object().shape({
                         cid: yup.string().required(text.FieldRequired),
