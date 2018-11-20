@@ -1,4 +1,8 @@
-import { DigitButton, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitButton,
+    DigitTranslations,
+    DigitDisplayData
+} from "@cthit/react-digit-components";
 import React from "react";
 import {
     GammaCard,

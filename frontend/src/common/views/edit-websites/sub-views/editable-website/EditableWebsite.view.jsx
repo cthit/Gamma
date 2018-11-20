@@ -1,38 +1,13 @@
+import { DigitTextField, DigitTranslations, DigitIconButton } from "@cthit/react-digit-components";
+import { Cancel, Delete, Edit, Save } from "@material-ui/icons";
 import React from "react";
-import {
-    Fill,
-    VerticalFill,
-    Spacing,
-    Hide,
-    Size
-} from "../../../../../common-ui/layout";
+import { Hide, Size, Spacing, VerticalFill } from "../../../../../common-ui/layout";
 import { Text } from "../../../../../common-ui/text";
-import GammaIconButton from "../../../../elements/gamma-icon-button";
-import { Edit, Delete, Save, Cancel } from "@material-ui/icons";
 import GammaTooltip from "../../../../elements/gamma-tooltip";
-import {
-    DigitTranslations,
-    DigitTextField
-} from "@cthit/react-digit-components";
-
+import { CustomVerticalFill, CustomVerticalFillRightAlign } from "./EditableWebsite.view.styles";
 import translations from "./EditableWebsite.view.translations.json";
-
-import {
-    CustomVerticalFill,
-    CustomVerticalFillRightAlign
-} from "./EditableWebsite.view.styles";
-
-class EditableWebsite extends React.Component {
-    state = {
-        editing: false,
-        newUrl: this.props.url
     };
-
     render() {
-        const { prettyWebsite, url, website, onChange, onDelete } = this.props;
-
-        const { editing, newUrl } = this.state;
-
         return (
             <DigitTranslations
                 translations={translations}
@@ -62,7 +37,7 @@ class EditableWebsite extends React.Component {
                         <CustomVerticalFillRightAlign>
                             <Hide hidden={editing}>
                                 <GammaTooltip text={text.Edit}>
-                                    <GammaIconButton
+                                    <DigitIconButton
                                         component={Edit}
                                         onClick={() =>
                                             this.setState({
@@ -74,7 +49,7 @@ class EditableWebsite extends React.Component {
                             </Hide>
                             <Hide hidden={!editing}>
                                 <GammaTooltip text={text.Cancel}>
-                                    <GammaIconButton
+                                    <DigitIconButton
                                         component={Cancel}
                                         onClick={() =>
                                             this.setState({
@@ -85,7 +60,7 @@ class EditableWebsite extends React.Component {
                                     />
                                 </GammaTooltip>
                                 <GammaTooltip text={text.Save}>
-                                    <GammaIconButton
+                                    <DigitIconButton
                                         component={Save}
                                         onClick={() => {
                                             this.setState({
@@ -101,7 +76,7 @@ class EditableWebsite extends React.Component {
                             </Hide>
                             <div>
                                 <GammaTooltip text={text.Delete}>
-                                    <GammaIconButton
+                                    <DigitIconButton
                                         component={Delete}
                                         onClick={() => onDelete()}
                                     />
