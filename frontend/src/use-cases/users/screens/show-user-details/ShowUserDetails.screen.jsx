@@ -1,22 +1,15 @@
+import { DigitButton, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import styled from "styled-components";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
 import {
     GammaCard,
-    GammaCardDisplayTitle,
     GammaCardBody,
     GammaCardButtons,
+    GammaCardDisplayTitle,
     GammaLink
 } from "../../../../common-ui/design";
+import { Center, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text } from "../../../../common-ui/text";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowUserDetails.screen.translations.json";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-
-import { DigitButton } from "@cthit/react-digit-components";
 
 const ShowUserDetails = ({
     user,
@@ -44,7 +37,7 @@ const ShowUserDetails = ({
                                 }
                             />
                             <GammaCardBody>
-                                <GammaDisplayData
+                                <DigitDisplayData
                                     data={user}
                                     keysText={{
                                         cid: text.cid,

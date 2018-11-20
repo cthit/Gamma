@@ -13,7 +13,7 @@ import {
     DigitTranslations,
     DigitTextField,
     DigitEditData,
-    DigitSelects
+    DigitSelect
 } from "@cthit/react-digit-components";
 
 function _getCurrentYear() {

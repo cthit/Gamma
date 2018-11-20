@@ -1,20 +1,18 @@
+import {
+    DigitButton,
+    DigitTranslations,
+    DigitDisplayData
+} from "@cthit/react-digit-components";
 import React from "react";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
-
 import {
     GammaCard,
-    GammaCardTitle,
     GammaCardBody,
-    GammaLink,
-    GammaCardButtons
+    GammaCardButtons,
+    GammaLink
 } from "../../../../common-ui/design";
+import { Center, Fill } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text } from "../../../../common-ui/text";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
-import { DigitTranslations } from "@cthit/react-digit-components";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
-
-import { DigitButton } from "@cthit/react-digit-components";
 
 const ShowActivationCodeDetails = ({
     activationCode,
@@ -34,7 +32,7 @@ const ShowActivationCodeDetails = ({
                         <Center>
                             <GammaCard minWidth="300px" maxWidth="600px">
                                 <GammaCardBody>
-                                    <GammaDisplayData
+                                    <DigitDisplayData
                                         data={activationCode}
                                         keysText={{
                                             id: text.Id,

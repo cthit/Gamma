@@ -1,18 +1,13 @@
+import { DigitButton, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import styled from "styled-components";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
-
 import {
     GammaCard,
-    GammaCardTitle,
     GammaCardBody,
-    GammaLink,
-    GammaCardButtons
+    GammaCardButtons,
+    GammaLink
 } from "../../../../common-ui/design";
+import { Center, Fill, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text } from "../../../../common-ui/text";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data";
-import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 import translations from "./ShowWhitelistItem.screen.translations.json";
 
 const ShowWhitelistItem = ({
@@ -33,7 +28,7 @@ const ShowWhitelistItem = ({
                         <Center>
                             <GammaCard minWidth="300px" maxWidth="600px">
                                 <GammaCardBody>
-                                    <GammaDisplayData
+                                    <DigitDisplayData
                                         data={whitelistItem}
                                         keysOrder={["id", "cid"]}
                                         keysText={{

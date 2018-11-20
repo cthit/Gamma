@@ -1,17 +1,18 @@
+import {
+    DigitButton,
+    DigitTranslations,
+    DigitDisplayData
+} from "@cthit/react-digit-components";
 import React from "react";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
-
 import {
     GammaCard,
-    GammaCardTitle,
     GammaCardBody,
-    GammaLink,
-    GammaCardButtons
+    GammaCardButtons,
+    GammaLink
 } from "../../../../common-ui/design";
+import { Center, Fill, Spacing } from "../../../../common-ui/layout";
+import { Display } from "../../../../common-ui/text";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text, Display } from "../../../../common-ui/text";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
-import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 import translations from "./ShowPostDetails.screen.translations.json";
 
 function getPostName(post, activeLanguage) {
@@ -57,7 +58,7 @@ class ShowPostDetails extends React.Component {
                                     >
                                         <GammaCardBody>
                                             <Display text="Post" />
-                                            <GammaDisplayData
+                                            <DigitDisplayData
                                                 data={post}
                                                 keysText={{
                                                     id: text.Id,

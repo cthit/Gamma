@@ -1,18 +1,17 @@
+import {
+    DigitButton,
+    DigitTranslations,
+    DigitDisplayData
+} from "@cthit/react-digit-components";
 import React from "react";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
-
 import {
     GammaCard,
-    GammaCardTitle,
     GammaCardBody,
-    GammaLink,
-    GammaCardButtons
+    GammaCardButtons,
+    GammaLink
 } from "../../../../common-ui/design";
+import { Center, Fill, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text } from "../../../../common-ui/text";
-import { Edit } from "@material-ui/icons";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
-import { DigitTranslations, DigitButton } from "@cthit/react-digit-components";
 import translations from "./ShowWebsiteDetails.screen.translations.json";
 
 const ShowWebsiteDetails = ({
@@ -33,7 +32,7 @@ const ShowWebsiteDetails = ({
                         <Center>
                             <GammaCard minWidth="300px" maxWidth="600px">
                                 <GammaCardBody>
-                                    <GammaDisplayData
+                                    <DigitDisplayData
                                         data={website}
                                         keysText={{
                                             id: text.Id,
