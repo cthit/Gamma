@@ -1,6 +1,9 @@
-import { DigitLayout, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitLayout,
+    DigitTranslations,
+    DigitIfElseRendering
+} from "@cthit/react-digit-components";
 import React from "react";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import UserForm from "../common-views/user-form/UserForm.view";
 import translations from "./EditUserDetails.screen.translations.json";
 
@@ -12,7 +15,7 @@ class EditUserDetails extends React.Component {
     render() {
         const { user, usersChange, websites } = this.props;
         return (
-            <IfElseRendering
+            <DigitIfElseRendering
                 test={user != null && websites != null}
                 ifRender={() => (
                     <DigitTranslations

@@ -2,11 +2,11 @@ import {
     DigitButton,
     DigitLayout,
     DigitText,
-    DigitTranslations
+    DigitTranslations,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
 import styled from "styled-components";
-import IfElseRendering from "../../../common/declaratives/if-else-rendering";
 
 const UserInformation = ({
     loaded,
@@ -16,7 +16,7 @@ const UserInformation = ({
     currentPath,
     toastOpen
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={loaded == null ? false : loaded && loggedIn}
         ifRender={() => (
             <DigitTranslations

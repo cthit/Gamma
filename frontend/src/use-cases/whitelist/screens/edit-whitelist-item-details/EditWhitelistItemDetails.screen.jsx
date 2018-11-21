@@ -1,7 +1,10 @@
+import {
+    DigitIfElseRendering,
+    DigitLayout,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import React from "react";
 import WhitelistItemForm from "../common-views/whitelist-item-form";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { DigitTranslations, DigitLayout } from "@cthit/react-digit-components";
 import translations from "./EditWhitelistItemDetails.screen.translations.json";
 
 const EditWhitelistItemDetails = ({
@@ -9,7 +12,7 @@ const EditWhitelistItemDetails = ({
     whitelistItem,
     match
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={whitelistItem != null}
         ifRender={() => (
             <DigitTranslations

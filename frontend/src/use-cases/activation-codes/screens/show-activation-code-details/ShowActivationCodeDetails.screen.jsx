@@ -3,10 +3,10 @@ import {
     DigitTranslations,
     DigitDisplayData,
     DigitDesign,
-    DigitLayout
+    DigitLayout,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
 
 const ShowActivationCodeDetails = ({
@@ -16,7 +16,7 @@ const ShowActivationCodeDetails = ({
     redirectTo,
     toastOpen
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={activationCode != null}
         ifRender={() => (
             <DigitTranslations

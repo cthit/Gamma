@@ -3,10 +3,10 @@ import {
     DigitTranslations,
     DigitDisplayData,
     DigitDesign,
-    DigitLayout
+    DigitLayout,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowWhitelistItem.screen.translations.json";
 
 const ShowWhitelistItem = ({
@@ -16,7 +16,7 @@ const ShowWhitelistItem = ({
     toastOpen,
     gammaDialogOpen
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={whitelistItem != null}
         ifRender={() => (
             <DigitTranslations

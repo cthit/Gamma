@@ -1,12 +1,13 @@
 import {
     DigitHeader,
+    DigitIfElseRendering,
     DigitLayout,
     DigitNavLink,
     DigitTranslations
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import IfElseRendering from "../common/declaratives/if-else-rendering";
+import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
 import Error from "../use-cases/error";
@@ -24,7 +25,6 @@ import GammaDialog from "./views/gamma-dialog";
 import GammaLoading from "./views/gamma-loading";
 import GammaRedirect from "./views/gamma-redirect";
 import GammaToast from "./views/gamma-toast";
-import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 
 export class App extends Component {
     state = {
@@ -142,7 +142,7 @@ export class App extends Component {
                                     translations={appTranslations}
                                     uniquePath="App"
                                     render={text => (
-                                        <IfElseRendering
+                                        <DigitIfElseRendering
                                             test={!loggedIn && userLoaded}
                                             ifRender={() => (
                                                 <Route
@@ -242,7 +242,7 @@ export class App extends Component {
                                             <Route
                                                 path="/"
                                                 render={props => (
-                                                    <IfElseRendering
+                                                    <DigitIfElseRendering
                                                         test={loggedIn}
                                                         ifRender={() => (
                                                             <Redirect to="/home" />

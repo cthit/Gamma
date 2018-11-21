@@ -1,11 +1,14 @@
-import { DigitLayout, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitLayout,
+    DigitTranslations,
+    DigitIfElseRendering
+} from "@cthit/react-digit-components";
 import React from "react";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import PostForm from "../common-views/post-form";
 import translations from "./EditPostDetails.screen.translations.json";
 
 const EditPostDetails = ({ postsChange, post, match }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={post != null}
         ifRender={() => (
             <DigitTranslations

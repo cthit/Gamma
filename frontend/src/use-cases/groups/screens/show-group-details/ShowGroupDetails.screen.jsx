@@ -3,11 +3,11 @@ import {
     DigitTranslations,
     DigitDisplayData,
     DigitDesign,
-    DigitLayout
+    DigitLayout,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowGroupDetails.screen.translations.json";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 
 const ShowGroupDetails = ({
     group,
@@ -16,7 +16,7 @@ const ShowGroupDetails = ({
     toastOpen,
     redirectTo
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={group != null}
         ifRender={() => (
             <DigitTranslations

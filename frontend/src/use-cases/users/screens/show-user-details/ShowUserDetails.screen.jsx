@@ -3,10 +3,10 @@ import {
     DigitTranslations,
     DigitDisplayData,
     DigitDesign,
-    DigitLayout
+    DigitLayout,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowUserDetails.screen.translations.json";
 
 const ShowUserDetails = ({
@@ -16,7 +16,7 @@ const ShowUserDetails = ({
     redirectTo,
     toastOpen
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={user != null}
         ifRender={() => (
             <DigitTranslations

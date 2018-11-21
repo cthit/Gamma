@@ -2,18 +2,18 @@ import {
     DigitEditData,
     DigitLayout,
     DigitTextField,
-    DigitTranslations
+    DigitTranslations,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./EditActivationCodeDetails.screen.translations.json";
 
 const EditActivationCodeDetails = ({
     activationCode,
     activationCodesChange
 }) => (
-    <IfElseRendering
+    <DigitIfElseRendering
         test={activationCode != null}
         ifRender={text => (
             <DigitTranslations
