@@ -25,6 +25,7 @@ const ShowActivationCodeDetails = ({
                 render={text => (
                     <DigitLayout.Fill>
                         <DigitLayout.Center>
+                            {console.log(activationCode.id)}
                             <DigitDesign.Card minWidth="300px" maxWidth="600px">
                                 <DigitDesign.CardBody>
                                     <DigitDisplayData
@@ -44,19 +45,6 @@ const ShowActivationCodeDetails = ({
                                     />
                                 </DigitDesign.CardBody>
                                 <DigitDesign.CardButtons reverseDirection>
-                                    <DigitDesign.Link
-                                        to={
-                                            "/activation-codes/" +
-                                            activationCode.id +
-                                            "/edit"
-                                        }
-                                    >
-                                        <DigitButton
-                                            text={text.EditActivationCode}
-                                            primary
-                                            raised
-                                        />
-                                    </DigitDesign.Link>
                                     <DigitButton
                                         text={text.DeleteActivationCode}
                                         onClick={() => {
