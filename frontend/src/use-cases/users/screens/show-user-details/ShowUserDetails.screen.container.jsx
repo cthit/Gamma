@@ -1,24 +1,27 @@
-import { connect } from "react-redux";
+import {
+    DigitDialogActions,
+    DigitRedirectActions,
+    DigitToastActions
+} from "@cthit/react-digit-components";
 import _ from "lodash";
+import { connect } from "react-redux";
+import { usersDelete } from "../../Users.action-creator";
 import ShowUserDetails from "./ShowUserDetails.screen";
 
-import { gammaDialogOpen } from "../../../../app/views/gamma-dialog/GammaDialog.view.action-creator";
-import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
-import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
-import { usersDelete } from "../../Users.action-creator";
-
 const mapStateToProps = (state, ownProps) => ({
-  user: _.find(state.users, { cid: ownProps.match.params.cid })
+    user: _.find(state.users, { cid: ownProps.match.params.cid })
 });
 
 const mapDispatchToProps = dispatch => ({
-  gammaDialogOpen: options => dispatch(gammaDialogOpen(options)),
-  usersDelete: cid => dispatch(usersDelete(cid)),
-  toastOpen: toastData => dispatch(toastOpen(toastData)),
-  redirectTo: to => dispatch(redirectTo(to))
+    dialogOpen: options =>
+        dispatch(DigitDialogActions.digitDialogOpen(options)),
+    usersDelete: cid => dispatch(usersDelete(cid)),
+    toastOpen: toastData =>
+        dispatch(DigitToastActions.digitToastOpen(toastData)),
+    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(ShowUserDetails);

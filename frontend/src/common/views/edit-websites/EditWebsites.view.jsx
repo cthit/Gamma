@@ -1,110 +1,107 @@
+import {
+    DigitButton,
+    DigitTextField,
+    DigitSelect,
+    DigitLayout
+} from "@cthit/react-digit-components";
 import React from "react";
-import * as yup from "yup";
-
-import { Fill, VerticalFill, Size, Spacing } from "../../../common-ui/layout";
-import GammaSelect from "../../elements/gamma-select";
-import GammaButton from "../../elements/gamma-button";
-import GammaForm from "../../elements/gamma-form";
-import GammaFormField from "../../elements/gamma-form-field";
-import GammaTextField from "../../elements/gamma-text-field";
-import GammaEditData from "../../elements/gamma-edit-data";
-
 import EditableWebsite from "./sub-views/editable-website";
-import { TypeSelect } from "./EditWebsites.view.styles";
 
 class EditWebsites extends React.Component {
-  state = {
-    newWebsiteTypeSelected: "",
-    newWebsiteUrl: ""
-  };
+    state = {
+        newWebsiteTypeSelected: "",
+        newWebsiteUrl: ""
+    };
 
-  /**
+    /**
    * {
             type: yup.string().required(),
             url: yup.string().required()
           }
    */
 
-  /**
-   *
-   */
+    /**
+     *
+     */
 
-  _getValueToTextMap(availableWebsites) {
-    const output = {};
+    _getValueToTextMap(availableWebsites) {
+        const output = {};
 
-    availableWebsites.forEach(website => {
-      output[website.name] = website.prettyName;
-    });
+        availableWebsites.forEach(website => {
+            output[website.name] = website.prettyName;
+        });
 
-    return output;
-  }
+        return output;
+    }
 
-  render() {
-    const { push, replace, remove, form, availableWebsites } = this.props;
+    render() {
+        const { push, replace, remove, form, availableWebsites } = this.props;
 
-    return (
-      <Fill>
-        <VerticalFill>
-          <Size minWidth="150px">
-            <GammaSelect
-              valueToTextMap={this._getValueToTextMap(availableWebsites)}
-              upperLabel="Typ"
-              value={this.state.newWebsiteTypeSelected}
-              onChange={e => {
-                this.setState({
-                  newWebsiteTypeSelected: e.target.value
-                });
-              }}
-            />
-          </Size>
+        return (
+            <DigitLayout.Fill>
+                <DigitLayout.Column>
+                    <DigitLayout.Size minWidth="150px">
+                        <DigitSelect
+                            valueToTextMap={this._getValueToTextMap(
+                                availableWebsites
+                            )}
+                            upperLabel="Typ"
+                            value={this.state.newWebsiteTypeSelected}
+                            onChange={e => {
+                                this.setState({
+                                    newWebsiteTypeSelected: e.target.value
+                                });
+                            }}
+                        />
+                    </DigitLayout.Size>
 
-          <Spacing />
+                    <DigitLayout.Spacing />
 
-          <GammaTextField
-            upperLabel="URL"
-            value={this.state.newWebsiteUrl}
-            onChange={e => {
-              this.setState({
-                newWebsiteUrl: e.target.value
-              });
-            }}
-          />
+                    <DigitTextField
+                        upperLabel="URL"
+                        value={this.state.newWebsiteUrl}
+                        onChange={e => {
+                            this.setState({
+                                newWebsiteUrl: e.target.value
+                            });
+                        }}
+                    />
 
-          <Spacing />
+                    <DigitLayout.Spacing />
 
-          <GammaButton
-            outline
-            text="Add website"
-            onClick={() => {
-              push({
-                website: this.state.newWebsiteTypeSelected,
-                url: this.state.newWebsiteUrl
-              });
-              this.setState({
-                newWebsiteUrl: ""
-              });
-            }}
-          />
-        </VerticalFill>
-        <Fill>
-          {form.values.websites.map((website, index) => (
-            <EditableWebsite
-              key={website.url}
-              website={website.website}
-              prettyWebsite={website.website}
-              url={website.url}
-              onChange={newWebsite => {
-                replace(index, newWebsite);
-              }}
-              onDelete={() => {
-                remove(index);
-              }}
-            />
-          ))}
-        </Fill>
-      </Fill>
-    );
-  }
+                    <DigitButton
+                        outline
+                        text="Add website"
+                        onClick={() => {
+                            push({
+                                website: this.state.newWebsiteTypeSelected,
+                                url: this.state.newWebsiteUrl
+                            });
+                            this.setState({
+                                newWebsiteUrl: ""
+                            });
+                        }}
+                    />
+                </DigitLayout.Column>
+                <DigitLayout.Fill>
+                    {form.values.websites.map((website, index) => (
+                        <EditableWebsite
+                            key={website.url}
+                            website={website.website}
+                            prettyWebsite={website.website}
+                            url={website.url}
+                            onChange={newWebsite => {
+                                replace(index, newWebsite);
+                            }}
+                            onDelete={() => {
+                                remove(index);
+                            }}
+                        />
+                    ))}
+                </DigitLayout.Fill>
+            </DigitLayout.Fill>
+        );
+    }
 }
 
 export default EditWebsites;

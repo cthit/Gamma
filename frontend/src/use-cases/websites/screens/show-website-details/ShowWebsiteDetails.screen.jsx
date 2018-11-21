@@ -1,87 +1,95 @@
-import React from "react";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
-
 import {
-  GammaCard,
-  GammaCardTitle,
-  GammaCardBody,
-  GammaLink,
-  GammaCardButtons
-} from "../../../../common-ui/design";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
-import { Edit } from "@material-ui/icons";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data/GammaDisplayData.element";
-import GammaTranslations from "../../../../common/declaratives/gamma-translations";
+    DigitButton,
+    DigitTranslations,
+    DigitDisplayData,
+    DigitDesign,
+    DigitLayout,
+    DigitIfElseRendering
+} from "@cthit/react-digit-components";
+import React from "react";
 import translations from "./ShowWebsiteDetails.screen.translations.json";
 
 const ShowWebsiteDetails = ({
-  website,
-  gammaDialogOpen,
-  toastOpen,
-  redirectTo,
-  websitesDelete
+    website,
+    dialogOpen,
+    toastOpen,
+    redirectTo,
+    websitesDelete
 }) => (
-  <IfElseRendering
-    test={website != null}
-    ifRender={() => (
-      <GammaTranslations
-        translations={translations}
-        uniquePath="Websites.Screen.ShowWebsiteDetails"
-        render={text => (
-          <Fill>
-            <Center>
-              <GammaCard minWidth="300px" maxWidth="600px">
-                <GammaCardBody>
-                  <GammaDisplayData
-                    data={website}
-                    keysText={{
-                      id: text.Id,
-                      name: text.Name,
-                      prettyName: text.PrettyName
-                    }}
-                    keysOrder={["id", "name", "prettyName"]}
-                  />
-                </GammaCardBody>
-                <GammaCardButtons reverseDirection>
-                  <GammaLink to={"/websites/" + website.id + "/edit"}>
-                    <GammaButton text={text.EditWebsite} primary raised />
-                  </GammaLink>
-                  <Spacing />
-                  <GammaButton
-                    onClick={() => {
-                      gammaDialogOpen({
-                        title:
-                          text.WouldYouLikeToDelete + " " + website.prettyName,
-                        confirmButtonText: text.DeleteWebsite,
-                        cancelButtonText: text.Cancel,
-                        onConfirm: () => {
-                          websitesDelete(website.id)
-                            .then(response => {
-                              toastOpen({
-                                text: website.prettyName + " " + text.Deleted
-                              });
-                              redirectTo("/websites");
-                            })
-                            .catch(error => {
-                              toastOpen({
-                                text: text.SomethingWentWrong
-                              });
-                            });
-                        }
-                      });
-                    }}
-                    text={text.DeleteWebsite}
-                  />
-                </GammaCardButtons>
-              </GammaCard>
-            </Center>
-          </Fill>
+    <DigitIfElseRendering
+        test={website != null}
+        ifRender={() => (
+            <DigitTranslations
+                translations={translations}
+                uniquePath="Websites.Screen.ShowWebsiteDetails"
+                render={text => (
+                    <DigitLayout.Fill>
+                        <DigitLayout.Center>
+                            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                                <DigitDesign.CardBody>
+                                    <DigitDisplayData
+                                        data={website}
+                                        keysText={{
+                                            id: text.Id,
+                                            name: text.Name,
+                                            prettyName: text.PrettyName
+                                        }}
+                                        keysOrder={["id", "name", "prettyName"]}
+                                    />
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reverseDirection>
+                                    <DigitDesign.Link
+                                        to={"/websites/" + website.id + "/edit"}
+                                    >
+                                        <DigitButton
+                                            text={text.EditWebsite}
+                                            primary
+                                            raised
+                                        />
+                                    </DigitDesign.Link>
+                                    <DigitLayout.Spacing />
+                                    <DigitButton
+                                        onClick={() => {
+                                            dialogOpen({
+                                                title:
+                                                    text.WouldYouLikeToDelete +
+                                                    " " +
+                                                    website.prettyName,
+                                                confirmButtonText:
+                                                    text.DeleteWebsite,
+                                                cancelButtonText: text.Cancel,
+                                                onConfirm: () => {
+                                                    websitesDelete(website.id)
+                                                        .then(response => {
+                                                            toastOpen({
+                                                                text:
+                                                                    website.prettyName +
+                                                                    " " +
+                                                                    text.Deleted
+                                                            });
+                                                            redirectTo(
+                                                                "/websites"
+                                                            );
+                                                        })
+                                                        .catch(error => {
+                                                            toastOpen({
+                                                                text:
+                                                                    text.SomethingWentWrong
+                                                            });
+                                                        });
+                                                }
+                                            });
+                                        }}
+                                        text={text.DeleteWebsite}
+                                    />
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
+                        </DigitLayout.Center>
+                    </DigitLayout.Fill>
+                )}
+            />
         )}
-      />
-    )}
-  />
+    />
 );
 
 export default ShowWebsiteDetails;

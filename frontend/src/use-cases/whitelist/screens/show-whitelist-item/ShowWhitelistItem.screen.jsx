@@ -1,89 +1,101 @@
-import React from "react";
-import styled from "styled-components";
-import { Fill, Center, Spacing } from "../../../../common-ui/layout";
-
 import {
-  GammaCard,
-  GammaCardTitle,
-  GammaCardBody,
-  GammaLink,
-  GammaCardButtons
-} from "../../../../common-ui/design";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Text } from "../../../../common-ui/text";
-import GammaButton from "../../../../common/elements/gamma-button";
-import GammaDisplayData from "../../../../common/elements/gamma-display-data";
-import GammaTranslations from "../../../../common/declaratives/gamma-translations";
+    DigitButton,
+    DigitTranslations,
+    DigitDisplayData,
+    DigitDesign,
+    DigitLayout,
+    DigitIfElseRendering
+} from "@cthit/react-digit-components";
+import React from "react";
 import translations from "./ShowWhitelistItem.screen.translations.json";
 
 const ShowWhitelistItem = ({
-  whitelistItem,
-  whitelistDelete,
-  redirectTo,
-  toastOpen,
-  gammaDialogOpen
+    whitelistItem,
+    whitelistDelete,
+    redirectTo,
+    toastOpen,
+    dialogOpen
 }) => (
-  <IfElseRendering
-    test={whitelistItem != null}
-    ifRender={() => (
-      <GammaTranslations
-        translations={translations}
-        uniquePath="Whitelist.Screen.ShowWhitelistItem"
-        render={text => (
-          <Fill>
-            <Center>
-              <GammaCard minWidth="300px" maxWidth="600px">
-                <GammaCardBody>
-                  <GammaDisplayData
-                    data={whitelistItem}
-                    keysOrder={["id", "cid"]}
-                    keysText={{ id: text.Id, cid: text.Cid }}
-                  />
-                </GammaCardBody>
-                <GammaCardButtons reversedDirection>
-                  <GammaButton
-                    text={text.DeleteWhitelistItem}
-                    onClick={() => {
-                      gammaDialogOpen({
-                        title:
-                          text.WouldYouLikeToDelete +
-                          " " +
-                          whitelistItem.cid +
-                          "?",
-                        confirmButtonText: text.DeleteWhitelistItem,
-                        cancelButtonText: text.Cancel,
-                        onConfirm: () => {
-                          whitelistDelete(whitelistItem.id)
-                            .then(response => {
-                              toastOpen({
-                                text:
-                                  text.DeleteSuccessfully +
-                                  " " +
-                                  whitelistItem.cid
-                              });
-                              redirectTo("/whitelist");
-                            })
-                            .catch(error => {
-                              toastOpen({
-                                text: text.SomethingWentWrong
-                              });
-                            });
-                        }
-                      });
-                    }}
-                  />
-                  <Spacing />
-                  <GammaLink to={"/whitelist/" + whitelistItem.id + "/edit"}>
-                    <GammaButton text={text.EditWhitelistItem} primary raised />
-                  </GammaLink>
-                </GammaCardButtons>
-              </GammaCard>
-            </Center>
-          </Fill>
+    <DigitIfElseRendering
+        test={whitelistItem != null}
+        ifRender={() => (
+            <DigitTranslations
+                translations={translations}
+                uniquePath="Whitelist.Screen.ShowWhitelistItem"
+                render={text => (
+                    <DigitLayout.Fill>
+                        <DigitLayout.Center>
+                            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                                <DigitDesign.CardBody>
+                                    <DigitDisplayData
+                                        data={whitelistItem}
+                                        keysOrder={["id", "cid"]}
+                                        keysText={{
+                                            id: text.Id,
+                                            cid: text.Cid
+                                        }}
+                                    />
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reversedDirection>
+                                    <DigitButton
+                                        text={text.DeleteWhitelistItem}
+                                        onClick={() => {
+                                            dialogOpen({
+                                                title:
+                                                    text.WouldYouLikeToDelete +
+                                                    " " +
+                                                    whitelistItem.cid +
+                                                    "?",
+                                                confirmButtonText:
+                                                    text.DeleteWhitelistItem,
+                                                cancelButtonText: text.Cancel,
+                                                onConfirm: () => {
+                                                    whitelistDelete(
+                                                        whitelistItem.id
+                                                    )
+                                                        .then(response => {
+                                                            toastOpen({
+                                                                text:
+                                                                    text.DeleteSuccessfully +
+                                                                    " " +
+                                                                    whitelistItem.cid
+                                                            });
+                                                            redirectTo(
+                                                                "/whitelist"
+                                                            );
+                                                        })
+                                                        .catch(error => {
+                                                            toastOpen({
+                                                                text:
+                                                                    text.SomethingWentWrong
+                                                            });
+                                                        });
+                                                }
+                                            });
+                                        }}
+                                    />
+                                    <DigitLayout.Spacing />
+                                    <DigitDesign.Link
+                                        to={
+                                            "/whitelist/" +
+                                            whitelistItem.id +
+                                            "/edit"
+                                        }
+                                    >
+                                        <DigitButton
+                                            text={text.EditWhitelistItem}
+                                            primary
+                                            raised
+                                        />
+                                    </DigitDesign.Link>
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
+                        </DigitLayout.Center>
+                    </DigitLayout.Fill>
+                )}
+            />
         )}
-      />
-    )}
-  />
+    />
 );
 
 export default ShowWhitelistItem;

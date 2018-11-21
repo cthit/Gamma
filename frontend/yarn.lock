@@ -9,6 +9,11 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
+"@cthit/react-digit-components@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-0.1.11.tgz#6bcb3268c4ec69554b873556a8b56ae77ed413c6"
+  integrity sha512-ClEOjAAV7iDRV2EqwG1k9bAM3ZJ2IqUwbTlXMLFVKNx8+ysq3j0zD+eNh8hBRJiWDvgR3v1RnNR5ImS0OlmanQ==
+
 "@material-ui/core@^1.4.2":
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-1.4.2.tgz#8a1282e985d4922a4d2b4f7e287d8a716a2fc108"

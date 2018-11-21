@@ -1,128 +1,129 @@
+import {
+    DigitDesign,
+    DigitForm,
+    DigitFormField,
+    DigitLayout,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import React from "react";
-import PropTypes from "prop-types";
 import * as yup from "yup";
-
-import {
-  CIDInput,
-  PasswordInput,
-  LoginButton,
-  CreateAccountButton,
-  RememberMe
-} from "./LoginForm.view.styles";
-
-import GammaButton from "../../../../common/elements/gamma-button";
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
-
-import { Center, MarginTop, Fill } from "../../../../common-ui/layout";
-import {
-  GammaCard,
-  GammaCardBody,
-  GammaCardButtons,
-  GammaCardSubTitle,
-  GammaCardTitle,
-  GammaLink
-} from "../../../../common-ui/design";
-
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-
+import {
+    CIDInput,
+    CreateAccountButton,
+    LoginButton,
+    PasswordInput,
+    RememberMe
+} from "./LoginForm.view.styles";
 import translations from "./LoginForm.view.translations.json";
-import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 
 const LoginForm = ({ login, toastOpen, redirectTo }) => (
-  <GammaTranslations
-    translations={translations}
-    uniquePath="Login.View.LoginForm"
-    render={text => (
-      <Fill>
-        <GammaForm
-          validationSchema={yup.object().shape({
-            cid: yup.string().required(text.FieldRequired),
-            password: yup.string().required(text.FieldRequired),
-            rememberMe: yup.boolean()
-          })}
-          initialValues={{ cid: "", password: "", rememberMe: false }}
-          onSubmit={(values, actions) => {
-            const data = {
-              cid: values["cid"],
-              password: values["password"]
-            };
+    <DigitTranslations
+        translations={translations}
+        uniquePath="Login"
+        render={text => (
+            <DigitLayout.Fill>
+                {console.log(text)}
+                <DigitForm
+                    validationSchema={yup.object().shape({
+                        cid: yup.string().required(text.FieldRequired),
+                        password: yup.string().required(text.FieldRequired),
+                        rememberMe: yup.boolean()
+                    })}
+                    initialValues={{ cid: "", password: "", rememberMe: false }}
+                    onSubmit={(values, actions) => {
+                        const data = {
+                            cid: values["cid"],
+                            password: values["password"]
+                        };
 
-            login(data, values.rememberMe)
-              .then(response => {
-                redirectTo("/home");
-                toastOpen({
-                  text: text.SuccessfullLogin,
-                  duration: 3000
-                });
-              })
-              .catch(error => {
-                const code = statusCode(error);
-                const message = statusMessage(error);
-                switch (code) {
-                  case 422:
-                    switch (message) {
-                      case "INCORRECT_CID_OR_PASSWORD":
-                        toastOpen({
-                          text: text.IncorrectCidOrPassword,
-                          duration: 3000
-                        });
-                    }
-                    break;
-                  default:
-                    toastOpen({
-                      text: text.SomethingWentWrong,
-                      duration: 3000
-                    });
-                }
-              });
+                        login(data, values.rememberMe)
+                            .then(response => {
+                                redirectTo("/home");
+                                toastOpen({
+                                    text: text.SuccessfullLogin,
+                                    duration: 3000
+                                });
+                            })
+                            .catch(error => {
+                                const code = statusCode(error);
+                                const message = statusMessage(error);
+                                switch (code) {
+                                    case 422:
+                                        switch (message) {
+                                            case "INCORRECT_CID_OR_PASSWORD":
+                                                toastOpen({
+                                                    text:
+                                                        text.IncorrectCidOrPassword,
+                                                    duration: 3000
+                                                });
+                                        }
+                                        break;
+                                    default:
+                                        toastOpen({
+                                            text: text.SomethingWentWrong,
+                                            duration: 3000
+                                        });
+                                }
+                            });
 
-            actions.resetForm();
-          }}
-          render={({ errors, touched }) => (
-            <GammaCard absWidth="300px" absHeight="300px" hasSubTitle>
-              <GammaCardTitle text={text.Login} />
-              <GammaCardBody>
-                <Center>
-                  <GammaFormField
-                    name="cid"
-                    component={CIDInput}
-                    componentProps={{
-                      upperLabel: text.EnterYourCid
+                        actions.resetForm();
                     }}
-                  />
-                  <GammaFormField
-                    name="password"
-                    component={PasswordInput}
-                    componentProps={{
-                      upperLabel: text.EnterYourPassword,
-                      password: true
-                    }}
-                  />
+                    render={({ errors, touched }) => (
+                        <DigitDesign.Card
+                            absWidth="300px"
+                            absHeight="300px"
+                            hasSubTitle
+                        >
+                            <DigitDesign.CardTitle text={text.Login} />
+                            <DigitDesign.CardBody>
+                                <DigitLayout.Center>
+                                    <DigitFormField
+                                        name="cid"
+                                        component={CIDInput}
+                                        componentProps={{
+                                            upperLabel: text.EnterYourCid
+                                        }}
+                                    />
+                                    <DigitFormField
+                                        name="password"
+                                        component={PasswordInput}
+                                        componentProps={{
+                                            upperLabel: text.EnterYourPassword,
+                                            password: true
+                                        }}
+                                    />
 
-                  <GammaFormField
-                    name="rememberMe"
-                    component={RememberMe}
-                    componentProps={{
-                      label: text.RememberMe,
-                      primary: true
-                    }}
-                  />
-                </Center>
-              </GammaCardBody>
-              <GammaCardButtons reverseDirection>
-                <LoginButton text={text.Login} primary raised submit />
-                <GammaLink to="/create-account">
-                  <CreateAccountButton text={text.CreateAccount} />
-                </GammaLink>
-              </GammaCardButtons>
-            </GammaCard>
-          )}
-        />
-      </Fill>
-    )}
-  />
+                                    <DigitFormField
+                                        name="rememberMe"
+                                        component={RememberMe}
+                                        componentProps={{
+                                            label: text.RememberMe,
+                                            primary: true
+                                        }}
+                                    />
+                                </DigitLayout.Center>
+                            </DigitDesign.CardBody>
+                            <DigitDesign.CardButtons reverseDirection>
+                                <LoginButton
+                                    text={text.Login}
+                                    primary
+                                    raised
+                                    submit
+                                />
+                                <DigitDesign.Link to="/create-account">
+                                    <CreateAccountButton
+                                        text={text.CreateAccount}
+                                    />
+                                </DigitDesign.Link>
+                            </DigitDesign.CardButtons>
+                        </DigitDesign.Card>
+                    )}
+                />
+            </DigitLayout.Fill>
+        )}
+    />
 );
 
 export default LoginForm;

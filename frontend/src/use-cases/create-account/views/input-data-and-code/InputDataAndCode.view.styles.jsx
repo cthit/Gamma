@@ -1,40 +1,42 @@
 import styled from "styled-components";
 
-import GammaSwitch from "../../../../common/elements/gamma-switch";
-import GammaTextField from "../../../../common/elements/gamma-text-field";
-import GammaSelect from "../../../../common/elements/gamma-select";
-import GammaButton from "../../../../common/elements/gamma-button";
+import {
+    DigitButton,
+    DigitSwitch,
+    DigitTextField,
+    DigitSelect
+} from "@cthit/react-digit-components";
 
-export const CreateAccountButton = styled(GammaButton)``;
+export const CreateAccountButton = styled(DigitButton)``;
 
-export const ConfirmationCodeInput = styled(GammaTextField)`
-  width: 100px;
+export const ConfirmationCodeInput = styled(DigitTextField)`
+    width: 100px;
 `;
 
-export const NickInput = styled(GammaTextField)`
-  width: 300px;
+export const NickInput = styled(DigitTextField)`
+    width: 300px;
 `;
 
-export const PasswordInput = styled(GammaTextField)`
-  width: 300px;
+export const PasswordInput = styled(DigitTextField)`
+    width: 300px;
 `;
 
-export const PasswordConfirmationInput = styled(GammaTextField)`
-  width: 300px;
+export const PasswordConfirmationInput = styled(DigitTextField)`
+    width: 300px;
 `;
 
-export const FirstnameInput = styled(GammaTextField)`
-  width: 300px;
+export const FirstnameInput = styled(DigitTextField)`
+    width: 300px;
 `;
 
-export const LastnameInput = styled(GammaTextField)`
-  width: 300px;
+export const LastnameInput = styled(DigitTextField)`
+    width: 300px;
 `;
 
-export const ConfirmCidInput = styled(GammaTextField)``;
+export const ConfirmCidInput = styled(DigitTextField)``;
 
-export const AcceptanceYearInput = styled(GammaSelect)`
-  width: 300px;
+export const AcceptanceYearInput = styled(DigitSelect)`
+    width: 300px;
 `;
 
-export const AcceptUserAgreementInput = styled(GammaSwitch)``;
+export const AcceptUserAgreementInput = styled(DigitSwitch)``;

@@ -1,49 +1,40 @@
-import React from "react";
-import * as yup from "yup";
-import GammaForm from "../../../../common/elements/gamma-form";
-import GammaFormField from "../../../../common/elements/gamma-form-field";
 import {
-  GammaCard,
-  GammaCardTitle,
-  GammaCardBody,
-  GammaCardButtons
-} from "../../../../common-ui/design";
-import GammaTextField from "../../../../common/elements/gamma-text-field";
-import GammaButton from "../../../../common/elements/gamma-button";
-import { Center } from "../../../../common-ui/layout";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
+    DigitLayout,
+    DigitTranslations,
+    DigitIfElseRendering
+} from "@cthit/react-digit-components";
+import React from "react";
 import PostForm from "../common-views/post-form";
-import GammaTranslations from "../../../../common/declaratives/gamma-translations";
 import translations from "./EditPostDetails.screen.translations.json";
 
 const EditPostDetails = ({ postsChange, post, match }) => (
-  <IfElseRendering
-    test={post != null}
-    ifRender={() => (
-      <GammaTranslations
-        translations={translations}
-        uniquePath="Posts.Screen.EditPostDetails"
-        render={text => (
-          <Center>
-            <PostForm
-              onSubmit={(values, actions) => {
-                postsChange(values, match.params.id);
-              }}
-              initialValues={{
-                sv: post.sv == null ? "" : post.sv,
-                en: post.en == null ? "" : post.en
-              }}
-              titleText={text.UpdatePost}
-              swedishInputText={text.SwedishInput}
-              englishInputText={text.EnglishInput}
-              submitText={text.SavePost}
-              fieldRequiredText={text.fieldRequiredText}
+    <DigitIfElseRendering
+        test={post != null}
+        ifRender={() => (
+            <DigitTranslations
+                translations={translations}
+                uniquePath="Posts.Screen.EditPostDetails"
+                render={text => (
+                    <DigitLayout.Center>
+                        <PostForm
+                            onSubmit={(values, actions) => {
+                                postsChange(values, match.params.id);
+                            }}
+                            initialValues={{
+                                sv: post.sv == null ? "" : post.sv,
+                                en: post.en == null ? "" : post.en
+                            }}
+                            titleText={text.UpdatePost}
+                            swedishInputText={text.SwedishInput}
+                            englishInputText={text.EnglishInput}
+                            submitText={text.SavePost}
+                            fieldRequiredText={text.fieldRequiredText}
+                        />
+                    </DigitLayout.Center>
+                )}
             />
-          </Center>
         )}
-      />
-    )}
-  />
+    />
 );
 
 export default EditPostDetails;
