@@ -33,6 +33,7 @@ export function putRequest(endpoint, data) {
         }
     });
 }
+
 function token() {
     const sessionToken = sessionStorage.token;
     const localToken = localStorage.token;
