@@ -6,11 +6,11 @@ import {
     DigitTranslations,
     DigitRedirect,
     DigitDialog,
-    DigitToast
+    DigitToast,
+    DigitContainUser
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import ContainUserToAllowedPages from "../common/declaratives/contain-user-to-allowed-pages";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
 import Error from "../use-cases/error";
@@ -147,7 +147,7 @@ export class App extends Component {
                                             ifRender={() => (
                                                 <Route
                                                     render={props => (
-                                                        <ContainUserToAllowedPages
+                                                        <DigitContainUser
                                                             currentPath={
                                                                 props.location
                                                                     .pathname
