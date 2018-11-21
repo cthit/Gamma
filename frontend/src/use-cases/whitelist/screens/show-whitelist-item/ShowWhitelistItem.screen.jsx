@@ -1,15 +1,10 @@
 import {
     DigitButton,
     DigitTranslations,
-    DigitDisplayData
+    DigitDisplayData,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import React from "react";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Fill, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowWhitelistItem.screen.translations.json";
@@ -30,8 +25,8 @@ const ShowWhitelistItem = ({
                 render={text => (
                     <Fill>
                         <Center>
-                            <GammaCard minWidth="300px" maxWidth="600px">
-                                <GammaCardBody>
+                            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                                <DigitDesign.CardBody>
                                     <DigitDisplayData
                                         data={whitelistItem}
                                         keysOrder={["id", "cid"]}
@@ -40,8 +35,8 @@ const ShowWhitelistItem = ({
                                             cid: text.Cid
                                         }}
                                     />
-                                </GammaCardBody>
-                                <GammaCardButtons reversedDirection>
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reversedDirection>
                                     <DigitButton
                                         text={text.DeleteWhitelistItem}
                                         onClick={() => {
@@ -80,7 +75,7 @@ const ShowWhitelistItem = ({
                                         }}
                                     />
                                     <Spacing />
-                                    <GammaLink
+                                    <DigitDesign.Link
                                         to={
                                             "/whitelist/" +
                                             whitelistItem.id +
@@ -92,9 +87,9 @@ const ShowWhitelistItem = ({
                                             primary
                                             raised
                                         />
-                                    </GammaLink>
-                                </GammaCardButtons>
-                            </GammaCard>
+                                    </DigitDesign.Link>
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
                         </Center>
                     </Fill>
                 )}

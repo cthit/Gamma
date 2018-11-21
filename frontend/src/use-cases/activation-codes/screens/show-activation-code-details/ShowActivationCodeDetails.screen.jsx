@@ -1,15 +1,10 @@
 import {
     DigitButton,
     DigitTranslations,
-    DigitDisplayData
+    DigitDisplayData,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import React from "react";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Fill } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
@@ -30,8 +25,8 @@ const ShowActivationCodeDetails = ({
                 render={text => (
                     <Fill>
                         <Center>
-                            <GammaCard minWidth="300px" maxWidth="600px">
-                                <GammaCardBody>
+                            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                                <DigitDesign.CardBody>
                                     <DigitDisplayData
                                         data={activationCode}
                                         keysText={{
@@ -47,9 +42,9 @@ const ShowActivationCodeDetails = ({
                                             "createdAt"
                                         ]}
                                     />
-                                </GammaCardBody>
-                                <GammaCardButtons reverseDirection>
-                                    <GammaLink
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reverseDirection>
+                                    <DigitDesign.Link
                                         to={
                                             "/activation-codes/" +
                                             activationCode.id +
@@ -61,7 +56,7 @@ const ShowActivationCodeDetails = ({
                                             primary
                                             raised
                                         />
-                                    </GammaLink>
+                                    </DigitDesign.Link>
                                     <DigitButton
                                         text={text.DeleteActivationCode}
                                         onClick={() => {
@@ -98,8 +93,8 @@ const ShowActivationCodeDetails = ({
                                             });
                                         }}
                                     />
-                                </GammaCardButtons>
-                            </GammaCard>
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
                         </Center>
                     </Fill>
                 )}

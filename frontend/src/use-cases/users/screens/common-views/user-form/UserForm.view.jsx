@@ -1,11 +1,5 @@
 import React from "react";
 import * as yup from "yup";
-import {
-    GammaCard,
-    GammaCardTitle,
-    GammaCardButtons,
-    GammaCardBody
-} from "../../../../../common-ui/design";
 import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 
@@ -13,7 +7,8 @@ import {
     DigitTranslations,
     DigitTextField,
     DigitEditData,
-    DigitSelect
+    DigitSelect,
+    DigitDesign
 } from "@cthit/react-digit-components";
 
 function _getCurrentYear() {

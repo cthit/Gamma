@@ -1,11 +1,11 @@
 import {
     DigitFAB,
     DigitTable,
-    DigitTranslations
+    DigitTranslations,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
 import React from "react";
-import { GammaLink } from "../../../../common-ui/design";
 import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowWhitelist.screen.translations.json";
 
@@ -34,9 +34,9 @@ const ShowWhitelist = ({ whitelist }) => (
                     })}
                     emptyTableText={text.EmptyWhitelist}
                 />
-                <GammaLink to="/whitelist/add">
+                <DigitDesign.Link to="/whitelist/add">
                     <DigitFAB icon={Add} secondary />
-                </GammaLink>
+                </DigitDesign.Link>
             </Fill>
         )}
     />

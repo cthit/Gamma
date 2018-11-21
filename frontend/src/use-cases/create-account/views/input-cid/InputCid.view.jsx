@@ -1,19 +1,13 @@
 import {
     DigitButton,
-    DigitTranslations,
     DigitForm,
-    DigitFormField
+    DigitFormField,
+    DigitTranslations,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
 import React from "react";
 import * as yup from "yup";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaCardSubTitle,
-    GammaCardTitle
-} from "../../../../common-ui/design";
 import { Center, MarginTop } from "../../../../common-ui/layout";
 import { CIDInput } from "./InputCid.view.styles";
 import translations from "./InputCid.view.translations";
@@ -44,16 +38,18 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                 });
                         }}
                         render={({ errors, touched }) => (
-                            <GammaCard
+                            <DigitDesign.Card
                                 absWidth="300px"
                                 absHeight="300px"
                                 hasSubTitle
                             >
-                                <GammaCardTitle text={text.EnterYourCid} />
-                                <GammaCardSubTitle
+                                <DigitDesign.CardTitle
+                                    text={text.EnterYourCid}
+                                />
+                                <DigitDesign.CardSubTitle
                                     text={text.EnterYourCidDescription}
                                 />
-                                <GammaCardBody>
+                                <DigitDesign.CardBody>
                                     <Center>
                                         <DigitFormField
                                             name="cid"
@@ -63,16 +59,16 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                             }}
                                         />
                                     </Center>
-                                </GammaCardBody>
-                                <GammaCardButtons reverseDirection>
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reverseDirection>
                                     <DigitButton
                                         text={text.SendCid}
                                         primary
                                         raised
                                         submit
                                     />
-                                </GammaCardButtons>
-                            </GammaCard>
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
                         )}
                     />
                 </Center>

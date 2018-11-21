@@ -1,17 +1,12 @@
 import {
     DigitButton,
+    DigitDisplayData,
+    DigitText,
     DigitTranslations,
-    DigitDisplayData
+    DigitDesign
 } from "@cthit/react-digit-components";
 import React from "react";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Fill, Spacing } from "../../../../common-ui/layout";
-import { Display } from "../../../../common-ui/text";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowPostDetails.screen.translations.json";
 
@@ -52,12 +47,12 @@ class ShowPostDetails extends React.Component {
                         render={(text, activeLanguage) => (
                             <Fill>
                                 <Center>
-                                    <GammaCard
+                                    <DigitDesign.Card
                                         minWidth="300px"
                                         maxWidth="600px"
                                     >
-                                        <GammaCardBody>
-                                            <Display text="Post" />
+                                        <DigitDesign.CardBody>
+                                            <DigitText.Heading3 text="Post" />
                                             <DigitDisplayData
                                                 data={post}
                                                 keysText={{
@@ -67,10 +62,12 @@ class ShowPostDetails extends React.Component {
                                                 }}
                                                 keysOrder={["id", "sv", "en"]}
                                             />
-                                            <Display text="Usages" />
-                                        </GammaCardBody>
-                                        <GammaCardButtons reverseDirection>
-                                            <GammaLink
+                                            <DigitText.Heading3 text="Usages" />
+                                        </DigitDesign.CardBody>
+                                        <DigitDesign.CardButtons
+                                            reverseDirection
+                                        >
+                                            <DigitDesign.Link
                                                 to={
                                                     "/posts/" +
                                                     post.id +
@@ -82,7 +79,7 @@ class ShowPostDetails extends React.Component {
                                                     primary
                                                     raised
                                                 />
-                                            </GammaLink>
+                                            </DigitDesign.Link>
                                             <Spacing />
                                             <DigitButton
                                                 text={text.DeletePost}
@@ -133,8 +130,8 @@ class ShowPostDetails extends React.Component {
                                                     });
                                                 }}
                                             />
-                                        </GammaCardButtons>
-                                    </GammaCard>
+                                        </DigitDesign.CardButtons>
+                                    </DigitDesign.Card>
                                 </Center>
                             </Fill>
                         )}

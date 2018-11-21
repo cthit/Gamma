@@ -1,15 +1,10 @@
 import {
     DigitButton,
     DigitTranslations,
-    DigitDisplayData
+    DigitDisplayData,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import React from "react";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Fill, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowWebsiteDetails.screen.translations.json";
@@ -30,8 +25,8 @@ const ShowWebsiteDetails = ({
                 render={text => (
                     <Fill>
                         <Center>
-                            <GammaCard minWidth="300px" maxWidth="600px">
-                                <GammaCardBody>
+                            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                                <DigitDesign.CardBody>
                                     <DigitDisplayData
                                         data={website}
                                         keysText={{
@@ -41,9 +36,9 @@ const ShowWebsiteDetails = ({
                                         }}
                                         keysOrder={["id", "name", "prettyName"]}
                                     />
-                                </GammaCardBody>
-                                <GammaCardButtons reverseDirection>
-                                    <GammaLink
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reverseDirection>
+                                    <DigitDesign.Link
                                         to={"/websites/" + website.id + "/edit"}
                                     >
                                         <DigitButton
@@ -51,7 +46,7 @@ const ShowWebsiteDetails = ({
                                             primary
                                             raised
                                         />
-                                    </GammaLink>
+                                    </DigitDesign.Link>
                                     <Spacing />
                                     <DigitButton
                                         onClick={() => {
@@ -87,8 +82,8 @@ const ShowWebsiteDetails = ({
                                         }}
                                         text={text.DeleteWebsite}
                                     />
-                                </GammaCardButtons>
-                            </GammaCard>
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
                         </Center>
                     </Fill>
                 )}

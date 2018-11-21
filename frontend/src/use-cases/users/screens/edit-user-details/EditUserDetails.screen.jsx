@@ -1,14 +1,8 @@
-import React from "react";
-import {
-    GammaCardDisplayTitle,
-    GammaCardBody,
-    GammaCard
-} from "../../../../common-ui/design";
-
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
-import { Center } from "../../../../common-ui/layout";
-import UserForm from "../common-views/user-form/UserForm.view";
 import { DigitTranslations } from "@cthit/react-digit-components";
+import React from "react";
+import { Center } from "../../../../common-ui/layout";
+import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
+import UserForm from "../common-views/user-form/UserForm.view";
 import translations from "./EditUserDetails.screen.translations.json";
 
 class EditUserDetails extends React.Component {

@@ -1,11 +1,11 @@
 import {
     DigitFAB,
     DigitTable,
-    DigitTranslations
+    DigitTranslations,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
 import React from "react";
-import { GammaLink } from "../../../../common-ui/design";
 import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllPosts.screen.translations.json";
 
@@ -35,9 +35,9 @@ const ShowAllPosts = ({ posts }) => (
                     })}
                     emptyTableText={text.NoPosts}
                 />
-                <GammaLink to="/posts/add">
+                <DigitDesign.Link to="/posts/add">
                     <DigitFAB icon={Add} secondary />
-                </GammaLink>
+                </DigitDesign.Link>
             </Fill>
         )}
     />

@@ -1,13 +1,11 @@
-import { DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitForm,
+    DigitFormField,
+    DigitTranslations,
+    DigitDesign
+} from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaCardTitle,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Fill } from "../../../../common-ui/layout";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
@@ -19,8 +17,6 @@ import {
     RememberMe
 } from "./LoginForm.view.styles";
 import translations from "./LoginForm.view.translations.json";
-
-import { DigitForm, DigitFormField } from "@cthit/react-digit-components";
 
 const LoginForm = ({ login, toastOpen, redirectTo }) => (
     <DigitTranslations
@@ -75,13 +71,13 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                         actions.resetForm();
                     }}
                     render={({ errors, touched }) => (
-                        <GammaCard
+                        <DigitDesign.Card
                             absWidth="300px"
                             absHeight="300px"
                             hasSubTitle
                         >
-                            <GammaCardTitle text={text.Login} />
-                            <GammaCardBody>
+                            <DigitDesign.CardTitle text={text.Login} />
+                            <DigitDesign.CardBody>
                                 <Center>
                                     <DigitFormField
                                         name="cid"
@@ -108,21 +104,21 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                 </Center>
-                            </GammaCardBody>
-                            <GammaCardButtons reverseDirection>
+                            </DigitDesign.CardBody>
+                            <DigitDesign.CardButtons reverseDirection>
                                 <LoginButton
                                     text={text.Login}
                                     primary
                                     raised
                                     submit
                                 />
-                                <GammaLink to="/create-account">
+                                <DigitDesign.Link to="/create-account">
                                     <CreateAccountButton
                                         text={text.CreateAccount}
                                     />
-                                </GammaLink>
-                            </GammaCardButtons>
-                        </GammaCard>
+                                </DigitDesign.Link>
+                            </DigitDesign.CardButtons>
+                        </DigitDesign.Card>
                     )}
                 />
             </Fill>

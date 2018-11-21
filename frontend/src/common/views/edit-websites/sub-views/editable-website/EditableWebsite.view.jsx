@@ -2,7 +2,8 @@ import {
     DigitIconButton,
     DigitTextField,
     DigitTranslations,
-    DigitTooltip
+    DigitTooltip,
+    DigitText
 } from "@cthit/react-digit-components";
 import { Cancel, Delete, Edit, Save } from "@material-ui/icons";
 import React from "react";
@@ -12,7 +13,6 @@ import {
     Spacing,
     VerticalFill
 } from "../../../../../common-ui/layout";
-import { Text } from "../../../../../common-ui/text";
 import {
     CustomVerticalFill,
     CustomVerticalFillRightAlign
@@ -35,11 +35,11 @@ class EditableWebsite extends React.Component {
                     <CustomVerticalFill>
                         <VerticalFill>
                             <Size minWidth="150px">
-                                <Text text={prettyWebsite} />
+                                <DigitText.Text text={prettyWebsite} />
                             </Size>
                             <Spacing />
                             <Hide hidden={editing}>
-                                <Text text={url} />
+                                <DigitText.Text text={url} />
                             </Hide>
                             <Hide hidden={!editing}>
                                 <DigitTextField

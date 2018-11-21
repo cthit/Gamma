@@ -1,11 +1,11 @@
 import {
     DigitFAB,
     DigitTable,
-    DigitTranslations
+    DigitTranslations,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
 import React from "react";
-import { GammaLink } from "../../../../common-ui/design";
 import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllGroups.screen.translations.json";
 
@@ -50,9 +50,9 @@ const ShowAllGroups = ({ groups }) => (
                     })}
                     emptyTableText={text.NoGroups}
                 />
-                <GammaLink to="/groups/new">
+                <DigitDesign.Link to="/groups/new">
                     <DigitFAB icon={Add} secondary />
-                </GammaLink>
+                </DigitDesign.Link>
             </Fill>
         )}
     />

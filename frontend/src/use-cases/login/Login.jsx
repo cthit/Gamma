@@ -1,28 +1,25 @@
 import React from "react";
-
+import { Center, Margin } from "../../common-ui/layout";
 import LoginForm from "./views/login-form";
 
-import { Display } from "../../common-ui/text";
-import { Center, Fill, Margin } from "../../common-ui/layout";
-
 class Login extends React.Component {
-  constructor(props) {
-    super();
+    constructor(props) {
+        super();
 
-    props.gammaLoadingFinished();
-  }
+        props.gammaLoadingFinished();
+    }
 
-  render() {
-    const { login } = this.props;
+    render() {
+        const { login } = this.props;
 
-    return (
-      <Margin>
-        <Center>
-          <LoginForm login={login} />
-        </Center>
-      </Margin>
-    );
-  }
+        return (
+            <Margin>
+                <Center>
+                    <LoginForm login={login} />
+                </Center>
+            </Margin>
+        );
+    }
 }
 
 export default Login;

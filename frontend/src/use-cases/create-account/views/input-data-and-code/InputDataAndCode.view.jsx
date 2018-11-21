@@ -16,13 +16,6 @@ import {
 } from "./InputDataAndCode.view.styles";
 
 import { Center, Spacing } from "../../../../common-ui/layout";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaCardSubTitle,
-    GammaCardTitle
-} from "../../../../common-ui/design";
 
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
@@ -31,7 +24,8 @@ import translations from "./InputDataAndCode.view.translations.json";
 import {
     DigitTranslations,
     DigitForm,
-    DigitFormField
+    DigitFormField,
+    DigitDesign
 } from "@cthit/react-digit-components";
 
 const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
@@ -117,16 +111,18 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                             .required(text.FieldRequired)
                     })}
                     render={props => (
-                        <GammaCard
+                        <DigitDesign.Card
                             minWidth="300px"
                             maxWidth="600px"
                             hasSubTitle
                         >
-                            <GammaCardTitle text={text.CompleteCreation} />
-                            <GammaCardSubTitle
+                            <DigitDesign.CardTitle
+                                text={text.CompleteCreation}
+                            />
+                            <DigitDesign.CardSubTitle
                                 text={text.CompleteCreationDescription}
                             />
-                            <GammaCardBody>
+                            <DigitDesign.CardBody>
                                 <Center>
                                     <DigitFormField
                                         name="cid"
@@ -207,8 +203,8 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                         }}
                                     />
                                 </Center>
-                            </GammaCardBody>
-                            <GammaCardButtons leftRight reverseDirection>
+                            </DigitDesign.CardBody>
+                            <DigitDesign.CardButtons leftRight reverseDirection>
                                 <CreateAccountButton
                                     submit
                                     text={text.CreateAccount}
@@ -216,8 +212,8 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                     raised
                                 />
                                 <Spacing />
-                            </GammaCardButtons>
-                        </GammaCard>
+                            </DigitDesign.CardButtons>
+                        </DigitDesign.Card>
                     )}
                 />
             </Center>

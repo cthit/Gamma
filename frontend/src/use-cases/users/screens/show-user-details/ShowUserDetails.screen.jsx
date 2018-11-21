@@ -1,16 +1,10 @@
 import {
     DigitButton,
     DigitTranslations,
-    DigitDisplayData
+    DigitDisplayData,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import React from "react";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaCardDisplayTitle,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowUserDetails.screen.translations.json";
@@ -30,8 +24,8 @@ const ShowUserDetails = ({
                 uniquePath="Users.Screen.ShowUserDetails"
                 render={text => (
                     <Center>
-                        <GammaCard minWidth="300px" maxWidth="600px">
-                            <GammaCardDisplayTitle
+                        <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                            <DigitDesign.CardDisplayTitle
                                 text={
                                     user.firstName +
                                     " '" +
@@ -40,7 +34,7 @@ const ShowUserDetails = ({
                                     user.lastName
                                 }
                             />
-                            <GammaCardBody>
+                            <DigitDesign.CardBody>
                                 <DigitDisplayData
                                     data={user}
                                     keysText={{
@@ -60,15 +54,17 @@ const ShowUserDetails = ({
                                         "acceptanceYear"
                                     ]}
                                 />
-                            </GammaCardBody>
-                            <GammaCardButtons reverseDirection>
-                                <GammaLink to={"/users/" + user.cid + "/edit"}>
+                            </DigitDesign.CardBody>
+                            <DigitDesign.CardButtons reverseDirection>
+                                <DigitDesign.Link
+                                    to={"/users/" + user.cid + "/edit"}
+                                >
                                     <DigitButton
                                         text={text.Edit}
                                         primary
                                         raised
                                     />
-                                </GammaLink>
+                                </DigitDesign.Link>
                                 <Spacing />
                                 <DigitButton
                                     onClick={() =>
@@ -109,8 +105,8 @@ const ShowUserDetails = ({
                                     }
                                     text={text.Delete}
                                 />
-                            </GammaCardButtons>
-                        </GammaCard>
+                            </DigitDesign.CardButtons>
+                        </DigitDesign.Card>
                     </Center>
                 )}
             />

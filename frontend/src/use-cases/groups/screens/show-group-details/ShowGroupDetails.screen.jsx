@@ -1,15 +1,10 @@
 import {
     DigitButton,
     DigitTranslations,
-    DigitDisplayData
+    DigitDisplayData,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import React from "react";
-import {
-    GammaCard,
-    GammaCardBody,
-    GammaCardButtons,
-    GammaLink
-} from "../../../../common-ui/design";
 import { Center, Fill } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowGroupDetails.screen.translations.json";
@@ -30,8 +25,8 @@ const ShowGroupDetails = ({
                 render={text => (
                     <Fill>
                         <Center>
-                            <GammaCard minWidth="300px" maxWidth="600px">
-                                <GammaCardBody>
+                            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+                                <DigitDesign.CardBody>
                                     <DigitDisplayData
                                         data={{
                                             id: group.id,
@@ -66,9 +61,9 @@ const ShowGroupDetails = ({
                                             "type"
                                         ]}
                                     />
-                                </GammaCardBody>
-                                <GammaCardButtons reverseDirection>
-                                    <GammaLink
+                                </DigitDesign.CardBody>
+                                <DigitDesign.CardButtons reverseDirection>
+                                    <DigitDesign.Link
                                         to={"/groups/" + group.id + "/edit"}
                                     >
                                         <DigitButton
@@ -76,7 +71,7 @@ const ShowGroupDetails = ({
                                             raised
                                             text="Redigera"
                                         />
-                                    </GammaLink>
+                                    </DigitDesign.Link>
                                     <DigitButton
                                         text="Radera"
                                         onClick={() => {
@@ -106,8 +101,8 @@ const ShowGroupDetails = ({
                                             });
                                         }}
                                     />
-                                </GammaCardButtons>
-                            </GammaCard>
+                                </DigitDesign.CardButtons>
+                            </DigitDesign.Card>
                         </Center>
                     </Fill>
                 )}
