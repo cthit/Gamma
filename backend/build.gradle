@@ -1,25 +1,24 @@
 buildscript {
-	ext {
-		springBootVersion = '2.0.5.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
+    ext {
+        springBootVersion = '2.1.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
 
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-		classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-		classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-		classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
-	}
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+        classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
+    }
+
 }
-
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-
 group = 'it.chalmers'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
@@ -27,7 +26,15 @@ sourceCompatibility = 10
 repositories {
 	mavenCentral()
 }
+jar {
+    manifest {
+        attributes "Main-Class": "it.chalmers.GammaApplication"
+    }
 
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 
 dependencies {
 	compile('com.google.api-client:google-api-client:1.23.0')
@@ -38,7 +45,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-mail')
 	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('com.sun.xml.bind:jaxb-impl:2.2.11')
+    compile('com.sun.xml.bind:jaxb-impl:2.2.11')
 	compile('com.sun.xml.bind:jaxb-core:2.2.11')
 	compile('javax.xml.bind:jaxb-api:2.3.0')
 	compile('javax.activation:activation:1.1.1')

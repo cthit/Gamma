@@ -28,8 +28,8 @@ public class WhitelistController {
 
     private MailSenderService mailSenderService;
 
-    @Value("${mail.receiver.standard-postfix}")
-    private String mailPostfix;
+   // @Value("${mail.receiver.standard-postfix}")
+    private String mailPostfix = "@student.chalmers.se";
 
     public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService,
                                ITUserService itUserService, MailSenderService mailSenderService){
@@ -46,7 +46,7 @@ public class WhitelistController {
             Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
             String code = activationCodeService.generateActivationCode();
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-            sendEmail(activationCode);
+    //        sendEmail(activationCode);
         }
 
         /*
