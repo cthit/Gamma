@@ -1,6 +1,5 @@
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitLayout, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import UserForm from "../common-views/user-form/UserForm.view";
 import translations from "./EditUserDetails.screen.translations.json";
@@ -20,7 +19,7 @@ class EditUserDetails extends React.Component {
                         translations={translations}
                         uniquePath="Users.Screen.EditUserDetails"
                         render={text => (
-                            <Center>
+                            <DigitLayout.Center>
                                 <UserForm
                                     availableWebsites={websites}
                                     titleText={text.EditUser}
@@ -41,7 +40,7 @@ class EditUserDetails extends React.Component {
                                         );
                                     }}
                                 />
-                            </Center>
+                            </DigitLayout.Center>
                         )}
                     />
                 )}

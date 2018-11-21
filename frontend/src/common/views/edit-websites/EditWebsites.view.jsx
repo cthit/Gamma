@@ -1,10 +1,10 @@
 import {
     DigitButton,
     DigitTextField,
-    DigitSelect
+    DigitSelect,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Fill, Size, Spacing, VerticalFill } from "../../../common-ui/layout";
 import EditableWebsite from "./sub-views/editable-website";
 
 class EditWebsites extends React.Component {
@@ -38,9 +38,9 @@ class EditWebsites extends React.Component {
         const { push, replace, remove, form, availableWebsites } = this.props;
 
         return (
-            <Fill>
-                <VerticalFill>
-                    <Size minWidth="150px">
+            <DigitLayout.Fill>
+                <DigitLayout.Column>
+                    <DigitLayout.Size minWidth="150px">
                         <DigitSelect
                             valueToTextMap={this._getValueToTextMap(
                                 availableWebsites
@@ -53,9 +53,9 @@ class EditWebsites extends React.Component {
                                 });
                             }}
                         />
-                    </Size>
+                    </DigitLayout.Size>
 
-                    <Spacing />
+                    <DigitLayout.Spacing />
 
                     <DigitTextField
                         upperLabel="URL"
@@ -67,7 +67,7 @@ class EditWebsites extends React.Component {
                         }}
                     />
 
-                    <Spacing />
+                    <DigitLayout.Spacing />
 
                     <DigitButton
                         outline
@@ -82,8 +82,8 @@ class EditWebsites extends React.Component {
                             });
                         }}
                     />
-                </VerticalFill>
-                <Fill>
+                </DigitLayout.Column>
+                <DigitLayout.Fill>
                     {form.values.websites.map((website, index) => (
                         <EditableWebsite
                             key={website.url}
@@ -98,8 +98,8 @@ class EditWebsites extends React.Component {
                             }}
                         />
                     ))}
-                </Fill>
-            </Fill>
+                </DigitLayout.Fill>
+            </DigitLayout.Fill>
         );
     }
 }

@@ -6,7 +6,6 @@ import {
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { HideFill, Padding } from "../common-ui/layout";
 import IfElseRendering from "../common/declaratives/if-else-rendering";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
@@ -182,9 +181,9 @@ export class App extends Component {
                                 <GammaDialog />
                                 <GammaToast />
 
-                                <HideFill hidden={!loading}>
+                                <DigitLayout.HideFill hidden={!loading}>
                                     <GammaLoading />
-                                </HideFill>
+                                </DigitLayout.HideFill>
 
                                 <Route
                                     render={props => {
@@ -193,8 +192,8 @@ export class App extends Component {
                                     }}
                                 />
 
-                                <HideFill hidden={loading}>
-                                    <Padding>
+                                <DigitLayout.HideFill hidden={loading}>
+                                    <DigitLayout.Padding>
                                         <Switch>
                                             <Route
                                                 path="/home"
@@ -255,8 +254,8 @@ export class App extends Component {
                                                 )}
                                             />
                                         </Switch>
-                                    </Padding>
-                                </HideFill>
+                                    </DigitLayout.Padding>
+                                </DigitLayout.HideFill>
                             </div>
                         )}
                     />

@@ -1,8 +1,7 @@
 import React from "react";
-import { Fill, Center } from "../../../../common-ui/layout";
 import WhitelistItemForm from "../common-views/whitelist-item-form";
 
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitLayout } from "@cthit/react-digit-components";
 import translations from "./AddNewWhitelistItem.screen.translations.json";
 
 const AddNewWhitelistItem = ({ whitelistAdd }) => (
@@ -10,8 +9,8 @@ const AddNewWhitelistItem = ({ whitelistAdd }) => (
         translations={translations}
         uniquePath="Whitelist.Screen.AddNewWhitelistItem"
         render={text => (
-            <Fill>
-                <Center>
+            <DigitLayout.Fill>
+                <DigitLayout.Center>
                     <WhitelistItemForm
                         onSubmit={(values, actions) => {
                             whitelistAdd(values)
@@ -29,8 +28,8 @@ const AddNewWhitelistItem = ({ whitelistAdd }) => (
                         fieldRequiredText={text.FieldRequired}
                         submitText={text.SaveCid}
                     />
-                </Center>
-            </Fill>
+                </DigitLayout.Center>
+            </DigitLayout.Fill>
         )}
     />
 );

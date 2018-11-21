@@ -1,12 +1,12 @@
 import {
+    DigitDesign,
     DigitForm,
     DigitFormField,
-    DigitTranslations,
-    DigitDesign
+    DigitLayout,
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import { Center, Fill } from "../../../../common-ui/layout";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import {
@@ -23,7 +23,7 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
         translations={translations}
         uniquePath="Login"
         render={text => (
-            <Fill>
+            <DigitLayout.Fill>
                 {console.log(text)}
                 <DigitForm
                     validationSchema={yup.object().shape({
@@ -78,7 +78,7 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                         >
                             <DigitDesign.CardTitle text={text.Login} />
                             <DigitDesign.CardBody>
-                                <Center>
+                                <DigitLayout.Center>
                                     <DigitFormField
                                         name="cid"
                                         component={CIDInput}
@@ -103,7 +103,7 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                                             primary: true
                                         }}
                                     />
-                                </Center>
+                                </DigitLayout.Center>
                             </DigitDesign.CardBody>
                             <DigitDesign.CardButtons reverseDirection>
                                 <LoginButton
@@ -121,7 +121,7 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
                         </DigitDesign.Card>
                     )}
                 />
-            </Fill>
+            </DigitLayout.Fill>
         )}
     />
 );

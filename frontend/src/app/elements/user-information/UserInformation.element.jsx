@@ -1,11 +1,11 @@
 import {
     DigitButton,
-    DigitTranslations,
-    DigitText
+    DigitLayout,
+    DigitText,
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import React from "react";
 import styled from "styled-components";
-import { Center, Spacing } from "../../../common-ui/layout";
 import IfElseRendering from "../../../common/declaratives/if-else-rendering";
 
 const UserInformation = ({
@@ -23,10 +23,10 @@ const UserInformation = ({
                 render={text => (
                     <Container>
                         {console.log(text)}
-                        <Center>
+                        <DigitLayout.Center>
                             <DigitText.Title white text={user.nick} />
-                        </Center>
-                        <Spacing />
+                        </DigitLayout.Center>
+                        <DigitLayout.Spacing />
                         <DigitButton
                             text={text.Logout}
                             onClick={() => logout(text.LoggedOut)}

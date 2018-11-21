@@ -1,15 +1,14 @@
+import { DigitLayout, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
 import WhitelistItemForm from "../common-views/whitelist-item-form/WhitelistItemForm.view";
 import translations from "./ValidateCid.screen.translations.json";
-import { DigitTranslations } from "@cthit/react-digit-components";
-import { Center } from "../../../../common-ui/layout";
 
 const ValidateCid = ({ whitelistValidate, toastOpen }) => (
     <DigitTranslations
         translations={translations}
         uniquePath="Whitelist.Screen.ValdiateCid"
         render={text => (
-            <Center>
+            <DigitLayout.Center>
                 <WhitelistItemForm
                     initialValues={{ cid: "" }}
                     onSubmit={(values, actions) => {
@@ -37,7 +36,7 @@ const ValidateCid = ({ whitelistValidate, toastOpen }) => (
                     fieldRequiredText={text.FieldRequired}
                     submitText={text.Validate}
                 />
-            </Center>
+            </DigitLayout.Center>
         )}
     />
 );

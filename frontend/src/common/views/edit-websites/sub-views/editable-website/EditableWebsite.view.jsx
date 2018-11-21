@@ -1,22 +1,13 @@
 import {
     DigitIconButton,
+    DigitLayout,
+    DigitText,
     DigitTextField,
-    DigitTranslations,
     DigitTooltip,
-    DigitText
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import { Cancel, Delete, Edit, Save } from "@material-ui/icons";
 import React from "react";
-import {
-    Hide,
-    Size,
-    Spacing,
-    VerticalFill
-} from "../../../../../common-ui/layout";
-import {
-    CustomVerticalFill,
-    CustomVerticalFillRightAlign
-} from "./EditableWebsite.view.styles";
 import translations from "./EditableWebsite.view.translations.json";
 
 class EditableWebsite extends React.Component {
@@ -32,16 +23,16 @@ class EditableWebsite extends React.Component {
                 translations={translations}
                 uniquePath="Common.Views.EditWebsites.SubView.EditableWebsite"
                 render={text => (
-                    <CustomVerticalFill>
-                        <VerticalFill>
-                            <Size minWidth="150px">
+                    <DigitLayout.Column justifyContent="space-between">
+                        <DigitLayout.Column>
+                            <DigitLayout.Size minWidth="150px">
                                 <DigitText.Text text={prettyWebsite} />
-                            </Size>
-                            <Spacing />
-                            <Hide hidden={editing}>
+                            </DigitLayout.Size>
+                            <DigitLayout.Spacing />
+                            <DigitLayout.Hide hidden={editing}>
                                 <DigitText.Text text={url} />
-                            </Hide>
-                            <Hide hidden={!editing}>
+                            </DigitLayout.Hide>
+                            <DigitLayout.Hide hidden={!editing}>
                                 <DigitTextField
                                     upperLabel={text.Url}
                                     value={newUrl}
@@ -51,10 +42,10 @@ class EditableWebsite extends React.Component {
                                         });
                                     }}
                                 />
-                            </Hide>
-                        </VerticalFill>
-                        <CustomVerticalFillRightAlign>
-                            <Hide hidden={editing}>
+                            </DigitLayout.Hide>
+                        </DigitLayout.Column>
+                        <DigitLayout.Column justifyContent="flex-end">
+                            <DigitLayout.Hide hidden={editing}>
                                 <DigitTooltip text={text.Edit}>
                                     <DigitIconButton
                                         icon={Edit}
@@ -65,8 +56,8 @@ class EditableWebsite extends React.Component {
                                         }
                                     />
                                 </DigitTooltip>
-                            </Hide>
-                            <Hide hidden={!editing}>
+                            </DigitLayout.Hide>
+                            <DigitLayout.Hide hidden={!editing}>
                                 <DigitTooltip text={text.Cancel}>
                                     <DigitIconButton
                                         icon={Cancel}
@@ -92,7 +83,7 @@ class EditableWebsite extends React.Component {
                                         }}
                                     />
                                 </DigitTooltip>
-                            </Hide>
+                            </DigitLayout.Hide>
                             <div>
                                 <DigitTooltip text={text.Delete}>
                                     <DigitIconButton
@@ -101,8 +92,8 @@ class EditableWebsite extends React.Component {
                                     />
                                 </DigitTooltip>
                             </div>
-                        </CustomVerticalFillRightAlign>
-                    </CustomVerticalFill>
+                        </DigitLayout.Column>
+                    </DigitLayout.Column>
                 )}
             />
         );

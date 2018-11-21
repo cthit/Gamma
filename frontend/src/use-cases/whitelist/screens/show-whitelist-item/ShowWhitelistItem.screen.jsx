@@ -2,10 +2,10 @@ import {
     DigitButton,
     DigitTranslations,
     DigitDisplayData,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Center, Fill, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowWhitelistItem.screen.translations.json";
 
@@ -23,8 +23,8 @@ const ShowWhitelistItem = ({
                 translations={translations}
                 uniquePath="Whitelist.Screen.ShowWhitelistItem"
                 render={text => (
-                    <Fill>
-                        <Center>
+                    <DigitLayout.Fill>
+                        <DigitLayout.Center>
                             <DigitDesign.Card minWidth="300px" maxWidth="600px">
                                 <DigitDesign.CardBody>
                                     <DigitDisplayData
@@ -74,7 +74,7 @@ const ShowWhitelistItem = ({
                                             });
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitDesign.Link
                                         to={
                                             "/whitelist/" +
@@ -90,8 +90,8 @@ const ShowWhitelistItem = ({
                                     </DigitDesign.Link>
                                 </DigitDesign.CardButtons>
                             </DigitDesign.Card>
-                        </Center>
-                    </Fill>
+                        </DigitLayout.Center>
+                    </DigitLayout.Fill>
                 )}
             />
         )}

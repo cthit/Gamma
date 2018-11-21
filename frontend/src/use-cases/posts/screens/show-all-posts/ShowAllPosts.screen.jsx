@@ -2,11 +2,11 @@ import {
     DigitFAB,
     DigitTable,
     DigitTranslations,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
 import React from "react";
-import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllPosts.screen.translations.json";
 
 const ShowAllPosts = ({ posts }) => (
@@ -14,7 +14,7 @@ const ShowAllPosts = ({ posts }) => (
         translations={translations}
         uniquePath="Posts.Screen.ShowAllPosts"
         render={text => (
-            <Fill>
+            <DigitLayout.Fill>
                 <DigitTable
                     titleText={text.Posts}
                     searchText={text.SearchForPosts}
@@ -38,7 +38,7 @@ const ShowAllPosts = ({ posts }) => (
                 <DigitDesign.Link to="/posts/add">
                     <DigitFAB icon={Add} secondary />
                 </DigitDesign.Link>
-            </Fill>
+            </DigitLayout.Fill>
         )}
     />
 );

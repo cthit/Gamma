@@ -1,14 +1,13 @@
 import {
+    DigitEditData,
+    DigitLayout,
     DigitTextField,
     DigitTranslations
 } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./EditActivationCodeDetails.screen.translations.json";
-
-import { DigitEditData } from "@cthit/react-digit-components";
 
 const EditActivationCodeDetails = ({
     activationCode,
@@ -21,7 +20,7 @@ const EditActivationCodeDetails = ({
                 translations={translations}
                 uniquePath="ActivationCodes.Screen.EditActivationCodeDetails"
                 render={text => (
-                    <Center>
+                    <DigitLayout.Center>
                         <DigitEditData
                             initialValues={activationCode}
                             onSubmit={(values, actions) => {
@@ -42,7 +41,7 @@ const EditActivationCodeDetails = ({
                                 }
                             }}
                         />
-                    </Center>
+                    </DigitLayout.Center>
                 )}
             />
         )}

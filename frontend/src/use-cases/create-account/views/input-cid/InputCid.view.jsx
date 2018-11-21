@@ -3,12 +3,12 @@ import {
     DigitForm,
     DigitFormField,
     DigitTranslations,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
 import React from "react";
 import * as yup from "yup";
-import { Center, MarginTop } from "../../../../common-ui/layout";
 import { CIDInput } from "./InputCid.view.styles";
 import translations from "./InputCid.view.translations";
 
@@ -17,8 +17,8 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
         translations={translations}
         uniquePath="CreateAccount"
         render={text => (
-            <MarginTop>
-                <Center>
+            <DigitLayout.MarginTop>
+                <DigitLayout.Center>
                     <DigitForm
                         validationSchema={yup.object().shape({
                             cid: yup.string().required(text.FieldRequired)
@@ -50,7 +50,7 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                     text={text.EnterYourCidDescription}
                                 />
                                 <DigitDesign.CardBody>
-                                    <Center>
+                                    <DigitLayout.Center>
                                         <DigitFormField
                                             name="cid"
                                             component={CIDInput}
@@ -58,7 +58,7 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                                 upperLabel: text.Cid
                                             }}
                                         />
-                                    </Center>
+                                    </DigitLayout.Center>
                                 </DigitDesign.CardBody>
                                 <DigitDesign.CardButtons reverseDirection>
                                     <DigitButton
@@ -71,8 +71,8 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                             </DigitDesign.Card>
                         )}
                     />
-                </Center>
-            </MarginTop>
+                </DigitLayout.Center>
+            </DigitLayout.MarginTop>
         )}
     />
 );

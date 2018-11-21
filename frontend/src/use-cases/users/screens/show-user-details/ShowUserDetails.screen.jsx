@@ -2,10 +2,10 @@ import {
     DigitButton,
     DigitTranslations,
     DigitDisplayData,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Center, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowUserDetails.screen.translations.json";
 
@@ -23,7 +23,7 @@ const ShowUserDetails = ({
                 translations={translations}
                 uniquePath="Users.Screen.ShowUserDetails"
                 render={text => (
-                    <Center>
+                    <DigitLayout.Center>
                         <DigitDesign.Card minWidth="300px" maxWidth="600px">
                             <DigitDesign.CardDisplayTitle
                                 text={
@@ -65,7 +65,7 @@ const ShowUserDetails = ({
                                         raised
                                     />
                                 </DigitDesign.Link>
-                                <Spacing />
+                                <DigitLayout.Spacing />
                                 <DigitButton
                                     onClick={() =>
                                         gammaDialogOpen({
@@ -107,7 +107,7 @@ const ShowUserDetails = ({
                                 />
                             </DigitDesign.CardButtons>
                         </DigitDesign.Card>
-                    </Center>
+                    </DigitLayout.Center>
                 )}
             />
         )}

@@ -1,12 +1,12 @@
 import {
+    DigitDesign,
     DigitFAB,
+    DigitLayout,
     DigitTable,
-    DigitTranslations,
-    DigitDesign
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
 import React from "react";
-import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllGroups.screen.translations.json";
 
 const ShowAllGroups = ({ groups }) => (
@@ -14,7 +14,7 @@ const ShowAllGroups = ({ groups }) => (
         translations={translations}
         uniquePath="Groups.Screen.ShowAllGroups"
         render={(text, activeLanguage) => (
-            <Fill>
+            <DigitLayout.Fill>
                 <DigitTable
                     titleText={text.Groups}
                     searchText={text.SearchForGroups}
@@ -53,7 +53,7 @@ const ShowAllGroups = ({ groups }) => (
                 <DigitDesign.Link to="/groups/new">
                     <DigitFAB icon={Add} secondary />
                 </DigitDesign.Link>
-            </Fill>
+            </DigitLayout.Fill>
         )}
     />
 );

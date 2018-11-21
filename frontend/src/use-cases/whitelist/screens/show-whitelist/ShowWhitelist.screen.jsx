@@ -2,11 +2,11 @@ import {
     DigitFAB,
     DigitTable,
     DigitTranslations,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import { Add } from "@material-ui/icons";
 import React from "react";
-import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowWhitelist.screen.translations.json";
 
 const ShowWhitelist = ({ whitelist }) => (
@@ -14,7 +14,7 @@ const ShowWhitelist = ({ whitelist }) => (
         translations={translations}
         uniquePath="Whitelist.Screen.ShowWhitelist"
         render={text => (
-            <Fill>
+            <DigitLayout.Fill>
                 <DigitTable
                     titleText={text.Whitelist}
                     searchText={text.SearchForWhitelistItem}
@@ -37,7 +37,7 @@ const ShowWhitelist = ({ whitelist }) => (
                 <DigitDesign.Link to="/whitelist/add">
                     <DigitFAB icon={Add} secondary />
                 </DigitDesign.Link>
-            </Fill>
+            </DigitLayout.Fill>
         )}
     />
 );

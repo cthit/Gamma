@@ -1,8 +1,7 @@
 import React from "react";
 
 import WebsiteForm from "../common-views/website-form";
-import { Center } from "../../../../common-ui/layout";
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitTranslations, DigitLayout } from "@cthit/react-digit-components";
 import translations from "./EditWebsiteDetails.screen.translations.json";
 
 const EditWebsiteDetails = ({ website, websiteId, websitesChange }) => (
@@ -10,7 +9,7 @@ const EditWebsiteDetails = ({ website, websiteId, websitesChange }) => (
         translations={translations}
         uniquePath="Websites.Screen.WebsiteForm"
         render={text => (
-            <Center>
+            <DigitLayout.Center>
                 <WebsiteForm
                     initialValues={website}
                     onSubmit={(values, actions) => {
@@ -25,7 +24,7 @@ const EditWebsiteDetails = ({ website, websiteId, websitesChange }) => (
                     titleText={text.EditWebsite}
                     submitText={text.SaveWebsite}
                 />
-            </Center>
+            </DigitLayout.Center>
         )}
     />
 );

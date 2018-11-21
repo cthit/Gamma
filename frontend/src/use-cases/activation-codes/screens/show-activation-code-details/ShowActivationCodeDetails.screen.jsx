@@ -2,10 +2,10 @@ import {
     DigitButton,
     DigitTranslations,
     DigitDisplayData,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Center, Fill } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
 
@@ -23,8 +23,8 @@ const ShowActivationCodeDetails = ({
                 translations={translations}
                 uniquePath="ActivationCode.Screen.ShowActivationCodeDetails"
                 render={text => (
-                    <Fill>
-                        <Center>
+                    <DigitLayout.Fill>
+                        <DigitLayout.Center>
                             <DigitDesign.Card minWidth="300px" maxWidth="600px">
                                 <DigitDesign.CardBody>
                                     <DigitDisplayData
@@ -95,8 +95,8 @@ const ShowActivationCodeDetails = ({
                                     />
                                 </DigitDesign.CardButtons>
                             </DigitDesign.Card>
-                        </Center>
-                    </Fill>
+                        </DigitLayout.Center>
+                    </DigitLayout.Fill>
                 )}
             />
         )}

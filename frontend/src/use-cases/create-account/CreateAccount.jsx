@@ -1,21 +1,17 @@
-import React from "react";
+import {
+    DigitComponentSelector,
+    DigitLayout,
+    DigitStepper,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
-
-import InputCid from "./views/input-cid";
+import React from "react";
+import MapPathToStep from "../../common/declaratives/map-path-to-step";
+import translations from "./CreateAccount.translations.json";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
+import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
-
-import MapPathToStep from "../../common/declaratives/map-path-to-step";
-import { Fill, Spacing } from "../../common-ui/layout";
-
-import {
-    DigitTranslations,
-    DigitStepper,
-    DigitComponentSelector,
-    DigitLayout
-} from "@cthit/react-digit-components";
-import translations from "./CreateAccount.translations.json";
 
 class CreateAccount extends React.Component {
     constructor(props) {
@@ -34,7 +30,7 @@ class CreateAccount extends React.Component {
                 translations={translations}
                 uniquePath="CreateAccount"
                 render={text => (
-                    <Fill>
+                    <DigitLayout.Fill>
                         {console.log(text)}
                         <MapPathToStep
                             currentPath={location.pathname}
@@ -66,7 +62,7 @@ class CreateAccount extends React.Component {
                                 </DigitLayout.Column>
                             )}
                         />
-                    </Fill>
+                    </DigitLayout.Fill>
                 )}
             />
         );

@@ -2,12 +2,12 @@ import {
     DigitButton,
     DigitTranslations,
     DigitDisplayData,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Center, Fill } from "../../../../common-ui/layout";
-import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowGroupDetails.screen.translations.json";
+import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 
 const ShowGroupDetails = ({
     group,
@@ -23,8 +23,8 @@ const ShowGroupDetails = ({
                 translations={translations}
                 uniquePath="Groups.Screen.ShowGroupDetails"
                 render={text => (
-                    <Fill>
-                        <Center>
+                    <DigitLayout.Fill>
+                        <DigitLayout.Center>
                             <DigitDesign.Card minWidth="300px" maxWidth="600px">
                                 <DigitDesign.CardBody>
                                     <DigitDisplayData
@@ -103,8 +103,8 @@ const ShowGroupDetails = ({
                                     />
                                 </DigitDesign.CardButtons>
                             </DigitDesign.Card>
-                        </Center>
-                    </Fill>
+                        </DigitLayout.Center>
+                    </DigitLayout.Fill>
                 )}
             />
         )}

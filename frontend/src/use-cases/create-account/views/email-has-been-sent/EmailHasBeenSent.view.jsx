@@ -2,10 +2,10 @@ import {
     DigitButton,
     DigitDesign,
     DigitText,
-    DigitTranslations
+    DigitTranslations,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Center } from "../../../../common-ui/layout";
 import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
 import translations from "./EmailHasBeenSent.view.translations.json";
 
@@ -14,7 +14,7 @@ const EmailHasBeenSent = ({}) => (
         translations={translations}
         uniquePath="CreateAccount"
         render={text => (
-            <Center>
+            <DigitLayout.Center>
                 <DigitDesign.Card minWidth="300px" maxWidth="500px">
                     <DigitDesign.CardTitle text={text.AnEmailShouldBeSent} />
                     <DigitDesign.CardBody>
@@ -40,7 +40,7 @@ const EmailHasBeenSent = ({}) => (
                         </ButtonNavLink>
                     </DigitDesign.CardButtons>
                 </DigitDesign.Card>
-            </Center>
+            </DigitLayout.Center>
         )}
     />
 );

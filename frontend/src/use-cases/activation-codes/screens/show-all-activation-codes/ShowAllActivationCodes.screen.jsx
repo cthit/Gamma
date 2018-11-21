@@ -1,10 +1,13 @@
-import { DigitTranslations, DigitTable } from "@cthit/react-digit-components";
+import {
+    DigitTranslations,
+    DigitTable,
+    DigitLayout
+} from "@cthit/react-digit-components";
 import React from "react";
-import { Fill } from "../../../../common-ui/layout";
 import translations from "./ShowAllActivationCodes.screen.translations.json";
 
 const ShowAllActivationCodes = ({ activationCodes, text }) => (
-    <Fill>
+    <DigitLayout.Fill>
         <DigitTranslations
             translations={translations}
             uniquePath="ActivationCodes.Screen.ShowAllActivationCodes"
@@ -32,7 +35,7 @@ const ShowAllActivationCodes = ({ activationCodes, text }) => (
                 />
             )}
         />
-    </Fill>
+    </DigitLayout.Fill>
 );
 
 export default ShowAllActivationCodes;

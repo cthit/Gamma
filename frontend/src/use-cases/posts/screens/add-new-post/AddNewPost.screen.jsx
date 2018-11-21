@@ -1,10 +1,8 @@
+import { DigitLayout, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import PostForm from "../common-views/post-form";
-import { Center } from "../../../../common-ui/layout";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-
-import { DigitTranslations } from "@cthit/react-digit-components";
+import PostForm from "../common-views/post-form";
 import translations from "./AddNewPost.screen.translations.json";
 
 const AddNewPost = ({ postsAdd, toastOpen }) => (
@@ -12,7 +10,7 @@ const AddNewPost = ({ postsAdd, toastOpen }) => (
         translations={translations}
         uniquePath="Posts.Screen.AddNewPost"
         render={text => (
-            <Center>
+            <DigitLayout.Center>
                 <PostForm
                     onSubmit={(values, actions) => {
                         postsAdd(values)
@@ -52,7 +50,7 @@ const AddNewPost = ({ postsAdd, toastOpen }) => (
                     submitText={text.CreatePost}
                     fieldRequiredText={text.FieldRequired}
                 />
-            </Center>
+            </DigitLayout.Center>
         )}
     />
 );

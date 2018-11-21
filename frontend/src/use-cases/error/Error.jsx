@@ -1,15 +1,13 @@
-import React from "react";
-
-import { Center } from "../../common-ui/layout";
-
 import {
     DigitButton,
-    DigitText,
-    DigitDesign
+    DigitDesign,
+    DigitLayout,
+    DigitText
 } from "@cthit/react-digit-components";
+import React from "react";
 
 const Error = ({}) => (
-    <Center>
+    <DigitLayout.Center>
         <DigitDesign.Card absWidth="300px" absHeight="300px">
             <DigitDesign.CardDisplayTitle text="Åh nej" />
             <DigitDesign.CardBody>
@@ -19,7 +17,7 @@ const Error = ({}) => (
                 <DigitButton text="Försök igen" />
             </DigitDesign.CardButtons>
         </DigitDesign.Card>
-    </Center>
+    </DigitLayout.Center>
 );
 
 export default Error;

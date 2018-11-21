@@ -3,10 +3,10 @@ import {
     DigitDisplayData,
     DigitText,
     DigitTranslations,
-    DigitDesign
+    DigitDesign,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { Center, Fill, Spacing } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import translations from "./ShowPostDetails.screen.translations.json";
 
@@ -45,8 +45,8 @@ class ShowPostDetails extends React.Component {
                         translations={translations}
                         uniquePath="Posts.Screen.ShowPostDetails"
                         render={(text, activeLanguage) => (
-                            <Fill>
-                                <Center>
+                            <DigitLayout.Fill>
+                                <DigitLayout.Center>
                                     <DigitDesign.Card
                                         minWidth="300px"
                                         maxWidth="600px"
@@ -80,7 +80,7 @@ class ShowPostDetails extends React.Component {
                                                     raised
                                                 />
                                             </DigitDesign.Link>
-                                            <Spacing />
+                                            <DigitLayout.Spacing />
                                             <DigitButton
                                                 text={text.DeletePost}
                                                 onClick={() => {
@@ -132,8 +132,8 @@ class ShowPostDetails extends React.Component {
                                             />
                                         </DigitDesign.CardButtons>
                                     </DigitDesign.Card>
-                                </Center>
-                            </Fill>
+                                </DigitLayout.Center>
+                            </DigitLayout.Fill>
                         )}
                     />
                 )}

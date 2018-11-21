@@ -1,6 +1,6 @@
 import React from "react";
-import { Center, Margin } from "../../common-ui/layout";
 import LoginForm from "./views/login-form";
+import { DigitLayout } from "@cthit/react-digit-components";
 
 class Login extends React.Component {
     constructor(props) {
@@ -13,11 +13,11 @@ class Login extends React.Component {
         const { login } = this.props;
 
         return (
-            <Margin>
-                <Center>
+            <DigitLayout.Margin>
+                <DigitLayout.Center>
                     <LoginForm login={login} />
-                </Center>
-            </Margin>
+                </DigitLayout.Center>
+            </DigitLayout.Margin>
         );
     }
 }

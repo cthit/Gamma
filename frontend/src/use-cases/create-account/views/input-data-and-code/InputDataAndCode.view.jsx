@@ -1,12 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
-import * as yup from "yup";
-
 import {
-    AcceptUserAgreementInput,
+    DigitDesign,
+    DigitForm,
+    DigitFormField,
+    DigitLayout,
+    DigitTranslations
+} from "@cthit/react-digit-components";
+import PropTypes from "prop-types";
+import React from "react";
+import * as yup from "yup";
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
+import {
     AcceptanceYearInput,
-    ConfirmCidInput,
+    AcceptUserAgreementInput,
     ConfirmationCodeInput,
+    ConfirmCidInput,
     CreateAccountButton,
     FirstnameInput,
     LastnameInput,
@@ -14,26 +22,14 @@ import {
     PasswordConfirmationInput,
     PasswordInput
 } from "./InputDataAndCode.view.styles";
-
-import { Center, Spacing } from "../../../../common-ui/layout";
-
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-
 import translations from "./InputDataAndCode.view.translations.json";
-import {
-    DigitTranslations,
-    DigitForm,
-    DigitFormField,
-    DigitDesign
-} from "@cthit/react-digit-components";
 
 const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
     <DigitTranslations
         translations={translations}
         uniquePath="CreateAccount"
         render={text => (
-            <Center>
+            <DigitLayout.Center>
                 <DigitForm
                     onSubmit={(values, actions) => {
                         const cid = values.cid;
@@ -123,7 +119,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                 text={text.CompleteCreationDescription}
                             />
                             <DigitDesign.CardBody>
-                                <Center>
+                                <DigitLayout.Center>
                                     <DigitFormField
                                         name="cid"
                                         component={ConfirmCidInput}
@@ -131,7 +127,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             upperLabel: text.YourCid
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="code"
                                         component={ConfirmationCodeInput}
@@ -140,7 +136,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                                 text.CodeFromYourStudentEmail
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="nick"
                                         component={NickInput}
@@ -148,7 +144,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             upperLabel: text.Nick
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="password"
                                         component={PasswordInput}
@@ -157,7 +153,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             password: true
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="passwordConfirmation"
                                         component={PasswordConfirmationInput}
@@ -166,7 +162,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             password: true
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="firstName"
                                         component={FirstnameInput}
@@ -174,7 +170,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             upperLabel: text.FirstName
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="lastName"
                                         component={LastnameInput}
@@ -182,7 +178,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             upperLabel: text.LastName
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="acceptanceYear"
                                         component={AcceptanceYearInput}
@@ -193,7 +189,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             reverse: true
                                         }}
                                     />
-                                    <Spacing />
+                                    <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="userAgreement"
                                         component={AcceptUserAgreementInput}
@@ -202,7 +198,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                             primary: true
                                         }}
                                     />
-                                </Center>
+                                </DigitLayout.Center>
                             </DigitDesign.CardBody>
                             <DigitDesign.CardButtons leftRight reverseDirection>
                                 <CreateAccountButton
@@ -211,12 +207,12 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                     primary
                                     raised
                                 />
-                                <Spacing />
+                                <DigitLayout.Spacing />
                             </DigitDesign.CardButtons>
                         </DigitDesign.Card>
                     )}
                 />
-            </Center>
+            </DigitLayout.Center>
         )}
     />
 );

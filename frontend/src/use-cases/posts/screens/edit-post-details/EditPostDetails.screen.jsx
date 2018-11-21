@@ -1,6 +1,5 @@
-import { DigitTranslations } from "@cthit/react-digit-components";
+import { DigitLayout, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
-import { Center } from "../../../../common-ui/layout";
 import IfElseRendering from "../../../../common/declaratives/if-else-rendering";
 import PostForm from "../common-views/post-form";
 import translations from "./EditPostDetails.screen.translations.json";
@@ -13,7 +12,7 @@ const EditPostDetails = ({ postsChange, post, match }) => (
                 translations={translations}
                 uniquePath="Posts.Screen.EditPostDetails"
                 render={text => (
-                    <Center>
+                    <DigitLayout.Center>
                         <PostForm
                             onSubmit={(values, actions) => {
                                 postsChange(values, match.params.id);
@@ -28,7 +27,7 @@ const EditPostDetails = ({ postsChange, post, match }) => (
                             submitText={text.SavePost}
                             fieldRequiredText={text.fieldRequiredText}
                         />
-                    </Center>
+                    </DigitLayout.Center>
                 )}
             />
         )}
