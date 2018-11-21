@@ -3,7 +3,10 @@ import {
     DigitIfElseRendering,
     DigitLayout,
     DigitNavLink,
-    DigitTranslations
+    DigitTranslations,
+    DigitRedirect,
+    DigitDialog,
+    DigitToast
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -21,10 +24,7 @@ import Websites from "../use-cases/websites";
 import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
 import UserInformation from "./elements/user-information";
-import GammaDialog from "./views/gamma-dialog";
 import GammaLoading from "./views/gamma-loading";
-import GammaRedirect from "./views/gamma-redirect";
-import GammaToast from "./views/gamma-toast";
 
 export class App extends Component {
     state = {
@@ -169,21 +169,13 @@ export class App extends Component {
                                     )}
                                 />
 
-                                <Route
-                                    render={props => (
-                                        <GammaRedirect
-                                            currentPath={
-                                                props.location.pathname
-                                            }
-                                        />
-                                    )}
-                                />
-                                <GammaDialog />
-                                <GammaToast />
-
                                 <DigitLayout.HideFill hidden={!loading}>
                                     <GammaLoading />
                                 </DigitLayout.HideFill>
+
+                                <DigitRedirect />
+                                <DigitDialog />
+                                <DigitToast />
 
                                 <Route
                                     render={props => {

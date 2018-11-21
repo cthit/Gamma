@@ -1,17 +1,16 @@
+import { DigitRedirectActions } from "@cthit/react-digit-components";
 import { connect } from "react-redux";
-import CreateAccount from "./CreateAccount";
-
-import { redirectTo } from "../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import CreateAccount from "./CreateAccount";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  redirectTo: path => dispatch(redirectTo(path)),
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    redirectTo: path => dispatch(DigitRedirectActions.redirectTo(path)),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(CreateAccount);

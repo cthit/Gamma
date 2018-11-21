@@ -1,18 +1,15 @@
-import axios from "axios";
-
-import token from "../../../common/utils/retrievers/token.retrieve";
-
 import {
-    USER_UPDATE_ME,
-    USER_UPDATED_SUCCESSFULLY,
-    USER_UPDATED_FAILED,
+    DigitRedirectActions,
+    DigitToastActions
+} from "@cthit/react-digit-components";
+import axios from "axios";
+import token from "../../../common/utils/retrievers/token.retrieve";
+import {
+    USER_LOGOUT_SUCCESSFULLY,
     USER_NOT_LOGGED_IN,
-    USER_LOGOUT,
-    USER_LOGOUT_SUCCESSFULLY
+    USER_UPDATED_FAILED,
+    USER_UPDATED_SUCCESSFULLY
 } from "./UserInformation.element.actions";
-
-import { toastOpen } from "../../views/gamma-toast/GammaToast.view.action-creator";
-import { redirectTo } from "../../views/gamma-redirect/GammaRedirect.view.action-creator";
 
 export function userUpdateMe() {
     if (token() == null) {
@@ -55,10 +52,10 @@ export function userLogout(loggedOutText) {
         delete localStorage.token;
         delete sessionStorage.token;
         dispatch(userLogoutSuccessfully());
-        dispatch(redirectTo("/login"));
+        dispatch(DigitRedirectActions.redirectTo("/login"));
         if (loggedOutText != null) {
             dispatch(
-                toastOpen({
+                DigitToastActions.digitToastOpen({
                     duration: 3000,
                     text: loggedOutText
                 })

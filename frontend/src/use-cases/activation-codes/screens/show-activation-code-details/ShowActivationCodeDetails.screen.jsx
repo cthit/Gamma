@@ -12,7 +12,7 @@ import translations from "./ShowActivationCodeDetails.screen.translations.json";
 const ShowActivationCodeDetails = ({
     activationCode,
     activationCodesDelete,
-    gammaDialogOpen,
+    dialogOpen,
     redirectTo,
     toastOpen
 }) => (
@@ -60,7 +60,7 @@ const ShowActivationCodeDetails = ({
                                     <DigitButton
                                         text={text.DeleteActivationCode}
                                         onClick={() => {
-                                            gammaDialogOpen({
+                                            dialogOpen({
                                                 title:
                                                     text.WouldYouLikeToDelete +
                                                     " " +

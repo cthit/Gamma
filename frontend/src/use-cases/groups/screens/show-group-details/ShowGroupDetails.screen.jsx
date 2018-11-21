@@ -12,7 +12,7 @@ import translations from "./ShowGroupDetails.screen.translations.json";
 const ShowGroupDetails = ({
     group,
     groupsDelete,
-    gammaDialogOpen,
+    dialogOpen,
     toastOpen,
     redirectTo
 }) => (
@@ -75,7 +75,7 @@ const ShowGroupDetails = ({
                                     <DigitButton
                                         text="Radera"
                                         onClick={() => {
-                                            gammaDialogOpen({
+                                            dialogOpen({
                                                 title: "Radera?",
                                                 confirmButtonText: "Radera",
                                                 cancelButtonText: text.Cancel,

@@ -31,7 +31,7 @@ class ShowPostDetails extends React.Component {
     render() {
         const {
             post,
-            gammaDialogOpen,
+            dialogOpen,
             toastOpen,
             redirectTo,
             postsDelete
@@ -84,7 +84,7 @@ class ShowPostDetails extends React.Component {
                                             <DigitButton
                                                 text={text.DeletePost}
                                                 onClick={() => {
-                                                    gammaDialogOpen({
+                                                    dialogOpen({
                                                         title:
                                                             text.WouldYouLikeToDelete +
                                                             " " +

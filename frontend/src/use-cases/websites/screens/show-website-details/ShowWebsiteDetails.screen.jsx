@@ -11,7 +11,7 @@ import translations from "./ShowWebsiteDetails.screen.translations.json";
 
 const ShowWebsiteDetails = ({
     website,
-    gammaDialogOpen,
+    dialogOpen,
     toastOpen,
     redirectTo,
     websitesDelete
@@ -50,7 +50,7 @@ const ShowWebsiteDetails = ({
                                     <DigitLayout.Spacing />
                                     <DigitButton
                                         onClick={() => {
-                                            gammaDialogOpen({
+                                            dialogOpen({
                                                 title:
                                                     text.WouldYouLikeToDelete +
                                                     " " +

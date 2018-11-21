@@ -14,7 +14,7 @@ const ShowWhitelistItem = ({
     whitelistDelete,
     redirectTo,
     toastOpen,
-    gammaDialogOpen
+    dialogOpen
 }) => (
     <DigitIfElseRendering
         test={whitelistItem != null}
@@ -40,7 +40,7 @@ const ShowWhitelistItem = ({
                                     <DigitButton
                                         text={text.DeleteWhitelistItem}
                                         onClick={() => {
-                                            gammaDialogOpen({
+                                            dialogOpen({
                                                 title:
                                                     text.WouldYouLikeToDelete +
                                                     " " +

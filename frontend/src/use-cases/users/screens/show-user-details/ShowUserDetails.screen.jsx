@@ -11,7 +11,7 @@ import translations from "./ShowUserDetails.screen.translations.json";
 
 const ShowUserDetails = ({
     user,
-    gammaDialogOpen,
+    dialogOpen,
     usersDelete,
     redirectTo,
     toastOpen
@@ -68,7 +68,7 @@ const ShowUserDetails = ({
                                 <DigitLayout.Spacing />
                                 <DigitButton
                                     onClick={() =>
-                                        gammaDialogOpen({
+                                        dialogOpen({
                                             title:
                                                 text.WouldYouLikeToDelete +
                                                 " " +

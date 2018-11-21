@@ -1,16 +1,18 @@
+import {
+    DigitRedirectActions,
+    DigitToastActions
+} from "@cthit/react-digit-components";
 import { connect } from "react-redux";
 import ContainUserToAllowedPages from "./ContainUserToAllowedPages.declarative";
-import { redirectTo } from "../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
-import { toastOpen } from "../../../app/views/gamma-toast/GammaToast.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  redirectTo: to => dispatch(redirectTo(to)),
-  toastOpen: data => dispatch(toastOpen(data))
+    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    toastOpen: data => dispatch(DigitToastActions.digitToastOpen(data))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(ContainUserToAllowedPages);
