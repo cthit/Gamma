@@ -4,6 +4,15 @@ import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 
 import {
+    FIRST_NAME,
+    LAST_NAME,
+    NICKNAME,
+    EMAIL,
+    ACCEPTANCE_YEAR,
+    WEBSITES
+} from "../../../../../api/users/props.users.api";
+
+import {
     DigitTranslations,
     DigitTextField,
     DigitEditData,
@@ -26,6 +35,64 @@ function _generateAcceptanceYears() {
     return output;
 }
 
+function generateValidationSchema(text) {
+    const schema = {};
+    schema[FIRST_NAME] = yup.string().required(text.FieldRequired);
+    schema[LAST_NAME] = yup.string().required(text.FieldRequired);
+    schema[NICKNAME] = yup.string().required(text.FieldRequired);
+    schema[EMAIL] = yup.string().required(text.FieldRequired);
+    schema[ACCEPTANCE_YEAR] = yup.string().required(text.FieldRequired);
+    schema[WEBSITES] = yup.array().of(yup.object());
+
+    return yup.object().shape(schema);
+}
+
+function generateEditComponentData(text, availableWebsites) {
+    const componentData = {};
+
+    componentData[FIRST_NAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.FirstName
+        }
+    };
+    componentData[LAST_NAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.LastName
+        }
+    };
+    componentData[NICKNAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Nick
+        }
+    };
+    componentData[EMAIL] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Email
+        }
+    };
+    componentData[ACCEPTANCE_YEAR] = {
+        component: DigitSelect,
+        componentProps: {
+            upperLabel: text.AcceptanceYear,
+            valueToTextMap: _generateAcceptanceYears(),
+            reverse: true
+        }
+    };
+    componentData[WEBSITES] = {
+        array: true,
+        component: EditWebsites,
+        componentProps: {
+            availableWebsites: availableWebsites
+        }
+    };
+
+    return componentData;
+}
+
 const UserForm = ({
     initialValues,
     onSubmit,
@@ -44,64 +111,19 @@ const UserForm = ({
                 onSubmit={(values, actions) => {
                     onSubmit(values, actions);
                 }}
-                validationSchema={yup.object().shape({
-                    firstName: yup.string().required(text.FieldRequired),
-                    lastName: yup.string().required(text.FieldRequired),
-                    nick: yup.string().required(text.FieldRequired),
-                    email: yup.string().required(text.FieldRequired),
-                    acceptanceYear: yup.string().required(text.FieldRequired),
-                    websites: yup.array().of(yup.object())
-                })}
+                validationSchema={generateValidationSchema(text)}
                 keysOrder={[
-                    "firstName",
-                    "lastName",
-                    "nick",
-                    "email",
-                    "acceptanceYear",
-                    "websites"
+                    FIRST_NAME,
+                    LAST_NAME,
+                    NICKNAME,
+                    EMAIL,
+                    ACCEPTANCE_YEAR,
+                    WEBSITES
                 ]}
-                keysComponentData={{
-                    firstName: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.FirstName
-                        }
-                    },
-
-                    lastName: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.LastName
-                        }
-                    },
-                    nick: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Nick
-                        }
-                    },
-                    email: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Email
-                        }
-                    },
-                    acceptanceYear: {
-                        component: DigitSelect,
-                        componentProps: {
-                            upperLabel: text.AcceptanceYear,
-                            valueToTextMap: _generateAcceptanceYears(),
-                            reverse: true
-                        }
-                    },
-                    websites: {
-                        array: true,
-                        component: EditWebsites,
-                        componentProps: {
-                            availableWebsites: availableWebsites
-                        }
-                    }
-                }}
+                keysComponentData={generateEditComponentData(
+                    text,
+                    availableWebsites
+                )}
             />
         )}
     />

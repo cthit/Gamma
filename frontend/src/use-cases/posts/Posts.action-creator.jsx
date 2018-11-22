@@ -71,12 +71,7 @@ export function postsChange(post, postId) {
 export function postsDelete(postId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .delete("http://localhost:8081/admin/groups/posts/" + postId, {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            deletePost(postId)
                 .then(response => {
                     dispatch(postsDeleteSuccessfully());
                     resolve(response);

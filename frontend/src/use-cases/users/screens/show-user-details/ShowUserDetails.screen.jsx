@@ -25,13 +25,13 @@ const ShowUserDetails = ({
                 render={text => (
                     <DigitLayout.Center>
                         <DigitDesign.Card minWidth="300px" maxWidth="600px">
-                            <DigitDesign.CardDisplayTitle
+                            <DigitDesign.CardTitle
                                 text={
-                                    user.firstName +
+                                    user.first_name +
                                     " '" +
-                                    user.nick +
+                                    user.nickname +
                                     "' " +
-                                    user.lastName
+                                    user.last_name
                                 }
                             />
                             <DigitDesign.CardBody>
@@ -39,19 +39,19 @@ const ShowUserDetails = ({
                                     data={user}
                                     keysText={{
                                         cid: text.cid,
-                                        firstName: text.firstName,
-                                        lastName: text.lastName,
-                                        nick: text.nick,
+                                        first_name: text.firstName,
+                                        last_name: text.lastName,
+                                        nickname: text.nick,
                                         email: text.email,
-                                        acceptanceYear: text.acceptanceYear
+                                        acceptance_year: text.acceptanceYear
                                     }}
                                     keysOrder={[
                                         "cid",
-                                        "firstName",
-                                        "lastName",
-                                        "nick",
+                                        "first_name",
+                                        "last_name",
+                                        "nickname",
                                         "email",
-                                        "acceptanceYear"
+                                        "acceptance_year"
                                     ]}
                                 />
                             </DigitDesign.CardBody>

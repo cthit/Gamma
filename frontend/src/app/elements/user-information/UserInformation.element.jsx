@@ -22,7 +22,6 @@ const UserInformation = ({
             <DigitTranslations
                 render={text => (
                     <Container>
-                        {console.log(text)}
                         <DigitLayout.Center>
                             <DigitText.Title white text={user.nick} />
                         </DigitLayout.Center>

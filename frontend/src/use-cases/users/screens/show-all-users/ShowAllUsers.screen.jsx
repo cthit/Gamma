@@ -1,6 +1,13 @@
-import { DigitTable, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitTable,
+    DigitTranslations,
+    DigitFAB,
+    DigitLayout,
+    DigitDesign
+} from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowAllUsers.screen.translations.json";
+import { Add } from "@material-ui/icons";
 
 const ShowAllUsers = ({ users }) => (
     <DigitTranslations
@@ -8,8 +15,6 @@ const ShowAllUsers = ({ users }) => (
         uniquePath="Users.Screen.ShowAllUsers"
         render={text => (
             <div>
-                {console.log(users)}
-
                 <DigitTable
                     titleText={text.Users}
                     searchText={text.SearchForUsers}
@@ -35,6 +40,11 @@ const ShowAllUsers = ({ users }) => (
                     })}
                     emptyTableText={text.NoUsers}
                 />
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/users/add">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
             </div>
         )}
     />
