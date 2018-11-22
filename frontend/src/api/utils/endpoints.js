@@ -5,3 +5,4 @@ export const POSTS_ENDPOINT = "/admin/groups/posts/";
 export const ACTIVATION_CODES_ENDPOINT = "/activation_codes/";
 export const USERS_ENDPOINT = "/admin/users/";
 export const CREATE_ACCOUNT_ENDPOINT = "/users/";
+export const LOGIN_ENDPOINT = "/users/login";

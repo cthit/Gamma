@@ -14,14 +14,13 @@ import {
 
 import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
 
+import { login as loginRequest } from "../../api/login/post.login.api";
+
 export function login(data, persistant) {
     return dispatch => {
         dispatch(loginValidating());
         return new Promise((resolve, reject) => {
-            axios
-                .post("http://localhost:8081/users/login", data, {
-                    "Content-Type": "application/json"
-                })
+            loginRequest(data)
                 .then(response => {
                     const token = response.data;
                     if (persistant) {
