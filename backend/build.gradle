@@ -30,7 +30,6 @@ jar {
     manifest {
         attributes "Main-Class": "it.chalmers.GammaApplication"
     }
-
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
