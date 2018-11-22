@@ -1,6 +1,6 @@
 import { deleteRequest } from "../utils/api";
-import { WHITELIST_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_WHITELIST_ENDPOINT } from "../utils/endpoints";
 
 export function deleteWhitelistItem(whitelistId) {
-    return deleteRequest(WHITELIST_ENDPOINT + whitelistId);
+    return deleteRequest(ADMIN_WHITELIST_ENDPOINT + whitelistId);
 }

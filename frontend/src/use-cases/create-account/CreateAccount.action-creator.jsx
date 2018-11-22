@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import {
     CREATE_ACCOUNT_VALIDATING_CID,
     CREATE_ACCOUNT_VALIDATE_CID_FAILED,
@@ -16,14 +14,14 @@ import {
     DigitRedirectActions
 } from "@cthit/react-digit-components";
 
+import { activateCid } from "../../api/whitelist/post.whitelist.api";
+import { createAccount } from "../../api/create-account/post.createAccount.api";
+
 export function createAccountValidateCid(data, errorMsg) {
     return dispatch => {
         dispatch(createAccountValidatingCid());
         return new Promise((resolve, reject) => {
-            axios
-                .post("http://localhost:8081/whitelist/activate_cid", data, {
-                    "Content-Type": "application/json"
-                })
+            activateCid(data)
                 .then(response => {
                     dispatch(createAccountValidateCidSuccessfully());
                     resolve(response);
@@ -65,10 +63,7 @@ export function createAccountValidateCodeAndData(data) {
     return dispatch => {
         dispatch(createAccountValidatingCodeAndData());
         return new Promise((resolve, reject) => {
-            axios
-                .post("http://localhost:8081/users/create", data, {
-                    "Content-Type": "application/json"
-                })
+            createAccount(data)
                 .then(response => {
                     dispatch(createAccountValidateCodeAndDataSuccessfully());
 

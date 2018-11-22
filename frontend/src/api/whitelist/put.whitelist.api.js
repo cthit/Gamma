@@ -1,5 +1,5 @@
 import { putRequest } from "../utils/api";
-import { WHITELIST_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_WHITELIST_ENDPOINT } from "../utils/endpoints";
 
 /**
  * {
@@ -7,5 +7,5 @@ import { WHITELIST_ENDPOINT } from "../utils/endpoints";
  * }
  */
 export function editWhitelistItem(whitelistId, newWhitelistData) {
-    return putRequest(WHITELIST_ENDPOINT + whitelistId, newWhitelistData);
+    return putRequest(ADMIN_WHITELIST_ENDPOINT + whitelistId, newWhitelistData);
 }

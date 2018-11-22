@@ -1,5 +1,10 @@
 import { postRequest } from "../utils/api";
-import { WHITELIST_ENDPOINT } from "../utils/endpoints";
+import {
+    ADMIN_WHITELIST_ENDPOINT,
+    WHITELIST_ENDPOINT
+} from "../utils/endpoints";
+
+const ACTIVATE_CID_ENDPOINT = "activate_cid/";
 
 /**
  * {
@@ -16,7 +21,7 @@ export function addUserToWhitelist(whitelistData) {
  * }
  */
 export function addUsersToWhitelist(whitelistData) {
-    return postRequest(WHITELIST_ENDPOINT, whitelistData);
+    return postRequest(ADMIN_WHITELIST_ENDPOINT, whitelistData);
 }
 
 /**
@@ -25,5 +30,17 @@ export function addUsersToWhitelist(whitelistData) {
  * }
  */
 export function cidIsWhitelisted(whitelistData) {
-    return postRequest(WHITELIST_ENDPOINT, whitelistData);
+    return postRequest(ADMIN_WHITELIST_ENDPOINT, whitelistData);
+}
+
+/**
+ * {
+ *      cid: String
+ * }
+ */
+export function activateCid(whitelistData) {
+    return postRequest(
+        WHITELIST_ENDPOINT + ACTIVATE_CID_ENDPOINT,
+        whitelistData
+    );
 }

@@ -1,6 +1,6 @@
 import { getRequest } from "../utils/api";
-import { WHITELIST_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_WHITELIST_ENDPOINT } from "../utils/endpoints";
 
 export function getWhitelist() {
-    return getRequest(WHITELIST_ENDPOINT);
+    return getRequest(ADMIN_WHITELIST_ENDPOINT);
 }
