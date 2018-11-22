@@ -14,9 +14,9 @@ export const GROUPS_ADD_USER_SUCCESSFULLY = "groups_add_user_successfully";
 export const GROUPS_ADD_USER_FAILED = "groups_add_user_failed";
 
 export const GROUPS_DELETE_USER_SUCCESSFULLY =
-  "groups_delete_user_successfully";
+    "groups_delete_user_successfully";
 export const GROUPS_DELETE_USER_FAILED = "groups_delete_user_failed";
 
 export const GROUPS_CHANGE_POST_SUCCESSFULLY =
-  "groups_change_post_successfully";
+    "groups_change_post_successfully";
 export const GROUPS_CHANGE_POST_FAILED = "groups_change_post_failed";

@@ -1,7 +1,7 @@
 {
-  "ValidateCid": ["Validate cid", "Validera cid"],
-  "CidToValidate": ["Cid to validate", "Cid att validera"],
-  "Validate": ["Validate", "Validera"],
-  "CidIsValid": ["Cid is valid", "Cid är giltig"],
-  "CidIsNotValid": ["Cid is not valid", "Cid är ogiltig"]
+    "ValidateCid": ["Validate cid", "Validera cid"],
+    "CidToValidate": ["Cid to validate", "Cid att validera"],
+    "Validate": ["Validate", "Validera"],
+    "CidIsValid": ["Cid is valid", "Cid är giltig"],
+    "CidIsNotValid": ["Cid is not valid", "Cid är ogiltig"]
 }

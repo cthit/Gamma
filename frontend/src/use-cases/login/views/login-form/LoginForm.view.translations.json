@@ -1,15 +1,15 @@
 {
-  "EnterYourCid": ["Your cid", "Ditt cid"],
-  "EnterYourPassword": ["Enter your password", "Ditt lösenord"],
-  "RememberMe": ["Remember me", "Kom ihåg mig"],
-  "Login": ["Sign in", "Logga in"],
-  "CreateAccount": ["Create account", "Skapa konto"],
-  "SuccessfullLogin": [
-    "You have successfully logged in!",
-    "Du har loggats in!"
-  ],
-  "IncorrectCidOrPassword": [
-    "Incorrect cid or password",
-    "Felaktigt cid eller lösenord"
-  ]
+    "EnterYourCid": ["Your cid", "Ditt cid"],
+    "EnterYourPassword": ["Enter your password", "Ditt lösenord"],
+    "RememberMe": ["Remember me", "Kom ihåg mig"],
+    "Login": ["Sign in", "Logga in"],
+    "CreateAccount": ["Create account", "Skapa konto"],
+    "SuccessfullLogin": [
+        "You have successfully logged in!",
+        "Du har loggats in!"
+    ],
+    "IncorrectCidOrPassword": [
+        "Incorrect cid or password",
+        "Felaktigt cid eller lösenord"
+    ]
 }

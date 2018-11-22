@@ -2,12 +2,12 @@ import { USER_LOGOUT_SUCCESSFULLY } from "../../app/elements/user-information/Us
 import { WHITELIST_LOAD_SUCCESSFULLY } from "./Whitelist.actions";
 
 export function whitelist(state = [], action) {
-  switch (action.type) {
-    case WHITELIST_LOAD_SUCCESSFULLY:
-      return [...action.payload.data];
-    case USER_LOGOUT_SUCCESSFULLY:
-      return [];
-    default:
-      return state;
-  }
+    switch (action.type) {
+        case WHITELIST_LOAD_SUCCESSFULLY:
+            return [...action.payload.data];
+        case USER_LOGOUT_SUCCESSFULLY:
+            return [];
+        default:
+            return state;
+    }
 }

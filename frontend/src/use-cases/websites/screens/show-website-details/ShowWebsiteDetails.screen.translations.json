@@ -1,12 +1,12 @@
 {
-  "Id": ["Id", "Id"],
-  "Name": ["Name", "Namn"],
-  "PrettyName": ["Pretty name", "Pretty name"],
-  "DeleteWebsite": ["Delete website", "Radera hemsida"],
-  "EditWebsite": ["Edit website", "Redigera hemsida"],
-  "Deleted": ["has been deleted", "har blivit raderad"],
-  "WouldYouLikeToDelete": [
-    "Would you like to delete the website",
-    "Vill du radera hemsidan"
-  ]
+    "Id": ["Id", "Id"],
+    "Name": ["Name", "Namn"],
+    "PrettyName": ["Pretty name", "Pretty name"],
+    "DeleteWebsite": ["Delete website", "Radera hemsida"],
+    "EditWebsite": ["Edit website", "Redigera hemsida"],
+    "Deleted": ["has been deleted", "har blivit raderad"],
+    "WouldYouLikeToDelete": [
+        "Would you like to delete the website",
+        "Vill du radera hemsidan"
+    ]
 }

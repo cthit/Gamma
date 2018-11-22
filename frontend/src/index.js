@@ -7,9 +7,9 @@ import registerServiceWorker from "./registerServiceWorker";
 import { ProvidersForApp } from "./app/ProvidersForApp";
 
 export const Index = () => (
-  <ProvidersForApp>
-    <App />
-  </ProvidersForApp>
+    <ProvidersForApp>
+        <App />
+    </ProvidersForApp>
 );
 
 ReactDOM.render(<Index />, document.getElementById("root"));

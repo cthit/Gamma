@@ -1,16 +1,16 @@
 {
-  "Id": ["Id", "Id"],
-  "Cid": ["Cid", "Cid"],
-  "Code": ["Code", "Kod"],
-  "CreatedAt": ["Created at", "Skapad"],
-  "Details": ["Details", "Detaljer"],
-  "NoActivationCodes": [
-    "There's no activation codes",
-    "Det finns inga aktiveringskoder"
-  ],
-  "ActivationCodes": ["Activation codes", "Aktiveringskoder"],
-  "SearchForActivationCodes": [
-    "Search for activation codes",
-    "Sök efter aktiveringskoder"
-  ]
+    "Id": ["Id", "Id"],
+    "Cid": ["Cid", "Cid"],
+    "Code": ["Code", "Kod"],
+    "CreatedAt": ["Created at", "Skapad"],
+    "Details": ["Details", "Detaljer"],
+    "NoActivationCodes": [
+        "There's no activation codes",
+        "Det finns inga aktiveringskoder"
+    ],
+    "ActivationCodes": ["Activation codes", "Aktiveringskoder"],
+    "SearchForActivationCodes": [
+        "Search for activation codes",
+        "Sök efter aktiveringskoder"
+    ]
 }

@@ -6,15 +6,15 @@ import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading
 import Users from "./Users";
 
 const mapStateToProps = (state, ownProps) => ({
-  users: state.users
+    users: state.users
 });
 
 const mapDispatchToProps = dispatch => ({
-  usersLoad: () => dispatch(usersLoad()),
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    usersLoad: () => dispatch(usersLoad()),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Users);

@@ -5,6 +5,6 @@ const mapStateToProps = (state, ownProps) => ({});
 const mapDispatchToProps = dispatch => ({});
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Error);

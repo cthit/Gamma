@@ -8,11 +8,11 @@ import Groups from "./Groups";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  groupsLoad: () => dispatch(groupsLoad()),
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    groupsLoad: () => dispatch(groupsLoad()),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Groups);

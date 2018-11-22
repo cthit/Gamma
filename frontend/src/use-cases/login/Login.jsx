@@ -3,23 +3,23 @@ import LoginForm from "./views/login-form";
 import { DigitLayout } from "@cthit/react-digit-components";
 
 class Login extends React.Component {
-  constructor(props) {
-    super();
+    constructor(props) {
+        super();
 
-    props.gammaLoadingFinished();
-  }
+        props.gammaLoadingFinished();
+    }
 
-  render() {
-    const { login } = this.props;
+    render() {
+        const { login } = this.props;
 
-    return (
-      <DigitLayout.Margin>
-        <DigitLayout.Center>
-          <LoginForm login={login} />
-        </DigitLayout.Center>
-      </DigitLayout.Margin>
-    );
-  }
+        return (
+            <DigitLayout.Margin>
+                <DigitLayout.Center>
+                    <LoginForm login={login} />
+                </DigitLayout.Center>
+            </DigitLayout.Margin>
+        );
+    }
 }
 
 export default Login;

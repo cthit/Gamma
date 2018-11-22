@@ -6,10 +6,10 @@ import { whitelistAdd } from "../../Whitelist.action-creator";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  whitelistAdd: newWhitelistAdd => dispatch(whitelistAdd(newWhitelistAdd))
+    whitelistAdd: newWhitelistAdd => dispatch(whitelistAdd(newWhitelistAdd))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(AddNewWhitelistItem);

@@ -6,11 +6,11 @@ import CreateAccount from "./CreateAccount";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  redirectTo: path => dispatch(DigitRedirectActions.redirectTo(path)),
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    redirectTo: path => dispatch(DigitRedirectActions.redirectTo(path)),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(CreateAccount);

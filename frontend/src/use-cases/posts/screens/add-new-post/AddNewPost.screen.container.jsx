@@ -6,11 +6,12 @@ import AddNewPost from "./AddNewPost.screen";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  postsAdd: post => dispatch(postsAdd(post)),
-  toastOpen: toastData => dispatch(DigitToastActions.digitToastOpen(toastData))
+    postsAdd: post => dispatch(postsAdd(post)),
+    toastOpen: toastData =>
+        dispatch(DigitToastActions.digitToastOpen(toastData))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(AddNewPost);

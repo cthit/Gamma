@@ -7,10 +7,10 @@ import ResetPassword from "./ResetPassword";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(ResetPassword);

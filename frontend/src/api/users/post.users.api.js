@@ -7,5 +7,5 @@ import { USERS_ENDPOINT } from "../utils/endpoints";
  * }
  */
 export function addUser(userData) {
-  return postRequest(USERS_ENDPOINT, userData);
+    return postRequest(USERS_ENDPOINT, userData);
 }

@@ -7,10 +7,10 @@ import { websitesAdd } from "../../Websites.action-creator";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  websitesAdd: websiteData => dispatch(websitesAdd(websiteData))
+    websitesAdd: websiteData => dispatch(websitesAdd(websiteData))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(AddNewWebsite);

@@ -9,5 +9,5 @@ const CREATE = "create/";
  * }
  */
 export function createAccount(data) {
-  return postRequest(CREATE_ACCOUNT_ENDPOINT + CREATE, data);
+    return postRequest(CREATE_ACCOUNT_ENDPOINT + CREATE, data);
 }

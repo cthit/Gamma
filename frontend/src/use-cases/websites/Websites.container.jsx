@@ -8,11 +8,11 @@ import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  websitesLoad: () => dispatch(websitesLoad()),
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    websitesLoad: () => dispatch(websitesLoad()),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Websites);

@@ -8,11 +8,11 @@ import { whitelistLoad } from "./Whitelist.action-creator";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  whitelistLoad: () => dispatch(whitelistLoad()),
-  gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    whitelistLoad: () => dispatch(whitelistLoad()),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Whitelist);
