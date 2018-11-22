@@ -24,7 +24,6 @@ const LoginForm = ({ login, toastOpen, redirectTo }) => (
         uniquePath="Login"
         render={text => (
             <DigitLayout.Fill>
-                {console.log(text)}
                 <DigitForm
                     validationSchema={yup.object().shape({
                         cid: yup.string().required(text.FieldRequired),

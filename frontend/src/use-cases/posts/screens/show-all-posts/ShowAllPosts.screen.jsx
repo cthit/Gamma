@@ -35,9 +35,11 @@ const ShowAllPosts = ({ posts }) => (
                     })}
                     emptyTableText={text.NoPosts}
                 />
-                <DigitDesign.Link to="/posts/add">
-                    <DigitFAB icon={Add} secondary />
-                </DigitDesign.Link>
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/posts/add">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
             </DigitLayout.Fill>
         )}
     />

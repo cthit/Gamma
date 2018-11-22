@@ -50,9 +50,11 @@ const ShowAllGroups = ({ groups }) => (
                     })}
                     emptyTableText={text.NoGroups}
                 />
-                <DigitDesign.Link to="/groups/new">
-                    <DigitFAB icon={Add} secondary />
-                </DigitDesign.Link>
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/groups/new">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
             </DigitLayout.Fill>
         )}
     />

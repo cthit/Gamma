@@ -23,15 +23,12 @@ class CreateAccount extends React.Component {
     render() {
         const { location } = this.props;
 
-        console.log(translations);
-
         return (
             <DigitTranslations
                 translations={translations}
                 uniquePath="CreateAccount"
                 render={text => (
                     <DigitLayout.Fill>
-                        {console.log(text)}
                         <MapPathToStep
                             currentPath={location.pathname}
                             pathToStepMap={{

@@ -2,6 +2,41 @@ import { DigitEditData, DigitTextField } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
 
+import {
+    SWEDISH_LANGUAGE,
+    ENGLISH_LANGUAGE
+} from "../../../../../api/utils/commonProps";
+import { POST } from "../../../../../api/posts/props.posts.api";
+
+function generateValidationSchema(text) {
+    const schema = {};
+
+    schema[SWEDISH_LANGUAGE] = yup.string().required(text.fieldRequiredText);
+    schema[ENGLISH_LANGUAGE] = yup.string().required(text.fieldRequiredText);
+
+    return yup.object().shape(schema);
+}
+
+function generateEditComponentData(text) {
+    const componentData = {};
+
+    componentData[SWEDISH_LANGUAGE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.swedishInputText
+        }
+    };
+
+    componentData[ENGLISH_LANGUAGE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.englishInputText
+        }
+    };
+
+    return componentData;
+}
+
 const PostForm = ({
     initialValues,
     onSubmit,
@@ -14,34 +49,21 @@ const PostForm = ({
     <DigitEditData
         initialValues={initialValues}
         onSubmit={(values, actions) => {
-            const wrapped = {
-                post: {
-                    ...values
-                }
-            };
-            onSubmit(wrapped, actions);
+            const data = {};
+            data[POST] = values;
+
+            onSubmit(data, actions);
         }}
-        validationSchema={yup.object().shape({
-            sv: yup.string().required(fieldRequiredText),
-            en: yup.string().required(fieldRequiredText)
+        validationSchema={generateValidationSchema({
+            fieldRequiredText: fieldRequiredText
         })}
         titleText={titleText}
         submitText={submitText}
-        keysOrder={["sv", "en"]}
-        keysComponentData={{
-            sv: {
-                component: DigitTextField,
-                componentProps: {
-                    upperLabel: swedishInputText
-                }
-            },
-            en: {
-                component: DigitTextField,
-                componentProps: {
-                    upperLabel: englishInputText
-                }
-            }
-        }}
+        keysOrder={[SWEDISH_LANGUAGE, ENGLISH_LANGUAGE]}
+        keysComponentData={generateEditComponentData({
+            swedishInputText: swedishInputText,
+            englishInputText: englishInputText
+        })}
     />
 );
 
