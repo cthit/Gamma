@@ -1,21 +1,15 @@
+import { createAccount } from "../../api/create-account/post.createAccount.api";
+import { activateCid } from "../../api/whitelist/post.whitelist.api";
 import {
-    CREATE_ACCOUNT_VALIDATING_CID,
+    CREATE_ACCOUNT_COMPLETED,
     CREATE_ACCOUNT_VALIDATE_CID_FAILED,
     CREATE_ACCOUNT_VALIDATE_CID_SUCCESSFULLY,
-    CREATE_ACCOUNT_VALIDATING_CODE_AND_DATA,
+    CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA_SUCCESSFULLY,
     CREATE_ACCOUNT_VALIDATE_CODE_FAILED,
     CREATE_ACCOUNT_VALIDATE_DATA_FAILED,
-    CREATE_ACCOUNT_VALIDATE_CODE_AND_DATA_SUCCESSFULLY,
-    CREATE_ACCOUNT_COMPLETED
+    CREATE_ACCOUNT_VALIDATING_CID,
+    CREATE_ACCOUNT_VALIDATING_CODE_AND_DATA
 } from "./CreateAccount.actions";
-
-import {
-    DigitToastActions,
-    DigitRedirectActions
-} from "@cthit/react-digit-components";
-
-import { activateCid } from "../../api/whitelist/post.whitelist.api";
-import { createAccount } from "../../api/create-account/post.createAccount.api";
 
 export function createAccountValidateCid(data, errorMsg) {
     return dispatch => {

@@ -6,7 +6,7 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 
-const Error = ({}) => (
+const Error = () => (
     <DigitLayout.Center>
         <DigitDesign.Card absWidth="300px" absHeight="300px">
             <DigitDesign.CardDisplayTitle text="Åh nej" />

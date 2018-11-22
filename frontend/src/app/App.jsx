@@ -1,13 +1,13 @@
 import {
+    DigitContainUser,
+    DigitDialog,
     DigitHeader,
     DigitIfElseRendering,
     DigitLayout,
     DigitNavLink,
-    DigitTranslations,
     DigitRedirect,
-    DigitDialog,
     DigitToast,
-    DigitContainUser
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -28,7 +28,6 @@ import GammaLoading from "./views/gamma-loading";
 
 export class App extends Component {
     state = {
-        mobileOpen: false,
         lastPath: "/"
     };
 
@@ -36,16 +35,6 @@ export class App extends Component {
         super(props);
         props.userUpdateMe();
     }
-
-    handleDrawerToggle = () => {
-        this.setState({ mobileOpen: !this.state.mobileOpen });
-    };
-
-    _closeDrawer = () => {
-        this.setState({
-            mobileOpen: false
-        });
-    };
 
     onRouteChanged(data) {
         if (data.location.pathname !== this.state.lastPath) {
@@ -119,8 +108,6 @@ export class App extends Component {
                 )}
             />
         );
-
-        const { mobileOpen } = this.state;
 
         var { loggedIn, userLoaded, loading } = this.props;
 

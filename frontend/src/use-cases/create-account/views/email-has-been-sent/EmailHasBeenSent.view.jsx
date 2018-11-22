@@ -9,7 +9,7 @@ import React from "react";
 import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
 import translations from "./EmailHasBeenSent.view.translations.json";
 
-const EmailHasBeenSent = ({}) => (
+const EmailHasBeenSent = () => (
     <DigitTranslations
         translations={translations}
         uniquePath="CreateAccount"

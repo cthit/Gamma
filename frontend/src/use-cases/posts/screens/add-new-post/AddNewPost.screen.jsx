@@ -34,7 +34,15 @@ const AddNewPost = ({ postsAdd, toastOpen }) => (
                                                     sv: "",
                                                     en: ""
                                                 });
+                                                break;
+                                            default:
+                                                toastOpen({
+                                                    text:
+                                                        text.SomethingWentWrong,
+                                                    duration: 6000
+                                                });
                                         }
+                                        break;
                                     default:
                                         toastOpen({
                                             text: text.SomethingWentWrong,

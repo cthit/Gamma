@@ -1,25 +1,10 @@
-import {
-  GROUPS_LOAD_SUCCESSFULLY,
-  GROUPS_LOAD_FAILED,
-  GROUPS_ADD_SUCCESSFULLY,
-  GROUPS_ADD_FAILED,
-  GROUPS_DELETE_SUCCESSFULLY,
-  GROUPS_DELETE_FAILED,
-  GROUPS_CHANGE_SUCCESSFULLY,
-  GROUPS_CHANGE_FAILED,
-  GROUPS_ADD_USER_SUCCESSFULLY,
-  GROUPS_ADD_USER_FAILED,
-  GROUPS_DELETE_USER_SUCCESSFULLY,
-  GROUPS_DELETE_USER_FAILED,
-  GROUPS_CHANGE_POST_SUCCESSFULLY,
-  GROUPS_CHANGE_POST_FAILED
-} from "./Groups.actions";
+import { GROUPS_LOAD_SUCCESSFULLY } from "./Groups.actions";
 
 export function groups(state = [], action) {
-  switch (action.type) {
-    case GROUPS_LOAD_SUCCESSFULLY:
-      return [...action.payload.data];
-    default:
-      return state;
-  }
+    switch (action.type) {
+        case GROUPS_LOAD_SUCCESSFULLY:
+            return [...action.payload.data];
+        default:
+            return state;
+    }
 }

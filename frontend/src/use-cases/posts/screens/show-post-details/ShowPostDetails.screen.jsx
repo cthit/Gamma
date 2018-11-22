@@ -1,23 +1,22 @@
 import {
     DigitButton,
-    DigitDisplayData,
-    DigitText,
-    DigitTranslations,
     DigitDesign,
+    DigitDisplayData,
+    DigitIfElseRendering,
     DigitLayout,
-    DigitIfElseRendering
+    DigitText,
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowPostDetails.screen.translations.json";
 
 function getPostName(post, activeLanguage) {
     switch (activeLanguage.code.toLowerCase()) {
-        case "en":
-            return post.en;
         case "sv":
             return post.sv;
         default:
-            post.en + "/" + post.sv;
+            // case "en":
+            return post.en;
     }
 }
 

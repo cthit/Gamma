@@ -1,24 +1,21 @@
+import {
+    DigitEditData,
+    DigitSelect,
+    DigitTextField,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import EditWebsites from "../../../../../common/views/edit-websites";
-import translations from "./UserForm.view.translations.json";
-
 import {
+    ACCEPTANCE_YEAR,
+    EMAIL,
     FIRST_NAME,
     LAST_NAME,
     NICKNAME,
-    EMAIL,
-    ACCEPTANCE_YEAR,
     WEBSITES
 } from "../../../../../api/users/props.users.api";
-
-import {
-    DigitTranslations,
-    DigitTextField,
-    DigitEditData,
-    DigitSelect,
-    DigitDesign
-} from "@cthit/react-digit-components";
+import EditWebsites from "../../../../../common/views/edit-websites";
+import translations from "./UserForm.view.translations.json";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";

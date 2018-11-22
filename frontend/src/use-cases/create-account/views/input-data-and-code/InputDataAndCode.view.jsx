@@ -59,8 +59,13 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                                 errorMessage =
                                                     text.TOO_SHORT_PASSWORD;
                                                 break;
+                                            default:
+                                                errorMessage =
+                                                    text.SomethingWentWrong;
                                         }
                                         break;
+                                    default:
+                                        errorMessage = text.SomethingWentWrong;
                                 }
                                 toastOpen({
                                     text: errorMessage,

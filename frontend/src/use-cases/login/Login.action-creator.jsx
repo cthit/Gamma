@@ -1,20 +1,10 @@
-import axios from "axios";
-
-import {
-    LOGIN_VALIDATE,
-    LOGIN_VALIDATING,
-    LOGIN_VALIDATE_FAILED,
-    LOGIN_VALIDATE_SUCCESSFULLY
-} from "./Login.actions";
-
-import {
-    DigitToastActions,
-    DigitRedirectActions
-} from "@cthit/react-digit-components";
-
-import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
-
 import { login as loginRequest } from "../../api/login/post.login.api";
+import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
+import {
+    LOGIN_VALIDATE_FAILED,
+    LOGIN_VALIDATE_SUCCESSFULLY,
+    LOGIN_VALIDATING
+} from "./Login.actions";
 
 export function login(data, persistant) {
     return dispatch => {

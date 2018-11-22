@@ -8,7 +8,7 @@ import {
 import React from "react";
 import translations from "./CreationOfAccountFinished.view.translations.json";
 
-const CreationOfAccountFinished = ({}) => (
+const CreationOfAccountFinished = () => (
     <DigitTranslations
         translations={translations}
         uniquePath="CreateAccount"

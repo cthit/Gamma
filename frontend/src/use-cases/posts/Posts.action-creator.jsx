@@ -1,23 +1,18 @@
-import axios from "axios";
-
-import token from "../../common/utils/retrievers/token.retrieve";
-
+import { deletePost } from "../../api/posts/delete.posts.api";
 import { getPosts } from "../../api/posts/get.posts.api";
 import { addPost } from "../../api/posts/post.posts.api";
-import { deletePost } from "../../api/posts/delete.posts.api";
 import { editPost } from "../../api/posts/put.posts.api";
-
 import {
-    POSTS_LOAD_SUCCESSFULLY,
-    POSTS_LOAD_FAILED,
-    POSTS_ADD_SUCCESSFULLY,
     POSTS_ADD_FAILED,
-    POSTS_CHANGE_SUCCESSFULLY,
+    POSTS_ADD_SUCCESSFULLY,
     POSTS_CHANGE_FAILED,
-    POSTS_DELETE_SUCCESSFULLY,
+    POSTS_CHANGE_SUCCESSFULLY,
     POSTS_DELETE_FAILED,
-    POSTS_LOAD_USAGE_SUCCESSFULLY,
-    POSTS_LOAD_USAGE_FAILED
+    POSTS_DELETE_SUCCESSFULLY,
+    POSTS_LOAD_FAILED,
+    POSTS_LOAD_SUCCESSFULLY,
+    POSTS_LOAD_USAGE_FAILED,
+    POSTS_LOAD_USAGE_SUCCESSFULLY
 } from "./Posts.actions";
 
 export function postsLoad() {
@@ -77,7 +72,7 @@ export function postsDelete(postId) {
                     resolve(response);
                 })
                 .catch(error => {
-                    dispatch(postsLoadUsageFailed(error));
+                    dispatch(postsDeleteFailed(error));
                     reject(error);
                 });
         });
