@@ -1,15 +1,15 @@
 import React from "react";
 
 class Home extends React.Component {
-    constructor(props) {
-        super();
+  constructor(props) {
+    super();
 
-        props.gammaLoadingFinished();
-    }
+    props.gammaLoadingFinished();
+  }
 
-    render() {
-        return <div>Hej</div>;
-    }
+  render() {
+    return <div>Hej</div>;
+  }
 }
 
 export default Home;

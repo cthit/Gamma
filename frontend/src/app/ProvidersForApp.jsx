@@ -6,23 +6,23 @@ import commonTranslations from "../common/utils/translations/CommonTranslations.
 const preloadedState = {};
 
 const theme = {
-    breakpoints: {
-        xs: 0,
-        sm: 600,
-        md: 960,
-        lg: 1280,
-        xl: 1920
-    }
+  breakpoints: {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920
+  }
 };
 
 export const ProvidersForApp = ({ children }) => (
-    <DigitProviders
-        commonTranslations={commonTranslations}
-        rootReducer={rootReducer}
-        preloadedState={preloadedState}
-        defaultLanguage="sv"
-        theme={theme}
-    >
-        {children}
-    </DigitProviders>
+  <DigitProviders
+    commonTranslations={commonTranslations}
+    rootReducer={rootReducer}
+    preloadedState={preloadedState}
+    defaultLanguage="sv"
+    theme={theme}
+  >
+    {children}
+  </DigitProviders>
 );

@@ -1,8 +1,8 @@
 import {
-    DigitComponentSelector,
-    DigitLayout,
-    DigitStepper,
-    DigitTranslations
+  DigitComponentSelector,
+  DigitLayout,
+  DigitStepper,
+  DigitTranslations
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
 import React from "react";
@@ -14,60 +14,60 @@ import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
 
 class CreateAccount extends React.Component {
-    constructor(props) {
-        super();
+  constructor(props) {
+    super();
 
-        props.gammaLoadingFinished();
-    }
+    props.gammaLoadingFinished();
+  }
 
-    render() {
-        const { location } = this.props;
+  render() {
+    const { location } = this.props;
 
-        return (
-            <DigitTranslations
-                translations={translations}
-                uniquePath="CreateAccount"
-                render={text => (
-                    <DigitLayout.Fill>
-                        <MapPathToStep
-                            currentPath={location.pathname}
-                            pathToStepMap={{
-                                "/create-account": 0,
-                                "/create-account/email-sent": 1,
-                                "/create-account/input": 2,
-                                "/create-account/finished": 3
-                            }}
-                            render={step => (
-                                <DigitLayout.Column>
-                                    <DigitStepper
-                                        activeStep={step}
-                                        steps={[
-                                            { text: text.SendCid },
-                                            { text: text.GetActivationCode },
-                                            { text: text.CreateAccount }
-                                        ]}
-                                    />
-                                    <DigitComponentSelector
-                                        activeComponent={step}
-                                        components={[
-                                            InputCid,
-                                            EmailHasBeenSent,
-                                            InputDataAndCode,
-                                            CreationOfAccountFinished
-                                        ]}
-                                    />
-                                </DigitLayout.Column>
-                            )}
-                        />
-                    </DigitLayout.Fill>
-                )}
+    return (
+      <DigitTranslations
+        translations={translations}
+        uniquePath="CreateAccount"
+        render={text => (
+          <DigitLayout.Fill>
+            <MapPathToStep
+              currentPath={location.pathname}
+              pathToStepMap={{
+                "/create-account": 0,
+                "/create-account/email-sent": 1,
+                "/create-account/input": 2,
+                "/create-account/finished": 3
+              }}
+              render={step => (
+                <DigitLayout.Column>
+                  <DigitStepper
+                    activeStep={step}
+                    steps={[
+                      { text: text.SendCid },
+                      { text: text.GetActivationCode },
+                      { text: text.CreateAccount }
+                    ]}
+                  />
+                  <DigitComponentSelector
+                    activeComponent={step}
+                    components={[
+                      InputCid,
+                      EmailHasBeenSent,
+                      InputDataAndCode,
+                      CreationOfAccountFinished
+                    ]}
+                  />
+                </DigitLayout.Column>
+              )}
             />
-        );
-    }
+          </DigitLayout.Fill>
+        )}
+      />
+    );
+  }
 }
 
 CreateAccount.propTypes = {
-    location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired
 };
 
 export default CreateAccount;

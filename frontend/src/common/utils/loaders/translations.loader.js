@@ -3,9 +3,9 @@ import common from "../translations/CommonTranslations.json";
 import _ from "lodash";
 
 /*
-* Also loads in common by default
-* baseUrl must contain a dot at the end.
-*/
+ * Also loads in common by default
+ * baseUrl must contain a dot at the end.
+ */
 export default function loadTranslations(localize, translations, baseUrl) {
   if (translations == null && baseUrl == null) {
     return _loadCommonTranslations(localize);
