@@ -6,47 +6,47 @@ import { CID } from "../../../../../api/whitelist/props.whitelist.api";
 import { DigitTextField, DigitEditData } from "@cthit/react-digit-components";
 
 function generateValidationSchema(text) {
-    const schema = {};
+  const schema = {};
 
-    schema[CID] = yup.string().required(text.fieldRequiredText);
+  schema[CID] = yup.string().required(text.fieldRequiredText);
 
-    return yup.object().shape(schema);
+  return yup.object().shape(schema);
 }
 
 function generateEditComponentData(text) {
-    const componentData = {};
+  const componentData = {};
 
-    componentData[CID] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.cidInputText
-        }
-    };
+  componentData[CID] = {
+    component: DigitTextField,
+    componentProps: {
+      upperLabel: text.cidInputText
+    }
+  };
 
-    return componentData;
+  return componentData;
 }
 
 const WhitelistItemForm = ({
-    onSubmit,
-    initialValues,
-    titleText,
-    cidInputText,
-    fieldRequiredText,
-    submitText
+  onSubmit,
+  initialValues,
+  titleText,
+  cidInputText,
+  fieldRequiredText,
+  submitText
 }) => (
-    <DigitEditData
-        validationSchema={generateValidationSchema({
-            fieldRequiredText: fieldRequiredText
-        })}
-        initialValues={initialValues}
-        onSubmit={onSubmit}
-        titleText={titleText}
-        submitText={submitText}
-        keysOrder={["cid"]}
-        keysComponentData={generateEditComponentData({
-            cidInputText: cidInputText
-        })}
-    />
+  <DigitEditData
+    validationSchema={generateValidationSchema({
+      fieldRequiredText: fieldRequiredText
+    })}
+    initialValues={initialValues}
+    onSubmit={onSubmit}
+    titleText={titleText}
+    submitText={submitText}
+    keysOrder={["cid"]}
+    keysComponentData={generateEditComponentData({
+      cidInputText: cidInputText
+    })}
+  />
 );
 
 export default WhitelistItemForm;

@@ -10,14 +10,14 @@ import { user } from "./elements/user-information/UserInformation.element.reduce
 import { loading } from "./views/gamma-loading/GammaLoading.view.reducer";
 
 export const rootReducer = {
-    createAccount,
-    localize,
-    user,
-    users,
-    posts,
-    whitelist,
-    groups,
-    websites,
-    activationCodes,
-    loading
+  createAccount,
+  localize,
+  user,
+  users,
+  posts,
+  whitelist,
+  groups,
+  websites,
+  activationCodes,
+  loading
 };

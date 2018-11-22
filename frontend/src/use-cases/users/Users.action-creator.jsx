@@ -1,16 +1,12 @@
 import axios from "axios";
-
 import token from "../../common/utils/retrievers/token.retrieve";
-
 import {
-  USERS_LOAD_SUCCESSFULLY,
-  USERS_LOAD_FAILED,
-  USERS_CHANGE_SUCCESSFULLY,
   USERS_CHANGE_FAILED,
-  USERS_ADD_SUCCESSFULLY,
-  USERS_ADD_FAILED,
+  USERS_CHANGE_SUCCESSFULLY,
+  USERS_DELETE_FAILED,
   USERS_DELETE_SUCCESSFULLY,
-  USERS_DELETE_FAILED
+  USERS_LOAD_FAILED,
+  USERS_LOAD_SUCCESSFULLY
 } from "./Users.actions";
 
 export function usersLoad() {

@@ -6,11 +6,11 @@ import ValidateCid from "./ValidateCid.screen";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    toastOpen: options => dispatch(DigitToastActions.digitToastOpen(options)),
-    whitelistValidate: cid => dispatch(whitelistValidate(cid))
+  toastOpen: options => dispatch(DigitToastActions.digitToastOpen(options)),
+  whitelistValidate: cid => dispatch(whitelistValidate(cid))
 });
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(ValidateCid);

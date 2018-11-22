@@ -7,5 +7,5 @@ import { USERS_ENDPOINT } from "../utils/endpoints";
  * }
  */
 export function editUser(userId, newUserData) {
-    return putRequest(USERS_ENDPOINT + userId, newUserData);
+  return putRequest(USERS_ENDPOINT + userId, newUserData);
 }

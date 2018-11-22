@@ -10,5 +10,5 @@ import { POSTS_ENDPOINT } from "../utils/endpoints";
  * }
  */
 export function addPost(postData) {
-    return postRequest(POSTS_ENDPOINT, postData);
+  return postRequest(POSTS_ENDPOINT, postData);
 }

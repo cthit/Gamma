@@ -11,7 +11,8 @@ export function posts(state = [], action) {
       return [...action.payload];
     case POSTS_LOAD_USAGE_SUCCESSFULLY:
       console.log(action.payload);
-    //TODO find postId with action.payload.postId and insert action.payload.data
+      //TODO find postId with action.payload.postId and insert action.payload.data
+      break;
     case USER_LOGOUT_SUCCESSFULLY:
       return [];
     default:
