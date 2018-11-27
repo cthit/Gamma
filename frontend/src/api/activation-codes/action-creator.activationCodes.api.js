@@ -1,14 +1,14 @@
-import { getActivationCodes } from "../../api/activation-codes/get.activationCodes.api";
-import { deleteActivationCode } from "../../api/activation-codes/delete.activationCodes.api";
+import { getActivationCodes } from "./get.activationCodes.api";
+import { deleteActivationCode } from "./delete.activationCodes.api";
 
 import {
     ACTIVATION_CODES_LOAD_SUCCESSFULLY,
     ACTIVATION_CODES_LOAD_FAILED,
     ACTIVATION_CODES_DELETE_FAILED,
     ACTIVATION_CODES_DELETE_SUCCESSFULLY
-} from "./ActivationCodes.actions";
+} from "./actions.activationCodes.api";
 
-export function activationCodesLoad() {
+export function createGetActivationCodesAction() {
     return dispatch => {
         return new Promise((resolve, reject) => {
             getActivationCodes()
@@ -24,7 +24,7 @@ export function activationCodesLoad() {
     };
 }
 
-export function activationCodesDelete(activationCodeId) {
+export function createDeleteActivationCodeAction(activationCodeId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             deleteActivationCode(activationCodeId)

@@ -11,7 +11,7 @@ import translations from "./ShowActivationCodeDetails.screen.translations.json";
 
 const ShowActivationCodeDetails = ({
     activationCode,
-    activationCodesDelete,
+    deleteActivationCode,
     dialogOpen,
     redirectTo,
     toastOpen
@@ -25,7 +25,6 @@ const ShowActivationCodeDetails = ({
                 render={text => (
                     <DigitLayout.Fill>
                         <DigitLayout.Center>
-                            {console.log(activationCode.id)}
                             <DigitDesign.Card minWidth="300px" maxWidth="600px">
                                 <DigitDesign.CardBody>
                                     <DigitDisplayData
@@ -57,7 +56,7 @@ const ShowActivationCodeDetails = ({
                                                     text.DeleteActivationCode,
                                                 cancelButtonText: text.Cancel,
                                                 onConfirm: () => {
-                                                    activationCodesDelete(
+                                                    deleteActivationCode(
                                                         activationCode.id
                                                     )
                                                         .then(response => {

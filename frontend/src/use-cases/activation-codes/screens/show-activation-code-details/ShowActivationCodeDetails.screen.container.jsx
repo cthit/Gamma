@@ -5,7 +5,7 @@ import {
 } from "@cthit/react-digit-components";
 import _ from "lodash";
 import { connect } from "react-redux";
-import { activationCodesDelete } from "../../ActivationCodes.action-creator";
+import { createDeleteActivationCodeAction } from "../../../../api/activation-codes/action-creator.activationCodes.api";
 import ShowActivationCodeDetails from "./ShowActivationCodeDetails.screen";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -20,8 +20,8 @@ const mapDispatchToProps = dispatch => ({
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
-    activationCodesDelete: activationCodeId =>
-        dispatch(activationCodesDelete(activationCodeId))
+    deleteActivationCode: activationCodeId =>
+        dispatch(createDeleteActivationCodeAction(activationCodeId))
 });
 
 export default connect(

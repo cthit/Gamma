@@ -7,7 +7,7 @@ class ActivationCodes extends React.Component {
     constructor(props) {
         super();
 
-        props.activationCodesLoad().then(response => {
+        props.getActivationCodes().then(response => {
             props.gammaLoadingFinished();
         });
     }
