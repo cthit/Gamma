@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private ITUserService itUserService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider){
+    public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.itUserService = itUserService;
     }
@@ -32,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //Disables cross site request forgery
         http.cors().and().csrf().disable().authorizeRequests();
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
 
         http.authorizeRequests()//
                 .antMatchers("/users/login").permitAll()
@@ -47,13 +47,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(itUserService);
-        authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
-        return authProvider;
-    }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider());
@@ -63,6 +56,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(this.itUserService);
+        authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+        return authProvider;
     }
 
 
