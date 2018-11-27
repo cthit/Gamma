@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import EditUserDetails from "./EditUserDetails.screen";
 
-import { websitesLoad } from "../../../websites/Websites.action-creator";
+import { createGetWebsitesAction } from "../../../../api/websites/action-creator.websites.api";
 import { createEditUserAction } from "../../../../api/users/action-creator.users.api";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -12,7 +12,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
     usersChange: (user, cid) => dispatch(createEditUserAction(user, cid)),
-    websitesLoad: () => dispatch(websitesLoad())
+    websitesLoad: () => dispatch(createGetWebsitesAction())
 });
 
 export default connect(

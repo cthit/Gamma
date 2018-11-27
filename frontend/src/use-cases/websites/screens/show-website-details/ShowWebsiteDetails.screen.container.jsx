@@ -6,7 +6,7 @@ import {
 import _ from "lodash";
 import { connect } from "react-redux";
 import loadTranslations from "../../../../common/utils/loaders/translations.loader";
-import { websitesDelete } from "../../Websites.action-creator";
+import { createDeleteWebsiteAction } from "../../../../api/websites/action-creator.websites.api";
 import ShowWebsiteDetails from "./ShowWebsiteDetails.screen";
 import translations from "./ShowWebsiteDetails.screen.translations.json";
 
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
     redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
-    websitesDelete: websiteId => dispatch(websitesDelete(websiteId))
+    websitesDelete: websiteId => dispatch(createDeleteWebsiteAction(websiteId))
 });
 
 export default connect(

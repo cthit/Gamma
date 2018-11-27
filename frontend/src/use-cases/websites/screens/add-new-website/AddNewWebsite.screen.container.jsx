@@ -2,12 +2,12 @@ import { connect } from "react-redux";
 
 import AddNewWebsite from "./AddNewWebsite.screen";
 
-import { websitesAdd } from "../../Websites.action-creator";
+import { createAddWebsiteAction } from "../../../../api/websites/action-creator.websites.api";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    websitesAdd: websiteData => dispatch(websitesAdd(websiteData))
+    websitesAdd: websiteData => dispatch(createAddWebsiteAction(websiteData))
 });
 
 export default connect(

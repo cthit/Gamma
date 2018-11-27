@@ -1,7 +1,7 @@
-import { addWebsite } from "../../api/websites/post.websites.api";
-import { deleteWebsite } from "../../api/websites/delete.websites.api";
-import { getWebsites } from "../../api/websites/get.websites.api";
-import { editWebsite } from "../../api/websites/put.websites.api";
+import { addWebsite } from "./post.websites.api";
+import { deleteWebsite } from "./delete.websites.api";
+import { getWebsites } from "./get.websites.api";
+import { editWebsite } from "./put.websites.api";
 
 import {
     WEBSITES_LOAD_SUCCESSFULLY,
@@ -12,9 +12,9 @@ import {
     WEBSITES_DELETE_FAILED,
     WEBSITES_CHANGE_SUCCESSFULLY,
     WEBSITES_CHANGE_FAILED
-} from "./Websites.actions";
+} from "./actions.websites.api";
 
-export function websitesLoad() {
+export function createGetWebsitesAction() {
     return dispatch => {
         return new Promise((resolve, reject) => {
             getWebsites()
@@ -29,7 +29,7 @@ export function websitesLoad() {
         });
     };
 }
-export function websitesAdd(data) {
+export function createAddWebsiteAction(data) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             addWebsite(data)
@@ -44,7 +44,7 @@ export function websitesAdd(data) {
         });
     };
 }
-export function websitesDelete(websiteId) {
+export function createDeleteWebsiteAction(websiteId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             deleteWebsite(websiteId)
@@ -59,7 +59,7 @@ export function websitesDelete(websiteId) {
         });
     };
 }
-export function websitesChange(data, websiteId) {
+export function createEditWebsiteAction(data, websiteId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             editWebsite(websiteId, data)
