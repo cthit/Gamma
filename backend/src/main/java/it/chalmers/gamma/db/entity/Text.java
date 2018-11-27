@@ -1,13 +1,12 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "text")
@@ -22,19 +21,18 @@ public class Text {
     private String en;
 
     public Text() {
-        sv = "";
-        en = "";
-        id = UUID.randomUUID();
+        this.sv = "";
+        this.en = "";
+        this.id = UUID.randomUUID();
     }
 
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getSv() {
-
-        return sv;
+        return this.sv;
     }
 
     public void setSv(String sv) {
@@ -42,7 +40,7 @@ public class Text {
     }
 
     public String getEn() {
-        return en;
+        return this.en;
     }
 
     public void setEn(String en) {
@@ -51,26 +49,29 @@ public class Text {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Text text = (Text) o;
-        return Objects.equals(id, text.id) &&
-                Objects.equals(sv, text.sv) &&
-                Objects.equals(en, text.en);
+        return Objects.equals(this.id, text.id)
+                && Objects.equals(this.sv, text.sv)
+                && Objects.equals(this.en, text.en);
     }
 
     @Override
     public String toString() {
-        return "Text{" +
-                "id=" + id +
-                ", sv='" + sv + '\'' +
-                ", en='" + en + '\'' +
-                '}';
+        return "Text{"
+                + "id=" + this.id
+                + ", sv='" + this.sv + '\''
+                + ", en='" + this.en + '\''
+                + '}';
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, sv, en);
+        return Objects.hash(this.id, this.sv, this.en);
     }
 }
