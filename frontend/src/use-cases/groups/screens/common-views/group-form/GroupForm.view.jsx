@@ -7,6 +7,115 @@ import {
 import React from "react";
 import * as yup from "yup";
 import translations from "./GroupForm.view.translations";
+import {
+    NAME,
+    PRETTY_NAME,
+    DESCRIPTION,
+    EMAIL,
+    FUNCTION,
+    TYPE,
+    TYPE_SOCIETY,
+    TYPE_COMMITTEE,
+    TYPE_BOARD
+} from "../../../../../api/groups/props.groups";
+import {
+    SWEDISH_LANGUAGE,
+    ENGLISH_LANGUAGE
+} from "../../../../../api/utils/commonProps";
+
+function generateValidationSchema(text) {
+    const descriptionSchema = {};
+    descriptionSchema[SWEDISH_LANGUAGE] = yup.string().required();
+    descriptionSchema[ENGLISH_LANGUAGE] = yup.string().required();
+
+    const functionSchema = {};
+    functionSchema[SWEDISH_LANGUAGE] = yup.string().required();
+    functionSchema[ENGLISH_LANGUAGE] = yup.string().required();
+
+    const schema = {};
+    schema[NAME] = yup.string().required();
+    schema[PRETTY_NAME] = yup.string().required();
+    schema[DESCRIPTION] = yup
+        .object()
+        .shape(descriptionSchema)
+        .required();
+    schema[EMAIL] = yup.string().required();
+    schema[FUNCTION] = yup
+        .object()
+        .shape(functionSchema)
+        .required();
+    schema[TYPE] = yup.string().required();
+
+    return yup.object().shape(schema);
+}
+
+function generateEditComponentData(text) {
+    const componentData = {};
+
+    componentData[NAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Name
+        }
+    };
+
+    componentData[PRETTY_NAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.PrettyName
+        }
+    };
+
+    componentData[DESCRIPTION + "." + SWEDISH_LANGUAGE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.DescriptionSv
+        }
+    };
+
+    componentData[DESCRIPTION + "." + ENGLISH_LANGUAGE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.DescriptionEn
+        }
+    };
+
+    componentData[EMAIL] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Email
+        }
+    };
+
+    componentData[FUNCTION + "." + SWEDISH_LANGUAGE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.FunctionSv
+        }
+    };
+
+    componentData[FUNCTION + "." + ENGLISH_LANGUAGE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.FunctionEn
+        }
+    };
+
+    const typeValueToTextMap = {};
+    typeValueToTextMap[TYPE_SOCIETY] = text.Society;
+    typeValueToTextMap[TYPE_COMMITTEE] = text.Committee;
+    typeValueToTextMap[TYPE_BOARD] = text.Board;
+
+    componentData[TYPE] = {
+        component: DigitSelect,
+        componentProps: {
+            upperLabel: text.Type,
+            valueToTextMap: typeValueToTextMap
+        }
+    };
+
+    return componentData;
+}
 
 const GroupForm = ({ initialValues, onSubmit }) => (
     <DigitTranslations
@@ -16,93 +125,20 @@ const GroupForm = ({ initialValues, onSubmit }) => (
             <DigitEditData
                 titleText={text.Group}
                 submitText={text.SaveGroup}
-                validationSchema={yup.object().shape({
-                    name: yup.string().required(),
-                    prettyName: yup.string().required(),
-                    description: yup
-                        .object()
-                        .shape({
-                            sv: yup.string().required(),
-                            en: yup.string().required()
-                        })
-                        .required(),
-                    email: yup.string().required(),
-                    func: yup
-                        .object()
-                        .shape({
-                            sv: yup.string().required(),
-                            en: yup.string().required()
-                        })
-                        .required(),
-                    type: yup.string().required()
-                })}
+                validationSchema={generateValidationSchema(text)}
                 onSubmit={onSubmit}
                 initialValues={initialValues}
                 keysOrder={[
-                    "name",
-                    "prettyName",
-                    "description.sv",
-                    "description.en",
-                    "email",
-                    "func.sv",
-                    "func.en",
-                    "type"
+                    NAME,
+                    PRETTY_NAME,
+                    DESCRIPTION + "." + SWEDISH_LANGUAGE,
+                    DESCRIPTION + "." + ENGLISH_LANGUAGE,
+                    EMAIL,
+                    FUNCTION + "." + SWEDISH_LANGUAGE,
+                    FUNCTION + "." + ENGLISH_LANGUAGE,
+                    TYPE
                 ]}
-                keysComponentData={{
-                    name: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Name
-                        }
-                    },
-                    prettyName: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.PrettyName
-                        }
-                    },
-                    "description.sv": {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.DescriptionSv
-                        }
-                    },
-                    "description.en": {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.DescriptionEn
-                        }
-                    },
-                    email: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Email
-                        }
-                    },
-                    "func.sv": {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.FunctionSv
-                        }
-                    },
-                    "func.en": {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.FunctionEn
-                        }
-                    },
-                    type: {
-                        component: DigitSelect,
-                        componentProps: {
-                            upperLabel: text.Type,
-                            valueToTextMap: {
-                                SOCIETY: text.Society,
-                                COMMITTEE: text.Committee,
-                                BOARD: text.Board
-                            }
-                        }
-                    }
-                }}
+                keysComponentData={generateEditComponentData(text)}
             />
         )}
     />

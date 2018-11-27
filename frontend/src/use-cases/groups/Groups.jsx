@@ -6,6 +6,7 @@ import ShowAllGroups from "./screens/show-all-groups";
 import CreateNewGroup from "./screens/create-new-group";
 import EditGroupDetails from "./screens/edit-group-details";
 import ShowGroupDetails from "./screens/show-group-details";
+import AddUsersToGroup from "./screens/add-users-to-group";
 
 class Groups extends React.Component {
     constructor(props) {
@@ -25,6 +26,11 @@ class Groups extends React.Component {
                     path="/groups/:id/edit"
                     exact
                     component={EditGroupDetails}
+                />
+                <Route
+                    path="/groups/:id/members"
+                    exact
+                    component={AddUsersToGroup}
                 />
                 <Route path="/groups/:id" exact component={ShowGroupDetails} />
             </Switch>

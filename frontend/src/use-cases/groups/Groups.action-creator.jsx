@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import {
     GROUPS_LOAD_SUCCESSFULLY,
     GROUPS_LOAD_FAILED,
@@ -11,17 +9,15 @@ import {
     GROUPS_CHANGE_FAILED
 } from "./Groups.actions";
 
-import token from "../../common/utils/retrievers/token.retrieve";
+import { addGroup } from "../../api/groups/post.groups";
+import { getGroups } from "../../api/groups/get.groups";
+import { editGroup } from "../../api/groups/put.groups";
+import { deleteGroup } from "../../api/groups/delete.groups";
 
 export function groupsLoad() {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .get("http://localhost:8081/admin/groups", {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            getGroups()
                 .then(response => {
                     dispatch(groupsLoadSuccessfully(response.data));
                     resolve(response);
@@ -37,12 +33,7 @@ export function groupsLoad() {
 export function groupsAdd(group) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .post("http://localhost:8081/admin/groups/new", group, {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            addGroup(group)
                 .then(response => {
                     dispatch(groupsAddSuccessfully());
                     resolve(response);
@@ -58,12 +49,7 @@ export function groupsAdd(group) {
 export function groupsChange(group, groupId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .put("http://localhost:8081/admin/groups/" + groupId, group, {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            editGroup(groupId, group)
                 .then(response => {
                     dispatch(groupsChangeSuccessfully());
                     resolve(response);
@@ -79,12 +65,7 @@ export function groupsChange(group, groupId) {
 export function groupsDelete(groupId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .delete("http://localhost:8081/admin/groups/" + groupId, {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            deleteGroup(groupId)
                 .then(response => {
                     groupsDeleteSuccessfully();
                     resolve(response);
