@@ -1,16 +1,11 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "website")
@@ -24,7 +19,7 @@ public class Website {
     private String prettyName;
 
     public Website() {
-        id = UUID.randomUUID();
+        this.id = UUID.randomUUID();
     }
 
     public Website(String name) {
@@ -32,7 +27,7 @@ public class Website {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -40,7 +35,7 @@ public class Website {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -48,7 +43,7 @@ public class Website {
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     public void setPrettyName(String prettyName) {
@@ -57,24 +52,27 @@ public class Website {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Website website = (Website) o;
-        return Objects.equals(id, website.id) &&
-                Objects.equals(name, website.name);
+        return Objects.equals(this.id, website.id)
+                && Objects.equals(this.name, website.name);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, name);
+        return Objects.hash(this.id, this.name);
     }
 
     @Override
     public String toString() {
-        return "Website{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return "Website{"
+                + "id=" + this.id
+                + ", name='" + this.name + '\''
+                + '}';
     }
 }
