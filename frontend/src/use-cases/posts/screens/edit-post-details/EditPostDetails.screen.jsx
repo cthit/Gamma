@@ -7,7 +7,7 @@ import React from "react";
 import PostForm from "../common-views/post-form";
 import translations from "./EditPostDetails.screen.translations.json";
 
-const EditPostDetails = ({ postsChange, post, match }) => (
+const EditPostDetails = ({ editPost, post, match }) => (
     <DigitIfElseRendering
         test={post != null}
         ifRender={() => (
@@ -18,7 +18,7 @@ const EditPostDetails = ({ postsChange, post, match }) => (
                     <DigitLayout.Center>
                         <PostForm
                             onSubmit={(values, actions) => {
-                                postsChange(values, match.params.id);
+                                editPost(values, match.params.id);
                             }}
                             initialValues={{
                                 sv: post.sv == null ? "" : post.sv,

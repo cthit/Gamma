@@ -5,7 +5,7 @@ import statusMessage from "../../../../common/utils/formatters/statusMessage.for
 import PostForm from "../common-views/post-form";
 import translations from "./AddNewPost.screen.translations.json";
 
-const AddNewPost = ({ postsAdd, toastOpen }) => (
+const AddNewPost = ({ addPost, toastOpen }) => (
     <DigitTranslations
         translations={translations}
         uniquePath="Posts.Screen.AddNewPost"
@@ -13,7 +13,7 @@ const AddNewPost = ({ postsAdd, toastOpen }) => (
             <DigitLayout.Center>
                 <PostForm
                     onSubmit={(values, actions) => {
-                        postsAdd(values)
+                        addPost(values)
                             .then(response => {
                                 toastOpen({ text: text.PostAdded });
                                 actions.resetForm();

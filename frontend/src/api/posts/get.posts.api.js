@@ -9,6 +9,6 @@ export function getPost(postId) {
     return getRequest(POSTS_ENDPOINT + postId);
 }
 
-export function getUsagesOfPost(postId) {
+export function getPostUsage(postId) {
     return getRequest(POSTS_ENDPOINT + postId + "/usage");
 }

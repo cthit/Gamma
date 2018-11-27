@@ -5,7 +5,10 @@ import {
 } from "@cthit/react-digit-components";
 import _ from "lodash";
 import { connect } from "react-redux";
-import { postsDelete, postsLoadUsage } from "../../Posts.action-creator";
+import {
+    createDeletePostAction,
+    createGetPostUsageAction
+} from "../../../../api/posts/action-creator.posts.api";
 import ShowPostDetails from "./ShowPostDetails.screen";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -18,8 +21,8 @@ const mapDispatchToProps = dispatch => ({
         dispatch(DigitDialogActions.digitDialogOpen(options)),
     toastOpen: options => dispatch(DigitToastActions.digitToastOpen(options)),
     redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
-    postsDelete: postId => dispatch(postsDelete(postId)),
-    postsLoadUsage: postId => dispatch(postsLoadUsage(postId))
+    deletePost: postId => dispatch(createDeletePostAction(postId)),
+    getPostUsages: postId => dispatch(createGetPostUsageAction(postId))
 });
 
 export default connect(

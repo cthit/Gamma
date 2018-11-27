@@ -1,12 +1,12 @@
 import { DigitToastActions } from "@cthit/react-digit-components";
 import { connect } from "react-redux";
-import { postsAdd } from "../../Posts.action-creator";
+import { createAddPostAction } from "../../../../api/posts/action-creator.posts.api";
 import AddNewPost from "./AddNewPost.screen";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    postsAdd: post => dispatch(postsAdd(post)),
+    addPost: post => dispatch(createAddPostAction(post)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData))
 });

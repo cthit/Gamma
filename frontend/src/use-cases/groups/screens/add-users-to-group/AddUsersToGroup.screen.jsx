@@ -1,5 +1,11 @@
 import React from "react";
 
-const AddUsersToGroup = () => <div>hej</div>;
+import { DigitLayout, DigitTable } from "@cthit/react-digit-components";
+
+class AddUsersToGroup extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+}
 
 export default AddUsersToGroup;

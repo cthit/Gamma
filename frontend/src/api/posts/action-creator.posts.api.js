@@ -1,7 +1,7 @@
-import { deletePost } from "../../api/posts/delete.posts.api";
-import { getPosts } from "../../api/posts/get.posts.api";
-import { addPost } from "../../api/posts/post.posts.api";
-import { editPost } from "../../api/posts/put.posts.api";
+import { deletePost } from "./delete.posts.api";
+import { getPosts, getPostUsage } from "./get.posts.api";
+import { addPost } from "./post.posts.api";
+import { editPost } from "./put.posts.api";
 import {
     POSTS_ADD_FAILED,
     POSTS_ADD_SUCCESSFULLY,
@@ -13,28 +13,22 @@ import {
     POSTS_LOAD_SUCCESSFULLY,
     POSTS_LOAD_USAGE_FAILED,
     POSTS_LOAD_USAGE_SUCCESSFULLY
-} from "./Posts.actions";
+} from "./actions.posts.api";
 
-export function postsLoad() {
-    return dispatch => {
-        return new Promise((resolve, reject) => {
-            getPosts()
-                .then(response => {
-                    dispatch(postsLoadSuccessfully(response.data));
-                    resolve(response);
-                })
-                .catch(error => {
-                    postsLoadFailed(error);
-                    reject(error);
-                });
-        });
-    };
+import { requestPromise } from "../utils/requestPromise";
+
+export function createGetPostsAction() {
+    return requestPromise(
+        getPosts,
+        createGetPostsSuccessfullyAction,
+        createGetPostsFailedAction
+    );
 }
 
-export function postsAdd(post) {
+export function createAddPostAction(postData) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            addPost(post)
+            addPost(postData)
                 .then(response => {
                     dispatch(postsAddSuccessfully());
                     resolve(response);
@@ -47,10 +41,10 @@ export function postsAdd(post) {
     };
 }
 
-export function postsChange(post, postId) {
+export function createEditPostAction(postData, postId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            editPost(postId, post)
+            editPost(postId, postData)
                 .then(response => {
                     dispatch(postsChangeSuccessfully());
                     resolve(response);
@@ -63,7 +57,7 @@ export function postsChange(post, postId) {
     };
 }
 
-export function postsDelete(postId) {
+export function createDeletePostAction(postId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             deletePost(postId)
@@ -79,10 +73,10 @@ export function postsDelete(postId) {
     };
 }
 
-export function postsLoadUsage(postId) {
+export function createGetPostUsageAction(postId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            deletePost(postId)
+            getPostUsage(postId)
                 .then(response => {
                     dispatch(postsLoadUsageSuccessfully(response.data, postId));
                     resolve(response.data);
@@ -112,7 +106,7 @@ function postsAddFailed(error) {
     };
 }
 
-function postsLoadFailed(error) {
+function createGetPostsFailedAction(error) {
     return {
         type: POSTS_LOAD_FAILED,
         error: true,
@@ -122,8 +116,8 @@ function postsLoadFailed(error) {
     };
 }
 
-function postsLoadSuccessfully(data) {
-    return { type: POSTS_LOAD_SUCCESSFULLY, payload: [...data] };
+function createGetPostsSuccessfullyAction(response) {
+    return { type: POSTS_LOAD_SUCCESSFULLY, payload: [...response.data] };
 }
 
 function postsChangeSuccessfully() {

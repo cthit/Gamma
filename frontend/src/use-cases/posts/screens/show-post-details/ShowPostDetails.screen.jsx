@@ -24,7 +24,7 @@ class ShowPostDetails extends React.Component {
     constructor(props) {
         super();
 
-        props.postsLoadUsage(props.postId);
+        props.getPostUsages(props.postId);
     }
 
     render() {
@@ -33,7 +33,7 @@ class ShowPostDetails extends React.Component {
             dialogOpen,
             toastOpen,
             redirectTo,
-            postsDelete
+            deletePost
         } = this.props;
 
         return (
@@ -96,7 +96,7 @@ class ShowPostDetails extends React.Component {
                                                         cancelButtonText:
                                                             text.Cancel,
                                                         onConfirm: () => {
-                                                            postsDelete(post.id)
+                                                            deletePost(post.id)
                                                                 .then(
                                                                     response => {
                                                                         toastOpen(

@@ -10,7 +10,7 @@ class Posts extends React.Component {
     constructor(props) {
         super();
 
-        props.postsLoad().then(response => {
+        props.getPosts().then(response => {
             props.gammaLoadingFinished();
         });
     }

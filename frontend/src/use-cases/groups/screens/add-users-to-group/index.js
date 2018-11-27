@@ -1,2 +1,2 @@
-import AddUsersToGroup from "./AddUsersToGroup.screen";
+import AddUsersToGroup from "./AddUsersToGroup.screen.container";
 export default AddUsersToGroup;

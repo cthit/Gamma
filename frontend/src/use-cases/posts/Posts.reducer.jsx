@@ -1,7 +1,7 @@
 import {
     POSTS_LOAD_SUCCESSFULLY,
     POSTS_LOAD_USAGE_SUCCESSFULLY
-} from "./Posts.actions";
+} from "../../api/posts/actions.posts.api";
 
 import { USER_LOGOUT_SUCCESSFULLY } from "../../app/elements/user-information/UserInformation.element.actions";
 
@@ -12,7 +12,7 @@ export function posts(state = [], action) {
         case POSTS_LOAD_USAGE_SUCCESSFULLY:
             console.log(action.payload);
             //TODO find postId with action.payload.postId and insert action.payload.data
-            break;
+            return state;
         case USER_LOGOUT_SUCCESSFULLY:
             return [];
         default:

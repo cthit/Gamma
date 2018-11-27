@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { postsLoad } from "./Posts.action-creator";
+import { createGetPostsAction } from "../../api/posts/action-creator.posts.api";
 import Posts from "./Posts";
 
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
@@ -9,7 +9,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    postsLoad: () => dispatch(postsLoad()),
+    getPosts: () => dispatch(createGetPostsAction()),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 

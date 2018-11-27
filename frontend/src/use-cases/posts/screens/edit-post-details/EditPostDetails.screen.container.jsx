@@ -3,14 +3,15 @@ import _ from "lodash";
 
 import EditPostDetails from "./EditPostDetails.screen";
 
-import { postsChange } from "../../Posts.action-creator";
+import { createEditPostAction } from "../../../../api/posts/action-creator.posts.api";
 
 const mapStateToProps = (state, ownProps) => ({
     post: _.find(state.posts, { id: ownProps.match.params.id })
 });
 
 const mapDispatchToProps = dispatch => ({
-    postsChange: (postData, postId) => dispatch(postsChange(postData, postId))
+    editPost: (postData, postId) =>
+        dispatch(createEditPostAction(postData, postId))
 });
 
 export default connect(
