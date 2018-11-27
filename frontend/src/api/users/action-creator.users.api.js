@@ -1,5 +1,3 @@
-import axios from "axios";
-import token from "../../common/utils/retrievers/token.retrieve";
 import {
     USERS_CHANGE_FAILED,
     USERS_CHANGE_SUCCESSFULLY,
@@ -7,17 +5,16 @@ import {
     USERS_DELETE_SUCCESSFULLY,
     USERS_LOAD_FAILED,
     USERS_LOAD_SUCCESSFULLY
-} from "./Users.actions";
+} from "./actions.users.api";
 
-export function usersLoad() {
+import { deleteUser } from "./delete.users.api";
+import { editUser } from "./put.users.api";
+import { getUsers } from "./get.users.api";
+
+export function createGetUsersAction() {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .get("http://localhost:8081/users/minified", {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            getUsers()
                 .then(response => {
                     dispatch(usersLoadSuccessfully(response.data));
                     resolve(response.data);
@@ -30,17 +27,10 @@ export function usersLoad() {
     };
 }
 
-export function usersChange(user, cid) {
-    console.log("Hej");
-    console.log(user);
+export function createEditUserAction(user, cid) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .put("http://localhost:8081/admin/users/" + cid, user, {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            editUser(cid, user)
                 .then(response => {
                     dispatch(usersChangeSuccessfully());
                     resolve(response.data);
@@ -53,15 +43,10 @@ export function usersChange(user, cid) {
     };
 }
 
-export function usersDelete(cid) {
+export function createDeleteUserAction(cid) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            axios
-                .delete("http://localhost:8081/admin/users/" + cid, {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
+            deleteUser(cid)
                 .then(response => {
                     dispatch(usersDeleteSuccessfully());
                     resolve(response);

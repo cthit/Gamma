@@ -3,7 +3,7 @@ import _ from "lodash";
 import EditUserDetails from "./EditUserDetails.screen";
 
 import { websitesLoad } from "../../../websites/Websites.action-creator";
-import { usersChange } from "../../Users.action-creator";
+import { createEditUserAction } from "../../../../api/users/action-creator.users.api";
 
 const mapStateToProps = (state, ownProps) => ({
     user: _.find(state.users, { cid: ownProps.match.params.cid }),
@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    usersChange: (user, cid) => dispatch(usersChange(user, cid)),
+    usersChange: (user, cid) => dispatch(createEditUserAction(user, cid)),
     websitesLoad: () => dispatch(websitesLoad())
 });
 

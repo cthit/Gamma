@@ -1,4 +1,4 @@
-import { USERS_LOAD_SUCCESSFULLY } from "./Users.actions";
+import { USERS_LOAD_SUCCESSFULLY } from "../../api/users/actions.users.api";
 
 import { USER_LOGOUT_SUCCESSFULLY } from "../../app/elements/user-information/UserInformation.element.actions";
 

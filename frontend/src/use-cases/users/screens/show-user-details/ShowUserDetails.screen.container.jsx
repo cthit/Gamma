@@ -5,7 +5,7 @@ import {
 } from "@cthit/react-digit-components";
 import _ from "lodash";
 import { connect } from "react-redux";
-import { usersDelete } from "../../Users.action-creator";
+import { createDeleteUserAction } from "../../../../api/users/action-creator.users.api";
 import ShowUserDetails from "./ShowUserDetails.screen";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -15,7 +15,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
-    usersDelete: cid => dispatch(usersDelete(cid)),
+    usersDelete: cid => dispatch(createDeleteUserAction(cid)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to))
