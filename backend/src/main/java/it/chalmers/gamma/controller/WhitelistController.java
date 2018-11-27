@@ -8,7 +8,6 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,11 +27,14 @@ public class WhitelistController {
 
     private MailSenderService mailSenderService;
 
-   // @Value("${mail.receiver.standard-postfix}")
+    // @Value("${mail.receiver.standard-postfix}")
     private String mailPostfix = "@student.chalmers.se";
 
-    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService,
-                               ITUserService itUserService, MailSenderService mailSenderService){
+    public WhitelistController(
+            WhitelistService whitelistService,
+            ActivationCodeService activationCodeService,
+            ITUserService itUserService,
+            MailSenderService mailSenderService) {
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.itUserService = itUserService;
@@ -41,12 +43,13 @@ public class WhitelistController {
     }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
-    public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
-        if(whitelistService.isCIDWhiteListed(cid.getCid())) {
-            Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
-            String code = activationCodeService.generateActivationCode();
-            ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
-    //        sendEmail(activationCode);
+    public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid) {
+        if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
+            Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
+            String code = this.activationCodeService.generateActivationCode();
+            ActivationCode activationCode =
+                    this.activationCodeService.saveActivationCode(whitelist, code);
+            // sendEmail(activationCode);
         }
 
         /*
@@ -56,11 +59,11 @@ public class WhitelistController {
          */
         return new WhitelistAddedResponse();
     }
-    private void sendEmail(ActivationCode activationCode){
+    private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@" + mailPostfix;
+        String to = activationCode.getCid() + "@" + this.mailPostfix;
         String message = "Your code to Gamma is: " + code;
-        mailSenderService.sendMail(to, "Chalmers activation code", message);
+        this.mailSenderService.sendMail(to, "Chalmers activation code", message);
     }
 }
 
