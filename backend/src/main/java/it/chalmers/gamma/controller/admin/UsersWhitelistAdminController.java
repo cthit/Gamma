@@ -1,4 +1,4 @@
-package it.chalmers.gamma.controller.administrationSubControllers;
+package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.AddListOfWhitelistedRequest;

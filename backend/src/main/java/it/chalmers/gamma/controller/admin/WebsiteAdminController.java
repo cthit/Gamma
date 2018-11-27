@@ -1,12 +1,7 @@
-package it.chalmers.gamma.controller.administrationSubControllers;
+package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.GroupWebsite;
-import it.chalmers.gamma.db.entity.UserWebsite;
 import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.requests.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.requests.CreateWebsiteRequest;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.*;
 import org.springframework.http.ResponseEntity;
