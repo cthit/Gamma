@@ -1,10 +1,7 @@
-import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
-import { getWhitelist } from "../../api/whitelist/get.whitelist.api";
-import {
-    addUserToWhitelist,
-    cidIsWhitelisted
-} from "../../api/whitelist/post.whitelist.api";
-import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
+import { deleteWhitelistItem } from "./delete.whitelist.api";
+import { getWhitelist } from "./get.whitelist.api";
+import { addUserToWhitelist, cidIsWhitelisted } from "./post.whitelist.api";
+import { editWhitelistItem } from "./put.whitelist.api";
 import {
     WHITELIST_ADD_SUCCESSFULLY,
     WHITELIST_CHANGE_FAILED,
@@ -16,9 +13,9 @@ import {
     WHITELIST_LOAD_SUCCESSFULLY,
     WHITELIST_VALIDATE_FAILED,
     WHITELIST_VALIDATE_SUCCESSFULLY
-} from "./Whitelist.actions";
+} from "./actions.whitelist.api";
 
-export function whitelistLoad() {
+export function createGetWhitelistAction() {
     return dispatch => {
         dispatch(whitelistLoading());
         return new Promise((resolve, reject) => {
@@ -35,7 +32,7 @@ export function whitelistLoad() {
     };
 }
 
-export function whitelistAdd(whitelist) {
+export function createAddToWhitelistAction(whitelist) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             addUserToWhitelist(whitelist)
@@ -51,7 +48,7 @@ export function whitelistAdd(whitelist) {
     };
 }
 
-export function whitelistDelete(whitelistId) {
+export function createDeleteWhitelistItemAction(whitelistId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             deleteWhitelistItem(whitelistId)
@@ -67,7 +64,7 @@ export function whitelistDelete(whitelistId) {
     };
 }
 
-export function whitelistChange(whitelist, whitelistId) {
+export function createEditWhitelistItemAction(whitelist, whitelistId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             editWhitelistItem(whitelistId, whitelist)
@@ -83,7 +80,7 @@ export function whitelistChange(whitelist, whitelistId) {
     };
 }
 
-export function whitelistValidate(cid) {
+export function createValidateWhitelistAction(cid) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             cidIsWhitelisted({ cid: cid })

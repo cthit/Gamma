@@ -1,12 +1,13 @@
 import { connect } from "react-redux";
 import AddNewWhitelistItem from "./AddNewWhitelistItem.screen";
 
-import { whitelistAdd } from "../../Whitelist.action-creator";
+import { createAddToWhitelistAction } from "../../../../api/whitelist/action-creator.whitelist.api";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    whitelistAdd: newWhitelistAdd => dispatch(whitelistAdd(newWhitelistAdd))
+    whitelistAdd: newWhitelistAdd =>
+        dispatch(createAddToWhitelistAction(newWhitelistAdd))
 });
 
 export default connect(

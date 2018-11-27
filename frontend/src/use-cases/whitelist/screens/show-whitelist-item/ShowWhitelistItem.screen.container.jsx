@@ -5,7 +5,7 @@ import {
 } from "@cthit/react-digit-components";
 import _ from "lodash";
 import { connect } from "react-redux";
-import { whitelistDelete } from "../../Whitelist.action-creator";
+import { createDeleteWhitelistItemAction } from "../../../../api/whitelist/action-creator.whitelist.api";
 import ShowWhitelistItem from "./ShowWhitelistItem.screen";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -18,7 +18,8 @@ const mapDispatchToProps = dispatch => ({
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
-    whitelistDelete: whitelistId => dispatch(whitelistDelete(whitelistId))
+    whitelistDelete: whitelistId =>
+        dispatch(createDeleteWhitelistItemAction(whitelistId))
 });
 
 export default connect(
