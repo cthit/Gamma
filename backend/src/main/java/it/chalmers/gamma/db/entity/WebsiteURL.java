@@ -1,10 +1,16 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "website_url")
@@ -22,24 +28,25 @@ public class WebsiteURL {
     private String url;
 
 
-    public WebsiteURL(){
-        id = UUID.randomUUID();
+    public WebsiteURL() {
+        this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
         this.id = id;
     }
+
     @JsonIgnore
     public Website getWebsite() {
-        return website;
+        return this.website;
     }
 
-    public String getWebsiteName(){
-        return website.getName();
+    public String getWebsiteName() {
+        return this.website.getName();
     }
 
     public void setWebsite(Website website) {
@@ -47,7 +54,7 @@ public class WebsiteURL {
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public void setUrl(String url) {
@@ -56,25 +63,29 @@ public class WebsiteURL {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         WebsiteURL that = (WebsiteURL) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(website, that.website) &&
-                Objects.equals(url, that.url);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.website, that.website)
+                && Objects.equals(this.url, that.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, website, url);
+        return Objects.hash(this.id, this.website, this.url);
     }
 
     @Override
     public String toString() {
-        return "WebsiteURL{" +
-                "id=" + id +
-                ", website=" + website +
-                ", url='" + url + '\'' +
-                '}';
+        return "WebsiteURL{"
+                + "id=" + this.id
+                + ", website=" + this.website
+                + ", url='" + this.url + '\''
+                + '}';
     }
 }
