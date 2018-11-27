@@ -1,9 +1,15 @@
 package it.chalmers.gamma.db.entity;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "activation_code")
@@ -12,8 +18,6 @@ public class ActivationCode {
     @Id
     @Column(updatable = false)
     private UUID id;
-
-
 
     @JoinColumn(name = "cid", insertable = true, updatable = false, unique = true)
     @OneToOne(fetch = FetchType.EAGER)
@@ -25,26 +29,22 @@ public class ActivationCode {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    public void setCid(Whitelist cid) {
-        this.cid = cid;
-    }
-
     public Instant getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
-    protected ActivationCode(){
-        id = UUID.randomUUID();
+    protected ActivationCode() {
+        this.id = UUID.randomUUID();
     }
-    public ActivationCode(Whitelist cid){
-        id = UUID.randomUUID();
-        createdAt = Instant.now();
+
+    public ActivationCode(Whitelist cid) {
+        this.id = UUID.randomUUID();
+        this.createdAt = Instant.now();
         this.cid = cid;
     }
 
     public UUID getId() {
-
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -52,27 +52,27 @@ public class ActivationCode {
     }
 
     public String getCid() {
-        return cid.getCid();
+        return this.cid.getCid();
     }
 
-    public Whitelist getWhitelist(){
-        return cid;
+    public Whitelist getWhitelist() {
+        return this.cid;
     }
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setWhitelist(Whitelist cid){
+    public void setWhitelist(Whitelist cid) {
         this.cid = cid;
     }
 
-    public void setCid(String cid) {
-        this.cid.setCid(cid);
+    public void setCid(Whitelist cid) {
+        this.cid = cid;
     }
 
     public String getCode() {
-        return code;
+        return this.code;
     }
 
     public void setCode(String code) {
@@ -82,25 +82,29 @@ public class ActivationCode {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ActivationCode that = (ActivationCode) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(cid, that.cid) &&
-                Objects.equals(code, that.code);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.cid, that.cid)
+                && Objects.equals(this.code, that.code);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cid, code);
+        return Objects.hash(this.id, this.cid, this.code);
     }
 
     @Override
     public String toString() {
-        return "ActivationCode{" +
-                "id=" + id +
-                ", whitelistedCid=" + cid +
-                ", code='" + code + '\'' +
-                '}';
+        return "ActivationCode{"
+                + "id=" + this.id
+                + ", whitelistedCid=" + this.cid
+                + ", code='" + this.code + '\''
+                + '}';
     }
 }
