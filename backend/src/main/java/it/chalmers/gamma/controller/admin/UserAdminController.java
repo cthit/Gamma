@@ -1,20 +1,39 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.requests.*;
-import it.chalmers.gamma.response.*;
-import it.chalmers.gamma.service.*;
+import it.chalmers.gamma.requests.AdminChangePasswordRequest;
+import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
+import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.requests.EditITUserRequest;
+import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
+import it.chalmers.gamma.requests.ResetPasswordRequest;
+import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.response.PasswordChangedResponse;
+import it.chalmers.gamma.response.PasswordResetResponse;
+import it.chalmers.gamma.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.UserDeletedResponse;
+import it.chalmers.gamma.response.UserEditedResponse;
+import it.chalmers.gamma.service.EntityWebsiteService;
+import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.PasswordResetService;
+import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.util.TokenGenerator;
-import org.json.simple.JSONObject;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.json.simple.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/users")
@@ -24,53 +43,70 @@ public class UserAdminController {
     private UserWebsiteService userWebsiteService;
     private PasswordResetService passwordResetService;
 
-    private UserAdminController(ITUserService itUserService, UserWebsiteService userWebsiteService, PasswordResetService passwordResetService){
+    private UserAdminController(
+            ITUserService itUserService,
+            UserWebsiteService userWebsiteService,
+            PasswordResetService passwordResetService) {
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
         this.passwordResetService = passwordResetService;
     }
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
-    public ResponseEntity<String> changePassword(@PathVariable("id") String id, @RequestBody AdminChangePasswordRequest request){
-        if(!itUserService.userExists(UUID.fromString(id))){
+    public ResponseEntity<String> changePassword(
+            @PathVariable("id") String id,
+            @RequestBody AdminChangePasswordRequest request) {
+        if (!this.itUserService.userExists(UUID.fromString(id))) {
             throw new CidNotFoundResponse();
         }
-        ITUser user = itUserService.getUserById(UUID.fromString(id));
-        itUserService.setPassword(user, request.getPassword());
+        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
+        this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
 
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
-        if(!itUserService.editUser(UUID.fromString(id), request.getNick(), request.getFirstName(), request.getLastName(), request.getEmail(),
-                request.getPhone(), request.getLanguage(), request.getAvatarUrl())){
+        if (!this.itUserService.editUser(
+                UUID.fromString(id),
+                request.getNick(),
+                request.getFirstName(),
+                request.getLastName(),
+                request.getEmail(),
+                request.getPhone(),
+                request.getLanguage(),
+                request.getAvatarUrl())) {
             throw new CidNotFoundResponse();
         }
-        ITUser user = itUserService.getUserById(UUID.fromString(id));
+        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<WebsiteInterface> userWebsite = new ArrayList<>(userWebsiteService.getWebsites(user));
-        userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
-        userWebsiteService.addWebsiteToUser(user, websiteURLs);
+        List<WebsiteInterface> userWebsite = new ArrayList<>(this.userWebsiteService.getWebsites(user));
+        this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
+        this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
-        userWebsiteService.deleteWebsitesConnectedToUser(itUserService.getUserById(UUID.fromString(id)));
-        itUserService.removeUser(UUID.fromString(id));
+    public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
+        this.userWebsiteService.deleteWebsitesConnectedToUser(
+                this.itUserService.getUserById(UUID.fromString(id))
+        );
+        this.itUserService.removeUser(UUID.fromString(id));
         return new UserDeletedResponse();
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<JSONObject> getAllUsers(){
+    public List<JSONObject> getAllUsers() {
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
         ITUserSerializer serializer = new ITUserSerializer(props);
-        List<ITUser> users = itUserService.loadAllUsers();
+        List<ITUser> users = this.itUserService.loadAllUsers();
         List<JSONObject> userViewList = new ArrayList<>();
-        for(ITUser user : users){
-            List<EntityWebsiteService.WebsiteView> websiteViews = userWebsiteService.getWebsitesOrdered(userWebsiteService.getWebsites(user));
+        for (ITUser user : users) {
+            List<EntityWebsiteService.WebsiteView> websiteViews =
+                    this.userWebsiteService.getWebsitesOrdered(
+                            this.userWebsiteService.getWebsites(user)
+                    );
             JSONObject userView = serializer.serialize(user, websiteViews);
             userViewList.add(userView);
 
@@ -83,45 +119,56 @@ public class UserAdminController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest) {
-        if (itUserService.userExists(createITUserRequest.getCid())) {
+        if (this.itUserService.userExists(createITUserRequest.getCid())) {
             throw new UserAlreadyExistsResponse();
         }
-        itUserService.createUser(createITUserRequest.getNick(), createITUserRequest.getFirstName(),
-                createITUserRequest.getLastName(), createITUserRequest.getCid(), Year.of(createITUserRequest.getAcceptanceYear()),
-                createITUserRequest.isUserAgreement(), createITUserRequest.getEmail(), createITUserRequest.getPassword());
+        this.itUserService.createUser(
+                createITUserRequest.getNick(),
+                createITUserRequest.getFirstName(),
+                createITUserRequest.getLastName(),
+                createITUserRequest.getCid(),
+                Year.of(createITUserRequest.getAcceptanceYear()),
+                createITUserRequest.isUserAgreement(),
+                createITUserRequest.getEmail(),
+                createITUserRequest.getPassword()
+        );
         return new UserCreatedResponse();
     }
+
+    //TODO MOVE THIS TO ITUSERCONTROLLER
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
-    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request){      //TODO MOVE THIS TO ITUSERCONTROLLER
-        if(!itUserService.userExists(UUID.fromString(request.getId()))){
+    public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
+        if (!this.itUserService.userExists(UUID.fromString(request.getId()))) {
             throw new CidNotFoundResponse();
         }
-        ITUser user = itUserService.getUserById(UUID.fromString(request.getId()));
+        ITUser user = this.itUserService.getUserById(UUID.fromString(request.getId()));
         String token = TokenGenerator.generateToken();
-        if(passwordResetService.userHasActiveReset(user)){
-            passwordResetService.editToken(user, token);
+        if (this.passwordResetService.userHasActiveReset(user)) {
+            this.passwordResetService.editToken(user, token);
+        } else {
+            this.passwordResetService.addToken(user, token);
         }
-        else {
-            passwordResetService.addToken(user, token);
-        }
-  //      try {
-       //     mailSenderService.sendPasswordReset(user, token);
-      //  } catch (MessagingException e) {
-        //    e.printStackTrace();
-       // }
+        // try {
+        //   mailSenderService.sendPasswordReset(user, token);
+        // } catch (MessagingException e) {
+        //   e.printStackTrace();
+        // }
         return new PasswordResetResponse();
     }
+
+    //TODO MOVE THIS TO ITUSERCONTROLLER
     @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordFinishRequest request){     //TODO MOVE THIS TO ITUSERCONTROLLER
-        if(!itUserService.userExists(request.getCid())){
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordFinishRequest request) {
+        if (!this.itUserService.userExists(request.getCid())) {
             throw new CidNotFoundResponse();
         }
-        ITUser user = itUserService.loadUser(request.getCid());
-        if(!passwordResetService.userHasActiveReset(user) || !passwordResetService.tokenMatchesUser(user, request.getToken())){
+        ITUser user = this.itUserService.loadUser(request.getCid());
+        if (!this.passwordResetService.userHasActiveReset(user)
+                || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
             throw new CodeOrCidIsWrongResponse();
         }
-        itUserService.setPassword(user, request.getPassword());
-        passwordResetService.removeToken(user);
+        this.itUserService.setPassword(user, request.getPassword());
+        this.passwordResetService.removeToken(user);
         return new PasswordChangedResponse();
     }
 
