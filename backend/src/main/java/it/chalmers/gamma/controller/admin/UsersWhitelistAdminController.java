@@ -3,13 +3,23 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
-import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
+import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.response.EditedWhitelistResponse;
+import it.chalmers.gamma.response.GetWhitelistedResponse;
+import it.chalmers.gamma.response.MissingRequiredFieldResponse;
+import it.chalmers.gamma.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.UserDeletedResponse;
+import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/users/whitelist")
@@ -18,7 +28,7 @@ public class UsersWhitelistAdminController {
     private WhitelistService whitelistService;
     private ITUserService itUserService;
 
-    public UsersWhitelistAdminController(WhitelistService whitelistService, ITUserService itUserService){
+    public UsersWhitelistAdminController(WhitelistService whitelistService, ITUserService itUserService) {
         this.whitelistService = whitelistService;
         this.itUserService = itUserService;
     }
@@ -26,55 +36,58 @@ public class UsersWhitelistAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request) {
         List<String> cids = request.getCids();
-        for(String cid : cids) {
-            if (whitelistService.isCIDWhiteListed(cid)) {
+        for (String cid : cids) {
+            if (this.whitelistService.isCIDWhiteListed(cid)) {
                 throw new CIDAlreadyWhitelistedResponse();
             }
-            if (itUserService.userExists(cid)) {
+            if (this.itUserService.userExists(cid)) {
                 throw new UserAlreadyExistsResponse();
             }
-            whitelistService.addWhiteListedCID(cid);
+            this.whitelistService.addWhiteListedCID(cid);
         }
         return new WhitelistAddedResponse();
     }
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editWhitelist(@RequestBody WhitelistCodeRequest request, @PathVariable("id") String id){
-        Whitelist oldWhitelist = whitelistService.getWhitelistById(id);
-        if(!whitelistService.isCIDWhiteListed(oldWhitelist.getCid())){
+    public ResponseEntity<String> editWhitelist(
+            @RequestBody WhitelistCodeRequest request,
+            @PathVariable("id") String id) {
+        Whitelist oldWhitelist = this.whitelistService.getWhitelistById(id);
+        if (!this.whitelistService.isCIDWhiteListed(oldWhitelist.getCid())) {
             throw new CidNotFoundResponse();
         }
-        if(whitelistService.isCIDWhiteListed(request.getCid())){
+        if (this.whitelistService.isCIDWhiteListed(request.getCid())) {
             throw new CIDAlreadyWhitelistedResponse();
         }
-        if(request.getCid() == null){
+        if (request.getCid() == null) {
             throw new MissingRequiredFieldResponse("cid");
         }
-        whitelistService.editWhitelist(oldWhitelist, request.getCid());
+        this.whitelistService.editWhitelist(oldWhitelist, request.getCid());
         return new EditedWhitelistResponse();
     }
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeWhitelist(@PathVariable("id") String id){
-        Whitelist whitelist = whitelistService.getWhitelistById(id);
-        if(whitelist == null){
+    public ResponseEntity<String> removeWhitelist(@PathVariable("id") String id) {
+        Whitelist whitelist = this.whitelistService.getWhitelistById(id);
+        if (whitelist == null) {
             throw new CidNotFoundResponse();
         }
-        whitelistService.removeWhiteListedCID(whitelist.getCid());
+        this.whitelistService.removeWhiteListedCID(whitelist.getCid());
         return new UserDeletedResponse();
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Whitelist>> getAllWhiteList(){
-        return new GetWhitelistedResponse(whitelistService.getAllWhitelist());
+    public ResponseEntity<List<Whitelist>> getAllWhiteList() {
+        return new GetWhitelistedResponse(this.whitelistService.getAllWhitelist());
     }
 
     /**
-     * /whitelist/valid will be able to return whether or not a user is whitelist, without doing anything to modify the data.
+     * /whitelist/valid will be able to return whether or not a
+     * user is whitelist, without doing anything to modify the data.
      * @param cid CID of a user.
      * @return true if the user is whitelisted false otherwise
      */
     @RequestMapping(value = "/valid", method = RequestMethod.POST)
     public boolean isValid(@RequestBody WhitelistCodeRequest cid) {
-        return whitelistService.isCIDWhiteListed(cid.getCid());
+        return this.whitelistService.isCIDWhiteListed(cid.getCid());
     }
 
 
