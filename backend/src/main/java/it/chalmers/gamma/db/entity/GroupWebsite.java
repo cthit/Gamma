@@ -1,10 +1,15 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group_website")
@@ -23,16 +28,15 @@ public class GroupWebsite implements WebsiteInterface {
     private FKITGroup group;
 
     public GroupWebsite() {
-        id = UUID.randomUUID();
+        this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public WebsiteURL getWebsite() {
-
-        return website;
+        return this.website;
     }
 
     public void setWebsite(WebsiteURL website) {
@@ -40,7 +44,7 @@ public class GroupWebsite implements WebsiteInterface {
     }
 
     public FKITGroup getGroup() {
-        return group;
+        return this.group;
     }
 
     public void setGroup(FKITGroup group) {
@@ -49,55 +53,30 @@ public class GroupWebsite implements WebsiteInterface {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         GroupWebsite that = (GroupWebsite) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(website, that.website) &&
-                Objects.equals(group, that.group);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.website, that.website)
+                && Objects.equals(this.group, that.group);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, website, group);
+        return Objects.hash(this.id, this.website, this.group);
     }
 
     @Override
     public String toString() {
-        return "GroupWebsite{" +
-                "id=" + id +
-                ", website=" + website +
-                ", group=" + group +
-                '}';
+        return "GroupWebsite{"
+                + "id=" + this.id
+                + ", website=" + this.website
+                + ", group=" + this.group
+                + '}';
     }
-    public class GroupWebsiteview{
-        private UUID id;
-        private WebsiteURL website;
-        private FKITGroup group;
 
-        public UUID getId() {
-            return id;
-        }
-
-        public void setId(UUID id) {
-            this.id = id;
-        }
-
-        public WebsiteURL getWebsite() {
-            return website;
-        }
-
-        public void setWebsite(WebsiteURL website) {
-            this.website = website;
-        }
-
-        public FKITGroup getGroup() {
-            return group;
-        }
-
-        public void setGroup(FKITGroup group) {
-            this.group = group;
-        }
-    }
 }
