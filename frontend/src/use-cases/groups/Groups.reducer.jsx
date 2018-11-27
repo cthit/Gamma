@@ -1,4 +1,4 @@
-import { GROUPS_LOAD_SUCCESSFULLY } from "./Groups.actions";
+import { GROUPS_LOAD_SUCCESSFULLY } from "../../api/groups/actions.groups.api";
 
 export function groups(state = [], action) {
     switch (action.type) {

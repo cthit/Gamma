@@ -17,7 +17,7 @@ import {
     TYPE_SOCIETY,
     TYPE_COMMITTEE,
     TYPE_BOARD
-} from "../../../../../api/groups/props.groups";
+} from "../../../../../api/groups/props.groups.api";
 import {
     SWEDISH_LANGUAGE,
     ENGLISH_LANGUAGE

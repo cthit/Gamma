@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import { groupsLoad } from "./Groups.action-creator";
+import { createGetGroupsAction } from "../../api/groups/action-creator.groups.api";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
 import Groups from "./Groups";
@@ -8,7 +8,7 @@ import Groups from "./Groups";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    groupsLoad: () => dispatch(groupsLoad()),
+    groupsLoad: () => dispatch(createGetGroupsAction()),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 

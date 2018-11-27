@@ -7,14 +7,14 @@ import {
     GROUPS_DELETE_FAILED,
     GROUPS_CHANGE_SUCCESSFULLY,
     GROUPS_CHANGE_FAILED
-} from "./Groups.actions";
+} from "./actions.groups.api";
 
-import { addGroup } from "../../api/groups/post.groups";
-import { getGroups } from "../../api/groups/get.groups";
-import { editGroup } from "../../api/groups/put.groups";
-import { deleteGroup } from "../../api/groups/delete.groups";
+import { addGroup } from "./post.groups.api";
+import { getGroups } from "./get.groups.api";
+import { editGroup } from "./put.groups.api";
+import { deleteGroup } from "./delete.groups.api";
 
-export function groupsLoad() {
+export function createGetGroupsAction() {
     return dispatch => {
         return new Promise((resolve, reject) => {
             getGroups()
@@ -30,7 +30,7 @@ export function groupsLoad() {
     };
 }
 
-export function groupsAdd(group) {
+export function createAddGroupAction(group) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             addGroup(group)
@@ -46,7 +46,7 @@ export function groupsAdd(group) {
     };
 }
 
-export function groupsChange(group, groupId) {
+export function createEditGroupAction(group, groupId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             editGroup(groupId, group)
@@ -62,7 +62,7 @@ export function groupsChange(group, groupId) {
     };
 }
 
-export function groupsDelete(groupId) {
+export function createDeleteGroupAction(groupId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             deleteGroup(groupId)

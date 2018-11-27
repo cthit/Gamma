@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import _ from "lodash";
 
-import { groupsChange } from "../../Groups.action-creator";
+import { createEditGroupAction } from "../../../../api/groups/action-creator.groups.api";
 
 import EditGroupDetails from "./EditGroupDetails.screen";
 
@@ -10,7 +10,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    groupsChange: (group, groupId) => dispatch(groupsChange(group, groupId))
+    groupsChange: (group, groupId) =>
+        dispatch(createEditGroupAction(group, groupId))
 });
 
 export default connect(
