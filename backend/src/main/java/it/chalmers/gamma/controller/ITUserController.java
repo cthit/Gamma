@@ -1,12 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
-
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
@@ -26,10 +19,12 @@ import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
+
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +39,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -93,6 +95,8 @@ public class ITUserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest) {
+        int minPassLength = 8;
+
         if (createITUserRequest == null) {
             throw new NullPointerException();
         }
@@ -113,7 +117,7 @@ public class ITUserController {
             this.activationCodeService.deleteCode(user.getCid());
             throw new CodeExpiredResponse();
         }
-        if (createITUserRequest.getPassword().length() < 8) {
+        if (createITUserRequest.getPassword().length() < minPassLength) {
             throw new PasswordTooShortResponse();
         } else {
             this.itUserService.createUser(
@@ -138,8 +142,8 @@ public class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public JSONObject getMe(@RequestHeader("Authorization") String jwtToken) {
-        jwtToken = this.jwtTokenProvider.removeBearer(jwtToken);
+    public JSONObject getMe(@RequestHeader("Authorization") String jwtTokenWithBearer) {
+        String jwtToken = this.jwtTokenProvider.removeBearer(jwtTokenWithBearer);
         String cid = this.jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
         ITUser user = this.itUserService.loadUser(cid);
         ITUserSerializer serializer =
@@ -171,13 +175,13 @@ public class ITUserController {
     }
     @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("cid") String cid) {
-        List<ITUserSerializer.Properties> properties =
-                ITUserSerializer.Properties.getAllProperties();
         ITUser user = this.itUserService.loadUser(cid);
         if (user == null) {
             throw new CidNotFoundResponse();
         }
-        ITUserSerializer serializer = new ITUserSerializer(properties);
+        ITUserSerializer serializer = new ITUserSerializer(
+                ITUserSerializer.Properties.getAllProperties()
+        );
         List<EntityWebsiteService.WebsiteView> websites =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)

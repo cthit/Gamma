@@ -1,10 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
-
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
@@ -21,10 +16,12 @@ import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,12 +30,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
+
 @RestController
-@RequestMapping(value = "/admin/groups")
+@RequestMapping("/admin/groups")
 public class GroupAdminController {
-    private FKITService fkitService;
-    private WebsiteService websiteService;
-    private GroupWebsiteService groupWebsiteService;
+
+    private final FKITService fkitService;
+    private final WebsiteService websiteService;
+    private final GroupWebsiteService groupWebsiteService;
 
     public GroupAdminController(
             FKITService fkitService,
@@ -56,12 +59,13 @@ public class GroupAdminController {
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public JSONObject getGroupMinified(@PathVariable("id") String id) {
-        List<FKITGroupSerializer.Properties> properties = Arrays.asList(NAME, FUNC, ID, TYPE);
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         if (group == null) {
             return null;
         }
-        FKITGroupSerializer serializer = new FKITGroupSerializer(properties);
+        FKITGroupSerializer serializer = new FKITGroupSerializer(
+                Arrays.asList(NAME, FUNC, ID, TYPE)
+        );
         return serializer.serialize(group, null, null);
     }
 
@@ -82,15 +86,7 @@ public class GroupAdminController {
         if (createGroupRequest.getType() == null) {
             throw new MissingRequiredFieldResponse("type");
         }
-        FKITGroup group = this.fkitService.createGroup(
-                createGroupRequest.getName(),
-                createGroupRequest.getPrettyName(),
-                createGroupRequest.getDescription(),
-                createGroupRequest.getEmail(),
-                createGroupRequest.getType(),
-                createGroupRequest.getFunc(),
-                createGroupRequest.getAvatarURL()
-        );
+
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
         if (websites == null || websites.isEmpty()) {
             return new GroupCreatedResponse();
@@ -103,7 +99,16 @@ public class GroupAdminController {
             websiteURL.setUrl(websiteInfo.getUrl());
             websiteURLs.add(websiteURL);
         }
-        this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+        this.groupWebsiteService.addGroupWebsites(
+                this.fkitService.createGroup(
+                    createGroupRequest.getName(),
+                    createGroupRequest.getPrettyName(),
+                    createGroupRequest.getDescription(),
+                    createGroupRequest.getEmail(),
+                    createGroupRequest.getType(),
+                    createGroupRequest.getFunc(),
+                    createGroupRequest.getAvatarURL()
+                ), websiteURLs);
         return new GroupCreatedResponse();
     }
 

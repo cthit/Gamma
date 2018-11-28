@@ -4,8 +4,10 @@ import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.response.ActivationCodeDeletedResponse;
 import it.chalmers.gamma.response.GetAllActivationCodesResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
+
 import java.util.List;
 import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/activation_codes")
 public class UserActivationCodeAdminController {
-    private ActivationCodeService activationCodeService;
+
+    private final ActivationCodeService activationCodeService;
 
     public UserActivationCodeAdminController(ActivationCodeService activationCodeService) {
         this.activationCodeService = activationCodeService;

@@ -22,11 +22,13 @@ import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.util.TokenGenerator;
+import it.chalmers.gamma.util.TokenUtils;
+
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,9 +41,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/users")
 public class UserAdminController {
 
-    private ITUserService itUserService;
-    private UserWebsiteService userWebsiteService;
-    private PasswordResetService passwordResetService;
+    private final ITUserService itUserService;
+    private final UserWebsiteService userWebsiteService;
+    private final PasswordResetService passwordResetService;
 
     private UserAdminController(
             ITUserService itUserService,
@@ -142,7 +144,7 @@ public class UserAdminController {
             throw new CidNotFoundResponse();
         }
         ITUser user = this.itUserService.getUserById(UUID.fromString(request.getId()));
-        String token = TokenGenerator.generateToken();
+        String token = TokenUtils.generateToken();
         if (this.passwordResetService.userHasActiveReset(user)) {
             this.passwordResetService.editToken(user, token);
         } else {

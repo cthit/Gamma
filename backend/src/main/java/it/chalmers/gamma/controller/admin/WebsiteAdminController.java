@@ -12,7 +12,9 @@ import it.chalmers.gamma.response.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
+
 import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,10 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/websites")
 public class WebsiteAdminController {
 
-    private WebsiteService websiteService;
-    private GroupWebsiteService groupWebsiteService;
-    private UserWebsiteService userWebsiteService;
-
+    private final WebsiteService websiteService;
+    private final GroupWebsiteService groupWebsiteService;
+    private final UserWebsiteService userWebsiteService;
 
     public WebsiteAdminController(
             WebsiteService websiteService,

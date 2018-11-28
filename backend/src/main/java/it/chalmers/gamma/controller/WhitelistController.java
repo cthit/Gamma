@@ -5,9 +5,9 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,25 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class WhitelistController {
 
-    private WhitelistService whitelistService;
+    private final WhitelistService whitelistService;
 
-    private ActivationCodeService activationCodeService;
+    private final ActivationCodeService activationCodeService;
 
-    private ITUserService itUserService;
-
-    private MailSenderService mailSenderService;
+    private final MailSenderService mailSenderService;
 
     // @Value("${mail.receiver.standard-postfix}")
-    private String mailPostfix = "@student.chalmers.se";
+    private static final String MAIL_POSTFIX = "@student.chalmers.se";
 
     public WhitelistController(
             WhitelistService whitelistService,
             ActivationCodeService activationCodeService,
-            ITUserService itUserService,
             MailSenderService mailSenderService) {
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
-        this.itUserService = itUserService;
         this.mailSenderService = mailSenderService;
 
     }
@@ -47,9 +43,8 @@ public class WhitelistController {
         if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
             String code = this.activationCodeService.generateActivationCode();
-            ActivationCode activationCode =
-                    this.activationCodeService.saveActivationCode(whitelist, code);
-            // sendEmail(activationCode);
+            ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
+            //sendEmail(activationCode);
         }
 
         /*
@@ -59,9 +54,10 @@ public class WhitelistController {
          */
         return new WhitelistAddedResponse();
     }
+
     private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@" + this.mailPostfix;
+        String to = activationCode.getCid() + "@" + this.MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
         this.mailSenderService.sendMail(to, "Chalmers activation code", message);
     }

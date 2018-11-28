@@ -26,9 +26,11 @@ import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +88,6 @@ public class AuthorityAdminController {
 
     @RequestMapping(value = "/user_authorities/{authorityLevel}", method = RequestMethod.GET)
     public List<JSONObject> getUsersWithAuthority(@PathVariable("authorityLevel") String level) {
-        System.out.println(level);
         AuthorityLevel authorityLevel =
                 this.authorityLevelService.getAuthorityLevel(UUID.fromString(level));
         List<Authority> authorities =

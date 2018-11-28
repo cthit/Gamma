@@ -14,9 +14,11 @@ import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,10 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/groups")
 public class GroupMemberAdminController {
-    private ITUserService itUserService;
-    private PostService postService;
-    private FKITService fkitService;
-    private MembershipService membershipService;
+    private final ITUserService itUserService;
+    private final PostService postService;
+    private final FKITService fkitService;
+    private final MembershipService membershipService;
 
     public GroupMemberAdminController(
             ITUserService itUserService,

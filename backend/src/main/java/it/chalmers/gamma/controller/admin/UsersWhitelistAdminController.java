@@ -13,7 +13,9 @@ import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
+
 import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,16 +27,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/users/whitelist")
 public class UsersWhitelistAdminController {
 
-    private WhitelistService whitelistService;
-    private ITUserService itUserService;
+    private final WhitelistService whitelistService;
+    private final ITUserService itUserService;
 
-    public UsersWhitelistAdminController(WhitelistService whitelistService, ITUserService itUserService) {
+    public UsersWhitelistAdminController(WhitelistService whitelistService,
+                                         ITUserService itUserService) {
         this.whitelistService = whitelistService;
         this.itUserService = itUserService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request) {
+    public ResponseEntity<String> addWhitelistedUsers(
+        @RequestBody AddListOfWhitelistedRequest request
+    ) {
         List<String> cids = request.getCids();
         for (String cid : cids) {
             if (this.whitelistService.isCIDWhiteListed(cid)) {

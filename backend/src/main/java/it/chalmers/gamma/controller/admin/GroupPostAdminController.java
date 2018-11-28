@@ -13,14 +13,14 @@ import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.response.PostAlreadyExistsResponse;
 import it.chalmers.gamma.response.PostCreatedResponse;
 import it.chalmers.gamma.response.PostDeletedResponse;
-import it.chalmers.gamma.service.FKITService;
-import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,20 +33,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/groups/posts")
 public class GroupPostAdminController {
 
-    private PostService postService;
-    private MembershipService membershipService;
-    private FKITService fkitService;
-    private ITUserService itUserService;
+    private final PostService postService;
+    private final MembershipService membershipService;
 
     public GroupPostAdminController(
             PostService postService,
-            MembershipService membershipService,
-            FKITService fkitService,
-            ITUserService itUserService) {
+            MembershipService membershipService) {
         this.postService = postService;
         this.membershipService = membershipService;
-        this.fkitService = fkitService;
-        this.itUserService = itUserService;
     }
 
     /**
@@ -103,7 +97,7 @@ public class GroupPostAdminController {
      * @param id the ID of the post
      * @return a list of groups that has the post and who in the group currently is assigned that post
      */
-    @RequestMapping(value = "/{id}/usage")
+    @RequestMapping("/{id}/usage")
     public List<JSONObject> getPostUsages(@PathVariable("id") String id) {
         List<ITUserSerializer.Properties> itUserProperties = Arrays.asList(
                 ITUserSerializer.Properties.CID,
@@ -125,7 +119,6 @@ public class GroupPostAdminController {
         List<JSONObject> groupAndUser = new ArrayList<>();
         for (FKITGroup group : groups) {
             List<ITUser> userIDs = this.membershipService.getUserByGroupAndPost(group, post);
-            System.out.println(userIDs);
             List<JSONObject> users = new ArrayList<>();
             for (ITUser user: userIDs) {
                 users.add(itUserSerializer.serialize(user, null));
