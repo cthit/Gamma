@@ -1,8 +1,10 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
+
 import java.util.Objects;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

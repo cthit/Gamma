@@ -1,6 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
 import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,6 +47,7 @@ public class UserWebsite implements WebsiteInterface {
         this.itUser = itUser;
     }
 
+    @Override
     public WebsiteURL getWebsite() {
         return this.website;
     }

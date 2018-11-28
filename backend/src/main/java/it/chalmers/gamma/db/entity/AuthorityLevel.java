@@ -2,10 +2,12 @@ package it.chalmers.gamma.db.entity;
 
 import java.util.Objects;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
@@ -31,6 +33,7 @@ public class AuthorityLevel implements GrantedAuthority {
         this.id = id;
     }
 
+    @Override
     public String getAuthority() {
         return this.authorityLevel;
     }

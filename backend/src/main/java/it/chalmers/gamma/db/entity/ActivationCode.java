@@ -3,6 +3,7 @@ package it.chalmers.gamma.db.entity;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

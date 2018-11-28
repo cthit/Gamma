@@ -2,8 +2,10 @@ package it.chalmers.gamma.db.entity.pk;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
+
 import java.io.Serializable;
 import java.util.Objects;
+
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;

@@ -1,8 +1,10 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +18,7 @@ import javax.persistence.Table;
 public class GroupWebsite implements WebsiteInterface {
     @Id
     @JsonIgnore
-    private UUID id;
+    private final UUID id;
 
     @JoinColumn(name = "website")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,6 +37,7 @@ public class GroupWebsite implements WebsiteInterface {
         return this.id;
     }
 
+    @Override
     public WebsiteURL getWebsite() {
         return this.website;
     }

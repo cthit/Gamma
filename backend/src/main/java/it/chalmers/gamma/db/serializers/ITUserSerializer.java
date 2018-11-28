@@ -2,10 +2,12 @@ package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.service.EntityWebsiteService;
-import it.chalmers.gamma.util.SerializerUtil;
+import it.chalmers.gamma.util.SerializerUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.json.simple.JSONObject;
 
 public class ITUserSerializer {
@@ -84,7 +86,7 @@ public class ITUserSerializer {
         values.add(serializeValue(Properties.LAST_MODIFIED_AT, value.getLastModifiedAt(), "last_modified_at"));
         values.add(serializeValue(Properties.WEBSITE, websites, "websites"));
 
-        return SerializerUtil.serialize(values, false);
+        return SerializerUtils.serialize(values, false);
     }
 
     private SerializerValue serializeValue(Properties properties, Object value, String name) {

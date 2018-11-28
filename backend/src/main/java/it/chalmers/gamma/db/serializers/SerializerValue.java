@@ -2,9 +2,9 @@ package it.chalmers.gamma.db.serializers;
 
 public class SerializerValue {
 
-    private boolean enabled;
-    private Object value;
-    private String name;
+    private final boolean enabled;
+    private final Object value;
+    private final String name;
 
     public SerializerValue(boolean enabled, Object value, String name) {
         this.enabled = enabled;

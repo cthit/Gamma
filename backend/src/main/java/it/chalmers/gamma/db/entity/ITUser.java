@@ -2,13 +2,16 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import it.chalmers.gamma.domain.Language;
+
 import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,6 +19,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -107,6 +111,7 @@ public class ITUser implements UserDetails {
         return new ArrayList<>(this.authorities);
     }
 
+    @Override
     public String getPassword() {
         return this.password;
     }

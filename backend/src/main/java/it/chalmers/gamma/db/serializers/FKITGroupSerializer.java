@@ -2,11 +2,14 @@ package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.service.EntityWebsiteService;
-import it.chalmers.gamma.util.SerializerUtil;
+import it.chalmers.gamma.util.SerializerUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.annotation.Nullable;
+
 import org.json.simple.JSONObject;
 
 public class FKITGroupSerializer {
@@ -84,7 +87,7 @@ public class FKITGroupSerializer {
         values.add(new SerializerValue(
                 this.properties.contains(Properties.WEBSITES), websites, "websites")
         );
-        return SerializerUtil.serialize(values, false);
+        return SerializerUtils.serialize(values, false);
 
     }
 }
