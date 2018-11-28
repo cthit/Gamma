@@ -3,6 +3,7 @@ package it.chalmers.gamma.config;
 import it.chalmers.gamma.jwt.JwtTokenFilterConfigurer;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.service.ITUserService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -20,8 +21,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private ITUserService itUserService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final ITUserService itUserService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
