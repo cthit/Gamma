@@ -4,7 +4,7 @@ import it.chalmers.gamma.db.entity.Whitelist;
 
 import java.util.Objects;
 
-public class CreateITUserRequest{
+public class CreateITUserRequest {
 
     private String code;
     private String password;
@@ -14,8 +14,9 @@ public class CreateITUserRequest{
     private boolean userAgreement;
     private int acceptanceYear;
     private Whitelist whitelist;
+
     public Whitelist getWhitelist() {
-        return whitelist;
+        return this.whitelist;
     }
 
     public void setWhitelist(Whitelist cid) {
@@ -23,7 +24,7 @@ public class CreateITUserRequest{
     }
 
     public String getCode() {
-        return code;
+        return this.code;
     }
 
     public void setCode(String code) {
@@ -31,7 +32,7 @@ public class CreateITUserRequest{
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -39,7 +40,7 @@ public class CreateITUserRequest{
     }
 
     public String getNick() {
-        return nick;
+        return this.nick;
     }
 
     public void setNick(String nick) {
@@ -47,7 +48,7 @@ public class CreateITUserRequest{
     }
 
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -55,7 +56,7 @@ public class CreateITUserRequest{
     }
 
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     public void setLastName(String lastName) {
@@ -63,7 +64,7 @@ public class CreateITUserRequest{
     }
 
     public boolean isUserAgreement() {
-        return userAgreement;
+        return this.userAgreement;
     }
 
     public void setUserAgreement(boolean userAgreement) {
@@ -71,7 +72,7 @@ public class CreateITUserRequest{
     }
 
     public int getAcceptanceYear() {
-        return acceptanceYear;
+        return this.acceptanceYear;
     }
 
     public void setAcceptanceYear(int acceptanceYear) {
@@ -80,36 +81,40 @@ public class CreateITUserRequest{
 
     @Override
     public String toString() {
-        return "CreateITUserRequest{" +
-                "code='" + code + '\'' +
-                ", password='" + password + '\'' +
-                ", nick='" + nick + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", userAgreement=" + userAgreement +
-                ", acceptanceYear=" + acceptanceYear +
-                ", whitelist=" + whitelist +
-                '}';
+        return "CreateITUserRequest{"
+            + "code='" + this.code + '\''
+            + ", password='" + this.password + '\''
+            + ", nick='" + this.nick + '\''
+            + ", firstName='" + this.firstName + '\''
+            + ", lastName='" + this.lastName + '\''
+            + ", userAgreement=" + this.userAgreement
+            + ", acceptanceYear=" + this.acceptanceYear
+            + ", whitelist=" + this.whitelist
+            + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CreateITUserRequest that = (CreateITUserRequest) o;
-        return userAgreement == that.userAgreement &&
-                acceptanceYear == that.acceptanceYear &&
-                Objects.equals(code, that.code) &&
-                Objects.equals(password, that.password) &&
-                Objects.equals(nick, that.nick) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName) &&
-                Objects.equals(whitelist, that.whitelist);
+        return this.userAgreement == that.userAgreement
+            && this.acceptanceYear == that.acceptanceYear
+            && Objects.equals(this.code, that.code)
+            && Objects.equals(this.password, that.password)
+            && Objects.equals(this.nick, that.nick)
+            && Objects.equals(this.firstName, that.firstName)
+            && Objects.equals(this.lastName, that.lastName)
+            && Objects.equals(this.whitelist, that.whitelist);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(code, password, nick, firstName, lastName, userAgreement, acceptanceYear, whitelist);
+        return Objects.hash(this.code, this.password, this.nick, this.firstName,
+            this.lastName, this.userAgreement, this.acceptanceYear, this.whitelist);
     }
 }

@@ -6,7 +6,7 @@ public class AuthorizationLevelRequest {
     private String authorityLevel;
 
     public String getAuthorityLevel() {
-        return authorityLevel;
+        return this.authorityLevel;
     }
 
     public void setAuthorityLevel(String authorityLevel) {
@@ -15,21 +15,25 @@ public class AuthorizationLevelRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AuthorizationLevelRequest that = (AuthorizationLevelRequest) o;
-        return Objects.equals(authorityLevel, that.authorityLevel);
+        return Objects.equals(this.authorityLevel, that.authorityLevel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(authorityLevel);
+        return Objects.hash(this.authorityLevel);
     }
 
     @Override
     public String toString() {
-        return "AuthorizationLevelRequest{" +
-                "AuthorityLevel='" + authorityLevel + '\'' +
-                '}';
+        return "AuthorizationLevelRequest{"
+            + "AuthorityLevel='" + this.authorityLevel + '\''
+            + '}';
     }
 }

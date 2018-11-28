@@ -1,13 +1,39 @@
 package it.chalmers.gamma.requests;
 
+import java.util.Objects;
+
 public class ValidateJwtRequest {
     private String jwt;
 
     public String getJwt() {
-        return jwt;
+        return this.jwt;
     }
 
     public void setJwt(String jwt) {
         this.jwt = jwt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ValidateJwtRequest that = (ValidateJwtRequest) o;
+        return this.jwt.equals(that.jwt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.jwt);
+    }
+
+    @Override
+    public String toString() {
+        return "ValidateJwtRequest{"
+            + "jwt='" + this.jwt + '\''
+            + '}';
     }
 }
