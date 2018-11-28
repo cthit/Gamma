@@ -1,6 +1,7 @@
 package it.chalmers.gamma.response;
 
 import it.chalmers.gamma.db.entity.Website;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
