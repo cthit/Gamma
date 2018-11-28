@@ -21,8 +21,11 @@ import it.chalmers.gamma.response.LoginCompleteResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
-import it.chalmers.gamma.service.*;
-
+import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.UserWebsiteService;
+import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.service.WhitelistService;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;

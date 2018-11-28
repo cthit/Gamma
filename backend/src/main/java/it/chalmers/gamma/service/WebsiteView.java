@@ -1,8 +1,6 @@
 package it.chalmers.gamma.service;
 
-
 import it.chalmers.gamma.db.entity.Website;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

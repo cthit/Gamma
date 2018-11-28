@@ -1,15 +1,12 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
+import it.chalmers.gamma.service.WebsiteView;
 import java.util.List;
 import java.util.UUID;
-
-import it.chalmers.gamma.service.WebsiteView;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
