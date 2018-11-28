@@ -6,9 +6,10 @@ import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
-import it.chalmers.gamma.service.MembershipService;
 import java.util.List;
 import java.util.UUID;
+
+import it.chalmers.gamma.service.WebsiteView;
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,15 +25,12 @@ public class FKITGroupController {
 
     private FKITService fkitService;
     private GroupWebsiteService groupWebsiteService;
-    private MembershipService membershipService;
 
     public FKITGroupController(
             FKITService fkitService,
-            GroupWebsiteService groupWebsiteService,
-            MembershipService membershipService) {
+            GroupWebsiteService groupWebsiteService) {
         this.fkitService = fkitService;
         this.groupWebsiteService = groupWebsiteService;
-        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -47,7 +45,7 @@ public class FKITGroupController {
         }
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
-        List<EntityWebsiteService.WebsiteView> websiteViews =
+        List<WebsiteView> websiteViews =
                 this.groupWebsiteService.getWebsitesOrdered(
                         this.groupWebsiteService.getWebsites(group)
                 );

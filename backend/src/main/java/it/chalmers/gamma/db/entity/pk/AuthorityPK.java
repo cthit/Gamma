@@ -12,11 +12,14 @@ import javax.persistence.ManyToOne;
 public class AuthorityPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private FKITGroup fkitGroup;
+    private transient FKITGroup fkitGroup;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Post post;
+    private transient Post post;
+
+    private static final long serialVersionUID = 3085451407319206L;
+
 
     public FKITGroup getFkitGroup() {
         return this.fkitGroup;

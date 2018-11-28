@@ -25,6 +25,7 @@ public class Post {
     @JoinColumn(name = "post_name")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Text postName;
+
     public Post() {
         this.postName = new Text();
         this.id = UUID.randomUUID();
@@ -45,12 +46,6 @@ public class Post {
     @JsonProperty("en")
     public void setENPostName(String postName) {
         this.postName.setEn(postName);
-    }
-    public String getSVPostName() {
-        return this.postName.getSv();
-    }
-    public String getENPostName() {
-        return this.postName.getEn();
     }
 
     @Override

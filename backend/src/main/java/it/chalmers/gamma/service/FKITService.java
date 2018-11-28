@@ -55,6 +55,8 @@ public class FKITService {
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
                                 String email, GroupType type, Text function, String avatarURL) {
         group.setPrettyName(prettyName != null ? prettyName : group.getPrettyName());
+        group.setSVDescription((description != null
+                ? description.getSv() : group.getSVDescription()));
         group.setENDescription((description != null
                 ? description.getEn() : group.getENDescription()));
         group.setEmail(email != null ? email : group.getEmail());

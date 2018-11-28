@@ -6,6 +6,12 @@ public class CreateWebsiteRequest {
     private String name;
     private String prettyName;
 
+
+    public CreateWebsiteRequest(String name, String prettyName) {
+        this.name = name;
+        this.prettyName = prettyName;
+    }
+
     public String getPrettyName() {
         return this.prettyName;
     }

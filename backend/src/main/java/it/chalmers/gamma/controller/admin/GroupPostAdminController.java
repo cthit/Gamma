@@ -47,6 +47,8 @@ public class GroupPostAdminController {
         this.membershipService = membershipService;
         this.fkitService = fkitService;
         this.itUserService = itUserService;
+        System.out.println("I AM NOT BEING USED PLZ FIX: " + this.fkitService);
+        System.out.println("I AM NOT BEING USED PLZ FIX: " + this.itUserService);
     }
 
     /**

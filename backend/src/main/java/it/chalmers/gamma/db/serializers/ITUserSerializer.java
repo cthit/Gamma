@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.service.EntityWebsiteService;
+import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.util.SerializerUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,16 +29,11 @@ public class ITUserSerializer {
         WEBSITE(false);
 
         private boolean enabled;
+
         Properties(boolean defaultEnabled) {
             this.enabled = defaultEnabled;
         }
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
 
-        public boolean isEnabled() {
-            return this.enabled;
-        }
         public static List<ITUserSerializer.Properties> getAllProperties() {
             ITUserSerializer.Properties[] props = {
                     ID,
@@ -66,7 +62,7 @@ public class ITUserSerializer {
         this.properties = new ArrayList<>(properties);
     }
 
-    public JSONObject serialize(ITUser value, List<EntityWebsiteService.WebsiteView> websites) {
+    public JSONObject serialize(ITUser value, List<WebsiteView> websites) {
         List<SerializerValue> values = new ArrayList<>();
         values.add(serializeValue(Properties.ID, value.getId(), "id"));
         values.add(serializeValue(Properties.AVATAR_URL, value.getAvatarUrl(), "avatar_url"));
