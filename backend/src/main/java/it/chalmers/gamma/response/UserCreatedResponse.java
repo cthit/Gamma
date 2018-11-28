@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public class UserCreatedResponse extends ResponseEntity<String> {
 
-    public UserCreatedResponse(){
+    public UserCreatedResponse() {
         super("USER_CREATED", HttpStatus.ACCEPTED);
     }
 
