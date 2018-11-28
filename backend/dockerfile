@@ -9,11 +9,21 @@ RUN chown -R gradle /app
 WORKDIR /app
 
 USER gradle
-#db is used to separate development and production databasesZ
+#db is used to separate development and production databases
+
+# Environment variables needed for Gamma to run, Should be changed. 
 ENV DB_HOST db
-ENV GRADLE_USER_HOME .gradle
+ENV DB_USER user
+ENV DB_PASSWORD password
+ENV SERVER_PORT 9090
+ENV JWT_SECRET_KEY jwtkey
+ENV JWT_EXPIRE_LENGTH 2592000000
+ENV GOTIFY_KEY key
+ENV GOTIFY_URL https://gotify.chalmers.it 
+
+
 
 RUN gradle :build -x test
 
-CMD java -jar build/libs/gamma-0.0.1-SNAPSHOT.jar
+CMD java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
 

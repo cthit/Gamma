@@ -1,13 +1,15 @@
 spring:
   datasource:
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:example}
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/postgres
+    username: postgres
+    password: example
+    url: jdbc:postgresql://localhost:5432/postgres
   output:
     ansi:
       enabled: ALWAYS
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         temp:
@@ -15,7 +17,7 @@ spring:
           use_jdbc_metadata_defaults: false
 
 server:
-  port: ${GAMMA_PORT:8081}
+  port: 8081
 
 logging:
   level:

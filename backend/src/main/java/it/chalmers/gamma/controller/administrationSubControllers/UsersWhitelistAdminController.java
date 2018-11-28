@@ -37,7 +37,7 @@ public class UsersWhitelistAdminController {
         }
         return new WhitelistAddedResponse();
     }
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editWhitelist(@RequestBody WhitelistCodeRequest request, @PathVariable("id") String id){
         Whitelist oldWhitelist = whitelistService.getWhitelistById(id);
         if(!whitelistService.isCIDWhiteListed(oldWhitelist.getCid())){
