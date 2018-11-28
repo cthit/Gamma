@@ -1,13 +1,16 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.db.repository.TextRepository;
 import it.chalmers.gamma.domain.GroupType;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class FKITService {
@@ -19,26 +22,30 @@ public class FKITService {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(String name, String prettyName, Text description, String email, GroupType type, Text function, String avatarURL) {
-        if(description == null){
+    public FKITGroup createGroup(String name, String prettyName, Text description, String email,
+                                 GroupType type, Text function, String avatarURL) {
+        if (description == null) {
             description = new Text();
         }
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(name.toLowerCase());
         fkitGroup.setFunc(function);
         fkitGroup.setDescription(description);
-        return saveGroup(fkitGroup, prettyName != null ? prettyName : name, description, email, type, function, avatarURL);
+        return saveGroup(fkitGroup, prettyName != null ? prettyName : name, description,
+            email, type, function, avatarURL);
     }
 
-    public FKITGroup editGroup(UUID id, String prettyName, Text description, String email, GroupType type, Text function, String avatarURL){ //TODO if no info, don't change value.
-        FKITGroup group = repo.findById(id).orElse(null);
-        if(group == null){
+    //TODO if no info, don't change value.
+    public FKITGroup editGroup(UUID id, String prettyName, Text description, String email,
+                               GroupType type, Text function, String avatarURL) {
+        FKITGroup group = this.repo.findById(id).orElse(null);
+        if (group == null) {
             return null;
         }
         group.setSVFunction(function != null ? function.getSv() : group.getSVFunction());
         group.setENFunction(function != null ? function.getEn() : group.getENFunction());
         function = group.getFunc();
-        if(description != null && group.getDescription() != null) {
+        if (description != null && group.getDescription() != null) {
             group.setSVDescription(description.getSv());
             group.setENDescription(description.getEn());
         }
@@ -46,35 +53,65 @@ public class FKITService {
     }
 
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
-                                String email, GroupType type, Text function, String avatarURL){
+                                String email, GroupType type, Text function, String avatarURL) {
         group.setPrettyName(prettyName != null ? prettyName : group.getPrettyName());
-        group.setENDescription((description != null ? description.getEn() : group.getENDescription()));
+        group.setENDescription((description != null
+                ? description.getEn() : group.getENDescription()));
         group.setEmail(email != null ? email : group.getEmail());
         group.setType(type != null ? type : group.getType());
         group.setAvatarURL(avatarURL != null ? avatarURL : group.getAvatarURL());
-        return repo.save(group);
+        return this.repo.save(group);
     }
-    public boolean groupExists(String name){
-        return repo.existsFKITGroupByName(name);
+
+    public boolean groupExists(String name) {
+        return this.repo.existsFKITGroupByName(name);
     }
-    public boolean groupExists(UUID id){
-        return repo.existsById(id);
+
+    public boolean groupExists(UUID id) {
+        return this.repo.existsById(id);
     }
-    public FKITGroup getGroup(String group){
-        return repo.findByName(group);
+
+    public void removeGroup(String group) {
+        this.repo.delete(this.repo.findByName(group));
     }
-    public void removeGroup(String group){
-        repo.delete(repo.findByName(group));
-    }
-    public void removeGroup(UUID groupId){
-        repo.deleteById(groupId);
+
+    public void removeGroup(UUID groupId) {
+        this.repo.deleteById(groupId);
     }
 
     public List<FKITGroup> getGroups() {
-        return repo.findAll();
+        return this.repo.findAll();
     }
 
-    public FKITGroup getGroup(UUID id){
-        return repo.findById(id).orElse(null);
+    public FKITGroup getGroup(String group) {
+        return this.repo.findByName(group);
+    }
+
+    public FKITGroup getGroup(UUID id) {
+        return this.repo.findById(id).orElse(null);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FKITService that = (FKITService) o;
+        return this.repo.equals(that.repo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.repo);
+    }
+
+    @Override
+    public String toString() {
+        return "FKITService{"
+            + "repo=" + this.repo
+            + '}';
     }
 }
