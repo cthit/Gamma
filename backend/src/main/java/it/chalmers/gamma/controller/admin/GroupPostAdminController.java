@@ -31,12 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/groups/posts")
-public class GroupPostAdminController {
+public final class GroupPostAdminController {
 
     private final PostService postService;
     private final MembershipService membershipService;
 
-    public GroupPostAdminController(
+    private GroupPostAdminController(
             PostService postService,
             MembershipService membershipService) {
         this.postService = postService;

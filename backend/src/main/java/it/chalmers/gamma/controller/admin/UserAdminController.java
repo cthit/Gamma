@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/users")
-public class UserAdminController {
+public final class UserAdminController {
 
     private final ITUserService itUserService;
     private final UserWebsiteService userWebsiteService;

@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/activation_codes")
-public class UserActivationCodeAdminController {
+public final class UserActivationCodeAdminController {
 
     private final ActivationCodeService activationCodeService;
 
-    public UserActivationCodeAdminController(ActivationCodeService activationCodeService) {
+    private UserActivationCodeAdminController(ActivationCodeService activationCodeService) {
         this.activationCodeService = activationCodeService;
     }
 

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class WhitelistController {
+public final class WhitelistController {
 
     private final WhitelistService whitelistService;
 
@@ -28,7 +28,7 @@ public class WhitelistController {
     // @Value("${mail.receiver.standard-postfix}")
     private static final String MAIL_POSTFIX = "@student.chalmers.se";
 
-    public WhitelistController(
+    private WhitelistController(
             WhitelistService whitelistService,
             ActivationCodeService activationCodeService,
             MailSenderService mailSenderService) {

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/validate_jwt")
-public class JwtController {
+public final class JwtController {
 
     private final JwtTokenProvider tokenProvider;
 
-    public JwtController(JwtTokenProvider jwtTokenProvider) {
+    private JwtController(JwtTokenProvider jwtTokenProvider) {
         this.tokenProvider = jwtTokenProvider;
     }
 

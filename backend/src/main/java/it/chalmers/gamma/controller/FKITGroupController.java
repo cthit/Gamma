@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/groups")
-public class FKITGroupController {
+public final class FKITGroupController {
 
     //TODO add groupmembers to serialize method call once that has been solved.
 
     private final FKITService fkitService;
     private final GroupWebsiteService groupWebsiteService;
 
-    public FKITGroupController(
+    private FKITGroupController(
             FKITService fkitService,
             GroupWebsiteService groupWebsiteService) {
         this.fkitService = fkitService;

@@ -37,13 +37,13 @@ import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TY
 
 @RestController
 @RequestMapping("/admin/groups")
-public class GroupAdminController {
+public final class GroupAdminController {
 
     private final FKITService fkitService;
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
 
-    public GroupAdminController(
+    private GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService) {

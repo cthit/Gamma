@@ -25,12 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/users/whitelist")
-public class UsersWhitelistAdminController {
+public final class UsersWhitelistAdminController {
 
     private final WhitelistService whitelistService;
     private final ITUserService itUserService;
 
-    public UsersWhitelistAdminController(WhitelistService whitelistService,
+    private UsersWhitelistAdminController(WhitelistService whitelistService,
                                          ITUserService itUserService) {
         this.whitelistService = whitelistService;
         this.itUserService = itUserService;

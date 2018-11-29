@@ -49,7 +49,7 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class ITUserController {
+public final class ITUserController {
 
     private final ITUserService itUserService;
     private final ActivationCodeService activationCodeService;
@@ -58,7 +58,7 @@ public class ITUserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserWebsiteService userWebsiteService;
 
-    public ITUserController(ITUserService itUserService,
+    private ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             AuthenticationManager authenticationManager,

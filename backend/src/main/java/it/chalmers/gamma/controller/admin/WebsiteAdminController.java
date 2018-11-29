@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/websites")
-public class WebsiteAdminController {
+public final class WebsiteAdminController {
 
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
     private final UserWebsiteService userWebsiteService;
 
-    public WebsiteAdminController(
+    private WebsiteAdminController(
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             UserWebsiteService userWebsiteService) {

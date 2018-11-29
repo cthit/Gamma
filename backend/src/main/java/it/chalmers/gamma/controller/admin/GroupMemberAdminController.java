@@ -28,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/groups")
-public class GroupMemberAdminController {
+public final class GroupMemberAdminController {
     private final ITUserService itUserService;
     private final PostService postService;
     private final FKITService fkitService;
     private final MembershipService membershipService;
 
-    public GroupMemberAdminController(
+    private GroupMemberAdminController(
             ITUserService itUserService,
             PostService postService,
             FKITService fkitService,
