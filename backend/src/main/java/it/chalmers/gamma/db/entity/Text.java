@@ -13,12 +13,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "text")
 public class Text {
+
     @Id
     @Column(updatable = false)
     @JsonIgnore
-    private UUID id;
+    private final UUID id;
+
     @Column(name = "sv")
     private String sv;
+
     @Column(name = "en")
     private String en;
 
