@@ -10,7 +10,7 @@ import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.util.TokenGenerator;
+import it.chalmers.gamma.util.TokenUtils;
 
 import java.time.Year;
 
@@ -101,7 +101,7 @@ public class ITUserIntegrationTests {
         Whitelist wl = new Whitelist(cid);
         this.whitelistRepository.save(wl);
         ActivationCode activationCode = new ActivationCode(wl);
-        activationCode.setCode(TokenGenerator.generateToken());
+        activationCode.setCode(TokenUtils.generateToken());
         this.activationCodeService.saveActivationCode(wl, activationCode.getCode());
 
         CreateITUserRequest user = createAccount(cid);
