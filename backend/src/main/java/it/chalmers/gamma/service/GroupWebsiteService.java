@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GroupWebsiteService extends EntityWebsiteService {
 
-    private GroupWebsiteRepository repository;
+    private final GroupWebsiteRepository repository;
 
     public GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService) {
         super(websiteService);
