@@ -36,8 +36,6 @@ public class ITUserService implements UserDetailsService {
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
-    private int minPasswordLength = 8;
-
     private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
                           AuthorityService authorityService) {
         this.itUserRepository = itUserRepository;
@@ -139,8 +137,7 @@ public class ITUserService implements UserDetailsService {
             return false;
         }
         ITUserService that = (ITUserService) o;
-        return this.minPasswordLength == that.minPasswordLength
-            && this.itUserRepository.equals(that.itUserRepository)
+        return this.itUserRepository.equals(that.itUserRepository)
             && this.passwordEncoder.equals(that.passwordEncoder)
             && this.membershipService.equals(that.membershipService)
             && this.authorityService.equals(that.authorityService);
@@ -149,7 +146,7 @@ public class ITUserService implements UserDetailsService {
     @Override
     public int hashCode() {
         return Objects.hash(this.itUserRepository, this.passwordEncoder,
-            this.membershipService, this.authorityService, this.minPasswordLength);
+            this.membershipService, this.authorityService);
     }
 
     @Override
@@ -159,7 +156,6 @@ public class ITUserService implements UserDetailsService {
             + ", passwordEncoder=" + this.passwordEncoder
             + ", membershipService=" + this.membershipService
             + ", authorityService=" + this.authorityService
-            + ", minPasswordLength=" + this.minPasswordLength
             + '}';
     }
 }
