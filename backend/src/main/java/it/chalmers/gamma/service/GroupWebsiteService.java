@@ -23,11 +23,11 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class GroupWebsiteService extends EntityWebsiteService {
+public final class GroupWebsiteService extends EntityWebsiteService {
 
     private final GroupWebsiteRepository repository;
 
-    public GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService) {
+    private GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService) {
         super(websiteService);
         this.repository = repository;
     }

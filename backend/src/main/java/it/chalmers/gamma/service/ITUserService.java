@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("userDetailsService")
-public class ITUserService implements UserDetailsService {
+public final class ITUserService implements UserDetailsService {
 
     private final ITUserRepository itUserRepository;
 

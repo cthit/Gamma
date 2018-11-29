@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
  * A class to handle all database access to memberships between users and groups in the system.
  */
 @Service
-public class PostService {
+public final class PostService {
 
     private final PostRepository repository;
 
-    public PostService(PostRepository repository) {
+    private PostService(PostRepository repository) {
         this.repository = repository;
     }
 

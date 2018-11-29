@@ -18,11 +18,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorityService {
+public final class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 
-    public AuthorityService(AuthorityRepository authorityRepository) {
+    private AuthorityService(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
     }
 

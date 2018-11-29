@@ -15,13 +15,15 @@ import org.springframework.web.client.RestTemplate;
 
 @PropertySource("classpath:secrets.properties")
 @Service
-public class MailSenderService {
+public final class MailSenderService {
 
     @Value("${gotify.key}")
     private String gotifyApiKey;
 
     @Value("${gotify.url}")
     private String gotifyURL;
+
+    private MailSenderService() {}
 
     /**
      * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify

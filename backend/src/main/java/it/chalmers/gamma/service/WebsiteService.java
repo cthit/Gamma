@@ -10,11 +10,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WebsiteService {
+public final class WebsiteService {
 
     private final WebsiteRepository repository;
 
-    public WebsiteService(WebsiteRepository repository) {
+    private WebsiteService(WebsiteRepository repository) {
         this.repository = repository;
     }
 

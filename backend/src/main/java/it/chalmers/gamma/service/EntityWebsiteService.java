@@ -17,7 +17,7 @@ public class EntityWebsiteService {
 
     private final WebsiteService websiteService;
 
-    public EntityWebsiteService(WebsiteService websiteService) {
+    protected EntityWebsiteService(WebsiteService websiteService) {
         this.websiteService = websiteService;
     }
 

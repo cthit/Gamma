@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 //TODO this class might be unnecessary because of changes in how websites work
 @Service
-public class WebsiteURLService {
+public final class WebsiteURLService {
 
     private final WebsiteURLRepository repository;
 
@@ -22,7 +22,7 @@ public class WebsiteURLService {
         this.repository = repository;
     }
 
-    public void addWebsite(Website website, String url) {
+    private void addWebsite(Website website, String url) {
         WebsiteURL websiteURL = new WebsiteURL();
         websiteURL.setWebsite(website);
         websiteURL.setUrl(url);

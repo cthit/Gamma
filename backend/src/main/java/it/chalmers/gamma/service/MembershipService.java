@@ -15,10 +15,11 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MembershipService {
+public final class MembershipService {
+
     private final MembershipRepository membershipRepository;
 
-    public MembershipService(MembershipRepository membershipRepository) {
+    private MembershipService(MembershipRepository membershipRepository) {
         this.membershipRepository = membershipRepository;
     }
 
