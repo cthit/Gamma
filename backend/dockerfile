@@ -19,7 +19,8 @@ ENV SERVER_PORT 9090
 ENV JWT_SECRET_KEY jwtkey
 ENV JWT_EXPIRE_LENGTH 2592000000
 ENV GOTIFY_KEY key
-ENV GOTIFY_URL https://gotify.chalmers.it 
+ENV GOTIFY_URL https://gotify.chalmers.it
+ENV ADMIN_PASSWORD password
 
 
 

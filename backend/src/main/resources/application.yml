@@ -33,3 +33,7 @@ security:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs= # This is only for Development, should also be a secret one for Production
       expire-length: 2592000000 #One Month. Subject to change.
       issuer: CTHIT
+
+application:
+  standard-admin-account:
+    password: ${ADMIN_PASSWORD:password}

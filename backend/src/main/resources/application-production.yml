@@ -39,3 +39,7 @@ security:
 gotify:
   key: ${GOTIFY_KEY}
   url: ${GOTIFY_URL}
+
+application:
+  standard-admin-account:
+    password: ${ADMIN_PASSWORD:password}

@@ -73,7 +73,7 @@ public class ITUserService implements UserDetailsService{
         return itUserRepository.existsById(id);
     }
 
-    public void createUser(String nick, String firstName, String lastname,
+    public ITUser createUser(String nick, String firstName, String lastname,
                            String cid, Year year, boolean userAgreement, String email, String password){
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
@@ -91,6 +91,7 @@ public class ITUserService implements UserDetailsService{
         itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
         itUser.setPassword(passwordEncoder.encode(password));
         itUserRepository.save(itUser);
+        return itUser;
     }
 
     public void removeUser(String cid){
