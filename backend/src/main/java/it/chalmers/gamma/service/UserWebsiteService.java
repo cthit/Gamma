@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserWebsiteService extends EntityWebsiteService {
 
-    private UserWebsiteRepository repository;
+    private final UserWebsiteRepository repository;
 
     public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
         super(websiteService);

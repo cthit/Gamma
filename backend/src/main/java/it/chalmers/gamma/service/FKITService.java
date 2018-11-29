@@ -3,7 +3,6 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
-import it.chalmers.gamma.db.repository.TextRepository;
 import it.chalmers.gamma.domain.GroupType;
 
 import java.util.List;
@@ -17,8 +16,7 @@ public class FKITService {
 
     private final FKITGroupRepository repo;
 
-
-    public FKITService(FKITGroupRepository repo, TextRepository textRepository) {
+    public FKITService(FKITGroupRepository repo) {
         this.repo = repo;
     }
 
@@ -31,7 +29,7 @@ public class FKITService {
         fkitGroup.setName(name.toLowerCase());
         fkitGroup.setFunc(function);
         fkitGroup.setDescription(description);
-        return saveGroup(fkitGroup, prettyName != null ? prettyName : name, description,
+        return saveGroup(fkitGroup, prettyName == null ? name : prettyName, description,
             email, type, function, avatarURL);
     }
 
@@ -42,8 +40,8 @@ public class FKITService {
         if (group == null) {
             return null;
         }
-        group.setSVFunction(function != null ? function.getSv() : group.getSVFunction());
-        group.setENFunction(function != null ? function.getEn() : group.getENFunction());
+        group.setSVFunction(function == null ? group.getSVFunction() : function.getSv());
+        group.setENFunction(function == null ? group.getENFunction() : function.getEn());
         function = group.getFunc();
         if (description != null && group.getDescription() != null) {
             group.setSVDescription(description.getSv());
@@ -54,12 +52,11 @@ public class FKITService {
 
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
                                 String email, GroupType type, Text function, String avatarURL) {
-        group.setPrettyName(prettyName != null ? prettyName : group.getPrettyName());
-        group.setENDescription((description != null
-                ? description.getEn() : group.getENDescription()));
-        group.setEmail(email != null ? email : group.getEmail());
-        group.setType(type != null ? type : group.getType());
-        group.setAvatarURL(avatarURL != null ? avatarURL : group.getAvatarURL());
+        group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
+        group.setENDescription(description == null ? group.getENDescription() : description.getEn());
+        group.setEmail(email == null ? group.getEmail() : email);
+        group.setType(type == null ? group.getType() : type);
+        group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
         return this.repo.save(group);
     }
 

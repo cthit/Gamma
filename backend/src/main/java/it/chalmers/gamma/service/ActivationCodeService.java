@@ -18,10 +18,10 @@ public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
 
-    //TODO should probably change to some other words, or a new system of creating codes.
+    //TODO should probably change to some other WORDS, or a new system of creating codes.
 
-    // Add some random words in here.
-    private String[] words = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};
+    // Add some random WORDS in here.
+    private static final String[] WORDS = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};
 
     public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
         this.activationCodeRepository = activationCodeRepository;
@@ -29,7 +29,7 @@ public class ActivationCodeService {
 
     public String generateActivationCode() {
         Random rand = new Random();
-        StringBuilder word = new StringBuilder(this.words[rand.nextInt(this.words.length - 1)]);
+        StringBuilder word = new StringBuilder(WORDS[rand.nextInt(WORDS.length - 1)]);
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < 10; i++) {
             int index = rand.nextInt(word.length());
@@ -92,8 +92,8 @@ public class ActivationCodeService {
      */
     public boolean hasCodeExpired(String user, double hours) {
         ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user);
-        return (activationCode.getCreatedAt().getEpochSecond()
-            + (hours * 3600) < Instant.now().getEpochSecond());
+        return activationCode.getCreatedAt().getEpochSecond()
+            + (hours * 3600) < Instant.now().getEpochSecond();
     }
 
     public List<ActivationCode> getAllActivationCodes() {
@@ -110,13 +110,13 @@ public class ActivationCodeService {
         }
         ActivationCodeService that = (ActivationCodeService) o;
         return this.activationCodeRepository.equals(that.activationCodeRepository)
-            && Arrays.equals(this.words, that.words);
+            && Arrays.equals(this.WORDS, that.WORDS);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(this.activationCodeRepository);
-        result = 31 * result + Arrays.hashCode(this.words);
+        result = 31 * result + Arrays.hashCode(this.WORDS);
         return result;
     }
 
@@ -124,7 +124,7 @@ public class ActivationCodeService {
     public String toString() {
         return "ActivationCodeService{"
             + "activationCodeRepository=" + this.activationCodeRepository
-            + ", words=" + Arrays.toString(this.words)
+            + ", WORDS=" + Arrays.toString(this.WORDS)
             + '}';
     }
 }

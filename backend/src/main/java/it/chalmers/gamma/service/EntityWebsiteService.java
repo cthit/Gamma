@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EntityWebsiteService {
-    private WebsiteService websiteService;
+
+    private final WebsiteService websiteService;
 
     public EntityWebsiteService(WebsiteService websiteService) {
         this.websiteService = websiteService;

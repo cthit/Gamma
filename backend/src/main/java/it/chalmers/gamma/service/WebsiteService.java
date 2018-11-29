@@ -11,7 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class WebsiteService {
-    private WebsiteRepository repository;
+
+    private final WebsiteRepository repository;
 
     public WebsiteService(WebsiteRepository repository) {
         this.repository = repository;
@@ -25,7 +26,7 @@ public class WebsiteService {
      */
     public void addPossibleWebsite(String name, String prettyName) {
         Website website = new Website();
-        website.setPrettyName(prettyName != null ? prettyName : name.toLowerCase());
+        website.setPrettyName(prettyName == null ? name.toLowerCase() : prettyName);
         website.setName(name);
         this.repository.save(website);
     }
@@ -36,7 +37,7 @@ public class WebsiteService {
 
     public void editWebsite(Website website, String name, String prettyName) {
         website.setName(name.toLowerCase());
-        website.setPrettyName(prettyName != null ? prettyName : name.toLowerCase());
+        website.setPrettyName(prettyName == null ? name.toLowerCase() : prettyName);
         this.repository.save(website);
     }
 

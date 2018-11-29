@@ -109,13 +109,13 @@ public class ITUserService implements UserDetailsService {
         if (itUser == null) {
             return false;
         }
-        itUser.setNick(nick != null ? nick : itUser.getNick());
-        itUser.setFirstName(firstName != null ? firstName : itUser.getFirstName());
-        itUser.setLastName(lastName != null ? lastName : itUser.getLastName());
-        itUser.setEmail(email != null ? email : itUser.getEmail());
-        itUser.setPhone(phone != null ? phone : itUser.getPhone());
-        itUser.setLanguage(language != null ? language : itUser.getLanguage());
-        itUser.setAvatarUrl(avatarUrl != null ? avatarUrl : itUser.getAvatarUrl());
+        itUser.setNick(nick == null ? itUser.getNick() : nick);
+        itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
+        itUser.setLastName(lastName == null ? itUser.getLastName() : lastName);
+        itUser.setEmail(email == null ? itUser.getEmail() : email);
+        itUser.setPhone(phone == null ? itUser.getPhone() : phone);
+        itUser.setLanguage(language == null ? itUser.getLanguage() : language);
+        itUser.setAvatarUrl(avatarUrl == null ? itUser.getAvatarUrl() : avatarUrl);
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
         return true;

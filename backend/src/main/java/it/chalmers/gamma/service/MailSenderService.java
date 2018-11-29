@@ -23,10 +23,6 @@ public class MailSenderService {
     @Value("${gotify.url}")
     private String gotifyURL;
 
-    public MailSenderService() {
-
-    }
-
     /**
      * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
      *
@@ -47,8 +43,6 @@ public class MailSenderService {
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<String> response = restTemplate.postForEntity(this.gotifyURL, entity, String.class);
-
-        System.out.println(response.toString());
 
         return true;
     }

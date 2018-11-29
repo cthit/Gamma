@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class WhitelistService {
+
     private final WhitelistRepository whitelistRepository;
 
     private WhitelistService(WhitelistRepository whitelistRepository) {

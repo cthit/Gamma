@@ -12,10 +12,11 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-
+//TODO this class might be unnecessary because of changes in how websites work
 @Service
-public class WebsiteURLService {        //TODO this class might be unnecessary because of changes in how websites work
-    private WebsiteURLRepository repository;
+public class WebsiteURLService {
+
+    private final WebsiteURLRepository repository;
 
     WebsiteURLService(WebsiteURLRepository repository) {
         this.repository = repository;
