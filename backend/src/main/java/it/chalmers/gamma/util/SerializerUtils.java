@@ -7,7 +7,9 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 
-public class SerializerUtil {
+public final class SerializerUtils {
+
+    private SerializerUtils() {}
 
     public static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields) {
         JSONObject json = new JSONObject();

@@ -2,7 +2,9 @@ package it.chalmers.gamma.util;
 
 import java.util.Random;
 
-public class TokenGenerator {
+public final class TokenUtils {
+
+    private TokenUtils() {}
 
     public static String generateToken() {
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
