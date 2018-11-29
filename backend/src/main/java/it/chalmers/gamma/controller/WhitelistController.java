@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public final class WhitelistController {
 
     private final WhitelistService whitelistService;
-
     private final ActivationCodeService activationCodeService;
-
     private final MailSenderService mailSenderService;
 
     // @Value("${mail.receiver.standard-postfix}")
@@ -44,7 +42,7 @@ public final class WhitelistController {
             Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
             String code = this.activationCodeService.generateActivationCode();
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
-            //sendEmail(activationCode);
+            // sendEmail(activationCode);
         }
 
         /*

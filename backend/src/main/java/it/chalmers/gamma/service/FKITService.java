@@ -53,10 +53,12 @@ public final class FKITService {
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
                                 String email, GroupType type, Text function, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
+        group.setSVDescription(description == null ? group.getSVDescription() : description.getSv());
         group.setENDescription(description == null ? group.getENDescription() : description.getEn());
         group.setEmail(email == null ? group.getEmail() : email);
         group.setType(type == null ? group.getType() : type);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
+
         return this.repo.save(group);
     }
 

@@ -15,9 +15,9 @@ import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
+import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
 
 import java.time.Year;
@@ -148,7 +148,7 @@ public final class ITUserController {
         ITUser user = this.itUserService.loadUser(cid);
         ITUserSerializer serializer =
                 new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
-        List<EntityWebsiteService.WebsiteView> websites =
+        List<WebsiteView> websites =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
@@ -182,7 +182,7 @@ public final class ITUserController {
         ITUserSerializer serializer = new ITUserSerializer(
                 ITUserSerializer.Properties.getAllProperties()
         );
-        List<EntityWebsiteService.WebsiteView> websites =
+        List<WebsiteView> websites =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );

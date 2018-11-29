@@ -18,11 +18,11 @@ import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
-import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.gamma.service.WebsiteView;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -105,7 +105,7 @@ public final class UserAdminController {
         List<ITUser> users = this.itUserService.loadAllUsers();
         List<JSONObject> userViewList = new ArrayList<>();
         for (ITUser user : users) {
-            List<EntityWebsiteService.WebsiteView> websiteViews =
+            List<WebsiteView> websiteViews =
                     this.userWebsiteService.getWebsitesOrdered(
                             this.userWebsiteService.getWebsites(user)
                     );

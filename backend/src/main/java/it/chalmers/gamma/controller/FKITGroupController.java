@@ -2,9 +2,9 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.service.EntityWebsiteService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
+import it.chalmers.gamma.service.WebsiteView;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +41,7 @@ public final class FKITGroupController {
         }
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
-        List<EntityWebsiteService.WebsiteView> websiteViews =
+        List<WebsiteView> websiteViews =
                 this.groupWebsiteService.getWebsitesOrdered(
                         this.groupWebsiteService.getWebsites(group)
                 );

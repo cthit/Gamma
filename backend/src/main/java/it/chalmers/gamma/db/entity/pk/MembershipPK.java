@@ -15,11 +15,14 @@ public class MembershipPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ituser_id")
-    private ITUser itUser;
+    private transient ITUser itUser;
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private FKITGroup fkitGroup;
+    private transient FKITGroup fkitGroup;
+
+    private static final long serialVersionUID = 6624119509779427L;
+
 
     public ITUser getITUser() {
         return this.itUser;
