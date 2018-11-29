@@ -95,28 +95,36 @@ public final class ITUserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest) {
-        int minPassLength = 8;
 
         if (createITUserRequest == null) {
             throw new NullPointerException();
         }
+
         Whitelist user = this.whitelistService.getWhitelist(
                 createITUserRequest.getWhitelist().getCid()
         );
+
         if (user == null) {
             throw new CodeOrCidIsWrongResponse();
         }
+
         createITUserRequest.setWhitelist(user);
+
         if (this.itUserService.userExists(createITUserRequest.getWhitelist().getCid())) {
             throw new UserAlreadyExistsResponse();
         }
+
         if (!this.activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
             throw new CodeOrCidIsWrongResponse();
         }
+
         if (this.activationCodeService.hasCodeExpired(user.getCid(), 2)) {
             this.activationCodeService.deleteCode(user.getCid());
             throw new CodeExpiredResponse();
         }
+
+        int minPassLength = 8;
+
         if (createITUserRequest.getPassword().length() < minPassLength) {
             throw new PasswordTooShortResponse();
         } else {
