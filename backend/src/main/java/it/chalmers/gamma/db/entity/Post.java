@@ -23,10 +23,10 @@ public class Post {
     @Column(updatable = false)
     private UUID id;
 
-
     @JoinColumn(name = "post_name")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Text postName;
+    private final Text postName;
+
     public Post() {
         this.postName = new Text();
         this.id = UUID.randomUUID();
@@ -44,13 +44,16 @@ public class Post {
     public void setSVPostName(String postName) {
         this.postName.setSv(postName);
     }
+
     @JsonProperty("en")
     public void setENPostName(String postName) {
         this.postName.setEn(postName);
     }
+
     public String getSVPostName() {
         return this.postName.getSv();
     }
+
     public String getENPostName() {
         return this.postName.getEn();
     }
