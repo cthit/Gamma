@@ -2,40 +2,64 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 @Service
-public class AuthorityLevelService {
+public final class AuthorityLevelService {
     AuthorityLevelRepository authorityLevelRepository;
-    public AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository){
+
+    private AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository) {
         this.authorityLevelRepository = authorityLevelRepository;
     }
 
-    public void addAuthorityLevel(String level){
+    public void addAuthorityLevel(String level) {
         AuthorityLevel authorityLevel = new AuthorityLevel();
         authorityLevel.setAuthorityLevel(level);
-        authorityLevelRepository.save(authorityLevel);
+        this.authorityLevelRepository.save(authorityLevel);
     }
 
-    public boolean authorityLevelExists(String authorityLevel){
-        if(authorityLevelRepository.findByAuthorityLevel(authorityLevel.toUpperCase()) == null){
+    public boolean authorityLevelExists(String authorityLevel) {
+        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel.toUpperCase()) != null;
+    }
+
+    public AuthorityLevel getAuthorityLevel(UUID authorityLevel) {
+        return this.authorityLevelRepository.findById(authorityLevel).orElse(null);
+    }
+
+    public List<AuthorityLevel> getAllAuthorityLevels() {
+        return this.authorityLevelRepository.findAll();
+    }
+
+    public void removeAuthorityLevel(UUID id) {
+        this.authorityLevelRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return true;
+        AuthorityLevelService that = (AuthorityLevelService) o;
+        return this.authorityLevelRepository.equals(that.authorityLevelRepository);
     }
 
-    public AuthorityLevel getAuthorityLevel(UUID authorityLevel){
-        return authorityLevelRepository.findById(authorityLevel).orElse(null);
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.authorityLevelRepository);
     }
 
-    public List<AuthorityLevel> getAllAuthorityLevels(){
-        return authorityLevelRepository.findAll();
-    }
-
-    public void removeAuthorityLevel(UUID id){
-        authorityLevelRepository.deleteById(id);
+    @Override
+    public String toString() {
+        return "AuthorityLevelService{"
+            + "authorityLevelRepository=" + this.authorityLevelRepository
+            + '}';
     }
 }

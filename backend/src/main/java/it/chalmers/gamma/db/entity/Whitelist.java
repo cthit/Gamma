@@ -1,13 +1,12 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Objects;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "whitelist")
@@ -21,13 +20,13 @@ public class Whitelist {
 
     protected Whitelist(){}
 
-    public Whitelist(String cid){
-        id = UUID.randomUUID();
+    public Whitelist(String cid) {
+        this.id = UUID.randomUUID();
         this.cid = cid;
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -35,7 +34,7 @@ public class Whitelist {
     }
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     public void setCid(String cid) {
@@ -44,24 +43,27 @@ public class Whitelist {
 
     @Override
     public String toString() {
-        return "Whitelist{" +
-                "id=" + id +
-                ", cid='" + cid + '\'' +
-                '}';
+        return "Whitelist{"
+                + "id=" + this.id
+                + ", cid='" + this.cid + '\''
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Whitelist whitelist = (Whitelist) o;
-        return Objects.equals(id, whitelist.id) &&
-                Objects.equals(cid, whitelist.cid);
+        return Objects.equals(this.id, whitelist.id)
+                && Objects.equals(this.cid, whitelist.cid);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, cid);
+        return Objects.hash(this.id, this.cid);
     }
 }

@@ -1,10 +1,10 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.domain.GroupType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CreateGroupRequest {
     private String name;
@@ -17,7 +17,7 @@ public class CreateGroupRequest {
     private List<WebsiteInfo> websites;
 
     public List<WebsiteInfo> getWebsites() {
-        return websites;
+        return this.websites;
     }
 
     public void setWebsites(List<WebsiteInfo> websites) {
@@ -30,11 +30,11 @@ public class CreateGroupRequest {
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public Text getFunc() {
-        return func;
+        return this.func;
     }
 
     public void setFunc(Text func) {
@@ -42,7 +42,7 @@ public class CreateGroupRequest {
     }
 
     public String getAvatarURL() {
-        return avatarURL;
+        return this.avatarURL;
     }
 
     public void setAvatarURL(String avatarURL) {
@@ -50,7 +50,7 @@ public class CreateGroupRequest {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -58,7 +58,7 @@ public class CreateGroupRequest {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -66,11 +66,11 @@ public class CreateGroupRequest {
     }
 
     public GroupType getType() {
-        return type;
+        return this.type;
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     public void setPrettyName(String prettyName) {
@@ -81,12 +81,51 @@ public class CreateGroupRequest {
         this.type = type;
     }
 
-    public static class WebsiteInfo{
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CreateGroupRequest that = (CreateGroupRequest) o;
+        return this.name.equals(that.name)
+            && this.prettyName.equals(that.prettyName)
+            && this.description.equals(that.description)
+            && this.email.equals(that.email)
+            && this.type == that.type
+            && this.func.equals(that.func)
+            && this.avatarURL.equals(that.avatarURL)
+            && this.websites.equals(that.websites);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.prettyName, this.description, this.email,
+            this.type, this.func, this.avatarURL, this.websites);
+    }
+
+    @Override
+    public String toString() {
+        return "CreateGroupRequest{"
+            + "name='" + this.name + '\''
+            + ", prettyName='" + this.prettyName + '\''
+            + ", description=" + this.description
+            + ", email='" + this.email + '\''
+            + ", type=" + this.type
+            + ", func=" + this.func
+            + ", avatarURL='" + this.avatarURL + '\''
+            + ", websites=" + this.websites
+            + '}';
+    }
+
+    public static class WebsiteInfo {
         String website;
         String url;
 
         public String getWebsite() {
-            return website;
+            return this.website;
         }
 
         public void setWebsite(String website) {
@@ -94,11 +133,37 @@ public class CreateGroupRequest {
         }
 
         public String getUrl() {
-            return url;
+            return this.url;
         }
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            WebsiteInfo that = (WebsiteInfo) o;
+            return this.website.equals(that.website)
+                && this.url.equals(that.url);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.website, this.url);
+        }
+
+        @Override
+        public String toString() {
+            return "WebsiteInfo{"
+                + "website='" + this.website + '\''
+                + ", url='" + this.url + '\''
+                + '}';
         }
     }
 }

@@ -1,14 +1,20 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.*;
-import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.GroupWebsite;
+import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
-import org.springframework.stereotype.Service;
+import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
 
 /*
  * @ł€®®þþ←↓→œþªßðđŋħ̡ĸłøæ«»©“”nµ̣ΩŁ¢®Þ¥↑↑ıŒÞ§ÐªŊĦ̛&ŁØ<>©‘’Nº
@@ -17,48 +23,79 @@ import java.util.UUID;
  */
 
 @Service
-public class GroupWebsiteService extends EntityWebsiteService{
+public final class GroupWebsiteService extends EntityWebsiteService {
 
-    private GroupWebsiteRepository repository;
+    private final GroupWebsiteRepository repository;
 
-    public GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService){
+    private GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService) {
         super(websiteService);
         this.repository = repository;
     }
 
-    public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs){
-        for(WebsiteURL websiteURL : websiteURLs) {
+    public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) {
+        for (WebsiteURL websiteURL : websiteURLs) {
             GroupWebsite groupWebsite = new GroupWebsite();
             groupWebsite.setGroup(group);
             groupWebsite.setWebsite(websiteURL);
-            repository.save(groupWebsite);
+            this.repository.save(groupWebsite);
         }
     }
+
     @Transactional
-    public void deleteGroupWebsiteByWebsite(Website website){
-        repository.deleteAllByWebsite_Website(website);
-    }
-    public List<GroupWebsite> getAllGroupWebsites(){
-        return repository.findAll();
+    public void deleteGroupWebsiteByWebsite(Website website) {
+        this.repository.deleteAllByWebsite_Website(website);
     }
 
-    public GroupWebsite getGroupWebsiteById(String id){
-        return repository.findById(UUID.fromString(id)).orElse(null);
+    public List<GroupWebsite> getAllGroupWebsites() {
+        return this.repository.findAll();
     }
-    public void deleteGroupWebsite(String id){
+
+    public GroupWebsite getGroupWebsiteById(String id) {
+        return this.repository.findById(UUID.fromString(id)).orElse(null);
+    }
+
+    public void deleteGroupWebsite(String id) {
 
     }
-    public List<WebsiteInterface> getWebsites(FKITGroup group){
-        List<GroupWebsite> groupWebsites = repository.findAllByGroup(group);
+
+    public List<WebsiteInterface> getWebsites(FKITGroup group) {
+        List<GroupWebsite> groupWebsites = this.repository.findAllByGroup(group);
         return new ArrayList<>(groupWebsites);
     }
 
-    public GroupWebsite getGroupWebsiteByWebsite(Website website){
-        return repository.findByWebsite_Website(website);
-    }
-    @Transactional
-    public void deleteWebsitesConnectedToGroup(FKITGroup group){
-        repository.deleteAllByGroup(group);
+    public GroupWebsite getGroupWebsiteByWebsite(Website website) {
+        return this.repository.findByWebsite_Website(website);
     }
 
+    @Transactional
+    public void deleteWebsitesConnectedToGroup(FKITGroup group) {
+        this.repository.deleteAllByGroup(group);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        GroupWebsiteService that = (GroupWebsiteService) o;
+        return this.repository.equals(that.repository);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), this.repository);
+    }
+
+    @Override
+    public String toString() {
+        return "GroupWebsiteService{"
+            + "repository=" + this.repository
+            + '}';
+    }
 }

@@ -1,8 +1,14 @@
 package it.chalmers.gamma.db.entity;
 
-import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset_token")
@@ -18,12 +24,12 @@ public class PasswordResetToken {
     private ITUser itUser;
 
 
-    public PasswordResetToken(){
+    public PasswordResetToken() {
         this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -31,7 +37,7 @@ public class PasswordResetToken {
     }
 
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     public void setToken(String token) {
@@ -39,7 +45,7 @@ public class PasswordResetToken {
     }
 
     public ITUser getItUser() {
-        return itUser;
+        return this.itUser;
     }
 
     public void setItUser(ITUser itUser) {
@@ -48,26 +54,29 @@ public class PasswordResetToken {
 
     @Override
     public String toString() {
-        return "PasswordResetToken{" +
-                "id=" + id +
-                ", token='" + token + '\'' +
-                ", itUser=" + itUser +
-                '}';
+        return "PasswordResetToken{"
+                + "id=" + this.id
+                + ", token='" + this.token + '\''
+                + ", itUser=" + this.itUser
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         PasswordResetToken that = (PasswordResetToken) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(token, that.token) &&
-                Objects.equals(itUser, that.itUser);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.token, that.token)
+                && Objects.equals(this.itUser, that.itUser);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, token, itUser);
+        return Objects.hash(this.id, this.token, this.itUser);
     }
 }

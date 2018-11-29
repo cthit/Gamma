@@ -1,10 +1,13 @@
 language: java
 
 jdk:
-  - oraclejdk10
+  - oraclejdk11
+
+before_script:
+  - cd backend
 
 script:
-  - ./backend/gradlew build --console 'plain' -s
+  - ./gradlew build --console 'plain' -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

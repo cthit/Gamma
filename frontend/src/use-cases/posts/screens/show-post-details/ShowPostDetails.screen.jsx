@@ -12,11 +12,12 @@ import translations from "./ShowPostDetails.screen.translations.json";
 
 function getPostName(post, activeLanguage) {
     switch (activeLanguage.code.toLowerCase()) {
+        case "en":
+            return post.en;
         case "sv":
             return post.sv;
         default:
-            // case "en":
-            return post.en;
+            return post.en + "/" + post.sv;
     }
 }
 

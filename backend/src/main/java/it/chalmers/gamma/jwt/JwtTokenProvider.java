@@ -1,19 +1,25 @@
 package it.chalmers.gamma.jwt;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.TextCodec;
-import it.chalmers.gamma.response.InvalidJWTTokenResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+
 import it.chalmers.gamma.service.ITUserService;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
@@ -35,20 +41,21 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(cid);
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + this.validityInMilliseconds);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuer(issuer)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
+            .setClaims(claims)
+            .setIssuer(this.issuer)
+            .setIssuedAt(now)
+            .setExpiration(validity)
+            .signWith(SignatureAlgorithm.HS256, this.secretKey)
+            .compact();
     }
 
-    public Authentication getAuthentication(String cid){
-        UserDetails userDetails = itUserService.loadUserByUsername(cid);
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+    public Authentication getAuthentication(String cid) {
+        UserDetails userDetails = this.itUserService.loadUserByUsername(cid);
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
+            userDetails.getPassword(), userDetails.getAuthorities());
 
     }
 
@@ -60,27 +67,26 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public String removeBearer(String token){
-        return token.substring(7, token.length());
+    public String removeBearer(String token) {
+        return token.substring(7);
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }
-    public Jws<Claims> decodeToken(String token){
+
+    public Jws<Claims> decodeToken(String token) {
         try {
             return Jwts.parser()
-                    .requireIssuer(issuer)
-                    .setSigningKey(
-                            secretKey)
-                    .parseClaimsJws(token);
-        }
-        catch (MalformedJwtException | SignatureException e){
+                .requireIssuer(this.issuer)
+                .setSigningKey(this.secretKey)
+                .parseClaimsJws(token);
+        } catch (MalformedJwtException | SignatureException e) {
             e.printStackTrace();
             return null;
         }

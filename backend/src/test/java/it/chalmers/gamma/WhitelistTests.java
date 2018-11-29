@@ -1,7 +1,7 @@
 package it.chalmers.gamma;
 
-import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
 import it.chalmers.gamma.service.WhitelistService;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,18 +23,18 @@ public class WhitelistTests {
      */
     @Test
     public void testWhiteList() {
-        whitelistService.addWhiteListedCID("cid3");
-        whitelistService.addWhiteListedCID("cid4");
-        Assert.assertTrue(whitelistService.isCIDWhiteListed("cid3"));
-        Assert.assertFalse(whitelistService.isCIDWhiteListed("leif"));
+        this.whitelistService.addWhiteListedCID("cid3");
+        this.whitelistService.addWhiteListedCID("cid4");
+        Assert.assertTrue(this.whitelistService.isCIDWhiteListed("cid3"));
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed("leif"));
     }
 
     @Test
     public void testDeleteActivationCode() {
         String cid = "cid5";
-        whitelistService.addWhiteListedCID(cid);
-        whitelistService.removeWhiteListedCID(cid);
-        Assert.assertFalse(whitelistService.isCIDWhiteListed(cid));
+        this.whitelistService.addWhiteListedCID(cid);
+        this.whitelistService.removeWhiteListedCID(cid);
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed(cid));
     }
 
 
@@ -43,18 +43,18 @@ public class WhitelistTests {
      */
     @Test
     public void testAddWhitelistCIDMultipleTimes() {
-        try{
-            whitelistService.addWhiteListedCID("cid1");
-            whitelistService.addWhiteListedCID("cid1");
-            assert(false);
-        }catch(Exception e){
-            assert(true);
+        try {
+            this.whitelistService.addWhiteListedCID("cid1");
+            this.whitelistService.addWhiteListedCID("cid1");
+            assert (false);
+        } catch (Exception e) {
+            assert (true);
         }
     }
 
     /*
-TODO Set up test environment that specifies mail address to send from and to.
- */
+     * TODO Set up test environment that specifies mail address to send from and to.
+     */
     @Test
     public void testSendEmail() {
 

@@ -8,7 +8,7 @@ public class AuthorizationRequest {
     private String authority;
 
     public String getAuthority() {
-        return authority;
+        return this.authority;
     }
 
     public void setAuthority(String authorization) {
@@ -16,7 +16,7 @@ public class AuthorizationRequest {
     }
 
     public String getPost() {
-        return post;
+        return this.post;
     }
 
     public void setPost(String post) {
@@ -24,7 +24,7 @@ public class AuthorizationRequest {
     }
 
     public String getGroup() {
-        return group;
+        return this.group;
     }
 
     public void setGroup(String group) {
@@ -33,24 +33,29 @@ public class AuthorizationRequest {
 
     @Override
     public String toString() {
-        return "AuthorizationRequest{" +
-                "post='" + post + '\'' +
-                ", group='" + group + '\'' +
-                ", authority'" + authority + '\'' +
-                '}';
+        return "AuthorizationRequest{"
+            + "post='" + this.post + '\''
+            + ", group='" + this.group + '\''
+            + ", authority'" + this.authority + '\''
+            + '}';
     }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AuthorizationRequest that = (AuthorizationRequest) o;
-        return Objects.equals(post, that.post) &&
-                Objects.equals(group, that.group) &&
-                Objects.equals(authority, that.authority);
+        return Objects.equals(this.post, that.post)
+            && Objects.equals(this.group, that.group)
+            && Objects.equals(this.authority, that.authority);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(post, group, authority);
+        return Objects.hash(this.post, this.group, this.authority);
     }
 }

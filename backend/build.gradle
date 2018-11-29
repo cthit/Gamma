@@ -1,37 +1,56 @@
 buildscript {
-	ext {
-		springBootVersion = '2.0.5.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-		classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-		classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-		classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
-		classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
-	}
+    ext {
+        springBootVersion = '2.1.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+        classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
+    }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
+plugins {
+    id "java"
+	id "eclipse"
+	id "application"
+	id "checkstyle"
+	id "com.github.spotbugs" version "1.6.5"
+	id "pmd"
+	id 'io.franzbecker.gradle-lombok' version '1.14'
+	id "jacoco"
+}
+
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-
 group = 'it.chalmers'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
+mainClassName = 'it.chalmers.gamma.GammaApplication'
 
 repositories {
 	mavenCentral()
 }
-
+jar {
+    manifest {
+        attributes "Main-Class": "it.chalmers.GammaApplication"
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 
 dependencies {
+
+    compileOnly (
+        'com.github.spotbugs:spotbugs-annotations:3.1.8'
+    )
+
 	compile('com.google.api-client:google-api-client:1.23.0')
-	compile('com.google.oauth-client:google-oauth-client-jetty:1.23.0')
 	compile('com.google.apis:google-api-services-gmail:v1-rev83-1.23.0')
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -39,7 +58,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-mail')
 	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('com.sun.xml.bind:jaxb-impl:2.2.11')
+    compile('com.sun.xml.bind:jaxb-impl:2.2.11')
 	compile('com.sun.xml.bind:jaxb-core:2.2.11')
 	compile('javax.xml.bind:jaxb-api:2.3.0')
 	compile('javax.activation:activation:1.1.1')
@@ -57,4 +76,38 @@ dependencies {
 	testCompile('org.springframework.security:spring-security-test')
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 
+}
+
+repositories {
+	mavenCentral()
+}
+
+checkstyle {
+    toolVersion '8.11'
+    ignoreFailures false
+    maxWarnings 0
+    configFile = project(':').file('config/checkstyle/checkstyle.xml')
+	configProperties = [ "suppressionFile" : project(':').file('config/checkstyle/suppressions.xml')]
+}
+
+lombok {
+	version = '1.18.2'
+	sha256 = ""
+}
+
+pmd {
+    toolVersion '6.8.0'
+    consoleOutput true
+    ignoreFailures false
+	ruleSetFiles files("config/pmd/ruleset.xml")
+}
+
+jacoco {
+    toolVersion '0.8.2'
+}
+
+jacocoTestReport {
+    reports {
+        html.enabled true
+    }
 }

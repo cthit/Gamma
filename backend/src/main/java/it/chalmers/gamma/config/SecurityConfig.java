@@ -3,6 +3,7 @@ package it.chalmers.gamma.config;
 import it.chalmers.gamma.jwt.JwtTokenFilterConfigurer;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.service.ITUserService;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -20,10 +21,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private ITUserService itUserService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final ITUserService itUserService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider){
+    public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.itUserService = itUserService;
     }
@@ -32,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //Disables cross site request forgery
         http.cors().and().csrf().disable().authorizeRequests();
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
+        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
 
         http.authorizeRequests()//
                 .antMatchers("/users/login").permitAll()
@@ -47,13 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(itUserService);
-        authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
-        return authProvider;
-    }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authProvider());
@@ -63,6 +57,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(this.itUserService);
+        authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+        return authProvider;
     }
 
 

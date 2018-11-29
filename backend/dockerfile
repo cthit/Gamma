@@ -1,0 +1,19 @@
+FROM gradle:4.10-jdk10
+#Gradle docker has gradle user as default
+USER root
+
+COPY . /app
+
+RUN mkdir -p /app
+RUN chown -R gradle /app
+WORKDIR /app
+
+USER gradle
+#db is used to separate development and production databasesZ
+ENV DB_HOST db
+ENV GRADLE_USER_HOME .gradle
+
+RUN gradle :build -x test
+
+CMD java -jar build/libs/gamma-0.0.1-SNAPSHOT.jar
+
