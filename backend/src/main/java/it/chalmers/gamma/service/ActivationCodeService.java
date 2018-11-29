@@ -5,7 +5,6 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -109,22 +108,18 @@ public class ActivationCodeService {
             return false;
         }
         ActivationCodeService that = (ActivationCodeService) o;
-        return this.activationCodeRepository.equals(that.activationCodeRepository)
-            && Arrays.equals(this.WORDS, that.WORDS);
+        return this.activationCodeRepository.equals(that.activationCodeRepository);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(this.activationCodeRepository);
-        result = 31 * result + Arrays.hashCode(this.WORDS);
-        return result;
+        return Objects.hash(activationCodeRepository);
     }
 
     @Override
     public String toString() {
         return "ActivationCodeService{"
             + "activationCodeRepository=" + this.activationCodeRepository
-            + ", WORDS=" + Arrays.toString(this.WORDS)
             + '}';
     }
 }
