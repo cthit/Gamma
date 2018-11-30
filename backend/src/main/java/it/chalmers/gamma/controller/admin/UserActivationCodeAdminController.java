@@ -20,7 +20,7 @@ public final class UserActivationCodeAdminController {
 
     private final ActivationCodeService activationCodeService;
 
-    private UserActivationCodeAdminController(ActivationCodeService activationCodeService) {
+    public UserActivationCodeAdminController(ActivationCodeService activationCodeService) {
         this.activationCodeService = activationCodeService;
     }
 

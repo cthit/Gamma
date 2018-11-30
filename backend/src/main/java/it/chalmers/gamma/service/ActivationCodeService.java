@@ -13,7 +13,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class ActivationCodeService {
+public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
 
@@ -22,7 +22,7 @@ public final class ActivationCodeService {
     // Add some random WORDS in here.
     private static final String[] WORDS = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};
 
-    private ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
+    public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
         this.activationCodeRepository = activationCodeRepository;
     }
 

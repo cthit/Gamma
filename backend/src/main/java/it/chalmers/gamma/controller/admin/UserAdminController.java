@@ -45,7 +45,7 @@ public final class UserAdminController {
     private final UserWebsiteService userWebsiteService;
     private final PasswordResetService passwordResetService;
 
-    private UserAdminController(
+    public UserAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
             PasswordResetService passwordResetService) {

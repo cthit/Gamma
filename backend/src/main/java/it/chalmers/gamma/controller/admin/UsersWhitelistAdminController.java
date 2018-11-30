@@ -30,7 +30,7 @@ public final class UsersWhitelistAdminController {
     private final WhitelistService whitelistService;
     private final ITUserService itUserService;
 
-    private UsersWhitelistAdminController(WhitelistService whitelistService,
+    public UsersWhitelistAdminController(WhitelistService whitelistService,
                                           ITUserService itUserService) {
         this.whitelistService = whitelistService;
         this.itUserService = itUserService;

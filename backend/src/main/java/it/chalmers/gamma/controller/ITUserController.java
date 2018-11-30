@@ -58,7 +58,7 @@ public final class ITUserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserWebsiteService userWebsiteService;
 
-    private ITUserController(ITUserService itUserService,
+    public ITUserController(ITUserService itUserService,
                              ActivationCodeService activationCodeService,
                              WhitelistService whitelistService,
                              AuthenticationManager authenticationManager,

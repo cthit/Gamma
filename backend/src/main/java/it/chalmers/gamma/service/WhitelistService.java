@@ -11,11 +11,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class WhitelistService {
+public class WhitelistService {
 
     private final WhitelistRepository whitelistRepository;
 
-    private WhitelistService(WhitelistRepository whitelistRepository) {
+    public WhitelistService(WhitelistRepository whitelistRepository) {
         this.whitelistRepository = whitelistRepository;
     }
 

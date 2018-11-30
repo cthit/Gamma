@@ -39,4 +39,4 @@ application:
   gotify:
     key: "key"                  # This is not needed, but application crashes since it looks for these values.
     url: "gotify.chalmers.it"
-  allowed-origin: "*"
+  allowed-origin: "http://localhost:3000"

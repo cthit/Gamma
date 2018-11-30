@@ -10,10 +10,10 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AuthorityLevelService {
+public class AuthorityLevelService {
     AuthorityLevelRepository authorityLevelRepository;
 
-    private AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository) {
+    public AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository) {
         this.authorityLevelRepository = authorityLevelRepository;
     }
 

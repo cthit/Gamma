@@ -9,10 +9,10 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class PasswordResetService {
+public class PasswordResetService {
     PasswordResetTokenRepository repository;
 
-    private PasswordResetService(PasswordResetTokenRepository repository) {
+    public PasswordResetService(PasswordResetTokenRepository repository) {
         this.repository = repository;
     }
 

@@ -17,11 +17,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class UserWebsiteService extends EntityWebsiteService {
+public class UserWebsiteService extends EntityWebsiteService {
 
     private final UserWebsiteRepository repository;
 
-    private UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
+    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
         super(websiteService);
         this.repository = repository;
     }

@@ -34,7 +34,7 @@ public final class GroupMemberAdminController {
     private final FKITService fkitService;
     private final MembershipService membershipService;
 
-    private GroupMemberAdminController(
+    public GroupMemberAdminController(
             ITUserService itUserService,
             PostService postService,
             FKITService fkitService,

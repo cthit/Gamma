@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Service
-public final class MailSenderService {
+public class MailSenderService {
 
     @Value("${application.gotify.key}")
     private String gotifyApiKey;
@@ -21,7 +21,7 @@ public final class MailSenderService {
     @Value("${application.gotify.url}")
     private String gotifyURL;
 
-    private MailSenderService() {
+    public MailSenderService() {
     }
 
     /**

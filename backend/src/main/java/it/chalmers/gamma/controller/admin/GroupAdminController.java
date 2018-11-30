@@ -43,7 +43,7 @@ public final class GroupAdminController {
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
 
-    private GroupAdminController(
+    public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService) {

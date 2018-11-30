@@ -15,7 +15,7 @@ public class WebsiteView {
     private String prettyName;
     private List<String> url;
 
-    WebsiteView(Website website) {
+    public WebsiteView(Website website) {
         this.id = website.getId();
         this.name = website.getName();
         this.prettyName = website.getPrettyName();

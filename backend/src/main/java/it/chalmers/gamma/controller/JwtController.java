@@ -16,7 +16,7 @@ public final class JwtController {
 
     private final JwtTokenProvider tokenProvider;
 
-    private JwtController(JwtTokenProvider jwtTokenProvider) {
+    public JwtController(JwtTokenProvider jwtTokenProvider) {
         this.tokenProvider = jwtTokenProvider;
     }
 

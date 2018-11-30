@@ -36,7 +36,7 @@ public final class GroupPostAdminController {
     private final PostService postService;
     private final MembershipService membershipService;
 
-    private GroupPostAdminController(
+    public GroupPostAdminController(
             PostService postService,
             MembershipService membershipService) {
         this.postService = postService;

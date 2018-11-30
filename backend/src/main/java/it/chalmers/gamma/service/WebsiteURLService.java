@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 
 //TODO this class might be unnecessary because of changes in how websites work
 @Service
-public final class WebsiteURLService {
+public class WebsiteURLService {
 
     private final WebsiteURLRepository repository;
 
-    WebsiteURLService(WebsiteURLRepository repository) {
+    public WebsiteURLService(WebsiteURLRepository repository) {
         this.repository = repository;
     }
 

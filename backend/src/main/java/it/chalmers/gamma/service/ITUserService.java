@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("userDetailsService")
-public final class ITUserService implements UserDetailsService {
+public class ITUserService implements UserDetailsService {
 
     private final ITUserRepository itUserRepository;
 
@@ -36,7 +36,7 @@ public final class ITUserService implements UserDetailsService {
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
-    private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
+    public ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
                           AuthorityService authorityService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

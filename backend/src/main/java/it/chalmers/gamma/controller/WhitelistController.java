@@ -37,7 +37,7 @@ public final class WhitelistController {
     // @Value("${mail.receiver.standard-postfix}")
     private String mailPostfix = "@student.chalmers.se";
 
-    private WhitelistController(
+    public WhitelistController(
             WhitelistService whitelistService,
             ActivationCodeService activationCodeService,
             MailSenderService mailSenderService) {

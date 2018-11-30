@@ -30,7 +30,7 @@ public final class WebsiteAdminController {
     private final GroupWebsiteService groupWebsiteService;
     private final UserWebsiteService userWebsiteService;
 
-    private WebsiteAdminController(
+    public WebsiteAdminController(
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             UserWebsiteService userWebsiteService) {

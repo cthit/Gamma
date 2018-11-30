@@ -18,11 +18,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AuthorityService {
+public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 
-    private AuthorityService(AuthorityRepository authorityRepository) {
+    public AuthorityService(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
     }
 
@@ -33,7 +33,7 @@ public final class AuthorityService {
             AuthorityPK pk = new AuthorityPK();
             pk.setFkitGroup(group);
             pk.setPost(post);
-            authority.setId(pk);
+   //         authority.setId(pk);
         }
         authority.setAuthorityLevel(authorityLevel);
         this.authorityRepository.save(authority);

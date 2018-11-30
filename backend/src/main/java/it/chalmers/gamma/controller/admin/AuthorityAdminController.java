@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin/authority")
-public final class AuthorityAdminController {
+public class AuthorityAdminController {
 
     private final AuthorityService authorityService;
 
@@ -53,7 +53,7 @@ public final class AuthorityAdminController {
 
     private final MembershipService membershipService;
 
-    private AuthorityAdminController(AuthorityService authorityService,
+    public AuthorityAdminController(AuthorityService authorityService,
                                      FKITService fkitService,
                                      PostService postService,
                                      AuthorityLevelService authorityLevelService,
