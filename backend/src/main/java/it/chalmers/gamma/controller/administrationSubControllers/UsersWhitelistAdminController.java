@@ -6,6 +6,7 @@ import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
+import org.apache.commons.logging.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class UsersWhitelistAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request) {
         List<String> cids = request.getCids();
+        System.out.println(cids);
         for(String cid : cids) {
             if (whitelistService.isCIDWhiteListed(cid)) {
                 throw new CIDAlreadyWhitelistedResponse();

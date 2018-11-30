@@ -2,9 +2,7 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.response.GetMembershipsResponse;
 import it.chalmers.gamma.service.*;
-import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

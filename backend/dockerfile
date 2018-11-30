@@ -25,6 +25,6 @@ ENV ADMIN_PASSWORD password
 
 
 RUN gradle :build -x test
-
+# This probably should not have a static path, but instead build in a custom path.
 CMD java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
 

@@ -13,15 +13,14 @@ spring:
     properties:
       hibernate:
         temp:
-          #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
-          use_jdbc_metadata_defaults: false
+          use_jdbc_metadata_defazults: false
 
 server:
   port: 8081
 
 logging:
   level:
-    root: WARN
+    root: INFO
     org:
       springframework:
         web: DEBUG
@@ -37,3 +36,7 @@ security:
 application:
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
+  gotify:
+    key: "key"                  # This is not needed, but application crashes since it looks for these values.
+    url: "gotify.chalmers.it"
+  allowed-origin: "*"

@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
-@PropertySource("classpath:secrets.properties")
 @Service
 public class MailSenderService{
 
-    @Value("${gotify.key}")
+    @Value("${application.gotify.key}")
     private String gotifyApiKey;
 
-    @Value("${gotify.url}")
+    @Value("${application.gotify.url}")
     private String gotifyURL;
 
     public MailSenderService() {
@@ -40,7 +39,7 @@ public class MailSenderService{
         object.put("subject", subject);
         object.put("body",body);
 
-        HttpEntity<JSONObject> entity = new HttpEntity<JSONObject>(object, headers);
+        HttpEntity<JSONObject> entity = new HttpEntity<>(object, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<String> response = restTemplate.postForEntity(gotifyURL, entity, String.class);

@@ -7,7 +7,7 @@ spring:
     ansi:
       enabled: ALWAYS
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL29Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:
       ddl-auto: none
     properties:
@@ -36,10 +36,12 @@ security:
       expire-length: ${JWT_EXPIRE_LENGTH:2592000000} #One Month. Subject to change.
       issuer: CTHIT
 
-gotify:
-  key: ${GOTIFY_KEY}
-  url: ${GOTIFY_URL}
+
 
 application:
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
+  gotify:
+    key: ${GOTIFY_KEY:key}
+    url: ${GOTIFY_URL:https://gotify.chalmers.it}
+  allowed-origin: "https://account.chalmers.it"
