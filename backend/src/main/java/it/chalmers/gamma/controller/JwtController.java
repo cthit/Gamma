@@ -21,7 +21,7 @@ public final class JwtController {
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> isValid(@RequestBody ValidateJwtRequest validateJwtRequest) {
+    public ResponseEntity<Boolean> tokenIsValid(@RequestBody ValidateJwtRequest validateJwtRequest) {
         return new ValidJwtResponse(this.tokenProvider.validateToken(validateJwtRequest.getJwt()));
     }
 }

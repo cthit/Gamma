@@ -11,9 +11,9 @@
 
 
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="AvoidPrintStackTrace" />
         <exclude name="JUnitAssertionsShouldIncludeMessage" />
         <exclude name="OneDeclarationPerLine" />
+        <exclude name="PreserveStackTrace" />
     </rule>
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor" />
@@ -32,6 +32,7 @@
         <exclude name="AvoidThrowingRawExceptionTypes" />
         <exclude name="LawOfDemeter" />
         <exclude name="LoosePackageCoupling" />
+        <exclude name="DataClass" />
     </rule>
     <rule ref="category/java/documentation.xml">
         <exclude name="CommentRequired" />
@@ -43,6 +44,7 @@
         <exclude name="DataflowAnomalyAnalysis" />
         <exclude name="NullAssignment" />
         <exclude name="UseLocaleWithCaseConversions" />
+        <exclude name="MissingSerialVersionUID"/>
     </rule>
     <rule ref="category/java/performance.xml" />
     <rule ref="category/java/security.xml" />
@@ -76,6 +78,12 @@
     <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
         <properties>
             <property name="skipAnnotations" value="true" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+        <properties>
+            <property name="maxDuplicateLiterals" value="2"/>
         </properties>
     </rule>
 </ruleset>

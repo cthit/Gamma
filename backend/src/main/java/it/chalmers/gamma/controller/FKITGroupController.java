@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/groups")
-public class FKITGroupController {
+public final class FKITGroupController {
 
     //TODO add groupmembers to serialize method call once that has been solved.
 

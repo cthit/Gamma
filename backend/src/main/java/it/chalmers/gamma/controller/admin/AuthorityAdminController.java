@@ -39,18 +39,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @RestController
 @RequestMapping("/admin/authority")
-public class AuthorityAdminController {
+public final class AuthorityAdminController {
 
     private final AuthorityService authorityService;
-
     private final FKITService fkitService;
-
     private final PostService postService;
-
     private final AuthorityLevelService authorityLevelService;
-
     private final MembershipService membershipService;
 
     public AuthorityAdminController(AuthorityService authorityService,

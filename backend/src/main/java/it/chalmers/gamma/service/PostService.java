@@ -26,14 +26,14 @@ public class PostService {
 
     public Post addPost(Text postName) {
         Post post = new Post();
-        return setPost(post, postName);
+        return savePost(post, postName);
     }
 
     public Post editPost(Post post, Text text) {
-        return setPost(post, text);
+        return savePost(post, text);
     }
 
-    private Post setPost(Post post, Text postName) {
+    private Post savePost(Post post, Text postName) {
         post.setSVPostName(postName.getSv());
         post.setENPostName(postName.getEn());
         return this.repository.save(post);

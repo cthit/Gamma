@@ -28,14 +28,10 @@ public final class WhitelistController {
 
     // @Value("${mail.receiver.standard-postfix}")
     private static final String MAIL_POSTFIX = "@student.chalmers.se";
-    private static final Logger logger = LoggerFactory.getLogger(WhitelistController.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
 
     @Value("${spring.profiles.active:development}")
     private String profile;
-
-    // @Value("${mail.receiver.standard-postfix}")
-    private String mailPostfix = "@student.chalmers.se";
 
     public WhitelistController(
             WhitelistService whitelistService,
@@ -66,13 +62,13 @@ public final class WhitelistController {
 
     private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@" + this.MAIL_POSTFIX;
+        String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
-        logger.info(this.profile);
+        LOGGER.info(this.profile);
         if (this.profile.equals("profile")) {
             this.mailSenderService.sendMail(to, "Chalmers activation code", message);
         } else {
-            logger.info(code);
+            LOGGER.info(code);
         }
     }
 }

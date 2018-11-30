@@ -18,6 +18,7 @@ import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.LoginCompleteResponse;
+import it.chalmers.gamma.response.NoDataSentResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -33,6 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public final class ITUserController {
@@ -57,6 +61,8 @@ public final class ITUserController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserWebsiteService userWebsiteService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ITUserController.class);
 
     public ITUserController(ITUserService itUserService,
                              ActivationCodeService activationCodeService,
@@ -87,7 +93,7 @@ public final class ITUserController {
                 return new LoginCompleteResponse(jwt);
             }
         } catch (AuthenticationException e) {
-            e.printStackTrace();
+            LOGGER.info(e.getMessage(), e);
             throw new IncorrectCidOrPasswordResponse();
         }
         throw new IncorrectCidOrPasswordResponse();
@@ -98,7 +104,7 @@ public final class ITUserController {
     public ResponseEntity<String> createUser(
             @RequestBody CreateITUserRequest createITUserRequest) {
         if (createITUserRequest == null) {
-            throw new NullPointerException();
+            throw new NoDataSentResponse();
         }
 
         Whitelist user = this.whitelistService.getWhitelist(

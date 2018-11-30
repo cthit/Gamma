@@ -50,25 +50,40 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     @Override
     public void run(String... args) throws Exception {
-        if (!this.userservice.userExists("admin")) {
+        String admin = "admin";
+        String adminMail = "admin@chalmers.it";
+        if (!this.userservice.userExists(admin)) {
             Text description = new Text();
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
-            FKITGroup group = this.groupService.createGroup("superadmin", "SuperAdmin",
-                    description, "admin@chalmers.it", GroupType.COMMITTEE, new Text(), null);
+            FKITGroup group = this.groupService.createGroup(
+                    "superadmin",
+                    "SuperAdmin",
+                    description,
+                    adminMail,
+                    GroupType.COMMITTEE,
+                    new Text(),
+                    null
+            );
             Text p = new Text();
-            p.setSv("admin");
-            p.setEn("admin");
+            p.setSv(admin);
+            p.setEn(admin);
             Post post = this.postService.addPost(p);
-            ITUser user = this.userservice.createUser("admin", "admin",
-                    "admin", "admin", Year.of(2018), true,
-                    "admin@chalmers.it", this.password);
+            ITUser user = this.userservice.createUser(admin,
+                    admin,
+                    admin,
+                    admin,
+                    Year.of(2018),
+                    true,
+                    adminMail,
+                    this.password
+            );
             this.membershipService.addUserToGroup(
-                    group, user, post, "admin", Year.of(2018)
+                    group, user, post, admin, Year.of(2018)
             ); // This might break on a new year
-            AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel("admin");
+            AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(group, post, authorityLevel);
         }
     }
