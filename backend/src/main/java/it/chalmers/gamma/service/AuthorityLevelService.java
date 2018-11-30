@@ -2,7 +2,6 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,10 +17,11 @@ public final class AuthorityLevelService {
         this.authorityLevelRepository = authorityLevelRepository;
     }
 
-    public void addAuthorityLevel(String level) {
+    public AuthorityLevel addAuthorityLevel(String level) {
         AuthorityLevel authorityLevel = new AuthorityLevel();
         authorityLevel.setAuthorityLevel(level);
         this.authorityLevelRepository.save(authorityLevel);
+        return authorityLevel;
     }
 
     public boolean authorityLevelExists(String authorityLevel) {

@@ -72,7 +72,7 @@ public final class ITUserService implements UserDetailsService {
         return this.itUserRepository.existsById(id);
     }
 
-    public void createUser(String nick,
+    public ITUser createUser(String nick,
                            String firstName,
                            String lastname,
                            String cid,
