@@ -95,6 +95,7 @@ public final class ITUserService implements UserDetailsService {
         itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
         itUser.setPassword(this.passwordEncoder.encode(password));
         this.itUserRepository.save(itUser);
+        return itUser;
     }
 
     public void removeUser(UUID id) {

@@ -1,25 +1,26 @@
 spring:
   datasource:
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:example}
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/postgres
+    username: postgres
+    password: example
+    url: jdbc:postgresql://localhost:5432/postgres
   output:
     ansi:
       enabled: ALWAYS
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         temp:
-          #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
-          use_jdbc_metadata_defaults: false
+          use_jdbc_metadata_defazults: false
 
 server:
-  port: ${GAMMA_PORT:8081}
+  port: 8081
 
 logging:
   level:
-    root: WARN
+    root: INFO
     org:
       springframework:
         web: DEBUG
@@ -31,3 +32,11 @@ security:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs= # This is only for Development, should also be a secret one for Production
       expire-length: 2592000000 #One Month. Subject to change.
       issuer: CTHIT
+
+application:
+  standard-admin-account:
+    password: ${ADMIN_PASSWORD:password}
+  gotify:
+    key: "key"                  # This is not needed, but application crashes since it looks for these values.
+    url: "gotify.chalmers.it"
+  allowed-origin: "*"

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/activation_codes")
+@RequestMapping("/admin/activation_codes")
 public final class UserActivationCodeAdminController {
 
     private final ActivationCodeService activationCodeService;
@@ -24,13 +24,13 @@ public final class UserActivationCodeAdminController {
         this.activationCodeService = activationCodeService;
     }
 
-    @RequestMapping(value = "/activation_codes", method = RequestMethod.GET)
-    public ResponseEntity<List<ActivationCode>> getAllActivationCodes() {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<List<ActivationCode>> getAllActivationCodes(){
         return new GetAllActivationCodesResponse(this.activationCodeService.getAllActivationCodes());
     }
-    @RequestMapping(value = "/activation_codes/{activationCode}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeActivationCode(@PathVariable("activationCode") String activationCode) {
-        if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
+    @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeActivationCode(@PathVariable("activationCode") String activationCode){
+        if(!this.activationCodeService.codeExists(UUID.fromString(activationCode))){
             return new ActivationCodeDeletedResponse();
         }
         this.activationCodeService.deleteCode(UUID.fromString(activationCode));
