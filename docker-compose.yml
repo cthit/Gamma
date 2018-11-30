@@ -5,8 +5,6 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: example
-      GAMMA_EMAIL: gustav.engsmyre@gmail.com
-      GAMMA_EMAIL_PASSWORD: glmxmanbpehkvilw
     ports:
       - 5432:5432
 
@@ -15,3 +13,13 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: dev.dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+      - ./frontend/public:/usr/src/app/public

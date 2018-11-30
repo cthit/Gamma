@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/activation_codes")
+@RequestMapping("/admin/activation_codes")
 public class UserActivationCodeAdminController {
     private ActivationCodeService activationCodeService;
 
@@ -22,11 +22,11 @@ public class UserActivationCodeAdminController {
         this.activationCodeService = activationCodeService;
     }
 
-    @RequestMapping(value = "/activation_codes", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ActivationCode>> getAllActivationCodes(){
         return new GetAllActivationCodesResponse(activationCodeService.getAllActivationCodes());
     }
-    @RequestMapping(value = "/activation_codes/{activationCode}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeActivationCode(@PathVariable("activationCode") String activationCode){
         if(!activationCodeService.codeExists(UUID.fromString(activationCode))){
             return new ActivationCodeDeletedResponse();

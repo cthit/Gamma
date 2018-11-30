@@ -14,10 +14,11 @@ public class AuthorityLevelService {
         this.authorityLevelRepository = authorityLevelRepository;
     }
 
-    public void addAuthorityLevel(String level){
+    public AuthorityLevel addAuthorityLevel(String level){
         AuthorityLevel authorityLevel = new AuthorityLevel();
         authorityLevel.setAuthorityLevel(level);
         authorityLevelRepository.save(authorityLevel);
+        return authorityLevel;
     }
 
     public boolean authorityLevelExists(String authorityLevel){

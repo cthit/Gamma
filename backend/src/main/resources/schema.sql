@@ -46,14 +46,6 @@ create table authority_level (
   authority_level varchar(30)
 );
 
-create table authority (
-  id              uuid  constraint authority_unique unique,
-  fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
-  post_id         uuid  constraint authority_post                     references post,
-  authority_level uuid  constraint authority_authority_level          references authority_level,
-  constraint      authority_pk primary key (post_id, fkit_group_id)
-);
-
 create table password_reset_token(
   id      uuid constraint password_reset_token_pk primary key,
   token   varchar(100) not null,
@@ -71,16 +63,26 @@ create table fkit_group (
   avatar_url  varchar(255) null
 );
 
+create table post (
+  id        uuid constraint post_pk primary key,
+  post_name uuid not null references text
+);
+
+create table authority (
+  id              uuid  constraint authority_unique unique,
+  fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
+  post_id         uuid  constraint authority_post                     references post,
+  authority_level uuid  constraint authority_authority_level          references authority_level,
+  constraint      authority_pk primary key (post_id, fkit_group_id)
+);
+
 create table fkit_group_website(
   id          uuid constraint fkit_group_website_pk primary key,
   fkit_group  uuid not null references fkit_group,
   website     uuid not null references website_url
 );
 
-create table post (
-  id        uuid constraint post_pk primary key,
-  post_name uuid not null references text
-);
+
 
 create table membership (   -- Should this be rebuilt to look like all other tables? probably
   ituser_id            uuid         constraint membership_ituser_fk references ituser,

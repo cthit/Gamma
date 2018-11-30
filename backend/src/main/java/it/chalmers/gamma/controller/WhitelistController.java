@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller;
 
+import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
@@ -8,6 +9,8 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class WhitelistController {
@@ -28,8 +30,14 @@ public class WhitelistController {
 
     private MailSenderService mailSenderService;
 
-    @Value("${mail.receiver.standard-postfix}")
-    private String mailPostfix;
+    private static final Logger logger = LoggerFactory.getLogger(WhitelistController.class);
+
+
+    @Value("${spring.profiles.active:development}")
+    private String profile;
+
+   // @Value("${mail.receiver.standard-postfix}")
+    private String mailPostfix = "@student.chalmers.se";
 
     public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService,
                                ITUserService itUserService, MailSenderService mailSenderService){
@@ -48,6 +56,9 @@ public class WhitelistController {
             ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
         }
+        else{
+            //Log that a unsuccessful attempt was made
+        }
 
         /*
         We always want to send the same response, for security reasons.
@@ -60,7 +71,13 @@ public class WhitelistController {
         String code = activationCode.getCode();
         String to = activationCode.getCid() + "@" + mailPostfix;
         String message = "Your code to Gamma is: " + code;
-        mailSenderService.sendMail(to, "Chalmers activation code", message);
+        logger.info(profile);
+        if(profile.equals("profile")) {
+            mailSenderService.sendMail(to, "Chalmers activation code", message);
+        }
+        else{
+            logger.info(code);
+        }
     }
 }
 

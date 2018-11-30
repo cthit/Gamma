@@ -1,0 +1,30 @@
+FROM gradle:4.10-jdk10
+#Gradle docker has gradle user as default
+USER root
+
+COPY . /app
+
+RUN mkdir -p /app
+RUN chown -R gradle /app
+WORKDIR /app
+
+USER gradle
+#db is used to separate development and production databases
+
+# Environment variables needed for Gamma to run, Should be changed. 
+ENV DB_HOST db
+ENV DB_USER user
+ENV DB_PASSWORD password
+ENV SERVER_PORT 9090
+ENV JWT_SECRET_KEY jwtkey
+ENV JWT_EXPIRE_LENGTH 2592000000
+ENV GOTIFY_KEY key
+ENV GOTIFY_URL https://gotify.chalmers.it
+ENV ADMIN_PASSWORD password
+
+
+
+RUN gradle :build -x test
+# This probably should not have a static path, but instead build in a custom path.
+CMD java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
+
