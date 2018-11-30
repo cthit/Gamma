@@ -3,6 +3,8 @@ package it.chalmers.gamma.service;
 import java.util.Objects;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,8 +23,7 @@ public class MailSenderService {
     @Value("${application.gotify.url}")
     private String gotifyURL;
 
-    public MailSenderService() {
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
 
     /**
      * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
@@ -42,9 +43,8 @@ public class MailSenderService {
 
         HttpEntity<JSONObject> entity = new HttpEntity<>(object, headers);
         RestTemplate restTemplate = new RestTemplate();
-
         ResponseEntity<String> response = restTemplate.postForEntity(this.gotifyURL, entity, String.class);
-
+        LOGGER.info("Gotify responded with " + response.getHeaders() + response.getBody());
         return true;
     }
 

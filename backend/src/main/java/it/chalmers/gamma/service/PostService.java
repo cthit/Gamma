@@ -40,7 +40,7 @@ public class PostService {
     }
 
     public boolean postExists(String postName) {
-        return !(this.repository.getByPostName_Sv(postName) == null);
+        return (this.repository.getByPostName_Sv(postName) != null);
     }
 
     public List<Post> getAllPosts() {

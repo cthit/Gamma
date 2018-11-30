@@ -5,12 +5,10 @@ import it.chalmers.gamma.db.entity.Post;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 
 @Embeddable
 public class AuthorityPK implements Serializable {

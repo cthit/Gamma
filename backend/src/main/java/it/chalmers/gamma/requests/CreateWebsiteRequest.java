@@ -3,8 +3,8 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 
 public class CreateWebsiteRequest {
-    private String name;
-    private String prettyName;
+    private final String name;
+    private final String prettyName;
 
 
     public CreateWebsiteRequest(String name, String prettyName) {

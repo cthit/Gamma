@@ -15,22 +15,17 @@ import org.json.simple.JSONObject;
 public class FKITGroupSerializer {
 
     public enum Properties {
-        ID(false),
-        AVATAR_URL(false),
-        NAME(false),
-        PRETTY_NAME(false),
-        DESCRIPTION(false),
-        FUNC(false),
-        EMAIL(false),
-        TYPE(false),
-        WEBSITES(false),
-        USERS(false);
+        ID,
+        AVATAR_URL,
+        NAME,
+        PRETTY_NAME,
+        DESCRIPTION,
+        FUNC,
+        EMAIL,
+        TYPE,
+        WEBSITES,
+        USERS;
 
-        private boolean enabled;
-
-        Properties(boolean defaultEnabled) {
-            this.enabled = defaultEnabled;
-        }
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
@@ -40,7 +35,7 @@ public class FKITGroupSerializer {
         }
     }
 
-    private List<Properties> properties;
+    private final List<Properties> properties;
 
     public FKITGroupSerializer(List<Properties> properties) {
         this.properties = new ArrayList<>(properties);

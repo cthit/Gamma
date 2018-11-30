@@ -102,12 +102,9 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.deleteById(id);
     }
 
-    public boolean editUser(UUID user, String nick, String firstName, String lastName,
+    public void editUser(UUID user, String nick, String firstName, String lastName,
                             String email, String phone, Language language, String avatarUrl) {
         ITUser itUser = this.itUserRepository.findById(user).orElse(null);
-        if (itUser == null) {
-            return false;
-        }
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
         itUser.setLastName(lastName == null ? itUser.getLastName() : lastName);
@@ -117,7 +114,6 @@ public class ITUserService implements UserDetailsService {
         itUser.setAvatarUrl(avatarUrl == null ? itUser.getAvatarUrl() : avatarUrl);
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
-        return true;
     }
 
     public ITUser getUserById(UUID id) {

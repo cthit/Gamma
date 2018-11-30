@@ -69,7 +69,10 @@ public final class UserAdminController {
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
-        if (!this.itUserService.editUser(
+        if (!this.itUserService.userExists(UUID.fromString(id))){
+            throw new CidNotFoundResponse();
+        }
+        this.itUserService.editUser(
                 UUID.fromString(id),
                 request.getNick(),
                 request.getFirstName(),
@@ -77,9 +80,8 @@ public final class UserAdminController {
                 request.getEmail(),
                 request.getPhone(),
                 request.getLanguage(),
-                request.getAvatarUrl())) {
-            throw new CidNotFoundResponse();
-        }
+                request.getAvatarUrl());
+        // Below handles adding websites.
         ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();

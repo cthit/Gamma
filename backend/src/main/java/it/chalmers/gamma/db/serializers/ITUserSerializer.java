@@ -13,27 +13,21 @@ import org.json.simple.JSONObject;
 public class ITUserSerializer {
 
     public enum Properties {
-        ID(false),
-        AVATAR_URL(false),
-        CID(false),
-        NICK(false),
-        FIRST_NAME(false),
-        LAST_NAME(false),
-        EMAIL(false),
-        PHONE(false),
-        LANGUAGE(false),
-        USER_AGREEMENT(false),
-        ACCOUNT_LOCKED(false),
-        ACCEPTANCE_YEAR(false),
-        CREATED_AT(false),
-        LAST_MODIFIED_AT(false),
-        WEBSITE(false);
-
-        private boolean enabled;
-
-        Properties(boolean defaultEnabled) {
-            this.enabled = defaultEnabled;
-        }
+        ID,
+        AVATAR_URL,
+        CID,
+        NICK,
+        FIRST_NAME,
+        LAST_NAME,
+        EMAIL,
+        PHONE,
+        LANGUAGE,
+        USER_AGREEMENT,
+        ACCOUNT_LOCKED,
+        ACCEPTANCE_YEAR,
+        CREATED_AT,
+        LAST_MODIFIED_AT,
+        WEBSITE;
 
         public static List<ITUserSerializer.Properties> getAllProperties() {
             ITUserSerializer.Properties[] props = {
@@ -57,7 +51,7 @@ public class ITUserSerializer {
         }
     }
 
-    private List<Properties> properties;
+    private final List<Properties> properties;
 
     public ITUserSerializer(List<Properties> properties) {
         this.properties = new ArrayList<>(properties);
