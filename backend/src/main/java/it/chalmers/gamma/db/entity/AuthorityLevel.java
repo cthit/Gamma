@@ -52,7 +52,7 @@ public class AuthorityLevel implements GrantedAuthority {
         }
         AuthorityLevel that = (AuthorityLevel) o;
         return Objects.equals(this.id, that.id)
-                && Objects.equals(this.authorityLevel, that.authorityLevel);
+            && Objects.equals(this.authorityLevel, that.authorityLevel);
     }
 
     @Override
@@ -63,10 +63,10 @@ public class AuthorityLevel implements GrantedAuthority {
     @Override
     public String toString() {
         return "AuthorityLevel{"
-                + "id=" + this.id
-                + ", authorityLevel='"
-                + this.authorityLevel + '\''
-                + '}';
+            + "id=" + this.id
+            + ", authorityLevel='"
+            + this.authorityLevel + '\''
+            + '}';
     }
 
 }

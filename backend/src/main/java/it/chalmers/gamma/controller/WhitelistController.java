@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
@@ -8,16 +7,17 @@ import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public final class WhitelistController {
@@ -34,7 +34,7 @@ public final class WhitelistController {
     @Value("${spring.profiles.active:development}")
     private String profile;
 
-   // @Value("${mail.receiver.standard-postfix}")
+    // @Value("${mail.receiver.standard-postfix}")
     private String mailPostfix = "@student.chalmers.se";
 
     private WhitelistController(
@@ -53,7 +53,7 @@ public final class WhitelistController {
             Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
             String code = this.activationCodeService.generateActivationCode();
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
-             sendEmail(activationCode);
+            sendEmail(activationCode);
         }
 
         /*
@@ -68,11 +68,10 @@ public final class WhitelistController {
         String code = activationCode.getCode();
         String to = activationCode.getCid() + "@" + this.MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
-        logger.info(profile);
-        if(profile.equals("profile")) {
+        logger.info(this.profile);
+        if (this.profile.equals("profile")) {
             this.mailSenderService.sendMail(to, "Chalmers activation code", message);
-        }
-        else{
+        } else {
             logger.info(code);
         }
     }

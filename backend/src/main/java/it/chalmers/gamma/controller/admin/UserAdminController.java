@@ -21,8 +21,8 @@ import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.util.TokenUtils;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -83,7 +83,9 @@ public final class UserAdminController {
         ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<WebsiteInterface> userWebsite = new ArrayList<>(this.userWebsiteService.getWebsites(user));
+        List<WebsiteInterface> userWebsite = new ArrayList<>(
+                this.userWebsiteService.getWebsites(user)
+        );
         this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
@@ -120,7 +122,8 @@ public final class UserAdminController {
      * Administrative function that can add user without need for user to add it personally.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest) {
+    public ResponseEntity<String> addUser(
+            @RequestBody AdminViewCreateITUserRequest createITUserRequest) {
         if (this.itUserService.userExists(createITUserRequest.getCid())) {
             throw new UserAlreadyExistsResponse();
         }

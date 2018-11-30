@@ -163,15 +163,15 @@ public class FKITGroup {
     @Override
     public String toString() {
         return "FKITGroup{"
-                + "id=" + id
-                + ", avatarURL='" + avatarURL + '\''
-                + ", name='" + name + '\''
-                + ", prettyName='" + prettyName + '\''
-                + ", description=" + description
-                + ", func=" + func
-                + ", email='" + email + '\''
-                + ", type=" + type
-                + '}';
+            + "id=" + id
+            + ", avatarURL='" + avatarURL + '\''
+            + ", name='" + name + '\''
+            + ", prettyName='" + prettyName + '\''
+            + ", description=" + description
+            + ", func=" + func
+            + ", email='" + email + '\''
+            + ", type=" + type
+            + '}';
     }
 
     @Override
@@ -184,25 +184,25 @@ public class FKITGroup {
         }
         FKITGroup fkitGroup = (FKITGroup) o;
         return Objects.equals(this.id, fkitGroup.id)
-                && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
-                && Objects.equals(this.name, fkitGroup.name)
-                && Objects.equals(this.prettyName, fkitGroup.prettyName)
-                && Objects.equals(this.description, fkitGroup.description)
-                && Objects.equals(this.func, fkitGroup.func)
-                && Objects.equals(this.email, fkitGroup.email)
-                && this.type == fkitGroup.type;
+            && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
+            && Objects.equals(this.name, fkitGroup.name)
+            && Objects.equals(this.prettyName, fkitGroup.prettyName)
+            && Objects.equals(this.description, fkitGroup.description)
+            && Objects.equals(this.func, fkitGroup.func)
+            && Objects.equals(this.email, fkitGroup.email)
+            && this.type == fkitGroup.type;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
-                this.avatarURL,
-                this.name,
-                this.prettyName,
-                this.description,
-                this.func,
-                this.email,
-                this.type);
+            this.id,
+            this.avatarURL,
+            this.name,
+            this.prettyName,
+            this.description,
+            this.func,
+            this.email,
+            this.type);
     }
 }

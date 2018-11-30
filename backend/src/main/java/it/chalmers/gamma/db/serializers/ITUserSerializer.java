@@ -1,8 +1,8 @@
 package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.util.SerializerUtils;
 import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.util.SerializerUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,21 +37,21 @@ public class ITUserSerializer {
 
         public static List<ITUserSerializer.Properties> getAllProperties() {
             ITUserSerializer.Properties[] props = {
-                    ID,
-                    AVATAR_URL,
-                    CID,
-                    NICK,
-                    FIRST_NAME,
-                    LAST_NAME,
-                    EMAIL,
-                    PHONE,
-                    LANGUAGE,
-                    USER_AGREEMENT,
-                    ACCOUNT_LOCKED,
-                    ACCEPTANCE_YEAR,
-                    CREATED_AT,
-                    LAST_MODIFIED_AT,
-                    WEBSITE
+                ID,
+                AVATAR_URL,
+                CID,
+                NICK,
+                FIRST_NAME,
+                LAST_NAME,
+                EMAIL,
+                PHONE,
+                LANGUAGE,
+                USER_AGREEMENT,
+                ACCOUNT_LOCKED,
+                ACCEPTANCE_YEAR,
+                CREATED_AT,
+                LAST_MODIFIED_AT,
+                WEBSITE
             };
             return new ArrayList<>(Arrays.asList(props));
         }

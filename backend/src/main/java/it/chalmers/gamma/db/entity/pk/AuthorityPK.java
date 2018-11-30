@@ -49,7 +49,7 @@ public class AuthorityPK implements Serializable {
         }
         AuthorityPK that = (AuthorityPK) o;
         return Objects.equals(this.fkitGroup, that.fkitGroup)
-                && Objects.equals(this.post, that.post);
+            && Objects.equals(this.post, that.post);
     }
 
     @Override
@@ -60,8 +60,8 @@ public class AuthorityPK implements Serializable {
     @Override
     public String toString() {
         return "AuthorityPK{"
-                + "fkitGroup=" + this.fkitGroup
-                + ", post=" + this.post
-                + '}';
+            + "fkitGroup=" + this.fkitGroup
+            + ", post=" + this.post
+            + '}';
     }
 }

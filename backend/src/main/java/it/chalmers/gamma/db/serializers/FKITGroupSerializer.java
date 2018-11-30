@@ -1,8 +1,8 @@
 package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.util.SerializerUtils;
 import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.util.SerializerUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class FKITGroupSerializer {
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
-                    ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS
+                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS
             };
             return new ArrayList<>(Arrays.asList(props));
         }

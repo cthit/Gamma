@@ -113,7 +113,7 @@ public final class ActivationCodeService {
 
     @Override
     public int hashCode() {
-        return Objects.hash(activationCodeRepository);
+        return Objects.hash(this.activationCodeRepository);
     }
 
     @Override

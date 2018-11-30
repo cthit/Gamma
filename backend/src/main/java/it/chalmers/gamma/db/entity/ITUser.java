@@ -263,62 +263,62 @@ public class ITUser implements UserDetails {
         }
         ITUser itUser = (ITUser) o;
         return this.gdpr == itUser.gdpr
-                && this.userAgreement == itUser.userAgreement
-                && Objects.equals(this.id, itUser.id)
-                && Objects.equals(this.cid, itUser.cid)
-                && Objects.equals(this.nick, itUser.nick)
-                && Objects.equals(this.password, itUser.password)
-                && Objects.equals(this.firstName, itUser.firstName)
-                && Objects.equals(this.lastName, itUser.lastName)
-                && Objects.equals(this.email, itUser.email)
-                && Objects.equals(this.phone, itUser.phone)
-                && Objects.equals(this.language, itUser.language)
-                && Objects.equals(this.avatarUrl, itUser.avatarUrl)
-                && Objects.equals(this.acceptanceYear, itUser.acceptanceYear)
-                && Objects.equals(this.createdAt, itUser.createdAt)
-                && Objects.equals(this.lastModifiedAt, itUser.lastModifiedAt);
+            && this.userAgreement == itUser.userAgreement
+            && Objects.equals(this.id, itUser.id)
+            && Objects.equals(this.cid, itUser.cid)
+            && Objects.equals(this.nick, itUser.nick)
+            && Objects.equals(this.password, itUser.password)
+            && Objects.equals(this.firstName, itUser.firstName)
+            && Objects.equals(this.lastName, itUser.lastName)
+            && Objects.equals(this.email, itUser.email)
+            && Objects.equals(this.phone, itUser.phone)
+            && Objects.equals(this.language, itUser.language)
+            && Objects.equals(this.avatarUrl, itUser.avatarUrl)
+            && Objects.equals(this.acceptanceYear, itUser.acceptanceYear)
+            && Objects.equals(this.createdAt, itUser.createdAt)
+            && Objects.equals(this.lastModifiedAt, itUser.lastModifiedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
-                this.cid,
-                this.password,
-                this.nick,
-                this.firstName,
-                this.lastName,
-                this.email,
-                this.phone,
-                this.language,
-                this.avatarUrl,
-                this.gdpr,
-                this.userAgreement,
-                this.acceptanceYear,
-                this.createdAt,
-                this.lastModifiedAt);
+            this.id,
+            this.cid,
+            this.password,
+            this.nick,
+            this.firstName,
+            this.lastName,
+            this.email,
+            this.phone,
+            this.language,
+            this.avatarUrl,
+            this.gdpr,
+            this.userAgreement,
+            this.acceptanceYear,
+            this.createdAt,
+            this.lastModifiedAt);
     }
 
     @Override
     public String toString() {
         return "ITUser{"
-                + "id=" + id
-                + ", cid='" + cid + '\''
-                + ", password='" + "<redacted>" + '\''
-                + ", nick='" + nick + '\''
-                + ", firstName='" + firstName + '\''
-                + ", lastName='" + lastName + '\''
-                + ", email='" + email + '\''
-                + ", phone='" + phone + '\''
-                + ", language=" + language
-                + ", avatarUrl='" + avatarUrl + '\''
-                + ", gdpr=" + gdpr
-                + ", userAgreement=" + userAgreement
-                + ", accountLocked=" + accountLocked
-                + ", acceptanceYear=" + acceptanceYear
-                + ", createdAt=" + createdAt
-                + ", lastModifiedAt=" + lastModifiedAt
-                + ", authorities=" + authorities
-                + '}';
+            + "id=" + id
+            + ", cid='" + cid + '\''
+            + ", password='" + "<redacted>" + '\''
+            + ", nick='" + nick + '\''
+            + ", firstName='" + firstName + '\''
+            + ", lastName='" + lastName + '\''
+            + ", email='" + email + '\''
+            + ", phone='" + phone + '\''
+            + ", language=" + language
+            + ", avatarUrl='" + avatarUrl + '\''
+            + ", gdpr=" + gdpr
+            + ", userAgreement=" + userAgreement
+            + ", accountLocked=" + accountLocked
+            + ", acceptanceYear=" + acceptanceYear
+            + ", createdAt=" + createdAt
+            + ", lastModifiedAt=" + lastModifiedAt
+            + ", authorities=" + authorities
+            + '}';
     }
 }

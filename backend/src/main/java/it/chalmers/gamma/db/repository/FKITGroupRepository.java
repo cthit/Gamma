@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FKITGroupRepository extends JpaRepository<FKITGroup, UUID> {
     boolean existsFKITGroupByName(String name);
+
     FKITGroup findByName(String name);
 }

@@ -71,8 +71,8 @@ public class Membership {
         }
         Membership that = (Membership) o;
         return Objects.equals(this.id, that.id)
-                && Objects.equals(this.post, that.post)
-                && Objects.equals(this.unofficialPostName, that.unofficialPostName);
+            && Objects.equals(this.post, that.post)
+            && Objects.equals(this.unofficialPostName, that.unofficialPostName);
     }
 
     @Override
@@ -83,9 +83,9 @@ public class Membership {
     @Override
     public String toString() {
         return "Membership{"
-                + "id=" + this.id
-                + ", post=" + this.post
-                + ", unofficialPostName='" + this.unofficialPostName + '\''
-                + '}';
+            + "id=" + this.id
+            + ", post=" + this.post
+            + ", unofficialPostName='" + this.unofficialPostName + '\''
+            + '}';
     }
 }

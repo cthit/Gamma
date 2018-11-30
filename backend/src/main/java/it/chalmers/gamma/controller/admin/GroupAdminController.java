@@ -1,5 +1,10 @@
 package it.chalmers.gamma.controller.admin;
 
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
+
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
@@ -29,11 +34,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
 
 @RestController
 @RequestMapping("/admin/groups")
@@ -101,13 +101,13 @@ public final class GroupAdminController {
         }
         this.groupWebsiteService.addGroupWebsites(
                 this.fkitService.createGroup(
-                    createGroupRequest.getName(),
-                    createGroupRequest.getPrettyName(),
-                    createGroupRequest.getDescription(),
-                    createGroupRequest.getEmail(),
-                    createGroupRequest.getType(),
-                    createGroupRequest.getFunc(),
-                    createGroupRequest.getAvatarURL()
+                        createGroupRequest.getName(),
+                        createGroupRequest.getPrettyName(),
+                        createGroupRequest.getDescription(),
+                        createGroupRequest.getEmail(),
+                        createGroupRequest.getType(),
+                        createGroupRequest.getFunc(),
+                        createGroupRequest.getAvatarURL()
                 ), websiteURLs);
         return new GroupCreatedResponse();
     }
@@ -123,11 +123,16 @@ public final class GroupAdminController {
                 request.getEmail(),
                 request.getType(),
                 request.getFunc(),
-                request.getAvatarURL());
+                request.getAvatarURL()
+        );
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
-        List<WebsiteInterface> entityWebsites = new ArrayList<>(this.groupWebsiteService.getWebsites(group));
-        List<WebsiteURL> websiteURLs = this.groupWebsiteService.addWebsiteToEntity(websiteInfos, entityWebsites);
+        List<WebsiteInterface> entityWebsites = new ArrayList<>(
+                this.groupWebsiteService.getWebsites(group)
+        );
+        List<WebsiteURL> websiteURLs = this.groupWebsiteService.addWebsiteToEntity(
+                websiteInfos, entityWebsites
+        );
         this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupEditedResponse();
     }

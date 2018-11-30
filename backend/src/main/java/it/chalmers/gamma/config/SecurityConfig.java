@@ -36,10 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
 
         http.authorizeRequests()//
-                .antMatchers("/users/login").permitAll()
-                .antMatchers("/users/create").permitAll()
-                .antMatchers("/whitelist/activate_cid").permitAll()
-                .antMatchers("/validate_jwt").permitAll();
+            .antMatchers("/users/login").permitAll()
+            .antMatchers("/users/create").permitAll()
+            .antMatchers("/whitelist/activate_cid").permitAll()
+            .antMatchers("/validate_jwt").permitAll();
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

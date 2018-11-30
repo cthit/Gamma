@@ -49,7 +49,7 @@ public final class ITUserService implements UserDetailsService {
         ITUser details = this.itUserRepository.findByCid(cid);
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
         List<GrantedAuthority> authority = new ArrayList<>(
-                    this.authorityService.getAuthorities(memberships)
+                this.authorityService.getAuthorities(memberships)
         );
         details.setAuthority(authority);
         return details;
@@ -73,13 +73,13 @@ public final class ITUserService implements UserDetailsService {
     }
 
     public ITUser createUser(String nick,
-                           String firstName,
-                           String lastname,
-                           String cid,
-                           Year year,
-                           boolean userAgreement,
-                           String email,
-                           String password) {
+                             String firstName,
+                             String lastname,
+                             String cid,
+                             Year year,
+                             boolean userAgreement,
+                             String email,
+                             String password) {
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
         itUser.setFirstName(firstName);

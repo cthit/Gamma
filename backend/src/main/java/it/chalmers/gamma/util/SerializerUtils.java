@@ -9,7 +9,8 @@ import org.json.simple.JSONObject;
 
 public final class SerializerUtils {
 
-    private SerializerUtils() {}
+    private SerializerUtils() {
+    }
 
     public static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields) {
         JSONObject json = new JSONObject();

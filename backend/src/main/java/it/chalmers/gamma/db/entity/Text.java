@@ -62,17 +62,17 @@ public class Text {
         }
         Text text = (Text) o;
         return Objects.equals(this.id, text.id)
-                && Objects.equals(this.sv, text.sv)
-                && Objects.equals(this.en, text.en);
+            && Objects.equals(this.sv, text.sv)
+            && Objects.equals(this.en, text.en);
     }
 
     @Override
     public String toString() {
         return "Text{"
-                + "id=" + this.id
-                + ", sv='" + this.sv + '\''
-                + ", en='" + this.en + '\''
-                + '}';
+            + "id=" + this.id
+            + ", sv='" + this.sv + '\''
+            + ", en='" + this.en + '\''
+            + '}';
     }
 
     @Override

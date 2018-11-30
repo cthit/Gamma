@@ -54,10 +54,10 @@ public final class AuthorityAdminController {
     private final MembershipService membershipService;
 
     private AuthorityAdminController(AuthorityService authorityService,
-                                    FKITService fkitService,
-                                    PostService postService,
-                                    AuthorityLevelService authorityLevelService,
-                                    MembershipService membershipService) {
+                                     FKITService fkitService,
+                                     PostService postService,
+                                     AuthorityLevelService authorityLevelService,
+                                     MembershipService membershipService) {
         this.authorityService = authorityService;
         this.fkitService = fkitService;
         this.postService = postService;
@@ -136,6 +136,7 @@ public final class AuthorityAdminController {
         List<AuthorityLevel> authorityLevels = this.authorityLevelService.getAllAuthorityLevels();
         return new GetAllAuthorityLevelsResponse(authorityLevels);
     }
+
     @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeAuthorityLevel(@PathVariable("id") String id) {
         this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));

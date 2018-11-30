@@ -61,6 +61,7 @@ public final class GroupMemberAdminController {
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName(), request.getYear());
         return new UserAddedToGroupResponse();
     }
+
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
     public ResponseEntity<List<Membership>> getUsersInGroup(@PathVariable("id") String id) {
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));

@@ -91,8 +91,8 @@ public class ActivationCode {
         }
         ActivationCode that = (ActivationCode) o;
         return Objects.equals(this.id, that.id)
-                && Objects.equals(this.cid, that.cid)
-                && Objects.equals(this.code, that.code);
+            && Objects.equals(this.cid, that.cid)
+            && Objects.equals(this.code, that.code);
     }
 
     @Override
@@ -103,9 +103,9 @@ public class ActivationCode {
     @Override
     public String toString() {
         return "ActivationCode{"
-                + "id=" + this.id
-                + ", whitelistedCid=" + this.cid
-                + ", code='" + this.code + '\''
-                + '}';
+            + "id=" + this.id
+            + ", whitelistedCid=" + this.cid
+            + ", code='" + this.code + '\''
+            + '}';
     }
 }

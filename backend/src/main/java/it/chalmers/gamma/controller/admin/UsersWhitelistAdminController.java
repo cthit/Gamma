@@ -31,14 +31,14 @@ public final class UsersWhitelistAdminController {
     private final ITUserService itUserService;
 
     private UsersWhitelistAdminController(WhitelistService whitelistService,
-                                         ITUserService itUserService) {
+                                          ITUserService itUserService) {
         this.whitelistService = whitelistService;
         this.itUserService = itUserService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addWhitelistedUsers(
-        @RequestBody AddListOfWhitelistedRequest request
+            @RequestBody AddListOfWhitelistedRequest request
     ) {
         List<String> cids = request.getCids();
         for (String cid : cids) {
@@ -52,7 +52,8 @@ public final class UsersWhitelistAdminController {
         }
         return new WhitelistAddedResponse();
     }
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editWhitelist(
             @RequestBody WhitelistCodeRequest request,
             @PathVariable("id") String id) {
@@ -69,6 +70,7 @@ public final class UsersWhitelistAdminController {
         this.whitelistService.editWhitelist(oldWhitelist, request.getCid());
         return new EditedWhitelistResponse();
     }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeWhitelist(@PathVariable("id") String id) {
         Whitelist whitelist = this.whitelistService.getWhitelistById(id);
@@ -87,6 +89,7 @@ public final class UsersWhitelistAdminController {
     /**
      * /whitelist/valid will be able to return whether or not a
      * user is whitelist, without doing anything to modify the data.
+     *
      * @param cid CID of a user.
      * @return true if the user is whitelisted false otherwise
      */

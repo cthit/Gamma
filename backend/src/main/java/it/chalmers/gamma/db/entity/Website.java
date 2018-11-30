@@ -61,7 +61,7 @@ public class Website {
         }
         Website website = (Website) o;
         return Objects.equals(this.id, website.id)
-                && Objects.equals(this.name, website.name);
+            && Objects.equals(this.name, website.name);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class Website {
     @Override
     public String toString() {
         return "Website{"
-                + "id=" + this.id
-                + ", name='" + this.name + '\''
-                + '}';
+            + "id=" + this.id
+            + ", name='" + this.name + '\''
+            + '}';
     }
 }

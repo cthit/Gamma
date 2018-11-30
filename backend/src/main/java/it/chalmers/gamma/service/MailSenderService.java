@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,7 +21,8 @@ public final class MailSenderService {
     @Value("${application.gotify.url}")
     private String gotifyURL;
 
-    private MailSenderService() {}
+    private MailSenderService() {
+    }
 
     /**
      * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify

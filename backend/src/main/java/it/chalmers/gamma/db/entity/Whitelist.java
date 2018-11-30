@@ -18,7 +18,8 @@ public class Whitelist {
     @Column(name = "cid", unique = true, length = 10, nullable = false)
     private String cid;
 
-    protected Whitelist(){}
+    protected Whitelist() {
+    }
 
     public Whitelist(String cid) {
         this.id = UUID.randomUUID();
@@ -44,9 +45,9 @@ public class Whitelist {
     @Override
     public String toString() {
         return "Whitelist{"
-                + "id=" + this.id
-                + ", cid='" + this.cid + '\''
-                + '}';
+            + "id=" + this.id
+            + ", cid='" + this.cid + '\''
+            + '}';
     }
 
     @Override
@@ -59,7 +60,7 @@ public class Whitelist {
         }
         Whitelist whitelist = (Whitelist) o;
         return Objects.equals(this.id, whitelist.id)
-                && Objects.equals(this.cid, whitelist.cid);
+            && Objects.equals(this.cid, whitelist.cid);
     }
 
     @Override

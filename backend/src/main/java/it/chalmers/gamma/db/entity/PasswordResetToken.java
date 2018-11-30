@@ -55,10 +55,10 @@ public class PasswordResetToken {
     @Override
     public String toString() {
         return "PasswordResetToken{"
-                + "id=" + this.id
-                + ", token='" + this.token + '\''
-                + ", itUser=" + this.itUser
-                + '}';
+            + "id=" + this.id
+            + ", token='" + this.token + '\''
+            + ", itUser=" + this.itUser
+            + '}';
     }
 
     @Override
@@ -71,8 +71,8 @@ public class PasswordResetToken {
         }
         PasswordResetToken that = (PasswordResetToken) o;
         return Objects.equals(this.id, that.id)
-                && Objects.equals(this.token, that.token)
-                && Objects.equals(this.itUser, that.itUser);
+            && Objects.equals(this.token, that.token)
+            && Objects.equals(this.itUser, that.itUser);
     }
 
     @Override

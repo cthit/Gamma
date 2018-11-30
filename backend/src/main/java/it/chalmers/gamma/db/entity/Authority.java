@@ -64,7 +64,7 @@ public class Authority {
         }
         Authority authority = (Authority) o;
         return Objects.equals(this.id, authority.id)
-                && Objects.equals(this.authorityLevel, authority.authorityLevel);
+            && Objects.equals(this.authorityLevel, authority.authorityLevel);
     }
 
     @Override
@@ -75,8 +75,8 @@ public class Authority {
     @Override
     public String toString() {
         return "Authority{"
-                + "id=" + this.id
-                + ", authorityLevel=" + this.authorityLevel
-                + '}';
+            + "id=" + this.id
+            + ", authorityLevel=" + this.authorityLevel
+            + '}';
     }
 }

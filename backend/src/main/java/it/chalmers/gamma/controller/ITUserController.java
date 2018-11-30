@@ -1,5 +1,12 @@
 package it.chalmers.gamma.controller;
 
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
+
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
@@ -40,13 +47,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
-
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public final class ITUserController {
@@ -59,11 +59,11 @@ public final class ITUserController {
     private final UserWebsiteService userWebsiteService;
 
     private ITUserController(ITUserService itUserService,
-                            ActivationCodeService activationCodeService,
-                            WhitelistService whitelistService,
-                            AuthenticationManager authenticationManager,
-                            JwtTokenProvider jwtTokenProvider,
-                            UserWebsiteService userWebsiteService) {
+                             ActivationCodeService activationCodeService,
+                             WhitelistService whitelistService,
+                             AuthenticationManager authenticationManager,
+                             JwtTokenProvider jwtTokenProvider,
+                             UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
@@ -80,7 +80,8 @@ public final class ITUserController {
                             new UsernamePasswordAuthenticationToken(
                                     cidPasswordRequest.getCid(),
                                     cidPasswordRequest.getPassword()
-                            ));
+                            )
+                    );
             if (authentication.isAuthenticated()) {
                 String jwt = this.jwtTokenProvider.createToken(cidPasswordRequest.getCid());
                 return new LoginCompleteResponse(jwt);
@@ -94,8 +95,8 @@ public final class ITUserController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest) {
-
+    public ResponseEntity<String> createUser(
+            @RequestBody CreateITUserRequest createITUserRequest) {
         if (createITUserRequest == null) {
             throw new NullPointerException();
         }
@@ -162,6 +163,7 @@ public final class ITUserController {
                 );
         return serializer.serialize(user, websites);
     }
+
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public List<JSONObject> getAllUserMini() {
         List<ITUser> itUsers = this.itUserService.loadAllUsers();
@@ -181,6 +183,7 @@ public final class ITUserController {
         }
         return minifiedITUsers;
     }
+
     @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("cid") String cid) {
         ITUser user = this.itUserService.loadUser(cid);
