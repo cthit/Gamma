@@ -124,7 +124,7 @@ export class App extends Component {
                         renderDrawer={drawer}
                         renderHeader={header}
                         renderMain={() => (
-                            <div>
+                            <DigitLayout.Fill>
                                 <DigitTranslations
                                     translations={appTranslations}
                                     uniquePath="App"
@@ -235,59 +235,11 @@ export class App extends Component {
                                         </Switch>
                                     </DigitLayout.Padding>
                                 </DigitLayout.HideFill>
-                            </div>
+                            </DigitLayout.Fill>
                         )}
                     />
                 )}
             />
-            // <BrowserRouter>
-            //     <StyledRoot>
-            //         <StyledAppBar>
-            //             <StyledToolbar>
-            //                 <StyledMenuButton
-            //                     color="inherit"
-            //                     aria-label="open drawer"
-            //                     onClick={this.handleDrawerToggle}
-            //                 >
-            //                     <MenuIcon />
-            //                 </StyledMenuButton>
-            //                 <HorizontalFill>
-            //                     <GammaTitle text={title} white />
-            // <Route
-            //     render={props => (
-            //         <UserInformation
-            //             currentPath={
-            //                 props.location.pathname
-            //             }
-            //         />
-            //     )}
-            // />
-            //                 </HorizontalFill>
-            //             </StyledToolbar>
-            //         </StyledAppBar>
-            //         <Hidden mdUp>
-            //             <StyledDrawer
-            //                 variant="temporary"
-            //                 anchor="left"
-            //                 open={mobileOpen}
-            //                 onClose={this.handleDrawerToggle}
-            //                 ModalProps={{
-            //                     keepMounted: true // Better open performance on mobile.
-            //                 }}
-            //             >
-            //                 {drawer}
-            //             </StyledDrawer>
-            //         </Hidden>
-            //         <Hidden smDown implementation="css">
-            //             <StyledDrawer variant="permanent" open>
-            //                 {drawer}
-            //             </StyledDrawer>
-            //         </Hidden>
-            //         <StyledMain>
-
-            //         </StyledMain>
-            //     </StyledRoot>
-            // </BrowserRouter>
         );
     }
 }
