@@ -7,7 +7,6 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
@@ -92,30 +91,6 @@ public class EntityWebsiteService {
             }
         }
         return groupedWebsites;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        EntityWebsiteService that = (EntityWebsiteService) o;
-        return this.websiteService.equals(that.websiteService);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.websiteService);
-    }
-
-    @Override
-    public String toString() {
-        return "EntityWebsiteService{"
-            + "websiteService=" + this.websiteService
-            + '}';
     }
 
 }

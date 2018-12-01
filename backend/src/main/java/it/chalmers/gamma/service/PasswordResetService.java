@@ -4,8 +4,6 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.PasswordResetToken;
 import it.chalmers.gamma.db.repository.PasswordResetTokenRepository;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,27 +50,4 @@ public class PasswordResetService {
         this.repository.delete(this.repository.getTokenByItUser(user));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PasswordResetService that = (PasswordResetService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "PasswordResetService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

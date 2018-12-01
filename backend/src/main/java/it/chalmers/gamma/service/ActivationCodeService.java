@@ -6,7 +6,6 @@ import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -101,27 +100,4 @@ public class ActivationCodeService {
         return this.activationCodeRepository.findAll();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ActivationCodeService that = (ActivationCodeService) o;
-        return this.activationCodeRepository.equals(that.activationCodeRepository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.activationCodeRepository);
-    }
-
-    @Override
-    public String toString() {
-        return "ActivationCodeService{"
-            + "activationCodeRepository=" + this.activationCodeRepository
-            + '}';
-    }
 }

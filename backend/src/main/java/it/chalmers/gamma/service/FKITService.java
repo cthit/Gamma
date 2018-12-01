@@ -6,7 +6,6 @@ import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.GroupType;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import it.chalmers.gamma.requests.CreateGroupRequest;
@@ -88,27 +87,4 @@ public class FKITService {
         return this.repo.findById(id).orElse(null);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        FKITService that = (FKITService) o;
-        return this.repo.equals(that.repo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repo);
-    }
-
-    @Override
-    public String toString() {
-        return "FKITService{"
-            + "repo=" + this.repo
-            + '}';
-    }
 }

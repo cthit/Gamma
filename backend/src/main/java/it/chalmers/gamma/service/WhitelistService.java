@@ -4,7 +4,6 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -80,27 +79,4 @@ public class WhitelistService {
         this.whitelistRepository.save(whitelist);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WhitelistService that = (WhitelistService) o;
-        return this.whitelistRepository.equals(that.whitelistRepository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.whitelistRepository);
-    }
-
-    @Override
-    public String toString() {
-        return "WhitelistService{"
-            + "whitelistRepository=" + this.whitelistRepository
-            + '}';
-    }
 }

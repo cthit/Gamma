@@ -5,7 +5,6 @@ import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.PostRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,27 +59,4 @@ public class PostService {
         this.repository.deleteById(id);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PostService that = (PostService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "PostService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

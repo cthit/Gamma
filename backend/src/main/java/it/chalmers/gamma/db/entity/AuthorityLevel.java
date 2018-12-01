@@ -12,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "authority_level")
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidDuplicateLiterals", "PMD.AvoidFieldNameMatchingTypeName"})
 
 public class AuthorityLevel implements GrantedAuthority {
 
@@ -54,7 +54,7 @@ public class AuthorityLevel implements GrantedAuthority {
         }
         AuthorityLevel that = (AuthorityLevel) o;
         return Objects.equals(this.id, that.id)
-            && Objects.equals(this.authorityLevel, that.authorityLevel);
+                && Objects.equals(this.authorityLevel, that.authorityLevel);
     }
 
     @Override

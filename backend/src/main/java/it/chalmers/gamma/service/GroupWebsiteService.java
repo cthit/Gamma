@@ -9,7 +9,6 @@ import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -72,30 +71,4 @@ public class GroupWebsiteService extends EntityWebsiteService {
         this.repository.deleteAllByGroup(group);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        GroupWebsiteService that = (GroupWebsiteService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "GroupWebsiteService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

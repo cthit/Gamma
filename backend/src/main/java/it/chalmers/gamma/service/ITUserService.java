@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -126,34 +125,4 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ITUserService that = (ITUserService) o;
-        return this.itUserRepository.equals(that.itUserRepository)
-            && this.passwordEncoder.equals(that.passwordEncoder)
-            && this.membershipService.equals(that.membershipService)
-            && this.authorityService.equals(that.authorityService);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.itUserRepository, this.passwordEncoder,
-            this.membershipService, this.authorityService);
-    }
-
-    @Override
-    public String toString() {
-        return "ITUserService{"
-            + "itUserRepository=" + this.itUserRepository
-            + ", passwordEncoder=" + this.passwordEncoder
-            + ", membershipService=" + this.membershipService
-            + ", authorityService=" + this.authorityService
-            + '}';
-    }
 }
