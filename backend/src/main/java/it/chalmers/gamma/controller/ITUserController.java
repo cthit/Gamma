@@ -99,8 +99,10 @@ public final class ITUserController {
         throw new IncorrectCidOrPasswordResponse();
     }
 
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     public ResponseEntity<String> createUser(
             @RequestBody CreateITUserRequest createITUserRequest) {
         if (createITUserRequest == null) {
