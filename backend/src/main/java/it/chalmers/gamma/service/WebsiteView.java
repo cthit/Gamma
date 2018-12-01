@@ -12,7 +12,7 @@ import java.util.UUID;
 public class WebsiteView {
     private UUID id;
     private String name;
-    private String prettyName;
+    private final String prettyName;
     private List<String> url;
 
     public WebsiteView(Website website) {

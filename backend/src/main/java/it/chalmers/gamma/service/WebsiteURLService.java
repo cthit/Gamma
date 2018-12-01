@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 //TODO this class might be unnecessary because of changes in how websites work
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 @Service
 public class WebsiteURLService {
 

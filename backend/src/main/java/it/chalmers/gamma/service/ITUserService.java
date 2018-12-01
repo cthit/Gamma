@@ -20,6 +20,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@SuppressWarnings("PMD.TooManyMethods")
 @Service("userDetailsService")
 public class ITUserService implements UserDetailsService {
 

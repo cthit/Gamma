@@ -14,6 +14,7 @@
         <exclude name="JUnitAssertionsShouldIncludeMessage" />
         <exclude name="OneDeclarationPerLine" />
         <exclude name="PreserveStackTrace" />
+        <exclude name="GuardLogStatement" />
     </rule>
     <rule ref="category/java/codestyle.xml">
         <exclude name="AtLeastOneConstructor" />
