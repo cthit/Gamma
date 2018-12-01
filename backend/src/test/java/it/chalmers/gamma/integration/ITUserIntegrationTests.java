@@ -1,4 +1,4 @@
-package it.chalmers.gamma.IntegrationTests;
+package it.chalmers.gamma.integration;
 
 
 import it.chalmers.gamma.TestUtils;
@@ -45,7 +45,7 @@ import java.time.Year;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class ITUserTests {
+public class ITUserIntegrationTests {
 
     @Autowired
     ITUserService userService;
@@ -74,7 +74,6 @@ public class ITUserTests {
         if(!hasRun) {
             utils = new TestUtils();
             utils.setMockMvc(mockMvc, jwtTokenProvider, userService);
-            utils.addAdminUser();
             hasRun = true;
         }
     }
@@ -100,7 +99,7 @@ public class ITUserTests {
                 .accept(MediaType.APPLICATION_JSON)).andReturn();
         Assert.assertTrue(result.getResponse().getContentAsString().contains(nick1));
 
-        Assert.assertTrue(result.getResponse().getContentAsString().contains(cid));
+        Assert.assertTrue(result.getResponse().getContentAsString().contains(cid1));
         Assert.assertFalse(result.getResponse().getContentAsString().contains("sfe"));
     }
 

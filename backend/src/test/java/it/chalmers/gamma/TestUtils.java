@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -28,6 +29,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 
 @Component
 @SuppressWarnings("PMD.AvoidPrintStackTrace")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class TestUtils {
 
     MockMvc mockMvc;

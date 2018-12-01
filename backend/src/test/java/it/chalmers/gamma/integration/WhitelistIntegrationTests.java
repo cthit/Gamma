@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class WhitelistTests {
+public class WhitelistIntegrationTests {
 
     @Autowired
     WhitelistRepository whitelistRepository;
@@ -55,11 +55,10 @@ public class WhitelistTests {
 
 
     @Before
-    public void setUp(){
+    public void setup(){
         if(!hasRun) {
             utils = new TestUtils();
             utils.setMockMvc(mockMvc, jwtTokenProvider, userService);
-            utils.addAdminUser();
             hasRun = true;
         }
     }
@@ -67,7 +66,11 @@ public class WhitelistTests {
     @Test
     public void testCreateCode() {
         String cid = "TEST_CODE";
-        this.utils.sendCreateCode(cid);
+        try {
+            utils.sendCreateCode(cid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Whitelist whitelist = this.whitelistRepository.findByCid(cid);
         Assert.assertTrue(this.activationCodeService.userHasCode(whitelist.getCid()));
     }

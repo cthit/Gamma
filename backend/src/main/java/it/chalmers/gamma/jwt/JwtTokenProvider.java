@@ -8,6 +8,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
+import it.chalmers.gamma.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.service.ITUserService;
 
 import java.util.Date;
