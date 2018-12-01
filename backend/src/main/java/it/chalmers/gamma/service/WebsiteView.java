@@ -44,5 +44,8 @@ public class WebsiteView {
         this.url = url;
     }
 
+    public String getPrettyName() {
+        return prettyName;
+    }
 }
 
