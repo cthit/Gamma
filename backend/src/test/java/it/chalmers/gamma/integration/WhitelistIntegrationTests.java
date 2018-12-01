@@ -34,19 +34,19 @@ public class WhitelistIntegrationTests {
     @Autowired
     ActivationCodeRepository activationCodeRepository;
 
-    TestUtils utils;
+    private TestUtils utils;
 
     @Autowired
     MockMvc mockMvc;
 
     @Before
-    public void setup() {
+    public void setUp() {
         this.utils = new TestUtils();
         this.utils.setMockMvc(this.mockMvc);
     }
 
     @Test
-    public void testCreateCode() throws Exception {
+    public void testCreateCode() {
         String cid = "TEST_CODE";
         this.utils.sendCreateCode(cid);
         Whitelist whitelist = this.whitelistRepository.findByCid(cid);
@@ -58,7 +58,7 @@ public class WhitelistIntegrationTests {
         String cid = "expired";
         this.utils.sendCreateCode(cid);
         ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(cid);
-        activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds((2 * 3600) + 5));
+        activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds(2 * 3600 + 5));
         this.activationCodeRepository.save(activationCode);
         Assert.assertTrue(this.activationCodeService.hasCodeExpired(cid, 2));
 

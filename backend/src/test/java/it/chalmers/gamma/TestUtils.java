@@ -12,18 +12,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 @Component
+@SuppressWarnings("PMD.AvoidPrintStackTrace")
 public class TestUtils {
 
-    MockMvc mockMvc;
-
-    public TestUtils() {
-    }
-
+    private MockMvc mockMvc;
     public void setMockMvc(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
 
-    public void sendCreateCode(String cid) throws Exception {
+    public void sendCreateCode(String cid) {
         MockHttpServletRequestBuilder mocker = MockMvcRequestBuilders
                 .post("/whitelist/add/")
                 .content(asJsonString(new Whitelist(cid)))
@@ -36,8 +33,12 @@ public class TestUtils {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON);
 
-        this.mockMvc.perform(mocker);
-        this.mockMvc.perform(mocker4).andDo(MockMvcResultHandlers.print());
+        try {
+            this.mockMvc.perform(mocker);
+            this.mockMvc.perform(mocker4).andDo(MockMvcResultHandlers.print());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String asJsonString(final Object obj) {

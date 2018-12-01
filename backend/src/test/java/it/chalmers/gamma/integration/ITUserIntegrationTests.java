@@ -54,23 +54,25 @@ public class ITUserIntegrationTests {
     @Autowired
     ActivationCodeRepository activationCodeRepository;
 
-    TestUtils utils;
+    private TestUtils utils;
 
     @Before
-    public void setup() {
+    public void setUp() {
         this.utils = new TestUtils();
         this.utils.setMockMvc(this.mockMvc);
     }
 
     @Test
     public void testDisplayUsers() throws Exception {
+        String cid = "gurr";
+        String password = "examplePassword";
         CreateITUserRequest itUser1 = new CreateITUserRequest();
-        itUser1.setNick("gurr");
-        itUser1.setPassword("examplePassword");
+        itUser1.setNick(cid);
+        itUser1.setPassword(password);
         itUser1.setWhitelist(new Whitelist("example"));
         CreateITUserRequest itUser2 = new CreateITUserRequest();
         itUser2.setNick("leif");
-        itUser2.setPassword("examplePassword");
+        itUser2.setPassword(password);
         itUser2.setWhitelist(new Whitelist("example2"));
         this.userService.createUser(itUser1.getNick(), itUser1.getFirstName(),
                 itUser1.getLastName(), itUser1.getWhitelist().getCid(),
@@ -83,13 +85,13 @@ public class ITUserIntegrationTests {
                 null, itUser2.getPassword()
         );
 
-        String token = this.jwtTokenProvider.createToken("gurr");
+        String token = this.jwtTokenProvider.createToken(cid);
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders
                 .get("/users/")
                 .header("Authorization", "Bearer " + token)
                 .accept(MediaType.APPLICATION_JSON)).andReturn();
 
-        Assert.assertTrue(result.getResponse().getContentAsString().contains("gurr"));
+        Assert.assertTrue(result.getResponse().getContentAsString().contains(cid));
         Assert.assertFalse(result.getResponse().getContentAsString().contains("sfe"));
     }
 
