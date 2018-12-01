@@ -56,11 +56,13 @@ public class JwtTokenProvider {
             .compact();
     }
 
-    public Authentication getAuthentication(String cid) {
+    public Authentication getAuthentication(String cid){
         UserDetails userDetails = this.itUserService.loadUserByUsername(cid);
+        if(userDetails == null){
+            throw new InvalidJWTTokenResponse();
+        }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
-            userDetails.getPassword(), userDetails.getAuthorities());
-
+                userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     public String resolveToken(HttpServletRequest req) {

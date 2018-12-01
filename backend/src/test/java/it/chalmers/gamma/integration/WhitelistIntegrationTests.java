@@ -5,15 +5,20 @@ import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
+import it.chalmers.gamma.jwt.JwtTokenProvider;
+import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
-
+import it.chalmers.gamma.service.ITUserService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class WhitelistIntegrationTests {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+public class WhitelistTests {
 
     @Autowired
     WhitelistRepository whitelistRepository;
@@ -34,15 +40,28 @@ public class WhitelistIntegrationTests {
     @Autowired
     ActivationCodeRepository activationCodeRepository;
 
-    private TestUtils utils;
+    static TestUtils utils;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    ITUserService userService;
 
     @Autowired
     MockMvc mockMvc;
 
+    private static boolean hasRun = false;
+
+
     @Before
-    public void setUp() {
-        this.utils = new TestUtils();
-        this.utils.setMockMvc(this.mockMvc);
+    public void setUp(){
+        if(!hasRun) {
+            utils = new TestUtils();
+            utils.setMockMvc(mockMvc, jwtTokenProvider, userService);
+            utils.addAdminUser();
+            hasRun = true;
+        }
     }
 
     @Test

@@ -15,7 +15,6 @@ import javax.persistence.Table;
 @Table(name = "membership")
 public class Membership {
 
-
     @EmbeddedId
     private MembershipPK id;
 
@@ -27,7 +26,6 @@ public class Membership {
 
     @Column(name = "year")
     private int year;
-
 
     public Year getYear() {
         return Year.of(this.year);
