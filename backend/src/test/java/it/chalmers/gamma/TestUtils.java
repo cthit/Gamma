@@ -61,6 +61,8 @@ public class TestUtils {
     }
 
     public void sendCreateCode(String cid) throws Exception {
+        String authcid = "admin";
+        token = tokenProvider.createToken(authcid);
         JSONObject object = new JSONObject();
         ArrayList<String> cids = new ArrayList<>();
         cids.add(cid);
