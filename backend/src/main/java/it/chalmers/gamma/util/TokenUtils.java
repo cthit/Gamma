@@ -4,7 +4,8 @@ import java.util.Random;
 
 public final class TokenUtils {
 
-    private TokenUtils() {}
+    private TokenUtils() {
+    }
 
     public static String generateToken() {
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

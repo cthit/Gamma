@@ -1,5 +1,10 @@
 package it.chalmers.gamma.controller.admin;
 
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
+
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
@@ -30,11 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
-
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/groups")
 public final class GroupAdminController {
@@ -43,7 +44,7 @@ public final class GroupAdminController {
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
 
-    private GroupAdminController(
+    public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService) {
@@ -68,7 +69,7 @@ public final class GroupAdminController {
         );
         return serializer.serialize(group, null, null);
     }
-
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
         if (this.fkitService.groupExists(createGroupRequest.getName())) {
@@ -100,15 +101,7 @@ public final class GroupAdminController {
             websiteURLs.add(websiteURL);
         }
         this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(
-                    createGroupRequest.getName(),
-                    createGroupRequest.getPrettyName(),
-                    createGroupRequest.getDescription(),
-                    createGroupRequest.getEmail(),
-                    createGroupRequest.getType(),
-                    createGroupRequest.getFunc(),
-                    createGroupRequest.getAvatarURL()
-                ), websiteURLs);
+                this.fkitService.createGroup(createGroupRequest), websiteURLs);
         return new GroupCreatedResponse();
     }
 
@@ -116,18 +109,15 @@ public final class GroupAdminController {
     public ResponseEntity<String> editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
-        this.fkitService.editGroup(
-                UUID.fromString(id),
-                request.getPrettyName(),
-                request.getDescription(),
-                request.getEmail(),
-                request.getType(),
-                request.getFunc(),
-                request.getAvatarURL());
+        this.fkitService.editGroup(UUID.fromString(id), request);
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
-        List<WebsiteInterface> entityWebsites = new ArrayList<>(this.groupWebsiteService.getWebsites(group));
-        List<WebsiteURL> websiteURLs = this.groupWebsiteService.addWebsiteToEntity(websiteInfos, entityWebsites);
+        List<WebsiteInterface> entityWebsites = new ArrayList<>(
+                this.groupWebsiteService.getWebsites(group)
+        );
+        List<WebsiteURL> websiteURLs = this.groupWebsiteService.addWebsiteToEntity(
+                websiteInfos, entityWebsites
+        );
         this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupEditedResponse();
     }

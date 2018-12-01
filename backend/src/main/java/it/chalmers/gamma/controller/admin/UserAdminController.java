@@ -21,8 +21,8 @@ import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.util.TokenUtils;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 @RestController
 @RequestMapping("/admin/users")
 public final class UserAdminController {
@@ -45,7 +46,7 @@ public final class UserAdminController {
     private final UserWebsiteService userWebsiteService;
     private final PasswordResetService passwordResetService;
 
-    private UserAdminController(
+    public UserAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
             PasswordResetService passwordResetService) {
@@ -69,7 +70,10 @@ public final class UserAdminController {
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
-        if (!this.itUserService.editUser(
+        if (!this.itUserService.userExists(UUID.fromString(id))) {
+            throw new CidNotFoundResponse();
+        }
+        this.itUserService.editUser(
                 UUID.fromString(id),
                 request.getNick(),
                 request.getFirstName(),
@@ -77,13 +81,14 @@ public final class UserAdminController {
                 request.getEmail(),
                 request.getPhone(),
                 request.getLanguage(),
-                request.getAvatarUrl())) {
-            throw new CidNotFoundResponse();
-        }
+                request.getAvatarUrl());
+        // Below handles adding websites.
         ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<WebsiteInterface> userWebsite = new ArrayList<>(this.userWebsiteService.getWebsites(user));
+        List<WebsiteInterface> userWebsite = new ArrayList<>(
+                this.userWebsiteService.getWebsites(user)
+        );
         this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
@@ -120,7 +125,8 @@ public final class UserAdminController {
      * Administrative function that can add user without need for user to add it personally.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(@RequestBody AdminViewCreateITUserRequest createITUserRequest) {
+    public ResponseEntity<String> addUser(
+            @RequestBody AdminViewCreateITUserRequest createITUserRequest) {
         if (this.itUserService.userExists(createITUserRequest.getCid())) {
             throw new UserAlreadyExistsResponse();
         }

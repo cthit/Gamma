@@ -5,7 +5,6 @@ import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.PostRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,31 +15,31 @@ import org.springframework.stereotype.Service;
  * A class to handle all database access to memberships between users and groups in the system.
  */
 @Service
-public final class PostService {
+public class PostService {
 
     private final PostRepository repository;
 
-    private PostService(PostRepository repository) {
+    public PostService(PostRepository repository) {
         this.repository = repository;
     }
 
     public Post addPost(Text postName) {
         Post post = new Post();
-        return setPost(post, postName);
+        return savePost(post, postName);
     }
 
     public Post editPost(Post post, Text text) {
-        return setPost(post, text);
+        return savePost(post, text);
     }
 
-    private Post setPost(Post post, Text postName) {
+    private Post savePost(Post post, Text postName) {
         post.setSVPostName(postName.getSv());
         post.setENPostName(postName.getEn());
         return this.repository.save(post);
     }
 
     public boolean postExists(String postName) {
-        return !(this.repository.getByPostName_Sv(postName) == null);
+        return this.repository.getByPostName_Sv(postName) != null;
     }
 
     public List<Post> getAllPosts() {
@@ -60,27 +59,4 @@ public final class PostService {
         this.repository.deleteById(id);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PostService that = (PostService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "PostService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

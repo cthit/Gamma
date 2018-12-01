@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @RestController
 @RequestMapping("/admin/websites")
 public final class WebsiteAdminController {
@@ -30,7 +31,7 @@ public final class WebsiteAdminController {
     private final GroupWebsiteService groupWebsiteService;
     private final UserWebsiteService userWebsiteService;
 
-    private WebsiteAdminController(
+    public WebsiteAdminController(
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             UserWebsiteService userWebsiteService) {
@@ -48,6 +49,7 @@ public final class WebsiteAdminController {
         this.websiteService.addPossibleWebsite(request.getName(), request.getPrettyName());
         return new WebsiteAddedResponse();
     }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Website> getWebsite(@PathVariable("id") String id) {
         Website website = this.websiteService.getWebsiteById(id);
@@ -56,6 +58,7 @@ public final class WebsiteAdminController {
         }
         return new GetWebsiteResponse(website);
     }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editWebsite(
             @PathVariable("id") String id,
@@ -67,6 +70,7 @@ public final class WebsiteAdminController {
         this.websiteService.editWebsite(website, request.getName(), request.getPrettyName());
         return new EditedWebsiteResponse();
     }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteWebsite(@PathVariable("id") String id) {
         this.groupWebsiteService.deleteGroupWebsiteByWebsite(this.websiteService.getWebsiteById(id));
@@ -74,6 +78,7 @@ public final class WebsiteAdminController {
         this.websiteService.deleteWebsite(id);
         return new WebsiteDeletedResponse();
     }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Website>> getAllWebsites() {
         return new GetAllWebsitesResponse(this.websiteService.getAllWebsites());

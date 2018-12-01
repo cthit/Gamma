@@ -1,8 +1,8 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Website;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -11,10 +11,10 @@ import java.util.UUID;
 public class WebsiteView {
     private UUID id;
     private String name;
-    private String prettyName;
+    private final String prettyName;
     private List<String> url;
 
-    WebsiteView(Website website) {
+    public WebsiteView(Website website) {
         this.id = website.getId();
         this.name = website.getName();
         this.prettyName = website.getPrettyName();
@@ -44,34 +44,8 @@ public class WebsiteView {
         this.url = url;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WebsiteView that = (WebsiteView) o;
-        return this.id.equals(that.id)
-                && this.name.equals(that.name)
-                && this.prettyName.equals(that.prettyName)
-                && this.url.equals(that.url);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.name, this.prettyName, this.url);
-    }
-
-    @Override
-    public String toString() {
-        return "WebsiteView{"
-                + "id=" + this.id
-                + ", name='" + this.name + '\''
-                + ", prettyName='" + this.prettyName + '\''
-                + ", url=" + this.url
-                + '}';
+    public String getPrettyName() {
+        return this.prettyName;
     }
 }
 

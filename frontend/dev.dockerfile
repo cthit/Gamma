@@ -1,4 +1,4 @@
-FROM node:11.2
+FROM node:9.11.1
 
 RUN mkdir -p /usr/src/app/
 RUN chown -R node /usr/src/app

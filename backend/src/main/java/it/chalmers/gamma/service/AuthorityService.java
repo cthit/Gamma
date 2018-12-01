@@ -10,7 +10,6 @@ import it.chalmers.gamma.db.repository.AuthorityRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -18,11 +17,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AuthorityService {
+public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 
-    private AuthorityService(AuthorityRepository authorityRepository) {
+    public AuthorityService(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
     }
 
@@ -76,27 +75,4 @@ public final class AuthorityService {
         return this.authorityRepository.findByInternalId(id);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AuthorityService that = (AuthorityService) o;
-        return this.authorityRepository.equals(that.authorityRepository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.authorityRepository);
-    }
-
-    @Override
-    public String toString() {
-        return "AuthorityService{"
-            + "authorityRepository=" + this.authorityRepository
-            + '}';
-    }
 }

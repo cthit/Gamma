@@ -4,54 +4,51 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.requests.CreateGroupRequest;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public final class FKITService {
+public class FKITService {
 
     private final FKITGroupRepository repo;
 
-    private FKITService(FKITGroupRepository repo) {
+    public FKITService(FKITGroupRepository repo) {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(String name, String prettyName, Text description, String email,
-                                 GroupType type, Text function, String avatarURL) {
-        if (description == null) {
-            description = new Text();
-        }
+    public FKITGroup createGroup(CreateGroupRequest request) {
+
         FKITGroup fkitGroup = new FKITGroup();
-        fkitGroup.setName(name.toLowerCase());
-        fkitGroup.setFunc(function);
-        fkitGroup.setDescription(description);
-        return saveGroup(fkitGroup, prettyName == null ? name : prettyName, description,
-            email, type, function, avatarURL);
+        fkitGroup.setName(request.getName().toLowerCase());
+        fkitGroup.setFunc(request.getFunc());
+        fkitGroup.setDescription(request.getDescription());
+        return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
+                request.getDescription() == null ? new Text() : request.getDescription(),
+                request.getEmail(), request.getType(), request.getAvatarURL());
     }
 
     //TODO if no info, don't change value.
-    public FKITGroup editGroup(UUID id, String prettyName, Text description, String email,
-                               GroupType type, Text function, String avatarURL) {
+    public FKITGroup editGroup(UUID id, CreateGroupRequest request) {
         FKITGroup group = this.repo.findById(id).orElse(null);
         if (group == null) {
             return null;
         }
-        group.setSVFunction(function == null ? group.getSVFunction() : function.getSv());
-        group.setENFunction(function == null ? group.getENFunction() : function.getEn());
-        function = group.getFunc();
-        if (description != null && group.getDescription() != null) {
-            group.setSVDescription(description.getSv());
-            group.setENDescription(description.getEn());
+        group.setSVFunction(request.getFunc() == null ? group.getSVFunction() : request.getFunc().getSv());
+        group.setENFunction(request.getFunc() == null ? group.getENFunction() : request.getFunc().getEn());
+        if (request.getDescription() != null && group.getDescription() != null) {
+            group.setSVDescription(request.getDescription().getSv());
+            group.setENDescription(request.getDescription().getEn());
         }
-        return saveGroup(group, prettyName, description, email, type, function, avatarURL);
+        return saveGroup(group, request.getPrettyName(), request.getDescription(), request.getEmail(),
+                request.getType(), request.getAvatarURL());
     }
 
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
-                                String email, GroupType type, Text function, String avatarURL) {
+                                String email, GroupType type, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
         group.setSVDescription(description == null ? group.getSVDescription() : description.getSv());
         group.setENDescription(description == null ? group.getENDescription() : description.getEn());
@@ -90,27 +87,4 @@ public final class FKITService {
         return this.repo.findById(id).orElse(null);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        FKITService that = (FKITService) o;
-        return this.repo.equals(that.repo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repo);
-    }
-
-    @Override
-    public String toString() {
-        return "FKITService{"
-            + "repo=" + this.repo
-            + '}';
-    }
 }

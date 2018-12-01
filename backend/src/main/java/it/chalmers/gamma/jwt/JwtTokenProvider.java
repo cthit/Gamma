@@ -8,12 +8,15 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
+import it.chalmers.gamma.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.service.ITUserService;
 
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +35,8 @@ public class JwtTokenProvider {
 
     @Value("${security.jwt.token.issuer}")
     private String issuer;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     @Autowired
     private ITUserService itUserService;
@@ -52,11 +57,13 @@ public class JwtTokenProvider {
             .compact();
     }
 
-    public Authentication getAuthentication(String cid) {
+    public Authentication getAuthentication(String cid){
         UserDetails userDetails = this.itUserService.loadUserByUsername(cid);
+        if(userDetails == null){
+            throw new InvalidJWTTokenResponse();
+        }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
-            userDetails.getPassword(), userDetails.getAuthorities());
-
+                userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     public String resolveToken(HttpServletRequest req) {
@@ -87,7 +94,7 @@ public class JwtTokenProvider {
                 .setSigningKey(this.secretKey)
                 .parseClaimsJws(token);
         } catch (MalformedJwtException | SignatureException e) {
-            e.printStackTrace();
+            LOGGER.warn(e.getMessage());
             return null;
         }
     }

@@ -12,9 +12,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Target;
+
 @Entity
 @Table(name = "authority")
 public class Authority {
+
+    @Target(AuthorityPK.class)
     @EmbeddedId
     AuthorityPK id;
 
@@ -64,7 +68,7 @@ public class Authority {
         }
         Authority authority = (Authority) o;
         return Objects.equals(this.id, authority.id)
-                && Objects.equals(this.authorityLevel, authority.authorityLevel);
+            && Objects.equals(this.authorityLevel, authority.authorityLevel);
     }
 
     @Override
@@ -75,8 +79,8 @@ public class Authority {
     @Override
     public String toString() {
         return "Authority{"
-                + "id=" + this.id
-                + ", authorityLevel=" + this.authorityLevel
-                + '}';
+            + "id=" + this.id
+            + ", authorityLevel=" + this.authorityLevel
+            + '}';
     }
 }

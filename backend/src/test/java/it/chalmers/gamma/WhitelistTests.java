@@ -7,12 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class WhitelistTests {
 
     @Autowired
@@ -23,9 +25,10 @@ public class WhitelistTests {
      */
     @Test
     public void testWhiteList() {
-        this.whitelistService.addWhiteListedCID("cid3");
+        String cid = "cid3";
+        this.whitelistService.addWhiteListedCID(cid);
         this.whitelistService.addWhiteListedCID("cid4");
-        Assert.assertTrue(this.whitelistService.isCIDWhiteListed("cid3"));
+        Assert.assertTrue(this.whitelistService.isCIDWhiteListed(cid));
         Assert.assertFalse(this.whitelistService.isCIDWhiteListed("leif"));
     }
 
@@ -43,12 +46,13 @@ public class WhitelistTests {
      */
     @Test
     public void testAddWhitelistCIDMultipleTimes() {
+        String cid = "cid1";
         try {
-            this.whitelistService.addWhiteListedCID("cid1");
-            this.whitelistService.addWhiteListedCID("cid1");
-            assert (false);
-        } catch (Exception e) {
-            assert (true);
+            this.whitelistService.addWhiteListedCID(cid);
+            this.whitelistService.addWhiteListedCID(cid);
+            Assert.fail();
+        } catch (Exception ignored) {
+            Assert.assertTrue(true);
         }
     }
 
@@ -57,6 +61,6 @@ public class WhitelistTests {
      */
     @Test
     public void testSendEmail() {
-
+        Assert.assertTrue(true);
     }
 }

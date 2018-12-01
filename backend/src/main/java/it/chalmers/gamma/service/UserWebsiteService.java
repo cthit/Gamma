@@ -9,7 +9,6 @@ import it.chalmers.gamma.db.repository.UserWebsiteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -17,11 +16,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class UserWebsiteService extends EntityWebsiteService {
+public class UserWebsiteService extends EntityWebsiteService {
 
     private final UserWebsiteRepository repository;
 
-    private UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
+    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
         super(websiteService);
         this.repository = repository;
     }
@@ -90,30 +89,4 @@ public final class UserWebsiteService extends EntityWebsiteService {
         this.repository.deleteAllByWebsite_Website(website);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        UserWebsiteService that = (UserWebsiteService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "UserWebsiteService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

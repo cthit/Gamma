@@ -4,17 +4,16 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.repository.WebsiteRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public final class WebsiteService {
+public class WebsiteService {
 
     private final WebsiteRepository repository;
 
-    private WebsiteService(WebsiteRepository repository) {
+    public WebsiteService(WebsiteRepository repository) {
         this.repository = repository;
     }
 
@@ -53,27 +52,4 @@ public final class WebsiteService {
         return this.repository.findAll();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WebsiteService that = (WebsiteService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "WebsiteService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

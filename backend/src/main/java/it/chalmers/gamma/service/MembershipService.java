@@ -10,16 +10,15 @@ import it.chalmers.gamma.db.repository.MembershipRepository;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public final class MembershipService {
+public class MembershipService {
 
     private final MembershipRepository membershipRepository;
 
-    private MembershipService(MembershipRepository membershipRepository) {
+    public MembershipService(MembershipRepository membershipRepository) {
         this.membershipRepository = membershipRepository;
     }
 
@@ -52,6 +51,7 @@ public final class MembershipService {
     }
 
     //should this return UUID? and not ITUser?.
+
     /**
      * finds all users that has a specific post.
      *
@@ -127,27 +127,4 @@ public final class MembershipService {
         return this.membershipRepository.findById_ItUserAndId_FkitGroup(user, group);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        MembershipService that = (MembershipService) o;
-        return this.membershipRepository.equals(that.membershipRepository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.membershipRepository);
-    }
-
-    @Override
-    public String toString() {
-        return "MembershipService{"
-            + "membershipRepository=" + this.membershipRepository
-            + '}';
-    }
 }

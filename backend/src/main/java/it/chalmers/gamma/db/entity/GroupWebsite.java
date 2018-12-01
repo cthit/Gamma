@@ -64,8 +64,8 @@ public class GroupWebsite implements WebsiteInterface {
         }
         GroupWebsite that = (GroupWebsite) o;
         return Objects.equals(this.id, that.id)
-                && Objects.equals(this.website, that.website)
-                && Objects.equals(this.group, that.group);
+            && Objects.equals(this.website, that.website)
+            && Objects.equals(this.group, that.group);
     }
 
     @Override
@@ -76,10 +76,10 @@ public class GroupWebsite implements WebsiteInterface {
     @Override
     public String toString() {
         return "GroupWebsite{"
-                + "id=" + this.id
-                + ", website=" + this.website
-                + ", group=" + this.group
-                + '}';
+            + "id=" + this.id
+            + ", website=" + this.website
+            + ", group=" + this.group
+            + '}';
     }
 
 }

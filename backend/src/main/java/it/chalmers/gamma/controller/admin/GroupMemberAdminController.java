@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @RestController
 @RequestMapping("/admin/groups")
 public final class GroupMemberAdminController {
@@ -34,7 +35,7 @@ public final class GroupMemberAdminController {
     private final FKITService fkitService;
     private final MembershipService membershipService;
 
-    private GroupMemberAdminController(
+    public GroupMemberAdminController(
             ITUserService itUserService,
             PostService postService,
             FKITService fkitService,
@@ -61,6 +62,7 @@ public final class GroupMemberAdminController {
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName(), request.getYear());
         return new UserAddedToGroupResponse();
     }
+
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
     public ResponseEntity<List<Membership>> getUsersInGroup(@PathVariable("id") String id) {
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));

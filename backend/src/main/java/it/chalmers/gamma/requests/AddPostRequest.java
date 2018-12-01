@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class AddPostRequest {
     private Text post;
+    //TODO ADD LEVEL OF CLEARANCE OF SOMETHING
 
     public Text getPost() {
         return this.post;

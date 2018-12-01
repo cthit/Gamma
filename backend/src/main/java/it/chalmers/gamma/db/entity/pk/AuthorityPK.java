@@ -12,13 +12,14 @@ import javax.persistence.ManyToOne;
 
 @Embeddable
 public class AuthorityPK implements Serializable {
+
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private transient FKITGroup fkitGroup;
+    private FKITGroup fkitGroup;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private transient Post post;
+    private Post post;
 
     private static final long serialVersionUID = 3085451407319206L;
 
@@ -49,7 +50,7 @@ public class AuthorityPK implements Serializable {
         }
         AuthorityPK that = (AuthorityPK) o;
         return Objects.equals(this.fkitGroup, that.fkitGroup)
-                && Objects.equals(this.post, that.post);
+            && Objects.equals(this.post, that.post);
     }
 
     @Override
@@ -60,8 +61,8 @@ public class AuthorityPK implements Serializable {
     @Override
     public String toString() {
         return "AuthorityPK{"
-                + "fkitGroup=" + this.fkitGroup
-                + ", post=" + this.post
-                + '}';
+            + "fkitGroup=" + this.fkitGroup
+            + ", post=" + this.post
+            + '}';
     }
 }

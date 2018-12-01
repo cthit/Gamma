@@ -12,6 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "authority_level")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidDuplicateLiterals", "PMD.AvoidFieldNameMatchingTypeName"})
+
 public class AuthorityLevel implements GrantedAuthority {
 
     @Id
@@ -63,10 +65,10 @@ public class AuthorityLevel implements GrantedAuthority {
     @Override
     public String toString() {
         return "AuthorityLevel{"
-                + "id=" + this.id
-                + ", authorityLevel='"
-                + this.authorityLevel + '\''
-                + '}';
+            + "id=" + this.id
+            + ", authorityLevel='"
+            + this.authorityLevel + '\''
+            + '}';
     }
 
 }

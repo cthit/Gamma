@@ -5,7 +5,6 @@ import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.WebsiteURLRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -13,12 +12,13 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 //TODO this class might be unnecessary because of changes in how websites work
+@SuppressWarnings("PMD.UnusedPrivateMethod")
 @Service
-public final class WebsiteURLService {
+public class WebsiteURLService {
 
     private final WebsiteURLRepository repository;
 
-    WebsiteURLService(WebsiteURLRepository repository) {
+    public WebsiteURLService(WebsiteURLRepository repository) {
         this.repository = repository;
     }
 
@@ -52,27 +52,4 @@ public final class WebsiteURLService {
         this.repository.deleteAllByWebsite(website);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WebsiteURLService that = (WebsiteURLService) o;
-        return this.repository.equals(that.repository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.repository);
-    }
-
-    @Override
-    public String toString() {
-        return "WebsiteURLService{"
-            + "repository=" + this.repository
-            + '}';
-    }
 }

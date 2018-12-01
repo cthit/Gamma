@@ -8,6 +8,9 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +28,12 @@ public final class WhitelistController {
 
     // @Value("${mail.receiver.standard-postfix}")
     private static final String MAIL_POSTFIX = "@student.chalmers.se";
+    private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
 
-    private WhitelistController(
+    @Value("${spring.profiles.active:development}")
+    private String profile;
+
+    public WhitelistController(
             WhitelistService whitelistService,
             ActivationCodeService activationCodeService,
             MailSenderService mailSenderService) {
@@ -42,7 +49,7 @@ public final class WhitelistController {
             Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
             String code = this.activationCodeService.generateActivationCode();
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
-            // sendEmail(activationCode);
+            sendEmail(activationCode);
         }
 
         /*
@@ -55,9 +62,14 @@ public final class WhitelistController {
 
     private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@" + this.MAIL_POSTFIX;
+        String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
-        this.mailSenderService.sendMail(to, "Chalmers activation code", message);
+        LOGGER.info(this.profile);
+        if (this.profile.equals("profile")) {
+            this.mailSenderService.sendMail(to, "Chalmers activation code", message);
+        } else {
+            LOGGER.info(code);
+        }
     }
 }
 

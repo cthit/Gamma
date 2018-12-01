@@ -73,8 +73,8 @@ public class WebsiteURL {
         }
         WebsiteURL that = (WebsiteURL) o;
         return Objects.equals(this.id, that.id)
-                && Objects.equals(this.website, that.website)
-                && Objects.equals(this.url, that.url);
+            && Objects.equals(this.website, that.website)
+            && Objects.equals(this.url, that.url);
     }
 
     @Override
@@ -85,9 +85,9 @@ public class WebsiteURL {
     @Override
     public String toString() {
         return "WebsiteURL{"
-                + "id=" + this.id
-                + ", website=" + this.website
-                + ", url='" + this.url + '\''
-                + '}';
+            + "id=" + this.id
+            + ", website=" + this.website
+            + ", url='" + this.url + '\''
+            + '}';
     }
 }

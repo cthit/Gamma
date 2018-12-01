@@ -1,10 +1,9 @@
 package it.chalmers.gamma.service;
 
-import java.util.Objects;
-
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,18 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-
-@PropertySource("classpath:secrets.properties")
 @Service
-public final class MailSenderService {
+public class MailSenderService {
 
-    @Value("${gotify.key}")
+    @Value("${application.gotify.key}")
     private String gotifyApiKey;
 
-    @Value("${gotify.url}")
+    @Value("${application.gotify.url}")
     private String gotifyURL;
 
-    private MailSenderService() {}
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
 
     /**
      * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
@@ -41,37 +38,11 @@ public final class MailSenderService {
         object.put("subject", subject);
         object.put("body", body);
 
-        HttpEntity<JSONObject> entity = new HttpEntity<JSONObject>(object, headers);
+        HttpEntity<JSONObject> entity = new HttpEntity<>(object, headers);
         RestTemplate restTemplate = new RestTemplate();
-
         ResponseEntity<String> response = restTemplate.postForEntity(this.gotifyURL, entity, String.class);
-
+        LOGGER.info("Gotify responded with " + response.getHeaders() + response.getBody());
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        MailSenderService that = (MailSenderService) o;
-        return this.gotifyApiKey.equals(that.gotifyApiKey)
-            && this.gotifyURL.equals(that.gotifyURL);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.gotifyApiKey, this.gotifyURL);
-    }
-
-    @Override
-    public String toString() {
-        return "MailSenderService{"
-            + "gotifyApiKey='<redacted>" + '\''
-            + ", gotifyURL='" + gotifyURL + '\''
-            + '}';
-    }
 }

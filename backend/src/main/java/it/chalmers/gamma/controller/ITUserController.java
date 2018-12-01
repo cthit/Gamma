@@ -1,5 +1,12 @@
 package it.chalmers.gamma.controller;
 
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
+
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
@@ -11,6 +18,7 @@ import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.LoginCompleteResponse;
+import it.chalmers.gamma.response.NoDataSentResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -26,6 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,13 +50,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
-
+@SuppressWarnings("PMD.ExcessiveImports")
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public final class ITUserController {
@@ -58,12 +62,14 @@ public final class ITUserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserWebsiteService userWebsiteService;
 
-    private ITUserController(ITUserService itUserService,
-                            ActivationCodeService activationCodeService,
-                            WhitelistService whitelistService,
-                            AuthenticationManager authenticationManager,
-                            JwtTokenProvider jwtTokenProvider,
-                            UserWebsiteService userWebsiteService) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ITUserController.class);
+
+    public ITUserController(ITUserService itUserService,
+                             ActivationCodeService activationCodeService,
+                             WhitelistService whitelistService,
+                             AuthenticationManager authenticationManager,
+                             JwtTokenProvider jwtTokenProvider,
+                             UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
@@ -80,24 +86,27 @@ public final class ITUserController {
                             new UsernamePasswordAuthenticationToken(
                                     cidPasswordRequest.getCid(),
                                     cidPasswordRequest.getPassword()
-                            ));
+                            )
+                    );
             if (authentication.isAuthenticated()) {
                 String jwt = this.jwtTokenProvider.createToken(cidPasswordRequest.getCid());
                 return new LoginCompleteResponse(jwt);
             }
         } catch (AuthenticationException e) {
-            e.printStackTrace();
+            LOGGER.info(e.getMessage(), e);
             throw new IncorrectCidOrPasswordResponse();
         }
         throw new IncorrectCidOrPasswordResponse();
     }
 
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> createUser(@RequestBody CreateITUserRequest createITUserRequest) {
-
+    @SuppressWarnings("PMD.CyclomaticComplexity")
+    public ResponseEntity<String> createUser(
+            @RequestBody CreateITUserRequest createITUserRequest) {
         if (createITUserRequest == null) {
-            throw new NullPointerException();
+            throw new NoDataSentResponse();
         }
 
         Whitelist user = this.whitelistService.getWhitelist(
@@ -162,6 +171,7 @@ public final class ITUserController {
                 );
         return serializer.serialize(user, websites);
     }
+
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public List<JSONObject> getAllUserMini() {
         List<ITUser> itUsers = this.itUserService.loadAllUsers();
@@ -181,6 +191,7 @@ public final class ITUserController {
         }
         return minifiedITUsers;
     }
+
     @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("cid") String cid) {
         ITUser user = this.itUserService.loadUser(cid);

@@ -68,7 +68,7 @@ public class Post {
         }
         Post post = (Post) o;
         return Objects.equals(this.id, post.id)
-                && Objects.equals(this.postName, post.postName);
+            && Objects.equals(this.postName, post.postName);
     }
 
     @Override
@@ -79,8 +79,8 @@ public class Post {
     @Override
     public String toString() {
         return "Post{"
-                + "id=" + this.id
-                + ", postName='" + this.postName + '\''
-                + '}';
+            + "id=" + this.id
+            + ", postName='" + this.postName + '\''
+            + '}';
     }
 }

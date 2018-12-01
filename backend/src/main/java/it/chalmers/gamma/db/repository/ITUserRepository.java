@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface ITUserRepository extends JpaRepository<ITUser, UUID> {
 
     ITUser findByCid(String cid);
+
     boolean existsByCid(String cid);
 }

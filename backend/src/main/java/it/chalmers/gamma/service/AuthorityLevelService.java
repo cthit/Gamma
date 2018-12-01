@@ -10,17 +10,18 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class AuthorityLevelService {
+public class AuthorityLevelService {
     AuthorityLevelRepository authorityLevelRepository;
 
-    private AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository) {
+    public AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository) {
         this.authorityLevelRepository = authorityLevelRepository;
     }
 
-    public void addAuthorityLevel(String level) {
+    public AuthorityLevel addAuthorityLevel(String level) {
         AuthorityLevel authorityLevel = new AuthorityLevel();
         authorityLevel.setAuthorityLevel(level);
         this.authorityLevelRepository.save(authorityLevel);
+        return authorityLevel;
     }
 
     public boolean authorityLevelExists(String authorityLevel) {

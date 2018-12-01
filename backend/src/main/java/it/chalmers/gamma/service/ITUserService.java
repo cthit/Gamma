@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -20,8 +19,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UseObjectForClearerAPI"})
 @Service("userDetailsService")
-public final class ITUserService implements UserDetailsService {
+public class ITUserService implements UserDetailsService {
 
     private final ITUserRepository itUserRepository;
 
@@ -36,7 +36,7 @@ public final class ITUserService implements UserDetailsService {
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
-    private ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
+    public ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
                           AuthorityService authorityService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -49,7 +49,7 @@ public final class ITUserService implements UserDetailsService {
         ITUser details = this.itUserRepository.findByCid(cid);
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
         List<GrantedAuthority> authority = new ArrayList<>(
-                    this.authorityService.getAuthorities(memberships)
+                this.authorityService.getAuthorities(memberships)
         );
         details.setAuthority(authority);
         return details;
@@ -72,14 +72,14 @@ public final class ITUserService implements UserDetailsService {
         return this.itUserRepository.existsById(id);
     }
 
-    public void createUser(String nick,
-                           String firstName,
-                           String lastname,
-                           String cid,
-                           Year year,
-                           boolean userAgreement,
-                           String email,
-                           String password) {
+    public ITUser createUser(String nick,
+                             String firstName,
+                             String lastname,
+                             String cid,
+                             Year year,
+                             boolean userAgreement,
+                             String email,
+                             String password) {
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
         itUser.setFirstName(firstName);
@@ -95,18 +95,16 @@ public final class ITUserService implements UserDetailsService {
         itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
         itUser.setPassword(this.passwordEncoder.encode(password));
         this.itUserRepository.save(itUser);
+        return itUser;
     }
 
     public void removeUser(UUID id) {
         this.itUserRepository.deleteById(id);
     }
 
-    public boolean editUser(UUID user, String nick, String firstName, String lastName,
+    public void editUser(UUID user, String nick, String firstName, String lastName,
                             String email, String phone, Language language, String avatarUrl) {
         ITUser itUser = this.itUserRepository.findById(user).orElse(null);
-        if (itUser == null) {
-            return false;
-        }
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
         itUser.setLastName(lastName == null ? itUser.getLastName() : lastName);
@@ -116,7 +114,6 @@ public final class ITUserService implements UserDetailsService {
         itUser.setAvatarUrl(avatarUrl == null ? itUser.getAvatarUrl() : avatarUrl);
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
-        return true;
     }
 
     public ITUser getUserById(UUID id) {
@@ -128,34 +125,4 @@ public final class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ITUserService that = (ITUserService) o;
-        return this.itUserRepository.equals(that.itUserRepository)
-            && this.passwordEncoder.equals(that.passwordEncoder)
-            && this.membershipService.equals(that.membershipService)
-            && this.authorityService.equals(that.authorityService);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.itUserRepository, this.passwordEncoder,
-            this.membershipService, this.authorityService);
-    }
-
-    @Override
-    public String toString() {
-        return "ITUserService{"
-            + "itUserRepository=" + this.itUserRepository
-            + ", passwordEncoder=" + this.passwordEncoder
-            + ", membershipService=" + this.membershipService
-            + ", authorityService=" + this.authorityService
-            + '}';
-    }
 }

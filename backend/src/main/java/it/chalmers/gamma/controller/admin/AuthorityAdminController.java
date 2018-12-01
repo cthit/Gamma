@@ -39,25 +39,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/authority")
 public final class AuthorityAdminController {
 
     private final AuthorityService authorityService;
-
     private final FKITService fkitService;
-
     private final PostService postService;
-
     private final AuthorityLevelService authorityLevelService;
-
     private final MembershipService membershipService;
 
-    private AuthorityAdminController(AuthorityService authorityService,
-                                    FKITService fkitService,
-                                    PostService postService,
-                                    AuthorityLevelService authorityLevelService,
-                                    MembershipService membershipService) {
+    public AuthorityAdminController(AuthorityService authorityService,
+                                     FKITService fkitService,
+                                     PostService postService,
+                                     AuthorityLevelService authorityLevelService,
+                                     MembershipService membershipService) {
         this.authorityService = authorityService;
         this.fkitService = fkitService;
         this.postService = postService;
@@ -136,6 +133,7 @@ public final class AuthorityAdminController {
         List<AuthorityLevel> authorityLevels = this.authorityLevelService.getAllAuthorityLevels();
         return new GetAllAuthorityLevelsResponse(authorityLevels);
     }
+
     @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeAuthorityLevel(@PathVariable("id") String id) {
         this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));

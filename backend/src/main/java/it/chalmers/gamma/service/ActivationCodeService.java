@@ -6,14 +6,15 @@ import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public final class ActivationCodeService {
+@SuppressWarnings({"TooManyMethods"})
+
+public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
 
@@ -22,7 +23,7 @@ public final class ActivationCodeService {
     // Add some random WORDS in here.
     private static final String[] WORDS = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};
 
-    private ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
+    public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
         this.activationCodeRepository = activationCodeRepository;
     }
 
@@ -99,27 +100,4 @@ public final class ActivationCodeService {
         return this.activationCodeRepository.findAll();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ActivationCodeService that = (ActivationCodeService) o;
-        return this.activationCodeRepository.equals(that.activationCodeRepository);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(activationCodeRepository);
-    }
-
-    @Override
-    public String toString() {
-        return "ActivationCodeService{"
-            + "activationCodeRepository=" + this.activationCodeRepository
-            + '}';
-    }
 }

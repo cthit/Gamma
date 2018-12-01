@@ -16,12 +16,12 @@ public final class JwtController {
 
     private final JwtTokenProvider tokenProvider;
 
-    private JwtController(JwtTokenProvider jwtTokenProvider) {
+    public JwtController(JwtTokenProvider jwtTokenProvider) {
         this.tokenProvider = jwtTokenProvider;
     }
 
     @PostMapping
-    public ResponseEntity<Boolean> isValid(@RequestBody ValidateJwtRequest validateJwtRequest) {
+    public ResponseEntity<Boolean> tokenIsValid(@RequestBody ValidateJwtRequest validateJwtRequest) {
         return new ValidJwtResponse(this.tokenProvider.validateToken(validateJwtRequest.getJwt()));
     }
 }

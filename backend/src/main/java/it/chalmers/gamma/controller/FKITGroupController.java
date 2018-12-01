@@ -24,7 +24,7 @@ public final class FKITGroupController {
     private final FKITService fkitService;
     private final GroupWebsiteService groupWebsiteService;
 
-    private FKITGroupController(
+    public FKITGroupController(
             FKITService fkitService,
             GroupWebsiteService groupWebsiteService) {
         this.fkitService = fkitService;
@@ -47,8 +47,8 @@ public final class FKITGroupController {
                 );
         // This should change the database setup probably.
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-            // which fields should be sent to frontend
-            FKITGroupSerializer.Properties.getAllProperties()
+                // which fields should be sent to frontend
+                FKITGroupSerializer.Properties.getAllProperties()
         );
         // serializes all selected data from the group
         return serializer.serialize(group, null, websiteViews);

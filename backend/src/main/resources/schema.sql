@@ -63,6 +63,11 @@ create table fkit_group (
   avatar_url  varchar(255) null
 );
 
+create table post (
+  id        uuid constraint post_pk primary key,
+  post_name uuid not null references text
+);
+
 create table authority (
   id              uuid  constraint authority_unique unique,
   fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
@@ -77,10 +82,7 @@ create table fkit_group_website(
   website     uuid not null references website_url
 );
 
-create table post (
-  id        uuid constraint post_pk primary key,
-  post_name uuid not null references text
-);
+
 
 create table membership (   -- Should this be rebuilt to look like all other tables? probably
   ituser_id            uuid         constraint membership_ituser_fk references ituser,

@@ -5,15 +5,20 @@ import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
+import it.chalmers.gamma.jwt.JwtTokenProvider;
+import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
-
+import it.chalmers.gamma.service.ITUserService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class WhitelistIntegrationTests {
 
     @Autowired
@@ -34,21 +40,37 @@ public class WhitelistIntegrationTests {
     @Autowired
     ActivationCodeRepository activationCodeRepository;
 
-    TestUtils utils;
+    static TestUtils utils;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    ITUserService userService;
 
     @Autowired
     MockMvc mockMvc;
 
+    private static boolean hasRun = false;
+
+
     @Before
-    public void setup() {
-        this.utils = new TestUtils();
-        this.utils.setMockMvc(this.mockMvc);
+    public void setup(){
+        if(!hasRun) {
+            utils = new TestUtils();
+            utils.setMockMvc(mockMvc, jwtTokenProvider, userService);
+            hasRun = true;
+        }
     }
 
     @Test
-    public void testCreateCode() throws Exception {
+    public void testCreateCode() {
         String cid = "TEST_CODE";
-        this.utils.sendCreateCode(cid);
+        try {
+            utils.sendCreateCode(cid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Whitelist whitelist = this.whitelistRepository.findByCid(cid);
         Assert.assertTrue(this.activationCodeService.userHasCode(whitelist.getCid()));
     }
@@ -58,7 +80,7 @@ public class WhitelistIntegrationTests {
         String cid = "expired";
         this.utils.sendCreateCode(cid);
         ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(cid);
-        activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds((2 * 3600) + 5));
+        activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds(2 * 3600 + 5));
         this.activationCodeRepository.save(activationCode);
         Assert.assertTrue(this.activationCodeService.hasCodeExpired(cid, 2));
 

@@ -15,11 +15,11 @@ public class MembershipPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ituser_id")
-    private transient ITUser itUser;
+    private ITUser itUser;
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private transient FKITGroup fkitGroup;
+    private FKITGroup fkitGroup;
 
     private static final long serialVersionUID = 6624119509779427L;
 
@@ -50,7 +50,7 @@ public class MembershipPK implements Serializable {
         }
         MembershipPK that = (MembershipPK) o;
         return Objects.equals(this.itUser, that.itUser)
-                && Objects.equals(this.fkitGroup, that.fkitGroup);
+            && Objects.equals(this.fkitGroup, that.fkitGroup);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class MembershipPK implements Serializable {
     @Override
     public String toString() {
         return "MembershipPK{"
-                + "itUser=" + this.itUser
-                + ", fkitGroup=" + this.fkitGroup
-                + '}';
+            + "itUser=" + this.itUser
+            + ", fkitGroup=" + this.fkitGroup
+            + '}';
     }
 }
