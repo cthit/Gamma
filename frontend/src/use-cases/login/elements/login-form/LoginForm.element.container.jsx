@@ -3,7 +3,7 @@ import {
     DigitToastActions
 } from "@cthit/react-digit-components";
 import { connect } from "react-redux";
-import LoginForm from "./LoginForm.view";
+import LoginForm from "./LoginForm.element";
 
 const mapStateToProps = (state, ownProps) => ({});
 
