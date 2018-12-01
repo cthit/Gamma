@@ -1,9 +1,10 @@
 import axios from "axios";
+import _ from "lodash";
 
 const path = "http://localhost:8081";
 
 export function getRequest(endpoint) {
-    return axios.get(path + endpoint, {
+    return axios.get(removeLastSlash(path + endpoint), {
         headers: {
             Authorization: "Bearer " + token()
         }
@@ -11,7 +12,7 @@ export function getRequest(endpoint) {
 }
 
 export function postRequest(endpoint, data) {
-    return axios.post(path + endpoint, data, {
+    return axios.post(removeLastSlash(path + endpoint), data, {
         headers: {
             Authorization: "Bearer " + token()
         }
@@ -19,7 +20,7 @@ export function postRequest(endpoint, data) {
 }
 
 export function deleteRequest(endpoint) {
-    return axios.delete(path + endpoint, {
+    return axios.delete(removeLastSlash(path + endpoint), {
         headers: {
             Authorization: "Bearer " + token()
         }
@@ -27,11 +28,15 @@ export function deleteRequest(endpoint) {
 }
 
 export function putRequest(endpoint, data) {
-    return axios.put(path + endpoint, data, {
+    return axios.put(removeLastSlash(path + endpoint), data, {
         headers: {
             Authorization: "Bearer " + token()
         }
     });
+}
+
+function removeLastSlash(path) {
+    return _.trimEnd(path, "/");
 }
 
 function token() {
