@@ -70,7 +70,7 @@ public final class UserAdminController {
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
-        if (!this.itUserService.userExists(UUID.fromString(id))){
+        if (!this.itUserService.userExists(UUID.fromString(id))) {
             throw new CidNotFoundResponse();
         }
         this.itUserService.editUser(

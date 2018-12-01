@@ -32,7 +32,7 @@ public class AuthorityService {
             AuthorityPK pk = new AuthorityPK();
             pk.setFkitGroup(group);
             pk.setPost(post);
-   //         authority.setId(pk);
+            authority.setId(pk);
         }
         authority.setAuthorityLevel(authorityLevel);
         this.authorityRepository.save(authority);

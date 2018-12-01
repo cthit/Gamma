@@ -4,11 +4,11 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.requests.CreateGroupRequest;
 
 import java.util.List;
 import java.util.UUID;
 
-import it.chalmers.gamma.requests.CreateGroupRequest;
 import org.springframework.stereotype.Service;
 
 @Service
