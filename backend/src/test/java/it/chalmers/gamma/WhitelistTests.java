@@ -50,7 +50,7 @@ public class WhitelistTests {
             this.whitelistService.addWhiteListedCID(cid);
             Assert.fail();
         } catch (Exception ignored) {
-
+            Assert.assertTrue(true);
         }
     }
 
