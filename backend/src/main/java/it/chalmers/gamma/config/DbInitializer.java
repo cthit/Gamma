@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITService;
@@ -58,15 +59,14 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
-            FKITGroup group = this.groupService.createGroup(
-                    "superadmin",
-                    "SuperAdmin",
-                    description,
-                    adminMail,
-                    GroupType.COMMITTEE,
-                    new Text(),
-                    null
-            );
+            CreateGroupRequest request = new CreateGroupRequest();
+            request.setName("superadmin");
+            request.setPrettyName("superAdmin");
+            request.setFunc(new Text());
+            request.setDescription(description);
+            request.setType(GroupType.COMMITTEE);
+
+            FKITGroup group = this.groupService.createGroup(request);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);

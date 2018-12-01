@@ -12,6 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(name = "authority_level")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "AvoidDuplicateLiterals"})
+
 public class AuthorityLevel implements GrantedAuthority {
 
     @Id

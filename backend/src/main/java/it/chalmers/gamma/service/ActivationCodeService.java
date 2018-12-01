@@ -13,6 +13,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
+@SuppressWarnings({"TooManyMethods"})
+
 public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;

@@ -69,7 +69,7 @@ public final class GroupAdminController {
         );
         return serializer.serialize(group, null, null);
     }
-
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
         if (this.fkitService.groupExists(createGroupRequest.getName())) {
@@ -101,15 +101,7 @@ public final class GroupAdminController {
             websiteURLs.add(websiteURL);
         }
         this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(
-                        createGroupRequest.getName(),
-                        createGroupRequest.getPrettyName(),
-                        createGroupRequest.getDescription(),
-                        createGroupRequest.getEmail(),
-                        createGroupRequest.getType(),
-                        createGroupRequest.getFunc(),
-                        createGroupRequest.getAvatarURL()
-                ), websiteURLs);
+                this.fkitService.createGroup(createGroupRequest), websiteURLs);
         return new GroupCreatedResponse();
     }
 
@@ -117,15 +109,7 @@ public final class GroupAdminController {
     public ResponseEntity<String> editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
-        this.fkitService.editGroup(
-                UUID.fromString(id),
-                request.getPrettyName(),
-                request.getDescription(),
-                request.getEmail(),
-                request.getType(),
-                request.getFunc(),
-                request.getAvatarURL()
-        );
+        this.fkitService.editGroup(UUID.fromString(id), request);
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteInterface> entityWebsites = new ArrayList<>(

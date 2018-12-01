@@ -26,6 +26,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "ituser")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@SuppressWarnings({"TooManyFields"})
+
 public class ITUser implements UserDetails {
 
     @Id
