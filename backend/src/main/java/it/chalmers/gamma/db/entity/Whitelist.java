@@ -18,6 +18,10 @@ public class Whitelist {
     @Column(name = "cid", unique = true, length = 10, nullable = false)
     private String cid;
 
+    protected Whitelist() {
+        this.id = UUID.randomUUID();
+    }
+
     public Whitelist(String cid) {
         this.id = UUID.randomUUID();
         this.cid = cid;

@@ -10,6 +10,7 @@ import it.chalmers.gamma.service.WhitelistService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -44,7 +45,7 @@ public class ActivationCodeTests {
     //TODO how do we test this?
     @Test
     public void testActivationCode() {
-
+        Assert.assertTrue(true);
     }
 
     @Test
