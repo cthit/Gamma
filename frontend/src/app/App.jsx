@@ -121,7 +121,7 @@ export class App extends Component {
                 render={text => (
                     <DigitHeader
                         title={title}
-                        renderDrawer={drawer}
+                        renderDrawer={loggedIn ? drawer : () => null}
                         renderHeader={header}
                         renderMain={() => (
                             <DigitLayout.Fill>
