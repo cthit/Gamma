@@ -3,12 +3,15 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 
 public class CreateWebsiteRequest {
-    private final String name;
-    private final String prettyName;
 
+    private String name;
+    private String prettyName;
 
-    public CreateWebsiteRequest(String name, String prettyName) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
     }
 

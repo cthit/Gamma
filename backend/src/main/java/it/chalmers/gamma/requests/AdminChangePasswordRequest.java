@@ -3,6 +3,7 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 
 public class AdminChangePasswordRequest {
+
     private String password;
 
     public String getPassword() {
