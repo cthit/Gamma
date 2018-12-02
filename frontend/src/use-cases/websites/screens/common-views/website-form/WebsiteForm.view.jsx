@@ -28,14 +28,16 @@ function generateEditComponentData(text) {
     componentData[NAME] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.Name
+            upperLabel: text.Name,
+            filled: true
         }
     };
 
     componentData[PRETTY_NAME] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.PrettyName
+            upperLabel: text.PrettyName,
+            filled: true
         }
     };
 

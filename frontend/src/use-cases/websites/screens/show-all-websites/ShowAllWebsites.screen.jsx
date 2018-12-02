@@ -35,9 +35,11 @@ const ShowAllWebsites = ({ websites }) => (
                     })}
                     emptyTableText={text.NoWebsites}
                 />
-                <DigitDesign.Link to="/websites/add">
-                    <DigitFAB icon={Add} secondary />
-                </DigitDesign.Link>
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/websites/add">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
             </DigitLayout.Fill>
         )}
     />
