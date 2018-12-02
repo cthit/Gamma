@@ -1,6 +1,6 @@
 import { getRequest } from "../utils/api";
-import { ACTIVATION_CODES_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_ACTIVATION_CODES_ENDPOINT } from "../utils/endpoints";
 
 export function getActivationCodes() {
-    return getRequest(ACTIVATION_CODES_ENDPOINT);
+    return getRequest(ADMIN_ACTIVATION_CODES_ENDPOINT);
 }

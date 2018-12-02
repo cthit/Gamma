@@ -8,6 +8,7 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowActivationCodeDetails.screen.translations.json";
+import { formatDateFromServer } from "../../../../common/utils/formatters/date.formatter";
 
 const ShowActivationCodeDetails = ({
     activationCode,
@@ -22,13 +23,19 @@ const ShowActivationCodeDetails = ({
             <DigitTranslations
                 translations={translations}
                 uniquePath="ActivationCode.Screen.ShowActivationCodeDetails"
-                render={text => (
+                render={(text, activeLanguage) => (
                     <DigitLayout.Fill>
                         <DigitLayout.Center>
                             <DigitDesign.Card minWidth="300px" maxWidth="600px">
                                 <DigitDesign.CardBody>
                                     <DigitDisplayData
-                                        data={activationCode}
+                                        data={{
+                                            ...activationCode,
+                                            createdAt: formatDateFromServer(
+                                                activationCode.createdAt,
+                                                activeLanguage
+                                            )
+                                        }}
                                         keysText={{
                                             id: text.Id,
                                             cid: text.Cid,

@@ -5,13 +5,14 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowAllActivationCodes.screen.translations.json";
+import { formatDateFromServer } from "../../../../common/utils/formatters/date.formatter";
 
 const ShowAllActivationCodes = ({ activationCodes, text }) => (
     <DigitLayout.Fill>
         <DigitTranslations
             translations={translations}
             uniquePath="ActivationCodes.Screen.ShowAllActivationCodes"
-            render={text => (
+            render={(text, activeLanguage) => (
                 <DigitTable
                     titleText={text.ActivationCodes}
                     searchText={text.SearchForActivationCodes}
@@ -28,7 +29,11 @@ const ShowAllActivationCodes = ({ activationCodes, text }) => (
                     data={activationCodes.map(activationCode => {
                         return {
                             ...activationCode,
-                            __link: "/activation-codes/" + activationCode.id
+                            __link: "/activation-codes/" + activationCode.id,
+                            createdAt: formatDateFromServer(
+                                activationCode.createdAt,
+                                activeLanguage
+                            )
                         };
                     })}
                     emptyTableText={text.NoActivationCodes}
