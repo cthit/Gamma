@@ -2,6 +2,8 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import EditWebsiteDetails from "./EditWebsiteDetails.screen";
 
+import { DigitToastActions } from "@cthit/react-digit-components";
+
 import { createEditWebsiteAction } from "../../../../api/websites/action-creator.websites.api";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -11,7 +13,9 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
     websitesChange: (websiteData, websiteId) =>
-        dispatch(createEditWebsiteAction(websiteData, websiteId))
+        dispatch(createEditWebsiteAction(websiteData, websiteId)),
+    toastOpen: toastData =>
+        dispatch(DigitToastActions.digitToastOpen(toastData))
 });
 
 export default connect(
