@@ -8,6 +8,7 @@ import { websites } from "../use-cases/websites/Websites.reducer";
 import { whitelist } from "../use-cases/whitelist/Whitelist.reducer";
 import { user } from "./elements/user-information/UserInformation.element.reducer";
 import { loading } from "./views/gamma-loading/GammaLoading.view.reducer";
+import { editUsersInGroup } from "../use-cases/groups/screens/edit-users-in-group/EditUsersInGroup.screen.reducer";
 
 export const rootReducer = {
     createAccount,
@@ -19,5 +20,6 @@ export const rootReducer = {
     groups,
     websites,
     activationCodes,
-    loading
+    loading,
+    editUsersInGroup
 };

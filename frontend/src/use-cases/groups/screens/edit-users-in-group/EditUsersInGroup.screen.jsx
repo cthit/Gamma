@@ -3,7 +3,9 @@ import React from "react";
 import {
     DigitTable,
     DigitTranslations,
-    DigitIfElseRendering
+    DigitIfElseRendering,
+    DigitLayout,
+    DigitText
 } from "@cthit/react-digit-components";
 
 import {
@@ -21,16 +23,33 @@ class EditUsersInGroup extends React.Component {
     constructor(props) {
         super(props);
 
+        const { savedSelectedGroups } = this.props;
+
         this.state = {
-            selectedUsers: []
+            unsavedEdits:
+                savedSelectedGroups != null ||
+                (savedSelectedGroups != null &&
+                    savedSelectedGroups.length == 0),
+            selectedUsers:
+                savedSelectedGroups == null ? [] : savedSelectedGroups
         };
 
         props.loadUsers();
     }
 
+    componentDidMount = () => {};
+
+    componentWillUnmount = () => {
+        const { group, temporarySaveSelectedUsersToGroup } = this.props;
+        const { selectedUsers } = this.state;
+
+        temporarySaveSelectedUsersToGroup(group.id, selectedUsers);
+    };
+
     onSelectedChange = selected => {
         this.setState({
-            selectedUsers: selected
+            selectedUsers: selected,
+            unsavedEdits: selected.length > 0
         });
     };
 
@@ -47,10 +66,8 @@ class EditUsersInGroup extends React.Component {
     };
 
     render() {
-        const { selectedUsers } = this.state;
+        const { selectedUsers, unsavedEdits } = this.state;
         const { users, group } = this.props;
-
-        console.log(group);
 
         return (
             <DigitIfElseRendering
@@ -60,22 +77,29 @@ class EditUsersInGroup extends React.Component {
                         translations={EditUsersInGroupTranslations}
                         uniquePath="Groups.EditUsersInGroup"
                         render={text => (
-                            <DigitTable
-                                selected={selectedUsers}
-                                onSelectedUpdated={this.onSelectedChange}
-                                search
-                                titleText={text.UsersFor + group[PRETTY_NAME]}
-                                searchText="Search for users"
-                                showSearchableProps
-                                idProp="id"
-                                startOrderBy={NICKNAME}
-                                columnsOrder={[ID, FIRST_NAME, LAST_NAME]}
-                                headerTexts={this.generateHeaderTexts(text)}
-                                data={users.map(user => ({
-                                    ...user,
-                                    __link: "/users/" + user.cid
-                                }))}
-                            />
+                            <DigitLayout.Column>
+                                <DigitText.Heading5
+                                    text={unsavedEdits ? text.UnsavedEdits : ""}
+                                />
+                                <DigitTable
+                                    selected={selectedUsers}
+                                    onSelectedUpdated={this.onSelectedChange}
+                                    search
+                                    titleText={
+                                        text.UsersFor + group[PRETTY_NAME]
+                                    }
+                                    searchText="Search for users"
+                                    showSearchableProps
+                                    idProp="id"
+                                    startOrderBy={NICKNAME}
+                                    columnsOrder={[ID, FIRST_NAME, LAST_NAME]}
+                                    headerTexts={this.generateHeaderTexts(text)}
+                                    data={users.map(user => ({
+                                        ...user,
+                                        __link: "/users/" + user.cid
+                                    }))}
+                                />
+                            </DigitLayout.Column>
                         )}
                     />
                 )}
