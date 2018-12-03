@@ -10,7 +10,8 @@ import translations from "./EditWhitelistItemDetails.screen.translations.json";
 const EditWhitelistItemDetails = ({
     whitelistChange,
     whitelistItem,
-    match
+    match,
+    toastOpen
 }) => (
     <DigitIfElseRendering
         test={whitelistItem != null}
@@ -25,11 +26,16 @@ const EditWhitelistItemDetails = ({
                                 onSubmit={(values, actions) => {
                                     whitelistChange(values, match.params.id)
                                         .then(response => {
-                                            console.log(response);
+                                            toastOpen({
+                                                text: text.SuccessfullyEdit
+                                            });
                                             actions.resetForm();
                                         })
                                         .catch(error => {
-                                            console.log(error);
+                                            toastOpen({
+                                                text: text.SomethingWentWrong,
+                                                duration: 6000
+                                            });
                                         });
                                 }}
                                 initialValues={{ cid: whitelistItem.cid }}
