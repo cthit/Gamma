@@ -5,11 +5,11 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
 import translations from "./LoginForm.element.translations.json";
 import LoginFormCard from "../login-form-card/LoginFormCard.element";
+
+import { INCORRECT_CID_OR_PASSWORD } from "../../../../api/login/errors.login.api";
 
 import { CID, PASSWORD } from "../../../../api/login/props.login.api";
 
@@ -47,10 +47,7 @@ function onLogin(
             resetForm();
         })
         .catch(error => {
-            const code = statusCode(error);
-            const message = statusMessage(error);
-
-            if (code === 422 && message === "INCORRECT_CID_OR_PASSWORD") {
+            if (INCORRECT_CID_OR_PASSWORD.equals(error)) {
                 toastOpen({
                     text: text.IncorrectCidOrPassword,
                     duration: 3000
