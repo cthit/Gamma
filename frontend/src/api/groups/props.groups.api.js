@@ -1,5 +1,5 @@
 export const NAME = "name";
-export const PRETTY_NAME = "pretty_name";
+export const PRETTY_NAME = "prettyName";
 export const DESCRIPTION = "description";
 export const EMAIL = "email";
 export const FUNCTION = "func";
