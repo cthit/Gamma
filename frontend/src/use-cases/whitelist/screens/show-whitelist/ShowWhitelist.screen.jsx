@@ -34,9 +34,11 @@ const ShowWhitelist = ({ whitelist }) => (
                     })}
                     emptyTableText={text.EmptyWhitelist}
                 />
-                <DigitDesign.Link to="/whitelist/add">
-                    <DigitFAB icon={Add} secondary />
-                </DigitDesign.Link>
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/whitelist/add">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
             </DigitLayout.Fill>
         )}
     />

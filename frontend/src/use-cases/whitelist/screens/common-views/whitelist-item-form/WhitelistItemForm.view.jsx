@@ -19,7 +19,8 @@ function generateEditComponentData(text) {
     componentData[CID] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.cidInputText
+            upperLabel: text.cidInputText,
+            filled: true
         }
     };
 

@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 
 import ShowWhitelist from "./screens/show-whitelist";
-import AddNewWhitelistItem from "./screens/add-new-whitelist-item";
+import AddToWhitelist from "./screens/add-to-whitelist";
 import ShowWhitelistItem from "./screens/show-whitelist-item";
 import EditWhitelistItemDetails from "./screens/edit-whitelist-item-details";
 import ValidateCid from "./screens/validate-cid";
@@ -25,11 +25,7 @@ class Whitelist extends React.Component {
                     exact
                     component={ValidateCid}
                 />
-                <Route
-                    path="/whitelist/add"
-                    exact
-                    component={AddNewWhitelistItem}
-                />
+                <Route path="/whitelist/add" exact component={AddToWhitelist} />
                 <Route
                     path="/whitelist/:id/edit"
                     exact

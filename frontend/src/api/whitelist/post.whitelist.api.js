@@ -8,15 +8,6 @@ const ACTIVATE_CID_ENDPOINT = "activate_cid/";
 
 /**
  * {
- *     cid: String
- * }
- */
-export function addUserToWhitelist(whitelistData) {
-    return addUsersToWhitelist({ cids: [whitelistData.cid] });
-}
-
-/**
- * {
  *     cids: [String]
  * }
  */

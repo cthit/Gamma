@@ -1,6 +1,6 @@
 import { deleteWhitelistItem } from "./delete.whitelist.api";
 import { getWhitelist } from "./get.whitelist.api";
-import { addUserToWhitelist, cidIsWhitelisted } from "./post.whitelist.api";
+import { addUsersToWhitelist, cidIsWhitelisted } from "./post.whitelist.api";
 import { editWhitelistItem } from "./put.whitelist.api";
 import {
     WHITELIST_ADD_SUCCESSFULLY,
@@ -12,7 +12,8 @@ import {
     WHITELIST_LOAD_FAILED,
     WHITELIST_LOAD_SUCCESSFULLY,
     WHITELIST_VALIDATE_FAILED,
-    WHITELIST_VALIDATE_SUCCESSFULLY
+    WHITELIST_VALIDATE_SUCCESSFULLY,
+    WHITELIST_ADD_FAILED
 } from "./actions.whitelist.api";
 
 export function createGetWhitelistAction() {
@@ -35,7 +36,7 @@ export function createGetWhitelistAction() {
 export function createAddToWhitelistAction(whitelist) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            addUserToWhitelist(whitelist)
+            addUsersToWhitelist(whitelist)
                 .then(response => {
                     dispatch(whitelistAddSuccessfully());
                     resolve(response);
@@ -132,7 +133,7 @@ function whitelistAddSuccessfully() {
 
 function whitelistAddFailed(error) {
     return {
-        type: WHITELIST_DELETE_FAILED,
+        type: WHITELIST_ADD_FAILED,
         error: true,
         payload: {
             error: error
