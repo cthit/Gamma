@@ -5,5 +5,6 @@
     "Checkbox": ["Choose users", "Välj användare"],
     "UsersFor": ["Users for ", "Användare för "],
     "Link": ["Details", "Detaljer"],
-    "UnsavedEdits": ["You have unsaved edits", "Du har osparade ändringar"]
+    "UnsavedEdits": ["You have unsaved edits", "Du har osparade ändringar"],
+    "Nickname": ["Nickname", "Nick"]
 }

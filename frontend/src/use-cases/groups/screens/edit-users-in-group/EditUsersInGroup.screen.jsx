@@ -58,6 +58,7 @@ class EditUsersInGroup extends React.Component {
 
         headerTexts[FIRST_NAME] = text.FirstName;
         headerTexts[LAST_NAME] = text.LastName;
+        headerTexts[NICKNAME] = text.Nickname;
         headerTexts[ID] = text.Id;
         headerTexts["__link"] = text.Link;
         headerTexts["__checkbox"] = text.Checkbox;
@@ -92,7 +93,12 @@ class EditUsersInGroup extends React.Component {
                                     showSearchableProps
                                     idProp="id"
                                     startOrderBy={NICKNAME}
-                                    columnsOrder={[ID, FIRST_NAME, LAST_NAME]}
+                                    columnsOrder={[
+                                        ID,
+                                        FIRST_NAME,
+                                        NICKNAME,
+                                        LAST_NAME
+                                    ]}
                                     headerTexts={this.generateHeaderTexts(text)}
                                     data={users.map(user => ({
                                         ...user,
