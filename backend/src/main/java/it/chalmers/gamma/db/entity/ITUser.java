@@ -2,21 +2,33 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import it.chalmers.gamma.domain.Language;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.awt.*;
+import it.chalmers.gamma.domain.Language;
+
 import java.time.Instant;
 import java.time.Year;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "ituser")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ITUser implements UserDetails{
+@SuppressWarnings({"PMD.TooManyFields"})
+
+public class ITUser implements UserDetails {
 
     @Id
     @Column(updatable = false)
@@ -49,7 +61,7 @@ public class ITUser implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    @Column(name = "avatarUrl", length = 255)
+    @Column(name = "avatar_url", length = 255)
     private String avatarUrl;
 
     @Column(name = "gdpr", nullable = false)
@@ -75,13 +87,13 @@ public class ITUser implements UserDetails{
 
 
     public ITUser() {
-        id = UUID.randomUUID();
-        createdAt = Instant.now();
-        lastModifiedAt = Instant.now();
+        this.id = UUID.randomUUID();
+        this.createdAt = Instant.now();
+        this.lastModifiedAt = Instant.now();
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -89,7 +101,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     public void setCid(String cid) {
@@ -98,16 +110,17 @@ public class ITUser implements UserDetails{
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
-        return new ArrayList<>(authorities);
+        return new ArrayList<>(this.authorities);
     }
 
+    @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return cid;
+        return this.cid;
     }
 
     @Override
@@ -117,7 +130,7 @@ public class ITUser implements UserDetails{
 
     @Override
     public boolean isAccountNonLocked() {
-        return !accountLocked;
+        return !this.accountLocked;
     }
 
     @Override
@@ -135,7 +148,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getNick() {
-        return nick;
+        return this.nick;
     }
 
     public void setNick(String nick) {
@@ -143,7 +156,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -151,7 +164,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     public void setLastName(String lastName) {
@@ -159,7 +172,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -167,7 +180,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
 
     public void setPhone(String phone) {
@@ -175,7 +188,7 @@ public class ITUser implements UserDetails{
     }
 
     public Language getLanguage() {
-        return language;
+        return this.language;
     }
 
     public void setLanguage(Language language) {
@@ -183,7 +196,7 @@ public class ITUser implements UserDetails{
     }
 
     public String getAvatarUrl() {
-        return avatarUrl;
+        return this.avatarUrl;
     }
 
     public void setAvatarUrl(String avatarUrl) {
@@ -191,7 +204,7 @@ public class ITUser implements UserDetails{
     }
 
     public boolean isGdpr() {
-        return gdpr;
+        return this.gdpr;
     }
 
     public void setGdpr(boolean gdpr) {
@@ -199,7 +212,7 @@ public class ITUser implements UserDetails{
     }
 
     public boolean isUserAgreement() {
-        return userAgreement;
+        return this.userAgreement;
     }
 
     public void setUserAgreement(boolean userAgreement) {
@@ -207,7 +220,7 @@ public class ITUser implements UserDetails{
     }
 
     public Year getAcceptanceYear() {
-        return Year.of(acceptanceYear);
+        return Year.of(this.acceptanceYear);
     }
 
     public void setAcceptanceYear(Year acceptanceYear) {
@@ -215,7 +228,7 @@ public class ITUser implements UserDetails{
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public void setCreatedAt(Instant createdAt) {
@@ -223,7 +236,7 @@ public class ITUser implements UserDetails{
     }
 
     public Instant getLastModifiedAt() {
-        return lastModifiedAt;
+        return this.lastModifiedAt;
     }
 
     public void setLastModifiedAt(Instant lastModifiedAt) {
@@ -231,64 +244,83 @@ public class ITUser implements UserDetails{
     }
 
     public boolean isAccountLocked() {
-        return accountLocked;
+        return this.accountLocked;
     }
 
     public void setAccountLocked(boolean accountLocked) {
         this.accountLocked = accountLocked;
     }
 
-    public void setAuthority(List<GrantedAuthority> authority){
-        authorities = new ArrayList<>(authority);
+    public void setAuthority(List<GrantedAuthority> authority) {
+        this.authorities = new ArrayList<>(authority);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ITUser itUser = (ITUser) o;
-        return gdpr == itUser.gdpr &&
-                userAgreement == itUser.userAgreement &&
-                Objects.equals(id, itUser.id) &&
-                Objects.equals(cid, itUser.cid) &&
-                Objects.equals(nick, itUser.nick) &&
-                Objects.equals(password, itUser.password) &&
-                Objects.equals(firstName, itUser.firstName) &&
-                Objects.equals(lastName, itUser.lastName) &&
-                Objects.equals(email, itUser.email) &&
-                Objects.equals(phone, itUser.phone) &&
-                Objects.equals(language, itUser.language) &&
-                Objects.equals(avatarUrl, itUser.avatarUrl) &&
-                Objects.equals(acceptanceYear, itUser.acceptanceYear) &&
-                Objects.equals(createdAt, itUser.createdAt) &&
-                Objects.equals(lastModifiedAt, itUser.lastModifiedAt);
+        return this.gdpr == itUser.gdpr
+            && this.userAgreement == itUser.userAgreement
+            && Objects.equals(this.id, itUser.id)
+            && Objects.equals(this.cid, itUser.cid)
+            && Objects.equals(this.nick, itUser.nick)
+            && Objects.equals(this.password, itUser.password)
+            && Objects.equals(this.firstName, itUser.firstName)
+            && Objects.equals(this.lastName, itUser.lastName)
+            && Objects.equals(this.email, itUser.email)
+            && Objects.equals(this.phone, itUser.phone)
+            && Objects.equals(this.language, itUser.language)
+            && Objects.equals(this.avatarUrl, itUser.avatarUrl)
+            && Objects.equals(this.acceptanceYear, itUser.acceptanceYear)
+            && Objects.equals(this.createdAt, itUser.createdAt)
+            && Objects.equals(this.lastModifiedAt, itUser.lastModifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cid, password, nick, firstName, lastName, email, phone, language, avatarUrl, gdpr, userAgreement, acceptanceYear, createdAt, lastModifiedAt);
+        return Objects.hash(
+            this.id,
+            this.cid,
+            this.password,
+            this.nick,
+            this.firstName,
+            this.lastName,
+            this.email,
+            this.phone,
+            this.language,
+            this.avatarUrl,
+            this.gdpr,
+            this.userAgreement,
+            this.acceptanceYear,
+            this.createdAt,
+            this.lastModifiedAt);
     }
 
     @Override
     public String toString() {
-        return "ITUser{" +
-                "id=" + id +
-                ", cid='" + cid + '\'' +
-                ", password='" + "<redacted>" + '\'' +
-                ", nick='" + nick + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", language=" + language +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", gdpr=" + gdpr +
-                ", userAgreement=" + userAgreement +
-                ", accountLocked=" + accountLocked +
-                ", acceptanceYear=" + acceptanceYear +
-                ", createdAt=" + createdAt +
-                ", lastModifiedAt=" + lastModifiedAt +
-                ", authorities=" + authorities +
-                '}';
+        return "ITUser{"
+            + "id=" + id
+            + ", cid='" + cid + '\''
+            + ", password='" + "<redacted>" + '\''
+            + ", nick='" + nick + '\''
+            + ", firstName='" + firstName + '\''
+            + ", lastName='" + lastName + '\''
+            + ", email='" + email + '\''
+            + ", phone='" + phone + '\''
+            + ", language=" + language
+            + ", avatarUrl='" + avatarUrl + '\''
+            + ", gdpr=" + gdpr
+            + ", userAgreement=" + userAgreement
+            + ", accountLocked=" + accountLocked
+            + ", acceptanceYear=" + acceptanceYear
+            + ", createdAt=" + createdAt
+            + ", lastModifiedAt=" + lastModifiedAt
+            + ", authorities=" + authorities
+            + '}';
     }
 }

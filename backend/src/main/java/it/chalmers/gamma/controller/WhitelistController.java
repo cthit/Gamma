@@ -1,14 +1,13 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,46 +17,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 @RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class WhitelistController {
+public final class WhitelistController {
 
-    private WhitelistService whitelistService;
+    private final WhitelistService whitelistService;
+    private final ActivationCodeService activationCodeService;
+    private final MailSenderService mailSenderService;
 
-    private ActivationCodeService activationCodeService;
-
-    private ITUserService itUserService;
-
-    private MailSenderService mailSenderService;
-
-    private static final Logger logger = LoggerFactory.getLogger(WhitelistController.class);
-
+    // @Value("${mail.receiver.standard-postfix}")
+    private static final String MAIL_POSTFIX = "@student.chalmers.se";
+    private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
 
     @Value("${spring.profiles.active:development}")
     private String profile;
 
-   // @Value("${mail.receiver.standard-postfix}")
-    private String mailPostfix = "@student.chalmers.se";
-
-    public WhitelistController(WhitelistService whitelistService, ActivationCodeService activationCodeService,
-                               ITUserService itUserService, MailSenderService mailSenderService){
+    public WhitelistController(
+            WhitelistService whitelistService,
+            ActivationCodeService activationCodeService,
+            MailSenderService mailSenderService) {
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
-        this.itUserService = itUserService;
         this.mailSenderService = mailSenderService;
 
     }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
-    public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid){
-        if(whitelistService.isCIDWhiteListed(cid.getCid())) {
-            Whitelist whitelist = whitelistService.getWhitelist(cid.getCid());
-            String code = activationCodeService.generateActivationCode();
-            ActivationCode activationCode = activationCodeService.saveActivationCode(whitelist, code);
+    public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid) {
+        if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
+            Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
+            String code = this.activationCodeService.generateActivationCode();
+            ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
-        }
-        else{
-            //Log that a unsuccessful attempt was made
         }
 
         /*
@@ -67,16 +59,16 @@ public class WhitelistController {
          */
         return new WhitelistAddedResponse();
     }
-    private void sendEmail(ActivationCode activationCode){
+
+    private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@" + mailPostfix;
+        String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
-        logger.info(profile);
-        if(profile.equals("profile")) {
-            mailSenderService.sendMail(to, "Chalmers activation code", message);
-        }
-        else{
-            logger.info(code);
+        LOGGER.info(this.profile);
+        if (this.profile.equals("profile")) {
+            this.mailSenderService.sendMail(to, "Chalmers activation code", message);
+        } else {
+            LOGGER.info(code);
         }
     }
 }

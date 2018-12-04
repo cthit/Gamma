@@ -1,18 +1,20 @@
 package it.chalmers.gamma;
 
-import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
 import it.chalmers.gamma.service.WhitelistService;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class WhitelistTests {
 
     @Autowired
@@ -23,18 +25,19 @@ public class WhitelistTests {
      */
     @Test
     public void testWhiteList() {
-        whitelistService.addWhiteListedCID("cid3");
-        whitelistService.addWhiteListedCID("cid4");
-        Assert.assertTrue(whitelistService.isCIDWhiteListed("cid3"));
-        Assert.assertFalse(whitelistService.isCIDWhiteListed("leif"));
+        String cid = "cid3";
+        this.whitelistService.addWhiteListedCID(cid);
+        this.whitelistService.addWhiteListedCID("cid4");
+        Assert.assertTrue(this.whitelistService.isCIDWhiteListed(cid));
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed("leif"));
     }
 
     @Test
     public void testDeleteActivationCode() {
         String cid = "cid5";
-        whitelistService.addWhiteListedCID(cid);
-        whitelistService.removeWhiteListedCID(cid);
-        Assert.assertFalse(whitelistService.isCIDWhiteListed(cid));
+        this.whitelistService.addWhiteListedCID(cid);
+        this.whitelistService.removeWhiteListedCID(cid);
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed(cid));
     }
 
 
@@ -43,20 +46,21 @@ public class WhitelistTests {
      */
     @Test
     public void testAddWhitelistCIDMultipleTimes() {
-        try{
-            whitelistService.addWhiteListedCID("cid1");
-            whitelistService.addWhiteListedCID("cid1");
-            assert(false);
-        }catch(Exception e){
-            assert(true);
+        String cid = "cid1";
+        try {
+            this.whitelistService.addWhiteListedCID(cid);
+            this.whitelistService.addWhiteListedCID(cid);
+            Assert.fail();
+        } catch (Exception ignored) {
+            Assert.assertTrue(true);
         }
     }
 
     /*
-TODO Set up test environment that specifies mail address to send from and to.
- */
+     * TODO Set up test environment that specifies mail address to send from and to.
+     */
     @Test
     public void testSendEmail() {
-
+        Assert.assertTrue(true);
     }
 }

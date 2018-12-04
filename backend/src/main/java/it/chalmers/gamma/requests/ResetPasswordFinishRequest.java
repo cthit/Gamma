@@ -6,7 +6,7 @@ public class ResetPasswordFinishRequest {
     private String token;
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -14,7 +14,7 @@ public class ResetPasswordFinishRequest {
     }
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     public void setCid(String cid) {
@@ -22,7 +22,7 @@ public class ResetPasswordFinishRequest {
     }
 
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     public void setToken(String token) {

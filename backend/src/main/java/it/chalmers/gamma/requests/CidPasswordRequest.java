@@ -8,7 +8,7 @@ public class CidPasswordRequest {
     private String password;
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     public void setCid(String cid) {
@@ -16,7 +16,7 @@ public class CidPasswordRequest {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -25,23 +25,27 @@ public class CidPasswordRequest {
 
     @Override
     public String toString() {
-        return "CidPasswordRequest{" +
-                "cid='" + cid + '\'' +
-                ", password='[REDACTED]'" +
-                '}';
+        return "CidPasswordRequest{"
+            + "cid='" + cid + '\''
+            + ", password='[REDACTED]'"
+            + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CidPasswordRequest that = (CidPasswordRequest) o;
-        return Objects.equals(cid, that.cid) &&
-                Objects.equals(password, that.password);
+        return Objects.equals(this.cid, that.cid)
+            && Objects.equals(this.password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cid, password);
+        return Objects.hash(this.cid, this.password);
     }
 }

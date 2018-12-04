@@ -1,7 +1,15 @@
 package it.chalmers.gamma.db.entity;
 
-import javax.persistence.*;
 import java.util.UUID;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "ituser_website")
@@ -19,12 +27,12 @@ public class UserWebsite implements WebsiteInterface {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private WebsiteURL website;
 
-    public UserWebsite(){
-        id = UUID.randomUUID();
+    public UserWebsite() {
+        this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -32,15 +40,16 @@ public class UserWebsite implements WebsiteInterface {
     }
 
     public ITUser getItUser() {
-        return itUser;
+        return this.itUser;
     }
 
     public void setItUser(ITUser itUser) {
         this.itUser = itUser;
     }
 
+    @Override
     public WebsiteURL getWebsite() {
-        return website;
+        return this.website;
     }
 
     public void setWebsite(WebsiteURL website) {

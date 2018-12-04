@@ -1,17 +1,19 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
-import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
 import java.time.Year;
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 @Entity
 @Table(name = "membership")
-public class Membership{
-
+public class Membership {
 
     @EmbeddedId
     private MembershipPK id;
@@ -25,9 +27,8 @@ public class Membership{
     @Column(name = "year")
     private int year;
 
-
     public Year getYear() {
-        return Year.of(year);
+        return Year.of(this.year);
     }
 
     public void setYear(Year year) {
@@ -35,7 +36,7 @@ public class Membership{
     }
 
     public MembershipPK getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(MembershipPK id) {
@@ -43,7 +44,7 @@ public class Membership{
     }
 
     public Post getPost() {
-        return post;
+        return this.post;
     }
 
     public void setPost(Post post) {
@@ -51,38 +52,38 @@ public class Membership{
     }
 
     public String getUnofficialPostName() {
-        return unofficialPostName;
+        return this.unofficialPostName;
     }
 
     public void setUnofficialPostName(String unofficialPostName) {
         this.unofficialPostName = unofficialPostName;
     }
 
-    public void setYear(int year) {
-        this.year = year;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Membership that = (Membership) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(post, that.post) &&
-                Objects.equals(unofficialPostName, that.unofficialPostName);
+        return Objects.equals(this.id, that.id)
+            && Objects.equals(this.post, that.post)
+            && Objects.equals(this.unofficialPostName, that.unofficialPostName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, post, unofficialPostName);
+        return Objects.hash(this.id, this.post, this.unofficialPostName);
     }
 
     @Override
     public String toString() {
-        return "Membership{" +
-                "id=" + id +
-                ", post=" + post +
-                ", unofficialPostName='" + unofficialPostName + '\'' +
-                '}';
+        return "Membership{"
+            + "id=" + this.id
+            + ", post=" + this.post
+            + ", unofficialPostName='" + this.unofficialPostName + '\''
+            + '}';
     }
 }

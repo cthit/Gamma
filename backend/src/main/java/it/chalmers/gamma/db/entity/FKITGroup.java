@@ -1,12 +1,22 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import it.chalmers.gamma.domain.GroupType;
-import org.codehaus.jackson.annotate.JsonProperty;
 
-import javax.persistence.*;
-import java.util.*;
+import it.chalmers.gamma.domain.GroupType;
+
+import java.util.Objects;
+import java.util.UUID;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group")
@@ -41,11 +51,11 @@ public class FKITGroup {
     private GroupType type;
 
     public FKITGroup() {
-        id = UUID.randomUUID();
+        this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -53,7 +63,7 @@ public class FKITGroup {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -61,7 +71,7 @@ public class FKITGroup {
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(Text description) {
@@ -69,7 +79,7 @@ public class FKITGroup {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -77,7 +87,7 @@ public class FKITGroup {
     }
 
     public GroupType getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(GroupType type) {
@@ -85,7 +95,7 @@ public class FKITGroup {
     }
 
     public String getAvatarURL() {
-        return avatarURL;
+        return this.avatarURL;
     }
 
     public void setAvatarURL(String avatarURL) {
@@ -93,7 +103,7 @@ public class FKITGroup {
     }
 
     public Text getFunc() {
-        return func;
+        return this.func;
     }
 
     public void setFunc(Text func) {
@@ -102,7 +112,7 @@ public class FKITGroup {
 
     @JsonIgnore
     public String getSVFunction() {
-        return func.getSv();
+        return this.func.getSv();
     }
 
     public void setSVFunction(String function) {
@@ -111,7 +121,7 @@ public class FKITGroup {
 
     @JsonIgnore
     public String getENFunction() {
-        return func.getEn();
+        return this.func.getEn();
     }
 
     public void setENFunction(String function) {
@@ -119,15 +129,15 @@ public class FKITGroup {
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     @JsonIgnore
     public String getSVDescription() {
-        if (description == null) {
+        if (this.description == null) {
             return null;
         }
-        return description.getSv();
+        return this.description.getSv();
     }
 
     public void setSVDescription(String description) {
@@ -136,10 +146,10 @@ public class FKITGroup {
 
     @JsonIgnore
     public String getENDescription() {
-        if (description == null) {
+        if (this.description == null) {
             return null;
         }
-        return description.getEn();
+        return this.description.getEn();
     }
 
     public void setENDescription(String description) {
@@ -152,36 +162,47 @@ public class FKITGroup {
 
     @Override
     public String toString() {
-        return "FKITGroup{" +
-                "id=" + id +
-                ", avatarURL='" + avatarURL + '\'' +
-                ", name='" + name + '\'' +
-                ", prettyName='" + prettyName + '\'' +
-                ", description=" + description +
-                ", func=" + func +
-                ", email='" + email + '\'' +
-                ", type=" + type +
-                '}';
+        return "FKITGroup{"
+            + "id=" + id
+            + ", avatarURL='" + avatarURL + '\''
+            + ", name='" + name + '\''
+            + ", prettyName='" + prettyName + '\''
+            + ", description=" + description
+            + ", func=" + func
+            + ", email='" + email + '\''
+            + ", type=" + type
+            + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FKITGroup fkitGroup = (FKITGroup) o;
-        return Objects.equals(id, fkitGroup.id) &&
-                Objects.equals(avatarURL, fkitGroup.avatarURL) &&
-                Objects.equals(name, fkitGroup.name) &&
-                Objects.equals(prettyName, fkitGroup.prettyName) &&
-                Objects.equals(description, fkitGroup.description) &&
-                Objects.equals(func, fkitGroup.func) &&
-                Objects.equals(email, fkitGroup.email) &&
-                type == fkitGroup.type;
+        return Objects.equals(this.id, fkitGroup.id)
+            && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
+            && Objects.equals(this.name, fkitGroup.name)
+            && Objects.equals(this.prettyName, fkitGroup.prettyName)
+            && Objects.equals(this.description, fkitGroup.description)
+            && Objects.equals(this.func, fkitGroup.func)
+            && Objects.equals(this.email, fkitGroup.email)
+            && this.type == fkitGroup.type;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, avatarURL, name, prettyName, description, func, email, type);
+        return Objects.hash(
+            this.id,
+            this.avatarURL,
+            this.name,
+            this.prettyName,
+            this.description,
+            this.func,
+            this.email,
+            this.type);
     }
 }

@@ -1,5 +1,7 @@
 package it.chalmers.gamma.requests;
 
+import java.util.Objects;
+
 public class AdminViewCreateITUserRequest {
     private String cid;
     private String password;
@@ -11,7 +13,7 @@ public class AdminViewCreateITUserRequest {
     private int acceptanceYear;
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     public void setCid(String cid) {
@@ -19,7 +21,7 @@ public class AdminViewCreateITUserRequest {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -27,7 +29,7 @@ public class AdminViewCreateITUserRequest {
     }
 
     public String getNick() {
-        return nick;
+        return this.nick;
     }
 
     public void setNick(String nick) {
@@ -35,7 +37,7 @@ public class AdminViewCreateITUserRequest {
     }
 
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -43,7 +45,7 @@ public class AdminViewCreateITUserRequest {
     }
 
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     public void setLastName(String lastName) {
@@ -51,7 +53,7 @@ public class AdminViewCreateITUserRequest {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -59,7 +61,7 @@ public class AdminViewCreateITUserRequest {
     }
 
     public boolean isUserAgreement() {
-        return userAgreement;
+        return this.userAgreement;
     }
 
     public void setUserAgreement(boolean userAgreement) {
@@ -67,10 +69,35 @@ public class AdminViewCreateITUserRequest {
     }
 
     public int getAcceptanceYear() {
-        return acceptanceYear;
+        return this.acceptanceYear;
     }
 
     public void setAcceptanceYear(int acceptanceYear) {
         this.acceptanceYear = acceptanceYear;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AdminViewCreateITUserRequest that = (AdminViewCreateITUserRequest) o;
+        return this.userAgreement == that.userAgreement
+            && this.acceptanceYear == that.acceptanceYear
+            && this.cid.equals(that.cid)
+            && this.password.equals(that.password)
+            && this.nick.equals(that.nick)
+            && this.firstName.equals(that.firstName)
+            && this.lastName.equals(that.lastName)
+            && this.email.equals(that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.cid, this.password, this.nick, this.firstName,
+            this.lastName, this.email, this.userAgreement, this.acceptanceYear);
     }
 }
