@@ -4,12 +4,12 @@ import {
     DigitFormField,
     DigitTranslations,
     DigitDesign,
-    DigitLayout
+    DigitLayout,
+    DigitTextField
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
 import React from "react";
 import * as yup from "yup";
-import { CIDInput } from "./InputCid.view.styles";
 import translations from "./InputCid.view.translations";
 
 const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
@@ -53,9 +53,10 @@ const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
                                     <DigitLayout.Center>
                                         <DigitFormField
                                             name="cid"
-                                            component={CIDInput}
+                                            component={DigitTextField}
                                             componentProps={{
-                                                upperLabel: text.Cid
+                                                upperLabel: text.Cid,
+                                                filled: true
                                             }}
                                         />
                                     </DigitLayout.Center>

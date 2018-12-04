@@ -11,17 +11,11 @@ import * as yup from "yup";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import {
-    AcceptanceYearInput,
-    AcceptUserAgreementInput,
-    ConfirmationCodeInput,
-    ConfirmCidInput,
-    CreateAccountButton,
-    FirstnameInput,
-    LastnameInput,
-    NickInput,
-    PasswordConfirmationInput,
-    PasswordInput
-} from "./InputDataAndCode.view.styles";
+    DigitButton,
+    DigitSwitch,
+    DigitTextField,
+    DigitSelect
+} from "@cthit/react-digit-components";
 import translations from "./InputDataAndCode.view.translations.json";
 
 const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
@@ -113,7 +107,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                     })}
                     render={props => (
                         <DigitDesign.Card
-                            minWidth="300px"
+                            minWidth="320px"
                             maxWidth="600px"
                             hasSubTitle
                         >
@@ -127,77 +121,87 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                 <DigitLayout.Center>
                                     <DigitFormField
                                         name="cid"
-                                        component={ConfirmCidInput}
+                                        component={DigitTextField}
                                         componentProps={{
-                                            upperLabel: text.YourCid
+                                            upperLabel: text.YourCid,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="code"
-                                        component={ConfirmationCodeInput}
+                                        component={DigitTextField}
                                         componentProps={{
                                             upperLabel:
-                                                text.CodeFromYourStudentEmail
+                                                text.CodeFromYourStudentEmail,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="nick"
-                                        component={NickInput}
+                                        component={DigitTextField}
                                         componentProps={{
-                                            upperLabel: text.Nick
+                                            upperLabel: text.Nick,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="password"
-                                        component={PasswordInput}
+                                        component={DigitTextField}
                                         componentProps={{
                                             upperLabel: text.Password,
-                                            password: true
+                                            password: true,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="passwordConfirmation"
-                                        component={PasswordConfirmationInput}
+                                        component={DigitTextField}
                                         componentProps={{
                                             upperLabel: text.ConfirmPassword,
-                                            password: true
+                                            password: true,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="firstName"
-                                        component={FirstnameInput}
+                                        component={DigitTextField}
                                         componentProps={{
-                                            upperLabel: text.FirstName
+                                            upperLabel: text.FirstName,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="lastName"
-                                        component={LastnameInput}
+                                        component={DigitTextField}
                                         componentProps={{
-                                            upperLabel: text.LastName
+                                            upperLabel: text.LastName,
+                                            outlined: true
                                         }}
                                     />
                                     <DigitLayout.Spacing />
-                                    <DigitFormField
-                                        name="acceptanceYear"
-                                        component={AcceptanceYearInput}
-                                        componentProps={{
-                                            valueToTextMap: _generateAcceptanceYears(),
-                                            upperLabel:
-                                                text.WhichYearDidYouStart,
-                                            reverse: true
-                                        }}
-                                    />
+                                    <DigitLayout.Size width="300px">
+                                        <DigitFormField
+                                            name="acceptanceYear"
+                                            component={DigitSelect}
+                                            componentProps={{
+                                                valueToTextMap: _generateAcceptanceYears(),
+                                                upperLabel:
+                                                    text.WhichYearDidYouStart,
+                                                reverse: true,
+                                                outlined: true
+                                            }}
+                                        />
+                                    </DigitLayout.Size>
                                     <DigitLayout.Spacing />
                                     <DigitFormField
                                         name="userAgreement"
-                                        component={AcceptUserAgreementInput}
+                                        component={DigitSwitch}
                                         componentProps={{
                                             label: text.AcceptUserAgreement,
                                             primary: true
@@ -206,7 +210,7 @@ const InputDataAndCode = ({ sendDataAndCode, toastOpen, redirectTo }) => (
                                 </DigitLayout.Center>
                             </DigitDesign.CardBody>
                             <DigitDesign.CardButtons leftRight reverseDirection>
-                                <CreateAccountButton
+                                <DigitButton
                                     submit
                                     text={text.CreateAccount}
                                     primary

@@ -16,6 +16,7 @@ const CreationOfAccountFinished = () => (
             <DigitLayout.Center>
                 <DigitDesign.Card>
                     <DigitDesign.CardTitle text={text.CongratsTitle} />
+                    <DigitDesign.CardHeaderImage src="/theofficeparty.gif" />
                     <DigitDesign.CardBody>
                         <DigitLayout.Center>
                             <DigitText.Text text={text.CongratsBody} />

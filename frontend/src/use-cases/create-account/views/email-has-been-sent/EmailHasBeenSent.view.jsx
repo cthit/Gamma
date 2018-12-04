@@ -6,7 +6,6 @@ import {
     DigitLayout
 } from "@cthit/react-digit-components";
 import React from "react";
-import { ButtonNavLink } from "./EmailHasBeenSent.view.styles";
 import translations from "./EmailHasBeenSent.view.translations.json";
 
 const EmailHasBeenSent = () => (
@@ -23,21 +22,21 @@ const EmailHasBeenSent = () => (
                         />
                     </DigitDesign.CardBody>
                     <DigitDesign.CardButtons leftRight reverseDirection>
-                        <ButtonNavLink to="/create-account/input">
+                        <DigitDesign.Link to="/create-account/input">
                             <DigitButton
                                 primary
                                 raised
                                 onClick={() => {}}
                                 text={text.HaveRecievedACode}
                             />
-                        </ButtonNavLink>
-                        <ButtonNavLink to="/create-account">
+                        </DigitDesign.Link>
+                        <DigitDesign.Link to="/create-account">
                             <DigitButton
                                 raised
                                 onClick={() => {}}
                                 text={text.Back}
                             />
-                        </ButtonNavLink>
+                        </DigitDesign.Link>
                     </DigitDesign.CardButtons>
                 </DigitDesign.Card>
             </DigitLayout.Center>
