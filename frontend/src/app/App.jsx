@@ -13,7 +13,7 @@ import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
-import Error from "../use-cases/error";
+import FourOFour from "../use-cases/four-o-four";
 import Gdpr from "../use-cases/gdpr";
 import Groups from "../use-cases/groups";
 import Home from "../use-cases/home";
@@ -199,10 +199,6 @@ export class App extends Component {
                                                 component={Whitelist}
                                             />
                                             <Route
-                                                path="/error"
-                                                component={Error}
-                                            />
-                                            <Route
                                                 path="/posts"
                                                 component={Posts}
                                             />
@@ -218,8 +214,10 @@ export class App extends Component {
                                                 path="/gdpr"
                                                 component={Gdpr}
                                             />
+
                                             <Route
                                                 path="/"
+                                                exact
                                                 render={props => (
                                                     <DigitIfElseRendering
                                                         test={loggedIn}
@@ -232,6 +230,7 @@ export class App extends Component {
                                                     />
                                                 )}
                                             />
+                                            <Route component={FourOFour} />
                                         </Switch>
                                     </DigitLayout.Padding>
                                 </DigitLayout.HideFill>
