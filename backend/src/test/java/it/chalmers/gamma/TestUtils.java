@@ -1,6 +1,7 @@
 package it.chalmers.gamma;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.chalmers.gamma.controller.ITUserController;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CreateITUserRequest;
@@ -8,6 +9,7 @@ import it.chalmers.gamma.service.ITUserService;
 import java.time.Year;
 import java.util.ArrayList;
 import org.json.simple.JSONObject;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
@@ -27,8 +29,6 @@ public class TestUtils {
     ITUserService userService;
 
     String token;
-
-    public TestUtils() {}
 
     public void setMockMvc(MockMvc mockMvc, JwtTokenProvider tokenProvider, ITUserService userService) {
         this.mockMvc = mockMvc;
@@ -57,25 +57,36 @@ public class TestUtils {
         return this.token;
     }
 
-    public void sendCreateCode(String cid) throws Exception {
+    public void sendCreateCode(String cid) {
         String authcid = "admin";
         this.token = this.tokenProvider.createToken(authcid);
         JSONObject object = new JSONObject();
         ArrayList<String> cids = new ArrayList<>();
         cids.add(cid);
         object.put("cids", cids);
-        MockHttpServletRequestBuilder mocker = (MockMvcRequestBuilders.post("/admin/users/whitelist")
+        MockHttpServletRequestBuilder mocker = MockMvcRequestBuilders.post("/admin/users/whitelist")
                 .header("Authorization", "Bearer " + this.token)
                 .content(object.toJSONString())
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
-        this.mockMvc.perform(mocker);
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+
+        try {
+            this.mockMvc.perform(mocker);
+        } catch (Exception e) {
+            LoggerFactory.getLogger(ITUserController.class).info(e.getMessage(), e);
+        }
+
         JSONObject jsoncid = new JSONObject();
         jsoncid.put("cid", cid);
-        MockHttpServletRequestBuilder mocker2 = (MockMvcRequestBuilders.post("/whitelist/activate_cid")
+        MockHttpServletRequestBuilder mocker2 = MockMvcRequestBuilders.post("/whitelist/activate_cid")
                 .header("Authorization", "Bearer " + this.token)
                 .content(jsoncid.toJSONString())
-                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
-        this.mockMvc.perform(mocker2);
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON);
+
+        try {
+            this.mockMvc.perform(mocker2);
+        } catch (Exception e) {
+            LoggerFactory.getLogger(ITUserController.class).info(e.getMessage(), e);
+        }
     }
 
     public String asJsonString(final Object obj) {

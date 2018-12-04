@@ -2,6 +2,7 @@ package it.chalmers.gamma.integration;
 
 import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.TestUtils;
+import it.chalmers.gamma.controller.ITUserController;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
@@ -13,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,8 +42,6 @@ public class WhitelistIntegrationTests {
     @Autowired
     ActivationCodeRepository activationCodeRepository;
 
-    static TestUtils utils;
-
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
@@ -51,16 +51,12 @@ public class WhitelistIntegrationTests {
     @Autowired
     MockMvc mockMvc;
 
-    private static boolean hasRun = false;
+    static TestUtils utils = new TestUtils();
 
 
     @Before
-    public void setup() {
-        if (!hasRun) {
-            utils = new TestUtils();
-            utils.setMockMvc(this.mockMvc, this.jwtTokenProvider, this.userService);
-            hasRun = true;
-        }
+    public void startup() {
+        utils.setMockMvc(this.mockMvc, this.jwtTokenProvider, this.userService);
     }
 
     @Test
@@ -69,7 +65,7 @@ public class WhitelistIntegrationTests {
         try {
             utils.sendCreateCode(cid);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerFactory.getLogger(ITUserController.class).info(e.getMessage(), e);
         }
         Whitelist whitelist = this.whitelistRepository.findByCid(cid);
         Assert.assertTrue(this.activationCodeService.userHasCode(whitelist.getCid()));

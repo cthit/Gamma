@@ -55,17 +55,11 @@ public class ITUserIntegrationTests {
     @Autowired
     ActivationCodeRepository activationCodeRepository;
 
-    static TestUtils utils;
-
-    private static boolean hasRun = false;
+    private static TestUtils utils = new TestUtils();
 
     @Before
-    public void setup() {
-        if (!hasRun) {
-            this.utils = new TestUtils();
-            this.utils.setMockMvc(this.mockMvc, this.jwtTokenProvider, this.userService);
-            this.hasRun = true;
-        }
+    public void startup() {
+        utils.setMockMvc(this.mockMvc, this.jwtTokenProvider, this.userService);
     }
 
     @Test
@@ -132,6 +126,7 @@ public class ITUserIntegrationTests {
         Assert.assertNull(this.whitelistRepository.findByCid(cid));
         Assert.assertNull(this.activationCodeRepository.findByCid_Cid(cid));
     }
+
     @Test
     public void testLogin() throws Exception {
         String cid = "testlogin";
@@ -149,10 +144,11 @@ public class ITUserIntegrationTests {
         String token = result.getResponse().getContentAsString();
         Assert.assertTrue(this.jwtTokenProvider.validateToken(token));
     }
+
     @Test
     public void testGetMe() throws Exception {
         String cid = "testme";
-        CreateITUserRequest request = createAccount(cid);
+        createAccount(cid);
         String token = this.jwtTokenProvider.createToken(cid);
         MockHttpServletRequestBuilder mocker = MockMvcRequestBuilders.get("/users/me")
                 .header("Authorization", "Bearer " + token);
