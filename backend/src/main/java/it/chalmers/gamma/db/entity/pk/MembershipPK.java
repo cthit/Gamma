@@ -1,16 +1,16 @@
 package it.chalmers.gamma.db.entity.pk;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-
 import java.io.Serializable;
 import java.util.Objects;
-
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
+@SuppressFBWarnings(justification = "Fields should be serializable", value = "SE_BAD_FIELD")
 public class MembershipPK implements Serializable {
 
     @ManyToOne

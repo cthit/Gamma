@@ -57,9 +57,9 @@ public class JwtTokenProvider {
             .compact();
     }
 
-    public Authentication getAuthentication(String cid){
+    public Authentication getAuthentication(String cid) {
         UserDetails userDetails = this.itUserService.loadUserByUsername(cid);
-        if(userDetails == null){
+        if (userDetails == null) {
             throw new InvalidJWTTokenResponse();
         }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),

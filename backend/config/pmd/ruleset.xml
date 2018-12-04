@@ -87,10 +87,4 @@ http://pmd.sourceforge.net/ruleset/2.0.0 ">
             <property name="skipAnnotations" value="true"/>
         </properties>
     </rule>
-
-    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
-        <properties>
-            <property name="maxDuplicateLiterals" value="2"/>
-        </properties>
-    </rule>
 </ruleset>
