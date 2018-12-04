@@ -1,28 +1,23 @@
 import React from "react";
-
-import LoginForm from "./views/login-form";
-
-import { Display } from "../../common-ui/text";
-import { Center, Fill, Margin } from "../../common-ui/layout";
+import LoginForm from "./elements/login-form";
+import { DigitLayout } from "@cthit/react-digit-components";
 
 class Login extends React.Component {
-  constructor(props) {
-    super();
+    constructor(props) {
+        super();
 
-    props.gammaLoadingFinished();
-  }
+        props.gammaLoadingFinished();
+    }
 
-  render() {
-    const { login } = this.props;
+    render() {
+        const { login } = this.props;
 
-    return (
-      <Margin>
-        <Center>
-          <LoginForm login={login} />
-        </Center>
-      </Margin>
-    );
-  }
+        return (
+            <DigitLayout.Center>
+                <LoginForm login={login} />
+            </DigitLayout.Center>
+        );
+    }
 }
 
 export default Login;

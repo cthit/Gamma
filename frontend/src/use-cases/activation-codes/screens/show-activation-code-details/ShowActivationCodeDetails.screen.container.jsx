@@ -1,28 +1,30 @@
-import { connect } from "react-redux";
+import {
+    DigitDialogActions,
+    DigitRedirectActions,
+    DigitToastActions
+} from "@cthit/react-digit-components";
 import _ from "lodash";
-
+import { connect } from "react-redux";
+import { createDeleteActivationCodeAction } from "../../../../api/activation-codes/action-creator.activationCodes.api";
 import ShowActivationCodeDetails from "./ShowActivationCodeDetails.screen";
 
-import { gammaDialogOpen } from "../../../../app/views/gamma-dialog/GammaDialog.view.action-creator";
-import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
-import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
-import { activationCodesDelete } from "../../ActivationCodes.action-creator";
-
 const mapStateToProps = (state, ownProps) => ({
-  activationCode: _.find(state.activationCodes, {
-    id: ownProps.match.params.id
-  })
+    activationCode: _.find(state.activationCodes, {
+        id: ownProps.match.params.id
+    })
 });
 
 const mapDispatchToProps = dispatch => ({
-  gammaDialogOpen: options => dispatch(gammaDialogOpen(options)),
-  toastOpen: toastData => dispatch(toastOpen(toastData)),
-  redirectTo: to => dispatch(redirectTo(to)),
-  activationCodesDelete: activationCodeId =>
-    dispatch(activationCodesDelete(activationCodeId))
+    dialogOpen: options =>
+        dispatch(DigitDialogActions.digitDialogOpen(options)),
+    toastOpen: toastData =>
+        dispatch(DigitToastActions.digitToastOpen(toastData)),
+    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    deleteActivationCode: activationCodeId =>
+        dispatch(createDeleteActivationCodeAction(activationCodeId))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(ShowActivationCodeDetails);

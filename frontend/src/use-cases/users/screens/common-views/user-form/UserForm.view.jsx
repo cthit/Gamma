@@ -1,113 +1,129 @@
+import {
+    DigitEditData,
+    DigitSelect,
+    DigitTextField,
+    DigitTranslations
+} from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
 import {
-  GammaCard,
-  GammaCardTitle,
-  GammaCardButtons,
-  GammaCardBody
-} from "../../../../../common-ui/design";
-import GammaButton from "../../../../../common/elements/gamma-button";
-import GammaTextField from "../../../../../common/elements/gamma-text-field";
-import GammaSelect from "../../../../../common/elements/gamma-select";
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-import GammaTranslations from "../../../../../common/declaratives/gamma-translations";
+    ACCEPTANCE_YEAR,
+    EMAIL,
+    FIRST_NAME,
+    LAST_NAME,
+    NICKNAME,
+    WEBSITES
+} from "../../../../../api/users/props.users.api";
 import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 
 function _getCurrentYear() {
-  return new Date().getFullYear() + "";
+    return new Date().getFullYear() + "";
 }
 
 function _generateAcceptanceYears() {
-  const output = {};
-  const startYear = 2001;
-  const currentYear = _getCurrentYear();
-  for (var i = currentYear; i >= startYear; i--) {
-    output[i] = i + "";
-  }
+    const output = {};
+    const startYear = 2001;
+    const currentYear = _getCurrentYear();
+    for (var i = currentYear; i >= startYear; i--) {
+        output[i] = i + "";
+    }
 
-  return output;
+    return output;
+}
+
+function generateValidationSchema(text) {
+    const schema = {};
+    schema[FIRST_NAME] = yup.string().required(text.FieldRequired);
+    schema[LAST_NAME] = yup.string().required(text.FieldRequired);
+    schema[NICKNAME] = yup.string().required(text.FieldRequired);
+    schema[EMAIL] = yup.string().required(text.FieldRequired);
+    schema[ACCEPTANCE_YEAR] = yup.string().required(text.FieldRequired);
+    schema[WEBSITES] = yup.array().of(yup.object());
+
+    return yup.object().shape(schema);
+}
+
+function generateEditComponentData(text, availableWebsites) {
+    const componentData = {};
+
+    componentData[FIRST_NAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.FirstName
+        }
+    };
+    componentData[LAST_NAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.LastName
+        }
+    };
+    componentData[NICKNAME] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Nick
+        }
+    };
+    componentData[EMAIL] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Email
+        }
+    };
+    componentData[ACCEPTANCE_YEAR] = {
+        component: DigitSelect,
+        componentProps: {
+            upperLabel: text.AcceptanceYear,
+            valueToTextMap: _generateAcceptanceYears(),
+            reverse: true
+        }
+    };
+    componentData[WEBSITES] = {
+        array: true,
+        component: EditWebsites,
+        componentProps: {
+            availableWebsites: availableWebsites
+        }
+    };
+
+    return componentData;
 }
 
 const UserForm = ({
-  initialValues,
-  onSubmit,
-  titleText,
-  submitText,
-  availableWebsites
+    initialValues,
+    onSubmit,
+    titleText,
+    submitText,
+    availableWebsites
 }) => (
-  <GammaTranslations
-    translations={translations}
-    uniquePath="Users.Screen.CommonViews.UserForm"
-    render={text => (
-      <GammaEditData
-        titleText={titleText}
-        submitText={submitText}
-        initialValues={initialValues}
-        onSubmit={(values, actions) => {
-          onSubmit(values, actions);
-        }}
-        validationSchema={yup.object().shape({
-          firstName: yup.string().required(text.FieldRequired),
-          lastName: yup.string().required(text.FieldRequired),
-          nick: yup.string().required(text.FieldRequired),
-          email: yup.string().required(text.FieldRequired),
-          acceptanceYear: yup.string().required(text.FieldRequired),
-          websites: yup.array().of(yup.object())
-        })}
-        keysOrder={[
-          "firstName",
-          "lastName",
-          "nick",
-          "email",
-          "acceptanceYear",
-          "websites"
-        ]}
-        keysComponentData={{
-          firstName: {
-            component: GammaTextField,
-            componentProps: {
-              upperLabel: text.FirstName
-            }
-          },
-
-          lastName: {
-            component: GammaTextField,
-            componentProps: {
-              upperLabel: text.LastName
-            }
-          },
-          nick: {
-            component: GammaTextField,
-            componentProps: {
-              upperLabel: text.Nick
-            }
-          },
-          email: {
-            component: GammaTextField,
-            componentProps: {
-              upperLabel: text.Email
-            }
-          },
-          acceptanceYear: {
-            component: GammaSelect,
-            componentProps: {
-              upperLabel: text.AcceptanceYear,
-              valueToTextMap: _generateAcceptanceYears(),
-              reverse: true
-            }
-          },
-          websites: {
-            array: true,
-            component: EditWebsites,
-            componentProps: {
-              availableWebsites: availableWebsites
-            }
-          }
-        }}
-      />
-    )}
-  />
+    <DigitTranslations
+        translations={translations}
+        uniquePath="Users.Screen.CommonViews.UserForm"
+        render={text => (
+            <DigitEditData
+                titleText={titleText}
+                submitText={submitText}
+                initialValues={initialValues}
+                onSubmit={(values, actions) => {
+                    onSubmit(values, actions);
+                }}
+                validationSchema={generateValidationSchema(text)}
+                keysOrder={[
+                    FIRST_NAME,
+                    LAST_NAME,
+                    NICKNAME,
+                    EMAIL,
+                    ACCEPTANCE_YEAR,
+                    WEBSITES
+                ]}
+                keysComponentData={generateEditComponentData(
+                    text,
+                    availableWebsites
+                )}
+            />
+        )}
+    />
 );
 
 export default UserForm;

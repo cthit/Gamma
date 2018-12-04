@@ -1,4 +1,8 @@
 {
-  "CreateNewWebsite": ["Create new website", "Skapa ny hemsida"],
-  "SaveWebsite": ["Save website", "Spara hemsida"]
+    "CreateNewWebsite": ["Create new website", "Skapa ny hemsida"],
+    "SaveWebsite": ["Save website", "Spara hemsida"],
+    "SuccessfullyAdd": [
+        "You've successfully added a website",
+        "Du har lyckats lägga till en hemsida"
+    ]
 }

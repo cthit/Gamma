@@ -1,26 +1,31 @@
-import { connect } from "react-redux";
+import {
+    DigitDialogActions,
+    DigitRedirectActions,
+    DigitToastActions
+} from "@cthit/react-digit-components";
 import _ from "lodash";
-
+import { connect } from "react-redux";
+import {
+    createDeletePostAction,
+    createGetPostUsageAction
+} from "../../../../api/posts/action-creator.posts.api";
 import ShowPostDetails from "./ShowPostDetails.screen";
-import { gammaDialogOpen } from "../../../../app/views/gamma-dialog/GammaDialog.view.action-creator";
-import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
-import { redirectTo } from "../../../../app/views/gamma-redirect/GammaRedirect.view.action-creator";
-import { postsDelete, postsLoadUsage } from "../../Posts.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
-  post: _.find(state.posts, { id: ownProps.match.params.id }),
-  postId: ownProps.match.params.id
+    post: _.find(state.posts, { id: ownProps.match.params.id }),
+    postId: ownProps.match.params.id
 });
 
 const mapDispatchToProps = dispatch => ({
-  gammaDialogOpen: options => dispatch(gammaDialogOpen(options)),
-  toastOpen: options => dispatch(toastOpen(options)),
-  redirectTo: to => dispatch(redirectTo(to)),
-  postsDelete: postId => dispatch(postsDelete(postId)),
-  postsLoadUsage: postId => dispatch(postsLoadUsage(postId))
+    dialogOpen: options =>
+        dispatch(DigitDialogActions.digitDialogOpen(options)),
+    toastOpen: options => dispatch(DigitToastActions.digitToastOpen(options)),
+    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    deletePost: postId => dispatch(createDeletePostAction(postId)),
+    getPostUsages: postId => dispatch(createGetPostUsageAction(postId))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(ShowPostDetails);

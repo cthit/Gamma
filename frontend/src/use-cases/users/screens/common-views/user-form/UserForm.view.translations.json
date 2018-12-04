@@ -1,8 +1,8 @@
 {
-  "Cid": ["Cid", "Cid"],
-  "FirstName": ["First name", "Förnamn"],
-  "LastName": ["Last name", "Efternamn"],
-  "Nick": ["Nick", "Nick"],
-  "Email": ["Email", "Email"],
-  "AcceptanceYear": ["Acceptance year", "Antagningsår"]
+    "Cid": ["Cid", "Cid"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "Nick": ["Nick", "Nick"],
+    "Email": ["Email", "Email"],
+    "AcceptanceYear": ["Acceptance year", "Antagningsår"]
 }

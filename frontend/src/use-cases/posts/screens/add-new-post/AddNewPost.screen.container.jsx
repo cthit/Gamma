@@ -1,17 +1,17 @@
-import AddNewPost from "./AddNewPost.screen";
+import { DigitToastActions } from "@cthit/react-digit-components";
 import { connect } from "react-redux";
-
-import { postsAdd } from "../../Posts.action-creator";
-import { toastOpen } from "../../../../app/views/gamma-toast/GammaToast.view.action-creator";
+import { createAddPostAction } from "../../../../api/posts/action-creator.posts.api";
+import AddNewPost from "./AddNewPost.screen";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  postsAdd: post => dispatch(postsAdd(post)),
-  toastOpen: toastData => dispatch(toastOpen(toastData))
+    addPost: post => dispatch(createAddPostAction(post)),
+    toastOpen: toastData =>
+        dispatch(DigitToastActions.digitToastOpen(toastData))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(AddNewPost);

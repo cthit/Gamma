@@ -1,17 +1,33 @@
 import React from "react";
-import { Fill } from "../../common-ui/layout";
-import { Display } from "../../common-ui/text";
+
+import { DigitLayout } from "@cthit/react-digit-components";
+
+import UserOptions from "./views/user-options";
+import AdminOptions from "./views/admin-options";
+import WelcomeUser from "./elements/welcome-user";
 
 class Home extends React.Component {
-  constructor(props) {
-    super();
+    constructor(props) {
+        super();
 
-    props.gammaLoadingFinished();
-  }
+        props.gammaLoadingFinished();
+    }
 
-  render() {
-    return <div>Hej</div>;
-  }
+    render() {
+        const { user } = this.props;
+
+        return (
+            <DigitLayout.Center>
+                <DigitLayout.Column>
+                    <WelcomeUser user={user} />
+                    <DigitLayout.Spacing />
+                    <UserOptions />
+                    <DigitLayout.Spacing />
+                    <AdminOptions />
+                </DigitLayout.Column>
+            </DigitLayout.Center>
+        );
+    }
 }
 
 export default Home;

@@ -1,35 +1,53 @@
 import React from "react";
 import * as yup from "yup";
 
-import GammaEditData from "../../../../../common/elements/gamma-edit-data";
-import GammaTextField from "../../../../../common/elements/gamma-text-field";
+import { CID } from "../../../../../api/whitelist/props.whitelist.api";
+
+import { DigitTextField, DigitEditData } from "@cthit/react-digit-components";
+
+function generateValidationSchema(text) {
+    const schema = {};
+
+    schema[CID] = yup.string().required(text.fieldRequiredText);
+
+    return yup.object().shape(schema);
+}
+
+function generateEditComponentData(text) {
+    const componentData = {};
+
+    componentData[CID] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.cidInputText,
+            filled: true
+        }
+    };
+
+    return componentData;
+}
 
 const WhitelistItemForm = ({
-  onSubmit,
-  initialValues,
-  titleText,
-  cidInputText,
-  fieldRequiredText,
-  submitText
+    onSubmit,
+    initialValues,
+    titleText,
+    cidInputText,
+    fieldRequiredText,
+    submitText
 }) => (
-  <GammaEditData
-    validationSchema={yup.object().shape({
-      cid: yup.string().required(fieldRequiredText)
-    })}
-    initialValues={initialValues}
-    onSubmit={onSubmit}
-    titleText={titleText}
-    submitText={submitText}
-    keysOrder={["cid"]}
-    keysComponentData={{
-      cid: {
-        component: GammaTextField,
-        componentProps: {
-          upperLabel: cidInputText
-        }
-      }
-    }}
-  />
+    <DigitEditData
+        validationSchema={generateValidationSchema({
+            fieldRequiredText: fieldRequiredText
+        })}
+        initialValues={initialValues}
+        onSubmit={onSubmit}
+        titleText={titleText}
+        submitText={submitText}
+        keysOrder={["cid"]}
+        keysComponentData={generateEditComponentData({
+            cidInputText: cidInputText
+        })}
+    />
 );
 
 export default WhitelistItemForm;

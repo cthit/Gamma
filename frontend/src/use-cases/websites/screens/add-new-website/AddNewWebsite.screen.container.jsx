@@ -2,15 +2,19 @@ import { connect } from "react-redux";
 
 import AddNewWebsite from "./AddNewWebsite.screen";
 
-import { websitesAdd } from "../../Websites.action-creator";
+import { DigitToastActions } from "@cthit/react-digit-components";
+
+import { createAddWebsiteAction } from "../../../../api/websites/action-creator.websites.api";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-  websitesAdd: websiteData => dispatch(websitesAdd(websiteData))
+    websitesAdd: websiteData => dispatch(createAddWebsiteAction(websiteData)),
+    toastOpen: toastData =>
+        dispatch(DigitToastActions.digitToastOpen(toastData))
 });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(AddNewWebsite);

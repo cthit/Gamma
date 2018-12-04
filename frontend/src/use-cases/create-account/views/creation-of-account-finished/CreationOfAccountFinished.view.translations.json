@@ -1,14 +1,14 @@
 {
-  "CongratsTitle": [
-    "Congrats! You have created an IT-account",
-    "Grattis! Du har skapat ett IT-konto!"
-  ],
-  "CongratsBody": [
-    "You can now use digITs services.",
-    "Du kan nu använda digITs tjänster"
-  ],
-  "LoginForTheFirstTime": [
-    "Login for the first time",
-    "Logga in för första gången"
-  ]
+    "CongratsTitle": [
+        "Congrats! You have created an IT-account",
+        "Grattis! Du har skapat ett IT-konto!"
+    ],
+    "CongratsBody": [
+        "You can now use digITs services.",
+        "Du kan nu använda digITs tjänster"
+    ],
+    "LoginForTheFirstTime": [
+        "Login for the first time",
+        "Logga in för första gången"
+    ]
 }
