@@ -9,6 +9,7 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowPostDetails.screen.translations.json";
+import DisplayPostUsages from "./elements/display-post-usages/DisplayPostUsages.element";
 
 function getPostName(post, activeLanguage) {
     switch (activeLanguage.code.toLowerCase()) {
@@ -52,7 +53,7 @@ class ShowPostDetails extends React.Component {
                                         maxWidth="600px"
                                     >
                                         <DigitDesign.CardBody>
-                                            <DigitText.Heading3 text="Post" />
+                                            <DigitText.Title text="Post" />
                                             <DigitDisplayData
                                                 data={post}
                                                 keysText={{
@@ -62,7 +63,10 @@ class ShowPostDetails extends React.Component {
                                                 }}
                                                 keysOrder={["id", "sv", "en"]}
                                             />
-                                            <DigitText.Heading3 text="Usages" />
+                                            <DigitText.Title text="Usages" />
+                                            <DisplayPostUsages
+                                                usages={post.usages}
+                                            />
                                         </DigitDesign.CardBody>
                                         <DigitDesign.CardButtons
                                             reverseDirection
