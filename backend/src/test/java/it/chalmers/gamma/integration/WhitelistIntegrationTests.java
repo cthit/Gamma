@@ -7,19 +7,16 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
-import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -58,10 +55,10 @@ public class WhitelistIntegrationTests {
 
 
     @Before
-    public void setup(){
-        if(!hasRun) {
+    public void setup() {
+        if (!hasRun) {
             utils = new TestUtils();
-            utils.setMockMvc(mockMvc, jwtTokenProvider, userService);
+            utils.setMockMvc(this.mockMvc, this.jwtTokenProvider, this.userService);
             hasRun = true;
         }
     }
@@ -81,7 +78,7 @@ public class WhitelistIntegrationTests {
     @Test
     public void testExpiredCode() throws Exception {
         String cid = "expired";
-        this.utils.sendCreateCode(cid);
+        utils.sendCreateCode(cid);
         ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(cid);
         activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds(2 * 3600 + 5));
         this.activationCodeRepository.save(activationCode);
