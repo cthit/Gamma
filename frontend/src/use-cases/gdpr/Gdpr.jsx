@@ -7,7 +7,7 @@ class Gdpr extends React.Component {
         super();
 
         props.usersLoad().then(response => {
-            // props.gammaLoadingFinished();
+            props.gammaLoadingFinished();
         });
     }
 
