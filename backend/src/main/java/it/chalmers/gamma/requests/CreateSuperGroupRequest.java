@@ -1,38 +1,20 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.domain.GroupType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
-import java.util.UUID;
 
-@Entity
-@Table(name = "fkit_super_group")
-public class FKITSuperGroup {
-
-    @Column(name = "id")
-    @Id
-    private final UUID id;
-
-    @Column(name = "name")
+public class CreateSuperGroupRequest {
+    @NotNull
+    @Size(min = 2, max = 50)
     private String name;
-
-    @Column(name = "pretty_name")
+    @Max(50)
     private String prettyName;
-
-    @Column(name = "type")
+    @NotNull
     private GroupType type;
-
-    public FKITSuperGroup(){
-        this.id = UUID.randomUUID();
-    }
-
-    public UUID getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -60,9 +42,8 @@ public class FKITSuperGroup {
 
     @Override
     public String toString() {
-        return "FKITSuperGroup{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+        return "CreateSuperGroupRequest{" +
+                "name='" + name + '\'' +
                 ", prettyName='" + prettyName + '\'' +
                 ", type=" + type +
                 '}';
@@ -72,9 +53,8 @@ public class FKITSuperGroup {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FKITSuperGroup that = (FKITSuperGroup) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
+        CreateSuperGroupRequest that = (CreateSuperGroupRequest) o;
+        return Objects.equals(name, that.name) &&
                 Objects.equals(prettyName, that.prettyName) &&
                 type == that.type;
     }
@@ -82,7 +62,6 @@ public class FKITSuperGroup {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, prettyName, type);
+        return Objects.hash(name, prettyName, type);
     }
-
 }
