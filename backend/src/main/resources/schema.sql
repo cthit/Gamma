@@ -52,14 +52,20 @@ create table password_reset_token(
   ituser  uuid references ituser
 );
 
+create table fkit_super_group (
+  id            uuid                    constraint fkit_super_group_pk                  primary key,
+  name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
+  pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
+  type          varchar(30)    not null constraint fkit_super_group_type_unique         unique,
+);
+
 create table fkit_group (
-  id          uuid constraint fkit_group_pk primary key,
+  id          uuid                  constraint fkit_group_pk primary key,
   name        varchar(50)  not null constraint fkit_group_name_unique unique,
   pretty_name varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
-  description uuid         null references text,
+  description uuid         null     references text,
   function    uuid         not null references text,
   email       varchar(100) not null constraint fkit_group_email_unique unique,
-  type        varchar(30)  not null,
   avatar_url  varchar(255) null
 );
 
