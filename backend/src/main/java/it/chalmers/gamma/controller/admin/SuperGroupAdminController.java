@@ -34,4 +34,9 @@ public class SuperGroupAdminController {
     public ResponseEntity<List<FKITSuperGroup>> getAllSuperGroups(){
         return new GetGroupsResponse(fkitSuperGroupService.getAllGroups());
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<FKITSuperGroup> getSuperGroup(@PathVariable("id") String id){
+        return null;
+    }
 }

@@ -32,8 +32,8 @@ public class FKITSuperGroupService {
         return repository.existsByName(name);
     }
 
-    public void removeGroup(){
-
+    public void removeGroup(UUID id){
+        repository.deleteById(id);
     }
     public List<FKITSuperGroup> getAllGroups(){
         return repository.findAll();
