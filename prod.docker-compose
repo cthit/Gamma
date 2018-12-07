@@ -1,0 +1,31 @@
+version: "2"
+services:
+  db: 
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user   # These should all be changed
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - 5432:5432
+
+  frontend:
+    build:
+      context: ./frontend/
+      dockerfile: dockerfile
+    ports:
+      - 8080:8080
+
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: dockerfile
+    ports: 
+      - 9090:9090
+      
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
