@@ -31,11 +31,21 @@ public class FKITSuperGroupService {
     public boolean groupExists(String name){
         return repository.existsByName(name);
     }
+    public boolean groupExists(UUID id){
+        return repository.existsById(id);
+    }
 
     public void removeGroup(UUID id){
         repository.deleteById(id);
     }
     public List<FKITSuperGroup> getAllGroups(){
         return repository.findAll();
+    }
+
+    public void updateSuperGroup(UUID id, CreateSuperGroupRequest request){
+        FKITSuperGroup group = repository.getById(id);
+        group.setType(request.getType() == null ? group.getType() : request.getType());
+        group.setName(request.getName() == null ? group.getName() : request.getName());
+        group.setPrettyName(request.getPrettyName() == null ? group.getPrettyName() : request.getPrettyName());
     }
 }

@@ -1,15 +1,15 @@
 package it.chalmers.gamma.controller.admin;
 
+import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.response.FKITSuperGroupCreatedResponse;
-import it.chalmers.gamma.response.GetGroupsResponse;
-import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/superGroups")       // What should this URL be?
@@ -37,6 +37,23 @@ public class SuperGroupAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<FKITSuperGroup> getSuperGroup(@PathVariable("id") String id){
-        return null;
+        return new GetSuperGroupResponse(fkitSuperGroupService.getGroup(UUID.fromString(id)));
+    }
+
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeSuperGroup(@PathVariable("id") String id){
+        fkitSuperGroupService.removeGroup(UUID.fromString(id));
+        return new GroupDeletedResponse();
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<String> updateSuperGroup(@PathVariable("id") String id,
+                                                   @RequestBody CreateSuperGroupRequest request){
+        if(!fkitSuperGroupService.groupExists(UUID.fromString(id))){
+            throw new GroupDoesNotExistResponse();
+        }
+        fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), request);
+        return new GroupEditedResponse();
     }
 }
