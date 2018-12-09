@@ -1,9 +1,11 @@
 export function requestPromise(
     request,
+    requestLoadingActionCreator,
     requestSuccessfullyActionCreator,
     requestFailedActionCreator
 ) {
     return dispatch => {
+        dispatch(requestLoadingActionCreator());
         return new Promise((resolve, reject) => {
             request()
                 .then(response => {

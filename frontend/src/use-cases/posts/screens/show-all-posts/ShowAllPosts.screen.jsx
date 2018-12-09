@@ -1,13 +1,7 @@
-import {
-    DigitFAB,
-    DigitTable,
-    DigitTranslations,
-    DigitDesign,
-    DigitLayout
-} from "@cthit/react-digit-components";
-import { Add } from "@material-ui/icons";
+import { DigitDesign, DigitFAB, DigitLayout, DigitTable, DigitTranslations } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./ShowAllPosts.screen.translations.json";
+import AddPostButton from "./elements/add-post-button";
 
 const ShowAllPosts = ({ posts }) => (
     <DigitTranslations
@@ -15,7 +9,7 @@ const ShowAllPosts = ({ posts }) => (
         uniquePath="Posts.Screen.ShowAllPosts"
         render={text => (
             <DigitLayout.Fill>
-                <DigitTable
+                    <DigitTable
                     titleText={text.Posts}
                     searchText={text.SearchForPosts}
                     idProp="id"
@@ -35,11 +29,7 @@ const ShowAllPosts = ({ posts }) => (
                     })}
                     emptyTableText={text.NoPosts}
                 />
-                <DigitLayout.DownRightPosition>
-                    <DigitDesign.Link to="/posts/add">
-                        <DigitFAB icon={Add} secondary />
-                    </DigitDesign.Link>
-                </DigitLayout.DownRightPosition>
+                <AddPostButton/>
             </DigitLayout.Fill>
         )}
     />

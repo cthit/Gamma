@@ -1,4 +1,4 @@
-export const POSTS_LOAD = "posts_load";
+export const POSTS_LOAD_LOADING = "posts_load_loading";
 export const POSTS_LOAD_SUCCESSFULLY = "posts_load_successfully";
 export const POSTS_LOAD_FAILED = "posts_load_failed";
 

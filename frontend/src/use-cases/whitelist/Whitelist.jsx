@@ -8,14 +8,6 @@ import EditWhitelistItemDetails from "./screens/edit-whitelist-item-details";
 import ValidateCid from "./screens/validate-cid";
 
 class Whitelist extends React.Component {
-    constructor(props) {
-        super();
-
-        props.whitelistLoad().then(response => {
-            props.gammaLoadingFinished();
-        });
-    }
-
     render() {
         return (
             <Switch>

@@ -10,6 +10,7 @@ import {
     POSTS_DELETE_FAILED,
     POSTS_DELETE_SUCCESSFULLY,
     POSTS_LOAD_FAILED,
+    POSTS_LOAD_LOADING,
     POSTS_LOAD_SUCCESSFULLY,
     POSTS_LOAD_USAGE_FAILED,
     POSTS_LOAD_USAGE_SUCCESSFULLY
@@ -20,6 +21,7 @@ import { requestPromise } from "../utils/requestPromise";
 export function createGetPostsAction() {
     return requestPromise(
         getPosts,
+        createGetPostsLoadingAction,
         createGetPostsSuccessfullyAction,
         createGetPostsFailedAction
     );
@@ -103,6 +105,13 @@ function postsAddFailed(error) {
         payload: {
             error: error
         }
+    };
+}
+
+function createGetPostsLoadingAction() {
+    return {
+        type: POSTS_LOAD_LOADING,
+        error: false
     };
 }
 
