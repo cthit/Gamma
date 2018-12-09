@@ -60,7 +60,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("trusted-app")
-                .authorizedGrantTypes("authorization_code", "client_credentials", "password")
+                .authorizedGrantTypes("authorization_code")
                 .secret(passwordEncoder().encode("secret"))
                 .accessTokenValiditySeconds(expiration)
                 .scopes("read", "write")

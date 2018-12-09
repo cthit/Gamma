@@ -35,18 +35,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //Disables cross site request forgery
+
+
+        //Disables cross site request forgery§
+        http.anonymous().disable();
         http.cors().and().csrf().disable().authorizeRequests();
         http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
-
-        http.authorizeRequests()//
-            .antMatchers("/users/login").permitAll()
-            .antMatchers("/users/create").permitAll()
-            .antMatchers("/whitelist/activate_cid").permitAll()
-            .antMatchers("/validate_jwt").permitAll()
-            .antMatchers("/oauth/**").hasAnyRole("ANONYMOUS", "USER")
-                .and().exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("http://localhost:3000/login"));
-
+        http.authorizeRequests()
+                .antMatchers("/users/login").permitAll()
+                .antMatchers("/users/create").permitAll()
+                .antMatchers("/whitelist/activate_cid").permitAll()
+                .antMatchers("/validate_jwt").permitAll()
+                .antMatchers("/oauth/authorize").permitAll()
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated()
+                .and().formLogin().loginPage("http://localhost:3000/login");
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

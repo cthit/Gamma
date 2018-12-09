@@ -28,6 +28,7 @@ import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
 
+import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -159,9 +160,10 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public JSONObject getMe(@RequestHeader("Authorization") String jwtTokenWithBearer) {
-        String jwtToken = this.jwtTokenProvider.removeBearer(jwtTokenWithBearer);
-        String cid = this.jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
+    public JSONObject getMe(@RequestHeader("Authorization") String jwtTokenWithBearer, Principal principal) {
+        System.out.println("principal " + principal);
+        System.out.println("ds" + principal.getName());
+        String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
         ITUserSerializer serializer =
                 new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
