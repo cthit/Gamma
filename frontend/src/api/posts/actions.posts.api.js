@@ -13,3 +13,7 @@ export const POSTS_DELETE_FAILED = "posts_delete_failed";
 
 export const POSTS_LOAD_USAGE_SUCCESSFULLY = "posts_load_usage_successfully";
 export const POSTS_LOAD_USAGE_FAILED = "posts_load_usage_failed";
+
+export const POST_GET_LOADING = "post_get_loading";
+export const POST_GET_SUCCESSFULLY = "post_get_successfully";
+export const POST_GET_FAILED = "post_get_failed";

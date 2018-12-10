@@ -1,8 +1,11 @@
 import { deletePost } from "./delete.posts.api";
-import { getPosts, getPostUsage } from "./get.posts.api";
+import { getPost, getPosts, getPostUsage } from "./get.posts.api";
 import { addPost } from "./post.posts.api";
 import { editPost } from "./put.posts.api";
 import {
+    POST_GET_FAILED,
+    POST_GET_LOADING,
+    POST_GET_SUCCESSFULLY,
     POSTS_ADD_FAILED,
     POSTS_ADD_SUCCESSFULLY,
     POSTS_CHANGE_FAILED,
@@ -24,6 +27,17 @@ export function createGetPostsAction() {
         createGetPostsLoadingAction,
         createGetPostsSuccessfullyAction,
         createGetPostsFailedAction
+    );
+}
+
+export function createGetPostAction(postId) {
+    return requestPromise(
+        () => {
+            return getPost(postId);
+        },
+        postGetLoading,
+        postGetSuccessfully,
+        postGetFailed
     );
 }
 
@@ -177,6 +191,33 @@ function postsLoadUsageSuccessfully(data, postId) {
 function postsLoadUsageFailed(error) {
     return {
         type: POSTS_LOAD_USAGE_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function postGetLoading() {
+    return {
+        type: POST_GET_LOADING,
+        error: false
+    };
+}
+
+function postGetSuccessfully(response) {
+    return {
+        type: POST_GET_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function postGetFailed(error) {
+    return {
+        type: POST_GET_FAILED,
         error: true,
         payload: {
             error: error

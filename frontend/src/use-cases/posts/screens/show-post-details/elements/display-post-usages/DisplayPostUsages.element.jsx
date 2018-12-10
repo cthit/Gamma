@@ -14,20 +14,12 @@ const DisplayPostUsages = ({ usages }) => (
         ifRender={() => (
             <DigitLayout.Column>
                 {usages.map(usage => {
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log("HEJHEJHEJHEJHEJHEJHEJEHJ");
-                    console.log(usage);
-                    return <DigitText.Text text={usage.pretty_name} />;
+                    return (
+                        <DigitText.Text
+                            key={usage.id}
+                            text={usage.pretty_name}
+                        />
+                    );
                 })}
             </DigitLayout.Column>
         )}
