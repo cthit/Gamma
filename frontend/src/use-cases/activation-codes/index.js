@@ -1,1 +1,1 @@
-export { default } from "./ActivationCodes.container";
+export { default } from "./ActivationCodes";
