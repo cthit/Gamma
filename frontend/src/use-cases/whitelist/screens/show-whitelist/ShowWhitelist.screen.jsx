@@ -18,6 +18,10 @@ class ShowWhitelist extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        this.props.gammaLoadingStart();
+    }
+
     render() {
         const { whitelist } = this.props;
 

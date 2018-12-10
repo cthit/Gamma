@@ -11,10 +11,19 @@ import translations from "./ShowWhitelistItem.screen.translations.json";
 
 class ShowWhitelistItem extends React.Component {
     componentDidMount() {
-        console.log(this.props);
-        this.props.getWhitelistItem(this.props.whitelistItemId).then(() => {
-            this.props.gammaLoadingFinished();
+        const {
+            getWhitelistItem,
+            whitelistItemId,
+            gammaLoadingFinished
+        } = this.props;
+
+        getWhitelistItem(whitelistItemId).then(() => {
+            gammaLoadingFinished();
         });
+    }
+
+    componentWillUnmount() {
+        this.props.gammaLoadingStart();
     }
 
     render() {

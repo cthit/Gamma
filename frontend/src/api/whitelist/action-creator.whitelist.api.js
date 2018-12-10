@@ -120,12 +120,12 @@ function whitelistItemLoading() {
     };
 }
 
-function whitelistItemLoadSuccessfully(data) {
+function whitelistItemLoadSuccessfully(response) {
     return {
         type: WHITELIST_ITEM_LOAD_SUCCESSFULLY,
         error: false,
         payload: {
-            data: [...data]
+            data: response.data
         }
     };
 }

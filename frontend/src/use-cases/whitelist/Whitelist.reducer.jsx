@@ -7,8 +7,7 @@ import {
 export function whitelist(state = [], action) {
     switch (action.type) {
         case WHITELIST_ITEM_LOAD_SUCCESSFULLY:
-            console.log(action.payload);
-            return [...state, ...action.payload.data];
+            return [action.payload.data];
         case WHITELIST_LOAD_SUCCESSFULLY:
             return [...action.payload.data];
         case USER_LOGOUT_SUCCESSFULLY:

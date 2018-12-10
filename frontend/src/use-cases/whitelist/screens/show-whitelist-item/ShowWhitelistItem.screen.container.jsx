@@ -5,7 +5,10 @@ import {
 } from "@cthit/react-digit-components";
 import _ from "lodash";
 import { connect } from "react-redux";
-import { gammaLoadingFinished } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import {
+    gammaLoadingFinished,
+    gammaLoadingStart
+} from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import {
     createDeleteWhitelistItemAction,
     createGetWhitelistItemAction
@@ -23,10 +26,11 @@ const mapDispatchToProps = dispatch => ({
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
-    getWhitelistItem: id => dispatch(createGetWhitelistItemAction(id)),
     whitelistDelete: whitelistId =>
         dispatch(createDeleteWhitelistItemAction(whitelistId)),
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    getWhitelistItem: id => dispatch(createGetWhitelistItemAction(id)),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
+    gammaLoadingStart: () => dispatch(gammaLoadingStart())
 });
 
 export default connect(
