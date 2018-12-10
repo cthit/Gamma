@@ -9,3 +9,7 @@ export const USERS_ADD_FAILED = "users_add_failed";
 
 export const USERS_DELETE_SUCCESSFULLY = "users_delete_successfully";
 export const USERS_DELETE_FAILED = "users_delete_failed";
+
+export const USER_GET_LOADING = "user_get_loading";
+export const USER_GET_SUCCESSFULLY = "user_get_successfully";
+export const USER_GET_FAILED = "user_get_failed";
