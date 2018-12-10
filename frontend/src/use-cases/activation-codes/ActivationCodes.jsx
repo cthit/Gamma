@@ -4,14 +4,6 @@ import ShowActivationCodeDetails from "./screens/show-activation-code-details";
 import ShowAllActivationCodes from "./screens/show-all-activation-codes";
 
 class ActivationCodes extends React.Component {
-    constructor(props) {
-        super();
-
-        props.getActivationCodes().then(response => {
-            props.gammaLoadingFinished();
-        });
-    }
-
     render() {
         return (
             <Switch>

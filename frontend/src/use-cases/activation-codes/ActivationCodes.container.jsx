@@ -7,10 +7,7 @@ import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading
 
 const mapStateToProps = (state, ownProps) => ({});
 
-const mapDispatchToProps = dispatch => ({
-    getActivationCodes: () => dispatch(createGetActivationCodesAction()),
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
-});
+const mapDispatchToProps = dispatch => ({});
 
 export default connect(
     mapStateToProps,
