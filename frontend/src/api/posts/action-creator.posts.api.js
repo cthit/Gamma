@@ -1,8 +1,11 @@
 import { deletePost } from "./delete.posts.api";
-import { getPosts, getPostUsage } from "./get.posts.api";
+import { getPost, getPosts, getPostUsage } from "./get.posts.api";
 import { addPost } from "./post.posts.api";
 import { editPost } from "./put.posts.api";
 import {
+    POST_GET_FAILED,
+    POST_GET_LOADING,
+    POST_GET_SUCCESSFULLY,
     POSTS_ADD_FAILED,
     POSTS_ADD_SUCCESSFULLY,
     POSTS_CHANGE_FAILED,
@@ -10,6 +13,7 @@ import {
     POSTS_DELETE_FAILED,
     POSTS_DELETE_SUCCESSFULLY,
     POSTS_LOAD_FAILED,
+    POSTS_LOAD_LOADING,
     POSTS_LOAD_SUCCESSFULLY,
     POSTS_LOAD_USAGE_FAILED,
     POSTS_LOAD_USAGE_SUCCESSFULLY
@@ -20,8 +24,20 @@ import { requestPromise } from "../utils/requestPromise";
 export function createGetPostsAction() {
     return requestPromise(
         getPosts,
+        createGetPostsLoadingAction,
         createGetPostsSuccessfullyAction,
         createGetPostsFailedAction
+    );
+}
+
+export function createGetPostAction(postId) {
+    return requestPromise(
+        () => {
+            return getPost(postId);
+        },
+        postGetLoading,
+        postGetSuccessfully,
+        postGetFailed
     );
 }
 
@@ -106,6 +122,13 @@ function postsAddFailed(error) {
     };
 }
 
+function createGetPostsLoadingAction() {
+    return {
+        type: POSTS_LOAD_LOADING,
+        error: false
+    };
+}
+
 function createGetPostsFailedAction(error) {
     return {
         type: POSTS_LOAD_FAILED,
@@ -168,6 +191,33 @@ function postsLoadUsageSuccessfully(data, postId) {
 function postsLoadUsageFailed(error) {
     return {
         type: POSTS_LOAD_USAGE_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function postGetLoading() {
+    return {
+        type: POST_GET_LOADING,
+        error: false
+    };
+}
+
+function postGetSuccessfully(response) {
+    return {
+        type: POST_GET_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function postGetFailed(error) {
+    return {
+        type: POST_GET_FAILED,
         error: true,
         payload: {
             error: error

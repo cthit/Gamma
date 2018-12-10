@@ -5,6 +5,6 @@ export function getUsers() {
     return getRequest(USERS_ENDPOINT);
 }
 
-export function getUser(userId) {
-    return getRequest(USERS_ENDPOINT + userId);
+export function getUser(cid) {
+    return getRequest(USERS_ENDPOINT + cid);
 }

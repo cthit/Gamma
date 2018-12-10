@@ -1,5 +1,5 @@
 import { deleteWhitelistItem } from "./delete.whitelist.api";
-import { getWhitelist } from "./get.whitelist.api";
+import { getWhitelist, getWhitelistItem } from "./get.whitelist.api";
 import { addUsersToWhitelist, cidIsWhitelisted } from "./post.whitelist.api";
 import { editWhitelistItem } from "./put.whitelist.api";
 import {
@@ -13,8 +13,24 @@ import {
     WHITELIST_LOAD_SUCCESSFULLY,
     WHITELIST_VALIDATE_FAILED,
     WHITELIST_VALIDATE_SUCCESSFULLY,
-    WHITELIST_ADD_FAILED
+    WHITELIST_ADD_FAILED,
+    WHITELIST_ITEM_LOAD_FAILED,
+    WHITELIST_ITEM_LOAD_SUCCESSFULLY,
+    WHITELIST_ITEM_LOAD_LOADING
 } from "./actions.whitelist.api";
+
+import { requestPromise } from "../utils/requestPromise";
+
+export function createGetWhitelistItemAction(whitelistItemId) {
+    return requestPromise(
+        () => {
+            return getWhitelistItem(whitelistItemId);
+        },
+        whitelistItemLoading,
+        whitelistItemLoadSuccessfully,
+        whitelistItemLoadFailed
+    );
+}
 
 export function createGetWhitelistAction() {
     return dispatch => {
@@ -94,6 +110,33 @@ export function createValidateWhitelistAction(cid) {
                     reject(error);
                 });
         });
+    };
+}
+
+function whitelistItemLoading() {
+    return {
+        type: WHITELIST_ITEM_LOAD_LOADING,
+        error: false
+    };
+}
+
+function whitelistItemLoadSuccessfully(response) {
+    return {
+        type: WHITELIST_ITEM_LOAD_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function whitelistItemLoadFailed(error) {
+    return {
+        type: WHITELIST_ITEM_LOAD_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
     };
 }
 

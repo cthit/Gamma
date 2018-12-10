@@ -6,13 +6,17 @@ import {
     GROUPS_DELETE_SUCCESSFULLY,
     GROUPS_DELETE_FAILED,
     GROUPS_CHANGE_SUCCESSFULLY,
-    GROUPS_CHANGE_FAILED
+    GROUPS_CHANGE_FAILED,
+    GROUPS_GET_LOADING,
+    GROUPS_GET_SUCCESSFULLY,
+    GROUPS_GET_FAILED
 } from "./actions.groups.api";
 
 import { addGroup } from "./post.groups.api";
-import { getGroups } from "./get.groups.api";
+import { getGroup, getGroups } from "./get.groups.api";
 import { editGroup } from "./put.groups.api";
 import { deleteGroup } from "./delete.groups.api";
+import { requestPromise } from "../utils/requestPromise";
 
 export function createGetGroupsAction() {
     return dispatch => {
@@ -30,10 +34,21 @@ export function createGetGroupsAction() {
     };
 }
 
-export function createAddGroupAction(group) {
+export function createGetGroupAction(groupId) {
+    return requestPromise(
+        () => {
+            return getGroup(groupId);
+        },
+        groupsGetLoading,
+        groupsGetSuccessfully,
+        groupsGetFailed
+    );
+}
+
+export function createAddGroupAction(groupId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            addGroup(group)
+            addGroup(groupId)
                 .then(response => {
                     dispatch(groupsAddSuccessfully());
                     resolve(response);
@@ -106,6 +121,33 @@ function groupsAddSuccessfully() {
 function groupsAddFailed(error) {
     return {
         type: GROUPS_ADD_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function groupsGetLoading() {
+    return {
+        type: GROUPS_GET_LOADING,
+        error: false
+    };
+}
+
+function groupsGetSuccessfully(response) {
+    return {
+        type: GROUPS_GET_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function groupsGetFailed(error) {
+    return {
+        type: GROUPS_GET_FAILED,
         error: true,
         payload: {
             error: error
