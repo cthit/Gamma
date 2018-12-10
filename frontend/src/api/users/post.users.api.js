@@ -1,5 +1,5 @@
 import { postRequest } from "../utils/api";
-import { USERS_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_USERS_ENDPOINT } from "../utils/endpoints";
 
 /**
  * {
@@ -7,5 +7,5 @@ import { USERS_ENDPOINT } from "../utils/endpoints";
  * }
  */
 export function addUser(userData) {
-    return postRequest(USERS_ENDPOINT, userData);
+    return postRequest(ADMIN_USERS_ENDPOINT, userData);
 }

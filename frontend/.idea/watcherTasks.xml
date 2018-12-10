@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectTasksOptions">
+    <enabled-global>
+      <option value="Prettier JS" />
+      <option value="Prettier JSX" />
+      <option value="Prettier JSON" />
+    </enabled-global>
+  </component>
+</project>

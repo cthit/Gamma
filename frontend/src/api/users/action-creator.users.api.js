@@ -6,14 +6,23 @@ import {
     USERS_CHANGE_SUCCESSFULLY,
     USERS_DELETE_FAILED,
     USERS_DELETE_SUCCESSFULLY,
-    USERS_LOAD_FAILED,
+    USERS_LOAD_FAILED, USERS_LOAD_MINIFIED_FAILED, USERS_LOAD_MINIFIED_LOADING, USERS_LOAD_MINIFIED_SUCCESSFULLY,
     USERS_LOAD_SUCCESSFULLY
 } from "./actions.users.api";
 
 import { deleteUser } from "./delete.users.api";
 import { editUser } from "./put.users.api";
-import { getUser, getUsers } from "./get.users.api";
+import { getUser, getUsers, getUsersMinified } from "./get.users.api";
 import { requestPromise } from "../utils/requestPromise";
+
+export function createGetUsersMinifiedAction() {
+    return requestPromise(
+        getUsersMinified,
+        usersGetMinifiedLoading,
+        usersGetMinifiedSuccessfully,
+        usersGetMinifiedFailed
+    )
+}
 
 export function createGetUsersAction() {
     return dispatch => {
@@ -153,4 +162,31 @@ function userGetFailed(error) {
             error: error
         }
     };
+}
+
+function usersGetMinifiedLoading(){
+    return {
+        type: USERS_LOAD_MINIFIED_LOADING,
+        error: false
+    };
+}
+
+function usersGetMinifiedSuccessfully(response){
+    return {
+        type: USERS_LOAD_MINIFIED_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    }
+}
+
+function usersGetMinifiedFailed(error){
+    return {
+        type: USERS_LOAD_MINIFIED_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    }
 }
