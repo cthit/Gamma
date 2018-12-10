@@ -5,18 +5,19 @@ import {
 } from "@cthit/react-digit-components";
 import _ from "lodash";
 import { connect } from "react-redux";
-import loadTranslations from "../../../../common/utils/loaders/translations.loader";
-import { createDeleteWebsiteAction } from "../../../../api/websites/action-creator.websites.api";
+import {
+    createDeleteWebsiteAction,
+    createGetWebsiteAction
+} from "../../../../api/websites/action-creator.websites.api";
 import ShowWebsiteDetails from "./ShowWebsiteDetails.screen";
-import translations from "./ShowWebsiteDetails.screen.translations.json";
+import {
+    gammaLoadingFinished,
+    gammaLoadingStart
+} from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
-    text: loadTranslations(
-        state.localize,
-        translations.ShowWebsiteDetails,
-        "Websites.Screen.ShowWebsiteDetails."
-    ),
-    website: _.find(state.websites, { id: ownProps.match.params.id })
+    website: _.find(state.websites, { id: ownProps.match.params.id }),
+    websiteId: ownProps.match.params.id
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -25,7 +26,10 @@ const mapDispatchToProps = dispatch => ({
     redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
-    websitesDelete: websiteId => dispatch(createDeleteWebsiteAction(websiteId))
+    websitesDelete: websiteId => dispatch(createDeleteWebsiteAction(websiteId)),
+    getWebsite: websiteId => dispatch(createGetWebsiteAction(websiteId)),
+    gammaLoadingStart: () => dispatch(gammaLoadingStart()),
+    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 
 export default connect(
