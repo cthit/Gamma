@@ -31,8 +31,15 @@ public final class UserActivationCodeAdminController {
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.GET)
-    public ResponseEntity<ActivationCode> getActivationCode(@PathVariable("activationCode") String activationCode){
-        return new GetActivationCodeResponse(this.activationCodeService.getActivationCode(UUID.fromString(activationCode)));
+    public ResponseEntity<ActivationCode> getActivationCode(
+            @PathVariable("activationCode") String activationCode) {
+        return new GetActivationCodeResponse(
+                this.activationCodeService.getActivationCode(
+                        UUID.fromString(
+                                activationCode
+                        )
+                )
+        );
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)
