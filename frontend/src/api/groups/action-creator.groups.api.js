@@ -9,14 +9,25 @@ import {
     GROUPS_CHANGE_FAILED,
     GROUPS_GET_LOADING,
     GROUPS_GET_SUCCESSFULLY,
-    GROUPS_GET_FAILED
+    GROUPS_GET_FAILED,
+    GROUPS_GET_MINIFIED_LOADING,
+    GROUPS_GET_MINIFIED_FAILED
 } from "./actions.groups.api";
 
 import { addGroup } from "./post.groups.api";
-import { getGroup, getGroups } from "./get.groups.api";
+import { getGroup, getGroups, getGroupsMinified } from "./get.groups.api";
 import { editGroup } from "./put.groups.api";
 import { deleteGroup } from "./delete.groups.api";
 import { requestPromise } from "../utils/requestPromise";
+
+export function createGetGroupsMinifiedAction() {
+    return requestPromise(
+        getGroupsMinified,
+        groupsGetMinifiedLoading,
+        groupsGetMinifiedSuccessfully,
+        groupsGetMinifiedFailed
+    );
+}
 
 export function createGetGroupsAction() {
     return dispatch => {
@@ -202,6 +213,33 @@ function groupsDeleteSuccessfully() {
 function groupsDeleteFailed(error) {
     return {
         type: GROUPS_DELETE_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function groupsGetMinifiedLoading() {
+    return {
+        type: GROUPS_GET_MINIFIED_LOADING,
+        error: false
+    };
+}
+
+function groupsGetMinifiedSuccessfully(response) {
+    return {
+        type: GROUPS_GET_MINIFIED_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function groupsGetMinifiedFailed(error) {
+    return {
+        type: GROUPS_GET_MINIFIED_FAILED,
         error: true,
         payload: {
             error: error
