@@ -157,7 +157,9 @@ export class App extends Component {
                                 />
 
                                 <DigitLayout.HideFill hidden={!loading}>
-                                    <GammaLoading />
+                                    <DigitLayout.Center>
+                                        <GammaLoading />
+                                    </DigitLayout.Center>
                                 </DigitLayout.HideFill>
 
                                 <DigitRedirect />
