@@ -1,11 +1,20 @@
 package it.chalmers.gamma.controller;
 
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
+
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.WebsiteView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,4 +62,35 @@ public final class FKITGroupController {
         // serializes all selected data from the group
         return serializer.serialize(group, null, websiteViews);
     }
+
+    @RequestMapping(value = "/minified", method = RequestMethod.GET)
+    public List<JSONObject> getGroupsMinified() {
+        List<FKITGroup> groups = this.fkitService.getGroups();
+        List<JSONObject> minifiedGroups = new ArrayList<>();
+        FKITGroupSerializer serializer = new FKITGroupSerializer(
+                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, ID, TYPE)
+        );
+        groups.forEach(fkitGroup -> minifiedGroups.add(
+                serializer.serialize(
+                        fkitGroup,
+                        null,
+                        null
+                )
+        ));
+        return minifiedGroups;
+    }
+
+    @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
+    public JSONObject getGroupMinified(@PathVariable("id") String id) {
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        if (group == null) {
+            return null;
+        }
+        FKITGroupSerializer serializer = new FKITGroupSerializer(
+                Arrays.asList(NAME, FUNC, ID, TYPE)
+        );
+        return serializer.serialize(group, null, null);
+    }
+
+
 }

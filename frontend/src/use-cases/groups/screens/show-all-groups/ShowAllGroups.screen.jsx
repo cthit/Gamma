@@ -11,9 +11,9 @@ import translations from "./ShowAllGroups.screen.translations.json";
 
 class ShowAllGroups extends Component {
     componentDidMount() {
-        const { groupsLoad, gammaLoadingFinished } = this.props;
+        const { getGroupsMinified, gammaLoadingFinished } = this.props;
 
-        groupsLoad().then(() => {
+        getGroupsMinified().then(() => {
             gammaLoadingFinished();
         });
     }
@@ -40,7 +40,7 @@ class ShowAllGroups extends Component {
                                 "name",
                                 "description",
                                 "email",
-                                "func",
+                                "function",
                                 "type"
                             ]}
                             headerTexts={{
@@ -58,7 +58,7 @@ class ShowAllGroups extends Component {
                                     name: group.name,
                                     description: group.description.sv,
                                     email: group.email,
-                                    func: group.func.sv,
+                                    func: group["function"].sv,
                                     type: _getTypeText(group.type, text),
                                     __link: "/groups/" + group.id
                                 };

@@ -11,10 +11,10 @@ export function getGroup(groupId) {
     return getRequest(GROUPS_ENDPOINT + groupId);
 }
 
-// export function getGroupsMinified() {
-//     return getRequest();
-// }
+export function getGroupsMinified() {
+    return getRequest(GROUPS_ENDPOINT + MINIFIED);
+}
 
 export function getGroupMinified(groupId) {
-    return getRequest(ADMIN_GROUPS_ENDPOINT + groupId + "/" + MINIFIED);
+    return getRequest(GROUPS_ENDPOINT + groupId + "/" + MINIFIED);
 }
