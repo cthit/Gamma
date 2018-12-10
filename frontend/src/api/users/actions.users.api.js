@@ -1,6 +1,10 @@
 export const USERS_LOAD_SUCCESSFULLY = "users_load_successfully";
 export const USERS_LOAD_FAILED = "users_load_failed";
 
+export const USERS_LOAD_MINIFIED_LOADING = "users_load_minified_loading";
+export const USERS_LOAD_MINIFIED_SUCCESSFULLY = "users_load_minified_successfully";
+export const USERS_LOAD_MINIFIED_FAILED = "users_load_minified_failed";
+
 export const USERS_CHANGE_SUCCESSFULLY = "users_change_successfully";
 export const USERS_CHANGE_FAILED = "users_change_failed";
 

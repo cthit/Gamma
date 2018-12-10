@@ -3,18 +3,25 @@ import {
     DigitTranslations,
     DigitFAB,
     DigitLayout,
-    DigitDesign
+    DigitDesign,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import translations from "./ShowAllUsers.screen.translations.json";
 import { Add } from "@material-ui/icons";
-import * as PropTypes from "prop-types";
+import {
+    ACCEPTANCE_YEAR,
+    CID,
+    FIRST_NAME,
+    LAST_NAME,
+    NICKNAME
+} from "../../../../api/users/props.users.api";
 
 class ShowAllUsers extends Component {
     componentDidMount() {
-        const { getUsers, gammaLoadingFinished } = this.props;
+        const { getUsersMinified, gammaLoadingFinished } = this.props;
 
-        getUsers().then(() => {
+        getUsersMinified().then(() => {
             gammaLoadingFinished();
         });
     }
@@ -23,48 +30,59 @@ class ShowAllUsers extends Component {
         this.props.gammaLoadingStart();
     }
 
+    static generateHeaderTexts(text) {
+        const headerTexts = {};
+        headerTexts[FIRST_NAME] = text.FirstName;
+        headerTexts[LAST_NAME] = text.LastName;
+        headerTexts[CID] = text.Cid;
+        headerTexts[NICKNAME] = text.Nick;
+        headerTexts[ACCEPTANCE_YEAR] = text.AcceptanceYear;
+        headerTexts["__link"] = text.Details;
+        return headerTexts;
+    }
+
     render() {
         const { users } = this.props;
         return (
-            <DigitTranslations
-                translations={translations}
-                uniquePath="Users.Screen.ShowAllUsers"
-                render={text => (
-                    <div>
-                        <DigitTable
-                            titleText={text.Users}
-                            searchText={text.SearchForUsers}
-                            idProp="cid"
-                            startOrderBy="firstName"
-                            columnsOrder={[
-                                "first_name",
-                                "nickname",
-                                "last_name",
-                                "cid",
-                                "acceptance_year"
-                            ]}
-                            headerTexts={{
-                                firstName: text.FirstName,
-                                lastName: text.LastName,
-                                cid: text.Cid,
-                                nick: text.Nick,
-                                acceptanceYear: text.AcceptanceYear,
-                                __link: text.Details
-                            }}
-                            data={users.map(user => {
-                                return {
-                                    ...user,
-                                    __link: "/users/" + user.cid
-                                };
-                            })}
-                            emptyTableText={text.NoUsers}
-                        />
-                        <DigitLayout.DownRightPosition>
-                            <DigitDesign.Link to="/users/add">
-                                <DigitFAB icon={Add} secondary />
-                            </DigitDesign.Link>
-                        </DigitLayout.DownRightPosition>
-                    </div>
+            <DigitIfElseRendering
+                test={users != null}
+                ifRender={() => (
+                    <DigitTranslations
+                        translations={translations}
+                        uniquePath="Users.Screen.ShowAllUsers"
+                        render={text => (
+                            <div>
+                                <DigitTable
+                                    titleText={text.Users}
+                                    searchText={text.SearchForUsers}
+                                    idProp={CID}
+                                    startOrderBy={FIRST_NAME}
+                                    columnsOrder={[
+                                        FIRST_NAME,
+                                        NICKNAME,
+                                        LAST_NAME,
+                                        CID,
+                                        ACCEPTANCE_YEAR
+                                    ]}
+                                    headerTexts={ShowAllUsers.generateHeaderTexts(
+                                        text
+                                    )}
+                                    data={users.map(user => {
+                                        return {
+                                            ...user,
+                                            __link: "/users/" + user.cid
+                                        };
+                                    })}
+                                    emptyTableText={text.NoUsers}
+                                />
+                                <DigitLayout.DownRightPosition>
+                                    <DigitDesign.Link to="/users/add">
+                                        <DigitFAB icon={Add} secondary />
+                                    </DigitDesign.Link>
+                                </DigitLayout.DownRightPosition>
+                            </div>
+                        )}
+                    />
                 )}
             />
         );
