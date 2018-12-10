@@ -11,7 +11,8 @@ import {
     GROUPS_GET_SUCCESSFULLY,
     GROUPS_GET_FAILED,
     GROUPS_GET_MINIFIED_LOADING,
-    GROUPS_GET_MINIFIED_FAILED
+    GROUPS_GET_MINIFIED_FAILED,
+    GROUPS_GET_MINIFIED_SUCCESSFULLY
 } from "./actions.groups.api";
 
 import { addGroup } from "./post.groups.api";
