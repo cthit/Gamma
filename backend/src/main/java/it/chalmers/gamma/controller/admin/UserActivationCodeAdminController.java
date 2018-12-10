@@ -2,6 +2,7 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.response.ActivationCodeDeletedResponse;
+import it.chalmers.gamma.response.GetActivationCodeResponse;
 import it.chalmers.gamma.response.GetAllActivationCodesResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 
@@ -27,6 +28,11 @@ public final class UserActivationCodeAdminController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ActivationCode>> getAllActivationCodes() {
         return new GetAllActivationCodesResponse(this.activationCodeService.getAllActivationCodes());
+    }
+
+    @RequestMapping(value = "/{activationCode}", method = RequestMethod.GET)
+    public ResponseEntity<ActivationCode> getActivationCode(@PathVariable("activationCode") String activationCode){
+        return new GetActivationCodeResponse(this.activationCodeService.getActivationCode(UUID.fromString(activationCode)));
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)

@@ -100,4 +100,7 @@ public class ActivationCodeService {
         return this.activationCodeRepository.findAll();
     }
 
+    public ActivationCode getActivationCode(UUID id) {
+        return this.activationCodeRepository.findById(id).orElse(null);
+    }
 }
