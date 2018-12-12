@@ -6,7 +6,10 @@ import {
     USERS_CHANGE_SUCCESSFULLY,
     USERS_DELETE_FAILED,
     USERS_DELETE_SUCCESSFULLY,
-    USERS_LOAD_FAILED, USERS_LOAD_MINIFIED_FAILED, USERS_LOAD_MINIFIED_LOADING, USERS_LOAD_MINIFIED_SUCCESSFULLY,
+    USERS_LOAD_FAILED,
+    USERS_LOAD_MINIFIED_FAILED,
+    USERS_LOAD_MINIFIED_LOADING,
+    USERS_LOAD_MINIFIED_SUCCESSFULLY,
     USERS_LOAD_SUCCESSFULLY
 } from "./actions.users.api";
 
@@ -21,7 +24,7 @@ export function createGetUsersMinifiedAction() {
         usersGetMinifiedLoading,
         usersGetMinifiedSuccessfully,
         usersGetMinifiedFailed
-    )
+    );
 }
 
 export function createGetUsersAction() {
@@ -164,29 +167,29 @@ function userGetFailed(error) {
     };
 }
 
-function usersGetMinifiedLoading(){
+function usersGetMinifiedLoading() {
     return {
         type: USERS_LOAD_MINIFIED_LOADING,
         error: false
     };
 }
 
-function usersGetMinifiedSuccessfully(response){
+function usersGetMinifiedSuccessfully(response) {
     return {
         type: USERS_LOAD_MINIFIED_SUCCESSFULLY,
         error: false,
         payload: {
             data: response.data
         }
-    }
+    };
 }
 
-function usersGetMinifiedFailed(error){
+function usersGetMinifiedFailed(error) {
     return {
         type: USERS_LOAD_MINIFIED_FAILED,
         error: true,
         payload: {
             error: error
         }
-    }
+    };
 }
