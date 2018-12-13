@@ -23,7 +23,7 @@ logging:
     root: INFO
     org:
       springframework:
-        web: DEBUG
+        web: INFO
       hibernate: ERROR
 
 security:

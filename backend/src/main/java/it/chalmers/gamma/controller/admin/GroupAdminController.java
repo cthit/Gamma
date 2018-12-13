@@ -5,10 +5,7 @@ import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
@@ -19,6 +16,7 @@ import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
 
@@ -43,14 +41,17 @@ public final class GroupAdminController {
     private final FKITService fkitService;
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
     public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
-            GroupWebsiteService groupWebsiteService) {
+            GroupWebsiteService groupWebsiteService,
+            FKITSuperGroupService fkitSuperGroupService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -83,6 +84,10 @@ public final class GroupAdminController {
         }
         if (createGroupRequest.getFunc() == null) {
             throw new MissingRequiredFieldResponse("function");
+        }
+        if (createGroupRequest.getSuperGroup() == null
+                || !fkitSuperGroupService.groupExists(createGroupRequest.getSuperGroup().getId())){
+            throw new MissingRequiredFieldResponse("superGroup");
         }
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();

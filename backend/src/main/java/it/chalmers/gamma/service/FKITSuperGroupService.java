@@ -19,7 +19,7 @@ public class FKITSuperGroupService {
     public FKITSuperGroup createSuperGroup(CreateSuperGroupRequest request){
         FKITSuperGroup group = new FKITSuperGroup();
         group.setName(request.getName());
-        group.setPrettyName(request.getPrettyName());
+        group.setPrettyName(request.getPrettyName() == null ? request.getName() : request.getPrettyName());
         group.setType(request.getType());
         return repository.save(group);
     }
