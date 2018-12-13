@@ -28,7 +28,7 @@ public class FKITService {
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
-                request.getDescription() == null ? new Text() : request.getDescription(),
+                fkitGroup.getDescription() == null ? new Text() : request.getDescription(),
                 request.getEmail(), request.getAvatarURL());
     }
 
@@ -51,8 +51,6 @@ public class FKITService {
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
                                 String email, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
-        group.setSVDescription(description == null ? group.getSVDescription() : description.getSv());
-        group.setENDescription(description == null ? group.getENDescription() : description.getEn());
         group.setEmail(email == null ? group.getEmail() : email);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
 
