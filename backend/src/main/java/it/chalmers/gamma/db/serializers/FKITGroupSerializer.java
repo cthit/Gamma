@@ -24,12 +24,12 @@ public class FKITGroupSerializer {
         EMAIL,
         TYPE,
         WEBSITES,
-        USERS;
-
+        USERS,
+        SUPER_GROUP;
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
-                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS
+                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
             };
             return new ArrayList<>(Arrays.asList(props));
         }
@@ -73,6 +73,9 @@ public class FKITGroupSerializer {
         values.add(new SerializerValue(
                 this.properties.contains(Properties.WEBSITES), websites, "websites")
         );
+        values.add(new SerializerValue(
+                this.properties.contains(Properties.SUPER_GROUP), value.getSuperGroup(), "super"
+        ));
         return SerializerUtils.serialize(values, false);
 
     }

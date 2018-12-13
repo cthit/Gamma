@@ -21,8 +21,8 @@ public class FKITService {
     }
 
     public FKITGroup createGroup(CreateGroupRequest request) {
-
         FKITGroup fkitGroup = new FKITGroup();
+        fkitGroup.setSuperGroup(request.getSuperGroup());
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());

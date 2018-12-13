@@ -62,6 +62,7 @@ create table fkit_super_group (
 create table fkit_group (
   id          uuid                  constraint fkit_group_pk primary key,
   name        varchar(50)  not null constraint fkit_group_name_unique unique,
+  super_group uuid         not null references fkit_super_group constraint fkit_group_super_group_unique unique,
   pretty_name varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
   description uuid         null     references text,
   function    uuid         not null references text,

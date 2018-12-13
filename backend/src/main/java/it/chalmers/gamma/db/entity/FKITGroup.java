@@ -2,6 +2,8 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import it.chalmers.gamma.domain.GroupType;
 
 import java.util.Objects;
@@ -20,6 +22,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class FKITGroup {
 
     @Id
@@ -49,6 +52,10 @@ public class FKITGroup {
     @Column(name = "type", length = 30, nullable = false)
     @Enumerated(EnumType.STRING)
     private GroupType type;
+
+    @Column(name = "super_group", nullable = false)
+    @OneToOne
+    private FKITSuperGroup superGroup;
 
     public FKITGroup() {
         this.id = UUID.randomUUID();
@@ -158,6 +165,14 @@ public class FKITGroup {
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
+    }
+
+    public FKITSuperGroup getSuperGroup() {
+        return superGroup;
+    }
+
+    public void setSuperGroup(FKITSuperGroup superGroup) {
+        this.superGroup = superGroup;
     }
 
     @Override

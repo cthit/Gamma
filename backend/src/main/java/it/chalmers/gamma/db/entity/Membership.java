@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 
 import java.time.Year;
@@ -13,6 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "membership")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Membership {
 
     @EmbeddedId

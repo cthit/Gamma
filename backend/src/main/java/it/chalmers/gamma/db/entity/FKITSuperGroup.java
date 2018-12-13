@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fkit_super_group")
+
 public class FKITSuperGroup {
 
     @Column(name = "id")
