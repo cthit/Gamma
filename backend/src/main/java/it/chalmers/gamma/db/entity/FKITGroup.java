@@ -49,11 +49,7 @@ public class FKITGroup {
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "type", length = 30, nullable = false)
-    @Enumerated(EnumType.STRING)
-    private GroupType type;
-
-    @Column(name = "super_group", nullable = false)
+    @JoinColumn(name = "super_group", nullable = false)
     @OneToOne
     private FKITSuperGroup superGroup;
 
@@ -91,14 +87,6 @@ public class FKITGroup {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public GroupType getType() {
-        return this.type;
-    }
-
-    public void setType(GroupType type) {
-        this.type = type;
     }
 
     public String getAvatarURL() {
@@ -185,7 +173,6 @@ public class FKITGroup {
             + ", description=" + description
             + ", func=" + func
             + ", email='" + email + '\''
-            + ", type=" + type
             + '}';
     }
 
@@ -204,8 +191,7 @@ public class FKITGroup {
             && Objects.equals(this.prettyName, fkitGroup.prettyName)
             && Objects.equals(this.description, fkitGroup.description)
             && Objects.equals(this.func, fkitGroup.func)
-            && Objects.equals(this.email, fkitGroup.email)
-            && this.type == fkitGroup.type;
+            && Objects.equals(this.email, fkitGroup.email);
     }
 
     @Override
@@ -217,7 +203,6 @@ public class FKITGroup {
             this.prettyName,
             this.description,
             this.func,
-            this.email,
-            this.type);
+            this.email);
     }
 }

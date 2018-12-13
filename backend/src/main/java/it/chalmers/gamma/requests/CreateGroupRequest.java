@@ -12,7 +12,6 @@ public class CreateGroupRequest {
     private String prettyName;
     private Text description;
     private String email;
-    private GroupType type;
     private Text func;
     private String avatarURL;
     private List<WebsiteInfo> websites;
@@ -75,20 +74,12 @@ public class CreateGroupRequest {
         this.email = email;
     }
 
-    public GroupType getType() {
-        return this.type;
-    }
-
     public String getPrettyName() {
         return this.prettyName;
     }
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
-    }
-
-    public void setType(GroupType type) {
-        this.type = type;
     }
 
     @Override
@@ -104,7 +95,6 @@ public class CreateGroupRequest {
             && this.prettyName.equals(that.prettyName)
             && this.description.equals(that.description)
             && this.email.equals(that.email)
-            && this.type == that.type
             && this.func.equals(that.func)
             && this.avatarURL.equals(that.avatarURL)
             && this.websites.equals(that.websites);
@@ -113,7 +103,7 @@ public class CreateGroupRequest {
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.prettyName, this.description, this.email,
-            this.type, this.func, this.avatarURL, this.websites);
+             this.func, this.avatarURL, this.websites);
     }
 
     @Override
@@ -123,7 +113,6 @@ public class CreateGroupRequest {
             + ", prettyName='" + this.prettyName + '\''
             + ", description=" + this.description
             + ", email='" + this.email + '\''
-            + ", type=" + this.type
             + ", func=" + this.func
             + ", avatarURL='" + this.avatarURL + '\''
             + ", websites=" + this.websites

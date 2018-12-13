@@ -28,7 +28,7 @@ public class FKITService {
         fkitGroup.setDescription(request.getDescription());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
                 request.getDescription() == null ? new Text() : request.getDescription(),
-                request.getEmail(), request.getType(), request.getAvatarURL());
+                request.getEmail(), request.getAvatarURL());
     }
 
     //TODO if no info, don't change value.
@@ -44,16 +44,15 @@ public class FKITService {
             group.setENDescription(request.getDescription().getEn());
         }
         return saveGroup(group, request.getPrettyName(), request.getDescription(), request.getEmail(),
-                request.getType(), request.getAvatarURL());
+                request.getAvatarURL());
     }
 
     private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
-                                String email, GroupType type, String avatarURL) {
+                                String email, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
         group.setSVDescription(description == null ? group.getSVDescription() : description.getSv());
         group.setENDescription(description == null ? group.getENDescription() : description.getEn());
         group.setEmail(email == null ? group.getEmail() : email);
-        group.setType(type == null ? group.getType() : type);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
 
         return this.repo.save(group);

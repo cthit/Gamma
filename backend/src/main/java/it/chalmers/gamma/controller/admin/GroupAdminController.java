@@ -84,9 +84,6 @@ public final class GroupAdminController {
         if (createGroupRequest.getFunc() == null) {
             throw new MissingRequiredFieldResponse("function");
         }
-        if (createGroupRequest.getType() == null) {
-            throw new MissingRequiredFieldResponse("type");
-        }
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
         if (websites == null || websites.isEmpty()) {

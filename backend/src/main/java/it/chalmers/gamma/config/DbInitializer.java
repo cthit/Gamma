@@ -1,18 +1,10 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.service.AuthorityLevelService;
-import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITService;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PostService;
+import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.service.*;
 
 import java.time.Year;
 
@@ -34,19 +26,22 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final PostService postService;
     private final MembershipService membershipService;
     private final AuthorityService authorityService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
     @Value("${application.standard-admin-account.password}")
     private String password;
 
     public DbInitializer(ITUserService userService, FKITService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
-                         MembershipService membershipService, AuthorityService authorityService) {
+                         MembershipService membershipService, AuthorityService authorityService,
+                         FKITSuperGroupService fkitSuperGroupService) {
         this.userservice = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
         this.postService = postService;
         this.membershipService = membershipService;
         this.authorityService = authorityService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @Override
@@ -59,13 +54,18 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
+            CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
+            superGroupRequest.setName("superadmin");
+            superGroupRequest.setPrettyName("super admin");
+            superGroupRequest.setType(GroupType.COMMITTEE);
+            FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
             request.setFunc(new Text());
             request.setDescription(description);
-            request.setType(GroupType.COMMITTEE);
             request.setEmail(adminMail);
+            request.setSuperGroup(superGroup);
             FKITGroup group = this.groupService.createGroup(request);
             Text p = new Text();
             p.setSv(admin);
