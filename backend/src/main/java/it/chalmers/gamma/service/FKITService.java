@@ -1,6 +1,7 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.GroupType;
@@ -20,9 +21,9 @@ public class FKITService {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(CreateGroupRequest request) {
+    public FKITGroup createGroup(CreateGroupRequest request, FKITSuperGroup group) {
         FKITGroup fkitGroup = new FKITGroup();
-        fkitGroup.setSuperGroup(request.getSuperGroup());
+        fkitGroup.setSuperGroup(group);
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());

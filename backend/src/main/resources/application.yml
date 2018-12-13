@@ -20,10 +20,10 @@ server:
 
 logging:
   level:
-    root: INFO
+    root: DEBUG
     org:
       springframework:
-        web: INFO
+        web: DEBUG
       hibernate: ERROR
 
 security:

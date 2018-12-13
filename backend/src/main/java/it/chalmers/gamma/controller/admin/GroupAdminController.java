@@ -85,8 +85,8 @@ public final class GroupAdminController {
         if (createGroupRequest.getFunc() == null) {
             throw new MissingRequiredFieldResponse("function");
         }
-        if (createGroupRequest.getSuperGroup() == null
-                || !fkitSuperGroupService.groupExists(createGroupRequest.getSuperGroup().getId())){
+        FKITSuperGroup superGroup = fkitSuperGroupService.getGroup(UUID.fromString(createGroupRequest.getSuperGroup()));
+        if (superGroup == null){
             throw new MissingRequiredFieldResponse("superGroup");
         }
 
@@ -103,7 +103,7 @@ public final class GroupAdminController {
             websiteURLs.add(websiteURL);
         }
         this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(createGroupRequest), websiteURLs);
+                this.fkitService.createGroup(createGroupRequest, superGroup), websiteURLs);
         return new GroupCreatedResponse();
     }
 

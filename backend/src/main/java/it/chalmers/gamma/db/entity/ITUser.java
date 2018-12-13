@@ -112,6 +112,7 @@ public class ITUser implements UserDetails {
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
+        System.out.println(this.authorities);
         return new ArrayList<>(this.authorities);
     }
 

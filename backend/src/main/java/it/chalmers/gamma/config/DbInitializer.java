@@ -65,8 +65,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setFunc(new Text());
             request.setDescription(description);
             request.setEmail(adminMail);
-            request.setSuperGroup(superGroup);
-            FKITGroup group = this.groupService.createGroup(request);
+            FKITGroup group = this.groupService.createGroup(request, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);

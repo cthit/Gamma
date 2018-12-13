@@ -1,8 +1,6 @@
 package it.chalmers.gamma.requests;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.GroupType;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,17 +13,17 @@ public class CreateGroupRequest {
     private Text func;
     private String avatarURL;
     private List<WebsiteInfo> websites;
-    private FKITSuperGroup superGroup;
+    private String superGroup;
 
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
     }
 
-    public FKITSuperGroup getSuperGroup() {
+    public String getSuperGroup() {
         return superGroup;
     }
 
-    public void setSuperGroup(FKITSuperGroup superGroup) {
+    public void setSuperGroup(String superGroup) {
         this.superGroup = superGroup;
     }
 

@@ -27,8 +27,12 @@ public class FKITSuperGroup {
     @Column(name = "type")
     private GroupType type;
 
-    public FKITSuperGroup(){
+    public FKITSuperGroup() {
         this.id = UUID.randomUUID();
+    }
+
+    public FKITSuperGroup(UUID id){
+        this.id = id;
     }
 
     public UUID getId() {
