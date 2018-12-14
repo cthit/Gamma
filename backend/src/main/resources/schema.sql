@@ -67,6 +67,9 @@ create table fkit_group (
   description uuid         null     references text,
   function    uuid         not null references text,
   email       varchar(100) not null constraint fkit_group_email_unique unique,
+  year        integer      not null constraint membership_valid_year check (year >= 2001),
+  -- GÅR PÅ
+  -- GÅR AV
   avatar_url  varchar(255) null
 );
 
@@ -95,7 +98,6 @@ create table membership (   -- Should this be rebuilt to look like all other tab
   ituser_id            uuid         constraint membership_ituser_fk references ituser,
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         not null constraint membership_post_fk references post,
-  year                 integer      not null constraint membership_valid_year check (year >= 2001),
   unofficial_post_name varchar(100) null,
   constraint membership_pk primary key (ituser_id, fkit_group_id)
 );

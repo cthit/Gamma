@@ -27,17 +27,6 @@ public class Membership {
     @Column(name = "unofficial_post_name", length = 100)
     private String unofficialPostName;
 
-    @Column(name = "year")
-    private int year;
-
-    public Year getYear() {
-        return Year.of(this.year);
-    }
-
-    public void setYear(Year year) {
-        this.year = year.getValue();
-    }
-
     public MembershipPK getId() {
         return this.id;
     }

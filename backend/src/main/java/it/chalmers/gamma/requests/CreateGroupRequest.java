@@ -13,6 +13,7 @@ public class CreateGroupRequest {
     private Text func;
     private String avatarURL;
     private List<WebsiteInfo> websites;
+    private int year;
     private String superGroup;
 
     public List<WebsiteInfo> getWebsites() {
@@ -78,6 +79,14 @@ public class CreateGroupRequest {
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     @Override

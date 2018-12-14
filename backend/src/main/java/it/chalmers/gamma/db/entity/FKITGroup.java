@@ -53,6 +53,9 @@ public class FKITGroup {
     @OneToOne
     private FKITSuperGroup superGroup;
 
+    @Column(name = "year")
+    private int year;
+
     public FKITGroup() {
         this.id = UUID.randomUUID();
     }
@@ -161,6 +164,14 @@ public class FKITGroup {
 
     public void setSuperGroup(FKITSuperGroup superGroup) {
         this.superGroup = superGroup;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     @Override

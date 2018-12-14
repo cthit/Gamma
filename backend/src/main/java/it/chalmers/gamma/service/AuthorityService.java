@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,7 +54,10 @@ public class AuthorityService {
         for (Membership membership : memberships) {
             Authority authority = getAuthorityLevel(membership.getId().getFKITGroup().getSuperGroup(), membership.getPost());
             if (authority != null) {
-                authorityLevels.add(authority.getAuthorityLevel());
+                int year = membership.getId().getFKITGroup().getYear();
+                if(Year.now().equals(Year.of(year))) {            // TODO Fix this implementation
+                    authorityLevels.add(authority.getAuthorityLevel());
+                }
             }
         }
         return authorityLevels;

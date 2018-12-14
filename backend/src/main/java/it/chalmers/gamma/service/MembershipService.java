@@ -33,9 +33,8 @@ public class MembershipService {
      * @param user     which user is added
      * @param post     what post the user has in group
      * @param postname what the unoficial-post name is
-     * @param year     which group-year the user is added in
      */
-    public void addUserToGroup(FKITGroup group, ITUser user, Post post, String postname, Year year) {
+    public void addUserToGroup(FKITGroup group, ITUser user, Post post, String postname) {
         Membership membership = new Membership();
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(group);
@@ -43,11 +42,8 @@ public class MembershipService {
         membership.setId(pk);
         membership.setPost(post);
         membership.setUnofficialPostName(postname);
-        membership.setYear(year);
         this.membershipRepository.save(membership);
     }
-
-    //should this return UUID? and not ITUser?.
 
     /**
      * finds all users that has a specific post.

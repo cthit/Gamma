@@ -65,6 +65,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setFunc(new Text());
             request.setDescription(description);
             request.setEmail(adminMail);
+            request.setYear(2018);
             FKITGroup group = this.groupService.createGroup(request, superGroup);
             Text p = new Text();
             p.setSv(admin);
@@ -80,8 +81,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     this.password
             );
             this.membershipService.addUserToGroup(
-                    group, user, post, admin, Year.of(2018)
-            ); // This might break on a new year
+                    group, user, post, admin); // This might break on a new year
             AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }

@@ -59,7 +59,7 @@ public final class GroupMemberAdminController {
         ITUser user = this.itUserService.loadUser(request.getUser());
         FKITGroup fkitGroup = this.fkitService.getGroup(UUID.fromString(id));
         Post post = this.postService.getPost(request.getPost());
-        this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName(), request.getYear());
+        this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new UserAddedToGroupResponse();
     }
 
