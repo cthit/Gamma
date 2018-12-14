@@ -1,9 +1,6 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
 
@@ -120,6 +117,12 @@ public class MembershipService {
     }
 
     public List<Membership> getMembershipsByUser(ITUser user) {
+        List<Membership> memberships = this.membershipRepository.findAllById_ItUser(user);
+        for(Membership membership : memberships){
+            FKITSuperGroup superGroup = membership.getId().getFKITGroup().getSuperGroup();
+
+            // Either this or
+        }
         return this.membershipRepository.findAllById_ItUser(user);
     }
 

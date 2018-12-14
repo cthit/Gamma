@@ -83,7 +83,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     group, user, post, admin, Year.of(2018)
             ); // This might break on a new year
             AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
-            this.authorityService.setAuthorityLevel(group, post, authorityLevel);
+            this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }
     }
 }
