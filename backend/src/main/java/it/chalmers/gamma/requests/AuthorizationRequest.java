@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class AuthorizationRequest {
     private String post;
-    private String group;
+    private String superGroup;
     private String authority;
 
     public String getAuthority() {
@@ -23,19 +23,19 @@ public class AuthorizationRequest {
         this.post = post;
     }
 
-    public String getGroup() {
-        return this.group;
+    public String getSuperGroup() {
+        return this.superGroup;
     }
 
-    public void setGroup(String group) {
-        this.group = group;
+    public void setSuperGroup(String superGroup) {
+        this.superGroup = superGroup;
     }
 
     @Override
     public String toString() {
         return "AuthorizationRequest{"
             + "post='" + this.post + '\''
-            + ", group='" + this.group + '\''
+            + ", superGroup='" + this.superGroup + '\''
             + ", authority'" + this.authority + '\''
             + '}';
     }
@@ -50,12 +50,12 @@ public class AuthorizationRequest {
         }
         AuthorizationRequest that = (AuthorizationRequest) o;
         return Objects.equals(this.post, that.post)
-            && Objects.equals(this.group, that.group)
+            && Objects.equals(this.superGroup, that.superGroup)
             && Objects.equals(this.authority, that.authority);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.post, this.group, this.authority);
+        return Objects.hash(this.post, this.superGroup, this.authority);
     }
 }

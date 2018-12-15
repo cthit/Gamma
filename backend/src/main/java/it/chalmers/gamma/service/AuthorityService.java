@@ -4,20 +4,16 @@ import it.chalmers.gamma.db.entity.*;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
 
-import java.time.Year;
 import java.util.*;
 
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
 
     public AuthorityService(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;

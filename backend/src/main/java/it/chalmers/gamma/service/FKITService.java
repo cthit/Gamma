@@ -2,9 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
-import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 
 import java.util.Calendar;

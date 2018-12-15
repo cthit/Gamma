@@ -1,7 +1,6 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.*;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.AuthorizationLevelRequest;
 import it.chalmers.gamma.requests.AuthorizationRequest;
 import it.chalmers.gamma.response.AuthorityAddedResponse;
@@ -19,11 +18,9 @@ import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.service.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,19 +36,16 @@ public final class AuthorityAdminController {
     private final AuthorityService authorityService;
     private final PostService postService;
     private final AuthorityLevelService authorityLevelService;
-    private final MembershipService membershipService;
-    private final FKITService fkitGroupService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
     public AuthorityAdminController(AuthorityService authorityService,
-                                     FKITService fkitGroupService,
                                      PostService postService,
                                      AuthorityLevelService authorityLevelService,
-                                     MembershipService membershipService) {
+                                     FKITSuperGroupService fkitSuperGroupService) {
         this.authorityService = authorityService;
         this.postService = postService;
         this.authorityLevelService = authorityLevelService;
-        this.membershipService = membershipService;
-        this.fkitGroupService = fkitGroupService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -60,7 +54,7 @@ public final class AuthorityAdminController {
         if (post == null) {
             throw new PostDoesNotExistResponse();
         }
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(request.getGroup()));
+        FKITSuperGroup group = this.fkitSuperGroupService.getGroup(UUID.fromString(request.getSuperGroup()));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -71,7 +65,7 @@ public final class AuthorityAdminController {
         if (level == null) {
             throw new AuthorityLevelNotFoundResponse();
         }
-        this.authorityService.setAuthorityLevel(group.getSuperGroup(), post, level);
+        this.authorityService.setAuthorityLevel(group, post, level);
         return new AuthorityAddedResponse();
     }
     // TODO This function might need a lot of rewriting to work, and is not a part of MVP

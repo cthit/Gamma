@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import com.sun.mail.iap.Response;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.*;
