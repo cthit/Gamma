@@ -75,8 +75,8 @@ public class FKITSuperGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o){ return true; }
+        if (o == null || getClass() != o.getClass()){ return false; }
         FKITSuperGroup that = (FKITSuperGroup) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&

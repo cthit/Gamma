@@ -68,25 +68,6 @@ public final class AuthorityAdminController {
         this.authorityService.setAuthorityLevel(group, post, level);
         return new AuthorityAddedResponse();
     }
-    // TODO This function might need a lot of rewriting to work, and is not a part of MVP
-  /*  @RequestMapping(value = "/user_authorities/{authorityLevel}", method = RequestMethod.GET)
-    public List<JSONObject> getUsersWithAuthority(@PathVariable("authorityLevel") String level) {
-        AuthorityLevel authorityLevel =
-                this.authorityLevelService.getAuthorityLevel(UUID.fromString(level));
-        List<Authority> authorities =
-                this.authorityService.getAllAuthoritiesWithAuthorityLevel(authorityLevel);
-        ITUserSerializer serializer =
-                new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
-        List<JSONObject> users = new ArrayList<>();
-        for (Authority authority : authorities) {
-            Post post = authority.getId().getPost();
-            List<ITUser> userDatas = this.membershipService.getUserByGroupAndPost(group, post);
-            for (ITUser user : userDatas) {
-                users.add(serializer.serialize(user, null));
-            }
-        }
-        return users;
-    }*/
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeAuthorization(@PathVariable("id") String id) {
