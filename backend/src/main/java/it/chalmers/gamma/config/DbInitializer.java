@@ -1,10 +1,22 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.service.*;
+
+import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
+import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.service.PostService;
 
 import java.time.Year;
 import java.util.Calendar;
@@ -60,7 +72,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
             superGroupRequest.setType(GroupType.COMMITTEE);
-            FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
@@ -74,6 +85,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             start.setTimeInMillis(System.currentTimeMillis());
             request.setBecomesActive(start);
             request.setBecomesInactive(end);
+            FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
             FKITGroup group = this.groupService.createGroup(request, superGroup);
             Text p = new Text();
             p.setSv(admin);
