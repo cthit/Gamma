@@ -1,6 +1,11 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.db.entity.Website;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteURL;
+
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupCreatedResponse;
@@ -66,8 +71,9 @@ public final class GroupAdminController {
         if (createGroupRequest.getFunc() == null) {
             throw new MissingRequiredFieldResponse("function");
         }
-        FKITSuperGroup superGroup = fkitSuperGroupService.getGroup(UUID.fromString(createGroupRequest.getSuperGroup()));
-        if (superGroup == null){
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+                UUID.fromString(createGroupRequest.getSuperGroup()));
+        if (superGroup == null) {
             throw new MissingRequiredFieldResponse("superGroup");
         }
 
