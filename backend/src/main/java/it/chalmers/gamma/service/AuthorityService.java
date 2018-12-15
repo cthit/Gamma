@@ -1,10 +1,18 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.*;
+;
+import it.chalmers.gamma.db.entity.Authority;
+import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.db.entity.Membership;
+import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -49,12 +57,13 @@ public class AuthorityService {
     public List<AuthorityLevel> getAuthorities(List<Membership> memberships) {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
-            Authority authority = getAuthorityLevel(membership.getId().getFKITGroup().getSuperGroup(), membership.getPost());
+            Authority authority = getAuthorityLevel(
+                    membership.getId().getFKITGroup().getSuperGroup(), membership.getPost());
             if (authority != null) {
                 Calendar start = membership.getId().getFKITGroup().getBecomesActive();
                 Calendar end = membership.getId().getFKITGroup().getBecomesInactive();
                 Calendar now = Calendar.getInstance();
-                if(now.after(start) && now.before(end)){
+                if (now.after(start) && now.before(end)) {
                     authorityLevels.add(authority.getAuthorityLevel());
                 }
             }
