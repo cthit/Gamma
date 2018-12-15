@@ -5,18 +5,19 @@ import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
 
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
 
     public AuthorityService(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
@@ -54,8 +55,10 @@ public class AuthorityService {
         for (Membership membership : memberships) {
             Authority authority = getAuthorityLevel(membership.getId().getFKITGroup().getSuperGroup(), membership.getPost());
             if (authority != null) {
-                int year = membership.getId().getFKITGroup().getYear();
-                if(Year.now().equals(Year.of(year))) {            // TODO Fix this implementation
+                Calendar start = membership.getId().getFKITGroup().getBecomesActive();
+                Calendar end = membership.getId().getFKITGroup().getBecomesInactive();
+                Calendar now = Calendar.getInstance();
+                if(now.after(start) && now.before(end)){
                     authorityLevels.add(authority.getAuthorityLevel());
                 }
             }

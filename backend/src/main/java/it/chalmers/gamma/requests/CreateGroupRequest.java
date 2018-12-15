@@ -2,6 +2,7 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,8 @@ public class CreateGroupRequest {
     private String avatarURL;
     private List<WebsiteInfo> websites;
     private int year;
+    private Calendar becomesActive;
+    private Calendar becomesInactive;
     private String superGroup;
 
     public List<WebsiteInfo> getWebsites() {
@@ -87,6 +90,22 @@ public class CreateGroupRequest {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public Calendar getBecomesActive() {
+        return becomesActive;
+    }
+
+    public void setBecomesActive(Calendar becomesActive) {
+        this.becomesActive = becomesActive;
+    }
+
+    public Calendar getBecomesInactive() {
+        return becomesInactive;
+    }
+
+    public void setBecomesInactive(Calendar becomesInactive) {
+        this.becomesInactive = becomesInactive;
     }
 
     @Override

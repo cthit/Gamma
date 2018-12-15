@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import it.chalmers.gamma.domain.GroupType;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -55,6 +57,12 @@ public class FKITGroup {
 
     @Column(name = "year")
     private int year;
+
+    @Column(name = "becomes_active")
+    private Calendar becomesActive;
+
+    @Column(name = "becomes_inactive")
+    private Calendar becomesInactive;
 
     public FKITGroup() {
         this.id = UUID.randomUUID();
@@ -172,6 +180,22 @@ public class FKITGroup {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public Calendar getBecomesActive() {
+        return becomesActive;
+    }
+
+    public void setBecomesActive(Calendar becomesActive) {
+        this.becomesActive = becomesActive;
+    }
+
+    public Calendar getBecomesInactive() {
+        return becomesInactive;
+    }
+
+    public void setBecomesInactive(Calendar becomesInactive) {
+        this.becomesInactive = becomesInactive;
     }
 
     @Override

@@ -7,6 +7,7 @@ import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class FKITService {
         fkitGroup.setDescription(request.getDescription());
         fkitGroup.setYear(request.getYear());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
-                fkitGroup.getDescription() == null ? new Text() : request.getDescription(),
+                request.getBecomesActive(), request.getBecomesInactive(),
                 request.getEmail(), request.getAvatarURL());
     }
 
@@ -46,16 +47,18 @@ public class FKITService {
             group.setSVDescription(request.getDescription().getSv());
             group.setENDescription(request.getDescription().getEn());
         }
-        return saveGroup(group, request.getPrettyName(), request.getDescription(), request.getEmail(),
-                request.getAvatarURL());
+        return saveGroup(group, request.getPrettyName(), request.getBecomesActive(), request.getBecomesInactive(),
+                request.getEmail(), request.getAvatarURL());
     }
 
-    private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
+    private FKITGroup saveGroup(FKITGroup group, String prettyName,
+                                Calendar becomesActive, Calendar becomesInactive,
                                 String email, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
         group.setEmail(email == null ? group.getEmail() : email);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
-
+        group.setBecomesActive(becomesActive == null ? group.getBecomesActive() : becomesActive);
+        group.setBecomesInactive(becomesInactive == null ? group.getBecomesInactive() : becomesInactive);
         return this.repo.save(group);
     }
 

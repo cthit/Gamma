@@ -7,6 +7,8 @@ import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.*;
 
 import java.time.Year;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -66,6 +68,12 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setDescription(description);
             request.setEmail(adminMail);
             request.setYear(2018);
+            Calendar end = new GregorianCalendar();
+            end.set(2099, Calendar.AUGUST, 10);
+            Calendar start = new GregorianCalendar();
+            start.setTimeInMillis(System.currentTimeMillis());
+            request.setBecomesActive(start);
+            request.setBecomesInactive(end);
             FKITGroup group = this.groupService.createGroup(request, superGroup);
             Text p = new Text();
             p.setSv(admin);

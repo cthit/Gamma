@@ -60,16 +60,16 @@ create table fkit_super_group (
 );
 
 create table fkit_group (
-  id          uuid                  constraint fkit_group_pk primary key,
-  name        varchar(50)  not null constraint fkit_group_name_unique unique,
-  super_group uuid         not null references fkit_super_group constraint fkit_group_super_group_unique unique,
-  pretty_name varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
-  description uuid         null     references text,
-  function    uuid         not null references text,
-  email       varchar(100) not null constraint fkit_group_email_unique unique,
-  year        integer      not null constraint membership_valid_year check (year >= 2001),
-  -- GÅR PÅ
-  -- GÅR AV
+  id                uuid                  constraint fkit_group_pk primary key,
+  name              varchar(50)  not null constraint fkit_group_name_unique unique,
+  super_group       uuid         not null references fkit_super_group constraint fkit_group_super_group_unique unique,
+  pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
+  description       uuid         null     references text,
+  function          uuid         not null references text,
+  email             varchar(100) not null constraint fkit_group_email_unique unique,
+  becomes_active    date         not null,
+  becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
+  year              integer      not null constraint fkit_group_year check (year >= 2001),
   avatar_url  varchar(255) null
 );
 
