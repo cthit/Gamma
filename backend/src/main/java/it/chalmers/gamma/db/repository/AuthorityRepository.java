@@ -1,6 +1,9 @@
 package it.chalmers.gamma.db.repository;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.Authority;
+import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.db.entity.Post;
 
 import java.util.List;
 import java.util.UUID;
