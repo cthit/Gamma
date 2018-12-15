@@ -1,6 +1,5 @@
 package it.chalmers.gamma.service;
 
-;
 import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
