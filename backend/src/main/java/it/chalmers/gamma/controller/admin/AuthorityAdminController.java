@@ -1,6 +1,9 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.Authority;
+import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.requests.AuthorizationLevelRequest;
 import it.chalmers.gamma.requests.AuthorizationRequest;
 import it.chalmers.gamma.response.AuthorityAddedResponse;
@@ -16,7 +19,10 @@ import it.chalmers.gamma.response.GetAuthorityResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.response.PostDoesNotExistResponse;
-import it.chalmers.gamma.service.*;
+import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
+import it.chalmers.gamma.service.PostService;
 
 import java.util.List;
 import java.util.UUID;
