@@ -69,7 +69,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setEmail(adminMail);
             request.setYear(2018);
             Calendar end = new GregorianCalendar();
-            end.set(2099, Calendar.AUGUST, 10);
+            end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();
             start.setTimeInMillis(System.currentTimeMillis());
             request.setBecomesActive(start);
