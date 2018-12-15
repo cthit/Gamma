@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "text")
+@Table(name = "internal_text")
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Text {
 

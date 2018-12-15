@@ -51,7 +51,7 @@ public class FKITGroup {
     @OneToOne
     private FKITSuperGroup superGroup;
 
-    @Column(name = "year")
+    @Column(name = "internal_year")
     private int year;
 
     @Column(name = "becomes_active")
