@@ -59,17 +59,6 @@ public final class GroupAdminController {
         return new GroupsResponse(this.fkitService.getGroups());
     }
 
-    @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
-    public JSONObject getGroupMinified(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
-        if (group == null) {
-            return null;
-        }
-        FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, ID, TYPE)
-        );
-        return serializer.serialize(group, null, null);
-    }
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {

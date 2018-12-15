@@ -12,71 +12,92 @@ import React from "react";
 import * as yup from "yup";
 import translations from "./InputCid.view.translations";
 
-const InputCid = ({ sendCid, redirectTo, toastOpen }) => (
-    <DigitTranslations
-        translations={translations}
-        uniquePath="CreateAccount"
-        render={text => (
-            <DigitLayout.MarginTop>
-                <DigitLayout.Center>
-                    <DigitForm
-                        validationSchema={yup.object().shape({
-                            cid: yup.string().required(text.FieldRequired)
-                        })}
-                        initialValues={{ cid: "" }}
-                        onSubmit={(values, actions) => {
-                            sendCid(values)
-                                .then(response => {
-                                    actions.resetForm();
-                                    redirectTo("/create-account/email-sent");
-                                })
-                                .catch(error => {
-                                    toastOpen({
-                                        text: text.SomethingWentWrong,
-                                        duration: 10000
-                                    });
-                                });
-                        }}
-                        render={({ errors, touched }) => (
-                            <DigitDesign.Card
-                                absWidth="300px"
-                                absHeight="300px"
-                                hasSubTitle
-                            >
-                                <DigitDesign.CardTitle
-                                    text={text.EnterYourCid}
-                                />
-                                <DigitDesign.CardSubTitle
-                                    text={text.EnterYourCidDescription}
-                                />
-                                <DigitDesign.CardBody>
-                                    <DigitLayout.Center>
-                                        <DigitFormField
-                                            name="cid"
-                                            component={DigitTextField}
-                                            componentProps={{
-                                                upperLabel: text.Cid,
-                                                filled: true
-                                            }}
+class InputCid extends React.Component {
+    componentDidMount() {
+        this.props.gammaLoadingFinished();
+    }
+
+    render() {
+        const {
+            sendCid,
+            redirectTo,
+            toastOpen,
+            gammaLoadingStart
+        } = this.props;
+
+        return (
+            <DigitTranslations
+                translations={translations}
+                uniquePath="CreateAccount"
+                render={text => (
+                    <DigitLayout.MarginTop>
+                        <DigitLayout.Center>
+                            <DigitForm
+                                validationSchema={yup.object().shape({
+                                    cid: yup
+                                        .string()
+                                        .required(text.FieldRequired)
+                                })}
+                                initialValues={{ cid: "" }}
+                                onSubmit={(values, actions) => {
+                                    sendCid(values)
+                                        .then(response => {
+                                            actions.resetForm();
+                                            redirectTo(
+                                                "/create-account/email-sent"
+                                            );
+                                        })
+                                        .catch(error => {
+                                            toastOpen({
+                                                text: text.SomethingWentWrong,
+                                                duration: 10000
+                                            });
+                                        });
+                                }}
+                                render={({ errors, touched }) => (
+                                    <DigitDesign.Card
+                                        absWidth="300px"
+                                        absHeight="300px"
+                                        hasSubTitle
+                                    >
+                                        <DigitDesign.CardTitle
+                                            text={text.EnterYourCid}
                                         />
-                                    </DigitLayout.Center>
-                                </DigitDesign.CardBody>
-                                <DigitDesign.CardButtons reverseDirection>
-                                    <DigitButton
-                                        text={text.SendCid}
-                                        primary
-                                        raised
-                                        submit
-                                    />
-                                </DigitDesign.CardButtons>
-                            </DigitDesign.Card>
-                        )}
-                    />
-                </DigitLayout.Center>
-            </DigitLayout.MarginTop>
-        )}
-    />
-);
+                                        <DigitDesign.CardSubTitle
+                                            text={text.EnterYourCidDescription}
+                                        />
+                                        <DigitDesign.CardBody>
+                                            <DigitLayout.Center>
+                                                <DigitFormField
+                                                    name="cid"
+                                                    component={DigitTextField}
+                                                    componentProps={{
+                                                        upperLabel: text.Cid,
+                                                        filled: true
+                                                    }}
+                                                />
+                                            </DigitLayout.Center>
+                                        </DigitDesign.CardBody>
+                                        <DigitDesign.CardButtons
+                                            reverseDirection
+                                        >
+                                            <DigitButton
+                                                text={text.SendCid}
+                                                primary
+                                                raised
+                                                submit
+                                            />
+                                        </DigitDesign.CardButtons>
+                                    </DigitDesign.Card>
+                                )}
+                            />
+                        </DigitLayout.Center>
+                    </DigitLayout.MarginTop>
+                )}
+            />
+        );
+    }
+}
 
 InputCid.propTypes = {
     sendCid: PropTypes.func.isRequired

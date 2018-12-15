@@ -1,1 +1,1 @@
-export { default } from "./Websites.container";
+export { default } from "./Websites";

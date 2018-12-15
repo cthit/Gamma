@@ -103,6 +103,18 @@ public final class UserAdminController {
         return new UserDeletedResponse();
     }
 
+    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
+    public JSONObject getUser(@PathVariable("cid") String cid) {
+        List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
+        ITUserSerializer serializer = new ITUserSerializer(props);
+        ITUser user = this.itUserService.loadUser(cid);
+        List<WebsiteView> websiteViews =
+                this.userWebsiteService.getWebsitesOrdered(
+                        this.userWebsiteService.getWebsites(user)
+                );
+        return serializer.serialize(user, websiteViews);
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public List<JSONObject> getAllUsers() {
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();

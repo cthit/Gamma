@@ -1,10 +1,14 @@
 import { getRequest } from "../utils/api";
-import { USERS_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_USERS_ENDPOINT, USERS_ENDPOINT } from "../utils/endpoints";
 
-export function getUsers() {
-    return getRequest(USERS_ENDPOINT);
+export function getUsersMinified() {
+    return getRequest(USERS_ENDPOINT + "minified");
 }
 
-export function getUser(userId) {
-    return getRequest(USERS_ENDPOINT + userId);
+export function getUsers() {
+    return getRequest(ADMIN_USERS_ENDPOINT);
+}
+
+export function getUser(cid) {
+    return getRequest(ADMIN_USERS_ENDPOINT + cid);
 }

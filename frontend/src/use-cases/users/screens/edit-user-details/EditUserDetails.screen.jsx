@@ -9,7 +9,22 @@ import translations from "./EditUserDetails.screen.translations.json";
 
 class EditUserDetails extends React.Component {
     componentDidMount() {
-        this.props.websitesLoad();
+        const {
+            getUser,
+            websitesLoad,
+            gammaLoadingFinished,
+            userCid
+        } = this.props;
+
+        console.log(userCid);
+
+        Promise.all([getUser(userCid), websitesLoad()]).then(() => {
+            gammaLoadingFinished();
+        });
+    }
+
+    componentWillUnmount() {
+        this.props.gammaLoadingStart();
     }
 
     render() {

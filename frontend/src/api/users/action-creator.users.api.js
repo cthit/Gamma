@@ -1,22 +1,38 @@
 import {
+    USER_GET_FAILED,
+    USER_GET_LOADING,
+    USER_GET_SUCCESSFULLY,
     USERS_CHANGE_FAILED,
     USERS_CHANGE_SUCCESSFULLY,
     USERS_DELETE_FAILED,
     USERS_DELETE_SUCCESSFULLY,
     USERS_LOAD_FAILED,
+    USERS_LOAD_MINIFIED_FAILED,
+    USERS_LOAD_MINIFIED_LOADING,
+    USERS_LOAD_MINIFIED_SUCCESSFULLY,
     USERS_LOAD_SUCCESSFULLY
 } from "./actions.users.api";
 
 import { deleteUser } from "./delete.users.api";
 import { editUser } from "./put.users.api";
-import { getUsers } from "./get.users.api";
+import { getUser, getUsers, getUsersMinified } from "./get.users.api";
+import { requestPromise } from "../utils/requestPromise";
+
+export function createGetUsersMinifiedAction() {
+    return requestPromise(
+        getUsersMinified,
+        usersGetMinifiedLoading,
+        usersGetMinifiedSuccessfully,
+        usersGetMinifiedFailed
+    );
+}
 
 export function createGetUsersAction() {
     return dispatch => {
         return new Promise((resolve, reject) => {
             getUsers()
                 .then(response => {
-                    dispatch(usersLoadSuccessfully(response.data));
+                    dispatch(usersLoadSuccessfully(response));
                     resolve(response.data);
                 })
                 .catch(error => {
@@ -25,6 +41,17 @@ export function createGetUsersAction() {
                 });
         });
     };
+}
+
+export function createGetUserAction(cid) {
+    return requestPromise(
+        () => {
+            return getUser(cid);
+        },
+        userGetLoading,
+        userGetSuccessfully,
+        userGetFailed
+    );
 }
 
 export function createEditUserAction(user, cid) {
@@ -69,12 +96,12 @@ function usersLoadFailed(error) {
     };
 }
 
-function usersLoadSuccessfully(data) {
+function usersLoadSuccessfully(response) {
     return {
         type: USERS_LOAD_SUCCESSFULLY,
         error: false,
         payload: {
-            ...data
+            data: response.data
         }
     };
 }
@@ -106,6 +133,60 @@ function usersDeleteSuccessfully() {
 function usersDeleteFailed(error) {
     return {
         type: USERS_DELETE_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function userGetLoading() {
+    return {
+        type: USER_GET_LOADING,
+        error: false
+    };
+}
+
+function userGetSuccessfully(response) {
+    return {
+        type: USER_GET_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function userGetFailed(error) {
+    return {
+        type: USER_GET_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function usersGetMinifiedLoading() {
+    return {
+        type: USERS_LOAD_MINIFIED_LOADING,
+        error: false
+    };
+}
+
+function usersGetMinifiedSuccessfully(response) {
+    return {
+        type: USERS_LOAD_MINIFIED_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function usersGetMinifiedFailed(error) {
+    return {
+        type: USERS_LOAD_MINIFIED_FAILED,
         error: true,
         payload: {
             error: error

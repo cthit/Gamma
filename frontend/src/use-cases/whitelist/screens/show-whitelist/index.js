@@ -1,1 +1,2 @@
-export { default } from "./ShowWhitelist.screen.container";
+import ShowWhitelist from "./ShowWhitelist.screen.container";
+export default ShowWhitelist;

@@ -6,6 +6,7 @@ import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
 import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.EditedWhitelistResponse;
+import it.chalmers.gamma.response.GetWhitelistResponse;
 import it.chalmers.gamma.response.GetWhitelistedResponse;
 import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
@@ -85,6 +86,11 @@ public final class UsersWhitelistAdminController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Whitelist>> getAllWhiteList() {
         return new GetWhitelistedResponse(this.whitelistService.getAllWhitelist());
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<Whitelist> getWhitelist(@PathVariable("id") String id) {
+        return new GetWhitelistResponse(this.whitelistService.getWhitelistById(id));
     }
 
     /**
