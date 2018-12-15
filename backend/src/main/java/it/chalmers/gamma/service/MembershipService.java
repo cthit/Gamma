@@ -1,6 +1,9 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.*;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
+import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
 
