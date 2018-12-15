@@ -24,7 +24,7 @@ public class CreateGroupRequest {
     }
 
     public String getSuperGroup() {
-        return superGroup;
+        return this.superGroup;
     }
 
     public void setSuperGroup(String superGroup) {
@@ -85,7 +85,7 @@ public class CreateGroupRequest {
     }
 
     public int getYear() {
-        return year;
+        return this.year;
     }
 
     public void setYear(int year) {
@@ -93,7 +93,7 @@ public class CreateGroupRequest {
     }
 
     public Calendar getBecomesActive() {
-        return becomesActive;
+        return this.becomesActive;
     }
 
     public void setBecomesActive(Calendar becomesActive) {
@@ -101,7 +101,7 @@ public class CreateGroupRequest {
     }
 
     public Calendar getBecomesInactive() {
-        return becomesInactive;
+        return this.becomesInactive;
     }
 
     public void setBecomesInactive(Calendar becomesInactive) {
