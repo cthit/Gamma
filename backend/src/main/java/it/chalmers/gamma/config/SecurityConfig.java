@@ -15,10 +15,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Configuration
 @EnableResourceServer
@@ -38,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         //Disables cross site request forgery§
-        http.anonymous().disable();
+     //   http.anonymous().disable();
         http.cors().and().csrf().disable().authorizeRequests();
         http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
         http.authorizeRequests()
@@ -47,9 +45,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/whitelist/activate_cid").permitAll()
                 .antMatchers("/validate_jwt").permitAll()
                 .antMatchers("/oauth/authorize").permitAll()
-                .antMatchers("/login").permitAll()
-                .anyRequest().authenticated()
-                .and().formLogin().loginPage("http://localhost:3000/login");
+                .antMatchers("/login").permitAll();
+           //     .anyRequest().authenticated()
+           //     .and().formLogin().loginPage("http://localhost:3000/login");
 
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
