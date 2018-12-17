@@ -2,11 +2,13 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Whitelist;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class CreateITUserRequest {
-
+    @NotNull
     private String code;
+    @NotNull
     private String password;
     private String nick;
     private String firstName;

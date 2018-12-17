@@ -1,10 +1,14 @@
 package it.chalmers.gamma.requests;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class CidPasswordRequest {
-
+    @NotNull
     private String cid;
+    @NotNull
+    @Min(value = 8, message = "PASSWORD_TOO_SHORT")
     private String password;
 
     public String getCid() {

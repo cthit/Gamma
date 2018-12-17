@@ -1,10 +1,14 @@
 package it.chalmers.gamma.requests;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class AuthorizationRequest {
+    @NotNull
     private String post;
+    @NotNull
     private String superGroup;
+    @NotNull
     private String authority;
 
     public String getAuthority() {

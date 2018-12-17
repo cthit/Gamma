@@ -1,9 +1,11 @@
 package it.chalmers.gamma.requests;
 
 import java.util.Objects;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 
 public class AdminChangePasswordRequest {
-
+    @Min(value = 8, message = "the password must be at least 8 characters long")
     private String password;
 
     public String getPassword() {

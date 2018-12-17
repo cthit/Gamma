@@ -2,11 +2,13 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
 
+import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
 public class CreateGroupRequest {
+    @NotNull
     private String name;
     private String prettyName;
     private Text description;

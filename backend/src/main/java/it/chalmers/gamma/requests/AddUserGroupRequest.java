@@ -1,21 +1,17 @@
 package it.chalmers.gamma.requests;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.Year;
 import java.util.Objects;
 
 public class AddUserGroupRequest {
+    @NotEmpty(message = "The user must be supplied")
     private String user;
+    @NotEmpty(message = "The Post must be supplied")
     private String post;
     private String unofficialName;
-    private Year year;
-
-    public Year getYear() {
-        return this.year;
-    }
-
-    public void setYear(Year year) {
-        this.year = year;
-    }
 
     public String getUser() {
         return this.user;
@@ -52,13 +48,12 @@ public class AddUserGroupRequest {
         AddUserGroupRequest that = (AddUserGroupRequest) o;
         return this.user.equals(that.user)
             && this.post.equals(that.post)
-            && this.unofficialName.equals(that.unofficialName)
-            && this.year.equals(that.year);
+            && this.unofficialName.equals(that.unofficialName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.user, this.post, this.unofficialName, this.year);
+        return Objects.hash(this.user, this.post, this.unofficialName);
     }
 
     @Override
@@ -67,7 +62,6 @@ public class AddUserGroupRequest {
             + "user='" + this.user + '\''
             + ", post='" + this.post + '\''
             + ", unofficialName='" + this.unofficialName + '\''
-            + ", year=" + this.year
             + '}';
     }
 }
