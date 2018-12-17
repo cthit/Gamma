@@ -110,12 +110,12 @@ create table itclient (
     client_id varchar(256) not null,
     client_secret varchar(256) not null,
     web_server_redirect_uri varchar(256) not null,
-    authorities varchar(256) not null,
+    --authorities varchar(256) not null,
     access_token_validity integer not null,
     refresh_token_validity integer not null,
-    autoapprove boolean default false not null,
+    auto_approve boolean default false not null,
     name varchar(30) not null,
-    description uuid null references text,
+    description varchar(512) null references text,
     created_at       timestamp    not null default current_timestamp,
     last_modified_at timestamp    not null default current_timestamp
 );
