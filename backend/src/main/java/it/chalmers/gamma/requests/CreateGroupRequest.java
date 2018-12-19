@@ -1,8 +1,8 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.GroupType;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,13 +11,24 @@ public class CreateGroupRequest {
     private String prettyName;
     private Text description;
     private String email;
-    private GroupType type;
     private Text func;
     private String avatarURL;
     private List<WebsiteInfo> websites;
+    private int year;
+    private Calendar becomesActive;
+    private Calendar becomesInactive;
+    private String superGroup;
 
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
+    }
+
+    public String getSuperGroup() {
+        return this.superGroup;
+    }
+
+    public void setSuperGroup(String superGroup) {
+        this.superGroup = superGroup;
     }
 
     public void setWebsites(List<WebsiteInfo> websites) {
@@ -65,10 +76,6 @@ public class CreateGroupRequest {
         this.email = email;
     }
 
-    public GroupType getType() {
-        return this.type;
-    }
-
     public String getPrettyName() {
         return this.prettyName;
     }
@@ -77,8 +84,28 @@ public class CreateGroupRequest {
         this.prettyName = prettyName;
     }
 
-    public void setType(GroupType type) {
-        this.type = type;
+    public int getYear() {
+        return this.year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public Calendar getBecomesActive() {
+        return this.becomesActive;
+    }
+
+    public void setBecomesActive(Calendar becomesActive) {
+        this.becomesActive = becomesActive;
+    }
+
+    public Calendar getBecomesInactive() {
+        return this.becomesInactive;
+    }
+
+    public void setBecomesInactive(Calendar becomesInactive) {
+        this.becomesInactive = becomesInactive;
     }
 
     @Override
@@ -94,7 +121,6 @@ public class CreateGroupRequest {
             && this.prettyName.equals(that.prettyName)
             && this.description.equals(that.description)
             && this.email.equals(that.email)
-            && this.type == that.type
             && this.func.equals(that.func)
             && this.avatarURL.equals(that.avatarURL)
             && this.websites.equals(that.websites);
@@ -103,7 +129,7 @@ public class CreateGroupRequest {
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.prettyName, this.description, this.email,
-            this.type, this.func, this.avatarURL, this.websites);
+             this.func, this.avatarURL, this.websites);
     }
 
     @Override
@@ -113,7 +139,6 @@ public class CreateGroupRequest {
             + ", prettyName='" + this.prettyName + '\''
             + ", description=" + this.description
             + ", email='" + this.email + '\''
-            + ", type=" + this.type
             + ", func=" + this.func
             + ", avatarURL='" + this.avatarURL + '\''
             + ", websites=" + this.websites

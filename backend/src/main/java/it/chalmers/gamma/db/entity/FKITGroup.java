@@ -2,16 +2,16 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import it.chalmers.gamma.domain.GroupType;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -20,6 +20,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class FKITGroup {
 
     @Id
@@ -46,9 +47,18 @@ public class FKITGroup {
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "type", length = 30, nullable = false)
-    @Enumerated(EnumType.STRING)
-    private GroupType type;
+    @JoinColumn(name = "super_group", nullable = false)
+    @OneToOne
+    private FKITSuperGroup superGroup;
+
+    @Column(name = "internal_year")
+    private int year;
+
+    @Column(name = "becomes_active")
+    private Calendar becomesActive;
+
+    @Column(name = "becomes_inactive")
+    private Calendar becomesInactive;
 
     public FKITGroup() {
         this.id = UUID.randomUUID();
@@ -84,14 +94,6 @@ public class FKITGroup {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public GroupType getType() {
-        return this.type;
-    }
-
-    public void setType(GroupType type) {
-        this.type = type;
     }
 
     public String getAvatarURL() {
@@ -160,6 +162,38 @@ public class FKITGroup {
         this.prettyName = prettyName;
     }
 
+    public FKITSuperGroup getSuperGroup() {
+        return this.superGroup;
+    }
+
+    public void setSuperGroup(FKITSuperGroup superGroup) {
+        this.superGroup = superGroup;
+    }
+
+    public int getYear() {
+        return this.year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public Calendar getBecomesActive() {
+        return this.becomesActive;
+    }
+
+    public void setBecomesActive(Calendar becomesActive) {
+        this.becomesActive = becomesActive;
+    }
+
+    public Calendar getBecomesInactive() {
+        return this.becomesInactive;
+    }
+
+    public void setBecomesInactive(Calendar becomesInactive) {
+        this.becomesInactive = becomesInactive;
+    }
+
     @Override
     public String toString() {
         return "FKITGroup{"
@@ -170,7 +204,6 @@ public class FKITGroup {
             + ", description=" + description
             + ", func=" + func
             + ", email='" + email + '\''
-            + ", type=" + type
             + '}';
     }
 
@@ -189,8 +222,7 @@ public class FKITGroup {
             && Objects.equals(this.prettyName, fkitGroup.prettyName)
             && Objects.equals(this.description, fkitGroup.description)
             && Objects.equals(this.func, fkitGroup.func)
-            && Objects.equals(this.email, fkitGroup.email)
-            && this.type == fkitGroup.type;
+            && Objects.equals(this.email, fkitGroup.email);
     }
 
     @Override
@@ -202,7 +234,6 @@ public class FKITGroup {
             this.prettyName,
             this.description,
             this.func,
-            this.email,
-            this.type);
+            this.email);
     }
 }

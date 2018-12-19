@@ -2,19 +2,25 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 
 import java.time.Year;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -34,19 +40,22 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final PostService postService;
     private final MembershipService membershipService;
     private final AuthorityService authorityService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
     @Value("${application.standard-admin-account.password}")
     private String password;
 
     public DbInitializer(ITUserService userService, FKITService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
-                         MembershipService membershipService, AuthorityService authorityService) {
+                         MembershipService membershipService, AuthorityService authorityService,
+                         FKITSuperGroupService fkitSuperGroupService) {
         this.userservice = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
         this.postService = postService;
         this.membershipService = membershipService;
         this.authorityService = authorityService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @Override
@@ -59,14 +68,25 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
+            CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
+            superGroupRequest.setName("superadmin");
+            superGroupRequest.setPrettyName("super admin");
+            superGroupRequest.setType(GroupType.COMMITTEE);
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
             request.setFunc(new Text());
             request.setDescription(description);
-            request.setType(GroupType.COMMITTEE);
             request.setEmail(adminMail);
-            FKITGroup group = this.groupService.createGroup(request);
+            request.setYear(2018);
+            Calendar end = new GregorianCalendar();
+            end.set(2099, Calendar.DECEMBER, 31);
+            Calendar start = new GregorianCalendar();
+            start.setTimeInMillis(System.currentTimeMillis());
+            request.setBecomesActive(start);
+            request.setBecomesInactive(end);
+            FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
+            FKITGroup group = this.groupService.createGroup(request, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
@@ -81,10 +101,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     this.password
             );
             this.membershipService.addUserToGroup(
-                    group, user, post, admin, Year.of(2018)
-            ); // This might break on a new year
+                    group, user, post, admin); // This might break on a new year
             AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
-            this.authorityService.setAuthorityLevel(group, post, authorityLevel);
+            this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }
     }
 }

@@ -1,5 +1,8 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,7 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 @Table(name = "authority_level")
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.AvoidDuplicateLiterals", "PMD.AvoidFieldNameMatchingTypeName"})
-
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AuthorityLevel implements GrantedAuthority {
 
     @Id

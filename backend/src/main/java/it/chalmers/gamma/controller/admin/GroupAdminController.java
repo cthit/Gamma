@@ -1,9 +1,11 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
+
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupCreatedResponse;
@@ -13,6 +15,7 @@ import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
 
@@ -35,14 +38,17 @@ public final class GroupAdminController {
     private final FKITService fkitService;
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
     public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
-            GroupWebsiteService groupWebsiteService) {
+            GroupWebsiteService groupWebsiteService,
+            FKITSuperGroupService fkitSuperGroupService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -65,8 +71,10 @@ public final class GroupAdminController {
         if (createGroupRequest.getFunc() == null) {
             throw new MissingRequiredFieldResponse("function");
         }
-        if (createGroupRequest.getType() == null) {
-            throw new MissingRequiredFieldResponse("type");
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+                UUID.fromString(createGroupRequest.getSuperGroup()));
+        if (superGroup == null) {
+            throw new MissingRequiredFieldResponse("superGroup");
         }
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
@@ -82,7 +90,7 @@ public final class GroupAdminController {
             websiteURLs.add(websiteURL);
         }
         this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(createGroupRequest), websiteURLs);
+                this.fkitService.createGroup(createGroupRequest, superGroup), websiteURLs);
         return new GroupCreatedResponse();
     }
 

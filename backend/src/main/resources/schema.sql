@@ -1,16 +1,16 @@
-create table text (
+create table internal_text (
   id  uuid constraint text_pk primary key,
   sv  text not null,
   en  text
 );
 
-create table website(
+create table website (
   id uuid constraint websites_pk primary key,
   name varchar(100) not null constraint website_name unique,
   pretty_name varchar(100) not null
 );
 
-create table website_url(
+create table website_url (
   id      uuid constraint websites_url_pk primary key,
   website uuid not null references website,
   url     varchar(2000) not null
@@ -52,25 +52,35 @@ create table password_reset_token(
   ituser  uuid references ituser
 );
 
+create table fkit_super_group (
+  id            uuid                    constraint fkit_super_group_pk                  primary key,
+  name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
+  pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
+  type          varchar(30)    not null constraint fkit_super_group_type_unique         unique
+);
+
 create table fkit_group (
-  id          uuid constraint fkit_group_pk primary key,
-  name        varchar(50)  not null constraint fkit_group_name_unique unique,
-  pretty_name varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
-  description uuid         null references text,
-  function    uuid         not null references text,
-  email       varchar(100) not null constraint fkit_group_email_unique unique,
-  type        varchar(30)  not null,
-  avatar_url  varchar(255) null
+  id                uuid                  constraint fkit_group_pk primary key,
+  name              varchar(50)  not null constraint fkit_group_name_unique unique,
+  super_group       uuid         not null references fkit_super_group,
+  pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
+  description       uuid         null     references internal_text,
+  function          uuid         not null references internal_text,
+  email             varchar(100) not null constraint fkit_group_email_unique unique,
+  becomes_active    date         not null,
+  becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
+  avatar_url        varchar(255) null,
+  internal_year     integer      not null constraint fkit_group_year check (internal_year >= 2001)
 );
 
 create table post (
   id        uuid constraint post_pk primary key,
-  post_name uuid not null references text
+  post_name uuid not null references internal_text
 );
 
 create table authority (
   id              uuid  constraint authority_unique unique,
-  fkit_group_id   uuid  constraint authority_fkit_group_fk            references fkit_group,
+  fkit_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level uuid  constraint authority_authority_level          references authority_level,
   constraint      authority_pk primary key (post_id, fkit_group_id)
@@ -88,7 +98,6 @@ create table membership (   -- Should this be rebuilt to look like all other tab
   ituser_id            uuid         constraint membership_ituser_fk references ituser,
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         not null constraint membership_post_fk references post,
-  year                 integer      not null constraint membership_valid_year check (year >= 2001),
   unofficial_post_name varchar(100) null,
   constraint membership_pk primary key (ituser_id, fkit_group_id)
 );

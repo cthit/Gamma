@@ -3,6 +3,8 @@ package it.chalmers.gamma.db.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import it.chalmers.gamma.domain.Language;
 
 import java.time.Instant;
@@ -27,7 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "ituser")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @SuppressWarnings({"PMD.TooManyFields"})
-
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ITUser implements UserDetails {
 
     @Id
@@ -110,7 +112,7 @@ public class ITUser implements UserDetails {
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
-        return new ArrayList<>(this.authorities);
+        return this.authorities;
     }
 
     @Override

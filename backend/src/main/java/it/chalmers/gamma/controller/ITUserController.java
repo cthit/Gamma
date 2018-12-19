@@ -99,7 +99,6 @@ public final class ITUserController {
         throw new IncorrectCidOrPasswordResponse();
     }
 
-
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
