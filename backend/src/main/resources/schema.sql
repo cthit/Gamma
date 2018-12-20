@@ -115,7 +115,7 @@ create table itclient (
     refresh_token_validity integer not null,
     auto_approve boolean default false not null,
     name varchar(30) not null,
-    description varchar(512) null references text,
+    description uuid not null references text,
     created_at       timestamp    not null default current_timestamp,
     last_modified_at timestamp    not null default current_timestamp
 );

@@ -20,10 +20,10 @@ server:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     org:
       springframework:
-        web: DEBUG
+        web: INFO
       hibernate: ERROR
 
 security:
@@ -40,3 +40,7 @@ application:
     key: "key"                  # This is not needed, but application crashes since it looks for these values.
     url: "gotify.chalmers.it"
   allowed-origin: "http://localhost:3000"
+  auth:
+    accessTokenValidityTime: 3600
+    autoApprove: true
+    refreshTokenValidityTime: 500000000

@@ -4,16 +4,9 @@ package it.chalmers.gamma.db.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -48,14 +41,95 @@ public class ITClient implements ClientDetails {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", length = 512, nullable = false)
-    private String description;
+    @JoinColumn(name = "function", nullable = false)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Text description;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @Column(name = "last_modified_at", nullable = false)
     private Instant lastModifiedAt;
+
+    public ITClient(){
+        this.id = UUID.randomUUID();
+    }
+
+    public UUID getId() {
+        return this.id;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+    }
+
+    public String getWebServerRedirectUri() {
+        return this.webServerRedirectUri;
+    }
+
+    public void setWebServerRedirectUri(String webServerRedirectUri) {
+        this.webServerRedirectUri = webServerRedirectUri;
+    }
+
+    public int getAccessTokenValidity() {
+        return this.accessTokenValidity;
+    }
+
+    public void setAccessTokenValidity(int accessTokenValidity) {
+        this.accessTokenValidity = accessTokenValidity;
+    }
+
+    public int getRefreshTokenValidity() {
+        return this.refreshTokenValidity;
+    }
+
+    public void setRefreshTokenValidity(int refreshTokenValidity) {
+        this.refreshTokenValidity = refreshTokenValidity;
+    }
+
+    public boolean isAutoApprove() {
+        return this.autoApprove;
+    }
+
+    public void setAutoApprove(boolean autoApprove) {
+        this.autoApprove = autoApprove;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Text getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(Text description) {
+        this.description = description;
+    }
+
+    public Instant getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getLastModifiedAt() {
+        return this.lastModifiedAt;
+    }
+
+    public void setLastModifiedAt(Instant lastModifiedAt) {
+        this.lastModifiedAt = lastModifiedAt;
+    }
 
     @Override
     public String getClientId() {
@@ -123,5 +197,46 @@ public class ITClient implements ClientDetails {
             put("name", name);
             put("description", description);
         }};
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ITClient itClient = (ITClient) o;
+        return accessTokenValidity == itClient.accessTokenValidity &&
+                refreshTokenValidity == itClient.refreshTokenValidity &&
+                autoApprove == itClient.autoApprove &&
+                Objects.equals(id, itClient.id) &&
+                Objects.equals(clientId, itClient.clientId) &&
+                Objects.equals(clientSecret, itClient.clientSecret) &&
+                Objects.equals(webServerRedirectUri, itClient.webServerRedirectUri) &&
+                Objects.equals(name, itClient.name) &&
+                Objects.equals(description, itClient.description) &&
+                Objects.equals(createdAt, itClient.createdAt) &&
+                Objects.equals(lastModifiedAt, itClient.lastModifiedAt);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, clientId, clientSecret, webServerRedirectUri, accessTokenValidity, refreshTokenValidity, autoApprove, name, description, createdAt, lastModifiedAt);
+    }
+
+    @Override
+    public String toString() {
+        return "ITClient{" +
+                "id=" + id +
+                ", clientId='" + clientId + '\'' +
+                ", clientSecret='" + clientSecret + '\'' +
+                ", webServerRedirectUri='" + webServerRedirectUri + '\'' +
+                ", accessTokenValidity=" + accessTokenValidity +
+                ", refreshTokenValidity=" + refreshTokenValidity +
+                ", autoApprove=" + autoApprove +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                ", lastModifiedAt=" + lastModifiedAt +
+                '}';
     }
 }
