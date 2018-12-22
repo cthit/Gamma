@@ -42,10 +42,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         this.clientDetailsService = clientDetailsService;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 
     @Override
     public void configure(

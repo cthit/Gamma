@@ -158,17 +158,24 @@ public class ITClient implements ClientDetails {
 
     @Override
     public Set<String> getScope() {
-        return null;
+        Set<String> scopes = new HashSet<>();
+        scopes.add("read");
+        scopes.add("write");
+        return scopes;
     }
 
     @Override
     public Set<String> getAuthorizedGrantTypes() {
-        return null;
+        Set<String> authorized = new HashSet<>();
+        authorized.add("authorized_code");
+        return authorized;
     }
 
     @Override
     public Set<String> getRegisteredRedirectUri() {
-        return null;
+        Set<String> authorized = new HashSet<>();
+        authorized.add(webServerRedirectUri);
+        return authorized;
     }
 
     @Override

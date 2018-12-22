@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @Configuration
 @EnableResourceServer
-@Order(1)
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
@@ -34,12 +34,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-
+        http.requestMatchers()
+                .antMatchers("/login", "/oauth/authorize", "/oauth/token")
+                .and()
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().permitAll();
         //Disables cross site request forgery§
      //   http.anonymous().disable();
         http.cors().and().csrf().disable().authorizeRequests();
         http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
-        http.authorizeRequests()
+    /*    http.authorizeRequests()
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/create").permitAll()
                 .antMatchers("/whitelist/activate_cid").permitAll()
@@ -48,20 +54,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin();
-
+*/
         // No session will be created or used by spring security
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    //    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().anyRequest().authenticated();
+      //  http.authorizeRequests().anyRequest().authenticated();
 
-    }
-
-    @Bean
-    public FilterRegistrationBean<OAuth2ClientContextFilter> oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-        FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<OAuth2ClientContextFilter>();
-        registration.setFilter(filter);
-        registration.setOrder(-100);
-        return registration;
     }
 
     @Override
