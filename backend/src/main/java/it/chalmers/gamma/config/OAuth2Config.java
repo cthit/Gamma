@@ -19,8 +19,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 @Configuration
-@EnableAuthorizationServer
-@EnableOAuth2Client
+//@EnableAuthorizationServer
+//@EnableOAuth2Client
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Qualifier("userDetailsService")

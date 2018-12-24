@@ -17,10 +17,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Configuration
-@EnableResourceServer
-@Order(2)
+//@EnableResourceServer
+//@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
@@ -34,18 +35,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.requestMatchers()
-                .antMatchers("/login", "/oauth/authorize", "/oauth/token")
-                .and()
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().permitAll();
-        //Disables cross site request forgery§
-     //   http.anonymous().disable();
         http.cors().and().csrf().disable().authorizeRequests();
         http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
-    /*    http.authorizeRequests()
+
+        http.antMatcher("/**")
+                .authorizeRequests()
+                .antMatchers("/", "/login", "/users/login", "/index", "/greeting").permitAll()
+                .anyRequest().authenticated()
+                .and().exceptionHandling()
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+
+     //   http.authorizeRequests().antMatchers("/users/login").permitAll()
+     //   .and().authorizeRequests().anyRequest().authenticated();
+      /*  http.authorizeRequests()
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/create").permitAll()
                 .antMatchers("/whitelist/activate_cid").permitAll()
