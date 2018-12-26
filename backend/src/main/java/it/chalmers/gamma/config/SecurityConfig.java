@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 
 @Configuration
 @EnableResourceServer
+@Order(2)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
@@ -32,61 +33,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.itUserService = itUserService;
     }
 
-    @Configuration
-    @Order(1)
-    public class OauthSecurityConfig extends WebSecurityConfigurerAdapter{
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.cors().and().csrf().disable().authorizeRequests();
-            http.antMatcher("/app/**").authorizeRequests()
-                    .antMatchers("/app/users/login").permitAll()
-                    .antMatchers("/users/create").permitAll()
-                    .antMatchers("/whitelist/activate_cid").permitAll()
-                    .antMatchers("/validate_jwt").permitAll()
-                    .antMatchers("/login").permitAll()
-                    .antMatchers("/app/**").authenticated();
-        }
-    }
-    @Configuration
-    @Order(2)
-    public class NormalSecurityConfig extends WebSecurityConfigurerAdapter{
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-
-                    http.antMatcher("/oauth/**").requestMatchers()
-                    .antMatchers("/oauth/authorize", "/login").and()
-                    .authorizeRequests().anyRequest().authenticated()
-                    .and()
-                    .formLogin().permitAll();
-        }
-    }
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().authenticated();
 
+        http.cors().and().csrf().disable().authorizeRequests();
         http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
-
-
-     /*   http.antMatcher("/**")
-                .authorizeRequests()
-                .antMatchers("/", "/login", "/users/login").permitAll()
-                .anyRequest().authenticated().and().formLogin().permitAll();
-*/
-   /*     http.antMatcher("/**")
-                .authorizeRequests().anyRequest().authenticated()
-                .antMatchers("/", "/login", "/users/login").permitAll()
-                .anyRequest().authenticated()
-                .and().requestMatchers().antMatchers("/oauth/authorization", "/login")
-                .anyRequest()
-                .and().formLogin().permitAll();
-*/
-     //   http.authorizeRequests().antMatchers("/users/login").permitAll()
-     //   .and().authorizeRequests().anyRequest().authenticated();
-
+        http.authorizeRequests()
+                .antMatchers("/users/login").permitAll()
+                .antMatchers("/users/create").permitAll()
+                .antMatchers("/whitelist/activate_cid").permitAll()
+                .antMatchers("/validate_jwt").permitAll()
+            //    .antMatchers("/login", "/oauth/authorize", "/oauth/**").permitAll()
+                .and().authorizeRequests().anyRequest().authenticated();
+            //    .and().formLogin().permitAll();
 
         // No session will be created or used by spring security
-    //    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
       //  http.authorizeRequests().anyRequest().authenticated();
 
