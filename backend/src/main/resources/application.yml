@@ -21,11 +21,11 @@ server:
 
 logging:
   level:
-    root: DEBUG
+    root: debug
     org:
       springframework:
         web: INFO
-      hibernate: ERROR
+      hibernate: info
 
 security:
   jwt:

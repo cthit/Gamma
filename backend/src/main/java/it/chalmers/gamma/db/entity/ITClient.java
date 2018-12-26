@@ -9,6 +9,7 @@ import java.util.*;
 import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
 @Entity
@@ -167,7 +168,7 @@ public class ITClient implements ClientDetails {
     @Override
     public Set<String> getAuthorizedGrantTypes() {
         Set<String> authorized = new HashSet<>();
-        authorized.add("authorized_code");
+        authorized.add("authorization_code");
         return authorized;
     }
 
@@ -180,7 +181,9 @@ public class ITClient implements ClientDetails {
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        return null;
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
+        return authorities;
     }
 
     @Override

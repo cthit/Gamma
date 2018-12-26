@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 @RestController
-@RequestMapping("/admin/users")
+@RequestMapping("/app/admin/users")
 public final class UserAdminController {
 
     private final ITUserService itUserService;

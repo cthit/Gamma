@@ -8,8 +8,6 @@ import it.chalmers.gamma.requests.AddITClientRequest;
 import it.chalmers.gamma.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -19,10 +17,7 @@ import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ITClientService implements ClientDetailsService {
@@ -51,15 +46,12 @@ public class ITClientService implements ClientDetailsService {
         ITClient client = this.itClientDetailsRepository.findByClientId(clientId);
         BaseClientDetails details = new BaseClientDetails();
         details.setClientId(client.getClientId());
-        details.setAuthorizedGrantTypes(Arrays.asList("authorization_code") );
-        details.setClientSecret(passwordEncoder().encode("secret"));
-        details.setScope(Arrays.asList("read,write"));
-        details.setRegisteredRedirectUri(Collections.singleton("http://localhost:8083/ui/login"));
-        details.setResourceIds(Arrays.asList("oauth2-resource"));
-        details.setAutoApproveScopes(Arrays.asList("read,write"));
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
-        details.setAuthorities(authorities);
+        details.setAuthorizedGrantTypes(client.getAuthorizedGrantTypes());
+        details.setClientSecret(passwordEncoder().encode(client.getClientSecret()));
+        details.setScope(client.getScope());
+        details.setRegisteredRedirectUri(client.getRegisteredRedirectUri());
+        details.setAutoApproveScopes(client.getScope());        // Change this to force a approval from user.
+        details.setAuthorities(client.getAuthorities());
         return details;
     }
     public void createITClient(AddITClientRequest request) {
@@ -78,5 +70,30 @@ public class ITClientService implements ClientDetailsService {
         client.setClientId(TokenUtils.generateToken());
         client.setClientSecret(TokenUtils.generateToken());
         itClientDetailsRepository.save(client);
+    }
+
+    public List<ITClient> getAllClients(){
+        return itClientDetailsRepository.findAll();
+    }
+
+    public ITClient getITClient(UUID id){
+        return itClientDetailsRepository.findById(id).orElseThrow();
+    }
+
+    public void removeITClient(UUID id){
+        itClientDetailsRepository.deleteById(id);
+    }
+
+    public void editClient(UUID id, AddITClientRequest request){
+        ITClient client = itClientDetailsRepository.findById(id).orElseThrow();
+        client.setLastModifiedAt(Instant.now());
+        client.setName(request.getName() == null ? client.getName() : request.getName());
+        client.setDescription(request.getDescription() == null ? client.getDescription() : request.getDescription());
+        client.setWebServerRedirectUri(request.getUrlRedirect() == null
+                ? client.getWebServerRedirectUri() : request.getUrlRedirect());
+    }
+
+    public boolean clientExists(UUID id){
+        return itClientDetailsRepository.existsById(id);
     }
 }

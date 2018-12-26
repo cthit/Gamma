@@ -53,7 +53,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 @RestController
-@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/app/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public final class ITUserController {
 
     private final ITUserService itUserService;
