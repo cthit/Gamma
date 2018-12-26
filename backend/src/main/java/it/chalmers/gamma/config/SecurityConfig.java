@@ -1,10 +1,7 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.jwt.JwtTokenFilterConfigurer;
-import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.service.ITUserService;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -12,13 +9,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
 @Configuration
 @EnableResourceServer
@@ -26,10 +20,8 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig(ITUserService itUserService, JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public SecurityConfig(ITUserService itUserService) {
         this.itUserService = itUserService;
     }
 
@@ -37,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.cors().and().csrf().disable().authorizeRequests();
-        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
+//        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
         http.authorizeRequests()
                 .antMatchers("/users/login").permitAll()
                 .antMatchers("/users/create").permitAll()

@@ -10,14 +10,10 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.jwt.JwtTokenProvider;
-import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
-import it.chalmers.gamma.response.LoginCompleteResponse;
 import it.chalmers.gamma.response.NoDataSentResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
@@ -40,9 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -60,7 +53,6 @@ public final class ITUserController {
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserWebsiteService userWebsiteService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ITUserController.class);
@@ -69,37 +61,13 @@ public final class ITUserController {
                              ActivationCodeService activationCodeService,
                              WhitelistService whitelistService,
                              AuthenticationManager authenticationManager,
-                             JwtTokenProvider jwtTokenProvider,
                              UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.userWebsiteService = userWebsiteService;
     }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest) {
-        try {
-            Authentication authentication =
-                    this.authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    cidPasswordRequest.getCid(),
-                                    cidPasswordRequest.getPassword()
-                            )
-                    );
-            if (authentication.isAuthenticated()) {
-                String jwt = this.jwtTokenProvider.createToken(cidPasswordRequest.getCid());
-                return new LoginCompleteResponse(jwt);
-            }
-        } catch (AuthenticationException e) {
-            LOGGER.info(e.getMessage(), e);
-            throw new IncorrectCidOrPasswordResponse();
-        }
-        throw new IncorrectCidOrPasswordResponse();
-    }
-
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
