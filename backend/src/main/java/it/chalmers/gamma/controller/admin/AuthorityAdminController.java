@@ -6,19 +6,7 @@ import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.requests.AuthorizationLevelRequest;
 import it.chalmers.gamma.requests.AuthorizationRequest;
-import it.chalmers.gamma.response.AuthorityAddedResponse;
-import it.chalmers.gamma.response.AuthorityLevelAddedResponse;
-import it.chalmers.gamma.response.AuthorityLevelAlreadyExists;
-import it.chalmers.gamma.response.AuthorityLevelNotFoundResponse;
-import it.chalmers.gamma.response.AuthorityLevelRemovedResponse;
-import it.chalmers.gamma.response.AuthorityNotFoundResponse;
-import it.chalmers.gamma.response.AuthorityRemovedResponse;
-import it.chalmers.gamma.response.GetAllAuthoritiesResponse;
-import it.chalmers.gamma.response.GetAllAuthorityLevelsResponse;
-import it.chalmers.gamma.response.GetAuthorityResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.MissingRequiredFieldResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
@@ -27,12 +15,17 @@ import it.chalmers.gamma.service.PostService;
 import java.util.List;
 import java.util.UUID;
 
+import it.chalmers.gamma.util.InputValidationUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
@@ -55,7 +48,10 @@ public final class AuthorityAdminController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addAuthority(@RequestBody AuthorizationRequest request) {
+    public ResponseEntity<String> addAuthority(@Valid @RequestBody AuthorizationRequest request, BindingResult result) {
+        if(result.hasErrors()){
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         if (post == null) {
             throw new PostDoesNotExistResponse();
@@ -77,6 +73,9 @@ public final class AuthorityAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeAuthorization(@PathVariable("id") String id) {
+        if(!this.authorityService.authorityExists(UUID.fromString(id))){
+            throw new AuthorityNotFoundResponse();
+        }
         this.authorityService.removeAuthority(UUID.fromString(id));
         return new AuthorityRemovedResponse();
     }
@@ -89,9 +88,9 @@ public final class AuthorityAdminController {
 
     // BELOW THIS SHOULD MAYBE BE MOVED TO A DIFFERENT FILE
     @RequestMapping(value = "/level", method = RequestMethod.POST)
-    public ResponseEntity<String> addAuthorityLevel(@RequestBody AuthorizationLevelRequest request) {
-        if (request.getAuthorityLevel() == null) {
-            throw new MissingRequiredFieldResponse("authorityLevel");
+    public ResponseEntity<String> addAuthorityLevel(@Valid @RequestBody AuthorizationLevelRequest request, BindingResult result) {
+        if(result.hasErrors()){
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (this.authorityLevelService.authorityLevelExists(request.getAuthorityLevel())) {
             throw new AuthorityLevelAlreadyExists();
@@ -108,6 +107,9 @@ public final class AuthorityAdminController {
 
     @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeAuthorityLevel(@PathVariable("id") String id) {
+        if(this.authorityLevelService.authorityLevelExists(UUID.fromString(id))){
+            throw new AuthorityNotFoundResponse();
+        }
         this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));
         return new AuthorityLevelRemovedResponse();
     }

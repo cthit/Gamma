@@ -81,5 +81,7 @@ public class AuthorityService {
     public Authority getAuthority(UUID id) {
         return this.authorityRepository.findByInternalId(id);
     }
-
+    public boolean authorityExists(UUID id){
+        return authorityRepository.existsById(id);
+    }
 }
