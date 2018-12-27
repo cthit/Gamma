@@ -3,6 +3,8 @@ package it.chalmers.gamma.config;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +19,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -51,10 +54,11 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer configurer) {
-        configurer
-            .tokenStore(tokenStore())
-            .authenticationManager(authenticationManager);
-        //        configurer.authenticationManager(authenticationManager);
+        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
+        enhancerChain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));
+        configurer.tokenEnhancer(enhancerChain);
+        configurer.accessTokenConverter(accessTokenConverter());
+        configurer.authenticationManager(authenticationManager);
     }
 
     @Override
@@ -67,7 +71,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
             .redirectUris("http://localhost:3000/login");
 //        clients.withClientDetails(this.clientDetailsService);
     }
-
 
     @Bean
     @Primary
