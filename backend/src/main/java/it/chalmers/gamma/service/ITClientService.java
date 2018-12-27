@@ -3,21 +3,19 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ITClientDetailsRepository;
-
 import it.chalmers.gamma.requests.AddITClientRequest;
 import it.chalmers.gamma.util.TokenUtils;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.*;
 
 @Service
 public class ITClientService implements ClientDetailsService {
@@ -36,10 +34,11 @@ public class ITClientService implements ClientDetailsService {
     public ITClientService(ITClientDetailsRepository itClientDetailsRepository){
         this.itClientDetailsRepository = itClientDetailsRepository;
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//    }
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
@@ -47,7 +46,7 @@ public class ITClientService implements ClientDetailsService {
         BaseClientDetails details = new BaseClientDetails();
         details.setClientId(client.getClientId());
         details.setAuthorizedGrantTypes(client.getAuthorizedGrantTypes());
-        details.setClientSecret(passwordEncoder().encode(client.getClientSecret()));
+        details.setClientSecret(client.getClientSecret()); //this used passwordEncoder before, why?
         details.setScope(client.getScope());
         details.setRegisteredRedirectUri(client.getRegisteredRedirectUri());
         details.setAutoApproveScopes(client.getScope());        // Change this to force a approval from user.

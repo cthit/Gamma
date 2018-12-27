@@ -5,44 +5,50 @@ import it.chalmers.gamma.service.ITUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @Configuration
 @EnableResourceServer
 @Order(2)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
 
-    public SecurityConfig(ITUserService itUserService) {
+    public WebSecurityConfig(ITUserService itUserService) {
         this.itUserService = itUserService;
     }
 
 
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.cors().and().csrf().disable().authorizeRequests();
-//        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
-        http.authorizeRequests()
-                .antMatchers("/users/login").permitAll()
-                .antMatchers("/users/create").permitAll()
-                .antMatchers("/whitelist/activate_cid").permitAll()
-                .antMatchers("/validate_jwt").permitAll()
-            //    .antMatchers("/login", "/oauth/authorize", "/oauth/**").permitAll()
-                .and().authorizeRequests().anyRequest().authenticated();
-            //    .and().formLogin().permitAll();
+        http
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/api/oauth/token").permitAll()
+            .and().formLogin()
+            .and().csrf().disable();
 
-        // No session will be created or used by spring security
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-      //  http.authorizeRequests().anyRequest().authenticated();
+//        http.cors().and().csrf().disable().authorizeRequests();
+////        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
+//        http.authorizeRequests()
+//                .antMatchers("/users/login").permitAll()
+//                .antMatchers("/users/create").permitAll()
+//                .antMatchers("/whitelist/activate_cid").permitAll()
+//                .antMatchers("/login", "/oauth/authorize", "/oauth/**").permitAll()
+//                .and().authorizeRequests().anyRequest().authenticated()
+//                .and().formLogin().permitAll();
+//
+//        // No session will be created or used by spring security
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//      //  http.authorizeRequests().anyRequest().authenticated();
 
     }
 

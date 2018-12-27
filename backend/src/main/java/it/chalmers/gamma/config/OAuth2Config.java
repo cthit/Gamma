@@ -2,7 +2,7 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,14 +16,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-
-import java.util.Arrays;
-import java.util.Collections;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableAuthorizationServer
@@ -46,7 +42,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private String signingKey;
 
     public OAuth2Config(ITUserService userDetailsService, AuthenticationManager authenticationManager,
-                        ITClientService clientDetailsService){
+                        ITClientService clientDetailsService) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.clientDetailsService = clientDetailsService;
@@ -54,20 +50,48 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
 
     @Override
-    public void configure(
-            AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
-        oauthServer.tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()");
-    }
-
-    @Override
     public void configure(AuthorizationServerEndpointsConfigurer configurer) {
-        configurer.authenticationManager(authenticationManager);
+        configurer
+            .tokenStore(tokenStore())
+            .authenticationManager(authenticationManager);
+        //        configurer.authenticationManager(authenticationManager);
     }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(this.clientDetailsService);
+        clients.inMemory()
+            .withClient("this_is_a_client_id")
+            .secret("{noop}secret")
+            .authorizedGrantTypes("authorization_code")
+            .scopes("read", "write")
+            .redirectUris("http://localhost:3000/login");
+//        clients.withClientDetails(this.clientDetailsService);
     }
 
+
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setTokenStore(tokenStore());
+        defaultTokenServices.setSupportRefreshToken(true);
+        return defaultTokenServices;
+    }
+
+    @Bean
+    public TokenStore tokenStore() {
+        return new JwtTokenStore(accessTokenConverter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey(signingKey);
+        return converter;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 }
