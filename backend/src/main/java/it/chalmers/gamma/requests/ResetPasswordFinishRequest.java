@@ -1,8 +1,15 @@
 package it.chalmers.gamma.requests;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class ResetPasswordFinishRequest {
+    @Size(min = 8, message = "NEW_PASSWORD_TOO_SHORT")
     private String password;
+    @NotEmpty(message = "CID_MUST_BE_PROVIDED")
     private String cid;
+    @NotEmpty(message = "A_TOKEN_MUST_BE_PROVIDED")
+    // TODO MORE INFO?
     private String token;
 
     public String getPassword() {

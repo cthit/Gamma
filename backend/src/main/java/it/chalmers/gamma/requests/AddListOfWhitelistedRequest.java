@@ -6,8 +6,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class AddListOfWhitelistedRequest {
-    @NotEmpty(message = "at least one cid must be added")
-    private List<@Size(min = 4, max = 12, message = "The cids must be between 4 and 12 characters") String> cids;
+    @NotEmpty(message = "NO_CID_IN_REQUEST")
+    private List<@Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS") String> cids;
 
     public List<String> getCids() {
         return this.cids;

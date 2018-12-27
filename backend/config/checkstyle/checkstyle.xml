@@ -44,13 +44,13 @@
         <module name="NeedBraces"/>
         <module name="LeftCurly"/>
         <module name="RightCurly">
-            <property name="id" value="RightCurlySame"/>
+            <property name="cid" value="RightCurlySame"/>
             <property name="tokens"
                       value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
                     LITERAL_DO"/>
         </module>
         <module name="RightCurly">
-            <property name="id" value="RightCurlyAlone"/>
+            <property name="cid" value="RightCurlyAlone"/>
             <property name="option" value="alone"/>
             <property name="tokens"
                       value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
@@ -73,27 +73,27 @@
         <module name="UpperEll"/>
         <module name="ModifierOrder"/>
         <module name="SeparatorWrap">
-            <property name="id" value="SeparatorWrapDot"/>
+            <property name="cid" value="SeparatorWrapDot"/>
             <property name="tokens" value="DOT"/>
             <property name="option" value="nl"/>
         </module>
         <module name="SeparatorWrap">
-            <property name="id" value="SeparatorWrapComma"/>
+            <property name="cid" value="SeparatorWrapComma"/>
             <property name="tokens" value="COMMA"/>
             <property name="option" value="EOL"/>
         </module>
         <module name="SeparatorWrap">
-            <property name="id" value="SeparatorWrapEllipsis"/>
+            <property name="cid" value="SeparatorWrapEllipsis"/>
             <property name="tokens" value="ELLIPSIS"/>
             <property name="option" value="EOL"/>
         </module>
         <module name="SeparatorWrap">
-            <property name="id" value="SeparatorWrapArrayDeclarator"/>
+            <property name="cid" value="SeparatorWrapArrayDeclarator"/>
             <property name="tokens" value="ARRAY_DECLARATOR"/>
             <property name="option" value="EOL"/>
         </module>
         <module name="SeparatorWrap">
-            <property name="id" value="SeparatorWrapMethodRef"/>
+            <property name="cid" value="SeparatorWrapMethodRef"/>
             <property name="tokens" value="METHOD_REF"/>
             <property name="option" value="nl"/>
         </module>
@@ -190,12 +190,12 @@
                     LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
         </module>
         <module name="AnnotationLocation">
-            <property name="id" value="AnnotationLocationMostCases"/>
+            <property name="cid" value="AnnotationLocationMostCases"/>
             <property name="tokens"
                       value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
         </module>
         <module name="AnnotationLocation">
-            <property name="id" value="AnnotationLocationVariables"/>
+            <property name="cid" value="AnnotationLocationVariables"/>
             <property name="tokens" value="VARIABLE_DEF"/>
             <property name="allowSamelineMultipleAnnotations" value="true"/>
         </module>

@@ -4,11 +4,11 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class AuthorizationRequest {
-    @NotNull
+    @NotNull(message = "POST_MUST_BE_PROVIDED")
     private String post;
-    @NotNull
+    @NotNull(message = "SUPER_GROUP_MUST_BE_PROVIDED")
     private String superGroup;
-    @NotNull
+    @NotNull(message = "AUTHORITY_MUST_BE_PROVIDED")
     private String authority;
 
     public String getAuthority() {

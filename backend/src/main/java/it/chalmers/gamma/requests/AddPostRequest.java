@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class AddPostRequest {
-    @NotNull(message = "The Post cannot be Empty or Null")
+    @NotNull(message = "POST_CANNOT_BE_NULL")
     private Text post;
     //TODO ADD LEVEL OF CLEARANCE OF SOMETHING
 

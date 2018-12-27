@@ -1,8 +1,10 @@
 package it.chalmers.gamma.requests;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 public class ValidateJwtRequest {
+    @NotEmpty(message = "JWT_MUST_BE_PROVIDED")
     private String jwt;
 
     public String getJwt() {

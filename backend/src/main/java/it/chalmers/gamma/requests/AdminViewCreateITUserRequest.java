@@ -4,24 +4,23 @@ import java.util.Objects;
 import javax.validation.constraints.*;
 
 public class AdminViewCreateITUserRequest {
-    @NotEmpty(message = "a cid must be supplied")
-    @Size(min = 4, max = 12, message = "cid must be between 4 and 12 characters")
+    @NotEmpty(message = "CID_MUST_BE_PROVIDED")
+    @Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS")
     private String cid;
-    @Min(value = 8, message = "password must be at least 8 characters long")
-    @NotEmpty(message = "a password must be supplied")
+    @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
     private String password;
-    @NotEmpty(message = "a cid must be supplied")
+    @NotEmpty(message = "NICK_MUST_BE_PROVIDED")
     private String nick;
-    @NotEmpty(message = "a first name must be supplied")
+    @NotEmpty(message = "FIRST_NAME_MUST_BE_PROVIDED")
     private String firstName;
-    @NotEmpty(message = "a last name must be supplied")
+    @NotEmpty(message = "LAST_NAME_MUST_BE_PROVIDED")
     private String lastName;
-    @NotEmpty(message = "an email must be supplied")
-    @Email(message = "email must be valid")
+    @NotEmpty(message = "EMAIL_NAME_MUST_BE_PROVIDED")
+    @Email(message = "NOT_A_VALID_EMAIL")
     private String email;
-    @AssertTrue(message = "the user agreement must be accepted before an account can be created")
+    @AssertTrue(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
     private boolean userAgreement;
-    @Min(value = 2001, message = "acceptance year cannot be before 2001")
+    @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
 
     public String getCid() {

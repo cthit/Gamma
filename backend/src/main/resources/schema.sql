@@ -1,23 +1,23 @@
 create table internal_text (
-  id  uuid constraint text_pk primary key,
+  cid  uuid constraint text_pk primary key,
   sv  text not null,
   en  text
 );
 
 create table website (
-  id uuid constraint websites_pk primary key,
+  cid uuid constraint websites_pk primary key,
   name varchar(100) not null constraint website_name unique,
   pretty_name varchar(100) not null
 );
 
 create table website_url (
-  id      uuid constraint websites_url_pk primary key,
+  cid      uuid constraint websites_url_pk primary key,
   website uuid not null references website,
   url     varchar(2000) not null
 );
 
 create table ituser (
-  id               uuid constraint ituser_pk primary key,
+  cid               uuid constraint ituser_pk primary key,
   cid              varchar(10)  not null constraint ituser_cid_unique unique,
   password         varchar(255) not null,
   nick             varchar(50)  not null,
@@ -36,31 +36,31 @@ create table ituser (
 );
 
 create table ituser_website (
-  id          uuid constraint ituser_website_pk primary key,
+  cid          uuid constraint ituser_website_pk primary key,
   ituser      uuid not null references ituser,
   website     uuid not null references website_url
 );
 
 create table authority_level (
-  id  uuid constraint authority_level_pk primary key,
+  cid  uuid constraint authority_level_pk primary key,
   authority_level varchar(30)
 );
 
 create table password_reset_token(
-  id      uuid constraint password_reset_token_pk primary key,
+  cid      uuid constraint password_reset_token_pk primary key,
   token   varchar(100) not null,
   ituser  uuid references ituser
 );
 
 create table fkit_super_group (
-  id            uuid                    constraint fkit_super_group_pk                  primary key,
+  cid            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
   type          varchar(30)    not null constraint fkit_super_group_type_unique         unique
 );
 
 create table fkit_group (
-  id                uuid                  constraint fkit_group_pk primary key,
+  cid                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
   super_group       uuid         not null references fkit_super_group,
   pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
@@ -74,12 +74,12 @@ create table fkit_group (
 );
 
 create table post (
-  id        uuid constraint post_pk primary key,
+  cid        uuid constraint post_pk primary key,
   post_name uuid not null references internal_text
 );
 
 create table authority (
-  id              uuid  constraint authority_unique unique,
+  cid              uuid  constraint authority_unique unique,
   fkit_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level uuid  constraint authority_authority_level          references authority_level,
@@ -87,7 +87,7 @@ create table authority (
 );
 
 create table fkit_group_website(
-  id          uuid constraint fkit_group_website_pk primary key,
+  cid          uuid constraint fkit_group_website_pk primary key,
   fkit_group  uuid not null references fkit_group,
   website     uuid not null references website_url
 );
@@ -103,12 +103,12 @@ create table membership (   -- Should this be rebuilt to look like all other tab
 );
 
 create table whitelist (
-  id  uuid constraint whitelist_pk primary key,
+  cid  uuid constraint whitelist_pk primary key,
   cid varchar(10) not null constraint whitelist_cid_unique unique
 );
 
 create table activation_code (
-  id          uuid constraint activation_code_pk primary key,
+  cid          uuid constraint activation_code_pk primary key,
   cid         uuid unique     not null references whitelist,
   code        varchar(30)     not null,
   created_at  timestamp       not null default current_timestamp

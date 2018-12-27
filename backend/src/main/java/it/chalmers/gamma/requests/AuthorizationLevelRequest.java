@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 public class AuthorizationLevelRequest {
-    @NotEmpty(message = "an authorityLevel must be supplied")
+    @NotEmpty(message = "AUTHORITY_LEVEL_MUST_BE_PROVIDED")
     private String authorityLevel;
 
     public String getAuthorityLevel() {

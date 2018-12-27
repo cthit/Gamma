@@ -2,6 +2,8 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.domain.Language;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 

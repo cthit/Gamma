@@ -2,19 +2,29 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Whitelist;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class CreateITUserRequest {
-    @NotNull
+    @NotEmpty(message = "CODE_MUST_BE_PROVIDED")
+    // TODO SPECIFY MINIMUM AND MAXIMUM LENGTH OF CODE
     private String code;
-    @NotNull
+    @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
     private String password;
+    @NotEmpty(message = "NICK_MUST_BE_PROVIDED")
     private String nick;
+    @NotEmpty(message = "FIRST_NAME_MUST_BE_PROVIDED")
     private String firstName;
+    @NotEmpty(message = "LAST_NAME_MUST_BE_PROVIDED")
     private String lastName;
+    @NotEmpty(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
     private boolean userAgreement;
+    @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
+    @NotNull(message = "WHITELIST_MUST_BE_PROVIDED")
     private Whitelist whitelist;
 
     public Whitelist getWhitelist() {

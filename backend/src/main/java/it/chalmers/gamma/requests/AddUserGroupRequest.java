@@ -7,9 +7,9 @@ import java.time.Year;
 import java.util.Objects;
 
 public class AddUserGroupRequest {
-    @NotEmpty(message = "The user must be supplied")
+    @NotEmpty(message = "USER_MUST_BE_PROVIDED")
     private String user;
-    @NotEmpty(message = "The Post must be supplied")
+    @NotEmpty(message = "POST_MUST_BE_PROVIDED")
     private String post;
     private String unofficialName;
 

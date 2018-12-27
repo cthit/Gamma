@@ -158,10 +158,10 @@ public final class UserAdminController {
     //TODO MOVE THIS TO ITUSERCONTROLLER
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
     public ResponseEntity<String> resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
-        if (!this.itUserService.userExists(UUID.fromString(request.getId()))) {
+        if (!this.itUserService.userExists(request.getCid())){
             throw new CidNotFoundResponse();
         }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(request.getId()));
+        ITUser user = this.itUserService.loadUser((request.getCid()));
         String token = TokenUtils.generateToken();
         if (this.passwordResetService.userHasActiveReset(user)) {
             this.passwordResetService.editToken(user, token);
