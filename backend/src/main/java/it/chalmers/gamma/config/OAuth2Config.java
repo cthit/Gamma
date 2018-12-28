@@ -59,6 +59,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         configurer.tokenEnhancer(enhancerChain);
         configurer.accessTokenConverter(accessTokenConverter());
         configurer.authenticationManager(authenticationManager);
+        configurer.userDetailsService(userDetailsService);
     }
 
     @Override
