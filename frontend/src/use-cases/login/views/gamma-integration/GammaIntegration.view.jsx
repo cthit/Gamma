@@ -14,8 +14,8 @@ class GammaIntegration extends React.Component {
                         code: code
                     })
                     .then(response => {
-                        console.log(response);
                         localStorage.token = response.data;
+                        props.redirectTo("/");
                     });
             }
         }
