@@ -5,11 +5,7 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
-import it.chalmers.gamma.response.CidNotFoundResponse;
-import it.chalmers.gamma.response.GetMembershipsResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
-import it.chalmers.gamma.response.UserAddedToGroupResponse;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
@@ -19,12 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import it.chalmers.gamma.util.InputValidationUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @RestController
@@ -48,8 +48,11 @@ public final class GroupMemberAdminController {
 
     @RequestMapping(value = "/{id}/members", method = RequestMethod.POST)
     public ResponseEntity<String> addUserToGroup(
-            @RequestBody AddUserGroupRequest request,
+            @Valid @RequestBody AddUserGroupRequest request, BindingResult result,
             @PathVariable("id") String id) {
+        if (result.hasErrors()){
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         if (!this.itUserService.userExists(request.getUser())) {
             throw new CidNotFoundResponse();
         }
