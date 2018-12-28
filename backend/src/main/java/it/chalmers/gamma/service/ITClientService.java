@@ -41,19 +41,7 @@ public class ITClientService implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        System.out.println("Kollar null");
-        System.out.println(clientId);
-        ITClient client = this.itClientRepository.findByClientId(clientId);
-        System.out.println(client);
-//        BaseClientDetails details = new BaseClientDetails();
-//        details.setClientId(client.getClientId());
-//        details.setAuthorizedGrantTypes(client.getAuthorizedGrantTypes());
-//        details.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
-//        details.setScope(client.getScope());
-//        details.setRegisteredRedirectUri(client.getRegisteredRedirectUri());
-//        details.setAutoApproveScopes(client.getScope());        // Change this to force a approval from user.
-//        details.setAuthorities(client.getAuthorities());
-        return client;
+        return this.itClientRepository.findByClientId(clientId);
     }
 
     public void createITClient(AddITClientRequest request) {
