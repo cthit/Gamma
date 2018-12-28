@@ -6,13 +6,7 @@ import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.AddPostRequest;
-import it.chalmers.gamma.response.EditedPostResponse;
-import it.chalmers.gamma.response.GetMultiplePostsResponse;
-import it.chalmers.gamma.response.GetPostResponse;
-import it.chalmers.gamma.response.MissingRequiredFieldResponse;
-import it.chalmers.gamma.response.PostAlreadyExistsResponse;
-import it.chalmers.gamma.response.PostCreatedResponse;
-import it.chalmers.gamma.response.PostDeletedResponse;
+import it.chalmers.gamma.response.*;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 
@@ -21,13 +15,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import it.chalmers.gamma.util.InputValidationUtils;
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @RestController
@@ -51,7 +49,10 @@ public final class GroupPostAdminController {
      * @return what the result of trying to create the post was.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addOfficialPost(@RequestBody AddPostRequest request) {
+    public ResponseEntity<String> addOfficialPost(@Valid @RequestBody AddPostRequest request, BindingResult result) {
+        if(result.hasErrors()){
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         if (this.postService.postExists(request.getPost().getSv())) {
             throw new PostAlreadyExistsResponse();
         }
@@ -72,7 +73,8 @@ public final class GroupPostAdminController {
             @PathVariable("id") String id) {
         Post post = this.postService.getPost(UUID.fromString(id));
         if (post == null) {
-            throw new MissingRequiredFieldResponse("post");
+            throw new PostDoesNotExistResponse();
+
         }
         this.postService.editPost(post, request.getPost());
         return new EditedPostResponse();
@@ -81,11 +83,17 @@ public final class GroupPostAdminController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Post> getPost(@PathVariable("id") String id) {
         Post post = this.postService.getPost(UUID.fromString(id));
+        if(post == null){
+            throw new PostDoesNotExistResponse();
+        }
         return new GetPostResponse(post);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deletePost(@PathVariable("id") String id) {
+        if(this.postService.postExists(UUID.fromString(id))){
+            throw new PostDoesNotExistResponse();
+        }
         this.postService.deletePost(UUID.fromString(id));
         return new PostDeletedResponse();
     }
@@ -108,6 +116,9 @@ public final class GroupPostAdminController {
      */
     @RequestMapping("/{id}/usage")
     public List<JSONObject> getPostUsages(@PathVariable("id") String id) {
+        if(postService.postExists(id)){
+            throw new PostDoesNotExistResponse();
+        }
         List<ITUserSerializer.Properties> itUserProperties = Arrays.asList(
                 ITUserSerializer.Properties.CID,
                 ITUserSerializer.Properties.NICK,
