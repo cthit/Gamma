@@ -2,10 +2,9 @@ package it.chalmers.gamma.util;
 
 import org.springframework.validation.ObjectError;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
-public class InputValidationUtils {
+public final class InputValidationUtils {
     private InputValidationUtils(){
 
     }

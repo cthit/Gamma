@@ -60,12 +60,12 @@ public final class GroupAdminController {
         if (this.fkitService.groupExists(createGroupRequest.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
-                UUID.fromString(createGroupRequest.getSuperGroup()));
 
         if (result.hasErrors()){
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+                UUID.fromString(createGroupRequest.getSuperGroup()));
 
         if (superGroup == null) {
             throw new GroupDoesNotExistResponse();

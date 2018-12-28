@@ -1,9 +1,6 @@
 package it.chalmers.gamma.requests;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.time.Year;
 import java.util.Objects;
 
 public class AddUserGroupRequest {

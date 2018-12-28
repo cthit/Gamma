@@ -174,7 +174,7 @@ public final class UserAdminController {
         if (!this.itUserService.userExists(request.getCid())){
             throw new CidNotFoundResponse();
         }
-        ITUser user = this.itUserService.loadUser((request.getCid()));
+        ITUser user = this.itUserService.loadUser(request.getCid());
         String token = TokenUtils.generateToken();
         if (this.passwordResetService.userHasActiveReset(user)) {
             this.passwordResetService.editToken(user, token);
