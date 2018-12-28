@@ -1,16 +1,24 @@
 import React from "react";
 import { Route } from "react-router-dom";
+import styled from "styled-components";
 import LoginForm from "./elements/login-form";
-import { DigitLayout } from "@cthit/react-digit-components";
+import {
+    DigitLayout,
+    DigitDesign,
+    DigitButton
+} from "@cthit/react-digit-components";
 
 import axios from "axios";
+import GammaIntegration from "./views/gamma-integration";
 
 var called = false;
 
+const NoStyleLink = styled.a`
+    text-decoration: none;
+    color: inherit;
+`;
+
 class Login extends React.Component {
-
-
-
     constructor(props) {
         super();
 
@@ -22,34 +30,27 @@ class Login extends React.Component {
 
         const baseUrl = "http://localhost:8081/api/oauth/authorize";
         const responseType = "response_type=code";
-        const clientId = "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
+        const clientId =
+            "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
         const redirectUri = "redirect_uri=http://localhost:3000/login";
 
         return (
-            <div>
-                <Route render={(props) => {
-                    if(props.location.search !== ""){
-                        const paramsResponse = new URLSearchParams(props.location.search);
-                        const code = paramsResponse.get("code");
-                        if(code){
-                            if(this.called){
-                                return null;
-                            }
-                            this.called = true;
-                            axios.post("http://localhost:8082/auth", {
-                                code: code
-                            }).then(response => {
-                                console.log(response);
-                                localStorage.token = response.data;
-                            });
-                        }
+            <React.Fragment>
+                <GammaIntegration />
+                <NoStyleLink
+                    href={
+                        baseUrl +
+                        "?" +
+                        responseType +
+                        "&" +
+                        clientId +
+                        "&" +
+                        redirectUri
                     }
-                    console.log(props)
-                    return null;
-                }}/>
-                <a href={baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri}>Logga in</a>
-                </div>
-
+                >
+                    <DigitButton primary raised text={"Logga in"} />
+                </NoStyleLink>
+            </React.Fragment>
         );
     }
 }
