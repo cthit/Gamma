@@ -20,7 +20,7 @@ export function userUpdateMe() {
     } else {
         return dispatch => {
             axios
-                .get("http://localhost:8081/users/me", {
+                .get("http://localhost:8081/api/users/me", {
                     headers: {
                         Authorization: "Bearer " + token()
                     }

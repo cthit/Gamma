@@ -34,7 +34,7 @@ security:
     token:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs= # This is only for Development, should also be a secret one for Production
       expire-length: 2592000000 #One Month. Subject to change.
-      issuer: CTHIT
+      issuer: http://localhost:8081
 
 application:
   frontend-client-details:
