@@ -64,13 +64,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
-            .withClient("this_is_a_client_id")
-            .secret("{noop}secret")
-            .authorizedGrantTypes("authorization_code")
-            .scopes("read", "write")
-            .redirectUris("http://localhost:3000/login");
-//        clients.withClientDetails(this.clientDetailsService);
+         clients.withClientDetails(this.clientDetailsService);
     }
 
     @Bean

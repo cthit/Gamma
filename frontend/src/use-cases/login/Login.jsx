@@ -22,7 +22,7 @@ class Login extends React.Component {
 
         const baseUrl = "http://localhost:8081/api/oauth/authorize";
         const responseType = "response_type=code";
-        const clientId = "client_id=this_is_a_client_id";
+        const clientId = "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
         const redirectUri = "redirect_uri=http://localhost:3000/login";
 
         return (

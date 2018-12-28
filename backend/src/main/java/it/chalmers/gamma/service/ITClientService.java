@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.ITClientDetailsRepository;
+import it.chalmers.gamma.db.repository.ITClientRepository;
 import it.chalmers.gamma.requests.AddITClientRequest;
 import it.chalmers.gamma.util.TokenUtils;
 
@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
-import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,30 +30,32 @@ public class ITClientService implements ClientDetailsService {
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
-    private ITClientDetailsRepository itClientDetailsRepository;
+    private ITClientRepository itClientRepository;
 
-    public ITClientService(ITClientDetailsRepository itClientDetailsRepository){
-        this.itClientDetailsRepository = itClientDetailsRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public ITClientService(ITClientRepository itClientRepository){
+        this.itClientRepository = itClientRepository;
+        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        ITClient client = this.itClientDetailsRepository.findByClientId(clientId);
-        BaseClientDetails details = new BaseClientDetails();
-        details.setClientId(client.getClientId());
-        details.setAuthorizedGrantTypes(client.getAuthorizedGrantTypes());
-        details.setClientSecret(client.getClientSecret()); //this used passwordEncoder before, why?
-        details.setScope(client.getScope());
-        details.setRegisteredRedirectUri(client.getRegisteredRedirectUri());
-        details.setAutoApproveScopes(client.getScope());        // Change this to force a approval from user.
-        details.setAuthorities(client.getAuthorities());
-        return details;
+        System.out.println("Kollar null");
+        System.out.println(clientId);
+        ITClient client = this.itClientRepository.findByClientId(clientId);
+        System.out.println(client);
+//        BaseClientDetails details = new BaseClientDetails();
+//        details.setClientId(client.getClientId());
+//        details.setAuthorizedGrantTypes(client.getAuthorizedGrantTypes());
+//        details.setClientSecret(passwordEncoder.encode(client.getClientSecret()));
+//        details.setScope(client.getScope());
+//        details.setRegisteredRedirectUri(client.getRegisteredRedirectUri());
+//        details.setAutoApproveScopes(client.getScope());        // Change this to force a approval from user.
+//        details.setAuthorities(client.getAuthorities());
+        return client;
     }
+
     public void createITClient(AddITClientRequest request) {
         ITClient client = new ITClient();
         client.setName(request.getName());
@@ -68,23 +71,23 @@ public class ITClientService implements ClientDetailsService {
         client.setRefreshTokenValidity(refreshTokenValidityTime);
         client.setClientId(TokenUtils.generateToken());
         client.setClientSecret(TokenUtils.generateToken());
-        itClientDetailsRepository.save(client);
+        itClientRepository.save(client);
     }
 
     public List<ITClient> getAllClients(){
-        return itClientDetailsRepository.findAll();
+        return itClientRepository.findAll();
     }
 
     public ITClient getITClient(UUID id){
-        return itClientDetailsRepository.findById(id).orElseThrow();
+        return itClientRepository.findById(id).orElseThrow();
     }
 
     public void removeITClient(UUID id){
-        itClientDetailsRepository.deleteById(id);
+        itClientRepository.deleteById(id);
     }
 
     public void editClient(UUID id, AddITClientRequest request){
-        ITClient client = itClientDetailsRepository.findById(id).orElseThrow();
+        ITClient client = itClientRepository.findById(id).orElseThrow();
         client.setLastModifiedAt(Instant.now());
         client.setName(request.getName() == null ? client.getName() : request.getName());
         client.setDescription(request.getDescription() == null ? client.getDescription() : request.getDescription());
@@ -93,6 +96,14 @@ public class ITClientService implements ClientDetailsService {
     }
 
     public boolean clientExists(UUID id){
-        return itClientDetailsRepository.existsById(id);
+        return itClientRepository.existsById(id);
+    }
+
+    public boolean clientExistsByClientId(String clientId) {
+        return itClientRepository.existsITClientByClientId(clientId);
+    }
+
+    public void addITClient(ITClient itClient) {
+        itClientRepository.save(itClient);
     }
 }

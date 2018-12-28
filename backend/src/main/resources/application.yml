@@ -37,6 +37,10 @@ security:
       issuer: CTHIT
 
 application:
+  frontend-client-details:
+    client-id: 7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc
+    client-secret: LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo
+    redirect-uri: http://localhost:3000/login
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   gotify:
