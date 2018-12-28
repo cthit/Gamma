@@ -2,7 +2,6 @@ package it.chalmers.gamma.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -15,9 +14,8 @@ import java.util.Base64;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +23,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-public class AuthenticationFilter extends GenericFilterBean {
+public class AuthenticationFilter extends OncePerRequestFilter {
 
     private String secretKey;
 
@@ -44,21 +42,17 @@ public class AuthenticationFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(
-            ServletRequest request,
-            ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
-        String encodedToken = resolveToken((HttpServletRequest) request);
+        String encodedToken = resolveToken(request);
         if (encodedToken != null) {
             Jws<Claims> claim = decodeToken(encodedToken);
             String token = null;
             if (claim != null) {
-                token = claim.getBody().getSubject();
+                token = (String) claim.getBody().get("user_name");
             }
-            if (token != null && validateToken(encodedToken)) {
+            if (token != null) {
                 Authentication auth = getAuthentication(token);
-                System.out.println(auth);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
@@ -71,18 +65,14 @@ public class AuthenticationFilter extends GenericFilterBean {
             throw new InvalidJWTTokenResponse();
         }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
-            userDetails.getPassword(), userDetails.getAuthorities());
+            null, userDetails.getAuthorities());
     }
 
-    private boolean validateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
-
+    /**
+     * If this doesn't crash, then the JWT token is valid.
+     * @param token
+     * @return
+     */
     private Jws<Claims> decodeToken(String token) {
         try {
             return Jwts.parser()

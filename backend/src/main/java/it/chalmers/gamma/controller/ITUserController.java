@@ -38,7 +38,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -128,9 +127,7 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public JSONObject getMe(@RequestHeader("Authorization") String jwtTokenWithBearer, Principal principal) {
-        System.out.println("principal " + principal);
-        System.out.println("ds" + principal.getName());
+    public JSONObject getMe(Principal principal) {
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
         ITUserSerializer serializer =
