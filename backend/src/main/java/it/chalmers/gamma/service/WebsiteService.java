@@ -48,7 +48,7 @@ public class WebsiteService {
         return this.repository.findById(UUID.fromString(id)).orElse(null);
     }
 
-    public boolean websiteExists(UUID id){
+    public boolean websiteExists(UUID id) {
         return this.repository.existsById(id);
     }
 
