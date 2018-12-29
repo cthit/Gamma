@@ -9,8 +9,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private String secretKey;
-    private String issuer;
+    private final String secretKey;
+    private final String issuer;
     private final ITUserService itUserService;
 
     public AuthenticationFilterConfigurer(ITUserService itUserService, String secretKey, String issuer){
