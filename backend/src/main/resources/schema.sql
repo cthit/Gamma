@@ -17,8 +17,7 @@ create table website_url (
 );
 
 create table ituser (
-  cid               uuid constraint ituser_pk primary key,
-  cid              varchar(10)  not null constraint ituser_cid_unique unique,
+  cid              uuid constraint ituser_pk primary key,
   password         varchar(255) not null,
   nick             varchar(50)  not null,
   first_name       varchar(50)  null,
