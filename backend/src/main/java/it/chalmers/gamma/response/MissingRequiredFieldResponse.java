@@ -1,9 +1,8 @@
 package it.chalmers.gamma.response;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
-public class MissingRequiredFieldResponse extends ResponseStatusException {
+public class MissingRequiredFieldResponse extends CustomResponseStatusException {
     public MissingRequiredFieldResponse(String missingField) {
         super(HttpStatus.UNPROCESSABLE_ENTITY, "MISSING_FIELD: " + missingField);
     }

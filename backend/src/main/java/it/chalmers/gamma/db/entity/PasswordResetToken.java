@@ -1,5 +1,8 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,6 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset_token")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PasswordResetToken {
     @Id
     private UUID id;

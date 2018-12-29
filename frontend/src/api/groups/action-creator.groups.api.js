@@ -6,13 +6,29 @@ import {
     GROUPS_DELETE_SUCCESSFULLY,
     GROUPS_DELETE_FAILED,
     GROUPS_CHANGE_SUCCESSFULLY,
-    GROUPS_CHANGE_FAILED
+    GROUPS_CHANGE_FAILED,
+    GROUPS_GET_LOADING,
+    GROUPS_GET_SUCCESSFULLY,
+    GROUPS_GET_FAILED,
+    GROUPS_GET_MINIFIED_LOADING,
+    GROUPS_GET_MINIFIED_FAILED,
+    GROUPS_GET_MINIFIED_SUCCESSFULLY
 } from "./actions.groups.api";
 
 import { addGroup } from "./post.groups.api";
-import { getGroups } from "./get.groups.api";
+import { getGroup, getGroups, getGroupsMinified } from "./get.groups.api";
 import { editGroup } from "./put.groups.api";
 import { deleteGroup } from "./delete.groups.api";
+import { requestPromise } from "../utils/requestPromise";
+
+export function createGetGroupsMinifiedAction() {
+    return requestPromise(
+        getGroupsMinified,
+        groupsGetMinifiedLoading,
+        groupsGetMinifiedSuccessfully,
+        groupsGetMinifiedFailed
+    );
+}
 
 export function createGetGroupsAction() {
     return dispatch => {
@@ -30,10 +46,21 @@ export function createGetGroupsAction() {
     };
 }
 
-export function createAddGroupAction(group) {
+export function createGetGroupAction(groupId) {
+    return requestPromise(
+        () => {
+            return getGroup(groupId);
+        },
+        groupsGetLoading,
+        groupsGetSuccessfully,
+        groupsGetFailed
+    );
+}
+
+export function createAddGroupAction(groupId) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            addGroup(group)
+            addGroup(groupId)
                 .then(response => {
                     dispatch(groupsAddSuccessfully());
                     resolve(response);
@@ -113,6 +140,33 @@ function groupsAddFailed(error) {
     };
 }
 
+function groupsGetLoading() {
+    return {
+        type: GROUPS_GET_LOADING,
+        error: false
+    };
+}
+
+function groupsGetSuccessfully(response) {
+    return {
+        type: GROUPS_GET_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function groupsGetFailed(error) {
+    return {
+        type: GROUPS_GET_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
 function groupsLoadSuccessfully(data) {
     return {
         type: GROUPS_LOAD_SUCCESSFULLY,
@@ -160,6 +214,33 @@ function groupsDeleteSuccessfully() {
 function groupsDeleteFailed(error) {
     return {
         type: GROUPS_DELETE_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function groupsGetMinifiedLoading() {
+    return {
+        type: GROUPS_GET_MINIFIED_LOADING,
+        error: false
+    };
+}
+
+function groupsGetMinifiedSuccessfully(response) {
+    return {
+        type: GROUPS_GET_MINIFIED_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function groupsGetMinifiedFailed(error) {
+    return {
+        type: GROUPS_GET_MINIFIED_FAILED,
         error: true,
         payload: {
             error: error

@@ -25,8 +25,23 @@ function getPostName(post, activeLanguage) {
 class ShowPostDetails extends React.Component {
     constructor(props) {
         super();
+    }
 
-        props.getPostUsages(props.postId);
+    componentDidMount() {
+        const {
+            gammaLoadingFinished,
+            getPost,
+            getPostUsages,
+            postId
+        } = this.props;
+
+        Promise.all([getPost(postId), getPostUsages(postId)]).then(() => {
+            gammaLoadingFinished();
+        });
+    }
+
+    componentWillUnmount() {
+        this.props.gammaLoadingStart();
     }
 
     render() {

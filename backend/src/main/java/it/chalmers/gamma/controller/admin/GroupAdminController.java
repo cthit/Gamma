@@ -1,15 +1,11 @@
 package it.chalmers.gamma.controller.admin;
 
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
-
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
+
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupCreatedResponse;
@@ -19,15 +15,14 @@ import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,14 +38,17 @@ public final class GroupAdminController {
     private final FKITService fkitService;
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
     public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
-            GroupWebsiteService groupWebsiteService) {
+            GroupWebsiteService groupWebsiteService,
+            FKITSuperGroupService fkitSuperGroupService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -58,17 +56,6 @@ public final class GroupAdminController {
         return new GroupsResponse(this.fkitService.getGroups());
     }
 
-    @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
-    public JSONObject getGroupMinified(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
-        if (group == null) {
-            return null;
-        }
-        FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, ID, TYPE)
-        );
-        return serializer.serialize(group, null, null);
-    }
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
@@ -84,8 +71,10 @@ public final class GroupAdminController {
         if (createGroupRequest.getFunc() == null) {
             throw new MissingRequiredFieldResponse("function");
         }
-        if (createGroupRequest.getType() == null) {
-            throw new MissingRequiredFieldResponse("type");
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+                UUID.fromString(createGroupRequest.getSuperGroup()));
+        if (superGroup == null) {
+            throw new MissingRequiredFieldResponse("superGroup");
         }
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
@@ -101,7 +90,7 @@ public final class GroupAdminController {
             websiteURLs.add(websiteURL);
         }
         this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(createGroupRequest), websiteURLs);
+                this.fkitService.createGroup(createGroupRequest, superGroup), websiteURLs);
         return new GroupCreatedResponse();
     }
 

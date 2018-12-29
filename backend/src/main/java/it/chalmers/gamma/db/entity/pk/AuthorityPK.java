@@ -1,7 +1,7 @@
 package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Post;
 import java.io.Serializable;
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class AuthorityPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private FKITGroup fkitGroup;
+    private FKITSuperGroup fkitSuperGroup;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -24,12 +24,12 @@ public class AuthorityPK implements Serializable {
     private static final long serialVersionUID = 3085451407319206L;
 
 
-    public FKITGroup getFkitGroup() {
-        return this.fkitGroup;
+    public FKITSuperGroup getFkitSuperGroup() {
+        return this.fkitSuperGroup;
     }
 
-    public void setFkitGroup(FKITGroup fkitGroup) {
-        this.fkitGroup = fkitGroup;
+    public void setFkitGroup(FKITSuperGroup fkitSuperGroup) {
+        this.fkitSuperGroup = fkitSuperGroup;
     }
 
     public Post getPost() {
@@ -49,19 +49,19 @@ public class AuthorityPK implements Serializable {
             return false;
         }
         AuthorityPK that = (AuthorityPK) o;
-        return Objects.equals(this.fkitGroup, that.fkitGroup)
+        return Objects.equals(this.fkitSuperGroup, that.fkitSuperGroup)
             && Objects.equals(this.post, that.post);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.fkitGroup, this.post);
+        return Objects.hash(this.fkitSuperGroup, this.post);
     }
 
     @Override
     public String toString() {
         return "AuthorityPK{"
-            + "fkitGroup=" + this.fkitGroup
+            + "fkitGroup=" + this.fkitSuperGroup
             + ", post=" + this.post
             + '}';
     }

@@ -1,6 +1,6 @@
 import { addWebsite } from "./post.websites.api";
 import { deleteWebsite } from "./delete.websites.api";
-import { getWebsites } from "./get.websites.api";
+import { getWebsite, getWebsites } from "./get.websites.api";
 import { editWebsite } from "./put.websites.api";
 
 import {
@@ -11,8 +11,12 @@ import {
     WEBSITES_DELETE_SUCCESSFULLY,
     WEBSITES_DELETE_FAILED,
     WEBSITES_CHANGE_SUCCESSFULLY,
-    WEBSITES_CHANGE_FAILED
+    WEBSITES_CHANGE_FAILED,
+    WEBSITE_GET_LOADING,
+    WEBSITE_GET_SUCCESSFULLY,
+    WEBSITE_GET_FAILED
 } from "./actions.websites.api";
+import { requestPromise } from "../utils/requestPromise";
 
 export function createGetWebsitesAction() {
     return dispatch => {
@@ -29,6 +33,18 @@ export function createGetWebsitesAction() {
         });
     };
 }
+
+export function createGetWebsiteAction(websiteId) {
+    return requestPromise(
+        () => {
+            return getWebsite(websiteId);
+        },
+        websiteGetLoading,
+        websiteGetSuccessfully,
+        websiteGetFailed
+    );
+}
+
 export function createAddWebsiteAction(data) {
     return dispatch => {
         return new Promise((resolve, reject) => {
@@ -139,6 +155,33 @@ function websitesChangeSuccessfully() {
 function websitesChangeFailed(error) {
     return {
         type: WEBSITES_CHANGE_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function websiteGetLoading() {
+    return {
+        type: WEBSITE_GET_LOADING,
+        error: false
+    };
+}
+
+function websiteGetSuccessfully(response) {
+    return {
+        type: WEBSITE_GET_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data
+        }
+    };
+}
+
+function websiteGetFailed(error) {
+    return {
+        type: WEBSITE_GET_FAILED,
         error: true,
         payload: {
             error: error

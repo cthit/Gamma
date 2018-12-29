@@ -29,7 +29,7 @@ class EditUsersInGroup extends React.Component {
             unsavedEdits:
                 savedSelectedGroups != null ||
                 (savedSelectedGroups != null &&
-                    savedSelectedGroups.length == 0),
+                    savedSelectedGroups.length === 0),
             selectedUsers:
                 savedSelectedGroups == null ? [] : savedSelectedGroups
         };
@@ -37,14 +37,31 @@ class EditUsersInGroup extends React.Component {
         props.loadUsers();
     }
 
-    componentDidMount = () => {};
+    componentDidMount() {
+        const {
+            loadUsers,
+            getGroup,
+            groupId,
+            gammaLoadingFinished
+        } = this.props;
 
-    componentWillUnmount = () => {
-        const { group, temporarySaveSelectedUsersToGroup } = this.props;
+        Promise.all([loadUsers(), getGroup(groupId)]).then(() => {
+            gammaLoadingFinished();
+        });
+    }
+
+    componentWillUnmount() {
+        const {
+            groupId,
+            temporarySaveSelectedUsersToGroup,
+            gammaLoadingStart
+        } = this.props;
         const { selectedUsers } = this.state;
 
-        temporarySaveSelectedUsersToGroup(group.id, selectedUsers);
-    };
+        temporarySaveSelectedUsersToGroup(groupId, selectedUsers);
+
+        gammaLoadingStart();
+    }
 
     onSelectedChange = selected => {
         this.setState({

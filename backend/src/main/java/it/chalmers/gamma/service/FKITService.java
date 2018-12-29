@@ -1,11 +1,11 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
-import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,15 +20,16 @@ public class FKITService {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(CreateGroupRequest request) {
-
+    public FKITGroup createGroup(CreateGroupRequest request, FKITSuperGroup group) {
         FKITGroup fkitGroup = new FKITGroup();
+        fkitGroup.setSuperGroup(group);
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
+        fkitGroup.setYear(request.getYear());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
-                request.getDescription() == null ? new Text() : request.getDescription(),
-                request.getEmail(), request.getType(), request.getAvatarURL());
+                request.getBecomesActive(), request.getBecomesInactive(),
+                request.getEmail(), request.getAvatarURL());
     }
 
     //TODO if no info, don't change value.
@@ -37,25 +38,25 @@ public class FKITService {
         if (group == null) {
             return null;
         }
+        group.setYear(request.getYear() == 0 ? group.getYear() : request.getYear());
         group.setSVFunction(request.getFunc() == null ? group.getSVFunction() : request.getFunc().getSv());
         group.setENFunction(request.getFunc() == null ? group.getENFunction() : request.getFunc().getEn());
         if (request.getDescription() != null && group.getDescription() != null) {
             group.setSVDescription(request.getDescription().getSv());
             group.setENDescription(request.getDescription().getEn());
         }
-        return saveGroup(group, request.getPrettyName(), request.getDescription(), request.getEmail(),
-                request.getType(), request.getAvatarURL());
+        return saveGroup(group, request.getPrettyName(), request.getBecomesActive(), request.getBecomesInactive(),
+                request.getEmail(), request.getAvatarURL());
     }
 
-    private FKITGroup saveGroup(FKITGroup group, String prettyName, Text description,
-                                String email, GroupType type, String avatarURL) {
+    private FKITGroup saveGroup(FKITGroup group, String prettyName,
+                                Calendar becomesActive, Calendar becomesInactive,
+                                String email, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
-        group.setSVDescription(description == null ? group.getSVDescription() : description.getSv());
-        group.setENDescription(description == null ? group.getENDescription() : description.getEn());
         group.setEmail(email == null ? group.getEmail() : email);
-        group.setType(type == null ? group.getType() : type);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
-
+        group.setBecomesActive(becomesActive == null ? group.getBecomesActive() : becomesActive);
+        group.setBecomesInactive(becomesInactive == null ? group.getBecomesInactive() : becomesInactive);
         return this.repo.save(group);
     }
 
