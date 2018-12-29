@@ -46,9 +46,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Qualifier("clientDetailsService")
     private final ITClientService clientDetailsService;
 
-    @Value("${it.oauth.tokenTimeout:3600}")
-    private int expiration;
-
     @Value("${security.jwt.token.secret-key}")
     private String signingKey;
 
