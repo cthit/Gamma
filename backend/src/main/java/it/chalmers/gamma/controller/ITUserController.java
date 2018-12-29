@@ -31,11 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,20 +48,15 @@ public final class ITUserController {
     private final ITUserService itUserService;
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
-    private final AuthenticationManager authenticationManager;
     private final UserWebsiteService userWebsiteService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ITUserController.class);
 
     public ITUserController(ITUserService itUserService,
                              ActivationCodeService activationCodeService,
                              WhitelistService whitelistService,
-                             AuthenticationManager authenticationManager,
                              UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
-        this.authenticationManager = authenticationManager;
         this.userWebsiteService = userWebsiteService;
     }
 
