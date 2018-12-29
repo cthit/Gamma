@@ -34,7 +34,7 @@ public final class UserActivationCodeAdminController {
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.GET)
     public ResponseEntity<ActivationCode> getActivationCode(
             @PathVariable("activationCode") String activationCode) {
-        if(!this.activationCodeService.codeExists(UUID.fromString(activationCode))){
+        if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
             throw new ActivationCodeDoesNotExistResponse();
         }
         return new GetActivationCodeResponse(
