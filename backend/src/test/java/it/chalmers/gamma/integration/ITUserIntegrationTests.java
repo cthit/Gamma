@@ -108,15 +108,15 @@ public class ITUserIntegrationTests {
     @Test
     public void testCreateAccount() throws Exception {
         String cid = "TESTACC";
-        String nick = "test";
-        String firstName = "testLn";
-        String lastName = "testFn";
         utils.sendCreateCode(cid);
         Whitelist whitelist = this.whitelistRepository.findByCid(cid);
         String activationCode = this.activationCodeRepository.findByCid_Cid(cid).getCode();
         CreateITUserRequest user = new CreateITUserRequest();
         user.setCode(activationCode);
         user.setWhitelist(whitelist);
+        String nick = "test";
+        String firstName = "testLn";
+        String lastName = "testFn";
         user.setPassword("password");
         user.setNick(nick);
         user.setAcceptanceYear(2018);
