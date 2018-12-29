@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.validation.ObjectError;
 
 public final class InputValidationUtils {
-    private InputValidationUtils(){
+    private InputValidationUtils() {
 
     }
 
