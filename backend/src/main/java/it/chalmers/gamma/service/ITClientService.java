@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
@@ -30,13 +28,10 @@ public class ITClientService implements ClientDetailsService {
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
-    private ITClientRepository itClientRepository;
-
-    private PasswordEncoder passwordEncoder;
+    private final ITClientRepository itClientRepository;
 
     public ITClientService(ITClientRepository itClientRepository){
         this.itClientRepository = itClientRepository;
-        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override
