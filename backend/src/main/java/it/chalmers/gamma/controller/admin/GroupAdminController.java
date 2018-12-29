@@ -7,17 +7,27 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 
 import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
+import it.chalmers.gamma.response.GroupCreatedResponse;
+import it.chalmers.gamma.response.GroupDeletedResponse;
+import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.GroupEditedResponse;
+import it.chalmers.gamma.response.GroupsResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
+
 import it.chalmers.gamma.service.WebsiteService;
+
+import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import it.chalmers.gamma.util.InputValidationUtils;
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +35,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
@@ -56,12 +64,13 @@ public final class GroupAdminController {
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest, BindingResult result) {
+    public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
+                                              BindingResult result) {
         if (this.fkitService.groupExists(createGroupRequest.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
 
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
@@ -92,7 +101,7 @@ public final class GroupAdminController {
     public ResponseEntity<String> editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
-        if(!this.fkitService.groupExists(UUID.fromString(id))){
+        if (!this.fkitService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
         this.fkitService.editGroup(UUID.fromString(id), request);
