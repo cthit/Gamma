@@ -1,7 +1,11 @@
 package it.chalmers.gamma.requests;
 
 import java.util.Objects;
-import javax.validation.constraints.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 public class AdminViewCreateITUserRequest {
     @NotEmpty(message = "CID_MUST_BE_PROVIDED")
