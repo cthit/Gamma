@@ -19,7 +19,7 @@ public class ITClient implements ClientDetails {
 
     @Id
     @Column(updatable = false)
-    private UUID id;
+    private final UUID id;
 
     @Column(name = "client_id", length = 256, nullable = false)
     private String clientId;
@@ -203,16 +203,23 @@ public class ITClient implements ClientDetails {
 
     @Override
     public Map<String, Object> getAdditionalInformation() {
-        return new HashMap<>(){{
-            put("name", name);
-            put("description", description);
-        }};
+        Map<String, Object> additionalInformation = new HashMap<>();
+        additionalInformation.put("name", name);
+        additionalInformation.put("description", description);
+
+        return additionalInformation;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        
         ITClient itClient = (ITClient) o;
         return accessTokenValidity == itClient.accessTokenValidity &&
                 refreshTokenValidity == itClient.refreshTokenValidity &&
