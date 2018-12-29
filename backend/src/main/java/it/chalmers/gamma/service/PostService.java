@@ -41,7 +41,7 @@ public class PostService {
     public boolean postExists(String postName) {
         return this.repository.getByPostName_Sv(postName) != null;
     }
-    public boolean postExists(UUID id){
+    public boolean postExists(UUID id) {
         return this.repository.existsById(id);
     }
 
