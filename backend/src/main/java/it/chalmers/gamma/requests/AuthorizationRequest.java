@@ -1,7 +1,7 @@
 package it.chalmers.gamma.requests;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 public class AuthorizationRequest {
     @NotNull(message = "POST_MUST_BE_PROVIDED")
