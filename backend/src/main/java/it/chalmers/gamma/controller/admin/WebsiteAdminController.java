@@ -2,15 +2,22 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.requests.CreateWebsiteRequest;
-import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.response.EditedWebsiteResponse;
+import it.chalmers.gamma.response.GetAllWebsitesResponse;
+import it.chalmers.gamma.response.GetWebsiteResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.WebsiteAddedResponse;
+import it.chalmers.gamma.response.WebsiteDeletedResponse;
+import it.chalmers.gamma.response.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
+import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 
-import it.chalmers.gamma.util.InputValidationUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @RestController
@@ -42,7 +47,7 @@ public final class WebsiteAdminController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addWebsite(@Valid @RequestBody CreateWebsiteRequest request, BindingResult result) {
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         this.websiteService.addPossibleWebsite(request.getName(), request.getPrettyName());
@@ -72,7 +77,7 @@ public final class WebsiteAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteWebsite(@PathVariable("id") String id) {
-        if(!websiteService.websiteExists(UUID.fromString(id))){
+        if (!this.websiteService.websiteExists(UUID.fromString(id))) {
             throw new WebsiteNotFoundResponse();
         }
         this.groupWebsiteService.deleteGroupWebsiteByWebsite(this.websiteService.getWebsiteById(id));
