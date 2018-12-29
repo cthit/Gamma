@@ -27,11 +27,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
 
-    private String secretKey;
-
-    private String issuer;
-
-    private ITUserService itUserService;
+    private final String secretKey;
+    private final String issuer;
+    private final ITUserService itUserService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFilter.class);
 
@@ -43,7 +41,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-
         String encodedToken = resolveToken(request);
         if (encodedToken != null) {
             Jws<Claims> claim = decodeToken(encodedToken);
