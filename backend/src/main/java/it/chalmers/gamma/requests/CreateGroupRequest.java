@@ -1,11 +1,15 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
-
-import javax.validation.constraints.*;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CreateGroupRequest {
     @NotNull(message = "NAME_MUST_BE_PROVIDED")
