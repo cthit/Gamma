@@ -10,7 +10,15 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
 import it.chalmers.gamma.requests.ResetPasswordRequest;
-import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.PasswordChangedResponse;
+import it.chalmers.gamma.response.PasswordResetResponse;
+import it.chalmers.gamma.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.UserDeletedResponse;
+import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -22,6 +30,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +40,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 @RestController
@@ -56,7 +63,7 @@ public final class UserAdminController {
     public ResponseEntity<String> changePassword(
             @Valid @PathVariable("id") String id, BindingResult result,
             @RequestBody AdminChangePasswordRequest request) {
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (!this.itUserService.userExists(UUID.fromString(id))) {
@@ -96,7 +103,7 @@ public final class UserAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
-        if (this.itUserService.userExists(UUID.fromString(id))){
+        if (this.itUserService.userExists(UUID.fromString(id))) {
             throw new CidNotFoundResponse();
         }
         this.userWebsiteService.deleteWebsitesConnectedToUser(
@@ -108,7 +115,7 @@ public final class UserAdminController {
 
     @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("cid") String cid) {
-        if (this.itUserService.userExists(UUID.fromString(cid))){
+        if (this.itUserService.userExists(UUID.fromString(cid))) {
             throw new CidNotFoundResponse();
         }
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
@@ -145,7 +152,7 @@ public final class UserAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addUser(
             @Valid @RequestBody AdminViewCreateITUserRequest createITUserRequest, BindingResult result) {
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (this.itUserService.userExists(createITUserRequest.getCid())) {
@@ -168,10 +175,10 @@ public final class UserAdminController {
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
     public ResponseEntity<String> resetPasswordRequest(
             @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(request.getCid())){
+        if (!this.itUserService.userExists(request.getCid())) {
             throw new CidNotFoundResponse();
         }
         ITUser user = this.itUserService.loadUser(request.getCid());
@@ -193,7 +200,7 @@ public final class UserAdminController {
     @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
     public ResponseEntity<String> resetPassword(
             @Valid @RequestBody ResetPasswordFinishRequest request, BindingResult result) {
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (!this.itUserService.userExists(request.getCid())) {
