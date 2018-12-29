@@ -13,19 +13,28 @@ import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.jwt.JwtTokenProvider;
 import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
-import it.chalmers.gamma.response.*;
+import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.response.CodeExpiredResponse;
+import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.LoginCompleteResponse;
+import it.chalmers.gamma.response.PasswordTooShortResponse;
+import it.chalmers.gamma.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.validation.Valid;
 
-import it.chalmers.gamma.util.InputValidationUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +52,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.Valid;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 @RestController
@@ -75,8 +82,9 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@Valid @RequestBody CidPasswordRequest cidPasswordRequest, BindingResult result) {
-        if(result.hasErrors()){
+    public ResponseEntity<String> login(@Valid @RequestBody CidPasswordRequest cidPasswordRequest,
+                                        BindingResult result) {
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         try {
@@ -103,7 +111,7 @@ public final class ITUserController {
     @SuppressWarnings("PMD.CyclomaticComplexity")
     public ResponseEntity<String> createUser(
             @Valid @RequestBody CreateITUserRequest createITUserRequest, BindingResult result) {
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         Whitelist user = this.whitelistService.getWhitelist(
