@@ -1,9 +1,9 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
-
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
+
 
 public class AddPostRequest {
     @NotNull(message = "POST_CANNOT_BE_NULL")
