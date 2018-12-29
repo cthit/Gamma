@@ -2,15 +2,18 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
-import java.util.UUID;
+
+import javax.validation.constraints.NotNull;
 
 public class AddITClientRequest {
+
     @NotNull
     private String urlRedirect;
+
     @NotNull
     private String name;
+
     private Text description;
 
     public String getUrlRedirect() {
@@ -39,12 +42,16 @@ public class AddITClientRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AddITClientRequest that = (AddITClientRequest) o;
         return Objects.equals(urlRedirect, that.urlRedirect) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description);
+            Objects.equals(name, that.name) &&
+            Objects.equals(description, that.description);
     }
 
     @Override
@@ -56,9 +63,9 @@ public class AddITClientRequest {
     @Override
     public String toString() {
         return "AddITClientRequest{" +
-                ", urlRedirect='" + urlRedirect + '\'' +
-                ", name='" + name + '\'' +
-                ", description=" + description +
-                '}';
+            ", urlRedirect='" + urlRedirect + '\'' +
+            ", name='" + name + '\'' +
+            ", description=" + description +
+            '}';
     }
 }
