@@ -1,8 +1,8 @@
 package it.chalmers.gamma.requests;
 
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class CidPasswordRequest {
     @NotNull(message = "CID_MUST_BE_PROVIDED")
