@@ -2,11 +2,13 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Whitelist;
 
+import java.util.Objects;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
+
 
 public class CreateITUserRequest {
     @NotEmpty(message = "CODE_MUST_BE_PROVIDED")
