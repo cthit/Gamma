@@ -3,6 +3,8 @@ package it.chalmers.gamma.config;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.service.ITUserService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,45 +31,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
+
     public WebSecurityConfig(ITUserService itUserService) {
         this.itUserService = itUserService;
     }
 
-    protected void configure(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) {
+        disableCsrf(http);
+        setSessionManagementToStateless(http);
+        addAuthenticationFilter(http);
+        addFormLogin(http);
 
-        http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-                .apply(new AuthenticationFilterConfigurer(itUserService, secretKey, issuer))
-            .and()
-                .authorizeRequests()
-                .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/oauth/authorize").permitAll()
-                .antMatchers("/api/oauth/token").permitAll()
-                .antMatchers("/api/users/create").permitAll()
-                .antMatchers("/api/whitelist/activate_cid").permitAll()
-            .and()
-                .formLogin();
+        String[] permittedPaths = {
+            "/api/login",
+            "/api/oauth/authorize",
+            "/api/oauth/token",
+            "/api/users/create",
+            "/api/whitelist/activate_cid"
+        };
 
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().anyRequest().authenticated();
-
-//        http.cors().and().csrf().disable().authorizeRequests();
-////        http.apply(new JwtTokenFilterConfigurer(this.jwtTokenProvider));
-//        http.authorizeRequests()
-//                .antMatchers("/users/login").permitAll()
-
-//                .antMatchers("/login", "/oauth/authorize", "/oauth/**").permitAll()
-//                .and().authorizeRequests().anyRequest().authenticated()
-//                .and().formLogin().permitAll();
-//
-//        // No session will be created or used by spring security
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//
-//      //
-
+        setPermittedPaths(http, permittedPaths);
+        setTheRestOfPathsToAuthenticatedOnly(http);
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -79,7 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -88,5 +75,61 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
+    private void disableCsrf(HttpSecurity http){
+        try {
+            http
+                .csrf().disable();
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when disabling csrf");
+            LOGGER.error(e.getMessage());
+        }
+    }
 
+    private void setSessionManagementToStateless(HttpSecurity http) {
+        try {
+            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when setting SessionManagement to stateless");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addAuthenticationFilter(HttpSecurity http) {
+        try {
+            http.apply(new AuthenticationFilterConfigurer(itUserService, secretKey, issuer));
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when adding AuthenticationFilter");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addFormLogin(HttpSecurity http) {
+        try {
+            http.formLogin();
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when adding form login");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void setPermittedPaths(HttpSecurity http, String... permittedPaths) {
+        try {
+            http
+                .authorizeRequests()
+                .antMatchers(permittedPaths).permitAll();
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when setting");
+            LOGGER.error(e.getMessage());
+        }
+
+    }
+
+    private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
+        try {
+            http.authorizeRequests().anyRequest().authenticated();
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when setting paths to authenticated only.");
+            LOGGER.error(e.getMessage());
+        }
+    }
 }
