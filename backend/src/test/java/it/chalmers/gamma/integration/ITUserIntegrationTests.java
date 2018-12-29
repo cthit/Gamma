@@ -108,6 +108,7 @@ public class ITUserIntegrationTests {
     @Test
     public void testCreateAccount() throws Exception {
         String cid = "TESTACC";
+        String nick = "test";
         utils.sendCreateCode(cid);
         Whitelist whitelist = this.whitelistRepository.findByCid(cid);
         String activationCode = this.activationCodeRepository.findByCid_Cid(cid).getCode();
@@ -115,6 +116,11 @@ public class ITUserIntegrationTests {
         user.setCode(activationCode);
         user.setWhitelist(whitelist);
         user.setPassword("password");
+        user.setNick("test");
+        user.setAcceptanceYear(2018);
+        user.setFirstName("test");
+        user.setLastName("test");
+        user.setUserAgreement(true);
         MockHttpServletRequestBuilder mocker = MockMvcRequestBuilders
                 .post("/users/create")
                 .content(utils.asJsonString(user))

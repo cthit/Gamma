@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.Whitelist;
 
 import java.util.Objects;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,7 +23,7 @@ public class CreateITUserRequest {
     private String firstName;
     @NotEmpty(message = "LAST_NAME_MUST_BE_PROVIDED")
     private String lastName;
-    @NotEmpty(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
+    @AssertTrue(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
     private boolean userAgreement;
     @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
