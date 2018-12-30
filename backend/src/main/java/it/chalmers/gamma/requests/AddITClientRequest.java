@@ -17,7 +17,7 @@ public class AddITClientRequest {
     private Text description;
 
     public String getUrlRedirect() {
-        return urlRedirect;
+        return this.urlRedirect;
     }
 
     public void setUrlRedirect(String urlRedirect) {
@@ -25,7 +25,7 @@ public class AddITClientRequest {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -33,7 +33,7 @@ public class AddITClientRequest {
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(Text description) {
@@ -49,23 +49,22 @@ public class AddITClientRequest {
             return false;
         }
         AddITClientRequest that = (AddITClientRequest) o;
-        return Objects.equals(urlRedirect, that.urlRedirect) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(description, that.description);
+        return Objects.equals(this.urlRedirect, that.urlRedirect)
+            && Objects.equals(this.name, that.name)
+            && Objects.equals(this.description, that.description);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(urlRedirect, name, description);
+        return Objects.hash(this.urlRedirect, this.name, this.description);
     }
 
     @Override
     public String toString() {
-        return "AddITClientRequest{" +
-            ", urlRedirect='" + urlRedirect + '\'' +
-            ", name='" + name + '\'' +
-            ", description=" + description +
-            '}';
+        return "AddITClientRequest{"
+            + ", urlRedirect='" + this.urlRedirect + '\''
+            + ", name='" + this.name + '\''
+            + ", description=" + this.description
+            + '}';
     }
 }
