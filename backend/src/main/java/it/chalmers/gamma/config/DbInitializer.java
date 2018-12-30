@@ -76,47 +76,47 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         ensureAdminUser();
         ensureFrontendClientDetails();
     }
 
-    private void ensureFrontendClientDetails(){
-        if(!this.itClientService.clientExistsByClientId(clientId)){
-            PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
+    private void ensureFrontendClientDetails() {
+        if (!this.itClientService.clientExistsByClientId(this.clientId)) {
             Text description = new Text();
             description.setEn("The client details for the frontend of Gamma");
             description.setSv("Klient detaljerna för Gammas frontend");
 
+            PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
             ITClient itClient = new ITClient();
-            itClient.setClientId(clientId);
-            itClient.setClientSecret(passwordEncoder.encode(clientSecret));
+            itClient.setClientId(this.clientId);
+            itClient.setClientSecret(passwordEncoder.encode(this.clientSecret));
             itClient.setAutoApprove(true);
             itClient.setName("Gamma Frontend");
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
-            itClient.setWebServerRedirectUri(redirectUri);
+            itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
             this.itClientService.addITClient(itClient);
         }
     }
 
-    private void ensureAdminUser(){
+    private void ensureAdminUser() {
         String admin = "admin";
         if (!this.userservice.userExists(admin)) {
-            String adminMail = "admin@chalmers.it";
             Text description = new Text();
             String descriptionText = "Super admin group, do not add anything to this group,"
-                + " as it is a way to always keep a privileged user on startup";
+                    + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
             CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
             superGroupRequest.setType(GroupType.COMMITTEE);
+            String adminMail = "admin@chalmers.it";
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
@@ -137,16 +137,19 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             p.setEn(admin);
             Post post = this.postService.addPost(p);
             ITUser user = this.userservice.createUser(admin,
-                admin,
-                admin,
-                admin,
-                Year.of(2018),
-                true,
-                adminMail,
-                this.password
+                    admin,
+                    admin,
+                    admin,
+                    Year.of(2018),
+                    true,
+                    adminMail,
+                    this.password
             );
             this.membershipService.addUserToGroup(
-                group, user, post, admin
+                    group,
+                    user,
+                    post,
+                    admin
             ); // This might break on a new year
             AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
