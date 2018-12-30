@@ -65,25 +65,26 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
         enhancerChain.setTokenEnhancers(Arrays.asList(issuerTokenEnhancer(), accessTokenConverter()));
         configurer.tokenEnhancer(enhancerChain)
-                  .accessTokenConverter(accessTokenConverter())
-                  .authenticationManager(authenticationManager)
-                  .userDetailsService(userDetailsService);
+            .accessTokenConverter(accessTokenConverter())
+            .authenticationManager(this.authenticationManager)
+            .userDetailsService(this.userDetailsService);
     }
 
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.withClientDetails(this.clientDetailsService);
+    }
+    
     @Bean
-    public TokenEnhancer issuerTokenEnhancer(){
+    public TokenEnhancer issuerTokenEnhancer() {
         return (accessToken, authentication) -> {
             Map<String, Object> additionalInfo = new HashMap<>();
-            additionalInfo.put("iss", issuer);
+            additionalInfo.put("iss", this.issuer);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             return accessToken;
         };
     }
 
-    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-         clients.withClientDetails(this.clientDetailsService);
-    }
 
     @Bean
     @Primary
@@ -102,14 +103,14 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(signingKey);
+        converter.setSigningKey(this.signingKey);
         return converter;
     }
 
     @Bean
     public JwtClaimsSetVerifier issuerClaimVerifier() {
         try {
-            return new IssuerClaimVerifier(new URL(issuer));
+            return new IssuerClaimVerifier(new URL(this.issuer));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
