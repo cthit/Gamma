@@ -67,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -75,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-    private void disableCsrf(HttpSecurity http){
+    private void disableCsrf(HttpSecurity http) {
         try {
             http
                 .csrf().disable();
@@ -96,7 +97,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addAuthenticationFilter(HttpSecurity http) {
         try {
-            http.apply(new AuthenticationFilterConfigurer(itUserService, secretKey, issuer));
+            http.apply(
+                    new AuthenticationFilterConfigurer(
+                            this.itUserService,
+                            this.secretKey,
+                            this.issuer
+                    )
+            );
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding AuthenticationFilter");
             LOGGER.error(e.getMessage());
