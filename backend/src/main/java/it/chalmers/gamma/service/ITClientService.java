@@ -30,7 +30,7 @@ public class ITClientService implements ClientDetailsService {
 
     private final ITClientRepository itClientRepository;
 
-    public ITClientService(ITClientRepository itClientRepository){
+    public ITClientService(ITClientRepository itClientRepository) {
         this.itClientRepository = itClientRepository;
     }
 
@@ -49,28 +49,28 @@ public class ITClientService implements ClientDetailsService {
         client.setWebServerRedirectUri(request.getUrlRedirect());
         client.setCreatedAt(Instant.now());
         client.setLastModifiedAt(Instant.now());
-        client.setAccessTokenValidity(accessTokenValidityTime);
-        client.setAutoApprove(autoApprove);
-        client.setRefreshTokenValidity(refreshTokenValidityTime);
+        client.setAccessTokenValidity(this.accessTokenValidityTime);
+        client.setAutoApprove(this.autoApprove);
+        client.setRefreshTokenValidity(this.refreshTokenValidityTime);
         client.setClientId(TokenUtils.generateToken());
         client.setClientSecret(TokenUtils.generateToken());
-        itClientRepository.save(client);
+        this.itClientRepository.save(client);
     }
 
-    public List<ITClient> getAllClients(){
-        return itClientRepository.findAll();
+    public List<ITClient> getAllClients() {
+        return this.itClientRepository.findAll();
     }
 
-    public ITClient getITClient(UUID id){
-        return itClientRepository.findById(id).orElseThrow();
+    public ITClient getITClient(UUID id) {
+        return this.itClientRepository.findById(id).orElseThrow();
     }
 
-    public void removeITClient(UUID id){
-        itClientRepository.deleteById(id);
+    public void removeITClient(UUID id) {
+        this.itClientRepository.deleteById(id);
     }
 
-    public void editClient(UUID id, AddITClientRequest request){
-        ITClient client = itClientRepository.findById(id).orElseThrow();
+    public void editClient(UUID id, AddITClientRequest request) {
+        ITClient client = this.itClientRepository.findById(id).orElseThrow();
         client.setLastModifiedAt(Instant.now());
         client.setName(request.getName() == null ? client.getName() : request.getName());
         client.setDescription(request.getDescription() == null ? client.getDescription() : request.getDescription());
@@ -78,15 +78,15 @@ public class ITClientService implements ClientDetailsService {
                 ? client.getWebServerRedirectUri() : request.getUrlRedirect());
     }
 
-    public boolean clientExists(UUID id){
-        return itClientRepository.existsById(id);
+    public boolean clientExists(UUID id) {
+        return this.itClientRepository.existsById(id);
     }
 
     public boolean clientExistsByClientId(String clientId) {
-        return itClientRepository.existsITClientByClientId(clientId);
+        return this.itClientRepository.existsITClientByClientId(clientId);
     }
 
     public void addITClient(ITClient itClient) {
-        itClientRepository.save(itClient);
+        this.itClientRepository.save(itClient);
     }
 }
