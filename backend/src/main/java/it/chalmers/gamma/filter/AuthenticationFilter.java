@@ -10,6 +10,7 @@ import it.chalmers.gamma.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.service.ITUserService;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Base64;
 
 import javax.servlet.FilterChain;
@@ -75,7 +76,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         try {
             return Jwts.parser()
                 .requireIssuer(this.issuer)
-                .setSigningKey(Base64.getEncoder().encodeToString(this.secretKey.getBytes()))
+                .setSigningKey(Base64.getEncoder().encodeToString(
+                        this.secretKey.getBytes(Charset.forName("UTF-8")))
+                )
                 .parseClaimsJws(token);
         } catch (MalformedJwtException | SignatureException e) {
             LOGGER.warn(e.getMessage());
