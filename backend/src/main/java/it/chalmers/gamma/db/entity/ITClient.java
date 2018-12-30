@@ -1,12 +1,24 @@
 package it.chalmers.gamma.db.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,7 +64,7 @@ public class ITClient implements ClientDetails {
     @Column(name = "last_modified_at", nullable = false)
     private Instant lastModifiedAt;
 
-    public ITClient(){
+    public ITClient() {
         this.id = UUID.randomUUID();
     }
 
@@ -90,10 +102,6 @@ public class ITClient implements ClientDetails {
 
     public void setRefreshTokenValidity(int refreshTokenValidity) {
         this.refreshTokenValidity = refreshTokenValidity;
-    }
-
-    public boolean isAutoApprove() {
-        return this.autoApprove;
     }
 
     public void setAutoApprove(boolean autoApprove) {
@@ -134,7 +142,7 @@ public class ITClient implements ClientDetails {
 
     @Override
     public String getClientId() {
-        return clientId;
+        return this.clientId;
     }
 
     @Override
@@ -149,7 +157,7 @@ public class ITClient implements ClientDetails {
 
     @Override
     public String getClientSecret() {
-        return clientSecret;
+        return this.clientSecret;
     }
 
     @Override
@@ -175,7 +183,7 @@ public class ITClient implements ClientDetails {
     @Override
     public Set<String> getRegisteredRedirectUri() {
         Set<String> authorized = new HashSet<>();
-        authorized.add(webServerRedirectUri);
+        authorized.add(this.webServerRedirectUri);
         return authorized;
     }
 
@@ -188,24 +196,24 @@ public class ITClient implements ClientDetails {
 
     @Override
     public Integer getAccessTokenValiditySeconds() {
-        return accessTokenValidity;
+        return this.accessTokenValidity;
     }
 
     @Override
     public Integer getRefreshTokenValiditySeconds() {
-        return refreshTokenValidity;
+        return this.refreshTokenValidity;
     }
 
     @Override
     public boolean isAutoApprove(String scope) {
-        return autoApprove;
+        return this.autoApprove;
     }
 
     @Override
     public Map<String, Object> getAdditionalInformation() {
         Map<String, Object> additionalInformation = new HashMap<>();
-        additionalInformation.put("name", name);
-        additionalInformation.put("description", description);
+        additionalInformation.put("name", this.name);
+        additionalInformation.put("description", this.description);
 
         return additionalInformation;
     }
@@ -219,41 +227,52 @@ public class ITClient implements ClientDetails {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        
+
         ITClient itClient = (ITClient) o;
-        return accessTokenValidity == itClient.accessTokenValidity &&
-                refreshTokenValidity == itClient.refreshTokenValidity &&
-                autoApprove == itClient.autoApprove &&
-                Objects.equals(id, itClient.id) &&
-                Objects.equals(clientId, itClient.clientId) &&
-                Objects.equals(clientSecret, itClient.clientSecret) &&
-                Objects.equals(webServerRedirectUri, itClient.webServerRedirectUri) &&
-                Objects.equals(name, itClient.name) &&
-                Objects.equals(description, itClient.description) &&
-                Objects.equals(createdAt, itClient.createdAt) &&
-                Objects.equals(lastModifiedAt, itClient.lastModifiedAt);
+        return this.accessTokenValidity == itClient.accessTokenValidity
+            && this.refreshTokenValidity == itClient.refreshTokenValidity
+            && this.autoApprove == itClient.autoApprove
+            && Objects.equals(this.id, itClient.id)
+            && Objects.equals(this.clientId, itClient.clientId)
+            && Objects.equals(this.clientSecret, itClient.clientSecret)
+            && Objects.equals(this.webServerRedirectUri, itClient.webServerRedirectUri)
+            && Objects.equals(this.name, itClient.name)
+            && Objects.equals(this.description, itClient.description)
+            && Objects.equals(this.createdAt, itClient.createdAt)
+            && Objects.equals(this.lastModifiedAt, itClient.lastModifiedAt);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, clientId, clientSecret, webServerRedirectUri, accessTokenValidity, refreshTokenValidity, autoApprove, name, description, createdAt, lastModifiedAt);
+        return Objects.hash(
+                this.id,
+                this.clientId,
+                this.clientSecret,
+                this.webServerRedirectUri,
+                this.accessTokenValidity,
+                this.refreshTokenValidity,
+                this.autoApprove,
+                this.name,
+                this.description,
+                this.createdAt,
+                this.lastModifiedAt
+        );
     }
 
     @Override
     public String toString() {
-        return "ITClient{" +
-                "id=" + id +
-                ", clientId='" + clientId + '\'' +
-                ", clientSecret='" + clientSecret + '\'' +
-                ", webServerRedirectUri='" + webServerRedirectUri + '\'' +
-                ", accessTokenValidity=" + accessTokenValidity +
-                ", refreshTokenValidity=" + refreshTokenValidity +
-                ", autoApprove=" + autoApprove +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastModifiedAt=" + lastModifiedAt +
-                '}';
+        return "ITClient{"
+                + "id=" + this.id
+                + ", clientId='" + this.clientId + '\''
+                + ", clientSecret={redacted}'\''"
+                + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''
+                + ", accessTokenValidity=" + this.accessTokenValidity
+                + ", refreshTokenValidity=" + this.refreshTokenValidity
+                + ", autoApprove=" + this.autoApprove
+                + ", name='" + this.name + '\''
+                + ", description='" + this.description + '\''
+                + ", createdAt=" + this.createdAt
+                + ", lastModifiedAt=" + this.lastModifiedAt
+                + '}';
     }
 }
