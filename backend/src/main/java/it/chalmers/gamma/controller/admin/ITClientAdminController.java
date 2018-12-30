@@ -23,39 +23,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/auth")
 public class ITClientAdminController {
+
     private final ITClientService itClientService;
-    public ITClientAdminController(ITClientService itClientService){
+
+    public ITClientAdminController(ITClientService itClientService) {
         this.itClientService = itClientService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addITClient(@RequestBody AddITClientRequest request){
-        itClientService.createITClient(request);
+    public ResponseEntity<String> addITClient(@RequestBody AddITClientRequest request) {
+        this.itClientService.createITClient(request);
         return new ITClientAdded();
     }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ITClient>> getAllOauthClients() {
-        return new GetAllClientsResponse(itClientService.getAllClients());
+        return new GetAllClientsResponse(this.itClientService.getAllClients());
     }
+
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<ITClient> getClient(@PathVariable("id") String id) {
-        ITClient client = itClientService.getITClient(UUID.fromString(id));
+        ITClient client = this.itClientService.getITClient(UUID.fromString(id));
         return new GetITClient(client);
     }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<String> removeClient(@PathVariable("id") String id) {
-        if(itClientService.clientExists(UUID.fromString(id))) {
-            itClientService.removeITClient(UUID.fromString(id));
+        if (this.itClientService.clientExists(UUID.fromString(id))) {
+            this.itClientService.removeITClient(UUID.fromString(id));
         }
         return new ITClientRemovedResponse();
     }
+
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
     public ResponseEntity<String> editClient(
             @PathVariable("id") String id, @RequestBody AddITClientRequest request) {
-        if(itClientService.clientExists(UUID.fromString(id))){
+        if (this.itClientService.clientExists(UUID.fromString(id))) {
             throw new NoSuchClientExistsResponse();
         }
-        itClientService.editClient(UUID.fromString(id), request);
+        this.itClientService.editClient(UUID.fromString(id), request);
         return new EditedClientResponse();
     }
 }
