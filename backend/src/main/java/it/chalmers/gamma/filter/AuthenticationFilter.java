@@ -33,14 +33,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    public AuthenticationFilter(ITUserService itUserService, String secretKey, String issuer){
+    public AuthenticationFilter(ITUserService itUserService, String secretKey, String issuer) {
         this.itUserService = itUserService;
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain) throws ServletException, IOException {
         String encodedToken = resolveToken(request);
         if (encodedToken != null) {
             Jws<Claims> claim = decodeToken(encodedToken);
@@ -65,10 +68,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             null, userDetails.getAuthorities());
     }
 
-    /**
+    /*
      * If this doesn't crash, then the JWT token is valid.
-     * @param token
-     * @return
      */
     private Jws<Claims> decodeToken(String token) {
         try {
