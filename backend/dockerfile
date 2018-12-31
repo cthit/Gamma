@@ -11,16 +11,29 @@ WORKDIR /app
 USER gradle
 #db is used to separate development and production databases
 
-# Environment variables needed for Gamma to run, Should be changed. 
+# Environment variables needed for Gamma to run in Production env, These must be changed!!.
 ENV DB_HOST db
 ENV DB_USER user
 ENV DB_PASSWORD password
+
 ENV SERVER_PORT 9090
+
 ENV JWT_SECRET_KEY jwtkey
 ENV JWT_EXPIRE_LENGTH 2592000000
+
+ENV FRONTEND_CLIENT_ID id
+ENV FRONTEND_CLIENT_SECRET secret
+ENV FRONTEND_REDIRECT_URI uri
+
 ENV GOTIFY_KEY key
 ENV GOTIFY_URL https://gotify.chalmers.it
+
 ENV ADMIN_PASSWORD password
+
+ENV AUTH_ACCESS_TOKEN_VALIDITY 3000
+ENV AUTH_AUTO_APPROVE true
+
+
 
 
 
