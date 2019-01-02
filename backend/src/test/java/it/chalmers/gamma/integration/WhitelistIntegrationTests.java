@@ -54,26 +54,25 @@ public class WhitelistIntegrationTests {
 
     @Test
     public void testCreateCode() {
-//        String cid = "TEST_CODE";
-//        try {
-//            utils.sendCreateCode(cid);
-//        } catch (Exception e) {
-//            LoggerFactory.getLogger(ITUserController.class).info(e.getMessage(), e);
-//        }
-//        Whitelist whitelist = this.whitelistRepository.findByCid(cid);
-//        Assert.assertTrue(this.activationCodeService.userHasCode(whitelist.getCid()));
+        //        String cid = "TEST_CODE";
+        //        try {
+        //            utils.sendCreateCode(cid);
+        //        } catch (Exception e) {
+        //            LoggerFactory.getLogger(ITUserController.class).info(e.getMessage(), e);
+        //        }
+        //        Whitelist whitelist = this.whitelistRepository.findByCid(cid);
+        //        Assert.assertTrue(this.activationCodeService.userHasCode(whitelist.getCid()));
         Assert.assertTrue(true);
     }
 
     @Test
     public void testExpiredCode() throws Exception {
-//        String cid = "expired";
-//        utils.sendCreateCode(cid);
-//        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(cid);
-//        activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds(2 * 3600 + 5));
-//        this.activationCodeRepository.save(activationCode);
-//        Assert.assertTrue(this.activationCodeService.hasCodeExpired(cid, 2));
-//
+        //        String cid = "expired";
+        //        utils.sendCreateCode(cid);
+        //        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(cid);
+        //        activationCode.setCreatedAt(activationCode.getCreatedAt().minusSeconds(2 * 3600 + 5));
+        //        this.activationCodeRepository.save(activationCode);
+        //        Assert.assertTrue(this.activationCodeService.hasCodeExpired(cid, 2));
         Assert.assertTrue(true);
     }
 }
