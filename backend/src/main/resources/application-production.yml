@@ -19,7 +19,9 @@ spring:
 
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8081}server
+  servlet:
+    context-path: /api
 
 logging:
   level:
@@ -39,9 +41,17 @@ security:
 
 
 application:
+  frontend-client-details:
+    client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
+    client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
+    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:3000/login}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   gotify:
     key: ${GOTIFY_KEY:key}
     url: ${GOTIFY_URL:https://gotify.chalmers.it}
   allowed-origin: "https://account.chalmers.it"
+  auth:
+    accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
+    autoApprove: ${AUTH_AUTO_APPROVE:true}
+    refreshTokenValidityTime: ${AUTH_REFRESH_TOKEN_VALIDITY:500000000}

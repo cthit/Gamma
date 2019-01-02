@@ -57,10 +57,8 @@ class ShowGroupDetails extends Component {
                                                     description_en:
                                                         group.description.en,
                                                     email: group.email,
-                                                    func_sv:
-                                                        group.func.sv,
-                                                    func_en:
-                                                        group.func.en,
+                                                    func_sv: group.func.sv,
+                                                    func_en: group.func.en,
                                                     type: _getTypeText(
                                                         group.type,
                                                         text

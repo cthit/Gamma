@@ -10,15 +10,11 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.jwt.JwtTokenProvider;
-import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.LoginCompleteResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -29,25 +25,20 @@ import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
+import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -61,49 +52,16 @@ public final class ITUserController {
     private final ITUserService itUserService;
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserWebsiteService userWebsiteService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ITUserController.class);
 
     public ITUserController(ITUserService itUserService,
                              ActivationCodeService activationCodeService,
                              WhitelistService whitelistService,
-                             AuthenticationManager authenticationManager,
-                             JwtTokenProvider jwtTokenProvider,
                              UserWebsiteService userWebsiteService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.userWebsiteService = userWebsiteService;
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@Valid @RequestBody CidPasswordRequest cidPasswordRequest,
-                                        BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-        try {
-            Authentication authentication =
-                    this.authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(
-                                    cidPasswordRequest.getCid(),
-                                    cidPasswordRequest.getPassword()
-                            )
-                    );
-            if (authentication.isAuthenticated()) {
-                String jwt = this.jwtTokenProvider.createToken(cidPasswordRequest.getCid());
-                return new LoginCompleteResponse(jwt);
-            }
-        } catch (AuthenticationException e) {
-            LOGGER.info(e.getMessage(), e);
-            throw new IncorrectCidOrPasswordResponse();
-        }
-        throw new IncorrectCidOrPasswordResponse();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -164,9 +122,8 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public JSONObject getMe(@RequestHeader("Authorization") String jwtTokenWithBearer) {
-        String jwtToken = this.jwtTokenProvider.removeBearer(jwtTokenWithBearer);
-        String cid = this.jwtTokenProvider.decodeToken(jwtToken).getBody().getSubject();
+    public JSONObject getMe(Principal principal) {
+        String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
         ITUserSerializer serializer =
                 new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());

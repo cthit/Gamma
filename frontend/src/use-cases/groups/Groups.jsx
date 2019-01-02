@@ -11,25 +11,13 @@ import EditUsersInGroup from "./screens/edit-users-in-group";
 
 const Groups = () => (
     <Switch>
-        <Route path="/groups" exact component={ShowAllGroups}/>
-        <Route path="/groups/new" exact component={CreateNewGroup}/>
-        <Route
-            path="/groups/:id/edit"
-            exact
-            component={EditGroupDetails}
-        />
-        <Route
-            path="/groups/:id/members"
-            exact
-            component={AddUsersToGroup}
-        />
-        <Route path="/groups/:id" exact component={ShowGroupDetails}/>
-        <Route
-            path="/groups/:id/users"
-            exace
-            component={EditUsersInGroup}
-        />
+        <Route path="/groups" exact component={ShowAllGroups} />
+        <Route path="/groups/new" exact component={CreateNewGroup} />
+        <Route path="/groups/:id/edit" exact component={EditGroupDetails} />
+        <Route path="/groups/:id/members" exact component={AddUsersToGroup} />
+        <Route path="/groups/:id" exact component={ShowGroupDetails} />
+        <Route path="/groups/:id/users" exace component={EditUsersInGroup} />
     </Switch>
-)
+);
 
 export default Groups;

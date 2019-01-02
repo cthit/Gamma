@@ -5,6 +5,7 @@
       <option value="Prettier JS" />
       <option value="Prettier JSX" />
       <option value="Prettier JSON" />
+      <option value="Prettier HTML" />
     </enabled-global>
   </component>
 </project>
