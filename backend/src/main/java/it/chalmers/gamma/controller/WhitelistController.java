@@ -3,16 +3,22 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
+
+import it.chalmers.gamma.util.InputValidationUtils;
+
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,20 +50,18 @@ public final class WhitelistController {
     }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
-    public ResponseEntity<String> createActivationCode(@RequestBody WhitelistCodeRequest cid) {
+    public ResponseEntity<String> createActivationCode(@Valid @RequestBody WhitelistCodeRequest cid,
+                                                       BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
             String code = this.activationCodeService.generateActivationCode();
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
         }
-
-        /*
-        We always want to send the same response, for security reasons.
-        If the responses would vary, brute force attacks could be made
-        to find out real CID values.
-         */
-        return new WhitelistAddedResponse();
+        return new WhitelistAddedResponse(); // For security reasons
     }
 
     private void sendEmail(ActivationCode activationCode) {

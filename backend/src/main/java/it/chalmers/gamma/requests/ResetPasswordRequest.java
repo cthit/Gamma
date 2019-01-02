@@ -3,14 +3,14 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 
 public class ResetPasswordRequest {
-    private String id;
+    private String cid;
 
-    public String getId() {
-        return this.id;
+    public String getCid() {
+        return this.cid;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCid(String cid) {
+        this.cid = cid;
     }
 
     @Override
@@ -22,18 +22,18 @@ public class ResetPasswordRequest {
             return false;
         }
         ResetPasswordRequest that = (ResetPasswordRequest) o;
-        return this.id.equals(that.id);
+        return this.cid.equals(that.cid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(this.cid);
     }
 
     @Override
     public String toString() {
         return "ResetPasswordRequest{"
-            + "id='" + this.id + '\''
+            + "cid='" + this.cid + '\''
             + '}';
     }
 }

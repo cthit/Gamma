@@ -1,10 +1,13 @@
 package it.chalmers.gamma.requests;
-
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 public class CreateWebsiteRequest {
 
+    @NotNull(message = "NAME_MUST_BE_PROVIDED")
     private String name;
+
+    @NotNull(message = "PRETTY_NAME_MUST_BE_PROVIDED")
     private String prettyName;
 
     public void setName(String name) {

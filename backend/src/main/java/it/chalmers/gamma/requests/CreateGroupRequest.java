@@ -1,22 +1,37 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
-
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class CreateGroupRequest {
+    @NotNull(message = "NAME_MUST_BE_PROVIDED")
+    @Size(max = 50, message = "NAME_TOO_LONG")
     private String name;
+    @Size(max = 50, message = "PRETTY_NAME_TOO_LONG")
     private String prettyName;
     private Text description;
+    @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
+    @Email(message = "NOT_A_VALID_EMAIL")
     private String email;
+    @NotNull(message = "A_FUNCTION_MUST_BE_PROVIDED")
     private Text func;
     private String avatarURL;
     private List<WebsiteInfo> websites;
+    @Min(value = 2001, message = "YEAR_MUST_BE_AFTER_2001")
     private int year;
+    @NotNull(message = "BECOMES_ACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
     private Calendar becomesActive;
+    @NotNull(message = "BECOMES_INACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
     private Calendar becomesInactive;
+    @NotEmpty(message = "A_SUPER_GROUP_MUST_BE_PROVIDED")
     private String superGroup;
 
     public List<WebsiteInfo> getWebsites() {

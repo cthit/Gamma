@@ -13,17 +13,23 @@ import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.GroupsResponse;
-import it.chalmers.gamma.response.MissingRequiredFieldResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
+
 import it.chalmers.gamma.service.WebsiteService;
+
+import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,23 +64,20 @@ public final class GroupAdminController {
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addNewGroup(@RequestBody CreateGroupRequest createGroupRequest) {
+    public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
+                                              BindingResult result) {
         if (this.fkitService.groupExists(createGroupRequest.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
-        if (createGroupRequest.getName() == null) {
-            throw new MissingRequiredFieldResponse("name");
-        }
-        if (createGroupRequest.getEmail() == null) {
-            throw new MissingRequiredFieldResponse("email");
-        }
-        if (createGroupRequest.getFunc() == null) {
-            throw new MissingRequiredFieldResponse("function");
+
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
                 UUID.fromString(createGroupRequest.getSuperGroup()));
+
         if (superGroup == null) {
-            throw new MissingRequiredFieldResponse("superGroup");
+            throw new GroupDoesNotExistResponse();
         }
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
@@ -98,6 +101,9 @@ public final class GroupAdminController {
     public ResponseEntity<String> editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
+        if (!this.fkitService.groupExists(UUID.fromString(id))) {
+            throw new GroupDoesNotExistResponse();
+        }
         this.fkitService.editGroup(UUID.fromString(id), request);
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();

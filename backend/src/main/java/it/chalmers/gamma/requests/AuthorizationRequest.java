@@ -1,10 +1,14 @@
 package it.chalmers.gamma.requests;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
 public class AuthorizationRequest {
+    @NotNull(message = "POST_MUST_BE_PROVIDED")
     private String post;
+    @NotNull(message = "SUPER_GROUP_MUST_BE_PROVIDED")
     private String superGroup;
+    @NotNull(message = "AUTHORITY_MUST_BE_PROVIDED")
     private String authority;
 
     public String getAuthority() {

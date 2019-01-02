@@ -10,11 +10,14 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.requests.CidPasswordRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.NoDataSentResponse;
+import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.LoginCompleteResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -23,6 +26,7 @@ import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.security.Principal;
 import java.time.Year;
@@ -30,9 +34,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,17 +74,16 @@ public final class ITUserController {
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
     public ResponseEntity<String> createUser(
-            @RequestBody CreateITUserRequest createITUserRequest) {
-        if (createITUserRequest == null) {
-            throw new NoDataSentResponse();
+            @Valid @RequestBody CreateITUserRequest createITUserRequest, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-
         Whitelist user = this.whitelistService.getWhitelist(
                 createITUserRequest.getWhitelist().getCid()
         );
 
         if (user == null) {
-            throw new CodeOrCidIsWrongResponse();
+            throw new CidNotFoundResponse();
         }
 
         createITUserRequest.setWhitelist(user);
