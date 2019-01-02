@@ -8,6 +8,7 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.chalmers.gamma.views.WebsiteView;
 import org.springframework.stereotype.Service;
 
 @Service

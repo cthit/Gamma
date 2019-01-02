@@ -22,7 +22,7 @@ import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.util.TokenUtils;
 

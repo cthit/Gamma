@@ -5,10 +5,14 @@ import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import it.chalmers.gamma.views.FKITGroupView;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -86,6 +90,26 @@ public class FKITService {
 
     public FKITGroup getGroup(UUID id) {
         return this.repo.findById(id).orElse(null);
+    }
+
+    public List<FKITGroupView> getGroupsOrdered(){
+        List<FKITGroup> groups = this.repo.findAll();
+        List<FKITGroupView> views = new ArrayList<>();
+        for (FKITGroup group : groups) {
+            boolean superGroupFound = false;
+            for (FKITGroupView view : views) {
+                if (view.getSuperGroup().equals(group.getSuperGroup())) {
+                   view.addGroup(group);
+                   superGroupFound = true;
+                }
+            }
+            if(!superGroupFound){
+                FKITGroupView newView = new FKITGroupView(group.getSuperGroup());
+                newView.addGroup(group);
+                views.add(newView);
+            }
+        }
+        return views;
     }
 
 }

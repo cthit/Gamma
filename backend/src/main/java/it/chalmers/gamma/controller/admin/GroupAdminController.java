@@ -14,6 +14,7 @@ import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.OrderedGroupsResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
@@ -28,6 +29,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.views.FKITGroupView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,8 +60,8 @@ public final class GroupAdminController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<FKITGroup>> getGroups() {
-        return new GroupsResponse(this.fkitService.getGroups());
+    public ResponseEntity<List<FKITGroupView>> getGroups() {
+        return new OrderedGroupsResponse(this.fkitService.getGroupsOrdered());
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")

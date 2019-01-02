@@ -11,7 +11,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
-import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.Arrays;

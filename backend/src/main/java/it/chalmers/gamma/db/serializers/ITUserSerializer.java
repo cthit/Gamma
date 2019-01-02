@@ -1,7 +1,7 @@
 package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.util.SerializerUtils;
 
 import java.util.ArrayList;

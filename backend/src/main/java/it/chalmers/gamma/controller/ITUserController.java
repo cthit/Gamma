@@ -21,7 +21,7 @@ import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
