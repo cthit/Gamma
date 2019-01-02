@@ -4,8 +4,10 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
 public class DeleteGroupRequest {       // Unsure about this one
+
     @NotNull(message = "GROUP_MUST_BE_PROVIDED")
     private String group;
+
     @NotNull(message = "NAME_MUST_BE_PROVIDED")
     private String adminUser;
     private String adminPassword;

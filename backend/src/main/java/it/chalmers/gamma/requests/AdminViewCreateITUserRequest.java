@@ -8,22 +8,30 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class AdminViewCreateITUserRequest {
+
     @NotEmpty(message = "CID_MUST_BE_PROVIDED")
     @Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS")
     private String cid;
+
     @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
     private String password;
+
     @NotEmpty(message = "NICK_MUST_BE_PROVIDED")
     private String nick;
+
     @NotEmpty(message = "FIRST_NAME_MUST_BE_PROVIDED")
     private String firstName;
+
     @NotEmpty(message = "LAST_NAME_MUST_BE_PROVIDED")
     private String lastName;
+
     @NotEmpty(message = "EMAIL_NAME_MUST_BE_PROVIDED")
     @Email(message = "NOT_A_VALID_EMAIL")
     private String email;
+
     @AssertTrue(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
     private boolean userAgreement;
+
     @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
 

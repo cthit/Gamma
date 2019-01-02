@@ -4,8 +4,10 @@ import java.util.Objects;
 import javax.validation.constraints.NotEmpty;
 
 public class AddUserGroupRequest {
+
     @NotEmpty(message = "USER_MUST_BE_PROVIDED")
     private String user;
+
     @NotEmpty(message = "POST_MUST_BE_PROVIDED")
     private String post;
     private String unofficialName;

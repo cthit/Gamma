@@ -15,18 +15,25 @@ public class CreateITUserRequest {
     @NotEmpty(message = "CODE_MUST_BE_PROVIDED")
     // TODO SPECIFY MINIMUM AND MAXIMUM LENGTH OF CODE
     private String code;
+
     @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
     private String password;
+
     @NotEmpty(message = "NICK_MUST_BE_PROVIDED")
     private String nick;
+
     @NotEmpty(message = "FIRST_NAME_MUST_BE_PROVIDED")
     private String firstName;
+
     @NotEmpty(message = "LAST_NAME_MUST_BE_PROVIDED")
     private String lastName;
+
     @AssertTrue(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
     private boolean userAgreement;
+
     @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
+
     @NotNull(message = "WHITELIST_MUST_BE_PROVIDED")
     private Whitelist whitelist;
 

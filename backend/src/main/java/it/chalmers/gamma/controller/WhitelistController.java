@@ -61,7 +61,7 @@ public final class WhitelistController {
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
         }
-        return new WhitelistAddedResponse();
+        return new WhitelistAddedResponse(); // For security reasons
     }
 
     private void sendEmail(ActivationCode activationCode) {

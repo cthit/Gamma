@@ -6,6 +6,7 @@ public class CreateWebsiteRequest {
 
     @NotNull(message = "NAME_MUST_BE_PROVIDED")
     private String name;
+
     @NotNull(message = "PRETTY_NAME_MUST_BE_PROVIDED")
     private String prettyName;
 
