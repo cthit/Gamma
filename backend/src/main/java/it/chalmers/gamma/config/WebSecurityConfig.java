@@ -40,19 +40,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) {
         disableCsrf(http);
-        setSessionManagementToStateless(http);
+        setSessionManagementToIfRequired(http);
         addAuthenticationFilter(http);
         addFormLogin(http);
-
-        String[] permittedPaths = {
-            "/api/login",
-            "/api/oauth/authorize",
-            "/api/oauth/token",
-            "/api/users/create",
-            "/api/whitelist/activate_cid"
-        };
-
-        setPermittedPaths(http, permittedPaths);
+        setPermittedPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
     }
 
@@ -86,11 +77,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    private void setSessionManagementToStateless(HttpSecurity http) {
+    private void setSessionManagementToIfRequired(HttpSecurity http) {
         try {
-            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when setting SessionManagement to stateless");
+            LOGGER.error("Something went wrong when setting SessionManagement to 'if required'");
             LOGGER.error(e.getMessage());
         }
     }
@@ -112,15 +103,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addFormLogin(HttpSecurity http) {
         try {
-            http.formLogin();
+            http
+                .formLogin()
+            .and()
+                .httpBasic();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding form login");
             LOGGER.error(e.getMessage());
         }
     }
 
-    private void setPermittedPaths(HttpSecurity http, String... permittedPaths) {
+    private void setPermittedPaths(HttpSecurity http) {
         try {
+
+            String[] permittedPaths = {
+                "/api/login",
+                "/api/oauth/authorize",
+                "/api/oauth/token",
+                "/api/users/create",
+                "/api/whitelist/activate_cid"
+            };
+
+
             http
                 .authorizeRequests()
                 .antMatchers(permittedPaths).permitAll();
@@ -139,4 +143,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             LOGGER.error(e.getMessage());
         }
     }
+
+
 }
