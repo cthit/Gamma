@@ -1,8 +1,10 @@
 package it.chalmers.gamma.requests;
 
 import java.util.Objects;
+import javax.validation.constraints.NotEmpty;
 
 public class AuthorizationLevelRequest {
+    @NotEmpty(message = "AUTHORITY_LEVEL_MUST_BE_PROVIDED")
     private String authorityLevel;
 
     public String getAuthorityLevel() {

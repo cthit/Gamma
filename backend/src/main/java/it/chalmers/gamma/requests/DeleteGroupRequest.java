@@ -1,11 +1,16 @@
 package it.chalmers.gamma.requests;
 
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
 
-public class DeleteGroupRequest {
-    String group;
-    String adminUser;
-    String adminPassword;
+public class DeleteGroupRequest {       // Unsure about this one
+
+    @NotNull(message = "GROUP_MUST_BE_PROVIDED")
+    private String group;
+
+    @NotNull(message = "NAME_MUST_BE_PROVIDED")
+    private String adminUser;
+    private String adminPassword;
 
     public String getGroup() {
         return this.group;

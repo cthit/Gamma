@@ -2,9 +2,12 @@ package it.chalmers.gamma.requests;
 
 import java.util.List;
 import java.util.Objects;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 public class AddListOfWhitelistedRequest {
-    private List<String> cids;
+    @NotEmpty(message = "NO_CID_IN_REQUEST")
+    private List<@Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS") String> cids;
 
     public List<String> getCids() {
         return this.cids;

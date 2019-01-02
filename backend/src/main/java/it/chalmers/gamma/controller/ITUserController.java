@@ -17,8 +17,8 @@ import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.LoginCompleteResponse;
-import it.chalmers.gamma.response.NoDataSentResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -27,11 +27,13 @@ import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -42,6 +44,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -79,7 +82,11 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> login(@RequestBody CidPasswordRequest cidPasswordRequest) {
+    public ResponseEntity<String> login(@Valid @RequestBody CidPasswordRequest cidPasswordRequest,
+                                        BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         try {
             Authentication authentication =
                     this.authenticationManager.authenticate(
@@ -103,17 +110,16 @@ public final class ITUserController {
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
     public ResponseEntity<String> createUser(
-            @RequestBody CreateITUserRequest createITUserRequest) {
-        if (createITUserRequest == null) {
-            throw new NoDataSentResponse();
+            @Valid @RequestBody CreateITUserRequest createITUserRequest, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-
         Whitelist user = this.whitelistService.getWhitelist(
                 createITUserRequest.getWhitelist().getCid()
         );
 
         if (user == null) {
-            throw new CodeOrCidIsWrongResponse();
+            throw new CidNotFoundResponse();
         }
 
         createITUserRequest.setWhitelist(user);

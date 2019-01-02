@@ -114,7 +114,15 @@ public class ITUserIntegrationTests {
         CreateITUserRequest user = new CreateITUserRequest();
         user.setCode(activationCode);
         user.setWhitelist(whitelist);
+        String nick = "test";
+        String firstName = "testLn";
+        String lastName = "testFn";
         user.setPassword("password");
+        user.setNick(nick);
+        user.setAcceptanceYear(2018);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setUserAgreement(true);
         MockHttpServletRequestBuilder mocker = MockMvcRequestBuilders
                 .post("/users/create")
                 .content(utils.asJsonString(user))

@@ -1,8 +1,10 @@
 package it.chalmers.gamma.requests;
 
 import java.util.Objects;
+import javax.validation.constraints.NotEmpty;
 
 public class WhitelistCodeRequest {
+    @NotEmpty(message = "CID_MUST_BE_PROVIDED")
     private String cid;
 
     public String getCid() {

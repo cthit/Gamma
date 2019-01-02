@@ -28,6 +28,10 @@ public class AuthorityLevelService {
         return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel.toUpperCase()) != null;
     }
 
+    public boolean authorityLevelExists(UUID id) {
+        return this.authorityLevelRepository.existsById(id);
+    }
+
     public AuthorityLevel getAuthorityLevel(UUID authorityLevel) {
         return this.authorityLevelRepository.findById(authorityLevel).orElse(null);
     }

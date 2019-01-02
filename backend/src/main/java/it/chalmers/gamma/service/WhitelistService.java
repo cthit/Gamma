@@ -32,6 +32,9 @@ public class WhitelistService {
     public void removeWhiteListedCID(String cid) {
         this.whitelistRepository.delete(this.whitelistRepository.findByCid(cid));
     }
+    public void removeWhiteListedCID(UUID id) {
+        this.whitelistRepository.deleteById(id);
+    }
 
     /**
      * gets whitelist object by cid.
@@ -51,6 +54,10 @@ public class WhitelistService {
      */
     public boolean isCIDWhiteListed(String cid) {
         return this.whitelistRepository.findByCid(cid) != null;
+    }
+
+    public boolean isCIDWhiteListed(UUID id) {
+        return this.whitelistRepository.existsById(id);
     }
 
     public List<Whitelist> getAllWhitelist() {

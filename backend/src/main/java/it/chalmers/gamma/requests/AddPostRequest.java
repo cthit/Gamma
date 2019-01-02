@@ -1,10 +1,12 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
-
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
+
 
 public class AddPostRequest {
+    @NotNull(message = "POST_CANNOT_BE_NULL")
     private Text post;
     //TODO ADD LEVEL OF CLEARANCE OF SOMETHING
 
