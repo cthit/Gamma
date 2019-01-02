@@ -21,11 +21,11 @@ public class TestUtils {
     }
 
     public MockMvc getMockMvc() {
-        return mockMvc;
+        return this.mockMvc;
     }
 
     public ITUserService getUserService() {
-        return userService;
+        return this.userService;
     }
 
     //    public String addAdminUser() {
