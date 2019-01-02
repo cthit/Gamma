@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/auth")
+@RequestMapping("/admin/clients")
 public class ITClientAdminController {
 
     private final ITClientService itClientService;

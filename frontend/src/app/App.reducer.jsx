@@ -1,4 +1,3 @@
-import { localizeReducer as localize } from "react-localize-redux";
 import { activationCodes } from "../use-cases/activation-codes/ActivationCodes.reducer";
 import { createAccount } from "../use-cases/create-account/CreateAccount.reducer";
 import { groups } from "../use-cases/groups/Groups.reducer";
@@ -9,10 +8,10 @@ import { whitelist } from "../use-cases/whitelist/Whitelist.reducer";
 import { user } from "./elements/user-information/UserInformation.element.reducer";
 import { loading } from "./views/gamma-loading/GammaLoading.view.reducer";
 import { editUsersInGroup } from "../use-cases/groups/screens/edit-users-in-group/EditUsersInGroup.screen.reducer";
+import { clients } from "../use-cases/clients/Clients.reducer";
 
 export const rootReducer = {
     createAccount,
-    localize,
     user,
     users,
     posts,
@@ -21,5 +20,6 @@ export const rootReducer = {
     websites,
     activationCodes,
     loading,
-    editUsersInGroup
+    editUsersInGroup,
+    clients
 };
