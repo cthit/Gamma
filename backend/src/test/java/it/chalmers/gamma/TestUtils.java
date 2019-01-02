@@ -11,14 +11,23 @@ import org.springframework.test.web.servlet.MockMvc;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class TestUtils {
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-    ITUserService userService;
+    private ITUserService userService;
 
     public void setMockMvc(MockMvc mockMvc, ITUserService userService) {
         this.mockMvc = mockMvc;
         this.userService = userService;
     }
+
+    public MockMvc getMockMvc() {
+        return mockMvc;
+    }
+
+    public ITUserService getUserService() {
+        return userService;
+    }
+
     //    public String addAdminUser() {
     //        String nick1 = "admin";
     //        String cid1 = "admin";
