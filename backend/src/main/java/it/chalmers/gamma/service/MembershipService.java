@@ -10,6 +10,7 @@ import it.chalmers.gamma.db.repository.MembershipRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.chalmers.gamma.requests.EditMembershipRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,6 +42,7 @@ public class MembershipService {
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(group);
         pk.setITUser(user);
+        System.out.println(pk);
         membership.setId(pk);
         membership.setPost(post);
         membership.setUnofficialPostName(postname);
@@ -120,6 +122,16 @@ public class MembershipService {
 
     public Membership getMembershipByUserAndGroup(ITUser user, FKITGroup group) {
         return this.membershipRepository.findById_ItUserAndId_FkitGroup(user, group);
+    }
+
+    public void removeUserFromGroup(FKITGroup group, ITUser user){
+        Membership membership = getMembershipByUserAndGroup(user, group);
+        this.membershipRepository.delete(membership);
+    }
+
+    public void editMembership(Membership membership, EditMembershipRequest request){
+        membership.setUnofficialPostName(request.getUnofficialName());
+        this.membershipRepository.save(membership);
     }
 
 }
