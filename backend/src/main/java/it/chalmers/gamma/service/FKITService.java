@@ -111,5 +111,8 @@ public class FKITService {
         }
         return views;
     }
+    public List<FKITGroup> getGroupsInSuperGroup(FKITSuperGroup group){
+        return this.repo.findAllBySuperGroup(group);
+    }
 
 }

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller.admin;
 
+import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.FKITSuperGroupCreatedResponse;
@@ -9,7 +10,9 @@ import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
+import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -30,11 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/superGroups")       // What should this URL be?
 public class SuperGroupAdminController {
     private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITService fkitService;
 
 
-    public SuperGroupAdminController(FKITSuperGroupService fkitSuperGroupService) {
+    public SuperGroupAdminController(FKITSuperGroupService fkitSuperGroupService, FKITService fkitService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
-
+        this.fkitService = fkitService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -80,5 +84,15 @@ public class SuperGroupAdminController {
         }
         this.fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), request);
         return new GroupEditedResponse();
+    }
+
+    @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
+    public ResponseEntity<List<FKITGroup>> getAllSubGroups(@PathVariable("id") String id){
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
+        if(superGroup == null){
+            throw new GroupDoesNotExistResponse();
+        }
+        List<FKITGroup> groups = this.fkitService.getGroupsInSuperGroup(superGroup);
+        return new GroupsResponse(groups);
     }
 }
