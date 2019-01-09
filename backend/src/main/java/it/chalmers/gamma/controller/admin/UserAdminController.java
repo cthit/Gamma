@@ -20,6 +20,7 @@ import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.views.WebsiteView;
@@ -30,6 +31,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
@@ -49,14 +51,17 @@ public final class UserAdminController {
     private final ITUserService itUserService;
     private final UserWebsiteService userWebsiteService;
     private final PasswordResetService passwordResetService;
+    private final MailSenderService mailSenderService;
 
     public UserAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
-            PasswordResetService passwordResetService) {
+            PasswordResetService passwordResetService,
+            MailSenderService mailSenderService) {
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
         this.passwordResetService = passwordResetService;
+        this.mailSenderService = mailSenderService;
     }
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
@@ -188,11 +193,7 @@ public final class UserAdminController {
         } else {
             this.passwordResetService.addToken(user, token);
         }
-        // try {
-        //   mailSenderService.sendPasswordReset(user, token);
-        // } catch (MessagingException e) {
-        //   e.printStackTrace();
-        // }
+        sendMail(user, token);
         return new PasswordResetResponse();
     }
 
@@ -214,6 +215,13 @@ public final class UserAdminController {
         this.itUserService.setPassword(user, request.getPassword());
         this.passwordResetService.removeToken(user);
         return new PasswordChangedResponse();
+    }
+    // TODO Make sure that an URL is added to the email
+    private void sendMail(ITUser user, String token){
+        String subject = "Password reset for Account at IT division of Chalmers";
+        String message = "A password reset have been requested for this account, if you have not requested " +
+                "this mail, feel free to ignore it. \n Your reset code : " + token + "URL : ";
+        mailSenderService.sendMail(user.getCid(), subject, message);
     }
 
 }
