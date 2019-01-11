@@ -85,6 +85,7 @@ public class EntityWebsiteService {
 
                 // if the websitetype is not found, it is added.
                 websiteTypes.add(website.getWebsite().getWebsite());
+                System.out.println(website.getWebsite());
                 WebsiteView newGroup = new WebsiteView(website.getWebsite().getWebsite());
                 newGroup.setUrl(new ArrayList<>());
                 newGroup.getUrl().add(website.getWebsite().getUrl());

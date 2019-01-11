@@ -59,11 +59,6 @@ public final class GroupAdminController {
         this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<FKITGroupView>> getGroups() {
-        return new OrderedGroupsResponse(this.fkitService.getGroupsOrdered());
-    }
-
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,

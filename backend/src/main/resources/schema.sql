@@ -5,14 +5,14 @@ create table internal_text (
 );
 
 create table website (
-  id uuid constraint websites_pk primary key,
-  name varchar(100) not null constraint website_name unique,
+  id uuid     constraint websites_pk primary key,
+  name        varchar(100) not null constraint website_name unique,
   pretty_name varchar(100) not null
 );
 
 create table website_url (
-  id      uuid constraint websites_url_pk primary key,
-  website uuid not null references website,
+  id      uuid          constraint websites_url_pk primary key,
+  website uuid          not null references website,
   url     varchar(2000) not null
 );
 

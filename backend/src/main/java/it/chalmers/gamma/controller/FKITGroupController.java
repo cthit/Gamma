@@ -7,10 +7,18 @@ import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
 
+import com.google.api.client.json.Json;
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Website;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
+import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.response.OrderedGroupsResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
+import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.views.FKITGroupView;
 import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
@@ -19,6 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,12 +41,15 @@ public final class FKITGroupController {
 
     private final FKITService fkitService;
     private final GroupWebsiteService groupWebsiteService;
+    private final MembershipService membershipService;
 
     public FKITGroupController(
             FKITService fkitService,
-            GroupWebsiteService groupWebsiteService) {
+            GroupWebsiteService groupWebsiteService,
+            MembershipService membershipService) {
         this.fkitService = fkitService;
         this.groupWebsiteService = groupWebsiteService;
+        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -92,5 +104,32 @@ public final class FKITGroupController {
         return serializer.serialize(group, null, null);
     }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public List<JSONObject> getGroups() {
+        List<FKITGroup> groups = this.fkitService.getGroups();
+        List<JSONObject> serializedGroups = new ArrayList<>();
+        FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
+        ITUserSerializer userSerializer = new ITUserSerializer(
+                Arrays.asList(ITUserSerializer.Properties.CID,
+                        ITUserSerializer.Properties.NICK,
+                        ITUserSerializer.Properties.FIRST_NAME,
+                        ITUserSerializer.Properties.LAST_NAME,
+                        ITUserSerializer.Properties.ID));
+        for (FKITGroup group : groups) {
+            List<ITUser> members = this.membershipService.getUsersInGroup(group);
+            List<JSONObject> jsonMembers = new ArrayList<>();
+            List<WebsiteView> websites =
+                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group));
+            for(ITUser member : members){
+                jsonMembers.add(userSerializer.serialize(member, null));
+            }
+            serializedGroups.add(serializer.serialize(
+                    group,
+                    jsonMembers,
+                    websites
+            ));
+        }
+        return serializedGroups;
+    }
 
 }
