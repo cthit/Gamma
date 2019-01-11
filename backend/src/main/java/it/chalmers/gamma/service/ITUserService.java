@@ -52,7 +52,9 @@ public class ITUserService implements UserDetailsService {
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
-        return this.itUserRepository.findByCid(cid);
+        ITUser user = this.itUserRepository.findByCid(cid);
+        user.setAuthority(getAuthorites(user));
+        return user;
     }
 
     private List<GrantedAuthority> getAuthorites(ITUser details){

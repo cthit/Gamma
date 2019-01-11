@@ -32,7 +32,11 @@ public class EntityWebsiteService {
      */
     public List<WebsiteURL> addWebsiteToEntity(List<CreateGroupRequest.WebsiteInfo> websiteInfos,
                                                List<WebsiteInterface> entityWebsites) {
+        if(entityWebsites == null || websiteInfos == null){
+            return null;
+        }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
+        System.out.println(websiteInfos);
         for (CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos) {
             boolean websiteExists = false;
             Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());

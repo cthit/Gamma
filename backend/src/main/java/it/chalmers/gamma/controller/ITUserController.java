@@ -8,9 +8,13 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
+import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
@@ -18,6 +22,7 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -169,5 +174,24 @@ public final class ITUserController {
                         this.userWebsiteService.getWebsites(user)
                 );
         return serializer.serialize(user, websites);
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.PUT)
+    public ResponseEntity<String> editMe(Principal principal, @RequestBody EditITUserRequest request){
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if(user == null){
+            throw new CidNotFoundResponse();
+        }
+        this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
+                request.getEmail(), request.getPhone(), request.getLanguage(), request.getAvatarUrl());
+        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
+        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        List<WebsiteInterface> userWebsite = new ArrayList<>(
+                this.userWebsiteService.getWebsites(user)
+        );
+        this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
+        this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
+        return new UserEditedResponse();
     }
 }
