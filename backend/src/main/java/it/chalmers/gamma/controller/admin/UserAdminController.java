@@ -125,7 +125,7 @@ public final class UserAdminController {
         }
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
         ITUserSerializer serializer = new ITUserSerializer(props);
-        ITUser user = this.itUserService.loadUser(cid);
+        ITUser user = this.itUserService.getUserById(UUID.fromString(cid));
         List<WebsiteView> websiteViews =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)

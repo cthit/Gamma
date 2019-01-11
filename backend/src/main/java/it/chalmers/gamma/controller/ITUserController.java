@@ -30,6 +30,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -155,8 +156,8 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
-    public JSONObject getUser(@PathVariable("cid") String cid) {
-        ITUser user = this.itUserService.loadUser(cid);
+    public JSONObject getUser(@PathVariable("cid") String id) {
+        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         if (user == null) {
             throw new CidNotFoundResponse();
         }

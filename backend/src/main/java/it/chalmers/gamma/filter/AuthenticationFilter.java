@@ -62,6 +62,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private Authentication getAuthentication(String cid) {
         UserDetails userDetails = this.itUserService.loadUserByUsername(cid);
+        System.out.println(userDetails.getAuthorities());
         if (userDetails == null) {
             throw new InvalidJWTTokenResponse();
         }
