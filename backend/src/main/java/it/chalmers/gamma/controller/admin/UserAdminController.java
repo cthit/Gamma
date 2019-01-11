@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
@@ -21,6 +22,7 @@ import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
+import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.views.WebsiteView;
@@ -52,16 +54,19 @@ public final class UserAdminController {
     private final UserWebsiteService userWebsiteService;
     private final PasswordResetService passwordResetService;
     private final MailSenderService mailSenderService;
+    private final MembershipService membershipService;
 
     public UserAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
             PasswordResetService passwordResetService,
-            MailSenderService mailSenderService) {
+            MailSenderService mailSenderService,
+            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
         this.passwordResetService = passwordResetService;
         this.mailSenderService = mailSenderService;
+        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
@@ -130,7 +135,8 @@ public final class UserAdminController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websiteViews);
+        return serializer.serialize(user, websiteViews,
+                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -144,7 +150,8 @@ public final class UserAdminController {
                     this.userWebsiteService.getWebsitesOrdered(
                             this.userWebsiteService.getWebsites(user)
                     );
-            JSONObject userView = serializer.serialize(user, websiteViews);
+            JSONObject userView = serializer.serialize(user, websiteViews,
+                    ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
             userViewList.add(userView);
 
         }

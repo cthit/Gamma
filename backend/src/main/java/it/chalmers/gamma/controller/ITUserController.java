@@ -7,10 +7,13 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
+import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
@@ -25,6 +28,7 @@ import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
@@ -59,15 +63,18 @@ public final class ITUserController {
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
+    private final MembershipService membershipService;
 
     public ITUserController(ITUserService itUserService,
-                             ActivationCodeService activationCodeService,
-                             WhitelistService whitelistService,
-                             UserWebsiteService userWebsiteService) {
+                            ActivationCodeService activationCodeService,
+                            WhitelistService whitelistService,
+                            UserWebsiteService userWebsiteService,
+                            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
+        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -137,7 +144,8 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websites);
+        return serializer.serialize(user, websites,
+                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -155,7 +163,7 @@ public final class ITUserController {
         List<JSONObject> minifiedITUsers = new ArrayList<>();
         ITUserSerializer serializer = new ITUserSerializer(props);
         for (ITUser user : itUsers) {
-            minifiedITUsers.add(serializer.serialize(user, null));
+            minifiedITUsers.add(serializer.serialize(user, null, null));
         }
         return minifiedITUsers;
     }
@@ -173,7 +181,9 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websites);
+
+        return serializer.serialize(user, websites,
+                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
