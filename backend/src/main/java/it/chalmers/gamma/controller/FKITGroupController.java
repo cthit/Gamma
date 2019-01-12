@@ -3,22 +3,20 @@ package it.chalmers.gamma.controller;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
-import com.google.api.client.json.Json;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.response.OrderedGroupsResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.views.FKITGroupView;
 import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -80,7 +77,7 @@ public final class FKITGroupController {
         List<FKITGroup> groups = this.fkitService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, ID, TYPE)
+                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
         );
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
@@ -99,7 +96,7 @@ public final class FKITGroupController {
             return null;
         }
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, ID, TYPE)
+                Arrays.asList(NAME, FUNC, FKITGroupSerializer.Properties.ID, TYPE)
         );
         return serializer.serialize(group, null, null);
     }
@@ -110,11 +107,7 @@ public final class FKITGroupController {
         List<JSONObject> serializedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
         ITUserSerializer userSerializer = new ITUserSerializer(
-                Arrays.asList(ITUserSerializer.Properties.CID,
-                        ITUserSerializer.Properties.NICK,
-                        ITUserSerializer.Properties.FIRST_NAME,
-                        ITUserSerializer.Properties.LAST_NAME,
-                        ITUserSerializer.Properties.ID));
+                Arrays.asList(CID, NICK, FIRST_NAME, LAST_NAME, ITUserSerializer.Properties.ID));
         for (FKITGroup group : groups) {
             List<ITUser> members = this.membershipService.getUsersInGroup(group);
             List<JSONObject> jsonMembers = new ArrayList<>();
