@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/superGroups")
+@RequestMapping("/superGroups")
 public class SuperGroupController {
 
     private final FKITSuperGroupService fkitSuperGroupService;
