@@ -27,9 +27,9 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.security.Principal;
 import java.time.Year;
@@ -184,10 +184,10 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
-    public ResponseEntity<String> editMe(Principal principal, @RequestBody EditITUserRequest request){
+    public ResponseEntity<String> editMe(Principal principal, @RequestBody EditITUserRequest request) {
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
-        if(user == null){
+        if (user == null) {
             throw new CidNotFoundResponse();
         }
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
