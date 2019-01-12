@@ -4,11 +4,11 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import it.chalmers.gamma.views.WebsiteView;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +32,7 @@ public class EntityWebsiteService {
      */
     public List<WebsiteURL> addWebsiteToEntity(List<CreateGroupRequest.WebsiteInfo> websiteInfos,
                                                List<WebsiteInterface> entityWebsites) {
-        if(entityWebsites == null || websiteInfos == null){
+        if (entityWebsites == null || websiteInfos == null) {
             return null;
         }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
