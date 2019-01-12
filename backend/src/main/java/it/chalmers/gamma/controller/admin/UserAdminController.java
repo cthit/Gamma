@@ -1,7 +1,6 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
@@ -33,7 +32,6 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
