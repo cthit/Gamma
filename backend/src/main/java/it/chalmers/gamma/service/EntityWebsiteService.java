@@ -36,7 +36,6 @@ public class EntityWebsiteService {
             return null;
         }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        System.out.println(websiteInfos);
         for (CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos) {
             boolean websiteExists = false;
             Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
@@ -89,7 +88,6 @@ public class EntityWebsiteService {
 
                 // if the websitetype is not found, it is added.
                 websiteTypes.add(website.getWebsite().getWebsite());
-                System.out.println(website.getWebsite());
                 WebsiteView newGroup = new WebsiteView(website.getWebsite().getWebsite());
                 newGroup.setUrl(new ArrayList<>());
                 newGroup.getUrl().add(website.getWebsite().getUrl());
