@@ -1,8 +1,8 @@
 package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.util.SerializerUtils;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
