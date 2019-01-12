@@ -32,6 +32,9 @@ public class GroupWebsiteService extends EntityWebsiteService {
     }
 
     public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) {
+        if(websiteURLs == null || group == null){
+            return;
+        }
         for (WebsiteURL websiteURL : websiteURLs) {
             GroupWebsite groupWebsite = new GroupWebsite();
             groupWebsite.setGroup(group);
