@@ -15,6 +15,12 @@ import javax.annotation.Nullable;
 
 public class ITUserSerializer {
 
+    private final List<Properties> properties;
+
+    public ITUserSerializer(List<Properties> properties) {
+        this.properties = new ArrayList<>(properties);
+    }
+
     public static List<JSONObject> getGroupsAsJson(List<Membership> memberships){
         FKITGroupSerializer groupSerializer = new FKITGroupSerializer(Arrays.asList(
                 FKITGroupSerializer.Properties.ID,
@@ -26,12 +32,6 @@ public class ITUserSerializer {
             groups.add(groupSerializer.serialize(membership.getId().getFKITGroup(), null, null));
         }
         return groups;
-    }
-
-    private final List<Properties> properties;
-
-    public ITUserSerializer(List<Properties> properties) {
-        this.properties = new ArrayList<>(properties);
     }
 
     public JSONObject serialize(ITUser value,
