@@ -16,7 +16,7 @@ public class FKITGroupView {
     }
 
     public List<FKITGroup> getGroups() {
-        return groups;
+        return this.groups;
     }
 
     public void addGroup(FKITGroup groups) {
@@ -24,6 +24,6 @@ public class FKITGroupView {
     }
 
     public FKITSuperGroup getSuperGroup() {
-        return superGroup;
+        return this.superGroup;
     }
 }
