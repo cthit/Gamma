@@ -93,7 +93,7 @@ public final class GroupMemberAdminController {
 
     @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUserFromGroup(@PathVariable("id") String id,
-                                                      @PathVariable("user") String userId){
+                                                      @PathVariable("user") String userId) {
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
@@ -110,8 +110,8 @@ public final class GroupMemberAdminController {
     public ResponseEntity<String> editUserInGroup(@PathVariable("id") String groupId,
                                                   @PathVariable("user") String userId,
                                                   @Valid @RequestBody EditMembershipRequest request,
-                                                  BindingResult result){
-        if(result.hasErrors()){
+                                                  BindingResult result) {
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(groupId));
