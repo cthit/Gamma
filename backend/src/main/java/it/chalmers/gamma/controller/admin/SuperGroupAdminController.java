@@ -53,18 +53,7 @@ public class SuperGroupAdminController {
         FKITSuperGroup group = this.fkitSuperGroupService.createSuperGroup(request);
         return new FKITSuperGroupCreatedResponse(group);
     }
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<FKITSuperGroup>> getAllSuperGroups() {
-        return new GetGroupsResponse(this.fkitSuperGroupService.getAllGroups());
-    }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<FKITSuperGroup> getSuperGroup(@PathVariable("id") String id) {
-        if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
-            throw new GroupDoesNotExistResponse();
-        }
-        return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroup(UUID.fromString(id)));
-    }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -86,13 +75,4 @@ public class SuperGroupAdminController {
         return new GroupEditedResponse();
     }
 
-    @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
-    public ResponseEntity<List<FKITGroup>> getAllSubGroups(@PathVariable("id") String id){
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
-        if(superGroup == null){
-            throw new GroupDoesNotExistResponse();
-        }
-        List<FKITGroup> groups = this.fkitService.getGroupsInSuperGroup(superGroup);
-        return new GroupsResponse(groups);
-    }
 }
