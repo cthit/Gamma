@@ -32,7 +32,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
     }
 
     public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) {
-        if(websiteURLs == null || group == null){
+        if (websiteURLs == null || group == null) {
             return;
         }
         for (WebsiteURL websiteURL : websiteURLs) {
