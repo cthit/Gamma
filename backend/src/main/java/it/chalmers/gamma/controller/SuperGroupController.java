@@ -8,14 +8,17 @@ import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
+
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/superGroups")
@@ -31,9 +34,9 @@ public class SuperGroupController {
     }
 
     @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
-    public ResponseEntity<List<FKITGroup>> getAllSubGroups(@PathVariable("id") String id){
+    public ResponseEntity<List<FKITGroup>> getAllSubGroups(@PathVariable("id") String id) {
         FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
-        if(superGroup == null){
+        if (superGroup == null) {
             throw new GroupDoesNotExistResponse();
         }
         List<FKITGroup> groups = this.fkitService.getGroupsInSuperGroup(superGroup);
