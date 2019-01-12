@@ -1,7 +1,6 @@
 package it.chalmers.gamma.response;
 
 import it.chalmers.gamma.views.FKITGroupView;
-import it.chalmers.gamma.views.WebsiteView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
