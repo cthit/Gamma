@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FKITGroupView {
-    private FKITSuperGroup superGroup;
-    private List<FKITGroup> groups;
+    private final FKITSuperGroup superGroup;
+    private final List<FKITGroup> groups;
 
     public FKITGroupView(FKITSuperGroup superGroup) {
         this.superGroup = superGroup;
