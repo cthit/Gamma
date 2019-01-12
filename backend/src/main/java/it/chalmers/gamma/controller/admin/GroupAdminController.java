@@ -12,9 +12,7 @@ import it.chalmers.gamma.response.GroupCreatedResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
-import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.OrderedGroupsResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
@@ -29,7 +27,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import it.chalmers.gamma.views.FKITGroupView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
