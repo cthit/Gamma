@@ -113,7 +113,7 @@ public final class FKITGroupController {
             List<JSONObject> jsonMembers = new ArrayList<>();
             List<WebsiteView> websites =
                     this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group));
-            for(ITUser member : members){
+            for (ITUser member : members) {
                 jsonMembers.add(userSerializer.serialize(member, null, null));
             }
             serializedGroups.add(serializer.serialize(
