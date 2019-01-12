@@ -42,7 +42,6 @@ public class MembershipService {
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(group);
         pk.setITUser(user);
-        System.out.println(pk);
         membership.setId(pk);
         membership.setPost(post);
         membership.setUnofficialPostName(postname);
