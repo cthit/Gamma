@@ -6,7 +6,7 @@ public class EditMembershipRequest {
     private String unofficialName;
 
     public String getUnofficialName() {
-        return unofficialName;
+        return this.unofficialName;
     }
 
     public void setUnofficialName(String unofficialName) {
@@ -15,22 +15,26 @@ public class EditMembershipRequest {
 
     @Override
     public String toString() {
-        return "EditMembershipRequest{" +
-                "unofficialName='" + unofficialName + '\'' +
-                '}';
+        return "EditMembershipRequest{"
+                + "unofficialName='" + this.unofficialName + '\''
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {return true;}
-        if (o == null || getClass() != o.getClass()) {return false;}
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         EditMembershipRequest that = (EditMembershipRequest) o;
-        return Objects.equals(unofficialName, that.unofficialName);
+        return Objects.equals(this.unofficialName, that.unofficialName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(unofficialName);
+        return Objects.hash(this.unofficialName);
     }
 }
