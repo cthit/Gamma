@@ -57,7 +57,7 @@ public class ITUserService implements UserDetailsService {
         return user;
     }
 
-    private List<GrantedAuthority> getAuthorites(ITUser details){
+    private List<GrantedAuthority> getAuthorites(ITUser details) {
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
         return new ArrayList<>(
                 this.authorityService.getAuthorities(memberships)
