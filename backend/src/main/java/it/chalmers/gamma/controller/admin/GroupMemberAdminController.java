@@ -11,7 +11,6 @@ import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.EditedMembershipResponse;
 import it.chalmers.gamma.response.GetMembershipsResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.response.UserAddedToGroupResponse;
@@ -38,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/groups")
 public final class GroupMemberAdminController {
@@ -96,10 +95,10 @@ public final class GroupMemberAdminController {
     public ResponseEntity<String> deleteUserFromGroup(@PathVariable("id") String id,
                                                       @PathVariable("user") String userId){
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
-        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
+        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
         if (user == null) {
             throw new CidNotFoundResponse();
         }
@@ -116,10 +115,10 @@ public final class GroupMemberAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(groupId));
-        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
+        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
         if (user == null) {
             throw new CidNotFoundResponse();
         }
