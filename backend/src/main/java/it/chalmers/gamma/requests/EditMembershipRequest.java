@@ -22,8 +22,8 @@ public class EditMembershipRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         EditMembershipRequest that = (EditMembershipRequest) o;
         return Objects.equals(unofficialName, that.unofficialName);
     }
