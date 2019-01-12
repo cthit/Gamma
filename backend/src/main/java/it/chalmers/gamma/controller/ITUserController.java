@@ -7,13 +7,10 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
