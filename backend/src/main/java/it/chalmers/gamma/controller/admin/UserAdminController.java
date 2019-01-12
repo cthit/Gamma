@@ -24,9 +24,9 @@ import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -222,11 +222,11 @@ public final class UserAdminController {
         return new PasswordChangedResponse();
     }
     // TODO Make sure that an URL is added to the email
-    private void sendMail(ITUser user, String token){
+    private void sendMail(ITUser user, String token) {
         String subject = "Password reset for Account at IT division of Chalmers";
-        String message = "A password reset have been requested for this account, if you have not requested " +
-                "this mail, feel free to ignore it. \n Your reset code : " + token + "URL : ";
-        mailSenderService.sendMail(user.getCid(), subject, message);
+        String message = "A password reset have been requested for this account, if you have not requested "
+                + "this mail, feel free to ignore it. \n Your reset code : " + token + "URL : ";
+        this.mailSenderService.sendMail(user.getCid(), subject, message);
     }
 
 }
