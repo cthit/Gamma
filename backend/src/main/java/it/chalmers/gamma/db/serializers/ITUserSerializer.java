@@ -2,16 +2,16 @@ package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.views.WebsiteView;
 import it.chalmers.gamma.util.SerializerUtils;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.simple.JSONObject;
-
 import javax.annotation.Nullable;
+
+import org.json.simple.JSONObject;
 
 public class ITUserSerializer {
 
@@ -21,14 +21,14 @@ public class ITUserSerializer {
         this.properties = new ArrayList<>(properties);
     }
 
-    public static List<JSONObject> getGroupsAsJson(List<Membership> memberships){
+    public static List<JSONObject> getGroupsAsJson(List<Membership> memberships) {
         FKITGroupSerializer groupSerializer = new FKITGroupSerializer(Arrays.asList(
                 FKITGroupSerializer.Properties.ID,
                 FKITGroupSerializer.Properties.NAME,
                 FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.SUPER_GROUP));
         List<JSONObject> groups = new ArrayList<>();
-        for(Membership membership : memberships){
+        for (Membership membership : memberships) {
             groups.add(groupSerializer.serialize(membership.getId().getFKITGroup(), null, null));
         }
         return groups;
