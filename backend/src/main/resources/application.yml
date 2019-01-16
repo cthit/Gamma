@@ -3,13 +3,13 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:example}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
+  flyway:
+    baseline-on-migrate: true
   output:
     ansi:
       enabled: ALWAYS
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         temp:
