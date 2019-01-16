@@ -26,6 +26,7 @@ import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
 import UserInformation from "./elements/user-information";
 import GammaLoading from "./views/gamma-loading";
+import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
 export class App extends Component {
     state = {
@@ -34,6 +35,7 @@ export class App extends Component {
 
     constructor(props) {
         super(props);
+        props.setCommonTranslations(commonTranslations);
         props.userUpdateMe();
     }
 
