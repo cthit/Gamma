@@ -3,13 +3,13 @@ spring:
     username: postgres
     password: example
     url: jdbc:postgresql://localhost:5432/postgres
+  flyway:
+    baseline-on-migrate: true
   output:
     ansi:
       enabled: ALWAYS
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         temp:
