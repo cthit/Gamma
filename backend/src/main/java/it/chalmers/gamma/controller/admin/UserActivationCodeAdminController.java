@@ -1,7 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.requests.ActivationCodeDoesNotExistResponse;
+import it.chalmers.gamma.response.ActivationCodeDoesNotExistResponse;
 import it.chalmers.gamma.response.ActivationCodeDeletedResponse;
 import it.chalmers.gamma.response.GetActivationCodeResponse;
 import it.chalmers.gamma.response.GetAllActivationCodesResponse;
