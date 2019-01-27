@@ -14,7 +14,7 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defazults: false
-  resources:
+
 
 server:
   port: 8081

@@ -21,7 +21,7 @@ public class FKITSuperGroupService {
         FKITSuperGroup group = new FKITSuperGroup();
         group.setName(request.getName());
         group.setPrettyName(request.getPrettyName() == null ? request.getName() : request.getPrettyName());
-        group.setType(request.getType());
+        group.setType(request.getType().toString());
         return this.repository.save(group);
     }
 
@@ -45,7 +45,7 @@ public class FKITSuperGroupService {
 
     public void updateSuperGroup(UUID id, CreateSuperGroupRequest request) {
         FKITSuperGroup group = this.repository.getById(id);
-        group.setType(request.getType() == null ? group.getType() : request.getType());
+        group.setType(request.getType() == null ? group.getType() : request.getType().toString());
         group.setName(request.getName() == null ? group.getName() : request.getName());
         group.setPrettyName(request.getPrettyName() == null ? group.getPrettyName() : request.getPrettyName());
     }

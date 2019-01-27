@@ -27,7 +27,7 @@ public class FKITSuperGroup {
     private String prettyName;
 
     @Column(name = "type")
-    private GroupType type;
+    private String type;
 
     public FKITSuperGroup() {
         this.id = UUID.randomUUID();
@@ -57,11 +57,11 @@ public class FKITSuperGroup {
         this.prettyName = prettyName;
     }
 
-    public GroupType getType() {
+    public String getType() {
         return this.type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(String type) {
         this.type = type;
     }
 

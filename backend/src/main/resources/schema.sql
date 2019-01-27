@@ -99,9 +99,16 @@ create table membership (   -- Should this be rebuilt to look like all other tab
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         not null constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-
   constraint membership_pk primary key (ituser_id, fkit_group_id)
 );
+
+create table no_account_membership (
+  ituser               varchar(30)  not null,
+  fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
+  post_id              uuid         not null constraint membership_post_fk references post,
+  unofficial_post_name varchar(100) null,
+  constraint membership_pk primary key (ituser_id, fkit_group_id)
+)
 
 create table whitelist (
   id  uuid constraint whitelist_pk primary key,

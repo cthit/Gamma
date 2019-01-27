@@ -70,8 +70,9 @@ dependencies {
 
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('org.postgresql:postgresql')
+    runtime('com.oracle:ojdbc7:12.1.0.2.0')
 
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
 	testCompile('org.springframework.security:spring-security-test')
 	testCompile group: 'junit', name: 'junit', version: '4.+'
