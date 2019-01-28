@@ -99,7 +99,7 @@ create table membership (   -- Should this be rebuilt to look like all other tab
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         not null constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (ituser_id, fkit_group_id)
+  constraint membership_pk primary key (ituser_id, fkit_group_id, post_id)
 );
 
 create table no_account_membership (

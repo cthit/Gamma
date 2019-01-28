@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
 var superGroupQuery = "\n insert into fkit_super_group (id, name, pretty_name, type) \nvalues "
 var postAddQuery = "\n insert into post (id, post_name) \nvalues "
 var membershipQuery = "\n insert into membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
-var membershipQueryNoUser = "\n insert into no_account_membership (ituser, fkit_group_id, post_id, unofficial_post_name) \nvalues"
+var membershipQueryNoUser = "\n insert into no_account_membership (it_user, fkit_group_id, post_id, unofficial_post_name) \nvalues"
 var groupQuery = "\n insert into fkit_group (id, name, super_group, pretty_name, description, function, email, becomes_active, becomes_inactive, internal_year) \nvalues"
 var TextQuery = "\n insert into internal_text (id, sv, en) \nvalues"
 
@@ -17,6 +18,7 @@ var TextQuery = "\n insert into internal_text (id, sv, en) \nvalues"
 var superGroupMap = make(map[string]string)
 var postMap = make(map[string]string)
 var groupMap = make(map[string]string)
+var isSpecialMember = make(map[string]bool)
 
 type SuperGroup struct {
 	id string
@@ -55,6 +57,11 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 	fmt.Println("parsing super groups to file")
 	AddDefaultPosts(file)
 	for i := 2; i < len(data); i++ {
+		if strings.Contains(data[i][0], "cn=ordf") || strings.Contains(data[i][0], "cn=kassor") {
+			isSpecialMember[ExtractMember(data[i][8])] = true
+		}
+	}
+	for i := 2; i < len(data); i++ {
 		if strings.Contains(data[i][1], "organizationalUnit") {
 			prettyName := data[i][5]
 			if prettyName == "" {
@@ -89,6 +96,11 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 			if(becomes_inactiveq1[l-2] > 57 || becomes_inactiveq1[l-1] > 57){
 				continue
 			}
+			bi1 := int(becomes_inactiveq1[l-2] - 48)
+			bi2 := int(becomes_inactiveq1[l-1] - 48)
+			bi := bi1*10 + bi2
+			year := strconv.Itoa(2000 + bi)
+			lastYear := strconv.Itoa(2000 + bi - 1)
 			WriteGroup(Group{
 				id:               GenerateUUID(),
 				name:             name,
@@ -97,28 +109,40 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				description:      descriptionUUID,
 				function:         functionUUID,
 				email:            data[i][7],
-				becomes_active:   "'20" + string(becomes_inactiveq1[l-2]) + string(becomes_inactiveq1[l-1]-1) + "1231'",
-				becomes_inactive: "'20" + string(becomes_inactiveq1[l-2]) + string(becomes_inactiveq1[l-1]) + "1231'",
-				internal_year:    "20" + string(becomes_inactiveq1[l-2]) + string(becomes_inactiveq1[l-1]),
+				becomes_active:   "'" + lastYear + "1231'",
+				becomes_inactive: "'" + year + "1231'",
+				internal_year:    year,
 			}, file)
+
 			if strings.Contains(data[i][8], "uid" ) {
 				mems := strings.Split(data[i][8], "uid=")
+				postNameq1 := strings.Split(data[i][10], "|")
+				leng := len(postNameq1)
 				for j := 1 ; j < len(mems) ; j++ {
 					mems1 := strings.Split(mems[j], ",")
+					if isSpecialMember[mems1[0]] {
+						continue
+					}
+					postname := "medlem"
+					if leng > 1 {
+						fmt.Println(postNameq1)
+						postNameq2 := strings.Split(postNameq1[j-1], ";")
+						postname = postNameq2[0]
+						fmt.Println(postname)
+					}
 					if userMap[mems1[0]] != "" {
 						WriteMembership(Membership{
 						ituser_id:           userMap[mems1[0]],
 						fkit_group_id:       groupMap[name],
 						post_id:             postMap["member"],
-						unoficial_post_name: "member",
+						unoficial_post_name: postname,
 						}, file)
 					} else {
-						fmt.Println(mems1[0])
 						WriteMembershipNoUser(Membership{
 						ituser_id:           mems1[0],
 						fkit_group_id:       groupMap[name],
 						post_id:             postMap["member"],
-						unoficial_post_name: "member",
+						unoficial_post_name: postname,
 						}, file)
 				}
 			}

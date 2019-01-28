@@ -3,6 +3,8 @@ package it.chalmers.gamma.db.entity.pk;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Post;
+
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Embeddable;
@@ -20,6 +22,18 @@ public class MembershipPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
     private FKITGroup fkitGroup;
+
+
+    @ManyToOne
+    private Post post;
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
     private static final long serialVersionUID = 6624119509779427L;
 
