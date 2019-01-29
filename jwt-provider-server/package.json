@@ -1,5 +1,5 @@
 {
-    "name": "frontend-backend-temp",
+    "name": "jwt-provider-server",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
@@ -12,8 +12,5 @@
         "axios": "^0.18.0",
         "cors": "^2.8.5",
         "express": "^4.16.4"
-    },
-    "devDependencies": {
-        "nodemon": "^1.18.9"
     }
 }
