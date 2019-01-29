@@ -10,4 +10,6 @@ RUN npm install nodemon -g
 
 EXPOSE 8082
 
+
+
 CMD nodemon -L index.js
