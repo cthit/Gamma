@@ -59,10 +59,15 @@ create table fkit_super_group (
   type          varchar(30)    not null constraint fkit_super_group_type_unique         unique
 );
 
+create table fkit_group_to_super_group (
+  fkit_super_group_id    uuid     not null references fkit_super_group,
+  fkit_group_id     uuid     not null references fkit_group,
+  constraint        fkit_group_to_super_group_pk  primary key (super_group_id, fkit_group_id)
+);
+
 create table fkit_group (
   id                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
-  super_group       uuid         not null references fkit_super_group,
   pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
   description       uuid         null     references internal_text,
   function          uuid         not null references internal_text,

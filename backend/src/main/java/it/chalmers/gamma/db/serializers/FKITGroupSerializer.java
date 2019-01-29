@@ -73,9 +73,6 @@ public class FKITGroupSerializer {
         values.add(new SerializerValue(
                 this.properties.contains(Properties.WEBSITES), websites, "websites")
         );
-        values.add(new SerializerValue(
-                this.properties.contains(Properties.SUPER_GROUP), value.getSuperGroup(), "super"
-        ));
         return SerializerUtils.serialize(values, false);
 
     }

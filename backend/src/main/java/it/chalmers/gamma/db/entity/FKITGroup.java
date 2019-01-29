@@ -47,10 +47,6 @@ public class FKITGroup {
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @JoinColumn(name = "super_group", nullable = false)
-    @OneToOne
-    private FKITSuperGroup superGroup;
-
     @Column(name = "internal_year")
     private int year;
 
@@ -160,14 +156,6 @@ public class FKITGroup {
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
-    }
-
-    public FKITSuperGroup getSuperGroup() {
-        return this.superGroup;
-    }
-
-    public void setSuperGroup(FKITSuperGroup superGroup) {
-        this.superGroup = superGroup;
     }
 
     public int getYear() {

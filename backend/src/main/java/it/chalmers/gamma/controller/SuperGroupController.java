@@ -1,14 +1,17 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.response.GetGroupsResponse;
 import it.chalmers.gamma.response.GetSuperGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupsResponse;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,12 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class SuperGroupController {
 
     private final FKITSuperGroupService fkitSuperGroupService;
-    private final FKITService fkitService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
-
-    public SuperGroupController(FKITSuperGroupService fkitSuperGroupService, FKITService fkitService) {
+    public SuperGroupController(FKITSuperGroupService fkitSuperGroupService,
+                                FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
-        this.fkitService = fkitService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
@@ -39,7 +42,11 @@ public class SuperGroupController {
         if (superGroup == null) {
             throw new GroupDoesNotExistResponse();
         }
-        List<FKITGroup> groups = this.fkitService.getGroupsInSuperGroup(superGroup);
+        List<FKITGroupToSuperGroup> groupRelationships = this.fkitGroupToSuperGroupService.getRelationships(superGroup);
+        List<FKITGroup> groups = new ArrayList<>();
+        for (FKITGroupToSuperGroup group : groupRelationships) {
+            groups.add(group.getId().getGroup());
+        }
         return new GroupsResponse(groups);
     }
 

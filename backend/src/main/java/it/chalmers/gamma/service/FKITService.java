@@ -22,9 +22,8 @@ public class FKITService {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(CreateGroupRequest request, FKITSuperGroup group) {
+    public FKITGroup createGroup(CreateGroupRequest request) {
         FKITGroup fkitGroup = new FKITGroup();
-        fkitGroup.setSuperGroup(group);
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
@@ -88,29 +87,6 @@ public class FKITService {
 
     public FKITGroup getGroup(UUID id) {
         return this.repo.findById(id).orElse(null);
-    }
-
-    public List<FKITGroupView> getGroupsOrdered() {
-        List<FKITGroup> groups = this.repo.findAll();
-        List<FKITGroupView> views = new ArrayList<>();
-        for (FKITGroup group : groups) {
-            boolean superGroupFound = false;
-            for (FKITGroupView view : views) {
-                if (view.getSuperGroup().equals(group.getSuperGroup())) {
-                    view.addGroup(group);
-                    superGroupFound = true;
-                }
-            }
-            if (!superGroupFound) {
-                FKITGroupView newView = new FKITGroupView(group.getSuperGroup());
-                newView.addGroup(group);
-                views.add(newView);
-            }
-        }
-        return views;
-    }
-    public List<FKITGroup> getGroupsInSuperGroup(FKITSuperGroup group) {
-        return this.repo.findAllBySuperGroup(group);
     }
 
 }

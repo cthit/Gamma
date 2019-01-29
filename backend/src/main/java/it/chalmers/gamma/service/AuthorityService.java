@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
@@ -22,8 +23,12 @@ public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 
-    public AuthorityService(AuthorityRepository authorityRepository) {
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+
+    public AuthorityService(AuthorityRepository authorityRepository,
+                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.authorityRepository = authorityRepository;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     public void setAuthorityLevel(FKITSuperGroup group, Post post, AuthorityLevel authorityLevel) {
@@ -56,8 +61,9 @@ public class AuthorityService {
     public List<AuthorityLevel> getAuthorities(List<Membership> memberships) {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
+            System.out.println(membership.getId().getFKITGroup());
             Authority authority = getAuthorityLevel(
-                    membership.getId().getFKITGroup().getSuperGroup(), membership.getPost());
+                    fkitGroupToSuperGroupService.getSuperGroup(membership.getId().getFKITGroup()), membership.getPost());
             if (authority != null) {
                 Calendar start = membership.getId().getFKITGroup().getBecomesActive();
                 Calendar end = membership.getId().getFKITGroup().getBecomesInactive();

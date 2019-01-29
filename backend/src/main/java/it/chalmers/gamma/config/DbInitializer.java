@@ -12,6 +12,7 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
@@ -45,6 +46,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final MembershipService membershipService;
     private final AuthorityService authorityService;
     private final ITClientService itClientService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     @Value("${application.frontend-client-details.client-id}")
     private String clientId;
@@ -64,7 +66,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                          AuthorityLevelService authorityLevelService, PostService postService,
                          MembershipService membershipService, AuthorityService authorityService,
                          ITClientService itClientService,
-                         FKITSuperGroupService fkitSuperGroupService) {
+                         FKITSuperGroupService fkitSuperGroupService,
+                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.userservice = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
@@ -73,6 +76,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
         this.authorityService = authorityService;
         this.itClientService = itClientService;
         this.fkitSuperGroupService = fkitSuperGroupService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @Override
@@ -131,7 +135,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setBecomesActive(start);
             request.setBecomesInactive(end);
             FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
-            FKITGroup group = this.groupService.createGroup(request, superGroup);
+            FKITGroup group = this.groupService.createGroup(request);
+            fkitGroupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);

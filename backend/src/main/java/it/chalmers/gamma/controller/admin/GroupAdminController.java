@@ -13,6 +13,7 @@ import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
@@ -44,16 +45,19 @@ public final class GroupAdminController {
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
-            FKITSuperGroupService fkitSuperGroupService) {
+            FKITSuperGroupService fkitSuperGroupService,
+            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -86,8 +90,9 @@ public final class GroupAdminController {
             websiteURL.setUrl(websiteInfo.getUrl());
             websiteURLs.add(websiteURL);
         }
-        this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(createGroupRequest, superGroup), websiteURLs);
+        FKITGroup group = this.fkitService.createGroup(createGroupRequest);
+        this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+        this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
         return new GroupCreatedResponse();
     }
 
