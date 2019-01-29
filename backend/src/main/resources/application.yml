@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: postgres
-    password: example
-    url: jdbc:postgresql://localhost:5432/postgres
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:example}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
   output:
     ansi:
       enabled: ALWAYS
@@ -17,7 +17,7 @@ spring:
   resources:
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
   servlet:
     context-path: /api
 
@@ -38,15 +38,15 @@ security:
 
 application:
   frontend-client-details:
-    client-id: 7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc
-    client-secret: LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo
-    redirect-uri: http://localhost:3000/login
+    client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
+    client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
+    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:3000/login}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   gotify:
     key: "key"                  # This is not needed, but application crashes since it looks for these values.
     url: "gotify.chalmers.it"
-  allowed-origin: "http://localhost:3000"
+  allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:3000}
   auth:
     accessTokenValidityTime: 3600
     autoApprove: true
