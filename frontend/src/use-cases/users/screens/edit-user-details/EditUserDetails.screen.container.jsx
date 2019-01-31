@@ -13,15 +13,15 @@ import {
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
-    user: _.find(state.users, { cid: ownProps.match.params.cid }),
-    userCid: ownProps.match.params.cid,
+    user: _.find(state.users, { id: ownProps.match.params.id }),
+    userId: ownProps.match.params.id,
     websites: state.websites
 });
 
 const mapDispatchToProps = dispatch => ({
-    usersChange: (user, cid) => dispatch(createEditUserAction(user, cid)),
+    usersChange: (user, id) => dispatch(createEditUserAction(user, id)),
     websitesLoad: () => dispatch(createGetWebsitesAction()),
-    getUser: cid => dispatch(createGetUserAction(cid)),
+    getUser: id => dispatch(createGetUserAction(id)),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart())
 });

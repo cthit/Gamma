@@ -9,8 +9,8 @@ const Users = () => (
     <DigitLayout.Fill>
         <Switch>
             <Route path="/users" exact component={ShowAllUsers} />
-            <Route path="/users/:cid" exact component={ShowUserDetails} />
-            <Route path="/users/:cid/edit" exact component={EditUserDetails} />
+            <Route path="/users/:id" exact component={ShowUserDetails} />
+            <Route path="/users/:id/edit" exact component={EditUserDetails} />
         </Switch>
     </DigitLayout.Fill>
 );
