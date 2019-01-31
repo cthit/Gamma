@@ -31,20 +31,26 @@ app.post("/auth", (req, res) => {
 
     const c = Buffer.from(id + ":" + secret).toString("base64");
 
+    console.log("Sending to Gamma");
+    console.log(params);
+
     axios
-        .post("http://localhost:8081/api/oauth/token", params, {
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                Authorization: "Basic " + c
+        .post(
+            "http://localhost:8081/api/oauth/token?" + params.toString(),
+            {},
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Authorization: "Basic " + c
+                }
             }
-        })
+        )
         .then(response => {
-            console.log(response);
+            console.log("JWT token recieved, returning to frontend");
             console.log(response.data);
             res.send(response.data.access_token);
         })
         .catch(error => {
-            console.log(error);
             console.log(error.response.data);
         });
 });
