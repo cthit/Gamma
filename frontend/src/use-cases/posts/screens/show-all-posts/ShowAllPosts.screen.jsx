@@ -1,6 +1,4 @@
 import {
-    DigitDesign,
-    DigitFAB,
     DigitLayout,
     DigitTable,
     DigitTranslations

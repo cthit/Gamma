@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
     toastOpen: options => dispatch(DigitToastActions.digitToastOpen(options)),
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     deletePost: postId => dispatch(createDeletePostAction(postId)),
     getPostUsages: postId => dispatch(createGetPostUsageAction(postId)),
     getPost: postId => dispatch(createGetPostAction(postId)),
