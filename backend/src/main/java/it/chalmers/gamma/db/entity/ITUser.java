@@ -29,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "ituser")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @SuppressWarnings({"PMD.TooManyFields"})
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ITUser implements UserDetails {
 
     @Id

@@ -16,7 +16,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ituser_website")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserWebsite implements WebsiteInterface {
 
     @Id

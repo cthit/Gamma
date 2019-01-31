@@ -18,7 +18,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "post")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Post {
 
     @Id

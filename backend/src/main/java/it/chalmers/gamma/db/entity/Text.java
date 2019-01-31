@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "internal_text")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Text {
 
     @Id

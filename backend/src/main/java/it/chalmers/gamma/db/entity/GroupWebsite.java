@@ -17,7 +17,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group_website")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class GroupWebsite implements WebsiteInterface {
     @Id
     @JsonIgnore
