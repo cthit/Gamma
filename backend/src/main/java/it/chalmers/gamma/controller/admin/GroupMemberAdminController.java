@@ -7,7 +7,7 @@ import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 
 import it.chalmers.gamma.requests.EditMembershipRequest;
-import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.EditedMembershipResponse;
 import it.chalmers.gamma.response.GetMembershipsResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
@@ -65,7 +65,7 @@ public final class GroupMemberAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (!this.itUserService.userExists(UUID.fromString(request.getUser()))) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         if (!this.postService.postExists(UUID.fromString(request.getPost()))) {
             throw new PostDoesNotExistResponse();
@@ -100,7 +100,7 @@ public final class GroupMemberAdminController {
         }
         ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         this.membershipService.removeUserFromGroup(group, user);
         return new UserRemovedFromGroupResponse();
@@ -120,7 +120,7 @@ public final class GroupMemberAdminController {
         }
         ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         Membership membership = this.membershipService.getMembershipByUserAndGroup(user, group);
         this.membershipService.editMembership(membership, request);

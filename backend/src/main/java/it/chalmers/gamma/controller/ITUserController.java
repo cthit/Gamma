@@ -15,7 +15,7 @@ import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
-import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
@@ -87,7 +87,7 @@ public final class ITUserController {
         );
 
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
 
         createITUserRequest.setWhitelist(user);
@@ -169,7 +169,7 @@ public final class ITUserController {
     public JSONObject getUser(@PathVariable("cid") String id) {
         ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         ITUserSerializer serializer = new ITUserSerializer(
                 ITUserSerializer.Properties.getAllProperties()
@@ -188,7 +188,7 @@ public final class ITUserController {
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
                 request.getEmail(), request.getPhone(), request.getLanguage(), request.getAvatarUrl());
