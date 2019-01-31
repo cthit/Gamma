@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
     groupsDelete: groupId => dispatch(createDeleteGroupAction(groupId)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     getGroup: groupId => dispatch(createGetGroupAction(groupId)),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart())
