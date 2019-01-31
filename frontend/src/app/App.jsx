@@ -7,7 +7,8 @@ import {
     DigitNavLink,
     DigitRedirect,
     DigitToast,
-    DigitTranslations
+    DigitTranslations,
+    DigitRedirectExternal
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -17,7 +18,6 @@ import FourOFour from "../use-cases/four-o-four";
 import Gdpr from "../use-cases/gdpr";
 import Groups from "../use-cases/groups";
 import Home from "../use-cases/home";
-import Login from "../use-cases/login";
 import Posts from "../use-cases/posts";
 import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
@@ -26,6 +26,9 @@ import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
 import UserInformation from "./elements/user-information";
 import GammaLoading from "./views/gamma-loading";
+import commonTranslations from "../common/utils/translations/CommonTranslations.json";
+import SuperGroups from "../use-cases/super-groups";
+import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
 
 export class App extends Component {
     state = {
@@ -34,6 +37,7 @@ export class App extends Component {
 
     constructor(props) {
         super(props);
+        props.setCommonTranslations(commonTranslations);
         props.userUpdateMe();
     }
 
@@ -53,6 +57,15 @@ export class App extends Component {
     }
 
     render() {
+        const baseUrl = "http://localhost:8081/api/oauth/authorize";
+        const responseType = "response_type=code";
+        const clientId =
+            "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
+        const redirectUri = "redirect_uri=http://localhost:3000/login";
+
+        const loginRedirect =
+            baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri;
+
         const title = "Gamma - IT-konto";
 
         const drawer = closeDrawer => (
@@ -65,11 +78,6 @@ export class App extends Component {
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text="Login"
-                    link="/login"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
                     text="Users"
                     link="/users"
                 />
@@ -77,6 +85,11 @@ export class App extends Component {
                     onClick={closeDrawer}
                     text="Groups"
                     link="/groups"
+                />
+                <DigitNavLink
+                    onClose={closeDrawer}
+                    text="Super groups"
+                    link="/super-groups"
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
@@ -98,6 +111,11 @@ export class App extends Component {
                     onClick={closeDrawer}
                     text="Activation codes"
                     link="/activation-codes"
+                />
+                <DigitNavLink
+                    onClick={closeDrawer}
+                    text={"Clients"}
+                    link={"/clients"}
                 />
             </DigitLayout.Column>
         );
@@ -121,6 +139,8 @@ export class App extends Component {
                 translations={appTranslations}
                 render={text => (
                     <DigitHeader
+                        headerHeight={"200px"}
+                        cssImageString={"url(/matterhorn.jpg)"}
                         title={title}
                         renderDrawer={loggedIn ? drawer : () => null}
                         renderHeader={header}
@@ -142,13 +162,10 @@ export class App extends Component {
                                                             }
                                                             allowedBasePaths={[
                                                                 "/create-account",
-                                                                "/reset-password",
-                                                                "/login"
+                                                                "/reset-password"
                                                             ]}
-                                                            to="/login"
-                                                            toastTextOnRedirect={
-                                                                text.YouNeedToLogin
-                                                            }
+                                                            to={loginRedirect}
+                                                            externalRedirect
                                                         />
                                                     )}
                                                 />
@@ -163,7 +180,7 @@ export class App extends Component {
                                     </DigitLayout.Center>
                                 </DigitLayout.HideFill>
 
-                                <DigitRedirect />
+                                <DigitRedirect window={window} />
                                 <DigitDialog />
                                 <DigitToast />
 
@@ -177,6 +194,16 @@ export class App extends Component {
                                 <DigitLayout.HideFill hidden={loading}>
                                     <DigitLayout.Padding>
                                         <Switch>
+                                            <Route
+                                                path="/login"
+                                                render={() => (
+                                                    <GammaIntegration />
+                                                )}
+                                            />
+                                            <Route
+                                                path="/clients"
+                                                component={Clients}
+                                            />
                                             <Route
                                                 path="/home"
                                                 component={Home}
@@ -192,10 +219,6 @@ export class App extends Component {
                                             <Route
                                                 path="/create-account"
                                                 component={CreateAccount}
-                                            />
-                                            <Route
-                                                path="/login"
-                                                component={Login}
                                             />
                                             <Route
                                                 path="/whitelist"
@@ -221,20 +244,15 @@ export class App extends Component {
                                                 path="/clients"
                                                 component={Clients}
                                             />
-
+                                            <Route
+                                                path="/super-groups"
+                                                component={SuperGroups}
+                                            />
                                             <Route
                                                 path="/"
                                                 exact
                                                 render={props => (
-                                                    <DigitIfElseRendering
-                                                        test={loggedIn}
-                                                        ifRender={() => (
-                                                            <Redirect to="/home" />
-                                                        )}
-                                                        elseRender={() => (
-                                                            <Redirect to="/login" />
-                                                        )}
-                                                    />
+                                                    <Redirect to="/home" />
                                                 )}
                                             />
                                             <Route component={FourOFour} />

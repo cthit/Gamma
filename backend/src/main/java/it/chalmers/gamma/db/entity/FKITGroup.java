@@ -20,7 +20,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class FKITGroup {
 
     @Id

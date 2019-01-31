@@ -6,7 +6,6 @@ import {
 import React, { Component } from "react";
 import translations from "./ShowAllActivationCodes.screen.translations.json";
 import { formatDateFromServer } from "../../../../common/utils/formatters/date.formatter";
-import * as PropTypes from "prop-types";
 
 class ShowAllActivationCodes extends Component {
     componentDidMount() {

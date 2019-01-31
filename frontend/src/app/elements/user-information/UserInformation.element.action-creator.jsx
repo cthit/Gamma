@@ -52,7 +52,7 @@ export function userLogout(loggedOutText) {
         delete localStorage.token;
         delete sessionStorage.token;
         dispatch(userLogoutSuccessfully());
-        dispatch(DigitRedirectActions.redirectTo("/login"));
+        dispatch(DigitRedirectActions.digitRedirectTo("/"));
         if (loggedOutText != null) {
             dispatch(
                 DigitToastActions.digitToastOpen({

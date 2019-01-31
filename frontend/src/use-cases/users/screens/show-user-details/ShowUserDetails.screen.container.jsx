@@ -16,8 +16,8 @@ import {
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
-    user: _.find(state.users, { cid: ownProps.match.params.cid }),
-    userCid: ownProps.match.params.cid
+    user: _.find(state.users, { id: ownProps.match.params.id }),
+    userId: ownProps.match.params.id
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -26,8 +26,8 @@ const mapDispatchToProps = dispatch => ({
     usersDelete: cid => dispatch(createDeleteUserAction(cid)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
-    getUser: userCid => dispatch(createGetUserAction(userCid)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
+    getUser: userId => dispatch(createGetUserAction(userId)),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart())
 });

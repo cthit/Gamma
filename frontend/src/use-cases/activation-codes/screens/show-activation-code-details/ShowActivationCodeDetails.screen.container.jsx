@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch(DigitDialogActions.digitDialogOpen(options)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     deleteActivationCode: activationCodeId =>
         dispatch(createDeleteActivationCodeAction(activationCodeId)),
     getActivationCode: activationCodeId =>

@@ -117,11 +117,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
 
             String[] permittedPaths = {
-                "/api/login",
-                "/api/oauth/authorize",
-                "/api/oauth/token",
-                "/api/users/create",
-                "/api/whitelist/activate_cid"
+                "/login",
+                "/oauth/authorize",
+                "/oauth/token",
+                "/users/create",
+                "/whitelist/activate_cid"
             };
 
 

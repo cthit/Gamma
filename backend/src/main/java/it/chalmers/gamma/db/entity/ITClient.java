@@ -2,8 +2,6 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +23,8 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Entity
 @Table(name = "itclient")
@@ -57,7 +57,7 @@ public class ITClient implements ClientDetails {
     private String name;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "is serializable by Jackson")
-    @JoinColumn(name = "function", nullable = false)
+    @JoinColumn(name = "description", nullable = false)
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 

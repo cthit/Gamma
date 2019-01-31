@@ -3,6 +3,8 @@ import { withRouter } from "react-router-dom";
 
 import App from "./App";
 
+import { DigitTranslationsActions } from "@cthit/react-digit-components";
+
 import { userUpdateMe } from "./elements/user-information/UserInformation.element.action-creator";
 
 import { gammaLoadingStart } from "./views/gamma-loading/GammaLoading.view.action-creator";
@@ -15,7 +17,11 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = dispatch => ({
     userUpdateMe: () => dispatch(userUpdateMe()),
-    gammaLoadingStart: () => dispatch(gammaLoadingStart())
+    gammaLoadingStart: () => dispatch(gammaLoadingStart()),
+    setCommonTranslations: commonTranslations =>
+        dispatch(
+            DigitTranslationsActions.setCommonTranslations(commonTranslations)
+        )
 });
 
 export default withRouter(

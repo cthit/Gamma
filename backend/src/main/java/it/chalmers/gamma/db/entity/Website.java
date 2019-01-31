@@ -1,8 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,7 +10,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "website")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Website {
     @Id
     @Column(updatable = false)

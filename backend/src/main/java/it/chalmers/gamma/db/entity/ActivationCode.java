@@ -17,7 +17,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "activation_code")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ActivationCode {
 
     @Id

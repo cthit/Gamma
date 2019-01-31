@@ -3,7 +3,6 @@ import React from "react";
 import {
     DigitDesign,
     DigitTranslations,
-    DigitButton,
     DigitLayout
 } from "@cthit/react-digit-components";
 
@@ -12,10 +11,6 @@ import HomeLink from "../../elements/home-link";
 import UserOptionsTranslations from "./UserOptions.view.translations.json";
 
 class UserOptions extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <DigitTranslations
@@ -25,9 +20,9 @@ class UserOptions extends React.Component {
                     <DigitDesign.Card>
                         <DigitDesign.CardTitle text={text.UserOptions} />
                         <DigitDesign.CardBody>
-                            <DigitLayout.Column>
-                                <HomeLink text="My account" link="/hej" />
-                                <HomeLink text="My groups" link="/hej" />
+                            <DigitLayout.Column marginVertical={"4px"}>
+                                <HomeLink text="My account" link="/me" />
+                                <HomeLink text="My groups" link="/me/groups" />
                             </DigitLayout.Column>
                         </DigitDesign.CardBody>
                     </DigitDesign.Card>

@@ -43,10 +43,10 @@ export function createGetUsersAction() {
     };
 }
 
-export function createGetUserAction(cid) {
+export function createGetUserAction(id) {
     return requestPromise(
         () => {
-            return getUser(cid);
+            return getUser(id);
         },
         userGetLoading,
         userGetSuccessfully,
@@ -54,10 +54,10 @@ export function createGetUserAction(cid) {
     );
 }
 
-export function createEditUserAction(user, cid) {
+export function createEditUserAction(user, id) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            editUser(cid, user)
+            editUser(id, user)
                 .then(response => {
                     dispatch(usersChangeSuccessfully());
                     resolve(response.data);
@@ -70,10 +70,10 @@ export function createEditUserAction(user, cid) {
     };
 }
 
-export function createDeleteUserAction(cid) {
+export function createDeleteUserAction(id) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            deleteUser(cid)
+            deleteUser(id)
                 .then(response => {
                     dispatch(usersDeleteSuccessfully());
                     resolve(response);

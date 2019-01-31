@@ -6,7 +6,7 @@ import CreateAccount from "./CreateAccount";
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    redirectTo: path => dispatch(DigitRedirectActions.redirectTo(path)),
+    redirectTo: path => dispatch(DigitRedirectActions.digitRedirectTo(path)),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
 });
 

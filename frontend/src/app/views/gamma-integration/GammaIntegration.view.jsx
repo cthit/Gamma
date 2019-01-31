@@ -2,6 +2,9 @@ import React from "react";
 import { withRouter } from "react-router";
 import axios from "axios";
 
+import * as p from "@cthit/react-digit-components";
+console.log(p);
+
 class GammaIntegration extends React.Component {
     constructor(props) {
         super(props);
