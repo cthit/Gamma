@@ -52,7 +52,9 @@ class EditWhitelistItemDetails extends Component {
                                                         text:
                                                             text.SuccessfullyEdit
                                                     });
-                                                    actions.resetForm();
+                                                    actions.setSubmitting(
+                                                        false
+                                                    );
                                                 })
                                                 .catch(error => {
                                                     toastOpen({
