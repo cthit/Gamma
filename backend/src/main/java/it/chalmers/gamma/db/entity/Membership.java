@@ -14,7 +14,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "membership")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Membership {
 
     @EmbeddedId
