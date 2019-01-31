@@ -8,6 +8,22 @@ import {
 import { Add } from "@material-ui/icons";
 import React, { Component } from "react";
 import translations from "./ShowAllWebsites.screen.translations.json";
+import {
+    NAME,
+    PRETTY_NAME,
+    WEBSITE_ID
+} from "../../../../api/websites/props.websites.api";
+
+function generateHeaderTexts(text) {
+    const headerTexts = {};
+
+    headerTexts[WEBSITE_ID] = text.Id;
+    headerTexts[NAME] = text.Name;
+    headerTexts[PRETTY_NAME] = text.PrettyName;
+    headerTexts["__link"] = text.Details;
+
+    return headerTexts;
+}
 
 class ShowAllWebsites extends Component {
     componentDidMount() {
@@ -27,21 +43,15 @@ class ShowAllWebsites extends Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="Websites.Screen.ShowAllWebsites"
                 render={text => (
                     <DigitLayout.Fill>
                         <DigitTable
                             titleText={text.Websites}
                             searchText={text.SearchForWebsites}
-                            idProp="id"
-                            startOrderBy="name"
-                            columnsOrder={["id", "name", "prettyName"]}
-                            headerTexts={{
-                                id: text.Id,
-                                name: text.Name,
-                                prettyName: text.PrettyName,
-                                __link: text.Details
-                            }}
+                            idProp={WEBSITE_ID}
+                            startOrderBy={NAME}
+                            columnsOrder={[WEBSITE_ID, NAME, PRETTY_NAME]}
+                            headerTexts={generateHeaderTexts(text)}
                             data={websites.map(website => {
                                 return {
                                     ...website,
