@@ -11,7 +11,7 @@ const WelcomeUser = ({ user }) => (
         uniquePath="Home.WelcomeUser"
         translations={WelcomeUserTranslations}
         render={text => (
-            <DigitText.Heading2 text={text.Hi + " " + user[FIRST_NAME]} />
+            <DigitText.Heading2 text={text.Hi + " " + user[FIRST_NAME] + "!"} />
         )}
     />
 );

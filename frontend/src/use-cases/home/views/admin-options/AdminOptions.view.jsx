@@ -3,7 +3,6 @@ import React from "react";
 import {
     DigitDesign,
     DigitTranslations,
-    DigitButton,
     DigitLayout
 } from "@cthit/react-digit-components";
 
@@ -11,10 +10,6 @@ import AdminOptionsTranslations from "./AdminOptions.view.translations.json";
 import HomeLink from "../../elements/home-link";
 
 class AdminOptions extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <DigitTranslations
@@ -24,14 +19,29 @@ class AdminOptions extends React.Component {
                     <DigitDesign.Card width="300px">
                         <DigitDesign.CardTitle text={text.AdminOptions} />
                         <DigitDesign.CardBody>
-                            <DigitLayout.Grid columns={2}>
-                                <HomeLink text="All users" />
-                                <HomeLink text="All groups" />
-                                <HomeLink text="Activation codes" />
-                                <HomeLink text="Gdpr certified" />
-                                <HomeLink text="Group posts" />
-                                <HomeLink text="Possible websites" />
-                                <HomeLink text="Whitelist" />
+                            <DigitLayout.Grid
+                                columns={`repeat(${2}, 1fr)`}
+                                margin={"4px"}
+                            >
+                                <HomeLink text="All users" link={"/users"} />
+                                <HomeLink text="All groups" link={"/groups"} />
+                                <HomeLink
+                                    text="Activation codes"
+                                    link={"/activation-codes"}
+                                />
+                                <HomeLink
+                                    text="Gdpr certified"
+                                    link={"/gdpr"}
+                                />
+                                <HomeLink text="Group posts" link={"/posts"} />
+                                <HomeLink
+                                    text="Possible websites"
+                                    link={"/websites"}
+                                />
+                                <HomeLink
+                                    text="Whitelist"
+                                    link={"/whitelist"}
+                                />
                             </DigitLayout.Grid>
                         </DigitDesign.CardBody>
                     </DigitDesign.Card>

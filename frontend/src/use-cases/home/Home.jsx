@@ -7,10 +7,8 @@ import AdminOptions from "./views/admin-options";
 import WelcomeUser from "./elements/welcome-user";
 
 class Home extends React.Component {
-    constructor(props) {
-        super();
-
-        props.gammaLoadingFinished();
+    componentDidMount() {
+        this.props.gammaLoadingFinished();
     }
 
     render() {
