@@ -136,7 +136,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setBecomesInactive(end);
             FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
             FKITGroup group = this.groupService.createGroup(request);
-            fkitGroupToSuperGroupService.addRelationship(group, superGroup);
+            this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
