@@ -25,7 +25,9 @@ public class FKITGroupToSuperGroupPK implements Serializable {
         this.group = group;
     }
 
-    public FKITGroupToSuperGroupPK() {}
+    public FKITGroupToSuperGroupPK() {
+        //Used by hibernate
+    }
 
     public FKITSuperGroup getSuperGroup() {
         return this.superGroup;
