@@ -2,10 +2,11 @@ package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 
+import java.util.Objects;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "fkit_group_to_super_group")
@@ -16,12 +17,11 @@ public class FKITGroupToSuperGroup {
     public FKITGroupToSuperGroup(FKITGroupToSuperGroupPK id) {
         this.id = id;
     }
-    public FKITGroupToSuperGroup(){
 
-    }
+    public FKITGroupToSuperGroup() {}
 
     public FKITGroupToSuperGroupPK getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(FKITGroupToSuperGroupPK id) {
@@ -30,22 +30,25 @@ public class FKITGroupToSuperGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FKITGroupToSuperGroup that = (FKITGroupToSuperGroup) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(this.id, that.id);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id);
+        return Objects.hash(this.id);
     }
 
     @Override
     public String toString() {
-        return "FKITGroupToSuperGroup{" +
-                "id=" + id +
-                '}';
+        return "FKITGroupToSuperGroup{"
+            + "id=" + this.id
+            + '}';
     }
 }
