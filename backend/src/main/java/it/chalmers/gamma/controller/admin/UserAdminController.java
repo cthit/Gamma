@@ -10,7 +10,6 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
 import it.chalmers.gamma.requests.ResetPasswordRequest;
-import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordChangedResponse;
@@ -19,6 +18,7 @@ import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.MembershipService;
@@ -32,6 +32,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
