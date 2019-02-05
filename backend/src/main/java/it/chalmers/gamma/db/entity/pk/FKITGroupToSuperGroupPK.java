@@ -10,7 +10,10 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @Embeddable
+@SuppressFBWarnings(justification = "Fields should be serializable", value = "SE_BAD_FIELD")
 public class FKITGroupToSuperGroupPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_super_group_id")
