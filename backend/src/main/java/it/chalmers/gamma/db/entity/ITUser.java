@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -66,21 +67,26 @@ public class ITUser implements UserDetails {
     private String avatarUrl;
 
     @Column(name = "gdpr", nullable = false)
+    @ColumnDefault("false")
     private boolean gdpr;
 
     @Column(name = "user_agreement", nullable = false)
+    @ColumnDefault("false")
     private boolean userAgreement;
 
     @Column(name = "account_locked", nullable = false)
+    @ColumnDefault("false")
     private boolean accountLocked;
 
     @Column(name = "acceptance_year", nullable = false)
     private int acceptanceYear;
 
     @Column(name = "created_at", nullable = false)
+    @ColumnDefault("current_timestamp")
     private Instant createdAt;
 
     @Column(name = "last_modified_at", nullable = false)
+    @ColumnDefault("current_timestamp")
     private Instant lastModifiedAt;
 
     @Transient

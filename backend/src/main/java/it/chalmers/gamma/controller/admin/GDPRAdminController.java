@@ -1,9 +1,9 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
-import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.GDPRStatusEdited;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class GDPRAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (!itUserService.userExists(UUID.fromString(id))) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         this.itUserService.editGDPR(UUID.fromString(id), request.isGdpr());
         return new GDPRStatusEdited();
