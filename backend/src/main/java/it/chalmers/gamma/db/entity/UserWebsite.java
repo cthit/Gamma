@@ -1,8 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
