@@ -2,7 +2,7 @@ spring:
   datasource:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:example}
-    url: jdbc:postgresql://${DB_HOST:localhost}:5432/postgres
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
   output:
     ansi:
       enabled: ALWAYS
@@ -19,7 +19,7 @@ spring:
 
 
 server:
-  port: ${SERVER_PORT:8081}server
+  port: ${SERVER_PORT:8081}
   servlet:
     context-path: /api
 
@@ -50,7 +50,7 @@ application:
   gotify:
     key: ${GOTIFY_KEY:key}
     url: ${GOTIFY_URL:https://gotify.chalmers.it}
-  allowed-origin: "https://account.chalmers.it"
+  allowed-origin: ${CORS_ALLOWED_ORIGIN:https://account.chalmers.it}
   auth:
     accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
     autoApprove: ${AUTH_AUTO_APPROVE:true}

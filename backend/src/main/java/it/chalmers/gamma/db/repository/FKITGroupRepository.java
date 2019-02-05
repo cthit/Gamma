@@ -1,9 +1,7 @@
 package it.chalmers.gamma.db.repository;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;

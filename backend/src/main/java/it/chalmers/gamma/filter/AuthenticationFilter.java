@@ -52,7 +52,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if (claim != null) {
                 token = (String) claim.getBody().get("user_name");
             }
-            System.out.println(token);
             if (token != null) {
                 Authentication auth = getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);

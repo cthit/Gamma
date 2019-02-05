@@ -1,15 +1,19 @@
 package it.chalmers.gamma.db.entity.pk;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
+@SuppressFBWarnings(justification = "Fields should be serializable", value = "SE_BAD_FIELD")
 public class FKITGroupToSuperGroupPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_super_group_id")
@@ -23,11 +27,13 @@ public class FKITGroupToSuperGroupPK implements Serializable {
         this.superGroup = superGroup;
         this.group = group;
     }
-    public FKITGroupToSuperGroupPK() {
 
+    public FKITGroupToSuperGroupPK() {
+        //Used by hibernate
     }
+
     public FKITSuperGroup getSuperGroup() {
-        return superGroup;
+        return this.superGroup;
     }
 
     public void setSuperGroup(FKITSuperGroup superGroup) {
@@ -35,7 +41,7 @@ public class FKITGroupToSuperGroupPK implements Serializable {
     }
 
     public FKITGroup getGroup() {
-        return group;
+        return this.group;
     }
 
     public void setGroup(FKITGroup group) {
@@ -44,24 +50,27 @@ public class FKITGroupToSuperGroupPK implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FKITGroupToSuperGroupPK that = (FKITGroupToSuperGroupPK) o;
-        return Objects.equals(superGroup, that.superGroup) &&
-                Objects.equals(group, that.group);
+        return Objects.equals(this.superGroup, that.superGroup)
+            && Objects.equals(this.group, that.group);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(superGroup, group);
+        return Objects.hash(this.superGroup, this.group);
     }
 
     @Override
     public String toString() {
-        return "FKITGroupToSuperGroupPK{" +
-                "superGroup=" + superGroup +
-                ", group=" + group +
-                '}';
+        return "FKITGroupToSuperGroupPK{"
+            + "superGroup=" + this.superGroup
+            + ", group=" + this. group
+            + '}';
     }
 }
