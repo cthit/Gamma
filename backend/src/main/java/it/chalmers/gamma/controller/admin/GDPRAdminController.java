@@ -30,9 +30,9 @@ public class GDPRAdminController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> setGDPRStatus(@PathVariable("id") String id,
-                                                @Valid @RequestBody ChangeGDPRStatusRequest request,
-                                                BindingResult result) {
+    public ResponseEntity<String> editGDPRStatus(@PathVariable("id") String id,
+                                                 @Valid @RequestBody ChangeGDPRStatusRequest request,
+                                                 BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
