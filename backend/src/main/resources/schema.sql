@@ -59,12 +59,6 @@ create table fkit_super_group (
   type          varchar(30)    not null constraint fkit_super_group_type_unique         unique
 );
 
-create table fkit_group_to_super_group (
-  fkit_super_group_id    uuid     not null references fkit_super_group,
-  fkit_group_id     uuid     not null references fkit_group,
-  constraint        fkit_group_to_super_group_pk  primary key (super_group_id, fkit_group_id)
-);
-
 create table fkit_group (
   id                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
@@ -76,6 +70,12 @@ create table fkit_group (
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
   avatar_url        varchar(255) null,
   internal_year     integer      not null constraint fkit_group_year check (internal_year >= 2001)
+);
+
+create table fkit_group_to_super_group (
+  fkit_super_group_id   uuid     not null references fkit_super_group,
+  fkit_group_id         uuid     not null references fkit_group,
+  constraint            fkit_group_to_super_group_pk  primary key (fkit_super_group_id, fkit_group_id)
 );
 
 create table post (
