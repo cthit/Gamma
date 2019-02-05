@@ -16,13 +16,11 @@ const server = http.createServer(app);
 
 app.use(cors());
 
-console.log("Hej");
-
 /* Start Server */
 server.listen(PORT);
 
 app.post("/auth", (req, res) => {
-    console.log("gotcha")
+    console.log("gotcha");
 
     const code = req.body.code;
     const params = new url.URLSearchParams();

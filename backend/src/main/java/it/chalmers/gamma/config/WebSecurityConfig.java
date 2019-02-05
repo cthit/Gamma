@@ -105,6 +105,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
             http
                 .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
+            .and()
+                .logout()
             .and()
                 .httpBasic();
         } catch (Exception e) {
@@ -121,7 +125,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/oauth/authorize",
                 "/oauth/token",
                 "/users/create",
-                "/whitelist/activate_cid"
+                "/whitelist/activate_cid",
+                "/css/**",
+                "/js/**",
+                "/img/**"
             };
 
 
