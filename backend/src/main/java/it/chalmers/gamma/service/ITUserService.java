@@ -132,9 +132,9 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    public void editGDPR(UUID id, boolean GDPR){
+    public void editGdpr(UUID id, boolean gdpr) {
         ITUser user = getUserById(id);
-        user.setGdpr(GDPR);
+        user.setGdpr(gdpr);
         this.itUserRepository.save(user);
     }
 

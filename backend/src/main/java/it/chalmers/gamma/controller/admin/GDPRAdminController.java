@@ -37,7 +37,7 @@ public class GDPRAdminController {
         if (!itUserService.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
-        this.itUserService.editGDPR(UUID.fromString(id), request.isGdpr());
+        this.itUserService.editGdpr(UUID.fromString(id), request.isGdpr());
         return new GDPRStatusEdited();
     }
 }
