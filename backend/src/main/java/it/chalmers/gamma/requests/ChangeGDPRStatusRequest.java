@@ -6,7 +6,7 @@ public class ChangeGDPRStatusRequest {
     private boolean gdpr;
 
     public boolean isGdpr() {
-        return gdpr;
+        return this.gdpr;
     }
 
     public void setGdpr(boolean gdpr) {
@@ -15,22 +15,25 @@ public class ChangeGDPRStatusRequest {
 
     @Override
     public String toString() {
-        return "ChangeGDPRStatusRequest{" +
-                "gdpr=" + gdpr +
-                '}';
+        return "ChangeGDPRStatusRequest{"
+            + "gdpr=" + this.gdpr
+            + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChangeGDPRStatusRequest that = (ChangeGDPRStatusRequest) o;
-        return gdpr == that.gdpr;
+        return this.gdpr == that.gdpr;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(gdpr);
+        return Objects.hash(this.gdpr);
     }
 }
