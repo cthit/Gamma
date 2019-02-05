@@ -70,7 +70,7 @@ class ShowAllUsers extends Component {
                                     data={users.map(user => {
                                         return {
                                             ...user,
-                                            __link: "/users/" + user.cid
+                                            __link: "/users/" + user.id
                                         };
                                     })}
                                     emptyTableText={text.NoUsers}

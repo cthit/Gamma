@@ -1,4 +1,4 @@
-package it.chalmers.gamma.service;
+package it.chalmers.gamma.views;
 
 import it.chalmers.gamma.db.entity.Website;
 

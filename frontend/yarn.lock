@@ -46,10 +46,10 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@cthit/react-digit-components@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-0.1.14.tgz#b6e9ea8e15aea18c6926b77b7152c67f186e6d72"
-  integrity sha512-Ympt/ViY/NcbhjtB/fIUz8M5jUorfeH0iBOgKOfNwwXrBPE+5Hg02H2Sh5WQV7hpnKIIshsLpTCHzqu/MMd+4g==
+"@cthit/react-digit-components@^0.1.35":
+  version "0.1.35"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-0.1.35.tgz#b203043035a48e46c8b4b7cefe40bd51d0c7e970"
+  integrity sha512-f1fcIggaVeTCdd+ZXy8r3GkMn+hYXjiX/e0YPebIoZEkKkBfcxiAvE6en0NOdWIArEPK4sgPSoq0fsJw0xYTJQ==
 
 "@material-ui/core@^1.4.2":
   version "1.5.1"

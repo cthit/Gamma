@@ -1,7 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 
 import java.util.Objects;
@@ -18,7 +16,6 @@ import org.hibernate.annotations.Target;
 
 @Entity
 @Table(name = "authority")
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Authority {
 
     @Target(AuthorityPK.class)

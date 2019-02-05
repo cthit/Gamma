@@ -14,8 +14,9 @@ const AddNewPost = ({ addPost, toastOpen }) => (
                 <PostForm
                     onSubmit={(values, actions) => {
                         addPost(values)
-                            .then(response => {
+                            .then(() => {
                                 toastOpen({ text: text.PostAdded });
+                                actions.setSubmitting(false);
                                 actions.resetForm();
                             })
                             .catch(error => {

@@ -4,14 +4,19 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.requests.AddUserGroupRequest;
 
-import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.requests.AddUserGroupRequest;
+import it.chalmers.gamma.requests.EditMembershipRequest;
+
+import it.chalmers.gamma.response.EditedMembershipResponse;
 import it.chalmers.gamma.response.GetMembershipsResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.response.UserAddedToGroupResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
+import it.chalmers.gamma.response.UserRemovedFromGroupResponse;
+
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
@@ -32,9 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/groups")
 public final class GroupMemberAdminController {
@@ -61,15 +64,15 @@ public final class GroupMemberAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(request.getUser())) {
-            throw new CidNotFoundResponse();
+        if (!this.itUserService.userExists(UUID.fromString(request.getUser()))) {
+            throw new UserNotFoundResponse();
         }
-        if (!this.postService.postExists(request.getPost())) {
+        if (!this.postService.postExists(UUID.fromString(request.getPost()))) {
             throw new PostDoesNotExistResponse();
         }
-        ITUser user = this.itUserService.loadUser(request.getUser());
+        ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUser()));
         FKITGroup fkitGroup = this.fkitService.getGroup(UUID.fromString(id));
-        Post post = this.postService.getPost(request.getPost());
+        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new UserAddedToGroupResponse();
     }
@@ -86,5 +89,41 @@ public final class GroupMemberAdminController {
             groupMembers.add(this.membershipService.getMembershipByUserAndGroup(member, group));
         }
         return new GetMembershipsResponse(groupMembers);
+    }
+
+    @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUserFromGroup(@PathVariable("id") String id,
+                                                      @PathVariable("user") String userId) {
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
+        }
+        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        this.membershipService.removeUserFromGroup(group, user);
+        return new UserRemovedFromGroupResponse();
+    }
+
+    @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.PUT)
+    public ResponseEntity<String> editUserInGroup(@PathVariable("id") String groupId,
+                                                  @PathVariable("user") String userId,
+                                                  @Valid @RequestBody EditMembershipRequest request,
+                                                  BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(groupId));
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
+        }
+        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        Membership membership = this.membershipService.getMembershipByUserAndGroup(user, group);
+        this.membershipService.editMembership(membership, request);
+        return new EditedMembershipResponse();
     }
 }

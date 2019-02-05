@@ -13,12 +13,10 @@ class EditUserDetails extends React.Component {
             getUser,
             websitesLoad,
             gammaLoadingFinished,
-            userCid
+            userId
         } = this.props;
 
-        console.log(userCid);
-
-        Promise.all([getUser(userCid), websitesLoad()]).then(() => {
+        Promise.all([getUser(userId), websitesLoad()]).then(() => {
             gammaLoadingFinished();
         });
     }
@@ -51,7 +49,7 @@ class EditUserDetails extends React.Component {
                                         acceptanceYear: user.acceptanceYear + ""
                                     }}
                                     onSubmit={(values, actions) => {
-                                        usersChange(values, user.cid).then(
+                                        usersChange(values, user.id).then(
                                             response => {
                                                 console.log("Save");
                                             }

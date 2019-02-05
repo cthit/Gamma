@@ -8,28 +8,35 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.WebsiteInterface;
+import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
-import it.chalmers.gamma.response.CidNotFoundResponse;
+import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.UserEditedResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.service.WebsiteView;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -53,15 +60,18 @@ public final class ITUserController {
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
+    private final MembershipService membershipService;
 
     public ITUserController(ITUserService itUserService,
-                             ActivationCodeService activationCodeService,
-                             WhitelistService whitelistService,
-                             UserWebsiteService userWebsiteService) {
+                            ActivationCodeService activationCodeService,
+                            WhitelistService whitelistService,
+                            UserWebsiteService userWebsiteService,
+                            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
+        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -77,7 +87,7 @@ public final class ITUserController {
         );
 
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
 
         createITUserRequest.setWhitelist(user);
@@ -131,7 +141,8 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websites);
+        return serializer.serialize(user, websites,
+                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -149,16 +160,16 @@ public final class ITUserController {
         List<JSONObject> minifiedITUsers = new ArrayList<>();
         ITUserSerializer serializer = new ITUserSerializer(props);
         for (ITUser user : itUsers) {
-            minifiedITUsers.add(serializer.serialize(user, null));
+            minifiedITUsers.add(serializer.serialize(user, null, null));
         }
         return minifiedITUsers;
     }
 
     @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
-    public JSONObject getUser(@PathVariable("cid") String cid) {
-        ITUser user = this.itUserService.loadUser(cid);
+    public JSONObject getUser(@PathVariable("cid") String id) {
+        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         if (user == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         ITUserSerializer serializer = new ITUserSerializer(
                 ITUserSerializer.Properties.getAllProperties()
@@ -167,6 +178,27 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websites);
+
+        return serializer.serialize(user, websites,
+                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.PUT)
+    public ResponseEntity<String> editMe(Principal principal, @RequestBody EditITUserRequest request) {
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
+                request.getEmail(), request.getPhone(), request.getLanguage(), request.getAvatarUrl());
+        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
+        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        List<WebsiteInterface> userWebsite = new ArrayList<>(
+                this.userWebsiteService.getWebsites(user)
+        );
+        this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
+        this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
+        return new UserEditedResponse();
     }
 }

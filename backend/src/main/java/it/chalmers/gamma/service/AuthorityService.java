@@ -22,12 +22,18 @@ public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
 
-    public AuthorityService(AuthorityRepository authorityRepository) {
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+
+    public AuthorityService(AuthorityRepository authorityRepository,
+                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.authorityRepository = authorityRepository;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     public void setAuthorityLevel(FKITSuperGroup group, Post post, AuthorityLevel authorityLevel) {
-        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post);
+        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(
+                group, post
+        );
         if (authority == null) {
             authority = new Authority();
             AuthorityPK pk = new AuthorityPK();
@@ -57,7 +63,11 @@ public class AuthorityService {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
             Authority authority = getAuthorityLevel(
-                    membership.getId().getFKITGroup().getSuperGroup(), membership.getPost());
+                    this.fkitGroupToSuperGroupService.getSuperGroup(
+                            membership.getId().getFKITGroup()
+                    ),
+                    membership.getPost()
+            );
             if (authority != null) {
                 Calendar start = membership.getId().getFKITGroup().getBecomesActive();
                 Calendar end = membership.getId().getFKITGroup().getBecomesInactive();

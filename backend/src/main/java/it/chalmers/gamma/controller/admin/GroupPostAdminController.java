@@ -148,7 +148,7 @@ public final class GroupPostAdminController {
             List<ITUser> userIDs = this.membershipService.getUserByGroupAndPost(group, post);
             List<JSONObject> users = new ArrayList<>();
             for (ITUser user : userIDs) {
-                users.add(itUserSerializer.serialize(user, null));
+                users.add(itUserSerializer.serialize(user, null, null));
             }
             groupAndUser.add(fkitGroupSerializer.serialize(group, users, null));
         }

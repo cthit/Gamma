@@ -83,7 +83,7 @@ public final class AuthorityAdminController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeAuthorization(@PathVariable("id") String id) {
+    public ResponseEntity<String> removeAuthority(@PathVariable("id") String id) {
         if (!this.authorityService.authorityExists(UUID.fromString(id))) {
             throw new AuthorityNotFoundResponse();
         }

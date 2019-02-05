@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PRETTY_NAME } from "../../../../../../api/groups/props.groups.api";
+import { PRETTY_NAME, ID } from "../../../../../../api/groups/props.groups.api";
 
 import {
     DigitLayout,
@@ -16,8 +16,8 @@ const DisplayPostUsages = ({ usages }) => (
                 {usages.map(usage => {
                     return (
                         <DigitText.Text
-                            key={usage.id}
-                            text={usage.pretty_name}
+                            key={usage[ID]}
+                            text={usage[PRETTY_NAME]}
                         />
                     );
                 })}

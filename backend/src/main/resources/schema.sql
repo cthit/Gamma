@@ -5,14 +5,14 @@ create table internal_text (
 );
 
 create table website (
-  id uuid constraint websites_pk primary key,
-  name varchar(100) not null constraint website_name unique,
+  id uuid     constraint websites_pk primary key,
+  name        varchar(100) not null constraint website_name unique,
   pretty_name varchar(100) not null
 );
 
 create table website_url (
-  id      uuid constraint websites_url_pk primary key,
-  website uuid not null references website,
+  id      uuid          constraint websites_url_pk primary key,
+  website uuid          not null references website,
   url     varchar(2000) not null
 );
 
@@ -62,7 +62,6 @@ create table fkit_super_group (
 create table fkit_group (
   id                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
-  super_group       uuid         not null references fkit_super_group,
   pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
   description       uuid         null     references internal_text,
   function          uuid         not null references internal_text,
@@ -71,6 +70,12 @@ create table fkit_group (
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
   avatar_url        varchar(255) null,
   internal_year     integer      not null constraint fkit_group_year check (internal_year >= 2001)
+);
+
+create table fkit_group_to_super_group (
+  fkit_super_group_id   uuid     not null references fkit_super_group,
+  fkit_group_id         uuid     not null references fkit_group,
+  constraint            fkit_group_to_super_group_pk  primary key (fkit_super_group_id, fkit_group_id)
 );
 
 create table post (

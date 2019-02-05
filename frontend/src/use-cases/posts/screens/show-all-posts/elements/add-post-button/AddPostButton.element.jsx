@@ -6,7 +6,7 @@ import {
 import { Add } from "@material-ui/icons";
 import React from "react";
 
-const AddPostButton = ({}) => (
+const AddPostButton = () => (
     <DigitLayout.DownRightPosition>
         <DigitDesign.Link to="/posts/add">
             <DigitFAB icon={Add} secondary />

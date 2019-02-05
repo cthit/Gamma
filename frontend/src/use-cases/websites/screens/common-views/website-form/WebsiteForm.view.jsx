@@ -44,10 +44,15 @@ function generateEditComponentData(text) {
     return componentData;
 }
 
-const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
+const WebsiteForm = ({
+    initialValues,
+    onSubmit,
+    titleText,
+    submitText,
+    backButtonTo
+}) => (
     <DigitTranslations
         translations={translations}
-        uniquePath="Websites.Screen.CommonView.WebsiteForm"
         render={text => (
             <DigitEditData
                 initialValues={initialValues}
@@ -55,8 +60,12 @@ const WebsiteForm = ({ initialValues, onSubmit, titleText, submitText }) => (
                 validationSchema={generateValidationSchema(text)}
                 titleText={titleText}
                 submitText={submitText}
-                keysOrder={["name", "prettyName"]}
+                keysOrder={[NAME, PRETTY_NAME]}
                 keysComponentData={generateEditComponentData(text)}
+                extraButton={{
+                    text: text.Cancel
+                }}
+                extraButtonTo={backButtonTo}
             />
         )}
     />

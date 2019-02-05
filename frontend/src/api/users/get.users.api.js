@@ -9,6 +9,6 @@ export function getUsers() {
     return getRequest(ADMIN_USERS_ENDPOINT);
 }
 
-export function getUser(cid) {
-    return getRequest(ADMIN_USERS_ENDPOINT + cid);
+export function getUser(id) {
+    return getRequest(ADMIN_USERS_ENDPOINT + id);
 }

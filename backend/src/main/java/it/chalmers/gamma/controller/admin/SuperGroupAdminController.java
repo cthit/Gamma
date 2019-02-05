@@ -3,8 +3,6 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.FKITSuperGroupCreatedResponse;
-import it.chalmers.gamma.response.GetGroupsResponse;
-import it.chalmers.gamma.response.GetSuperGroupResponse;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
@@ -13,7 +11,6 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -34,7 +31,6 @@ public class SuperGroupAdminController {
 
     public SuperGroupAdminController(FKITSuperGroupService fkitSuperGroupService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
-
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -49,18 +45,7 @@ public class SuperGroupAdminController {
         FKITSuperGroup group = this.fkitSuperGroupService.createSuperGroup(request);
         return new FKITSuperGroupCreatedResponse(group);
     }
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<FKITSuperGroup>> getAllSuperGroups() {
-        return new GetGroupsResponse(this.fkitSuperGroupService.getAllGroups());
-    }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<FKITSuperGroup> getSuperGroup(@PathVariable("id") String id) {
-        if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
-            throw new GroupDoesNotExistResponse();
-        }
-        return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroup(UUID.fromString(id)));
-    }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -81,4 +66,5 @@ public class SuperGroupAdminController {
         this.fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), request);
         return new GroupEditedResponse();
     }
+
 }

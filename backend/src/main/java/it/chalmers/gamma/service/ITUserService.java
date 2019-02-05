@@ -47,16 +47,21 @@ public class ITUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
         ITUser details = this.itUserRepository.findByCid(cid);
-        List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
-        List<GrantedAuthority> authority = new ArrayList<>(
-                this.authorityService.getAuthorities(memberships)
-        );
-        details.setAuthority(authority);
+        details.setAuthority(getAuthorites(details));
         return details;
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
-        return this.itUserRepository.findByCid(cid);
+        ITUser user = this.itUserRepository.findByCid(cid);
+        user.setAuthority(getAuthorites(user));
+        return user;
+    }
+
+    private List<GrantedAuthority> getAuthorites(ITUser details) {
+        List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
+        return new ArrayList<>(
+                this.authorityService.getAuthorities(memberships)
+        );
     }
 
     public List<ITUser> loadAllUsers() {
@@ -117,11 +122,19 @@ public class ITUserService implements UserDetailsService {
     }
 
     public ITUser getUserById(UUID id) {
-        return this.itUserRepository.findById(id).orElse(null);
+        ITUser user = this.itUserRepository.findById(id).orElseThrow();
+        user.setAuthority(getAuthorites(user));
+        return user;
     }
 
     public void setPassword(ITUser user, String password) {
         user.setPassword(this.passwordEncoder.encode(password));
+        this.itUserRepository.save(user);
+    }
+
+    public void editGdpr(UUID id, boolean gdpr) {
+        ITUser user = getUserById(id);
+        user.setGdpr(gdpr);
         this.itUserRepository.save(user);
     }
 

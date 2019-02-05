@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-    DigitButton,
     DigitDesign,
     DigitLayout,
     DigitText,
@@ -32,7 +31,7 @@ class FourOFour extends React.Component {
                             <DigitDesign.CardBody>
                                 <DigitText.Text
                                     text={
-                                        "This is not the site you're looking for!" +
+                                        "This is not the site you're looking for! " +
                                         text.ContactDigit
                                     }
                                 />
