@@ -18,7 +18,9 @@ public class FKITGroupToSuperGroup {
         this.id = id;
     }
 
-    public FKITGroupToSuperGroup() {}
+    public FKITGroupToSuperGroup() {
+        //Used by hibernate
+    }
 
     public FKITGroupToSuperGroupPK getId() {
         return this.id;
