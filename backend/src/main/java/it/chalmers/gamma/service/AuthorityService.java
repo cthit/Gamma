@@ -62,7 +62,6 @@ public class AuthorityService {
     public List<AuthorityLevel> getAuthorities(List<Membership> memberships) {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
-            System.out.println(membership.getId().getFKITGroup());
             Authority authority = getAuthorityLevel(
                     this.fkitGroupToSuperGroupService.getSuperGroup(
                             membership.getId().getFKITGroup()
