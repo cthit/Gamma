@@ -3,6 +3,7 @@ package it.chalmers.gamma.db.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -176,6 +177,11 @@ public class FKITGroup {
 
     public void setBecomesInactive(Calendar becomesInactive) {
         this.becomesInactive = becomesInactive;
+    }
+
+    public boolean isActive() {
+        Calendar now = new GregorianCalendar();
+        return now.after(becomesActive) && now.before(becomesInactive);
     }
 
     @Override

@@ -3,6 +3,10 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
+import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
+import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.response.GetGroupsResponse;
 import it.chalmers.gamma.response.GetSuperGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
@@ -14,6 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import it.chalmers.gamma.service.GroupWebsiteService;
+import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MembershipService;
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +34,17 @@ public class SuperGroupController {
 
     private final FKITSuperGroupService fkitSuperGroupService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final GroupWebsiteService groupWebsiteService;
+    private final MembershipService membershipService;
 
     public SuperGroupController(FKITSuperGroupService fkitSuperGroupService,
-                                FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+                                FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+                                GroupWebsiteService groupWebsiteService,
+                                MembershipService membershipService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.groupWebsiteService = groupWebsiteService;
+        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
@@ -58,5 +72,27 @@ public class SuperGroupController {
             throw new GroupDoesNotExistResponse();
         }
         return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroup(UUID.fromString(id)));
+    }
+
+    @RequestMapping(value = "/{id}/active", method = RequestMethod.GET)
+    public List<JSONObject> getActiveGroup(@PathVariable("id") String id) {
+        if(!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
+            throw new GroupDoesNotExistResponse();
+        }
+        FKITSuperGroup superGroup = fkitSuperGroupService.getGroup(UUID.fromString(id));
+        List<FKITGroup> groups = this.fkitGroupToSuperGroupService.getActiveGroups(superGroup);
+        FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
+        ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        List<JSONObject> serializedGroups = new ArrayList<>();
+        for (FKITGroup group : groups) {
+            List<ITUser> users = membershipService.getUsersInGroup(group);
+            List<JSONObject> serializedUsers = new ArrayList<>();
+            for(ITUser user : users) {
+                serializedUsers.add(userSerializer.serialize(user, null, null));
+            }
+            serializedGroups.add(serializer.serialize(group, serializedUsers, groupWebsiteService.
+                    getWebsitesOrdered(groupWebsiteService.getWebsites(group))));
+        }
+        return serializedGroups;
     }
 }
