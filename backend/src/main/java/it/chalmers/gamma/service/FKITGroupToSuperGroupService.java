@@ -28,21 +28,24 @@ public class FKITGroupToSuperGroupService {
     public List<FKITGroupToSuperGroup> getRelationships(FKITSuperGroup superGroup) {
         return this.repository.findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
     }
+
     public FKITSuperGroup getSuperGroup(FKITGroup group) {
         return this.repository.findFKITGroupToSuperGroupsById_Group(group).getId().getSuperGroup();
     }
+
     public void deleteRelationship(FKITGroup group, FKITSuperGroup superGroup) {
         this.repository.delete(this.repository.findFKITGroupToSuperGroupsById_GroupAndId_SuperGroup(group, superGroup));
     }
 
     /**
-     * returns the subgroup that is currently the active group
+     * returns the subgroup that is currently the active group.
+     *
      * @param superGroup the super group to retrieve active group from
      * @return the fkit group that is active
      */
     public List<FKITGroup> getActiveGroups(FKITSuperGroup superGroup) {
-        List<FKITGroupToSuperGroup> relationships = this.repository.
-                findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
+        List<FKITGroupToSuperGroup> relationships = this.repository
+                .findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
         List<FKITGroup> groups = new ArrayList<>();
         relationships.stream().filter(e -> e.getId().getGroup().isActive())
                 .forEach(e -> groups.add(e.getId().getGroup()));

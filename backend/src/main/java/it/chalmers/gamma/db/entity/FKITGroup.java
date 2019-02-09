@@ -181,7 +181,7 @@ public class FKITGroup {
 
     public boolean isActive() {
         Calendar now = new GregorianCalendar();
-        return now.after(becomesActive) && now.before(becomesInactive);
+        return now.after(this.becomesActive) && now.before(this.becomesInactive);
     }
 
     @Override
