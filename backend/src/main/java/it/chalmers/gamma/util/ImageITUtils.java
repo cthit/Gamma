@@ -29,21 +29,17 @@ public class ImageITUtils {
         HttpPost post = new HttpPost(imageITURL);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        builder.addBinaryBody("file", f, ContentType.MULTIPART_FORM_DATA, "file");
+        builder.addBinaryBody("file", f, ContentType.MULTIPART_FORM_DATA, f.getName());
         builder.addTextBody("API_KEY", apiKey, ContentType.MULTIPART_FORM_DATA);
         HttpEntity entity = builder.build();
         post.setEntity(entity);
         CloseableHttpClient client = HttpClients.custom().build();
         try {
-            System.out.println(EntityUtils.toString(entity));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             HttpResponse response = client.execute(post);
             HttpEntity res = response.getEntity();
             String content = EntityUtils.toString(res);
             System.out.println(content);
+            return content;
         } catch (IOException e) {
             e.printStackTrace();
         }
