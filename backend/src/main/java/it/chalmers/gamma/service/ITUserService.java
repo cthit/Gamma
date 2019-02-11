@@ -108,7 +108,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                            String email, String phone, Language language, String avatarUrl) {
+                            String email, String phone, Language language) {
         ITUser itUser = this.itUserRepository.findById(user).orElse(null);
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
@@ -116,7 +116,6 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(email == null ? itUser.getEmail() : email);
         itUser.setPhone(phone == null ? itUser.getPhone() : phone);
         itUser.setLanguage(language == null ? itUser.getLanguage() : language);
-        itUser.setAvatarUrl(avatarUrl == null ? itUser.getAvatarUrl() : avatarUrl);
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
     }

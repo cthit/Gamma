@@ -1,7 +1,9 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.domain.Language;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +14,6 @@ public class EditITUserRequest {
     private String email;
     private String phone;
     private Language language;
-    private String avatarUrl;
     private List<CreateGroupRequest.WebsiteInfo> websites;
 
     public void setNick(String nick) {
@@ -37,10 +38,6 @@ public class EditITUserRequest {
 
     public void setLanguage(Language language) {
         this.language = language;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     public List<CreateGroupRequest.WebsiteInfo> getWebsites() {
@@ -75,10 +72,6 @@ public class EditITUserRequest {
         return this.language;
     }
 
-    public String getAvatarUrl() {
-        return this.avatarUrl;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -94,14 +87,13 @@ public class EditITUserRequest {
             && this.email.equals(that.email)
             && this.phone.equals(that.phone)
             && this.language == that.language
-            && this.avatarUrl.equals(that.avatarUrl)
             && this.websites.equals(that.websites);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.nick, this.firstName, this.lastName, this.email,
-            this.phone, this.language, this.avatarUrl, this.websites);
+            this.phone, this.language, this.websites);
     }
 
     @Override
@@ -113,7 +105,6 @@ public class EditITUserRequest {
             + ", email='" + this.email + '\''
             + ", phone='" + this.phone + '\''
             + ", language=" + this.language
-            + ", avatarUrl='" + this.avatarUrl + '\''
             + ", websites=" + this.websites
             + '}';
     }

@@ -6,7 +6,7 @@ COPY . /app
 
 RUN mkdir -p /app
 RUN chown -R gradle /app
-WORKDIR /app
+WORKDIR /app/home/gurr/digIT/ImageIT/app.py
 
 USER gradle
 #db is used to separate development and production databases
