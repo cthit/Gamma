@@ -17,6 +17,7 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.response.EditedProfilePicture;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
@@ -202,8 +203,14 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me/image", method = RequestMethod.PUT)
-    public ResponseEntity<String> editProfileImage(@RequestParam MultipartFile file) {
-        ImageITUtils.saveImage(file);
-        return new ResponseEntity<String>("done", HttpStatus.OK);
+    public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file) {
+        String fileUrl = ImageITUtils.saveImage(file);
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if (user == null) {
+           throw new UserNotFoundResponse();
+        }
+        this.itUserService.editProfilePicture(user, fileUrl);
+        return new EditedProfilePicture();
     }
 }

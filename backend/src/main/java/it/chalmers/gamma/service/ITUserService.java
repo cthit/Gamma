@@ -137,4 +137,9 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
+    public void editProfilePicture(ITUser user, String fileUrl) {
+        user.setAvatarUrl(fileUrl);
+        itUserRepository.save(user);
+    }
+
 }
