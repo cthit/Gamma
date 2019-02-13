@@ -7,6 +7,7 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupCreatedResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
@@ -20,8 +21,10 @@ import it.chalmers.gamma.service.GroupWebsiteService;
 
 import it.chalmers.gamma.service.WebsiteService;
 
+import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +37,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
@@ -126,6 +131,21 @@ public final class GroupAdminController {
         );
         this.fkitService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
+    }
+
+    @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
+    public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
+        }
+        try {
+            String url = ImageITUtils.saveImage(file);
+            this.fkitService.editGroupAvatar(group, url);
+        } catch (IOException e) {
+            throw new FileNotSavedException();
+        }
+        return new GroupEditedResponse();
     }
 
 }

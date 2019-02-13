@@ -45,9 +45,19 @@ public class ITUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
-        ITUser details = this.itUserRepository.findByCid(cid);
-        details.setAuthority(getAuthorites(details));
+    public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
+        ITUser details;
+
+        if (cidOrEmail.contains("@")) {
+            details = this.itUserRepository.findByEmail(cidOrEmail);
+        } else {
+            details = this.itUserRepository.findByCid(cidOrEmail);
+        }
+
+        if (details != null) {
+            details.setAuthority(getAuthorites(details));
+        }
+
         return details;
     }
 
@@ -108,7 +118,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                            String email, String phone, Language language, String avatarUrl) {
+                            String email, String phone, Language language) {
         ITUser itUser = this.itUserRepository.findById(user).orElse(null);
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
@@ -116,7 +126,6 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(email == null ? itUser.getEmail() : email);
         itUser.setPhone(phone == null ? itUser.getPhone() : phone);
         itUser.setLanguage(language == null ? itUser.getLanguage() : language);
-        itUser.setAvatarUrl(avatarUrl == null ? itUser.getAvatarUrl() : avatarUrl);
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
     }
@@ -135,6 +144,11 @@ public class ITUserService implements UserDetailsService {
     public void editGdpr(UUID id, boolean gdpr) {
         ITUser user = getUserById(id);
         user.setGdpr(gdpr);
+        this.itUserRepository.save(user);
+    }
+
+    public void editProfilePicture(ITUser user, String fileUrl) {
+        user.setAvatarUrl(fileUrl);
         this.itUserRepository.save(user);
     }
 

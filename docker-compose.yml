@@ -37,3 +37,22 @@ services:
         environment:
             - NODE_ENV=development
         network_mode: host
+    
+    imageit:
+        image: cthit/imageit
+        environment:
+            IMAGEIT_POSTGRES_USER: imageit
+            IMAGEIT_POSTGRES_PASSWORD: password
+            IMAGEIT_POSTGRES_DB: imageit
+            IMAGEIT_POSTGRES_HOST: imageit_db
+        ports: 
+            - 5000:5000
+        command: sh startscript.sh
+
+    imageit_db:
+        image: postgres
+        restart: always
+        environment: 
+            POSTGRES_PASSWORD: password
+            POSTGRES_USER: imageit
+            POSTGRES_DB: imageit
