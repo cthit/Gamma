@@ -1,12 +1,14 @@
 package it.chalmers.gamma.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -24,16 +26,26 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @Component
+@SuppressFBWarnings(justification = "Needed for Spring to inject value, This is not in issue, FB is projecting",
+        value = {"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 public class ImageITUtils {
 
     private static String imageITUrl;
     private static String apiKey;
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageITUtils.class);
 
-    public static String saveImage(MultipartFile file) {
-        File f = null;
+    public static String saveImage(MultipartFile file) throws FileNotFoundException {
+        File f;
         try {
             f = convertToFile(file);
+            if (f == null) {
+                throw new FileNotFoundException();        // TODO, should probably throw instead
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            throw new FileNotFoundException();
+        }
+        try {
             HttpPost post = new HttpPost(imageITUrl);
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -50,20 +62,23 @@ public class ImageITUtils {
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
         } finally {
-            f.delete();
+            if (f.delete()) {
+                LOGGER.info("deleted local file");
+            }
         }
-        return null;
+        throw new FileNotFoundException();
     }
 
     private static File convertToFile(MultipartFile file) throws IOException {
-        File f = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        File f = new File(Objects.requireNonNull(Objects.requireNonNull(file).getOriginalFilename()));
+
         if (f.createNewFile()) {
             OutputStream fos = Files.newOutputStream(Paths.get(f.getPath()));
             fos.write(file.getBytes());
             fos.close();
             return f;
         }
-        return f;
+        return null;
     }
 
     /*

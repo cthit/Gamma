@@ -7,6 +7,7 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupCreatedResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
@@ -23,6 +24,7 @@ import it.chalmers.gamma.service.WebsiteService;
 import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -137,8 +139,12 @@ public final class GroupAdminController {
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
-        String url = ImageITUtils.saveImage(file);
-        this.fkitService.editGroupAvatar(group, url);
+        try {
+            String url = ImageITUtils.saveImage(file);
+            this.fkitService.editGroupAvatar(group, url);
+        } catch (FileNotFoundException e) {
+            throw new FileNotSavedException();
+        }
         return new GroupEditedResponse();
     }
 

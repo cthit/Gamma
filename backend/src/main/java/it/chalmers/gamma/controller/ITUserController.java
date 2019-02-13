@@ -18,6 +18,7 @@ import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.EditedProfilePicture;
+import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
@@ -33,6 +34,7 @@ import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
+import java.io.FileNotFoundException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
@@ -213,8 +215,13 @@ public final class ITUserController {
         if (user == null) {
             throw new UserNotFoundResponse();
         }
-        String fileUrl = ImageITUtils.saveImage(file);
-        this.itUserService.editProfilePicture(user, fileUrl);
+        try {
+            String fileUrl = ImageITUtils.saveImage(file);
+            this.itUserService.editProfilePicture(user, fileUrl);
+        } catch (FileNotFoundException e) {
+            throw new FileNotSavedException();
+        }
+
         return new EditedProfilePicture();
     }
 }
