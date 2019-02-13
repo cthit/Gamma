@@ -35,7 +35,7 @@ public class ImageITUtils {
     private static String apiKey;
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageITUtils.class);
 
-    public static String saveImage(MultipartFile file) throws FileNotFoundException {
+    public static String saveImage(MultipartFile file) throws IOException {
         File f;
         try {
             f = convertToFile(file);
@@ -52,10 +52,14 @@ public class ImageITUtils {
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             builder.addBinaryBody("file", f, ContentType.MULTIPART_FORM_DATA, f.getName());
             HttpEntity entity = builder.build();
-            post.addHeader("apiKey", apiKey);
+            post.addHeader("API_KEY", apiKey);
             post.setEntity(entity);
             CloseableHttpClient client = HttpClients.custom().build();
             HttpResponse response = client.execute(post);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                LOGGER.error("error connecting to ImageIT");
+                throw new IOException();
+            }
             HttpEntity res = response.getEntity();
             String returnUrl = imageITUrl + EntityUtils.toString(res);
             LOGGER.info("saving file to " + returnUrl);
