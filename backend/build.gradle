@@ -68,6 +68,7 @@ dependencies {
     compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile 'io.jsonwebtoken:jjwt:0.9.1'
 
+    compile "org.apache.httpcomponents:httpmime:4.5.7"
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('org.postgresql:postgresql')
 

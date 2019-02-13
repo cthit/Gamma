@@ -17,6 +17,8 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.response.EditedProfilePicture;
+import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
@@ -28,9 +30,11 @@ import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
@@ -48,8 +52,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 @RestController
@@ -191,7 +197,7 @@ public final class ITUserController {
             throw new UserNotFoundResponse();
         }
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
-                request.getEmail(), request.getPhone(), request.getLanguage(), request.getAvatarUrl());
+                request.getEmail(), request.getPhone(), request.getLanguage());
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         List<WebsiteInterface> userWebsite = new ArrayList<>(
@@ -200,5 +206,22 @@ public final class ITUserController {
         this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
+    }
+
+    @RequestMapping(value = "/me/avatar", method = RequestMethod.PUT)
+    public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file) {
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        try {
+            String fileUrl = ImageITUtils.saveImage(file);
+            this.itUserService.editProfilePicture(user, fileUrl);
+        } catch (IOException e) {
+            throw new FileNotSavedException();
+        }
+
+        return new EditedProfilePicture();
     }
 }

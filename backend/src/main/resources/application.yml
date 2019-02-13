@@ -62,4 +62,6 @@ application:
     accessTokenValidityTime: 3600
     autoApprove: true
     refreshTokenValidityTime: 500000000
-
+  imageit:
+    url: ${IMAGEIT_URL:http://localhost:5000}
+    apiKey: ${IMAGEIT_API_KEY:secret}
