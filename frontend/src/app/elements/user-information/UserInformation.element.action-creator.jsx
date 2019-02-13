@@ -47,20 +47,16 @@ export function userUpdateMe() {
     }
 }
 
-export function userLogout(loggedOutText) {
+export function userLogout() {
     return dispatch => {
         delete localStorage.token;
         delete sessionStorage.token;
-        dispatch(userLogoutSuccessfully());
-        dispatch(DigitRedirectActions.digitRedirectTo("/"));
-        if (loggedOutText != null) {
-            dispatch(
-                DigitToastActions.digitToastOpen({
-                    duration: 3000,
-                    text: loggedOutText
-                })
-            );
-        }
+        dispatch(
+            DigitRedirectActions.digitRedirectTo(
+                "http://localhost:8081/api/logout",
+                true
+            )
+        );
     };
 }
 

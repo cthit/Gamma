@@ -106,6 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                 .formLogin()
                     .loginPage("/login")
+                    .defaultSuccessUrl("http://localhost:3000/", false)
                     .permitAll()
             .and()
                 .logout()

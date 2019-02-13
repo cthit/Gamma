@@ -47,8 +47,7 @@ public class ITUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
         ITUser details = this.itUserRepository.findByCid(cid);
-        System.out.println("CID: " + cid);
-//        details.setAuthority(getAuthorites(details));
+        details.setAuthority(getAuthorites(details));
         return details;
     }
 

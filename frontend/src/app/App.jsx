@@ -11,7 +11,7 @@ import {
     DigitRedirectExternal
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
 import FourOFour from "../use-cases/four-o-four";
@@ -70,7 +70,7 @@ export class App extends Component {
 
         const drawer = closeDrawer => (
             <DigitLayout.Column padding="0">
-                <DigitNavLink onClick={closeDrawer} text="Home" link="/home" />
+                <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
                 <DigitNavLink
                     onClick={closeDrawer}
                     text="Create account"
@@ -132,6 +132,18 @@ export class App extends Component {
 
         loggedIn = loggedIn != null ? loggedIn : false;
         userLoaded = userLoaded != null ? userLoaded : false;
+
+        // alert(
+        //     "Loading:" +
+        //         loading +
+        //         ";" +
+        //         "Logged in: " +
+        //         loggedIn +
+        //         "; userLoaded: " +
+        //         userLoaded +
+        //         " COMBINED: " +
+        //         (!loggedIn && userLoaded && !loading)
+        // );
 
         return (
             <DigitTranslations
@@ -205,10 +217,6 @@ export class App extends Component {
                                                 component={Clients}
                                             />
                                             <Route
-                                                path="/home"
-                                                component={Home}
-                                            />
-                                            <Route
                                                 path="/users"
                                                 component={Users}
                                             />
@@ -250,9 +258,25 @@ export class App extends Component {
                                             />
                                             <Route
                                                 path="/"
-                                                exact
-                                                render={props => (
-                                                    <Redirect to="/home" />
+                                                render={() => (
+                                                    <DigitIfElseRendering
+                                                        test={
+                                                            !loading &&
+                                                            !loggedIn &&
+                                                            userLoaded
+                                                        }
+                                                        ifRender={() => (
+                                                            <DigitRedirectExternal
+                                                                window={window}
+                                                                to={
+                                                                    loginRedirect
+                                                                }
+                                                            />
+                                                        )}
+                                                        elseRender={() => (
+                                                            <Home />
+                                                        )}
+                                                    />
                                                 )}
                                             />
                                             <Route component={FourOFour} />
