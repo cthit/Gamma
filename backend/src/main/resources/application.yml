@@ -16,6 +16,17 @@ spring:
           use_jdbc_metadata_defazults: false
   resources:
 
+  thymeleaf:
+    cache: false
+    check-template: true
+    check-template-location: true
+    enabled: true
+    encoding: UTF-8
+    mode: HTML
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
 server:
   port: ${SERVER_PORT:8081}
   servlet:

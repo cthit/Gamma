@@ -12,7 +12,8 @@ import { gammaLoadingStart } from "./views/gamma-loading/GammaLoading.view.actio
 const mapStateToProps = (state, ownProps) => ({
     loading: state.loading,
     userLoaded: state.user.loaded,
-    loggedIn: state.user.loggedIn
+    loggedIn: state.user.loggedIn,
+    fetchingAccessToken: state.gammaIntegration.fetchingAccessToken
 });
 
 const mapDispatchToProps = dispatch => ({
