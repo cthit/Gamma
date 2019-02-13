@@ -50,11 +50,11 @@ public class ITUserService implements UserDetailsService {
 
         if (cidOrEmail.contains("@")) {
             details = this.itUserRepository.findByEmail(cidOrEmail);
-        }else {
+        } else {
             details = this.itUserRepository.findByCid(cidOrEmail);
         }
 
-        if(details != null){
+        if (details != null) {
             details.setAuthority(getAuthorites(details));
         }
 
