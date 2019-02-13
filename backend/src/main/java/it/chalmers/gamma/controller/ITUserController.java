@@ -33,7 +33,6 @@ import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -204,12 +202,12 @@ public final class ITUserController {
 
     @RequestMapping(value = "/me/image", method = RequestMethod.PUT)
     public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file) {
-        String fileUrl = ImageITUtils.saveImage(file);
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
         if (user == null) {
            throw new UserNotFoundResponse();
         }
+        String fileUrl = ImageITUtils.saveImage(file);
         this.itUserService.editProfilePicture(user, fileUrl);
         return new EditedProfilePicture();
     }

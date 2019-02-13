@@ -1,9 +1,6 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.domain.Language;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 import java.util.List;
 import java.util.Objects;
 

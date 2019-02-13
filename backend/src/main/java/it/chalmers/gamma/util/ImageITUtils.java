@@ -16,8 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 @Component
@@ -45,7 +47,7 @@ public class ImageITUtils {
             LOGGER.info("saving file to " + returnUrl);
             return returnUrl;
         } catch (IOException e) {
-            e.printStackTrace();
+           LOGGER.error(e.getMessage());
         }
         finally {
             f.delete();
@@ -54,9 +56,9 @@ public class ImageITUtils {
     }
 
     private static File convertToFile(MultipartFile file) throws IOException {
-        File f = new File(Objects.requireNonNull((file.getOriginalFilename())));
+        File f = new File(Objects.requireNonNull(file.getOriginalFilename()));
         if (f.createNewFile()) {
-            FileOutputStream fos = new FileOutputStream(f);
+            OutputStream fos = Files.newOutputStream(Paths.get(f.getPath()));
             fos.write(file.getBytes());
             fos.close();
             return f;
