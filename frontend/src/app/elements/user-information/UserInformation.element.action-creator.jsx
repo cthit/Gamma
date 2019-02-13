@@ -19,30 +19,34 @@ export function userUpdateMe() {
         };
     } else {
         return dispatch => {
-            axios
-                .get("http://localhost:8081/api/users/me", {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
-                .then(response => {
-                    dispatch(userUpdatedSuccessfully(response.data));
-                })
-                .catch(error => {
-                    dispatch(userUpdatedFailed(error));
-                    const statusCode =
-                        error.response == null
-                            ? -1
-                            : error.response.data.status;
-                    switch (statusCode) {
-                        case 403:
-                            dispatch(userLogout());
-                            break;
-                        default:
-                            //TODO DISPATCH REDIRECT TO ERROR PAGE
-                            break;
-                    }
-                });
+            return new Promise((resolve, reject) => {
+                axios
+                    .get("http://localhost:8081/api/users/me", {
+                        headers: {
+                            Authorization: "Bearer " + token()
+                        }
+                    })
+                    .then(response => {
+                        resolve();
+                        dispatch(userUpdatedSuccessfully(response.data));
+                    })
+                    .catch(error => {
+                        reject();
+                        dispatch(userUpdatedFailed(error));
+                        const statusCode =
+                            error.response == null
+                                ? -1
+                                : error.response.data.status;
+                        switch (statusCode) {
+                            case 403:
+                                dispatch(userLogout());
+                                break;
+                            default:
+                                //TODO DISPATCH REDIRECT TO ERROR PAGE
+                                break;
+                        }
+                    });
+            });
         };
     }
 }

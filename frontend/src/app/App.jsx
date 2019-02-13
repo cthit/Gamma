@@ -128,22 +128,10 @@ export class App extends Component {
             />
         );
 
-        var { loggedIn, userLoaded, loading } = this.props;
+        var { loggedIn, userLoaded, loading, fetchingAccessToken } = this.props;
 
         loggedIn = loggedIn != null ? loggedIn : false;
         userLoaded = userLoaded != null ? userLoaded : false;
-
-        // alert(
-        //     "Loading:" +
-        //         loading +
-        //         ";" +
-        //         "Logged in: " +
-        //         loggedIn +
-        //         "; userLoaded: " +
-        //         userLoaded +
-        //         " COMBINED: " +
-        //         (!loggedIn && userLoaded && !loading)
-        // );
 
         return (
             <DigitTranslations
@@ -263,7 +251,8 @@ export class App extends Component {
                                                         test={
                                                             !loading &&
                                                             !loggedIn &&
-                                                            userLoaded
+                                                            userLoaded &&
+                                                            !fetchingAccessToken
                                                         }
                                                         ifRender={() => (
                                                             <DigitRedirectExternal
