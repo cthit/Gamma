@@ -25,6 +25,7 @@ import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -142,7 +143,7 @@ public final class GroupAdminController {
         try {
             String url = ImageITUtils.saveImage(file);
             this.fkitService.editGroupAvatar(group, url);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new FileNotSavedException();
         }
         return new GroupEditedResponse();

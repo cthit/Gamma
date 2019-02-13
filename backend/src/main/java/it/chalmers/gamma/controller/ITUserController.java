@@ -35,6 +35,7 @@ import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.ArrayList;
@@ -218,7 +219,7 @@ public final class ITUserController {
         try {
             String fileUrl = ImageITUtils.saveImage(file);
             this.itUserService.editProfilePicture(user, fileUrl);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new FileNotSavedException();
         }
 
