@@ -1,7 +1,6 @@
 export const DESCRIPTION = "description";
 export const CLIENT_ID = "clientId";
 
-
 //     accessTokenValidity: 2592000
 // accessTokenValiditySeconds: 2592000
 // additionalInformation: {name: "Gamma Frontend", description: {…}}

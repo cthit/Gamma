@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import axios from "axios";
 
 import * as p from "@cthit/react-digit-components";
-console.log(p);
 
 class GammaIntegration extends React.Component {
     constructor(props) {
@@ -11,6 +10,7 @@ class GammaIntegration extends React.Component {
         if (props.location.search !== "") {
             const paramsResponse = new URLSearchParams(props.location.search);
             const code = paramsResponse.get("code");
+            props.startedFetchingAccessToken();
             if (code) {
                 axios
                     .post("http://localhost:8082/auth", {
@@ -18,7 +18,13 @@ class GammaIntegration extends React.Component {
                     })
                     .then(response => {
                         localStorage.token = response.data;
-                        props.redirectTo("/");
+                        props.userUpdateMe().then(() => {
+                            props.redirectTo("/");
+                            props.finishedFetchingAccessToken();
+                        });
+                    })
+                    .catch(error => {
+                        props.finishedFetchingAccessToken();
                     });
             }
         }
