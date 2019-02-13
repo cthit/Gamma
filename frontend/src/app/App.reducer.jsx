@@ -9,6 +9,7 @@ import { user } from "./elements/user-information/UserInformation.element.reduce
 import { loading } from "./views/gamma-loading/GammaLoading.view.reducer";
 import { editUsersInGroup } from "../use-cases/groups/screens/edit-users-in-group/EditUsersInGroup.screen.reducer";
 import { clients } from "../use-cases/clients/Clients.reducer";
+import { gammaIntegration } from "./views/gamma-integration/GammaIntegration.view.reducer";
 
 export const rootReducer = {
     createAccount,
@@ -21,5 +22,6 @@ export const rootReducer = {
     activationCodes,
     loading,
     editUsersInGroup,
-    clients
+    clients,
+    gammaIntegration
 };

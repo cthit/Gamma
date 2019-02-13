@@ -1,0 +1,248 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css"/>
+    <script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,900" rel="stylesheet">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            mdc.ripple.MDCRipple.attachTo(document.querySelector('#loginButton'));
+            mdc.ripple.MDCRipple.attachTo(document.querySelector('#createAccountButton'));
+            mdc.ripple.MDCRipple.attachTo(document.querySelector('#forgotPasswordButton'));
+            mdc.textField.MDCTextField.attachTo(document.querySelector('#username'));
+            mdc.textField.MDCTextField.attachTo(document.querySelector('#password'));
+        }, false);
+    </script>
+
+    <script>
+        function onload() {
+            var c = document.getElementById("c");
+            var ctx = c.getContext("2d");
+
+            //making the canvas full screen
+            c.height = window.innerHeight;
+            c.width = window.innerWidth;
+
+            //chinese characters - taken from the unicode charset
+            var chinese = "abcdefghijklmnopqrstuvwxyz1234567890";
+            //converting the string into an array of single characters
+            chinese = chinese.split("");
+
+            var font_size = 20;
+            var columns = c.width/font_size; //number of columns for the rain
+            //an array of drops - one per column
+            var drops = [];
+            //x below is the x coordinate
+            //1 = y co-ordinate of the drop(same for every drop initially)
+            for(var x = 0; x < columns; x++)
+                drops[x] = 1;
+
+            //drawing the characters
+            var lastTime = -1000
+            //drawing the characters
+            function draw(time) {
+                if (time - lastTime < 17) {
+                    requestAnimationFrame(draw);
+                    return
+                }
+                lastTime = time
+                //Black BG for the canvas
+                //translucent BG to show trail
+                ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+                ctx.fillRect(0, 0, c.width, c.height);
+
+                ctx.fillStyle = "#0F0"; //green text
+                ctx.font = font_size + "px Matrix";
+                //looping over drops
+                for(var i = 0; i < drops.length; i++)
+                {
+                    //a random chinese character to print
+                    var text = chinese[Math.floor(Math.random()*chinese.length)];
+                    //x = i*font_size, y = value of drops[i]*font_size
+                    ctx.fillText(text, i*font_size, drops[i]*font_size);
+
+                    //sending the drop back to the top randomly after it has crossed the screen
+                    //adding a randomness to the reset to make the drops scattered on the Y axis
+                    if(drops[i]*font_size > c.height && Math.random() > 0.975)
+                        drops[i] = 0;
+
+                    //incrementing Y coordinate
+                    drops[i]++;
+                }
+                requestAnimationFrame(draw);
+            }
+
+            requestAnimationFrame(draw);
+        }
+    </script>
+
+    <script>
+        function onload() {
+            var c = document.getElementById("c");
+            var ctx = c.getContext("2d");
+
+            //making the canvas full screen
+            c.height = window.innerHeight;
+            c.width = window.innerWidth;
+
+            //chinese characters - taken from the unicode charset
+            var chinese = "abcdefghijklmnopqrstuvwxyz1234567890";
+            //converting the string into an array of single characters
+            chinese = chinese.split("");
+
+            var font_size = 20;
+            var columns = c.width / font_size; //number of columns for the rain
+            //an array of drops - one per column
+            var drops = [];
+            //x below is the x coordinate
+            //1 = y co-ordinate of the drop(same for every drop initially)
+            for (var x = 0; x < columns; x++)
+                drops[x] = 1;
+
+            //drawing the characters
+            var lastTime = -1000
+
+            //drawing the characters
+            function draw(time) {
+                if (time - lastTime < 17) {
+                    requestAnimationFrame(draw);
+                    return
+                }
+                lastTime = time
+                //Black BG for the canvas
+                //translucent BG to show trail
+                ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+                ctx.fillRect(0, 0, c.width, c.height);
+
+                ctx.fillStyle = "#0F0"; //green text
+                ctx.font = font_size + "px Matrix";
+                //looping over drops
+                for (var i = 0; i < drops.length; i++) {
+                    //a random chinese character to print
+                    var text = chinese[Math.floor(Math.random() * chinese.length)];
+                    //x = i*font_size, y = value of drops[i]*font_size
+                    ctx.fillText(text, i * font_size, drops[i] * font_size);
+
+                    //sending the drop back to the top randomly after it has crossed the screen
+                    //adding a randomness to the reset to make the drops scattered on the Y axis
+                    if (drops[i] * font_size > c.height && Math.random() > 0.975)
+                        drops[i] = 0;
+
+                    //incrementing Y coordinate
+                    drops[i]++;
+                }
+                requestAnimationFrame(draw);
+            }
+
+            requestAnimationFrame(draw);
+        }
+    </script>
+</head>
+<body onload="onload()">
+    <canvas id="c"></canvas>
+    <div th:fragment="content">
+        <form name="f" th:action="@{/login}" method="post">
+            <div class="card mdc-elevation--z8">
+
+                <div th:if="${param.error}" class="text text--roboto alert alert-error">
+                    Invalid username and password.
+                    <div class="padding"></div>
+                </div>
+                <div th:if="${param.logout}" class="text text--roboto alert alert-success">
+                    You have been logged out.
+                    <div class="padding"></div>
+                </div>
+
+
+                <div class="row">
+                    <img id="it-logo" th:src="@{/img/itlogo.svg}" />
+                    <div class="padding"></div>
+                    <h1 class="text text--large text--roboto center-vertical">
+                        Gamma - IT account
+                    </h1>
+                </div>
+
+                <div class="padding"></div>
+
+                <!-- Cid -->
+                <div id="username" class="mdc-text-field mdc-text-field--outlined" >
+                    <input name="username" type="text" id="tf-cid" class="mdc-text-field__input">
+                    <div class="mdc-notched-outline" >
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label for="tf-cid" class="mdc-floating-label text text--roboto primary-color" >Cid or email</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+
+                <div class="padding"></div>
+
+                <!-- Password -->
+                <div id="password" class="mdc-text-field mdc-text-field--outlined" >
+                    <input name="password" type="password" id="tf-password" class="mdc-text-field__input">
+                    <div class="mdc-notched-outline" >
+                        <div class="mdc-notched-outline__leading"></div>
+                        <div class="mdc-notched-outline__notch">
+                            <label for="tf-password" class="mdc-floating-label text text--roboto" >Password</label>
+                        </div>
+                        <div class="mdc-notched-outline__trailing"></div>
+                    </div>
+                </div>
+
+                <div class="padding"></div>
+
+                <div class="row row--space-between">
+                    <!-- Remember me-->
+                    <div class="mdc-form-field">
+                        <div id="rememberMe" class="mdc-checkbox">
+                            <input type="checkbox"
+                                   class="mdc-checkbox__native-control"
+                                   id="checkbox-1"
+                                   name="remember-me"
+                            />
+                            <div class="mdc-checkbox__background">
+                                <svg class="mdc-checkbox__checkmark"
+                                     viewBox="0 0 24 24">
+                                    <path class="mdc-checkbox__checkmark-path"
+                                          fill="none"
+                                          d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+                                </svg>
+                                <div class="mdc-checkbox__mixedmark"></div>
+                            </div>
+                        </div>
+                        <label for="checkbox-1" class="text text--roboto">Remember me</label>
+                    </div>
+
+                    <button type="submit" id="loginButton" class="foo-button mdc-button mdc-button--raised">Sign in</button>
+                </div>
+
+                <div class="padding"></div>
+
+                <hr>
+
+                <div class="padding"></div>
+
+                <div class="row row--space-between">
+                    <button id="createAccountButton" class="black-color foo-button mdc-button text--small">Register</button>
+                    <button id="forgotPasswordButton" class="black-color foo-button mdc-button text--small">Forgot password</button>
+                </div>
+            </div>
+        </form>
+
+        <footer class="text text--roboto">
+            Made by digIT '18
+        </footer>
+
+    </div>
+
+</body>
+</html>

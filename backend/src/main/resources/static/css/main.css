@@ -1,0 +1,109 @@
+
+*{
+    --mdc-theme-primary: #4CAF50;
+    --mdc-theme-secondary: #4CAF50;
+}
+
+.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+    color: var(--mdc-theme-primary) !important;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+}
+
+@font-face {
+    font-family: 'Matrix';
+    src: url('matrix_code_nfi.ttf') format('truetype');
+}
+html, body { background:black; width:100%; height:100%; margin: 0; font-family: Matrix; }
+
+footer {
+    text-align: center;
+    color: white;
+
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+}
+
+#it-logo{
+    width:50px;
+    height:50px;
+}
+
+.text{
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0px;
+}
+
+.center-vertical{
+    display:block;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.text--large{
+    font-size: 23px;
+    font-weight: 900;
+}
+
+.text--small{
+    font-size: 13px !important;
+}
+
+.text--roboto{
+    font-family: "Roboto", serif;
+}
+
+.card{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+
+    max-width: 280px;
+    min-width: 250px;
+
+    height: 328px;
+
+    padding: 16px;
+
+    background-color: white;
+}
+
+.padding{
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+}
+
+.row--space-between{
+    justify-content: space-between;
+}
+
+.black-color{
+    color: black !important;
+}
+
+hr{
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #bbb;
+    margin: 0px;
+    margin-top: 8px;
+    padding: 0;
+}
