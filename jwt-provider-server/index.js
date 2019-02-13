@@ -16,14 +16,10 @@ const server = http.createServer(app);
 
 app.use(cors());
 
-console.log("Hej");
-
 /* Start Server */
 server.listen(PORT);
 
 app.post("/auth", (req, res) => {
-    console.log("gotcha")
-
     const code = req.body.code;
     const params = new url.URLSearchParams();
     const id = "7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
@@ -34,9 +30,6 @@ app.post("/auth", (req, res) => {
     params.append("code", code);
 
     const c = Buffer.from(id + ":" + secret).toString("base64");
-
-    console.log("Sending to Gamma");
-    console.log(params);
 
     axios
         .post(
@@ -50,8 +43,6 @@ app.post("/auth", (req, res) => {
             }
         )
         .then(response => {
-            console.log("JWT token recieved, returning to frontend");
-            console.log(response.data);
             res.send(response.data.access_token);
         })
         .catch(error => {

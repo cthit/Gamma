@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
 @RestController
 @RequestMapping("/admin/users")
-public final class UserAdminController {
+public final class UsersAdminController {
 
     private final ITUserService itUserService;
     private final UserWebsiteService userWebsiteService;
@@ -55,7 +55,7 @@ public final class UserAdminController {
     private final MailSenderService mailSenderService;
     private final MembershipService membershipService;
 
-    public UserAdminController(
+    public UsersAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
             PasswordResetService passwordResetService,
