@@ -139,7 +139,7 @@ public class ITUserService implements UserDetailsService {
 
     public void editProfilePicture(ITUser user, String fileUrl) {
         user.setAvatarUrl(fileUrl);
-        itUserRepository.save(user);
+        this.itUserRepository.save(user);
     }
 
 }
