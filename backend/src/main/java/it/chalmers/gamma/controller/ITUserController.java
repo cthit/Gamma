@@ -34,7 +34,6 @@ import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;

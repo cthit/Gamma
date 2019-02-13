@@ -29,11 +29,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 @SuppressFBWarnings(justification = "Needed for Spring to inject value, This is not in issue, FB is projecting",
         value = {"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public class ImageITUtils {
 
     private static String imageITUrl;
     private static String apiKey;
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageITUtils.class);
+    private static final int ACCEPTED_CODE = 200;
 
     public static String saveImage(MultipartFile file) throws IOException {
         File f;
@@ -56,7 +58,7 @@ public class ImageITUtils {
             post.setEntity(entity);
             CloseableHttpClient client = HttpClients.custom().build();
             HttpResponse response = client.execute(post);
-            if (response.getStatusLine().getStatusCode() != 200) {
+            if (response.getStatusLine().getStatusCode() != ACCEPTED_CODE) {
                 LOGGER.error("error connecting to ImageIT");
                 throw new IOException();
             }
