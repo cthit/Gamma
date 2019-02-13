@@ -86,4 +86,8 @@ public class FKITService {
         return this.repo.findById(id).orElse(null);
     }
 
+    public void editGroupAvatar(FKITGroup group, String url) {
+        group.setAvatarURL(url);
+        this.repo.save(group);
+    }
 }

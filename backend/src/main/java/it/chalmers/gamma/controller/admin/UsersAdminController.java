@@ -100,8 +100,7 @@ public final class UsersAdminController {
                 request.getLastName(),
                 request.getEmail(),
                 request.getPhone(),
-                request.getLanguage(),
-                request.getAvatarUrl());
+                request.getLanguage());
         // Below handles adding websites.
         ITUser user = this.itUserService.getUserById(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();

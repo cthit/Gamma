@@ -6,7 +6,7 @@ COPY . /app
 
 RUN mkdir -p /app
 RUN chown -R gradle /app
-WORKDIR /app
+WORKDIR /app/home/gurr/digIT/ImageIT/app.py
 
 USER gradle
 #db is used to separate development and production databases
@@ -33,7 +33,8 @@ ENV ADMIN_PASSWORD password
 ENV AUTH_ACCESS_TOKEN_VALIDITY 3000
 ENV AUTH_AUTO_APPROVE true
 
-
+ENV IMAGEIT_URL http://localhost:5000
+ENV IMAGEIT_API_KEY secret
 
 
 
