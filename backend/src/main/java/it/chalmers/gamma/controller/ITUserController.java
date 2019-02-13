@@ -170,7 +170,9 @@ public final class ITUserController {
         }
         return minifiedITUsers;
     }
-
+    /**
+    * First tries to get user using id, if not found gets it using the cid.
+    */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("id") String id) {
         ITUser user;
