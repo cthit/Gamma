@@ -26,25 +26,25 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 public class ImageITUtils {
 
-    private static String IMAGEIT_URL;
-    private static String API_KEY;
+    private static String imageITUrl;
+    private static String apiKey;
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageITUtils.class);
 
     public static String saveImage(MultipartFile file) {
         File f = null;
         try {
             f = convertToFile(file);
-            HttpPost post = new HttpPost(IMAGEIT_URL);
+            HttpPost post = new HttpPost(imageITUrl);
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
             builder.addBinaryBody("file", f, ContentType.MULTIPART_FORM_DATA, f.getName());
             HttpEntity entity = builder.build();
-            post.addHeader("API_KEY", API_KEY);
+            post.addHeader("apiKey", apiKey);
             post.setEntity(entity);
             CloseableHttpClient client = HttpClients.custom().build();
             HttpResponse response = client.execute(post);
             HttpEntity res = response.getEntity();
-            String returnUrl = IMAGEIT_URL + EntityUtils.toString(res);
+            String returnUrl = imageITUrl + EntityUtils.toString(res);
             LOGGER.info("saving file to " + returnUrl);
             return returnUrl;
         } catch (IOException e) {
@@ -71,11 +71,11 @@ public class ImageITUtils {
      */
     @Value("${application.imageit.url}")
     public void setImageITUrl(String imageITUrl) {
-        ImageITUtils.IMAGEIT_URL = imageITUrl;
+        ImageITUtils.imageITUrl = imageITUrl;
     }
     
-    @Value("${application.imageit.API_KEY}")
+    @Value("${application.imageit.apiKey}")
     public void setApiKey(String apiKey) {
-        ImageITUtils.API_KEY = apiKey;
+        ImageITUtils.apiKey = apiKey;
     }
 }

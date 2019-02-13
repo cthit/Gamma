@@ -206,7 +206,7 @@ public final class ITUserController {
         return new UserEditedResponse();
     }
 
-    @RequestMapping(value = "/me/image", method = RequestMethod.PUT)
+    @RequestMapping(value = "/me/avatar", method = RequestMethod.PUT)
     public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
