@@ -11,21 +11,24 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystemException;
 import java.util.Objects;
 
+@Component
 public class ImageITUtils {
-    //@Value()
-    private static String imageITURL = "http://localhost:5000";      // TODO Add Env Variable
-    private static String apiKey = "secret";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageITUtils.class);
+
+    private static String imageITURL;
+    private static String apiKey;
 
     public static String saveImage(MultipartFile file) {
+        System.out.println(imageITURL);
+        System.out.println(apiKey);
         File f = convertToFile(file);
         HttpPost post = new HttpPost(imageITURL);
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -44,7 +47,27 @@ public class ImageITUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        finally {
+            f.delete();
+        }
         return null;
+    }
+
+    /*
+     * Needed for Spring to inject into static fields
+     */
+    @Value("${application.imageit.url}")
+    public void setImageITURL(String imageITURL) {
+        System.out.println(imageITURL);
+        ImageITUtils.imageITURL = imageITURL;
+    }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageITUtils.class);
+
+    @Value("${application.imageit.apiKey}")
+    public void setApiKey(String apiKey) {
+        System.out.println(apiKey);
+        ImageITUtils.apiKey = apiKey;
     }
 
     private static File convertToFile(MultipartFile file) {
@@ -56,7 +79,6 @@ public class ImageITUtils {
             fos.close();
             return f;
         }
-            file.transferTo(f);
         } catch (IOException e) {
             e.printStackTrace();
         }
