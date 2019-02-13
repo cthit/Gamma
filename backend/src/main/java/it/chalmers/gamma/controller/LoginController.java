@@ -11,7 +11,7 @@ public class LoginController {
     @GetMapping("/login")
     public String getLogin(@RequestParam(value = "error", required = false) String error,
                            @RequestParam(value = "logout", required = false) String logout,
-                           Model model){
+                           Model model) {
         return "login";
     }
 
