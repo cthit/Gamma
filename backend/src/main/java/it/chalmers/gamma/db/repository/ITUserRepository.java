@@ -12,5 +12,8 @@ public interface ITUserRepository extends JpaRepository<ITUser, UUID> {
 
     ITUser findByCid(String cid);
 
+    ITUser findByEmail(String email);
+
     boolean existsByCid(String cid);
+
 }
