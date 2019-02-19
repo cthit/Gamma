@@ -55,6 +55,7 @@ public class ITUserSerializer {
         values.add(serializeValue(Properties.WEBSITE, websites, "websites"));
         values.add(serializeValue(Properties.AUTHORITIES, value.getAuthorities(), "authorities"));
         values.add(serializeValue(Properties.GROUPS, groups, "groups"));
+        values.add(serializeValue(Properties.GDPR, value.isGdpr(), "gdpr"));
         return SerializerUtils.serialize(values, false);
     }
 
@@ -79,7 +80,8 @@ public class ITUserSerializer {
         LAST_MODIFIED_AT,
         AUTHORITIES,
         WEBSITE,
-        GROUPS;
+        GROUPS,
+        GDPR;
 
         public static List<ITUserSerializer.Properties> getAllProperties() {
             ITUserSerializer.Properties[] props = {
@@ -99,7 +101,9 @@ public class ITUserSerializer {
                 LAST_MODIFIED_AT,
                 AUTHORITIES,
                 WEBSITE,
-                GROUPS
+                GROUPS,
+                GDPR
+
             };
             return new ArrayList<>(Arrays.asList(props));
         }
