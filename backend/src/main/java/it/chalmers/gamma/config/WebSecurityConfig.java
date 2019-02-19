@@ -1,10 +1,14 @@
 package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
+import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
@@ -43,15 +47,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthorityService authorityService;
 
-    private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITGroupToSuperGroupService groupToSuperGroupService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
-                             FKITSuperGroupService fkitSuperGroupService) {
+                             FKITGroupToSuperGroupService groupToSuperGroupService) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
-        this.fkitSuperGroupService = fkitSuperGroupService;
+        this.groupToSuperGroupService = groupToSuperGroupService;
     }
 
     @Override
@@ -162,27 +166,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
+            List<FKITGroupToSuperGroup> relationships = this.groupToSuperGroupService.getAllRelationships();
+            for (FKITGroupToSuperGroup relationship : relationships) {
+                addPathRole(http, relationship);
+            }
             http.authorizeRequests().antMatchers("/admin/**")
                     .hasAuthority("admin");
-            List<FKITSuperGroup> superGroups = this.fkitSuperGroupService.getAllGroups();
-            for (FKITSuperGroup superGroup : superGroups) {
-                addPathRole(http, superGroup.getId());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void addPathRole(HttpSecurity http, UUID groupId) {
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(groupId);
+    private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
         this.authorityService.getAllAuthorities().forEach( a -> {
-            if(a.getId().getFkitSuperGroup().equals(superGroup)) {
-                try {
-                    http.authorizeRequests().antMatchers("/admin/" + superGroup.getId() + "/**")
-                            .hasAuthority(a.getAuthorityLevel().getAuthority());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if(a.getId().getFkitSuperGroup().equals(relationship.getId().getSuperGroup())) {
+                    try {
+                        http.authorizeRequests().antMatchers("/admin/groups/" +
+                                relationship.getId().getGroup().getId() + "/**")
+                                .hasAuthority(a.getAuthorityLevel().getAuthority());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
             }
         });
     }
