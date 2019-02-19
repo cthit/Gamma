@@ -106,7 +106,7 @@ export class App extends Component {
                     text="Websites"
                     link="/websites"
                 />
-                <DigitNavLink onClick={closeDrawer} text="Gdpr" link="/gdpr" />
+                <DigitNavLink onClick={closeDrawer} text="GDPR" link="/gdpr" />
                 <DigitNavLink
                     onClick={closeDrawer}
                     text="Activation codes"

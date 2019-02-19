@@ -30,7 +30,7 @@ class AdminOptions extends React.Component {
                                     link={"/activation-codes"}
                                 />
                                 <HomeLink
-                                    text="Gdpr certified"
+                                    text="GDPR certified"
                                     link={"/gdpr"}
                                 />
                                 <HomeLink text="Group posts" link={"/posts"} />
