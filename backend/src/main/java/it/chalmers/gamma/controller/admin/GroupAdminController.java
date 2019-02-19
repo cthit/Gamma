@@ -19,6 +19,7 @@ import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 
+import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.WebsiteService;
 
 import it.chalmers.gamma.util.ImageITUtils;
@@ -29,8 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,18 +56,22 @@ public final class GroupAdminController {
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final static Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
+    private final MembershipService membershipService;
 
     public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             FKITSuperGroupService fkitSuperGroupService,
-            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+            FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+            MembershipService membershipService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.membershipService = membershipService;
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -89,14 +98,22 @@ public final class GroupAdminController {
         }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
-            Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL = new WebsiteURL();
-            websiteURL.setWebsite(website);
-            websiteURL.setUrl(websiteInfo.getUrl());
-            websiteURLs.add(websiteURL);
+
+                Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
+                WebsiteURL websiteURL = new WebsiteURL();
+                websiteURL.setWebsite(website);
+                websiteURL.setUrl(websiteInfo.getUrl());
+                websiteURLs.add(websiteURL);
         }
         FKITGroup group = this.fkitService.createGroup(createGroupRequest);
-        this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+        try {
+            this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+        }
+        catch (DataIntegrityViolationException e) {
+            LOGGER.warn(e.getMessage());
+            LOGGER.warn("Warning was non-fatal, continuing without adding websites");
+        }
+
         this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
         return new GroupCreatedResponse();
     }
@@ -129,6 +146,7 @@ public final class GroupAdminController {
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
                 this.fkitService.getGroup(UUID.fromString(id))
         );
+        this.membershipService.removeAllUsersFromGroup(this.fkitService.getGroup(UUID.fromString(id)));
         this.fkitService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }

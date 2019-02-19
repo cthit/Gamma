@@ -133,4 +133,10 @@ public class MembershipService {
         this.membershipRepository.save(membership);
     }
 
+    public void removeAllUsersFromGroup(FKITGroup group) {
+        List<ITUser> users = getUsersInGroup(group);
+        for (ITUser user : users) {
+            this.membershipRepository.delete(this.getMembershipByUserAndGroup(user, group));
+        }
+    }
 }

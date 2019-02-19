@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 /*
@@ -31,15 +33,23 @@ public class GroupWebsiteService extends EntityWebsiteService {
         this.repository = repository;
     }
 
-    public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) {
+    public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) throws DataIntegrityViolationException {
         if (websiteURLs == null || group == null) {
             return;
         }
+        boolean error = false;
         for (WebsiteURL websiteURL : websiteURLs) {
+            if (websiteURL.getWebsite() == null || websiteURL.getUrl() == null) {
+                error = true;
+                continue;
+            }
             GroupWebsite groupWebsite = new GroupWebsite();
             groupWebsite.setGroup(group);
             groupWebsite.setWebsite(websiteURL);
             this.repository.save(groupWebsite);
+        }
+        if (error) {
+            throw new DataIntegrityViolationException("A SQL Constraint was violated");
         }
     }
 

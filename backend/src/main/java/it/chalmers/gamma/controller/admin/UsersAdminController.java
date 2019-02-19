@@ -123,7 +123,11 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("id") String id) {
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
+        try {
+            if (!this.itUserService.userExists(UUID.fromString(id))) {
+                throw new UserNotFoundResponse();
+            }
+        } catch (IllegalArgumentException e) {
             throw new UserNotFoundResponse();
         }
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();

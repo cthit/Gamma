@@ -1,8 +1,14 @@
 package it.chalmers.gamma.config;
 
+import it.chalmers.gamma.db.entity.AuthorityLevel;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
+import it.chalmers.gamma.service.MembershipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +24,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Configuration
 @EnableResourceServer
 @Order(2)
@@ -31,10 +41,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
 
+    private final AuthorityService authorityService;
+
+    private final FKITSuperGroupService fkitSuperGroupService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(ITUserService itUserService) {
+    public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
+                             FKITSuperGroupService fkitSuperGroupService) {
         this.itUserService = itUserService;
+        this.authorityService = authorityService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @Override
@@ -44,6 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         addAuthenticationFilter(http);
         addFormLogin(http);
         setPermittedPaths(http);
+        setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
     }
 
@@ -140,7 +158,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             LOGGER.error("Something went wrong when setting");
             LOGGER.error(e.getMessage());
         }
+    }
 
+    private void setAdminPaths(HttpSecurity http) {
+        try {
+            http.authorizeRequests().antMatchers("/admin/**")
+                    .hasAuthority("admin");
+            List<FKITSuperGroup> superGroups = this.fkitSuperGroupService.getAllGroups();
+            for (FKITSuperGroup superGroup : superGroups) {
+                addPathRole(http, superGroup.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addPathRole(HttpSecurity http, UUID groupId) {
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(groupId);
+        this.authorityService.getAllAuthorities().forEach( a -> {
+            if(a.getId().getFkitSuperGroup().equals(superGroup)) {
+                try {
+                    http.authorizeRequests().antMatchers("/admin/" + superGroup.getId() + "/**")
+                            .hasAuthority(a.getAuthorityLevel().getAuthority());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
