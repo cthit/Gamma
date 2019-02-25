@@ -73,7 +73,6 @@ public class EntityWebsiteService {
             boolean websiteFound = false;
 
             //loops through all added website types.
-            System.out.println(website);
             for (int y = 0; y < websiteTypes.size(); y++) {
 
                 // checks if the website has been added to found types.

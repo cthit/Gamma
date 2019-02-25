@@ -1,18 +1,11 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
-import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
-import it.chalmers.gamma.service.MembershipService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,9 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Configuration
 @EnableResourceServer
@@ -173,7 +164,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().antMatchers("/admin/**")
                     .hasAuthority("admin");
         } catch (Exception e) {
-            e.printStackTrace();
+           LOGGER.error("something went wrong when setting admin paths");
+           LOGGER.error(e.getMessage());
         }
     }
 
@@ -185,7 +177,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                 relationship.getId().getGroup().getId() + "/**")
                                 .hasAuthority(a.getAuthorityLevel().getAuthority());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                       LOGGER.error("Something went wrong when setting authorized paths");
+                       LOGGER.error(e.getMessage());
                     }
             }
         });
@@ -199,6 +192,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             LOGGER.error(e.getMessage());
         }
     }
-
-
 }

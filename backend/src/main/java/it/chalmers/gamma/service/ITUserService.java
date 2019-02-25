@@ -57,7 +57,6 @@ public class ITUserService implements UserDetailsService {
         if (details != null) {
             details.setAuthority(getAuthorites(details));
         }
-        System.out.println(details);
         return details;
     }
 

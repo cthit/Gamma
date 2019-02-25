@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

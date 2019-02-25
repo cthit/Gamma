@@ -37,7 +37,6 @@ public class SuperGroupAdminController {
     public ResponseEntity<FKITSuperGroup> createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
                                                            BindingResult result) {
         if (result.hasErrors()) {
-            System.out.println(result.getAllErrors());
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (this.fkitSuperGroupService.groupExists(request.getName())) {
