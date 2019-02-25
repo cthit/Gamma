@@ -55,7 +55,7 @@ public final class GroupAdminController {
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
-    private final static Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final MembershipService membershipService;
 
     public GroupAdminController(
@@ -97,18 +97,16 @@ public final class GroupAdminController {
         }
         List<WebsiteURL> websiteURLs = new ArrayList<>();
         for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
-
-                Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-                WebsiteURL websiteURL = new WebsiteURL();
-                websiteURL.setWebsite(website);
-                websiteURL.setUrl(websiteInfo.getUrl());
-                websiteURLs.add(websiteURL);
+            Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
+            WebsiteURL websiteURL = new WebsiteURL();
+            websiteURL.setWebsite(website);
+            websiteURL.setUrl(websiteInfo.getUrl());
+            websiteURLs.add(websiteURL);
         }
         FKITGroup group = this.fkitService.createGroup(createGroupRequest);
         try {
             this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             LOGGER.warn(e.getMessage());
             LOGGER.warn("Warning was non-fatal, continuing without adding websites");
         }

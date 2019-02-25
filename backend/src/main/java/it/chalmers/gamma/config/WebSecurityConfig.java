@@ -6,6 +6,8 @@ import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +22,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-
-import java.util.List;
 
 @Configuration
 @EnableResourceServer
@@ -164,22 +164,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.authorizeRequests().antMatchers("/admin/**")
                     .hasAuthority("admin");
         } catch (Exception e) {
-           LOGGER.error("something went wrong when setting admin paths");
-           LOGGER.error(e.getMessage());
+            LOGGER.error("something went wrong when setting admin paths");
+            LOGGER.error(e.getMessage());
         }
     }
 
     private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
-        this.authorityService.getAllAuthorities().forEach( a -> {
-            if(a.getId().getFkitSuperGroup().equals(relationship.getId().getSuperGroup())) {
-                    try {
-                        http.authorizeRequests().antMatchers("/admin/groups/" +
-                                relationship.getId().getGroup().getId() + "/**")
-                                .hasAuthority(a.getAuthorityLevel().getAuthority());
-                    } catch (Exception e) {
-                       LOGGER.error("Something went wrong when setting authorized paths");
-                       LOGGER.error(e.getMessage());
-                    }
+        this.authorityService.getAllAuthorities().forEach(a -> {
+            if (a.getId().getFkitSuperGroup().equals(relationship.getId().getSuperGroup())) {
+                try {
+                    http.authorizeRequests().antMatchers("/admin/groups/"
+                            + relationship.getId().getGroup().getId() + "/**")
+                            .hasAuthority(a.getAuthorityLevel().getAuthority());
+                } catch (Exception e) {
+                    LOGGER.error("Something went wrong when setting authorized paths");
+                    LOGGER.error(e.getMessage());
+                }
             }
         });
     }
