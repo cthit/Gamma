@@ -73,8 +73,8 @@ public class ITUserService implements UserDetailsService {
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Membership membership : memberships) {
-             authorities.add(authorityLevelService.
-                     getAuthorityLevel(membership.getId().getFKITGroup().getId().toString()));
+            authorities.add(this.authorityLevelService
+                    .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString()));
         }
         authorities.addAll(this.authorityService.getAuthorities(memberships));
         return authorities;
