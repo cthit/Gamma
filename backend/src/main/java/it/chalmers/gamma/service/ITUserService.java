@@ -77,6 +77,8 @@ public class ITUserService implements UserDetailsService {
                     .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString()));
         }
         authorities.addAll(this.authorityService.getAuthorities(memberships));
+        authorities.remove(null);
+        System.out.println(authorities);
         return authorities;
     }
 
