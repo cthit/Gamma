@@ -31,17 +31,20 @@ public class ITUserService implements UserDetailsService {
 
     private final AuthorityService authorityService;
 
+    private final AuthorityLevelService authorityLevelService;
+
     /*
      * These dependencies are needed for the authentication system to work,
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
     public ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
-                          AuthorityService authorityService) {
+                          AuthorityService authorityService, AuthorityLevelService authorityLevelService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         this.membershipService = membershipService;
         this.authorityService = authorityService;
+        this.authorityLevelService = authorityLevelService;
     }
 
     @Override
@@ -55,22 +58,26 @@ public class ITUserService implements UserDetailsService {
         }
 
         if (details != null) {
-            details.setAuthority(getAuthorites(details));
+            details.setAuthority(getAuthorities(details));
         }
         return details;
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
         ITUser user = this.itUserRepository.findByCid(cid);
-        user.setAuthority(getAuthorites(user));
+        user.setAuthority(getAuthorities(user));
         return user;
     }
 
-    private List<GrantedAuthority> getAuthorites(ITUser details) {
+    private List<GrantedAuthority> getAuthorities(ITUser details) {
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
-        return new ArrayList<>(
-                this.authorityService.getAuthorities(memberships)
-        );
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Membership membership : memberships) {
+             authorities.add(authorityLevelService.
+                     getAuthorityLevel(membership.getId().getFKITGroup().getId().toString()));
+        }
+        authorities.addAll(this.authorityService.getAuthorities(memberships));
+        return authorities;
     }
 
     public List<ITUser> loadAllUsers() {
@@ -131,7 +138,7 @@ public class ITUserService implements UserDetailsService {
 
     public ITUser getUserById(UUID id) {
         ITUser user = this.itUserRepository.findById(id).orElseThrow();
-        user.setAuthority(getAuthorites(user));
+        user.setAuthority(getAuthorities(user));
         return user;
     }
 

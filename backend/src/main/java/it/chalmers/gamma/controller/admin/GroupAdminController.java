@@ -14,6 +14,7 @@ import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
@@ -57,6 +58,7 @@ public final class GroupAdminController {
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final MembershipService membershipService;
+    private final AuthorityLevelService authorityLevelService;
 
     public GroupAdminController(
             FKITService fkitService,
@@ -64,13 +66,15 @@ public final class GroupAdminController {
             GroupWebsiteService groupWebsiteService,
             FKITSuperGroupService fkitSuperGroupService,
             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
-            MembershipService membershipService) {
+            MembershipService membershipService,
+            AuthorityLevelService authorityLevelService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.membershipService = membershipService;
+        this.authorityLevelService = authorityLevelService;
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -112,6 +116,8 @@ public final class GroupAdminController {
         }
 
         this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
+        // Adds each group as an authoritylevel which
+        this.authorityLevelService.addAuthorityLevel(group.getId().toString());
         return new GroupCreatedResponse();
     }
 
