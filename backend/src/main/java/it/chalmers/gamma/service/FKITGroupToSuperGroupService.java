@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -27,13 +28,30 @@ public class FKITGroupToSuperGroupService {
     public List<FKITGroupToSuperGroup> getRelationships(FKITSuperGroup superGroup) {
         return this.repository.findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
     }
+
     public FKITSuperGroup getSuperGroup(FKITGroup group) {
         return this.repository.findFKITGroupToSuperGroupsById_Group(group).getId().getSuperGroup();
     }
+
     public void deleteRelationship(FKITGroup group, FKITSuperGroup superGroup) {
         this.repository.delete(this.repository.findFKITGroupToSuperGroupsById_GroupAndId_SuperGroup(group, superGroup));
     }
     public List<FKITGroupToSuperGroup> getAllRelationships() {
         return this.repository.findAll();
+    }
+
+    /**
+     * returns the subgroup that is currently the active group.
+     *
+     * @param superGroup the super group to retrieve active group from
+     * @return the fkit group that is active
+     */
+    public List<FKITGroup> getActiveGroups(FKITSuperGroup superGroup) {
+        List<FKITGroupToSuperGroup> relationships = this.repository
+                .findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
+        List<FKITGroup> groups = new ArrayList<>();
+        relationships.stream().filter(e -> e.getId().getGroup().isActive())
+                .forEach(e -> groups.add(e.getId().getGroup()));
+        return groups;
     }
 }

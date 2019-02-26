@@ -170,13 +170,21 @@ public final class ITUserController {
         }
         return minifiedITUsers;
     }
-
-    @RequestMapping(value = "/{cid}", method = RequestMethod.GET)
-    public JSONObject getUser(@PathVariable("cid") String id) {
-        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
-        if (user == null) {
-            throw new UserNotFoundResponse();
+    /**
+    * First tries to get user using id, if not found gets it using the cid.
+    */
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public JSONObject getUser(@PathVariable("id") String id) {
+        ITUser user;
+        try {
+            user = this.itUserService.getUserById(UUID.fromString(id));
+        } catch (IllegalArgumentException e) {
+            user = this.itUserService.loadUser(id);
+            if (user == null) {
+                throw new UserNotFoundResponse();
+            }
         }
+
         ITUserSerializer serializer = new ITUserSerializer(
                 ITUserSerializer.Properties.getAllProperties()
         );
