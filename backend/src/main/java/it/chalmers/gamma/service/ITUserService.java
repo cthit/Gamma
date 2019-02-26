@@ -1,5 +1,6 @@
 package it.chalmers.gamma.service;
 
+import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
@@ -73,11 +74,13 @@ public class ITUserService implements UserDetailsService {
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Membership membership : memberships) {
-            authorities.add(this.authorityLevelService
-                    .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString()));
+            AuthorityLevel authorityLevel = this.authorityLevelService
+                    .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString());
+            if (authorityLevel != null) {
+                authorities.add(authorityLevel);
+            }
         }
         authorities.addAll(this.authorityService.getAuthorities(memberships));
-        authorities.remove(null);
         return authorities;
     }
 
