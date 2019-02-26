@@ -14,6 +14,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
@@ -55,8 +56,11 @@ public final class FKITGroupController {
 
         // finds the group
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
-        if (group == null) {      //makes sure that the requested group exists
-            return null;
+        if (group == null) {
+            group = this.fkitService.getGroup(id);
+        }
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
         }
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
