@@ -8,6 +8,19 @@ import {
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import translations from "./ShowGroupDetails.screen.translations.json";
+import {
+    ID,
+    NAME,
+    EMAIL,
+    TYPE,
+    DESCRIPTION,
+    FUNCTION
+} from "../../../../api/groups/props.groups.api";
+
+const DESCRIPTION_SV = "description_sv";
+const DESCRIPTION_EN = "description_en";
+const FUNCTION_SV = "function_sv";
+const FUNCTION_EN = "function_en";
 
 class ShowGroupDetails extends Component {
     componentDidMount() {
@@ -22,6 +35,49 @@ class ShowGroupDetails extends Component {
         this.props.gammaLoadingStart();
     }
 
+    _getTypeText = (type, text) => {
+        switch (type) {
+            case "SOCIETY":
+                return text.society;
+            case "COMMITTEE":
+                return text.Committee;
+            case "BOARD":
+                return text.Board;
+            default:
+                return "Unknown";
+        }
+    };
+
+    generateKeysText = (text, groupType) => {
+        const output = {};
+
+        output[ID] = text.Id;
+        output[NAME] = text.Name;
+        output[DESCRIPTION_SV] = text.DescriptionSv;
+        output[DESCRIPTION_EN] = text.DescriptionEn;
+        output[EMAIL] = text.Email;
+        output[FUNCTION_SV] = text.FunctionSv;
+        output[FUNCTION_EN] = text.FunctionEn;
+        output[TYPE] = text.Type;
+
+        return output;
+    };
+
+    modifyData = group => {
+        const newGroup = {};
+
+        newGroup[ID] = group[ID];
+        newGroup[NAME] = group[NAME];
+        newGroup[DESCRIPTION_SV] = group[DESCRIPTION]["sv"];
+        newGroup[DESCRIPTION_EN] = group[DESCRIPTION]["en"];
+        newGroup[EMAIL] = group[EMAIL];
+        newGroup[FUNCTION_SV] = group[FUNCTION]["sv"];
+        newGroup[FUNCTION_EN] = group[FUNCTION]["en"];
+        newGroup[TYPE] = group[TYPE];
+
+        return newGroup;
+    };
+
     render() {
         const {
             group,
@@ -31,15 +87,12 @@ class ShowGroupDetails extends Component {
             redirectTo
         } = this.props;
 
-        console.log(group);
-
         return (
             <DigitIfElseRendering
                 test={group != null}
                 ifRender={() => (
                     <DigitTranslations
                         translations={translations}
-                        uniquePath="Groups.Screen.ShowGroupDetails"
                         render={text => (
                             <DigitLayout.Fill>
                                 <DigitLayout.Center>
@@ -49,45 +102,20 @@ class ShowGroupDetails extends Component {
                                     >
                                         <DigitDesign.CardBody>
                                             <DigitDisplayData
-                                                data={{
-                                                    id: group.id,
-                                                    name: group.name,
-                                                    description_sv:
-                                                        group.description.sv,
-                                                    description_en:
-                                                        group.description.en,
-                                                    email: group.email,
-                                                    func_sv: group.func.sv,
-                                                    func_en: group.func.en,
-                                                    type: _getTypeText(
-                                                        group.type,
-                                                        text
-                                                    )
-                                                }}
-                                                keysText={{
-                                                    id: text.Id,
-                                                    name: text.Name,
-                                                    description_sv:
-                                                        text.DescriptionSv,
-                                                    description_en:
-                                                        text.DescriptionEn,
-                                                    email: text.Email,
-                                                    func_sv: text.FunctionSv,
-                                                    func_en: text.FunctionEn,
-                                                    type: _getTypeText(
-                                                        group.type,
-                                                        text
-                                                    )
-                                                }}
+                                                data={this.modifyData(group)}
+                                                keysText={this.generateKeysText(
+                                                    text,
+                                                    group.type
+                                                )}
                                                 keysOrder={[
-                                                    "id",
-                                                    "name",
-                                                    "description_sv",
-                                                    "description_en",
-                                                    "email",
-                                                    "func_sv",
-                                                    "func_en",
-                                                    "type"
+                                                    ID,
+                                                    NAME,
+                                                    DESCRIPTION_SV,
+                                                    DESCRIPTION_EN,
+                                                    EMAIL,
+                                                    FUNCTION_SV,
+                                                    FUNCTION_EN,
+                                                    TYPE
                                                 ]}
                                             />
                                         </DigitDesign.CardBody>
@@ -153,19 +181,6 @@ class ShowGroupDetails extends Component {
                 )}
             />
         );
-    }
-}
-
-function _getTypeText(type, text) {
-    switch (type) {
-        case "SOCIETY":
-            return text.society;
-        case "COMMITTEE":
-            return text.Committee;
-        case "BOARD":
-            return text.Board;
-        default:
-            return "Unknown";
     }
 }
 

@@ -56,9 +56,9 @@ export function createEditSuperGroupAction(superGroupId, superGroupData) {
     );
 }
 
-export function createDeleteSuperGroupAction(superGroupId, superGroupData) {
+export function createDeleteSuperGroupAction(superGroupId) {
     return requestPromise(
-        () => deleteSuperGroup(superGroupId, superGroupData),
+        () => deleteSuperGroup(superGroupId),
         superGroupDeleteLoading,
         superGroupDeleteSuccessfully,
         superGroupDeleteFailed

@@ -13,4 +13,4 @@ export const CREATE_ACCOUNT_ENDPOINT = "/users/";
 export const LOGIN_ENDPOINT = "/users/login/";
 export const GROUPS_ENDPOINT = "/groups/";
 export const USERS_ENDPOINT = "/users/";
-export const SUPER_GROUPS_ENDPOINT = "/superGroups";
+export const SUPER_GROUPS_ENDPOINT = "/superGroups/";
