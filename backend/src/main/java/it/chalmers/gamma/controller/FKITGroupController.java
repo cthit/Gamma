@@ -2,7 +2,7 @@ package it.chalmers.gamma.controller;
 
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNCTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
@@ -77,7 +77,7 @@ public final class FKITGroupController {
         List<FKITGroup> groups = this.fkitService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNCTION, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
         );
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
@@ -96,7 +96,7 @@ public final class FKITGroupController {
             return null;
         }
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNCTION, FKITGroupSerializer.Properties.ID, TYPE)
         );
         return serializer.serialize(group, null, null);
     }

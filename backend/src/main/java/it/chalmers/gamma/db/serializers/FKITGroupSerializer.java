@@ -20,7 +20,7 @@ public class FKITGroupSerializer {
         NAME,
         PRETTY_NAME,
         DESCRIPTION,
-        FUNC,
+        FUNCTION,
         EMAIL,
         TYPE,
         WEBSITES,
@@ -29,7 +29,7 @@ public class FKITGroupSerializer {
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
-                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
+                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNCTION, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
             };
             return new ArrayList<>(Arrays.asList(props));
         }
@@ -56,7 +56,7 @@ public class FKITGroupSerializer {
                 this.properties.contains(Properties.DESCRIPTION), value.getDescription(), "description")
         );
         values.add(new SerializerValue(
-                this.properties.contains(Properties.FUNC), value.getFunc(), "function")
+                this.properties.contains(Properties.FUNCTION), value.getFunction(), "function")
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.EMAIL), value.getEmail(), "email")
