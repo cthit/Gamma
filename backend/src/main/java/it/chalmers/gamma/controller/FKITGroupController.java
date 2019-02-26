@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -125,6 +126,25 @@ public final class FKITGroupController {
                     jsonMembers,
                     websites
             ));
+        }
+        return serializedGroups;
+    }
+    @RequestMapping(value = "/active", method = RequestMethod.GET)
+    public List<JSONObject> getActiveGroups() {
+        List<FKITGroup> groups = this.fkitService.getGroups().stream()
+                .filter(FKITGroup::isActive).collect(Collectors.toList());
+        FKITGroupSerializer groupSerializer = new FKITGroupSerializer(FKITGroupSerializer.Properties
+                .getAllProperties());
+        ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        List<JSONObject> serializedUsers = new ArrayList<>();
+        List<JSONObject> serializedGroups = new ArrayList<>();
+        for (FKITGroup group : groups) {
+            List<ITUser> members = this.membershipService.getUsersInGroup(group);
+            for (ITUser member : members) {
+                serializedUsers.add(userSerializer.serialize(member, null, null));
+            }
+            serializedGroups.add(groupSerializer.serialize(group, serializedUsers,
+                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group))));
         }
         return serializedGroups;
     }
