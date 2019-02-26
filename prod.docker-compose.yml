@@ -29,3 +29,11 @@ services:
     restart: always
     ports:
       - 8081:8080
+  
+  jwt:
+    build:
+      context: ./jwt-provider-server
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8082:8082
