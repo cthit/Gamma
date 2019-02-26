@@ -13,8 +13,7 @@ spring:
     properties:
       hibernate:
         temp:
-          use_jdbc_metadata_defazults: false
-  resources:
+          use_jdbc_metadata_defaults: false
 
   thymeleaf:
     cache: false
