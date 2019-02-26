@@ -78,7 +78,6 @@ public class ITUserService implements UserDetailsService {
         }
         authorities.addAll(this.authorityService.getAuthorities(memberships));
         authorities.remove(null);
-        System.out.println(authorities);
         return authorities;
     }
 
