@@ -13,8 +13,7 @@ import {
     EMAIL,
     FUNCTION,
     ID,
-    NAME,
-    TYPE
+    NAME
 } from "../../../api/groups/props.groups.api";
 
 function generateHeaderTexts(text) {
@@ -25,7 +24,6 @@ function generateHeaderTexts(text) {
     output[DESCRIPTION] = text.Description;
     output[EMAIL] = text.Email;
     output[FUNCTION] = text.Function;
-    output[TYPE] = text.Type;
     output["__link"] = text.Details;
 
     return output;
@@ -35,19 +33,12 @@ function modifyData(groups, text, activeLanguage) {
     return groups.map(group => {
         const newGroup = {};
 
-        console.log("oj");
-        console.log(group);
-
         newGroup[ID] = group[ID];
         newGroup[NAME] = group[NAME];
         newGroup[DESCRIPTION] = group[DESCRIPTION][activeLanguage];
         newGroup[EMAIL] = group[EMAIL];
         newGroup[FUNCTION] = group[FUNCTION][activeLanguage];
-        newGroup[TYPE] = _getTypeText(group[TYPE], text);
         newGroup["__link"] = "/groups/" + group[ID];
-
-        console.log("Hej");
-        console.log(newGroup);
 
         return newGroup;
     });
@@ -63,23 +54,11 @@ const DisplayGroupsTable = ({ title, groups }) => (
                     searchText={text.SearchForGroups}
                     idProp="id"
                     startOrderBy={NAME}
-                    columnsOrder={[
-                        ID,
-                        NAME,
-                        DESCRIPTION,
-                        EMAIL,
-                        FUNCTION,
-                        TYPE
-                    ]}
+                    columnsOrder={[ID, NAME, DESCRIPTION, EMAIL, FUNCTION]}
                     headerTexts={generateHeaderTexts(text)}
                     data={modifyData(groups, text, activeLanguage)}
                     emptyTableText={text.NoGroups}
                 />
-                <DigitLayout.DownRightPosition>
-                    <DigitDesign.Link to="/groups/new">
-                        <DigitFAB icon={Add} secondary />
-                    </DigitDesign.Link>
-                </DigitLayout.DownRightPosition>
             </DigitLayout.Fill>
         )}
     />

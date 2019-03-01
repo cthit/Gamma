@@ -64,7 +64,7 @@ class ShowAllSuperGroup extends React.Component {
                                     emptyTableText={text.NoSuperGroups}
                                 />
                                 <DigitLayout.DownRightPosition>
-                                    <DigitDesign.Link to="/users/add">
+                                    <DigitDesign.Link to="/super-groups/add">
                                         <DigitFAB icon={Add} secondary />
                                     </DigitDesign.Link>
                                 </DigitLayout.DownRightPosition>

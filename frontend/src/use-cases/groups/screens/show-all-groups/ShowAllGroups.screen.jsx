@@ -1,4 +1,10 @@
 import React, { Component } from "react";
+import {
+    DigitFAB,
+    DigitLayout,
+    DigitDesign
+} from "@cthit/react-digit-components";
+import { Add } from "@material-ui/icons";
 import DisplayGroupsTable from "../../../../common/elements/display-groups-table/DisplayGroupsTable.element";
 
 class ShowAllGroups extends Component {
@@ -16,7 +22,16 @@ class ShowAllGroups extends Component {
 
     render() {
         let { groups } = this.props;
-        return <DisplayGroupsTable groups={groups} />;
+        return (
+            <React.Fragment>
+                <DisplayGroupsTable groups={groups} />;
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/groups/new">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
+            </React.Fragment>
+        );
     }
 }
 

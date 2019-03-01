@@ -12,7 +12,6 @@ import {
     ID,
     NAME,
     EMAIL,
-    TYPE,
     DESCRIPTION,
     FUNCTION
 } from "../../../../api/groups/props.groups.api";
@@ -35,20 +34,7 @@ class ShowGroupDetails extends Component {
         this.props.gammaLoadingStart();
     }
 
-    _getTypeText = (type, text) => {
-        switch (type) {
-            case "SOCIETY":
-                return text.society;
-            case "COMMITTEE":
-                return text.Committee;
-            case "BOARD":
-                return text.Board;
-            default:
-                return "Unknown";
-        }
-    };
-
-    generateKeysText = (text, groupType) => {
+    generateKeysText = text => {
         const output = {};
 
         output[ID] = text.Id;
@@ -58,7 +44,6 @@ class ShowGroupDetails extends Component {
         output[EMAIL] = text.Email;
         output[FUNCTION_SV] = text.FunctionSv;
         output[FUNCTION_EN] = text.FunctionEn;
-        output[TYPE] = text.Type;
 
         return output;
     };
@@ -73,7 +58,6 @@ class ShowGroupDetails extends Component {
         newGroup[EMAIL] = group[EMAIL];
         newGroup[FUNCTION_SV] = group[FUNCTION]["sv"];
         newGroup[FUNCTION_EN] = group[FUNCTION]["en"];
-        newGroup[TYPE] = group[TYPE];
 
         return newGroup;
     };
@@ -104,8 +88,7 @@ class ShowGroupDetails extends Component {
                                             <DigitDisplayData
                                                 data={this.modifyData(group)}
                                                 keysText={this.generateKeysText(
-                                                    text,
-                                                    group.type
+                                                    text
                                                 )}
                                                 keysOrder={[
                                                     ID,
@@ -114,8 +97,7 @@ class ShowGroupDetails extends Component {
                                                     DESCRIPTION_EN,
                                                     EMAIL,
                                                     FUNCTION_SV,
-                                                    FUNCTION_EN,
-                                                    TYPE
+                                                    FUNCTION_EN
                                                 ]}
                                             />
                                         </DigitDesign.CardBody>

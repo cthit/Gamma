@@ -12,11 +12,7 @@ import {
     PRETTY_NAME,
     DESCRIPTION,
     EMAIL,
-    FUNCTION,
-    TYPE,
-    TYPE_SOCIETY,
-    TYPE_COMMITTEE,
-    TYPE_BOARD
+    FUNCTION
 } from "../../../../../api/groups/props.groups.api";
 import {
     SWEDISH_LANGUAGE,
@@ -44,7 +40,6 @@ function generateValidationSchema(text) {
         .object()
         .shape(functionSchema)
         .required();
-    schema[TYPE] = yup.string().required();
 
     return yup.object().shape(schema);
 }
@@ -101,26 +96,12 @@ function generateEditComponentData(text) {
         }
     };
 
-    const typeValueToTextMap = {};
-    typeValueToTextMap[TYPE_SOCIETY] = text.Society;
-    typeValueToTextMap[TYPE_COMMITTEE] = text.Committee;
-    typeValueToTextMap[TYPE_BOARD] = text.Board;
-
-    componentData[TYPE] = {
-        component: DigitSelect,
-        componentProps: {
-            upperLabel: text.Type,
-            valueToTextMap: typeValueToTextMap
-        }
-    };
-
     return componentData;
 }
 
 const GroupForm = ({ initialValues, onSubmit }) => (
     <DigitTranslations
         translations={translations}
-        uniquePath="Groups.Screen.GroupForm"
         render={text => (
             <DigitEditData
                 titleText={text.Group}
@@ -135,8 +116,7 @@ const GroupForm = ({ initialValues, onSubmit }) => (
                     DESCRIPTION + "." + ENGLISH_LANGUAGE,
                     EMAIL,
                     FUNCTION + "." + SWEDISH_LANGUAGE,
-                    FUNCTION + "." + ENGLISH_LANGUAGE,
-                    TYPE
+                    FUNCTION + "." + ENGLISH_LANGUAGE
                 ]}
                 keysComponentData={generateEditComponentData(text)}
             />

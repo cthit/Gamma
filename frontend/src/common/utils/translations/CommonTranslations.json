@@ -3,6 +3,7 @@
     "Back": ["Back", "Tillbaka"],
     "Edit": ["Edit", "Redigera"],
     "Delete": ["Delete", "Radera"],
+    "Create": ["Create", "Skapa"],
     "FieldRequired": [
         "This field is required",
         "Det här fältet är obligatoriskt"

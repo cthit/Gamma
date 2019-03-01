@@ -8,8 +8,8 @@
     "Board": ["Board", "Nämnd"],
     "DeleteSuperGroup": ["Delete super group", "Radera supergrupp"],
     "WouldYouLikeToDelete": [
-        "Would you like to delete the post",
-        "Vill du radera posten"
+        "Would you like to delete the super group",
+        "Vill du radera supergruppen"
     ],
     "SubGroups": ["Sub groups", "Subgrupper"]
 }
