@@ -11,11 +11,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FKITService {
+public class FKITGroupService {
 
     private final FKITGroupRepository repo;
 
-    public FKITService(FKITGroupRepository repo) {
+    public FKITGroupService(FKITGroupRepository repo) {
         this.repo = repo;
     }
 

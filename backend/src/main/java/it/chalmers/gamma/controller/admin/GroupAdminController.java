@@ -14,7 +14,7 @@ import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 
@@ -41,19 +41,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/groups")
 public final class GroupAdminController {
 
-    private final FKITService fkitService;
+    private final FKITGroupService fkitGroupService;
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public GroupAdminController(
-            FKITService fkitService,
-            WebsiteService websiteService,
-            GroupWebsiteService groupWebsiteService,
-            FKITSuperGroupService fkitSuperGroupService,
-            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
-        this.fkitService = fkitService;
+        FKITGroupService fkitGroupService,
+        WebsiteService websiteService,
+        GroupWebsiteService groupWebsiteService,
+        FKITSuperGroupService fkitSuperGroupService,
+        FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+        this.fkitGroupService = fkitGroupService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
@@ -64,7 +64,7 @@ public final class GroupAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
                                               BindingResult result) {
-        if (this.fkitService.groupExists(createGroupRequest.getName())) {
+        if (this.fkitGroupService.groupExists(createGroupRequest.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
 
@@ -90,7 +90,7 @@ public final class GroupAdminController {
             websiteURL.setUrl(websiteInfo.getUrl());
             websiteURLs.add(websiteURL);
         }
-        FKITGroup group = this.fkitService.createGroup(createGroupRequest);
+        FKITGroup group = this.fkitGroupService.createGroup(createGroupRequest);
         this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
         this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
         return new GroupCreatedResponse();
@@ -100,11 +100,11 @@ public final class GroupAdminController {
     public ResponseEntity<String> editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
-        if (!this.fkitService.groupExists(UUID.fromString(id))) {
+        if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
-        this.fkitService.editGroup(UUID.fromString(id), request);
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        this.fkitGroupService.editGroup(UUID.fromString(id), request);
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteInterface> entityWebsites = new ArrayList<>(
                 this.groupWebsiteService.getWebsites(group)
@@ -118,13 +118,13 @@ public final class GroupAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
-        if (!this.fkitService.groupExists(UUID.fromString(id))) {
+        if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-                this.fkitService.getGroup(UUID.fromString(id))
+                this.fkitGroupService.getGroup(UUID.fromString(id))
         );
-        this.fkitService.removeGroup(UUID.fromString(id));
+        this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 

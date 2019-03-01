@@ -36,6 +36,8 @@ public class SuperGroupAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<FKITSuperGroup> createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
                                                            BindingResult result) {
+        System.out.println("HEJ");
+        System.out.println(request);
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }

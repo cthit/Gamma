@@ -14,7 +14,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.views.WebsiteView;
@@ -36,15 +36,15 @@ public final class FKITGroupController {
 
     //TODO add groupmembers to serialize method call once that has been solved.
 
-    private final FKITService fkitService;
+    private final FKITGroupService fkitGroupService;
     private final GroupWebsiteService groupWebsiteService;
     private final MembershipService membershipService;
 
     public FKITGroupController(
-            FKITService fkitService,
-            GroupWebsiteService groupWebsiteService,
-            MembershipService membershipService) {
-        this.fkitService = fkitService;
+        FKITGroupService fkitGroupService,
+        GroupWebsiteService groupWebsiteService,
+        MembershipService membershipService) {
+        this.fkitGroupService = fkitGroupService;
         this.groupWebsiteService = groupWebsiteService;
         this.membershipService = membershipService;
     }
@@ -53,7 +53,7 @@ public final class FKITGroupController {
     public JSONObject getGroup(@PathVariable("id") String id) {
 
         // finds the group
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {      //makes sure that the requested group exists
             return null;
         }
@@ -74,7 +74,7 @@ public final class FKITGroupController {
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public List<JSONObject> getGroupsMinified() {
-        List<FKITGroup> groups = this.fkitService.getGroups();
+        List<FKITGroup> groups = this.fkitGroupService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
                 Arrays.asList(NAME, FUNCTION, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
@@ -91,7 +91,7 @@ public final class FKITGroupController {
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public JSONObject getGroupMinified(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
             return null;
         }
@@ -103,7 +103,7 @@ public final class FKITGroupController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<JSONObject> getGroups() {
-        List<FKITGroup> groups = this.fkitService.getGroups();
+        List<FKITGroup> groups = this.fkitGroupService.getGroups();
         List<JSONObject> serializedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
         ITUserSerializer userSerializer = new ITUserSerializer(
