@@ -52,6 +52,7 @@ application:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
     client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
     redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:3000/login}
+    successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   gotify:
