@@ -41,7 +41,7 @@ public class ITUserSerializer {
         values.add(serializeValue(Properties.ID, value.getId(), "id"));
         values.add(serializeValue(Properties.AVATAR_URL, value.getAvatarUrl(), "avatarUrl"));
         values.add(serializeValue(Properties.CID, value.getCid(), "cid"));
-        values.add(serializeValue(Properties.NICK, value.getNick(), "nickname"));
+        values.add(serializeValue(Properties.NICK, value.getNick(), "nick"));
         values.add(serializeValue(Properties.FIRST_NAME, value.getFirstName(), "firstName"));
         values.add(serializeValue(Properties.LAST_NAME, value.getLastName(), "lastName"));
         values.add(serializeValue(Properties.EMAIL, value.getEmail(), "email"));

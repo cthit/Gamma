@@ -18,7 +18,7 @@ export const ProvidersForApp = ({ children }) => (
     <DigitProviders
         rootReducer={rootReducer}
         preloadedState={preloadedState}
-        defaultLanguage="sv"
+        defaultLanguage="en"
         theme={theme}
     >
         {children}

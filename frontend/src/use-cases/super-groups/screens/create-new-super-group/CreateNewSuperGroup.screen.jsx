@@ -37,7 +37,6 @@ class CreateNewSuperGroup extends React.Component {
                         <SuperGroupForm
                             initialValues={generateInitialValues()}
                             onSubmit={values => {
-                                console.log(values);
                                 addSuperGroup(values);
                             }}
                             titleText={text.CreateSuperGroup}

@@ -111,11 +111,20 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private void ensureAdminUser() {
         String admin = "admin";
         if (!this.userservice.userExists(admin)) {
-            Text description = new Text();
-            String descriptionText = "Super admin group, do not add anything to this group,"
+            Text descriptionText = new Text();
+            String descriptionTextEn = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
-            description.setEn(descriptionText);
-            description.setSv(descriptionText);
+
+            String descriptionTextSv = "Admin supergrupp, lägg inte till någonting till den här gruppen" +
+                "då den används för att kunna komma in i frontenden med en användare som har alla rättigheter";
+
+            Text functionText = new Text();
+            functionText.setSv("Supergrupp");
+            functionText.setEn("Super group");
+
+            descriptionText.setEn(descriptionTextEn);
+            descriptionText.setSv(descriptionTextSv);
+
             CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
@@ -123,9 +132,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             String adminMail = "admin@chalmers.it";
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
-            request.setPrettyName("superAdmin");
-            request.setFunction(new Text());
-            request.setDescription(description);
+            request.setPrettyName("SuperAdmin");
+            request.setFunction(functionText);
+            request.setDescription(descriptionText);
             request.setEmail(adminMail);
             request.setYear(2018);
             Calendar end = new GregorianCalendar();

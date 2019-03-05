@@ -15,6 +15,7 @@ import {
     DESCRIPTION,
     FUNCTION
 } from "../../../../api/groups/props.groups.api";
+import DisplayUsersTable from "../../../../common/elements/display-users-table";
 
 const DESCRIPTION_SV = "description_sv";
 const DESCRIPTION_EN = "description_en";
@@ -78,86 +79,85 @@ class ShowGroupDetails extends Component {
                     <DigitTranslations
                         translations={translations}
                         render={text => (
-                            <DigitLayout.Fill>
-                                <DigitLayout.Center>
-                                    <DigitDesign.Card
-                                        minWidth="300px"
-                                        maxWidth="600px"
-                                    >
-                                        <DigitDesign.CardBody>
-                                            <DigitDisplayData
-                                                data={this.modifyData(group)}
-                                                keysText={this.generateKeysText(
-                                                    text
-                                                )}
-                                                keysOrder={[
-                                                    ID,
-                                                    NAME,
-                                                    DESCRIPTION_SV,
-                                                    DESCRIPTION_EN,
-                                                    EMAIL,
-                                                    FUNCTION_SV,
-                                                    FUNCTION_EN
-                                                ]}
-                                            />
-                                        </DigitDesign.CardBody>
-                                        <DigitDesign.CardButtons
-                                            reverseDirection
+                            <DigitLayout.Column centerHorizontal>
+                                <DigitDesign.Card
+                                    minWidth="300px"
+                                    maxWidth="600px"
+                                >
+                                    <DigitDesign.CardBody>
+                                        <DigitDisplayData
+                                            data={this.modifyData(group)}
+                                            keysText={this.generateKeysText(
+                                                text
+                                            )}
+                                            keysOrder={[
+                                                ID,
+                                                NAME,
+                                                DESCRIPTION_SV,
+                                                DESCRIPTION_EN,
+                                                EMAIL,
+                                                FUNCTION_SV,
+                                                FUNCTION_EN
+                                            ]}
+                                        />
+                                    </DigitDesign.CardBody>
+                                    <DigitDesign.CardButtons reverseDirection>
+                                        <DigitDesign.Link
+                                            to={"/groups/" + group.id + "/edit"}
                                         >
-                                            <DigitDesign.Link
-                                                to={
-                                                    "/groups/" +
-                                                    group.id +
-                                                    "/edit"
-                                                }
-                                            >
-                                                <DigitButton
-                                                    primary
-                                                    raised
-                                                    text="Redigera"
-                                                />
-                                            </DigitDesign.Link>
                                             <DigitButton
-                                                text="Radera"
-                                                onClick={() => {
-                                                    dialogOpen({
-                                                        title: "Radera?",
-                                                        confirmButtonText:
-                                                            "Radera",
-                                                        cancelButtonText:
-                                                            text.Cancel,
-                                                        onConfirm: () => {
-                                                            groupsDelete(
-                                                                group.id
-                                                            )
-                                                                .then(() => {
-                                                                    toastOpen({
-                                                                        text:
-                                                                            "Du har raderat"
-                                                                    });
-
-                                                                    redirectTo(
-                                                                        "/groups"
-                                                                    );
-                                                                })
-                                                                .catch(
-                                                                    error => {
-                                                                        toastOpen(
-                                                                            {
-                                                                                text:
-                                                                                    text.SomethingWentWrong
-                                                                            }
-                                                                        );
-                                                                    }
-                                                                );
-                                                        }
-                                                    });
-                                                }}
+                                                primary
+                                                raised
+                                                text="Redigera"
                                             />
-                                        </DigitDesign.CardButtons>
-                                    </DigitDesign.Card>
-                                </DigitLayout.Center>
-                            </DigitLayout.Fill>
+                                        </DigitDesign.Link>
+                                        <DigitDesign.Link
+                                            to={
+                                                "/groups/" +
+                                                group.id +
+                                                "/members"
+                                            }
+                                        >
+                                            <DigitButton
+                                                outlined
+                                                primary
+                                                text="Redigera medlemmar"
+                                            />
+                                        </DigitDesign.Link>
+                                        <DigitButton
+                                            text="Radera"
+                                            onClick={() => {
+                                                dialogOpen({
+                                                    title: "Radera?",
+                                                    confirmButtonText: "Radera",
+                                                    cancelButtonText:
+                                                        text.Cancel,
+                                                    onConfirm: () => {
+                                                        groupsDelete(group.id)
+                                                            .then(() => {
+                                                                toastOpen({
+                                                                    text:
+                                                                        "Du har raderat"
+                                                                });
+
+                                                                redirectTo(
+                                                                    "/groups"
+                                                                );
+                                                            })
+                                                            .catch(error => {
+                                                                toastOpen({
+                                                                    text:
+                                                                        text.SomethingWentWrong
+                                                                });
+                                                            });
+                                                    }
+                                                });
+                                            }}
+                                        />
+                                    </DigitDesign.CardButtons>
+                                </DigitDesign.Card>
+                                <DisplayUsersTable users={group.groupMembers} />
+                            </DigitLayout.Column>
                         )}
                     />
                 )}

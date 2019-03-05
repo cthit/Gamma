@@ -21,8 +21,6 @@ class EditSuperGroup extends Component {
     render() {
         const { superGroup, editSuperGroup, superGroupId } = this.props;
 
-        console.log(superGroup);
-
         return (
             <DigitIfElseRendering
                 test={superGroup != null}
@@ -33,8 +31,6 @@ class EditSuperGroup extends Component {
                             <DigitLayout.Center>
                                 <SuperGroupForm
                                     onSubmit={values => {
-                                        console.log("hej");
-                                        console.log(values);
                                         editSuperGroup(superGroupId, values);
                                     }}
                                     backButtonTo="/super-groups"

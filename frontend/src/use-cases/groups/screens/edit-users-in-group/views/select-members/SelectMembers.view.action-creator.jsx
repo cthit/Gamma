@@ -1,4 +1,4 @@
-import { TEMPORARY_SAVE_SELECTED_USERS_TO_GROUP } from "./EditUsersInGroup.screen.actions";
+import { TEMPORARY_SAVE_SELECTED_USERS_TO_GROUP } from "./SelectMembers.view.actions";
 
 export function temporarySaveSelectedUsersToGroup(groupId, selectedUsers) {
     return {
@@ -6,7 +6,7 @@ export function temporarySaveSelectedUsersToGroup(groupId, selectedUsers) {
         error: false,
         payload: {
             groupId: groupId,
-            selectedUsers: selectedUsers
+            selectedMemberIds: selectedUsers
         }
     };
 }
