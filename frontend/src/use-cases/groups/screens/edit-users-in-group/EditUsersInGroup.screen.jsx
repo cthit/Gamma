@@ -9,10 +9,12 @@ import SelectMembers from "./views/select-members";
 import SetPostNames from "./views/set-post-names";
 
 import translations from "./EditUsersInGroup.screen.translations";
+import * as _ from "lodash";
 
 class EditUsersInGroup extends React.Component {
     state = {
-        activeStep: 0
+        activeStep: 0,
+        memberIdsSelected: []
     };
 
     constructor(props) {
@@ -22,17 +24,20 @@ class EditUsersInGroup extends React.Component {
             loadUsers,
             getGroup,
             groupId,
-            gammaLoadingFinished
+            gammaLoadingFinished,
+            getPosts
         } = this.props;
 
-        Promise.all([loadUsers(), getGroup(groupId)]).then(result => {
-            gammaLoadingFinished();
-        });
+        Promise.all([loadUsers(), getGroup(groupId), getPosts()]).then(
+            result => {
+                gammaLoadingFinished();
+            }
+        );
     }
 
     render() {
-        const { activeStep } = this.state;
-        const { groupId, group, users } = this.props;
+        const { activeStep, memberIdsSelected } = this.state;
+        const { groupId, group, users, posts } = this.props;
 
         return (
             <DigitTranslations
@@ -54,9 +59,24 @@ class EditUsersInGroup extends React.Component {
                                         group={group}
                                         users={users}
                                         groupId={groupId}
+                                        onMembersSelected={memberIdsSelected => {
+                                            this.setState({
+                                                activeStep: 1,
+                                                memberIdsSelected
+                                            });
+                                        }}
                                     />
                                 ),
-                                () => <SetPostNames />
+                                () => (
+                                    <SetPostNames
+                                        posts={posts}
+                                        currentMembers={group.groupMembers}
+                                        members={memberIdsSelected.map(
+                                            memberId =>
+                                                _.find(users, { id: memberId })
+                                        )}
+                                    />
+                                )
                             ]}
                         />
                     </React.Fragment>

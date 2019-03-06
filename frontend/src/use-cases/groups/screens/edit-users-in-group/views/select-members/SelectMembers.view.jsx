@@ -48,6 +48,7 @@ class SelectMembers extends React.Component {
             console.log(group);
             this.setState({
                 currentMembers: group.groupMembers,
+                currentMemberIds: group.groupMembers.map(member => member.id),
                 selectedMemberIds: this.state.selectedMemberIds.concat(
                     group.groupMembers.map(member => member.id)
                 ),
@@ -57,14 +58,15 @@ class SelectMembers extends React.Component {
     }
 
     componentWillUnmount() {
-        const {
-            groupId,
-            temporarySaveSelectedUsersToGroup,
-            gammaLoadingStart
-        } = this.props;
-        const { selectedMemberIds, currentUsers } = this.state;
+        const { groupId, temporarySaveSelectedUsersToGroup } = this.props;
+        const { selectedMemberIds, currentMemberIds } = this.state;
 
-        temporarySaveSelectedUsersToGroup(groupId, selectedMemberIds);
+        temporarySaveSelectedUsersToGroup(
+            groupId,
+            selectedMemberIds.filter(
+                member => currentMemberIds.indexOf(member) === -1
+            )
+        );
     }
 
     onSelectedChange = selected => {
@@ -89,7 +91,7 @@ class SelectMembers extends React.Component {
 
     render() {
         const { selectedMemberIds, unsavedEdits, currentMembers } = this.state;
-        const { users, group } = this.props;
+        const { users, group, onMembersSelected } = this.props;
 
         return (
             <DigitIfElseRendering
@@ -121,7 +123,7 @@ class SelectMembers extends React.Component {
                                                     primary
                                                     text={"Nästa"}
                                                     onClick={() => {
-                                                        console.log(
+                                                        onMembersSelected(
                                                             selectedMemberIds
                                                         );
                                                     }}

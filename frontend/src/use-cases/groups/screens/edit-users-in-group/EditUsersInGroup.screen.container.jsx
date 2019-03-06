@@ -9,15 +9,18 @@ import {
     gammaLoadingFinished,
     gammaLoadingStart
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { createGetPostsAction } from "../../../../api/posts/action-creator.posts.api";
 
 const mapStateToProps = (state, ownProps) => ({
     users: state.users,
     group: state.groups != null ? state.groups.details : null,
-    groupId: ownProps.match.params.id
+    groupId: ownProps.match.params.id,
+    posts: state.posts
 });
 
 const mapDispatchToProps = dispatch => ({
     getGroup: groupId => dispatch(createGetGroupAction(groupId)),
+    getPosts: () => dispatch(createGetPostsAction()),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart()),
     loadUsers: () => dispatch(createGetUsersAction())
