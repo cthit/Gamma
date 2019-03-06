@@ -1,5 +1,5 @@
 import React from "react";
 
-const SetPostNames = ({}) => <div>hej</div>;
+const SetPostNames = ({ posts, currentMembers, members }) => <div>hej</div>;
 
 export default SetPostNames;
