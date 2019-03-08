@@ -17,15 +17,17 @@ ENV SERVER_PORT 9090
 ENV JWT_SECRET_KEY jwtkey
 ENV JWT_EXPIRE_LENGTH 2592000000
 
-ENV FRONTEND_CLIENT_ID id
-ENV FRONTEND_CLIENT_SECRET secret
-ENV FRONTEND_REDIRECT_URI http://localhost:9090
-ENV SUCCESSFUL_LOGIN http://localhost:3000
+ENV FRONTEND_CLIENT_ID 7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc
+ENV FRONTEND_CLIENT_SECRET LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo
+#ENV FRONTEND_REDIRECT_URI http://localhost:8080/login
+#ENV SUCCESSFUL_LOGIN http://localhost:8080
 
 ENV GOTIFY_KEY key
 ENV GOTIFY_URL https://gotify.chalmers.it
 
 ENV ADMIN_PASSWORD password
+
+ENV CORS_ALLOWED_ORIGIN http://localhost:8080
 
 ENV AUTH_ACCESS_TOKEN_VALIDITY 3000
 ENV AUTH_AUTO_APPROVE true
@@ -44,5 +46,5 @@ USER gradle
 
 RUN gradle :build -x test
 # This probably should not have a static path, but instead build in a custom path.
-CMD java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
+CMD sleep 5 && java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
 

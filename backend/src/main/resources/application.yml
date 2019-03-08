@@ -5,6 +5,7 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
   flyway:
     baseline-on-migrate: true
+    locations: classpath:/db/migration
   output:
     ansi:
       enabled: ALWAYS
@@ -14,6 +15,9 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: none
+
 
   thymeleaf:
     cache: false

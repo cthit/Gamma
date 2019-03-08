@@ -25,6 +25,8 @@ import java.time.Year;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
@@ -61,6 +64,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     @Value("${application.standard-admin-account.password}")
     private String password;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 
     public DbInitializer(ITUserService userService, FKITService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
@@ -101,6 +106,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
+            LOGGER.error("oh" + this.redirectUri);
             itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
