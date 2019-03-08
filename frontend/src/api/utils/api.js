@@ -1,7 +1,7 @@
 import axios from "axios";
 import _ from "lodash";
 
-const path = "http://localhost:8081/api";
+const path = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/") + "api";
 
 export function getRequest(endpoint) {
     return axios.get(removeLastSlash(path + endpoint), {

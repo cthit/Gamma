@@ -34,6 +34,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
+    @Value("${application.frontend-client-details.successful-login-uri}")
+    private String frontendUrl;
+
     private final ITUserService itUserService;
 
     private final AuthorityService authorityService;
@@ -119,7 +122,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                 .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("http://localhost:3000/", false)
+                    .defaultSuccessUrl((frontendUrl) + "/", false)      //TODO Add an environment variable
                     .permitAll()
             .and()
                 .logout()
