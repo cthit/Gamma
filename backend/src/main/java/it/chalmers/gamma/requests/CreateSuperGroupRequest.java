@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.GroupType;
 
 import java.util.Objects;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,7 +14,7 @@ public class CreateSuperGroupRequest {
     @Size(min = 2, max = 50, message = "NAME_MUST_BE_BETWEEN_2_AND_50_CHARACTERS")
     private String name;
 
-    @Max(value = 50, message = "PRETTY_NAME_TOO_LONG")
+    @Size(max = 50, message = "PRETTY_NAME_TOO_LONG")
     private String prettyName;
 
     @NotNull(message = "TYPE_MUST_BE_PROVIDED")
