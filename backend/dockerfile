@@ -35,6 +35,8 @@ ENV IMAGEIT_API_KEY secret
 
 COPY . /app
 
+ENV LOGGING_FILE log/production.log
+
 RUN mkdir -p /app
 RUN chown -R gradle /app
 

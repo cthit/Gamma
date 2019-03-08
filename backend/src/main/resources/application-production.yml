@@ -24,11 +24,12 @@ server:
     context-path: /api
 
 logging:
+  file: ${LOGGING_FILE:production.log}
   level:
     root: WARN
     org:
       springframework:
-        web: DEBUG
+        web: WARN
       hibernate: ERROR
 
 security:

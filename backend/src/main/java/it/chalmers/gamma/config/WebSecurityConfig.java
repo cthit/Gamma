@@ -1,7 +1,12 @@
 package it.chalmers.gamma.config;
 
+import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +39,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
 
+    private final AuthorityService authorityService;
+
+    private final FKITGroupToSuperGroupService groupToSuperGroupService;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(ITUserService itUserService) {
+    public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
+                             FKITGroupToSuperGroupService groupToSuperGroupService) {
         this.itUserService = itUserService;
+        this.authorityService = authorityService;
+        this.groupToSuperGroupService = groupToSuperGroupService;
     }
 
     @Override
@@ -47,6 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         addAuthenticationFilter(http);
         addFormLogin(http);
         setPermittedPaths(http);
+        setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
     }
 
@@ -143,7 +156,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             LOGGER.error("Something went wrong when setting");
             LOGGER.error(e.getMessage());
         }
+    }
 
+    private void setAdminPaths(HttpSecurity http) {
+        try {
+            List<FKITGroupToSuperGroup> relationships = this.groupToSuperGroupService.getAllRelationships();
+            for (FKITGroupToSuperGroup relationship : relationships) {
+                addPathRole(http, relationship);
+            }
+            http.authorizeRequests().antMatchers("/admin/**")
+                    .hasAuthority("admin");
+        } catch (Exception e) {
+            LOGGER.error("something went wrong when setting admin paths");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
+        this.authorityService.getAllAuthorities().forEach(a -> {
+            if (a.getId().getFkitSuperGroup().equals(relationship.getId().getSuperGroup())) {
+                try {
+                    http.authorizeRequests().antMatchers("/admin/groups/"
+                            + relationship.getId().getGroup().getId() + "/**")
+                            .hasAuthority(a.getAuthorityLevel().getAuthority());
+                } catch (Exception e) {
+                    LOGGER.error("Something went wrong when setting authorized paths");
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        });
     }
 
     private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
@@ -154,6 +195,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             LOGGER.error(e.getMessage());
         }
     }
-
-
 }
