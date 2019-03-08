@@ -36,6 +36,7 @@ ENV AUTH_AUTO_APPROVE true
 ENV IMAGEIT_URL http://localhost:5000
 ENV IMAGEIT_API_KEY secret
 
+ENV LOGGING_FILE log/production.log
 
 
 RUN gradle :build -x test
