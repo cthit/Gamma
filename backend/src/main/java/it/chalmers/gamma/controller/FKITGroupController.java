@@ -14,6 +14,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,8 +56,11 @@ public final class FKITGroupController {
 
         // finds the group
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
-        if (group == null) {      //makes sure that the requested group exists
-            return null;
+        if (group == null) {
+            group = this.fkitService.getGroup(id);
+        }
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
         }
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
@@ -121,6 +126,25 @@ public final class FKITGroupController {
                     jsonMembers,
                     websites
             ));
+        }
+        return serializedGroups;
+    }
+    @RequestMapping(value = "/active", method = RequestMethod.GET)
+    public List<JSONObject> getActiveGroups() {
+        List<FKITGroup> groups = this.fkitService.getGroups().stream()
+                .filter(FKITGroup::isActive).collect(Collectors.toList());
+        FKITGroupSerializer groupSerializer = new FKITGroupSerializer(FKITGroupSerializer.Properties
+                .getAllProperties());
+        ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        List<JSONObject> serializedUsers = new ArrayList<>();
+        List<JSONObject> serializedGroups = new ArrayList<>();
+        for (FKITGroup group : groups) {
+            List<ITUser> members = this.membershipService.getUsersInGroup(group);
+            for (ITUser member : members) {
+                serializedUsers.add(userSerializer.serialize(member, null, null));
+            }
+            serializedGroups.add(groupSerializer.serialize(group, serializedUsers,
+                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group))));
         }
         return serializedGroups;
     }
