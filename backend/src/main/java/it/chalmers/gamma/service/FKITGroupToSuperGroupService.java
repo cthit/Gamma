@@ -36,6 +36,9 @@ public class FKITGroupToSuperGroupService {
     public void deleteRelationship(FKITGroup group, FKITSuperGroup superGroup) {
         this.repository.delete(this.repository.findFKITGroupToSuperGroupsById_GroupAndId_SuperGroup(group, superGroup));
     }
+    public List<FKITGroupToSuperGroup> getAllRelationships() {
+        return this.repository.findAll();
+    }
 
     /**
      * returns the subgroup that is currently the active group.
