@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/groups")
+@SuppressWarnings({"PMD.ExcessiveImports", "UnnecessaryFullyQualifiedName"})
 public final class FKITGroupController {
 
     //TODO add groupmembers to serialize method call once that has been solved.
