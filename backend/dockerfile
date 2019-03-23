@@ -8,33 +8,6 @@ WORKDIR /app
 #db is used to separate development and production databases
 
 # Environment variables needed for Gamma to run in Production env, These must be changed!!.
-ENV DB_HOST db
-ENV DB_USER user
-ENV DB_PASSWORD password
-
-ENV SERVER_PORT 9090
-
-ENV JWT_SECRET_KEY jwtkey
-ENV JWT_EXPIRE_LENGTH 2592000000
-
-ENV FRONTEND_CLIENT_ID 7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc
-ENV FRONTEND_CLIENT_SECRET LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo
-#ENV FRONTEND_REDIRECT_URI http://localhost:8080/login
-#ENV SUCCESSFUL_LOGIN http://localhost:8080
-
-ENV GOTIFY_KEY key
-ENV GOTIFY_URL https://gotify.chalmers.it
-
-ENV ADMIN_PASSWORD password
-
-ENV CORS_ALLOWED_ORIGIN http://localhost:8080
-
-ENV AUTH_ACCESS_TOKEN_VALIDITY 3000
-ENV AUTH_AUTO_APPROVE true
-
-ENV IMAGEIT_URL http://localhost:5000
-ENV IMAGEIT_API_KEY secret
-
 COPY . /app
 
 ENV LOGGING_FILE log/production.log

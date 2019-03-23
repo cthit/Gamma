@@ -25,8 +25,6 @@ import java.time.Year;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -64,8 +62,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     @Value("${application.standard-admin-account.password}")
     private String password;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
 
     public DbInitializer(ITUserService userService, FKITService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
@@ -106,7 +102,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
-            LOGGER.error("oh" + this.redirectUri);
+            this.redirectUri = this.redirectUri.trim();
             itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
