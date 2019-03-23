@@ -47,10 +47,10 @@ public final class GroupMemberAdminController {
     private final MembershipService membershipService;
 
     public GroupMemberAdminController(
-        ITUserService itUserService,
-        PostService postService,
-        FKITGroupService fkitGroupService,
-        MembershipService membershipService) {
+            ITUserService itUserService,
+            PostService postService,
+            FKITGroupService fkitGroupService,
+            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.postService = postService;
         this.fkitGroupService = fkitGroupService;

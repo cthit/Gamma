@@ -45,9 +45,9 @@ public final class FKITGroupController {
     private final MembershipService membershipService;
 
     public FKITGroupController(
-        FKITGroupService fkitGroupService,
-        GroupWebsiteService groupWebsiteService,
-        MembershipService membershipService) {
+            FKITGroupService fkitGroupService,
+            GroupWebsiteService groupWebsiteService,
+            MembershipService membershipService) {
         this.fkitGroupService = fkitGroupService;
         this.groupWebsiteService = groupWebsiteService;
         this.membershipService = membershipService;
@@ -71,16 +71,16 @@ public final class FKITGroupController {
                         this.groupWebsiteService.getWebsites(group)
                 );
 
-        List<ITUser> members = membershipService.getUsersInGroup(group);
+        List<ITUser> members = this.membershipService.getUsersInGroup(group);
         List<ITUserSerializer.Properties> props =
-            new ArrayList<>(Arrays.asList(
-                CID,
-                FIRST_NAME,
-                LAST_NAME,
-                NICK,
-                ACCEPTANCE_YEAR,
-                ID
-            ));
+                new ArrayList<>(Arrays.asList(
+                    CID,
+                    FIRST_NAME,
+                    LAST_NAME,
+                    NICK,
+                    ACCEPTANCE_YEAR,
+                    ID
+                ));
         List<JSONObject> minifiedMembers = new ArrayList<>();
         ITUserSerializer itUserSerializer = new ITUserSerializer(props);
         for (ITUser user : members) {

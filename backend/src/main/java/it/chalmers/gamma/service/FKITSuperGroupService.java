@@ -48,6 +48,6 @@ public class FKITSuperGroupService {
         group.setType(request.getType() == null ? group.getType() : request.getType());
         group.setName(request.getName() == null ? group.getName() : request.getName());
         group.setPrettyName(request.getPrettyName() == null ? group.getPrettyName() : request.getPrettyName());
-        repository.save(group);
+        this.repository.save(group);
     }
 }
