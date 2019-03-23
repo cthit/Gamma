@@ -17,7 +17,7 @@ import it.chalmers.gamma.response.UserAddedToGroupResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.UserRemovedFromGroupResponse;
 
-import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
@@ -43,17 +43,17 @@ import org.springframework.web.bind.annotation.RestController;
 public final class GroupMemberAdminController {
     private final ITUserService itUserService;
     private final PostService postService;
-    private final FKITService fkitService;
+    private final FKITGroupService fkitGroupService;
     private final MembershipService membershipService;
 
     public GroupMemberAdminController(
             ITUserService itUserService,
             PostService postService,
-            FKITService fkitService,
+            FKITGroupService fkitGroupService,
             MembershipService membershipService) {
         this.itUserService = itUserService;
         this.postService = postService;
-        this.fkitService = fkitService;
+        this.fkitGroupService = fkitGroupService;
         this.membershipService = membershipService;
     }
 
@@ -71,7 +71,7 @@ public final class GroupMemberAdminController {
             throw new PostDoesNotExistResponse();
         }
         ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUser()));
-        FKITGroup fkitGroup = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup fkitGroup = this.fkitGroupService.getGroup(UUID.fromString(id));
         Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new UserAddedToGroupResponse();
@@ -79,7 +79,7 @@ public final class GroupMemberAdminController {
 
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
     public ResponseEntity<List<Membership>> getUsersInGroup(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -94,7 +94,7 @@ public final class GroupMemberAdminController {
     @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUserFromGroup(@PathVariable("id") String id,
                                                       @PathVariable("user") String userId) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -114,7 +114,7 @@ public final class GroupMemberAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(groupId));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(groupId));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }

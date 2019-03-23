@@ -1,1 +1,2 @@
-export { default } from "./GroupForm.view.container";
+import GroupForm from "./GroupForm.view";
+export default GroupForm;

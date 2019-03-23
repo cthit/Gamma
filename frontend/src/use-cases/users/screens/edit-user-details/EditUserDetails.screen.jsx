@@ -50,9 +50,7 @@ class EditUserDetails extends React.Component {
                                     }}
                                     onSubmit={(values, actions) => {
                                         usersChange(values, user.id).then(
-                                            response => {
-                                                console.log("Save");
-                                            }
+                                            response => {}
                                         );
                                     }}
                                 />

@@ -12,8 +12,8 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
     private final ITUserService userservice;
-    private final FKITService groupService;
+    private final FKITGroupService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
@@ -62,7 +62,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.standard-admin-account.password}")
     private String password;
 
-    public DbInitializer(ITUserService userService, FKITService groupService,
+    public DbInitializer(ITUserService userService, FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
                          MembershipService membershipService, AuthorityService authorityService,
                          ITClientService itClientService,
@@ -111,11 +111,20 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private void ensureAdminUser() {
         String admin = "admin";
         if (!this.userservice.userExists(admin)) {
-            Text description = new Text();
-            String descriptionText = "Super admin group, do not add anything to this group,"
+            Text descriptionText = new Text();
+            String descriptionTextEn = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
-            description.setEn(descriptionText);
-            description.setSv(descriptionText);
+
+
+            Text functionText = new Text();
+            functionText.setSv("Supergrupp");
+            functionText.setEn("Super group");
+            String descriptionTextSv = "Admin supergrupp, lägg inte till någonting till den här gruppen"
+                    + "då den används för att kunna komma in i frontenden med en användare som har alla rättigheter";
+
+            descriptionText.setEn(descriptionTextEn);
+            descriptionText.setSv(descriptionTextSv);
+
             CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
@@ -123,9 +132,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             String adminMail = "admin@chalmers.it";
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
-            request.setPrettyName("superAdmin");
-            request.setFunc(new Text());
-            request.setDescription(description);
+            request.setPrettyName("SuperAdmin");
+            request.setFunction(functionText);
+            request.setDescription(descriptionText);
             request.setEmail(adminMail);
             request.setYear(2018);
             Calendar end = new GregorianCalendar();

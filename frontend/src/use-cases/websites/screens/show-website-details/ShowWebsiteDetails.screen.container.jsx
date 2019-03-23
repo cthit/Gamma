@@ -15,8 +15,6 @@ import {
     gammaLoadingStart
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
-console.log(DigitRedirectActions);
-
 const mapStateToProps = (state, ownProps) => ({
     website: _.find(state.websites, { id: ownProps.match.params.id }),
     websiteId: ownProps.match.params.id
