@@ -22,7 +22,7 @@ public class WebsiteURL {
     @JsonIgnore
     private UUID id;
 
-    @JoinColumn(name = "website")
+    @JoinColumn(name = "website", nullable = false)
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Website website;
 

@@ -13,7 +13,7 @@ class GammaIntegration extends React.Component {
             props.startedFetchingAccessToken();
             if (code) {
                 axios
-                    .post("http://localhost:8082/auth", {
+                    .post((process.env.REACT_APP_JWT_URL + "http://localhost:8082") + "/auth", {
                         code: code
                     })
                     .then(response => {

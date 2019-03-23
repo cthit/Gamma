@@ -21,7 +21,7 @@ export function userUpdateMe() {
         return dispatch => {
             return new Promise((resolve, reject) => {
                 axios
-                    .get("http://localhost:8081/api/users/me", {
+                    .get((process.env.REACT_APP_BACKEND_URL || "http://localhost:8081") + "/api/users/me", {
                         headers: {
                             Authorization: "Bearer " + token()
                         }
@@ -57,7 +57,7 @@ export function userLogout() {
         delete sessionStorage.token;
         dispatch(
             DigitRedirectActions.digitRedirectTo(
-                "http://localhost:8081/api/logout",
+                (process.env.REACT_APP_BACKEND_URL|| "http://localhost:8081") + "/api/logout",
                 true
             )
         );

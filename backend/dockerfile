@@ -2,13 +2,9 @@ FROM gradle:4.10-jdk10
 #Gradle docker has gradle user as default
 USER root
 
-COPY . /app
 
-RUN mkdir -p /app
-RUN chown -R gradle /app
 WORKDIR /app
 
-USER gradle
 #db is used to separate development and production databases
 
 # Environment variables needed for Gamma to run in Production env, These must be changed!!.
@@ -23,7 +19,8 @@ ENV JWT_EXPIRE_LENGTH 2592000000
 
 ENV FRONTEND_CLIENT_ID id
 ENV FRONTEND_CLIENT_SECRET secret
-ENV FRONTEND_REDIRECT_URI uri
+ENV FRONTEND_REDIRECT_URI http://localhost:9090
+ENV SUCCESSFUL_LOGIN http://localhost:3000
 
 ENV GOTIFY_KEY key
 ENV GOTIFY_URL https://gotify.chalmers.it
@@ -33,9 +30,17 @@ ENV ADMIN_PASSWORD password
 ENV AUTH_ACCESS_TOKEN_VALIDITY 3000
 ENV AUTH_AUTO_APPROVE true
 
+ENV IMAGEIT_URL http://localhost:5000
+ENV IMAGEIT_API_KEY secret
 
+COPY . /app
 
+ENV LOGGING_FILE log/production.log
 
+RUN mkdir -p /app
+RUN chown -R gradle /app
+
+USER gradle
 
 RUN gradle :build -x test
 # This probably should not have a static path, but instead build in a custom path.
