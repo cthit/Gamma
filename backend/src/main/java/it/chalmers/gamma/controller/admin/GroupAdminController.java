@@ -61,14 +61,14 @@ public final class GroupAdminController {
     private final AuthorityLevelService authorityLevelService;
 
     public GroupAdminController(
-            FKITService fkitService,
+            FKITGroupService fkitGroupService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             FKITSuperGroupService fkitSuperGroupService,
             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
             MembershipService membershipService,
             AuthorityLevelService authorityLevelService) {
-        this.fkitService = fkitService;
+        this.fkitGroupService = fkitGroupService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
@@ -107,7 +107,7 @@ public final class GroupAdminController {
             websiteURL.setUrl(websiteInfo.getUrl());
             websiteURLs.add(websiteURL);
         }
-        FKITGroup group = this.fkitService.createGroup(createGroupRequest);
+        FKITGroup group = this.fkitGroupService.createGroup(createGroupRequest);
         try {
             this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
         } catch (DataIntegrityViolationException e) {
@@ -149,20 +149,20 @@ public final class GroupAdminController {
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
                 this.fkitGroupService.getGroup(UUID.fromString(id))
         );
-        this.membershipService.removeAllUsersFromGroup(this.fkitService.getGroup(UUID.fromString(id)));
-        this.fkitService.removeGroup(UUID.fromString(id));
+        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getGroup(UUID.fromString(id)));
+        this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
     public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
         try {
             String url = ImageITUtils.saveImage(file);
-            this.fkitService.editGroupAvatar(group, url);
+            this.fkitGroupService.editGroupAvatar(group, url);
         } catch (IOException e) {
             throw new FileNotSavedException();
         }

@@ -17,7 +17,7 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.service.FKITService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.views.WebsiteView;
@@ -57,9 +57,9 @@ public final class FKITGroupController {
     public JSONObject getGroup(@PathVariable("id") String id) {
 
         // finds the group
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
-            group = this.fkitService.getGroup(id);
+            group = this.fkitGroupService.getGroup(id);
         }
         if (group == null) {
             throw new GroupDoesNotExistResponse();
@@ -153,7 +153,7 @@ public final class FKITGroupController {
     }
     @RequestMapping(value = "/active", method = RequestMethod.GET)
     public List<JSONObject> getActiveGroups() {
-        List<FKITGroup> groups = this.fkitService.getGroups().stream()
+        List<FKITGroup> groups = this.fkitGroupService.getGroups().stream()
                 .filter(FKITGroup::isActive).collect(Collectors.toList());
         FKITGroupSerializer groupSerializer = new FKITGroupSerializer(FKITGroupSerializer.Properties
                 .getAllProperties());
