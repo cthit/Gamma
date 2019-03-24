@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
@@ -85,6 +86,12 @@ public final class GroupAdminController {
 
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+                UUID.fromString(createGroupRequest.getSuperGroup()));
+
+        if (superGroup == null) {
+            throw new GroupDoesNotExistResponse();
         }
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
