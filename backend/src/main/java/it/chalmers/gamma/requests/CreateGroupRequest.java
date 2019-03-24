@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -35,10 +36,19 @@ public class CreateGroupRequest {
     @NotNull(message = "BECOMES_INACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
     private Calendar becomesInactive;
 
+    @NotEmpty(message = "A_SUPER_GROUP_MUST_BE_PROVIDED")
+    private String superGroup;
+
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
     }
+    public String getSuperGroup() {
+        return this.superGroup;
+    }
 
+    public void setSuperGroup(String superGroup) {
+        this.superGroup = superGroup;
+    }
     public void setWebsites(List<WebsiteInfo> websites) {
         this.websites = websites;
     }
