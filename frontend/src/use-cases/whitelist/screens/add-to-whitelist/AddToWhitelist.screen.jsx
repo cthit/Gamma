@@ -26,10 +26,8 @@ class AddNewWhitelistItem extends Component {
                         <DigitLayout.Center>
                             <DigitForm
                                 onSubmit={(values, actions) => {
-                                    console.log(values);
                                     addToWhitelist(values)
                                         .then(response => {
-                                            console.log("what");
                                             toastOpen({
                                                 text: text.SuccessfullAdd
                                             });
@@ -37,7 +35,6 @@ class AddNewWhitelistItem extends Component {
                                             actions.resetForm();
                                         })
                                         .catch(error => {
-                                            console.log("hmm");
                                             toastOpen({
                                                 text: text.SomethingWentWrong,
                                                 duration: 6000

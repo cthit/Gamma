@@ -14,7 +14,8 @@ public class CreateSuperGroupRequest {
     @Size(min = 2, max = 50, message = "NAME_MUST_BE_BETWEEN_2_AND_50_CHARACTERS")
     private String name;
 
-    @Size(max = 50, message = "PRETTY_NAME_TOO_LONG")
+    @NotNull(message = "PRETTY_NAME_MUST_BE_PROVIDED")
+    @Size(min = 2, max = 50, message = "PRETTY_NAME_MUST_BE_BETWEEN_2_AND_50_CHARACTERS")
     private String prettyName;
 
     @NotNull(message = "TYPE_MUST_BE_PROVIDED")

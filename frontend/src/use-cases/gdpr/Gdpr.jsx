@@ -24,12 +24,12 @@ class Gdpr extends React.Component {
                         searchText="Sök efter användare"
                         idProp="cid"
                         startOrderBy="firstName"
-                        columnsOrder={["cid", "firstName", "nick", "lastName"]}
+                        columnsOrder={["cid", "firstName", "NICK", "lastName"]}
                         headerTexts={{
                             cid: "Cid",
                             firstName: "firstName",
                             lastName: "lastName",
-                            nick: "nick",
+                            nick: "NICK",
                             __switch: "Switch"
                         }}
                         data={users.map(user => {
