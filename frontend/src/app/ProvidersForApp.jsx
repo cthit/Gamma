@@ -1,5 +1,5 @@
 import React from "react";
-import { DigitProviders } from "@cthit/react-digit-components";
+import { DigitText, DigitButton, DigitProviders } from "@cthit/react-digit-components";
 import { rootReducer } from "./App.reducer";
 
 const preloadedState = {};
@@ -14,7 +14,7 @@ const theme = {
     }
 };
 
-export const ProvidersForApp = ({ children }) => (
+const ProvidersForApp = ({ children }) => (
     <DigitProviders
         rootReducer={rootReducer}
         preloadedState={preloadedState}
@@ -24,3 +24,11 @@ export const ProvidersForApp = ({ children }) => (
         {children}
     </DigitProviders>
 );
+
+export default ProvidersForApp;
+//
+// <div>
+//     <DigitButton text={"Styling knapp"}/>
+//     <DigitText.Text text={"Styling text"}/>
+// </div>
+//

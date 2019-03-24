@@ -16,10 +16,6 @@ class EditPostDetails extends Component {
         });
     }
 
-    componentWillUnmount() {
-        this.props.gammaLoadingStart();
-    }
-
     render() {
         const { editPost, post, postId } = this.props;
         return (

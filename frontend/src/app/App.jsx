@@ -146,34 +146,6 @@ export class App extends Component {
                         renderHeader={header}
                         renderMain={() => (
                             <DigitLayout.Fill>
-                                <DigitTranslations
-                                    translations={appTranslations}
-                                    uniquePath="App"
-                                    render={text => (
-                                        <DigitIfElseRendering
-                                            test={!loggedIn && userLoaded}
-                                            ifRender={() => (
-                                                <Route
-                                                    render={props => (
-                                                        <DigitContainUser
-                                                            currentPath={
-                                                                props.location
-                                                                    .pathname
-                                                            }
-                                                            allowedBasePaths={[
-                                                                "/create-account",
-                                                                "/reset-password"
-                                                            ]}
-                                                            to={loginRedirect}
-                                                            externalRedirect
-                                                        />
-                                                    )}
-                                                />
-                                            )}
-                                        />
-                                    )}
-                                />
-
                                 <DigitLayout.HideFill hidden={!loading}>
                                     <DigitLayout.Center>
                                         <GammaLoading />
@@ -246,7 +218,7 @@ export class App extends Component {
                                             />
                                             <Route
                                                 path="/"
-                                                render={() => (
+                                                render={props => (
                                                     <DigitIfElseRendering
                                                         test={
                                                             !loading &&
@@ -255,11 +227,20 @@ export class App extends Component {
                                                             !fetchingAccessToken
                                                         }
                                                         ifRender={() => (
-                                                            <DigitRedirectExternal
-                                                                window={window}
+                                                            <DigitContainUser
+                                                                currentPath={
+                                                                    props
+                                                                        .location
+                                                                        .pathname
+                                                                }
+                                                                allowedBasePaths={[
+                                                                    "/create-account",
+                                                                    "/reset-password"
+                                                                ]}
                                                                 to={
                                                                     loginRedirect
                                                                 }
+                                                                externalRedirect
                                                             />
                                                         )}
                                                         elseRender={() => (

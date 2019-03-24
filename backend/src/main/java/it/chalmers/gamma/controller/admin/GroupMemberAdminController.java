@@ -64,13 +64,13 @@ public final class GroupMemberAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(UUID.fromString(request.getUser()))) {
+        if (!this.itUserService.userExists(UUID.fromString(request.getUserId()))) {
             throw new UserNotFoundResponse();
         }
         if (!this.postService.postExists(UUID.fromString(request.getPost()))) {
             throw new PostDoesNotExistResponse();
         }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUser()));
+        ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUserId()));
         FKITGroup fkitGroup = this.fkitGroupService.getGroup(UUID.fromString(id));
         Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());

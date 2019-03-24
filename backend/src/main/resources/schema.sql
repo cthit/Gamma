@@ -69,7 +69,6 @@ create table fkit_group (
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
   avatar_url        varchar(255) null,
-  internal_year     integer      not null constraint fkit_group_year check (internal_year >= 2001)
 );
 
 create table fkit_group_to_super_group (

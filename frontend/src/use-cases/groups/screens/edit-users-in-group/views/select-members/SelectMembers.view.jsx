@@ -26,10 +26,6 @@ class SelectMembers extends React.Component {
         const { savedSelectedGroups } = this.props;
 
         this.state = {
-            unsavedEdits:
-                savedSelectedGroups != null ||
-                (savedSelectedGroups != null &&
-                    savedSelectedGroups.length === 0),
             selectedMemberIds:
                 savedSelectedGroups == null ? [] : savedSelectedGroups,
             currentMembers: [],
@@ -56,6 +52,15 @@ class SelectMembers extends React.Component {
             });
         }
     }
+
+    _unsavedEdits = () => {
+        const { selectedMemberIds, currentMemberIds } = this.state;
+
+        return !_.isEqual(
+            _.sortBy(selectedMemberIds),
+            _.sortBy(currentMemberIds)
+        );
+    };
 
     componentWillUnmount() {
         const { groupId, temporarySaveSelectedUsersToGroup } = this.props;
@@ -90,8 +95,14 @@ class SelectMembers extends React.Component {
     };
 
     render() {
-        const { selectedMemberIds, unsavedEdits, currentMembers } = this.state;
+        const {
+            selectedMemberIds,
+            currentMembers,
+            currentMemberIds
+        } = this.state;
         const { users, group, onMembersSelected } = this.props;
+
+        const unsavedEdits = this._unsavedEdits();
 
         return (
             <DigitIfElseRendering
@@ -119,6 +130,7 @@ class SelectMembers extends React.Component {
                                             />
                                             <div>
                                                 <DigitButton
+                                                    disabled={!unsavedEdits}
                                                     raised
                                                     primary
                                                     text={"Nästa"}

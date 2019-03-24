@@ -43,9 +43,6 @@ public class FKITGroup {
     @Column(name = "email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "internal_year")
-    private int year;
-
     @Column(name = "becomes_active")
     private Calendar becomesActive;
 
@@ -152,14 +149,6 @@ public class FKITGroup {
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
-    }
-
-    public int getYear() {
-        return this.year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public Calendar getBecomesActive() {

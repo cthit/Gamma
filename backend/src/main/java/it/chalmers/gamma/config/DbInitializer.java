@@ -136,7 +136,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setFunction(functionText);
             request.setDescription(descriptionText);
             request.setEmail(adminMail);
-            request.setYear(2018);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();
