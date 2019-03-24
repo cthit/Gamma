@@ -11,11 +11,14 @@ import {
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { createGetPostsAction } from "../../../../api/posts/action-creator.posts.api";
 
+import { DigitRedirectActions } from "@cthit/react-digit-components";
+
 const mapStateToProps = (state, ownProps) => ({
     users: state.users,
     group: state.groups != null ? state.groups.details : null,
     groupId: ownProps.match.params.id,
-    posts: state.posts
+    posts: state.posts,
+    route: ownProps.location.pathname
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -23,7 +26,8 @@ const mapDispatchToProps = dispatch => ({
     getPosts: () => dispatch(createGetPostsAction()),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart()),
-    loadUsers: () => dispatch(createGetUsersAction())
+    loadUsers: () => dispatch(createGetUsersAction()),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to))
 });
 
 export default connect(

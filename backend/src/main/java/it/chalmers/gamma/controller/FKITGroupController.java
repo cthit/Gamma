@@ -14,6 +14,7 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
@@ -85,7 +86,11 @@ public final class FKITGroupController {
         List<JSONObject> minifiedMembers = new ArrayList<>();
         ITUserSerializer itUserSerializer = new ITUserSerializer(props);
         for (ITUser user : members) {
-            minifiedMembers.add(itUserSerializer.serialize(user, null, null));
+            JSONObject userObject = itUserSerializer.serialize(user, null, null);
+            Membership userMembership = membershipService.getMembershipByUserAndGroup(user, group);
+            userObject.put("post", userMembership.getPost());
+            userObject.put("unofficialPostName", userMembership.getUnofficialPostName());
+            minifiedMembers.add(userObject);
         }
 
         // This should change the database setup probably.

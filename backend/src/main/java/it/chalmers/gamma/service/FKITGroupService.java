@@ -24,7 +24,6 @@ public class FKITGroupService {
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunction(request.getFunction());
         fkitGroup.setDescription(request.getDescription());
-        fkitGroup.setYear(request.getYear());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
                 request.getBecomesActive(), request.getBecomesInactive(),
                 request.getEmail(), request.getAvatarURL());
@@ -36,7 +35,6 @@ public class FKITGroupService {
         if (group == null) {
             return null;
         }
-        group.setYear(request.getYear() == 0 ? group.getYear() : request.getYear());
         group.setSVFunction(request.getFunction() == null ? group.getSVFunction() : request.getFunction().getSv());
         group.setENFunction(request.getFunction() == null ? group.getENFunction() : request.getFunction().getEn());
         if (request.getDescription() != null && group.getDescription() != null) {

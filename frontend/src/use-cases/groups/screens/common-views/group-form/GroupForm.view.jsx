@@ -118,8 +118,12 @@ function convertToCorrectFormat(input) {
     output[PRETTY_NAME] = input[PRETTY_NAME];
     output[EMAIL] = input[EMAIL];
 
+    output[DESCRIPTION] = {};
+
     output[DESCRIPTION][SWEDISH_LANGUAGE] = input[DESCRIPTION_SV];
     output[DESCRIPTION][ENGLISH_LANGUAGE] = input[DESCRIPTION_EN];
+
+    output[FUNCTION] = {};
 
     output[FUNCTION][SWEDISH_LANGUAGE] = input[FUNCTION_SV];
     output[FUNCTION][ENGLISH_LANGUAGE] = input[FUNCTION_EN];
