@@ -57,11 +57,12 @@ export class App extends Component {
     }
 
     render() {
-        const baseUrl = "http://localhost:8081/api/oauth/authorize";
+        const baseUrl = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081") + "/api/oauth/authorize";
         const responseType = "response_type=code";
+        console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n " + baseUrl + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
         const clientId =
             "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
-        const redirectUri = "redirect_uri=http://localhost:3000/login";
+        const redirectUri = "redirect_uri= " + (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") + "/login";
 
         const loginRedirect =
             baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri;
@@ -132,7 +133,6 @@ export class App extends Component {
 
         loggedIn = loggedIn != null ? loggedIn : false;
         userLoaded = userLoaded != null ? userLoaded : false;
-
         return (
             <DigitTranslations
                 uniquePath="App"

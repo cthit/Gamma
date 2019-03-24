@@ -12,8 +12,8 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITGroupService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
@@ -115,12 +115,12 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             String descriptionTextEn = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
 
-            String descriptionTextSv = "Admin supergrupp, lägg inte till någonting till den här gruppen" +
-                "då den används för att kunna komma in i frontenden med en användare som har alla rättigheter";
 
             Text functionText = new Text();
             functionText.setSv("Supergrupp");
             functionText.setEn("Super group");
+            String descriptionTextSv = "Admin supergrupp, lägg inte till någonting till den här gruppen"
+                    + "då den används för att kunna komma in i frontenden med en användare som har alla rättigheter";
 
             descriptionText.setEn(descriptionTextEn);
             descriptionText.setSv(descriptionTextSv);

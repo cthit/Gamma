@@ -13,8 +13,7 @@ spring:
     properties:
       hibernate:
         temp:
-          use_jdbc_metadata_defazults: false
-  resources:
+          use_jdbc_metadata_defaults: false
 
   thymeleaf:
     cache: false
@@ -52,6 +51,7 @@ application:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
     client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
     redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:3000/login}
+    successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   gotify:
@@ -62,4 +62,6 @@ application:
     accessTokenValidityTime: 3600
     autoApprove: true
     refreshTokenValidityTime: 500000000
-
+  imageit:
+    url: ${IMAGEIT_URL:http://localhost:5000}
+    apiKey: ${IMAGEIT_API_KEY:secret}

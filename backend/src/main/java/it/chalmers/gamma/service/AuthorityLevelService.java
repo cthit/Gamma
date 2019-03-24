@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthorityLevelService {
-    AuthorityLevelRepository authorityLevelRepository;
+    private final AuthorityLevelRepository authorityLevelRepository;
 
     public AuthorityLevelService(AuthorityLevelRepository authorityLevelRepository) {
         this.authorityLevelRepository = authorityLevelRepository;
@@ -34,6 +34,10 @@ public class AuthorityLevelService {
 
     public AuthorityLevel getAuthorityLevel(UUID authorityLevel) {
         return this.authorityLevelRepository.findById(authorityLevel).orElse(null);
+    }
+
+    public AuthorityLevel getAuthorityLevel(String authorityLevel) {
+        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel);
     }
 
     public List<AuthorityLevel> getAllAuthorityLevels() {

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.service;
 
+import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
@@ -31,37 +32,56 @@ public class ITUserService implements UserDetailsService {
 
     private final AuthorityService authorityService;
 
+    private final AuthorityLevelService authorityLevelService;
+
     /*
      * These dependencies are needed for the authentication system to work,
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
     public ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
-                          AuthorityService authorityService) {
+                          AuthorityService authorityService, AuthorityLevelService authorityLevelService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         this.membershipService = membershipService;
         this.authorityService = authorityService;
+        this.authorityLevelService = authorityLevelService;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String cid) throws UsernameNotFoundException {
-        ITUser details = this.itUserRepository.findByCid(cid);
-        details.setAuthority(getAuthorites(details));
+    public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
+        ITUser details;
+
+        if (cidOrEmail.contains("@")) {
+            details = this.itUserRepository.findByEmail(cidOrEmail);
+        } else {
+            details = this.itUserRepository.findByCid(cidOrEmail);
+        }
+
+        if (details != null) {
+            details.setAuthority(getAuthorities(details));
+        }
         return details;
     }
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
         ITUser user = this.itUserRepository.findByCid(cid);
-        user.setAuthority(getAuthorites(user));
+        user.setAuthority(getAuthorities(user));
         return user;
     }
 
-    private List<GrantedAuthority> getAuthorites(ITUser details) {
+    private List<GrantedAuthority> getAuthorities(ITUser details) {
         List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
-        return new ArrayList<>(
-                this.authorityService.getAuthorities(memberships)
-        );
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Membership membership : memberships) {
+            AuthorityLevel authorityLevel = this.authorityLevelService
+                    .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString());
+            if (authorityLevel != null) {
+                authorities.add(authorityLevel);
+            }
+        }
+        authorities.addAll(this.authorityService.getAuthorities(memberships));
+        return authorities;
     }
 
     public List<ITUser> loadAllUsers() {
@@ -108,7 +128,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                            String email, String phone, Language language, String avatarUrl) {
+                            String email, String phone, Language language) {
         ITUser itUser = this.itUserRepository.findById(user).orElse(null);
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
@@ -116,14 +136,13 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(email == null ? itUser.getEmail() : email);
         itUser.setPhone(phone == null ? itUser.getPhone() : phone);
         itUser.setLanguage(language == null ? itUser.getLanguage() : language);
-        itUser.setAvatarUrl(avatarUrl == null ? itUser.getAvatarUrl() : avatarUrl);
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
     }
 
     public ITUser getUserById(UUID id) {
         ITUser user = this.itUserRepository.findById(id).orElseThrow();
-        user.setAuthority(getAuthorites(user));
+        user.setAuthority(getAuthorities(user));
         return user;
     }
 
@@ -135,6 +154,11 @@ public class ITUserService implements UserDetailsService {
     public void editGdpr(UUID id, boolean gdpr) {
         ITUser user = getUserById(id);
         user.setGdpr(gdpr);
+        this.itUserRepository.save(user);
+    }
+
+    public void editProfilePicture(ITUser user, String fileUrl) {
+        user.setAvatarUrl(fileUrl);
         this.itUserRepository.save(user);
     }
 

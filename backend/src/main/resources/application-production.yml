@@ -1,15 +1,15 @@
 spring:
   datasource:
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:example}
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
+    username: ${DB_USER:user}
+    password: ${DB_PASSWORD:password}
+    url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/postgres
   output:
     ansi:
       enabled: ALWAYS
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         temp:
@@ -24,11 +24,12 @@ server:
     context-path: /api
 
 logging:
+  file: ${LOGGING_FILE:production.log}
   level:
     root: WARN
     org:
       springframework:
-        web: DEBUG
+        web: WARN
       hibernate: ERROR
 
 security:
@@ -36,7 +37,7 @@ security:
     token:
       secret-key: ${JWT_SECRET_KEY:jwtkey} # This is only for Development, should also be a secret one for Production
       expire-length: ${JWT_EXPIRE_LENGTH:2592000000} #One Month. Subject to change.
-      issuer: CTHIT
+      issuer: http://localhost:9090
 
 
 
@@ -44,7 +45,8 @@ application:
   frontend-client-details:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
     client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
-    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:3000/login}
+    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:8080/login}
+    successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   gotify:
@@ -55,3 +57,6 @@ application:
     accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
     autoApprove: ${AUTH_AUTO_APPROVE:true}
     refreshTokenValidityTime: ${AUTH_REFRESH_TOKEN_VALIDITY:500000000}
+  imageit:
+    url: ${IMAGEIT_URL:http://localhost:5000}
+    apiKey: ${IMAGEIT_API_KEY:secret}
