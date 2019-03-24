@@ -3,21 +3,17 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:example}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/postgres
-  flyway:
-    baseline-on-migrate: true
-    locations: classpath:/db/migration
   output:
     ansi:
       enabled: ALWAYS
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
-    hibernate:
-      ddl-auto: none
-
 
   thymeleaf:
     cache: false

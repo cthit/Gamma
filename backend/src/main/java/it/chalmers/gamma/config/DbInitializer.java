@@ -36,7 +36,6 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
-@SuppressWarnings("PMD.ExcessiveImports")
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
@@ -102,7 +101,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
-            this.redirectUri = this.redirectUri.trim();
             itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);

@@ -62,7 +62,7 @@ export class App extends Component {
         console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n " + baseUrl + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
         const clientId =
             "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
-        const redirectUri = "redirect_uri=" + (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") + "/login";
+        const redirectUri = "redirect_uri= " + (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") + "/login";
 
         const loginRedirect =
             baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri;
