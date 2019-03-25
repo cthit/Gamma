@@ -882,10 +882,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@cthit/react-digit-components@1.0.0-beta.6":
-  version "1.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0-beta.6.tgz#ccb75c64e1cd3c1086a8b7eca425c2fcf757e59e"
-  integrity sha512-OonfqLozph/OqdgkeQeGckOVzzS2uv0eXUjlerPFMOu/AtM9p8ebB27U7Ff3/i3gj0yIqp7ukhssZC2FXhAI7A==
+"@cthit/react-digit-components@^1.0.0-beta.10":
+  version "1.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0-beta.10.tgz#e242c1138a8c3d2f443011fc327441be96cf93ca"
+  integrity sha512-wAI0euLk/Y/+ahYaqztjDv2q+wlb1i8UcXlHAF+OWPGNA06cIlDCqsuUaqHgIJWJOEA8yHp7EhjT7tvrWQzQ4g==
 
 "@date-io/core@^1.1.0":
   version "1.1.0"

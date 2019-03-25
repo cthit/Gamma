@@ -1,13 +1,10 @@
 import React from "react";
 import translations from "./DisplayGroupsTable.element.translations";
 import {
-    DigitFAB,
     DigitTable,
     DigitTranslations,
-    DigitLayout,
-    DigitDesign
+    DigitLayout
 } from "@cthit/react-digit-components";
-import { Add } from "@material-ui/icons";
 import {
     DESCRIPTION,
     EMAIL,
@@ -63,18 +60,5 @@ const DisplayGroupsTable = ({ title, groups }) => (
         )}
     />
 );
-
-function _getTypeText(type, text) {
-    switch (type) {
-        case "SOCIETY":
-            return text.society;
-        case "COMMITTEE":
-            return text.Committee;
-        case "BOARD":
-            return text.Board;
-        default:
-            return "Unknown";
-    }
-}
 
 export default DisplayGroupsTable;

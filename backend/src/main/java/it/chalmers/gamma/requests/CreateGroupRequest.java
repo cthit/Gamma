@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -19,6 +18,8 @@ public class CreateGroupRequest {
 
     @Size(max = 50, message = "PRETTY_NAME_TOO_LONG")
     private String prettyName;
+
+    @Size(max = 200, message = "DESCRIPTION_TOO_LONG")
     private Text description;
 
     @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
@@ -36,7 +37,6 @@ public class CreateGroupRequest {
     @NotNull(message = "BECOMES_INACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
     private Calendar becomesInactive;
 
-    @NotEmpty(message = "A_SUPER_GROUP_MUST_BE_PROVIDED")
     private String superGroup;
 
     public List<WebsiteInfo> getWebsites() {

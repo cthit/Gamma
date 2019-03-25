@@ -2,6 +2,8 @@ import { DigitLayout } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import GroupForm from "../common-views/group-form";
 import {
+    BECOMES_ACTIVE,
+    BECOMES_INACTIVE,
     DESCRIPTION,
     EMAIL,
     FUNCTION,
@@ -11,7 +13,6 @@ import {
     SWEDISH_LANGUAGE,
     ENGLISH_LANGUAGE
 } from "../../../../api/utils/commonProps";
-import * as PropTypes from "prop-types";
 
 function generateInitialValues() {
     const output = {};
@@ -30,29 +31,32 @@ function generateInitialValues() {
 
     output[FUNCTION] = _function;
 
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    output[BECOMES_ACTIVE] = today;
+    output[BECOMES_INACTIVE] = tomorrow;
+
     return output;
 }
 
 class CreateNewGroup extends Component {
-    constructor(props) {
-        super(props);
-
-        props.gammaLoadingFinished();
+    componentDidMount() {
+        this.props.gammaLoadingFinished();
     }
 
     render() {
         const { groupsAdd } = this.props;
         return (
-            <DigitLayout.Fill>
-                <DigitLayout.Center>
-                    <GroupForm
-                        onSubmit={(values, actions) => {
-                            groupsAdd(values);
-                        }}
-                        initialValues={generateInitialValues()}
-                    />
-                </DigitLayout.Center>
-            </DigitLayout.Fill>
+            <DigitLayout.Center>
+                <GroupForm
+                    onSubmit={(values, actions) => {
+                        groupsAdd(values);
+                    }}
+                    initialValues={generateInitialValues()}
+                />
+            </DigitLayout.Center>
         );
     }
 }

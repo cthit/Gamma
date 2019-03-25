@@ -4,7 +4,6 @@ import statusCode from "../../../../common/utils/formatters/statusCode.formatter
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import PostForm from "../common-views/post-form";
 import translations from "./AddNewPost.screen.translations.json";
-import * as PropTypes from "prop-types";
 
 class AddNewPost extends Component {
     constructor(props) {

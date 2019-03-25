@@ -20,6 +20,7 @@ public class FKITGroupService {
     }
 
     public FKITGroup createGroup(CreateGroupRequest request) {
+        System.out.println("då");
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunction(request.getFunction());
@@ -53,6 +54,8 @@ public class FKITGroupService {
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
         group.setBecomesActive(becomesActive == null ? group.getBecomesActive() : becomesActive);
         group.setBecomesInactive(becomesInactive == null ? group.getBecomesInactive() : becomesInactive);
+        System.out.println("HEJHEJHEJHEJHEJ");
+        System.out.println(group);
         return this.repo.save(group);
     }
 
@@ -88,4 +91,9 @@ public class FKITGroupService {
         group.setAvatarURL(url);
         this.repo.save(group);
     }
+
+    public void save(FKITGroup group){
+        this.repo.save(group);
+    }
+
 }

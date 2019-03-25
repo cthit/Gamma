@@ -1,9 +1,5 @@
 import React from "react";
-import {
-    DigitFAB,
-    DigitTable,
-    DigitTranslations
-} from "@cthit/react-digit-components";
+import { DigitTable, DigitTranslations } from "@cthit/react-digit-components";
 
 import translations from "./DisplayUsersTable.element.translations";
 

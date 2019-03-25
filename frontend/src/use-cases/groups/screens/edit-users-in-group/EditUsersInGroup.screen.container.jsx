@@ -1,8 +1,6 @@
 import { connect } from "react-redux";
-import _ from "lodash";
 import EditUsersInGroup from "./EditUsersInGroup.screen";
 
-import { temporarySaveSelectedUsersToGroup } from "./views/select-members/SelectMembers.view.action-creator";
 import { createGetUsersAction } from "../../../../api/users/action-creator.users.api";
 import { createGetGroupAction } from "../../../../api/groups/action-creator.groups.api";
 import {

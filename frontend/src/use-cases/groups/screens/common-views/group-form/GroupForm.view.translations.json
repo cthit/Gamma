@@ -11,5 +11,7 @@
     "Type": ["Group type", "Grupp typ"],
     "Society": ["Society", "Förening"],
     "Committee": ["Committee", "Kommitté"],
-    "Board": ["Board", "Nämnd"]
+    "Board": ["Board", "Nämnd"],
+    "BecomesActive": ["Becomes active", "Blir aktiva"],
+    "BecomesInactive": ["Becomes inactitve", "Blir inaktiva"]
 }

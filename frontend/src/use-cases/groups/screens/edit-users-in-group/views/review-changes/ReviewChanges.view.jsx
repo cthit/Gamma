@@ -1,5 +1,5 @@
 import React from "react";
 
-const ReviewChanges = ({}) => <div>hej</div>;
+const ReviewChanges = () => <div>hej</div>;
 
 export default ReviewChanges;
