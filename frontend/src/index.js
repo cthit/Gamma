@@ -4,9 +4,9 @@ import ReactDOM from "react-dom";
 import App from "./app";
 
 import registerServiceWorker from "./registerServiceWorker";
-import { ProvidersForApp } from "./app/ProvidersForApp";
+import ProvidersForApp from "./app/ProvidersForApp";
 
-export const Index = () => (
+const Index = () => (
     <ProvidersForApp>
         <App />
     </ProvidersForApp>

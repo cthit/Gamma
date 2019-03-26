@@ -2,8 +2,6 @@ import React from "react";
 import { withRouter } from "react-router";
 import axios from "axios";
 
-import * as p from "@cthit/react-digit-components";
-
 class GammaIntegration extends React.Component {
     constructor(props) {
         super(props);
@@ -13,9 +11,13 @@ class GammaIntegration extends React.Component {
             props.startedFetchingAccessToken();
             if (code) {
                 axios
-                    .post((process.env.REACT_APP_JWT_URL + "http://localhost:8082") + "/auth", {
-                        code: code
-                    })
+                    .post(
+                        (process.env.REACT_APP_JWT_URL ||
+                            "http://localhost:8082") + "/auth",
+                        {
+                            code: code
+                        }
+                    )
                     .then(response => {
                         localStorage.token = response.data;
                         props.userUpdateMe().then(() => {

@@ -14,7 +14,7 @@ const theme = {
     }
 };
 
-export const ProvidersForApp = ({ children }) => (
+const ProvidersForApp = ({ children }) => (
     <DigitProviders
         rootReducer={rootReducer}
         preloadedState={preloadedState}
@@ -24,3 +24,5 @@ export const ProvidersForApp = ({ children }) => (
         {children}
     </DigitProviders>
 );
+
+export default ProvidersForApp;
