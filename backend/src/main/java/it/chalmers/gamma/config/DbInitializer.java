@@ -12,8 +12,8 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
+import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
@@ -36,11 +36,12 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
     private final ITUserService userservice;
-    private final FKITGroupService groupService;
+    private final FKITService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
@@ -62,7 +63,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.standard-admin-account.password}")
     private String password;
 
-    public DbInitializer(ITUserService userService, FKITGroupService groupService,
+    public DbInitializer(ITUserService userService, FKITService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
                          MembershipService membershipService, AuthorityService authorityService,
                          ITClientService itClientService,
@@ -101,6 +102,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
+            this.redirectUri = this.redirectUri.trim();
             itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
@@ -111,20 +113,11 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private void ensureAdminUser() {
         String admin = "admin";
         if (!this.userservice.userExists(admin)) {
-            Text descriptionText = new Text();
-            String descriptionTextEn = "Super admin group, do not add anything to this group,"
+            Text description = new Text();
+            String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
-
-
-            Text functionText = new Text();
-            functionText.setSv("Supergrupp");
-            functionText.setEn("Super group");
-            String descriptionTextSv = "Admin supergrupp, lägg inte till någonting till den här gruppen"
-                    + "då den används för att kunna komma in i frontenden med en användare som har alla rättigheter";
-
-            descriptionText.setEn(descriptionTextEn);
-            descriptionText.setSv(descriptionTextSv);
-
+            description.setEn(descriptionText);
+            description.setSv(descriptionText);
             CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
@@ -132,9 +125,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             String adminMail = "admin@chalmers.it";
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
-            request.setPrettyName("SuperAdmin");
-            request.setFunction(functionText);
-            request.setDescription(descriptionText);
+            request.setPrettyName("superAdmin");
+            request.setFunc(new Text());
+            request.setDescription(description);
             request.setEmail(adminMail);
             request.setYear(2018);
             Calendar end = new GregorianCalendar();

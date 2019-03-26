@@ -11,18 +11,18 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FKITGroupService {
+public class FKITService {
 
     private final FKITGroupRepository repo;
 
-    public FKITGroupService(FKITGroupRepository repo) {
+    public FKITService(FKITGroupRepository repo) {
         this.repo = repo;
     }
 
     public FKITGroup createGroup(CreateGroupRequest request) {
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(request.getName().toLowerCase());
-        fkitGroup.setFunction(request.getFunction());
+        fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
         fkitGroup.setYear(request.getYear());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
@@ -37,8 +37,8 @@ public class FKITGroupService {
             return null;
         }
         group.setYear(request.getYear() == 0 ? group.getYear() : request.getYear());
-        group.setSVFunction(request.getFunction() == null ? group.getSVFunction() : request.getFunction().getSv());
-        group.setENFunction(request.getFunction() == null ? group.getENFunction() : request.getFunction().getEn());
+        group.setSVFunction(request.getFunc() == null ? group.getSVFunction() : request.getFunc().getSv());
+        group.setENFunction(request.getFunc() == null ? group.getENFunction() : request.getFunc().getEn());
         if (request.getDescription() != null && group.getDescription() != null) {
             group.setSVDescription(request.getDescription().getSv());
             group.setENDescription(request.getDescription().getEn());

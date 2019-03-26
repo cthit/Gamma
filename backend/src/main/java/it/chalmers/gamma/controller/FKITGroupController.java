@@ -2,13 +2,11 @@ package it.chalmers.gamma.controller;
 
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNCTION;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
@@ -17,7 +15,7 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.service.FKITGroupService;
+import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.views.WebsiteView;
@@ -36,20 +34,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/groups")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.UnnecessaryFullyQualifiedName"})
 public final class FKITGroupController {
 
     //TODO add groupmembers to serialize method call once that has been solved.
 
-    private final FKITGroupService fkitGroupService;
+    private final FKITService fkitService;
     private final GroupWebsiteService groupWebsiteService;
     private final MembershipService membershipService;
 
     public FKITGroupController(
-            FKITGroupService fkitGroupService,
+            FKITService fkitService,
             GroupWebsiteService groupWebsiteService,
             MembershipService membershipService) {
-        this.fkitGroupService = fkitGroupService;
+        this.fkitService = fkitService;
         this.groupWebsiteService = groupWebsiteService;
         this.membershipService = membershipService;
     }
@@ -58,9 +55,9 @@ public final class FKITGroupController {
     public JSONObject getGroup(@PathVariable("id") String id) {
 
         // finds the group
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         if (group == null) {
-            group = this.fkitGroupService.getGroup(id);
+            group = this.fkitService.getGroup(id);
         }
         if (group == null) {
             throw new GroupDoesNotExistResponse();
@@ -71,41 +68,21 @@ public final class FKITGroupController {
                 this.groupWebsiteService.getWebsitesOrdered(
                         this.groupWebsiteService.getWebsites(group)
                 );
-
-        List<ITUser> members = this.membershipService.getUsersInGroup(group);
-        List<ITUserSerializer.Properties> props =
-                new ArrayList<>(Arrays.asList(
-                    CID,
-                    FIRST_NAME,
-                    LAST_NAME,
-                    NICK,
-                    ACCEPTANCE_YEAR,
-                    ID
-                ));
-        List<JSONObject> minifiedMembers = new ArrayList<>();
-        ITUserSerializer itUserSerializer = new ITUserSerializer(props);
-        for (ITUser user : members) {
-            minifiedMembers.add(itUserSerializer.serialize(user, null, null));
-        }
-
         // This should change the database setup probably.
-        FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(
+        FKITGroupSerializer serializer = new FKITGroupSerializer(
                 // which fields should be sent to frontend
                 FKITGroupSerializer.Properties.getAllProperties()
         );
-
-
-
         // serializes all selected data from the group
-        return fkitGroupSerializer.serialize(group, minifiedMembers, websiteViews);
+        return serializer.serialize(group, null, websiteViews);
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public List<JSONObject> getGroupsMinified() {
-        List<FKITGroup> groups = this.fkitGroupService.getGroups();
+        List<FKITGroup> groups = this.fkitService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNCTION, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
         );
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
@@ -119,19 +96,19 @@ public final class FKITGroupController {
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public JSONObject getGroupMinified(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
         if (group == null) {
             return null;
         }
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNCTION, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNC, FKITGroupSerializer.Properties.ID, TYPE)
         );
         return serializer.serialize(group, null, null);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public List<JSONObject> getGroups() {
-        List<FKITGroup> groups = this.fkitGroupService.getGroups();
+        List<FKITGroup> groups = this.fkitService.getGroups();
         List<JSONObject> serializedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
         ITUserSerializer userSerializer = new ITUserSerializer(
@@ -154,7 +131,7 @@ public final class FKITGroupController {
     }
     @RequestMapping(value = "/active", method = RequestMethod.GET)
     public List<JSONObject> getActiveGroups() {
-        List<FKITGroup> groups = this.fkitGroupService.getGroups().stream()
+        List<FKITGroup> groups = this.fkitService.getGroups().stream()
                 .filter(FKITGroup::isActive).collect(Collectors.toList());
         FKITGroupSerializer groupSerializer = new FKITGroupSerializer(FKITGroupSerializer.Properties
                 .getAllProperties());

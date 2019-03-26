@@ -39,7 +39,7 @@ public class FKITGroup {
 
     @JoinColumn(name = "function", nullable = false)
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Text function;
+    private Text func;
 
     @Column(name = "email", length = 100, nullable = false)
     private String email;
@@ -97,30 +97,30 @@ public class FKITGroup {
         this.avatarURL = avatarURL;
     }
 
-    public Text getFunction() {
-        return this.function;
+    public Text getFunc() {
+        return this.func;
     }
 
-    public void setFunction(Text function) {
-        this.function = function;
+    public void setFunc(Text func) {
+        this.func = func;
     }
 
     @JsonIgnore
     public String getSVFunction() {
-        return this.function.getSv();
+        return this.func.getSv();
     }
 
     public void setSVFunction(String function) {
-        this.function.setSv(function);
+        this.func.setSv(function);
     }
 
     @JsonIgnore
     public String getENFunction() {
-        return this.function.getEn();
+        return this.func.getEn();
     }
 
     public void setENFunction(String function) {
-        this.function.setEn(function);
+        this.func.setEn(function);
     }
 
     public String getPrettyName() {
@@ -192,7 +192,7 @@ public class FKITGroup {
             + ", name='" + name + '\''
             + ", prettyName='" + prettyName + '\''
             + ", description=" + description
-            + ", function=" + function
+            + ", func=" + func
             + ", email='" + email + '\''
             + '}';
     }
@@ -211,7 +211,7 @@ public class FKITGroup {
             && Objects.equals(this.name, fkitGroup.name)
             && Objects.equals(this.prettyName, fkitGroup.prettyName)
             && Objects.equals(this.description, fkitGroup.description)
-            && Objects.equals(this.function, fkitGroup.function)
+            && Objects.equals(this.func, fkitGroup.func)
             && Objects.equals(this.email, fkitGroup.email);
     }
 
@@ -223,7 +223,7 @@ public class FKITGroup {
             this.name,
             this.prettyName,
             this.description,
-            this.function,
+            this.func,
             this.email);
     }
 }

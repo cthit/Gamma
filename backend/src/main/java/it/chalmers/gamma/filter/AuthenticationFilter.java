@@ -12,6 +12,7 @@ import it.chalmers.gamma.service.ITUserService;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Base64;
+import java.util.Iterator;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -39,13 +40,17 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
-
+    //TODO This function might cause some problems if sent wrong info.
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain) throws ServletException, IOException {
         String encodedToken = resolveToken(request);
+        LOGGER.error(request.toString());
+        LOGGER.error(response.toString());
+        LOGGER.error(chain.toString());
+        LOGGER.error(encodedToken);
         if (encodedToken != null) {
             Jws<Claims> claim = decodeToken(encodedToken);
             String token = null;
@@ -88,6 +93,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
+        LOGGER.error(bearerToken);
+        Iterator<String> it = req.getHeaderNames().asIterator();
+        while (it.hasNext()) {
+            LOGGER.error(it.next());
+        }
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return removeBearer(bearerToken);
         }

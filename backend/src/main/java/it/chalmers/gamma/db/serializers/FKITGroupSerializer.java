@@ -14,33 +14,6 @@ import org.json.simple.JSONObject;
 
 public class FKITGroupSerializer {
 
-    public enum Properties {
-        ID,
-        AVATAR_URL,
-        NAME,
-        PRETTY_NAME,
-        DESCRIPTION,
-        FUNCTION,
-        EMAIL,
-        TYPE,
-        WEBSITES,
-        USERS,
-        SUPER_GROUP;
-
-        public static List<Properties> getAllProperties() {
-            Properties[] props = {
-                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNCTION, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
-            };
-            return new ArrayList<>(Arrays.asList(props));
-        }
-    }
-
-    private final List<Properties> properties;
-
-    public FKITGroupSerializer(List<Properties> properties) {
-        this.properties = new ArrayList<>(properties);
-    }
-
     public JSONObject serialize(
             FKITGroup value,
             @Nullable List<JSONObject> groupMembers,
@@ -56,7 +29,7 @@ public class FKITGroupSerializer {
                 this.properties.contains(Properties.DESCRIPTION), value.getDescription(), "description")
         );
         values.add(new SerializerValue(
-                this.properties.contains(Properties.FUNCTION), value.getFunction(), "function")
+                this.properties.contains(Properties.FUNC), value.getFunc(), "function")
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.EMAIL), value.getEmail(), "email")
@@ -75,5 +48,32 @@ public class FKITGroupSerializer {
         );
         return SerializerUtils.serialize(values, false);
 
+    }
+
+    private final List<Properties> properties;
+
+    public FKITGroupSerializer(List<Properties> properties) {
+        this.properties = new ArrayList<>(properties);
+    }
+
+    public enum Properties {
+        ID,
+        AVATAR_URL,
+        NAME,
+        PRETTY_NAME,
+        DESCRIPTION,
+        FUNC,
+        EMAIL,
+        TYPE,
+        WEBSITES,
+        USERS,
+        SUPER_GROUP;
+
+        public static List<Properties> getAllProperties() {
+            Properties[] props = {
+                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
+            };
+            return new ArrayList<>(Arrays.asList(props));
+        }
     }
 }
