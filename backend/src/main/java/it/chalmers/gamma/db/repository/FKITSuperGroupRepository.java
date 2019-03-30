@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 public interface FKITSuperGroupRepository extends JpaRepository<FKITSuperGroup, UUID> {
     FKITSuperGroup getById(UUID id);
     boolean existsByName(String name);
-
 }

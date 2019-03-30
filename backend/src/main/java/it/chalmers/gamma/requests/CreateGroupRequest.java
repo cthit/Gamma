@@ -22,7 +22,7 @@ public class CreateGroupRequest {
     @Email(message = "NOT_A_VALID_EMAIL")
     private String email;
     @NotNull(message = "A_FUNCTION_MUST_BE_PROVIDED")
-    private Text function;
+    private Text func;
     private String avatarURL;
     private List<WebsiteInfo> websites;
     @Min(value = 2001, message = "YEAR_MUST_BE_AFTER_2001")
@@ -59,12 +59,12 @@ public class CreateGroupRequest {
         return this.description;
     }
 
-    public Text getFunction() {
-        return this.function;
+    public Text getFunc() {
+        return this.func;
     }
 
-    public void setFunction(Text function) {
-        this.function = function;
+    public void setFunc(Text func) {
+        this.func = func;
     }
 
     public String getAvatarURL() {
@@ -136,7 +136,7 @@ public class CreateGroupRequest {
             && this.prettyName.equals(that.prettyName)
             && this.description.equals(that.description)
             && this.email.equals(that.email)
-            && this.function.equals(that.function)
+            && this.func.equals(that.func)
             && this.avatarURL.equals(that.avatarURL)
             && this.websites.equals(that.websites);
     }
@@ -144,7 +144,7 @@ public class CreateGroupRequest {
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.prettyName, this.description, this.email,
-             this.function, this.avatarURL, this.websites);
+             this.func, this.avatarURL, this.websites);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class CreateGroupRequest {
             + ", prettyName='" + this.prettyName + '\''
             + ", description=" + this.description
             + ", email='" + this.email + '\''
-            + ", function=" + this.function
+            + ", func=" + this.func
             + ", avatarURL='" + this.avatarURL + '\''
             + ", websites=" + this.websites
             + '}';
