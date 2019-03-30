@@ -63,10 +63,10 @@ public class AuthorityService {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
             Authority authority = getAuthorityLevel(
-                this.fkitGroupToSuperGroupService.getSuperGroup(
-                    membership.getId().getFKITGroup()
-                ),
-                membership.getPost()
+                    this.fkitGroupToSuperGroupService.getSuperGroup(
+                            membership.getId().getFKITGroup()
+                    ),
+                    membership.getPost()
             );
 
             if (authority != null) {
@@ -92,6 +92,7 @@ public class AuthorityService {
     public Authority getAuthority(UUID id) {
         return this.authorityRepository.findByInternalId(id);
     }
+
     public boolean authorityExists(UUID id) {
         return this.authorityRepository.existsById(id);
     }

@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@SuppressWarnings( {"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/groups")
 public final class GroupAdminController {
@@ -58,13 +58,13 @@ public final class GroupAdminController {
     private final AuthorityLevelService authorityLevelService;
 
     public GroupAdminController(
-        FKITGroupService fkitGroupService,
-        WebsiteService websiteService,
-        GroupWebsiteService groupWebsiteService,
-        FKITSuperGroupService fkitSuperGroupService,
-        FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
-        MembershipService membershipService,
-        AuthorityLevelService authorityLevelService) {
+            FKITGroupService fkitGroupService,
+            WebsiteService websiteService,
+            GroupWebsiteService groupWebsiteService,
+            FKITSuperGroupService fkitSuperGroupService,
+            FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+            MembershipService membershipService,
+            AuthorityLevelService authorityLevelService) {
         this.fkitGroupService = fkitGroupService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
@@ -109,7 +109,7 @@ public final class GroupAdminController {
 
         if (createGroupRequest.getSuperGroup() != null) {
             FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
-                UUID.fromString(createGroupRequest.getSuperGroup()));
+                    UUID.fromString(createGroupRequest.getSuperGroup()));
             if (superGroup == null) {
                 throw new GroupDoesNotExistResponse();
             }
@@ -119,14 +119,13 @@ public final class GroupAdminController {
 
         // Adds each group as an authoritylevel which
         this.authorityLevelService.addAuthorityLevel(group.getId().toString());
-//        fkitGroupService.save(group);
         return new GroupCreatedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editGroup(
-        @RequestBody CreateGroupRequest request,
-        @PathVariable("id") String id) {
+            @RequestBody CreateGroupRequest request,
+            @PathVariable("id") String id) {
         if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
@@ -134,10 +133,10 @@ public final class GroupAdminController {
         FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteInterface> entityWebsites = new ArrayList<>(
-            this.groupWebsiteService.getWebsites(group)
+                this.groupWebsiteService.getWebsites(group)
         );
         List<WebsiteURL> websiteURLs = this.groupWebsiteService.addWebsiteToEntity(
-            websiteInfos, entityWebsites
+                websiteInfos, entityWebsites
         );
         this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupEditedResponse();
@@ -149,7 +148,7 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-            this.fkitGroupService.getGroup(UUID.fromString(id))
+                this.fkitGroupService.getGroup(UUID.fromString(id))
         );
         this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getGroup(UUID.fromString(id)));
         this.fkitGroupService.removeGroup(UUID.fromString(id));

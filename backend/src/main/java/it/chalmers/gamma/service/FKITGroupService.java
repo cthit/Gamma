@@ -89,7 +89,7 @@ public class FKITGroupService {
         this.repo.save(group);
     }
 
-    public void save(FKITGroup group){
+    public void save(FKITGroup group) {
         this.repo.save(group);
     }
 
