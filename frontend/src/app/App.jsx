@@ -63,7 +63,7 @@ export class App extends Component {
         const clientId =
             "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
         const redirectUri =
-            "redirect_uri= " +
+            "redirect_uri=" +
             (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") +
             "/login";
 
@@ -110,7 +110,7 @@ export class App extends Component {
                     text="Websites"
                     link="/websites"
                 />
-                <DigitNavLink onClick={closeDrawer} text="Gdpr" link="/gdpr" />
+                <DigitNavLink onClick={closeDrawer} text="GDPR" link="/gdpr" />
                 <DigitNavLink
                     onClick={closeDrawer}
                     text="Activation codes"

@@ -8,31 +8,6 @@ WORKDIR /app
 #db is used to separate development and production databases
 
 # Environment variables needed for Gamma to run in Production env, These must be changed!!.
-ENV DB_HOST db
-ENV DB_USER user
-ENV DB_PASSWORD password
-
-ENV SERVER_PORT 9090
-
-ENV JWT_SECRET_KEY jwtkey
-ENV JWT_EXPIRE_LENGTH 2592000000
-
-ENV FRONTEND_CLIENT_ID id
-ENV FRONTEND_CLIENT_SECRET secret
-ENV FRONTEND_REDIRECT_URI http://localhost:9090
-ENV SUCCESSFUL_LOGIN http://localhost:3000
-
-ENV GOTIFY_KEY key
-ENV GOTIFY_URL https://gotify.chalmers.it
-
-ENV ADMIN_PASSWORD password
-
-ENV AUTH_ACCESS_TOKEN_VALIDITY 3000
-ENV AUTH_AUTO_APPROVE true
-
-ENV IMAGEIT_URL http://localhost:5000
-ENV IMAGEIT_API_KEY secret
-
 COPY . /app
 
 ENV LOGGING_FILE log/production.log
@@ -44,5 +19,5 @@ USER gradle
 
 RUN gradle :build -x test
 # This probably should not have a static path, but instead build in a custom path.
-CMD java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
+CMD sleep 5 && java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
 

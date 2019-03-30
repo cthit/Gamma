@@ -2,7 +2,7 @@ package it.chalmers.gamma.controller;
 
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNCTION;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/groups")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.UnnecessaryFullyQualifiedName"})
 public final class FKITGroupController {
 
     //TODO add groupmembers to serialize method call once that has been solved.
@@ -94,15 +93,12 @@ public final class FKITGroupController {
         }
 
         // This should change the database setup probably.
-        FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(
+        FKITGroupSerializer serializer = new FKITGroupSerializer(
                 // which fields should be sent to frontend
                 FKITGroupSerializer.Properties.getAllProperties()
         );
-
-
-
         // serializes all selected data from the group
-        return fkitGroupSerializer.serialize(group, minifiedMembers, websiteViews);
+        return serializer.serialize(group, null, websiteViews);
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -110,7 +106,7 @@ public final class FKITGroupController {
         List<FKITGroup> groups = this.fkitGroupService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNCTION, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
         );
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
