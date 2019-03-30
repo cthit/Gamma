@@ -3,35 +3,59 @@ import _ from "lodash";
 
 const path = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/") + "api";
 
-export function getRequest(endpoint) {
+export function getRequest(endpoint, includeAuthorization = true) {
+    var headers = {};
+
+    if (includeAuthorization) {
+        headers = {
+            Authorization: "Bearer " + token()
+        };
+    }
+
     return axios.get(removeLastSlash(path + endpoint), {
-        headers: {
-            Authorization: "Bearer " + token()
-        }
+        headers
     });
 }
 
-export function postRequest(endpoint, data) {
+export function postRequest(endpoint, data, includeAuthorization = true) {
+    var headers = {};
+
+    if (includeAuthorization) {
+        headers = {
+            Authorization: "Bearer " + token()
+        };
+    }
+
     return axios.post(removeLastSlash(path + endpoint), data, {
-        headers: {
-            Authorization: "Bearer " + token()
-        }
+        headers
     });
 }
 
-export function deleteRequest(endpoint) {
+export function deleteRequest(endpoint, includeAuthorization = true) {
+    var headers = {};
+
+    if (includeAuthorization) {
+        headers = {
+            Authorization: "Bearer " + token()
+        };
+    }
+
     return axios.delete(removeLastSlash(path + endpoint), {
-        headers: {
-            Authorization: "Bearer " + token()
-        }
+        headers
     });
 }
 
-export function putRequest(endpoint, data) {
-    return axios.put(removeLastSlash(path + endpoint), data, {
-        headers: {
+export function putRequest(endpoint, data, includeAuthorization = true) {
+    var headers = {};
+
+    if (includeAuthorization) {
+        headers = {
             Authorization: "Bearer " + token()
-        }
+        };
+    }
+
+    return axios.put(removeLastSlash(path + endpoint), data, {
+        headers
     });
 }
 

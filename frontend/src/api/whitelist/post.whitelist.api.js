@@ -32,6 +32,7 @@ export function cidIsWhitelisted(whitelistData) {
 export function activateCid(whitelistData) {
     return postRequest(
         WHITELIST_ENDPOINT + ACTIVATE_CID_ENDPOINT,
-        whitelistData
+        whitelistData,
+        false
     );
 }
