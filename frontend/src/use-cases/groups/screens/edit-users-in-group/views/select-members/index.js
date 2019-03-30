@@ -1,2 +1,2 @@
-import SelectMembers from "./SelectMembers.view.container";
+import SelectMembers from "./SelectMembers.view";
 export default SelectMembers;

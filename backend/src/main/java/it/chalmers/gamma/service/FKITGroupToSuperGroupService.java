@@ -30,7 +30,8 @@ public class FKITGroupToSuperGroupService {
     }
 
     public FKITSuperGroup getSuperGroup(FKITGroup group) {
-        return this.repository.findFKITGroupToSuperGroupsById_Group(group).getId().getSuperGroup();
+        FKITGroupToSuperGroup fkitGroupToSuperGroup = this.repository.findFKITGroupToSuperGroupsById_Group(group);
+        return fkitGroupToSuperGroup == null ? null : fkitGroupToSuperGroup.getId().getSuperGroup();
     }
 
     public void deleteRelationship(FKITGroup group, FKITSuperGroup superGroup) {

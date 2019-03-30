@@ -15,11 +15,11 @@ import {
 } from "../../../../api/users/props.users.api";
 
 class CreateNewUser extends React.Component {
-    constructor(props) {
-        super(props);
+    componentDidMount() {
+        const { websitesLoad, gammaLoadingFinished } = this.props;
 
-        props.websitesLoad().then(() => {
-            props.gammaLoadingFinished();
+        websitesLoad().then(() => {
+            gammaLoadingFinished();
         });
     }
 

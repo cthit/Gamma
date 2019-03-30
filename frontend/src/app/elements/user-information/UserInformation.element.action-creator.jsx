@@ -66,13 +66,6 @@ export function userLogout() {
     };
 }
 
-export function userLogoutSuccessfully() {
-    return {
-        type: USER_LOGOUT_SUCCESSFULLY,
-        error: false
-    };
-}
-
 export function userUpdatedSuccessfully(data) {
     return {
         type: USER_UPDATED_SUCCESSFULLY,

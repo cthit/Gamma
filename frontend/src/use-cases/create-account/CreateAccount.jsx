@@ -14,10 +14,8 @@ import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
 
 class CreateAccount extends React.Component {
-    constructor(props) {
-        super();
-
-        props.gammaLoadingFinished();
+    componentDidMount() {
+        this.props.gammaLoadingFinished();
     }
 
     render() {

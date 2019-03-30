@@ -23,11 +23,8 @@ class SelectMembers extends React.Component {
     constructor(props) {
         super(props);
 
-        const { savedSelectedGroups } = this.props;
-
         this.state = {
-            selectedMemberIds:
-                savedSelectedGroups == null ? [] : savedSelectedGroups,
+            selectedMemberIds: [],
             currentMembers: [],
             currentMemberIds: []
         };
@@ -39,19 +36,43 @@ class SelectMembers extends React.Component {
             nextProps.users != null &&
             !nextState.hasLoadedCurrentMembers
         ) {
-            console.log("OMGOMGOMGOMG");
             const group = nextProps.group;
-            console.log(group);
-            this.setState({
-                currentMembers: group.groupMembers,
-                currentMemberIds: group.groupMembers.map(member => member.id),
-                selectedMemberIds: this.state.selectedMemberIds.concat(
-                    group.groupMembers.map(member => member.id)
-                ),
-                hasLoadedCurrentMembers: true
-            });
+
+            var selectedMembers = sessionStorage.getItem(
+                group.id + ".selectedMembers"
+            );
+
+            if (selectedMembers != null) {
+                selectedMembers = JSON.parse(selectedMembers);
+            }
+
+            if (selectedMembers == null || selectedMembers.length === 0) {
+                selectedMembers = group.groupMembers.map(member => member.id);
+            }
+
+            this.setState(
+                {
+                    currentMembers: group.groupMembers,
+                    currentMemberIds: group.groupMembers.map(
+                        member => member.id
+                    ),
+                    selectedMemberIds: selectedMembers,
+                    hasLoadedCurrentMembers: true
+                },
+                () => {
+                    this._save(selectedMembers);
+                }
+            );
         }
     }
+
+    _save = selectedMembers => {
+        console.log(selectedMembers);
+        sessionStorage.setItem(
+            this.props.group.id + ".selectedMembers",
+            JSON.stringify(selectedMembers)
+        );
+    };
 
     _unsavedEdits = () => {
         const { selectedMemberIds, currentMemberIds } = this.state;
@@ -63,15 +84,9 @@ class SelectMembers extends React.Component {
     };
 
     componentWillUnmount() {
-        const { groupId, temporarySaveSelectedUsersToGroup } = this.props;
-        const { selectedMemberIds, currentMemberIds } = this.state;
+        const { selectedMemberIds } = this.state;
 
-        temporarySaveSelectedUsersToGroup(
-            groupId,
-            selectedMemberIds.filter(
-                member => currentMemberIds.indexOf(member) === -1
-            )
-        );
+        this._save(selectedMemberIds);
     }
 
     onSelectedChange = selected => {
@@ -79,6 +94,8 @@ class SelectMembers extends React.Component {
             selectedMemberIds: selected,
             unsavedEdits: selected.length > 0
         });
+
+        this._save(selected);
     };
 
     generateHeaderTexts = text => {
@@ -97,6 +114,8 @@ class SelectMembers extends React.Component {
     render() {
         const { selectedMemberIds, currentMembers } = this.state;
         const { users, group, onMembersSelected } = this.props;
+
+        console.log(selectedMemberIds);
 
         const unsavedEdits = this._unsavedEdits();
 

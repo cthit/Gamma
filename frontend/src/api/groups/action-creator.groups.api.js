@@ -12,14 +12,18 @@ import {
     GROUP_GET_FAILED,
     GROUPS_GET_MINIFIED_LOADING,
     GROUPS_GET_MINIFIED_FAILED,
-    GROUPS_GET_MINIFIED_SUCCESSFULLY
+    GROUPS_GET_MINIFIED_SUCCESSFULLY,
+    GROUPS_ADD_USER_SUCCESSFULLY,
+    GROUPS_ADD_USER_FAILED,
+    GROUPS_ADD_USER_LOADING
 } from "./actions.groups.api";
 
-import { addGroup } from "./post.groups.api";
+import { addGroup, addUserToGroup } from "./post.groups.api";
 import { getGroup, getGroups, getGroupsMinified } from "./get.groups.api";
 import { editGroup } from "./put.groups.api";
 import { deleteGroup } from "./delete.groups.api";
 import { requestPromise } from "../utils/requestPromise";
+import { failed, loading, successfully } from "../utils/simpleActionCreators";
 
 export function createGetGroupsMinifiedAction() {
     return requestPromise(
@@ -105,10 +109,15 @@ export function createDeleteGroupAction(groupId) {
     };
 }
 
-export function groupsAddUser() {
-    return dispatch => {
-        return new Promise((resolve, reject) => {});
-    };
+export function createAddUserToGroupRequest(groupId, memberData) {
+    return requestPromise(
+        () => {
+            return addUserToGroup(groupId, memberData);
+        },
+        addUserToGroupLoading,
+        addUserToGroupSuccessfully,
+        addUserToGroupFailed
+    );
 }
 
 export function groupsDeleteUser() {
@@ -121,6 +130,18 @@ export function groupsChangePost() {
     return dispatch => {
         return new Promise((resolve, reject) => {});
     };
+}
+
+function addUserToGroupSuccessfully(response) {
+    return successfully(GROUPS_ADD_USER_SUCCESSFULLY, response);
+}
+
+function addUserToGroupFailed(error) {
+    return failed(GROUPS_ADD_USER_FAILED, error);
+}
+
+function addUserToGroupLoading() {
+    return loading(GROUPS_ADD_USER_LOADING);
 }
 
 function groupsAddSuccessfully() {

@@ -63,11 +63,12 @@ public class AuthorityService {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
             Authority authority = getAuthorityLevel(
-                    this.fkitGroupToSuperGroupService.getSuperGroup(
-                            membership.getId().getFKITGroup()
-                    ),
-                    membership.getPost()
+                this.fkitGroupToSuperGroupService.getSuperGroup(
+                    membership.getId().getFKITGroup()
+                ),
+                membership.getPost()
             );
+
             if (authority != null) {
                 Calendar start = membership.getId().getFKITGroup().getBecomesActive();
                 Calendar end = membership.getId().getFKITGroup().getBecomesInactive();

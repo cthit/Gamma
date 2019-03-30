@@ -24,7 +24,7 @@ function generateHeaderTexts(text) {
     return headerTexts;
 }
 
-const DisplayUsersTable = ({ users }) => (
+const DisplayUsersTable = ({ users, noUsersText }) => (
     <DigitTranslations
         translations={translations}
         render={text => (
@@ -47,7 +47,7 @@ const DisplayUsersTable = ({ users }) => (
                         __link: "/users/" + user.id
                     };
                 })}
-                emptyTableText={text.NoUsers}
+                emptyTableText={noUsersText || text.NoUsers}
             />
         )}
     />

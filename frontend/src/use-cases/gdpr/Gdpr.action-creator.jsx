@@ -9,7 +9,12 @@ export function gdprSetValue(userId, gdprValue) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             axios
-                .put((process.env.REACT_APP_FRONTEND_URL || "http://localhost:8081") + "/admin/users/" + userId)
+                .put(
+                    (process.env.REACT_APP_FRONTEND_URL ||
+                        "http://localhost:8081") +
+                        "/admin/users/" +
+                        userId
+                )
                 .then(response => {
                     dispatch(gdprSetValueSuccessfully());
                     resolve(response);
