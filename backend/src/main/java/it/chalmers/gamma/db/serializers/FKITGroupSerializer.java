@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import org.json.simple.JSONObject;
 
 public class FKITGroupSerializer {
+    private final List<Properties> properties;
 
     public JSONObject serialize(
             FKITGroup value,
@@ -49,8 +50,6 @@ public class FKITGroupSerializer {
         return SerializerUtils.serialize(values, false);
 
     }
-
-    private final List<Properties> properties;
 
     public FKITGroupSerializer(List<Properties> properties) {
         this.properties = new ArrayList<>(properties);

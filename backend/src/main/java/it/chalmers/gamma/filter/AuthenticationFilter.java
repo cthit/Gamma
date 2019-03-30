@@ -12,7 +12,6 @@ import it.chalmers.gamma.service.ITUserService;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Base64;
-import java.util.Iterator;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
