@@ -85,7 +85,11 @@ public final class UsersAdminController {
 
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
+    public ResponseEntity<String> editUser(@PathVariable("id") String id,
+                                           @Valid @RequestBody EditITUserRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         if (!this.itUserService.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
@@ -123,7 +127,11 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("id") String id) {
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
+        try {
+            if (!this.itUserService.userExists(UUID.fromString(id))) {
+                throw new UserNotFoundResponse();
+            }
+        } catch (IllegalArgumentException e) {
             throw new UserNotFoundResponse();
         }
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();

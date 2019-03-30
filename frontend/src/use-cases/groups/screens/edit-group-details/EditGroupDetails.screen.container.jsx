@@ -13,7 +13,7 @@ import {
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
-    group: _.find(state.groups, { id: ownProps.match.params.id }),
+    group: state.groups != null ? state.groups.details : null,
     groupId: ownProps.match.params.id
 });
 

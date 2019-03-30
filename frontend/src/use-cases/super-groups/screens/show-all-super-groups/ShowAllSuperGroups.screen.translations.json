@@ -1,0 +1,12 @@
+{
+    "Id": ["Id", "Id"],
+    "Name": ["Name", "Namn"],
+    "PrettyName": ["Pretty name", "Pretty namn"],
+    "Type": ["Type", "Typ"],
+    "Details": ["Details", "Detaljer"],
+    "NoSuperGroups": [
+        "There's no super groups",
+        "Det finns inga super grupper"
+    ],
+    "SearchForSuperGroups": [""]
+}

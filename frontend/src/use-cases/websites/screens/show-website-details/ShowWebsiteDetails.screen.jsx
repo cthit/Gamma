@@ -116,9 +116,6 @@ class ShowWebsiteDetails extends Component {
                                                                 })
                                                                 .catch(
                                                                     error => {
-                                                                        console.log(
-                                                                            error
-                                                                        );
                                                                         toastOpen(
                                                                             {
                                                                                 text:

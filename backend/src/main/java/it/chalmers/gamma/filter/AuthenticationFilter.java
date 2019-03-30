@@ -39,7 +39,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
-
+    //TODO This function might cause some problems if sent wrong info.
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,

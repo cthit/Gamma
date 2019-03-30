@@ -11,7 +11,7 @@ public final class InputValidationUtils {
     public static String getErrorMessages(List<ObjectError> errors) {
         StringBuilder errorMessages = new StringBuilder();
         for (ObjectError error : errors) {
-            errorMessages.append(error.getObjectName());
+            errorMessages.append(error.getDefaultMessage());
         }
         return errorMessages.toString();
     }
