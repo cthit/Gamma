@@ -7,9 +7,9 @@ import {
     GROUPS_DELETE_FAILED,
     GROUPS_CHANGE_SUCCESSFULLY,
     GROUPS_CHANGE_FAILED,
-    GROUPS_GET_LOADING,
-    GROUPS_GET_SUCCESSFULLY,
-    GROUPS_GET_FAILED,
+    GROUP_GET_LOADING,
+    GROUP_GET_SUCCESSFULLY,
+    GROUP_GET_FAILED,
     GROUPS_GET_MINIFIED_LOADING,
     GROUPS_GET_MINIFIED_FAILED,
     GROUPS_GET_MINIFIED_SUCCESSFULLY
@@ -51,9 +51,9 @@ export function createGetGroupAction(groupId) {
         () => {
             return getGroup(groupId);
         },
-        groupsGetLoading,
-        groupsGetSuccessfully,
-        groupsGetFailed
+        groupGetLoading,
+        groupGetSuccessfully,
+        groupGetFailed
     );
 }
 
@@ -140,16 +140,16 @@ function groupsAddFailed(error) {
     };
 }
 
-function groupsGetLoading() {
+function groupGetLoading() {
     return {
-        type: GROUPS_GET_LOADING,
+        type: GROUP_GET_LOADING,
         error: false
     };
 }
 
-function groupsGetSuccessfully(response) {
+function groupGetSuccessfully(response) {
     return {
-        type: GROUPS_GET_SUCCESSFULLY,
+        type: GROUP_GET_SUCCESSFULLY,
         error: false,
         payload: {
             data: response.data
@@ -157,9 +157,9 @@ function groupsGetSuccessfully(response) {
     };
 }
 
-function groupsGetFailed(error) {
+function groupGetFailed(error) {
     return {
-        type: GROUPS_GET_FAILED,
+        type: GROUP_GET_FAILED,
         error: true,
         payload: {
             error: error

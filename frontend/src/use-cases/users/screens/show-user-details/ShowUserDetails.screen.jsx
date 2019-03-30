@@ -14,7 +14,7 @@ import {
     EMAIL,
     FIRST_NAME,
     LAST_NAME,
-    NICKNAME
+    NICK
 } from "../../../../api/users/props.users.api";
 
 function createKeysTexts(text) {
@@ -23,7 +23,7 @@ function createKeysTexts(text) {
     output[CID] = text.cid;
     output[FIRST_NAME] = text.firstName;
     output[LAST_NAME] = text.lastName;
-    output[NICKNAME] = text.nick;
+    output[NICK] = text.nick;
     output[EMAIL] = text.email;
     output[ACCEPTANCE_YEAR] = text.acceptanceYear;
 
@@ -52,7 +52,6 @@ class ShowUserDetails extends Component {
             toastOpen
         } = this.props;
 
-        console.log(user);
         return (
             <DigitIfElseRendering
                 test={user != null}
@@ -70,7 +69,7 @@ class ShowUserDetails extends Component {
                                         text={
                                             user[FIRST_NAME] +
                                             " '" +
-                                            user[NICKNAME] +
+                                            user[NICK] +
                                             "' " +
                                             user[LAST_NAME]
                                         }
@@ -83,7 +82,7 @@ class ShowUserDetails extends Component {
                                                 CID,
                                                 FIRST_NAME,
                                                 LAST_NAME,
-                                                NICKNAME,
+                                                NICK,
                                                 EMAIL,
                                                 ACCEPTANCE_YEAR
                                             ]}

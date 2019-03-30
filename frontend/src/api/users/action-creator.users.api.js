@@ -2,6 +2,9 @@ import {
     USER_GET_FAILED,
     USER_GET_LOADING,
     USER_GET_SUCCESSFULLY,
+    USERS_ADD_FAILED,
+    USERS_ADD_LOADING,
+    USERS_ADD_SUCCESSFULLY,
     USERS_CHANGE_FAILED,
     USERS_CHANGE_SUCCESSFULLY,
     USERS_DELETE_FAILED,
@@ -17,6 +20,8 @@ import { deleteUser } from "./delete.users.api";
 import { editUser } from "./put.users.api";
 import { getUser, getUsers, getUsersMinified } from "./get.users.api";
 import { requestPromise } from "../utils/requestPromise";
+import { failed, loading, successfully } from "../utils/simpleActionCreators";
+import { addUser } from "./post.users.api";
 
 export function createGetUsersMinifiedAction() {
     return requestPromise(
@@ -84,6 +89,29 @@ export function createDeleteUserAction(id) {
                 });
         });
     };
+}
+
+export function createAddUserAction(userData) {
+    return requestPromise(
+        () => {
+            return addUser(userData);
+        },
+        addUserLoading,
+        addUserSuccessfully,
+        addUserFailed
+    );
+}
+
+function addUserLoading() {
+    return loading(USERS_ADD_LOADING);
+}
+
+function addUserSuccessfully(response) {
+    return successfully(USERS_ADD_SUCCESSFULLY, response);
+}
+
+function addUserFailed(error) {
+    return failed(USERS_ADD_FAILED, error);
 }
 
 function usersLoadFailed(error) {
