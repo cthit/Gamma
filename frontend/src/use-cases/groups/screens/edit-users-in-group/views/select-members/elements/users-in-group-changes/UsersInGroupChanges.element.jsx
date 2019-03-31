@@ -29,7 +29,7 @@ const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => (
             {findAdditions(currentMembers, selectedMembers).map(member => (
                 <MemberAddition key={member.id} member={member} />
             ))}
-            <DigitText.Title text="Borttaggningar" />
+            <DigitText.Title text="Borttagningar" />
             {findDeletions(currentMembers, selectedMembers).map(member => (
                 <MemberDeletion key={member.id} member={member} />
             ))}
