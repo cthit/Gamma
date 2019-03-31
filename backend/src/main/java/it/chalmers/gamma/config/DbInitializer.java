@@ -12,8 +12,8 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
     private final ITUserService userservice;
-    private final FKITService groupService;
+    private final FKITGroupService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
@@ -63,7 +63,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.standard-admin-account.password}")
     private String password;
 
-    public DbInitializer(ITUserService userService, FKITService groupService,
+    public DbInitializer(ITUserService userService, FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
                          MembershipService membershipService, AuthorityService authorityService,
                          ITClientService itClientService,

@@ -125,7 +125,7 @@ public final class FKITGroupController {
             return null;
         }
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNCTION, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNC, FKITGroupSerializer.Properties.ID, TYPE)
         );
         return serializer.serialize(group, null, null);
     }

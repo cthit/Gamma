@@ -22,7 +22,7 @@ public class FKITGroupService {
     public FKITGroup createGroup(CreateGroupRequest request) {
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(request.getName().toLowerCase());
-        fkitGroup.setFunction(request.getFunction());
+        fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
                 request.getBecomesActive(), request.getBecomesInactive(),
@@ -35,8 +35,8 @@ public class FKITGroupService {
         if (group == null) {
             return null;
         }
-        group.setSVFunction(request.getFunction() == null ? group.getSVFunction() : request.getFunction().getSv());
-        group.setENFunction(request.getFunction() == null ? group.getENFunction() : request.getFunction().getEn());
+        group.setSVFunction(request.getFunc() == null ? group.getSVFunction() : request.getFunc().getSv());
+        group.setENFunction(request.getFunc() == null ? group.getENFunction() : request.getFunc().getEn());
         if (request.getDescription() != null && group.getDescription() != null) {
             group.setSVDescription(request.getDescription().getSv());
             group.setENDescription(request.getDescription().getEn());
