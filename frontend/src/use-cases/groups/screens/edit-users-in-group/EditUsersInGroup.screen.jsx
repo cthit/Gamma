@@ -6,7 +6,7 @@ import SetPostNames from "./views/set-post-names";
 import ReviewChanges from "./views/review-changes";
 
 import translations from "./EditUsersInGroup.screen.translations";
-import * as _ from "lodash";
+import { NAME } from "../../../../api/groups/props.groups.api";
 
 class EditUsersInGroup extends React.Component {
     constructor(props) {
@@ -25,41 +25,10 @@ class EditUsersInGroup extends React.Component {
                 gammaLoadingFinished();
             }
         );
-
-        var memberIdsSelected = this._getDataFromSessionStorage(groupId);
-        if (memberIdsSelected == null) {
-            memberIdsSelected = [];
-        }
-
-        this.state = {
-            memberIdsSelected: memberIdsSelected
-        };
     }
 
     _getDataFromSessionStorage = groupId => {
         return JSON.parse(sessionStorage.getItem(groupId + ".selectedMembers"));
-    };
-
-    _hasNewMembers = (memberIdsSelected, group) => {
-        const groupMemberIds = group.groupMembers.filter(
-            groupMember => groupMember.id
-        );
-        console.log(groupMemberIds);
-        var hasNew = false;
-        for (var i = 0; i < memberIdsSelected.length - 1; i++) {
-            const selectedMemberId = memberIdsSelected[i];
-            if (memberIdsSelected.indexOf(selectedMemberId) === -1) {
-                hasNew = true;
-                break;
-            }
-        }
-
-        return memberIdsSelected
-            .filter(
-                memberIdSelected =>
-                    groupMemberIds.indexOf(memberIdSelected) === -1
-            )
-            .reduce((accumulator, value) => accumulator || value);
     };
 
     onMembersSelected = (memberIdsSelected, redirectTo, group) => {
@@ -69,17 +38,12 @@ class EditUsersInGroup extends React.Component {
                 memberIdsSelected
             },
             () => {
-                if (this._hasNewMembers(memberIdsSelected, group)) {
-                    redirectTo("/groups/" + group.id + "/members/posts");
-                } else {
-                    redirectTo("/groups/" + group.id + "/members/review");
-                }
+                redirectTo("/groups/" + group.id + "/members/posts");
             }
         );
     };
 
     render() {
-        const { memberIdsSelected } = this.state;
         const { groupId, group, users, posts, route, redirectTo } = this.props;
 
         var step = 0; //Ends with members
@@ -90,7 +54,12 @@ class EditUsersInGroup extends React.Component {
             step = 2;
         }
 
-        if (group != null && users != null && users.length > 0) {
+        if (
+            group != null &&
+            users != null &&
+            posts != null &&
+            users.length > 0
+        ) {
             return (
                 <DigitTranslations
                     translations={translations}
@@ -132,18 +101,7 @@ class EditUsersInGroup extends React.Component {
                                             groupId={groupId}
                                             posts={posts}
                                             currentMembers={group.groupMembers}
-                                            members={memberIdsSelected
-                                                .filter(
-                                                    member =>
-                                                        memberIdsSelected.indexOf(
-                                                            member.id
-                                                        ) === -1
-                                                )
-                                                .map(memberId =>
-                                                    _.find(users, {
-                                                        id: memberId
-                                                    })
-                                                )}
+                                            users={users}
                                             onNewMembers={() =>
                                                 redirectTo(
                                                     "/groups/" +
@@ -158,7 +116,12 @@ class EditUsersInGroup extends React.Component {
                                     path="/groups/:id/members/review"
                                     exact
                                     render={() => (
-                                        <ReviewChanges groupId={groupId} />
+                                        <ReviewChanges
+                                            groupName={group[NAME]}
+                                            posts={posts}
+                                            previousMembers={group.groupMembers}
+                                            groupId={groupId}
+                                        />
                                     )}
                                 />
                             </Switch>
