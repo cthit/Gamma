@@ -1,7 +1,6 @@
 import React from "react";
 import { DigitProviders } from "@cthit/react-digit-components";
 import { rootReducer } from "./App.reducer";
-import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 
 const preloadedState = {};
 
@@ -15,14 +14,15 @@ const theme = {
     }
 };
 
-export const ProvidersForApp = ({ children }) => (
+const ProvidersForApp = ({ children }) => (
     <DigitProviders
-        commonTranslations={commonTranslations}
         rootReducer={rootReducer}
         preloadedState={preloadedState}
-        defaultLanguage="sv"
+        defaultLanguage="en"
         theme={theme}
     >
         {children}
     </DigitProviders>
 );
+
+export default ProvidersForApp;

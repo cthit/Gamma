@@ -18,12 +18,7 @@ class InputCid extends React.Component {
     }
 
     render() {
-        const {
-            sendCid,
-            redirectTo,
-            toastOpen,
-            gammaLoadingStart
-        } = this.props;
+        const { sendCid, redirectTo, toastOpen } = this.props;
 
         return (
             <DigitTranslations
@@ -43,6 +38,7 @@ class InputCid extends React.Component {
                                     sendCid(values)
                                         .then(response => {
                                             actions.resetForm();
+                                            actions.setSubmitting(false);
                                             redirectTo(
                                                 "/create-account/email-sent"
                                             );

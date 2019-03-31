@@ -8,6 +8,21 @@ import {
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import translations from "./ShowWebsiteDetails.screen.translations.json";
+import {
+    NAME,
+    PRETTY_NAME,
+    WEBSITE_ID
+} from "../../../../api/websites/props.websites.api";
+
+function generateKeyTexts(text) {
+    const keyTexts = {};
+
+    keyTexts[WEBSITE_ID] = text.Id;
+    keyTexts[NAME] = text.Name;
+    keyTexts[PRETTY_NAME] = text.PrettyName;
+
+    return keyTexts;
+}
 
 class ShowWebsiteDetails extends Component {
     componentDidMount() {
@@ -36,7 +51,6 @@ class ShowWebsiteDetails extends Component {
                 ifRender={() => (
                     <DigitTranslations
                         translations={translations}
-                        uniquePath="Websites.Screen.ShowWebsiteDetails"
                         render={text => (
                             <DigitLayout.Fill>
                                 <DigitLayout.Center>
@@ -47,15 +61,13 @@ class ShowWebsiteDetails extends Component {
                                         <DigitDesign.CardBody>
                                             <DigitDisplayData
                                                 data={website}
-                                                keysText={{
-                                                    id: text.Id,
-                                                    name: text.Name,
-                                                    prettyName: text.PrettyName
-                                                }}
+                                                keysText={generateKeyTexts(
+                                                    text
+                                                )}
                                                 keysOrder={[
-                                                    "id",
-                                                    "name",
-                                                    "prettyName"
+                                                    WEBSITE_ID,
+                                                    NAME,
+                                                    PRETTY_NAME
                                                 ]}
                                             />
                                         </DigitDesign.CardBody>
@@ -91,21 +103,17 @@ class ShowWebsiteDetails extends Component {
                                                             websitesDelete(
                                                                 website.id
                                                             )
-                                                                .then(
-                                                                    response => {
-                                                                        toastOpen(
-                                                                            {
-                                                                                text:
-                                                                                    website.prettyName +
-                                                                                    " " +
-                                                                                    text.Deleted
-                                                                            }
-                                                                        );
-                                                                        redirectTo(
-                                                                            "/websites"
-                                                                        );
-                                                                    }
-                                                                )
+                                                                .then(() => {
+                                                                    toastOpen({
+                                                                        text:
+                                                                            website.prettyName +
+                                                                            " " +
+                                                                            text.Deleted
+                                                                    });
+                                                                    redirectTo(
+                                                                        "/websites"
+                                                                    );
+                                                                })
                                                                 .catch(
                                                                     error => {
                                                                         toastOpen(

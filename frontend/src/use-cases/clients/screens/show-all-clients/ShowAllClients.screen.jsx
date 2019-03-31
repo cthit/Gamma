@@ -2,7 +2,9 @@ import React from "react";
 
 class ShowAllClients extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.getClients().then(() => {
+            this.props.gammaLoadingFinished();
+        });
     }
 
     render() {

@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     dialogOpen: options =>

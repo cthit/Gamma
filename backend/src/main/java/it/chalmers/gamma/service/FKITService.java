@@ -1,7 +1,6 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 
@@ -20,9 +19,8 @@ public class FKITService {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(CreateGroupRequest request, FKITSuperGroup group) {
+    public FKITGroup createGroup(CreateGroupRequest request) {
         FKITGroup fkitGroup = new FKITGroup();
-        fkitGroup.setSuperGroup(group);
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
@@ -88,4 +86,8 @@ public class FKITService {
         return this.repo.findById(id).orElse(null);
     }
 
+    public void editGroupAvatar(FKITGroup group, String url) {
+        group.setAvatarURL(url);
+        this.repo.save(group);
+    }
 }

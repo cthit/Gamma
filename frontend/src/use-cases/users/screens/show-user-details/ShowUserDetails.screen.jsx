@@ -8,12 +8,33 @@ import {
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import translations from "./ShowUserDetails.screen.translations.json";
+import {
+    ACCEPTANCE_YEAR,
+    CID,
+    EMAIL,
+    FIRST_NAME,
+    LAST_NAME,
+    NICK
+} from "../../../../api/users/props.users.api";
+
+function createKeysTexts(text) {
+    const output = {};
+
+    output[CID] = text.cid;
+    output[FIRST_NAME] = text.firstName;
+    output[LAST_NAME] = text.lastName;
+    output[NICK] = text.nick;
+    output[EMAIL] = text.email;
+    output[ACCEPTANCE_YEAR] = text.acceptanceYear;
+
+    return output;
+}
 
 class ShowUserDetails extends Component {
     componentDidMount() {
-        const { getUser, userCid, gammaLoadingFinished } = this.props;
+        const { getUser, userId, gammaLoadingFinished } = this.props;
 
-        getUser(userCid).then(() => {
+        getUser(userId).then(() => {
             gammaLoadingFinished();
         });
     }
@@ -31,7 +52,6 @@ class ShowUserDetails extends Component {
             toastOpen
         } = this.props;
 
-        console.log(user);
         return (
             <DigitIfElseRendering
                 test={user != null}
@@ -47,38 +67,30 @@ class ShowUserDetails extends Component {
                                 >
                                     <DigitDesign.CardTitle
                                         text={
-                                            user.first_name +
+                                            user[FIRST_NAME] +
                                             " '" +
-                                            user.nickname +
+                                            user[NICK] +
                                             "' " +
-                                            user.last_name
+                                            user[LAST_NAME]
                                         }
                                     />
                                     <DigitDesign.CardBody>
                                         <DigitDisplayData
                                             data={user}
-                                            keysText={{
-                                                cid: text.cid,
-                                                first_name: text.firstName,
-                                                last_name: text.lastName,
-                                                nickname: text.nick,
-                                                email: text.email,
-                                                acceptance_year:
-                                                    text.acceptanceYear
-                                            }}
+                                            keysText={createKeysTexts(text)}
                                             keysOrder={[
-                                                "cid",
-                                                "first_name",
-                                                "last_name",
-                                                "nickname",
-                                                "email",
-                                                "acceptance_year"
+                                                CID,
+                                                FIRST_NAME,
+                                                LAST_NAME,
+                                                NICK,
+                                                EMAIL,
+                                                ACCEPTANCE_YEAR
                                             ]}
                                         />
                                     </DigitDesign.CardBody>
                                     <DigitDesign.CardButtons reverseDirection>
                                         <DigitDesign.Link
-                                            to={"/users/" + user.cid + "/edit"}
+                                            to={"/users/" + user.id + "/edit"}
                                         >
                                             <DigitButton
                                                 text={text.Edit}
@@ -103,7 +115,7 @@ class ShowUserDetails extends Component {
                                                     cancelButtonText:
                                                         text.Cancel,
                                                     onConfirm: () => {
-                                                        usersDelete(user.cid)
+                                                        usersDelete(user.id)
                                                             .then(response => {
                                                                 toastOpen({
                                                                     text:

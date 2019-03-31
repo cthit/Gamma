@@ -3,20 +3,28 @@ package it.chalmers.gamma.controller;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
+import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.GroupWebsiteService;
-import it.chalmers.gamma.service.WebsiteView;
+import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,12 +40,15 @@ public final class FKITGroupController {
 
     private final FKITService fkitService;
     private final GroupWebsiteService groupWebsiteService;
+    private final MembershipService membershipService;
 
     public FKITGroupController(
             FKITService fkitService,
-            GroupWebsiteService groupWebsiteService) {
+            GroupWebsiteService groupWebsiteService,
+            MembershipService membershipService) {
         this.fkitService = fkitService;
         this.groupWebsiteService = groupWebsiteService;
+        this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -45,8 +56,11 @@ public final class FKITGroupController {
 
         // finds the group
         FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
-        if (group == null) {      //makes sure that the requested group exists
-            return null;
+        if (group == null) {
+            group = this.fkitService.getGroup(id);
+        }
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
         }
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
@@ -68,7 +82,7 @@ public final class FKITGroupController {
         List<FKITGroup> groups = this.fkitService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, ID, TYPE)
+                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
         );
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
@@ -87,10 +101,52 @@ public final class FKITGroupController {
             return null;
         }
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, ID, TYPE)
+                Arrays.asList(NAME, FUNC, FKITGroupSerializer.Properties.ID, TYPE)
         );
         return serializer.serialize(group, null, null);
     }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public List<JSONObject> getGroups() {
+        List<FKITGroup> groups = this.fkitService.getGroups();
+        List<JSONObject> serializedGroups = new ArrayList<>();
+        FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
+        ITUserSerializer userSerializer = new ITUserSerializer(
+                Arrays.asList(CID, NICK, FIRST_NAME, LAST_NAME, ITUserSerializer.Properties.ID));
+        for (FKITGroup group : groups) {
+            List<ITUser> members = this.membershipService.getUsersInGroup(group);
+            List<JSONObject> jsonMembers = new ArrayList<>();
+            List<WebsiteView> websites =
+                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group));
+            for (ITUser member : members) {
+                jsonMembers.add(userSerializer.serialize(member, null, null));
+            }
+            serializedGroups.add(serializer.serialize(
+                    group,
+                    jsonMembers,
+                    websites
+            ));
+        }
+        return serializedGroups;
+    }
+    @RequestMapping(value = "/active", method = RequestMethod.GET)
+    public List<JSONObject> getActiveGroups() {
+        List<FKITGroup> groups = this.fkitService.getGroups().stream()
+                .filter(FKITGroup::isActive).collect(Collectors.toList());
+        FKITGroupSerializer groupSerializer = new FKITGroupSerializer(FKITGroupSerializer.Properties
+                .getAllProperties());
+        ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        List<JSONObject> serializedUsers = new ArrayList<>();
+        List<JSONObject> serializedGroups = new ArrayList<>();
+        for (FKITGroup group : groups) {
+            List<ITUser> members = this.membershipService.getUsersInGroup(group);
+            for (ITUser member : members) {
+                serializedUsers.add(userSerializer.serialize(member, null, null));
+            }
+            serializedGroups.add(groupSerializer.serialize(group, serializedUsers,
+                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group))));
+        }
+        return serializedGroups;
+    }
 
 }

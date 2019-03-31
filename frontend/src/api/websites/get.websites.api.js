@@ -1,10 +1,10 @@
 import { getRequest } from "../utils/api";
-import { WEBSITES_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_WEBSITES_ENDPOINT } from "../utils/endpoints";
 
 export function getWebsites() {
-    return getRequest(WEBSITES_ENDPOINT);
+    return getRequest(ADMIN_WEBSITES_ENDPOINT);
 }
 
 export function getWebsite(websiteId) {
-    return getRequest(WEBSITES_ENDPOINT + websiteId);
+    return getRequest(ADMIN_WEBSITES_ENDPOINT + websiteId);
 }

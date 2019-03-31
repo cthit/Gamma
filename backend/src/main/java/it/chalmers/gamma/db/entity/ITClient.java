@@ -57,7 +57,7 @@ public class ITClient implements ClientDetails {
     private String name;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "is serializable by Jackson")
-    @JoinColumn(name = "function", nullable = false)
+    @JoinColumn(name = "description", nullable = false)
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 

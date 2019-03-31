@@ -4,13 +4,15 @@ import { Route, Switch } from "react-router-dom";
 import EditUserDetails from "./screens/edit-user-details";
 import ShowAllUsers from "./screens/show-all-users";
 import ShowUserDetails from "./screens/show-user-details";
+import CreateNewUser from "./screens/create-new-user";
 
 const Users = () => (
     <DigitLayout.Fill>
         <Switch>
+            <Route path="/users/new" exact component={CreateNewUser} />
             <Route path="/users" exact component={ShowAllUsers} />
-            <Route path="/users/:cid" exact component={ShowUserDetails} />
-            <Route path="/users/:cid/edit" exact component={EditUserDetails} />
+            <Route path="/users/:id" exact component={ShowUserDetails} />
+            <Route path="/users/:id/edit" exact component={EditUserDetails} />
         </Switch>
     </DigitLayout.Fill>
 );

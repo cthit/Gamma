@@ -6,17 +6,10 @@ import {
     USER_LOGOUT_SUCCESSFULLY
 } from "./UserInformation.element.actions";
 
-import { LOGIN_VALIDATE_SUCCESSFULLY } from "../../../use-cases/login/Login.actions";
-
 export function user(state = { loaded: false }, action) {
     switch (action.type) {
         case USER_UPDATE_ME:
             return {
-                loaded: false
-            };
-        case LOGIN_VALIDATE_SUCCESSFULLY:
-            return {
-                loggedIn: true,
                 loaded: false
             };
         case USER_UPDATED_SUCCESSFULLY:

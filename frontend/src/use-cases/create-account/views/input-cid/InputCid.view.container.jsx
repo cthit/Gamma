@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
     toastOpen: data => dispatch(DigitToastActions.digitToastOpen(data)),
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     sendCid: cid => dispatch(createAccountValidateCid(cid)),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart())

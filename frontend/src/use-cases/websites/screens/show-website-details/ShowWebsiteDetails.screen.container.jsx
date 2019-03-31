@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
-    redirectTo: to => dispatch(DigitRedirectActions.redirectTo(to)),
+    redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     dialogOpen: options =>
         dispatch(DigitDialogActions.digitDialogOpen(options)),
     websitesDelete: websiteId => dispatch(createDeleteWebsiteAction(websiteId)),

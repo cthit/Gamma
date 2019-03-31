@@ -1,25 +1,58 @@
-version: '2'
+version: "2"
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: example
-    ports:
-      - 5432:5432
+    db:
+        image: postgres:10
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: example
+        ports:
+            - 5432:5432
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 8080:8080
 
-  frontend:
-    build:
-      context: ./frontend/
-      dockerfile: dev.dockerfile
-    ports:
-      - 3000:3000
-    volumes:
-      - ./frontend/src:/usr/src/app/src
-      - ./frontend/public:/usr/src/app/public
+    frontend:
+        build:
+            context: ./frontend/
+            dockerfile: dev.dockerfile
+        ports:
+            - 3000:3000
+        volumes:
+            - ./frontend/src:/usr/src/app/src
+            - ./frontend/public:/usr/src/app/public
+
+    jwt_provider_server:
+        build:
+            context: ./jwt-provider-server
+            dockerfile: dev.Dockerfile
+        image: jwt_provider_server:dev
+        ports:
+            - "8082:8082"
+        volumes:
+            - ./jwt-provider-server:/usr/src/app
+            - /usr/src/app/node_modules
+        environment:
+            - NODE_ENV=development
+        network_mode: host
+    
+    imageit:
+        image: cthit/imageit
+        environment:
+            IMAGEIT_POSTGRES_USER: imageit
+            IMAGEIT_POSTGRES_PASSWORD: password
+            IMAGEIT_POSTGRES_DB: imageit
+            IMAGEIT_POSTGRES_HOST: imageit_db
+        ports: 
+            - 5000:5000
+        command: sh startscript.sh
+
+    imageit_db:
+        image: postgres
+        restart: always
+        environment: 
+            POSTGRES_PASSWORD: password
+            POSTGRES_USER: imageit
+            POSTGRES_DB: imageit

@@ -4,7 +4,6 @@ import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.CIDAlreadyWhitelistedResponse;
-import it.chalmers.gamma.response.CidNotFoundResponse;
 import it.chalmers.gamma.response.EditedWhitelistResponse;
 import it.chalmers.gamma.response.GetWhitelistResponse;
 import it.chalmers.gamma.response.GetWhitelistedResponse;
@@ -12,6 +11,7 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.MissingRequiredFieldResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
@@ -68,10 +68,10 @@ public final class UsersWhitelistAdminController {
             @PathVariable("id") String id) {
         Whitelist oldWhitelist = this.whitelistService.getWhitelistById(id);
         if (oldWhitelist == null) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         if (!this.whitelistService.isCIDWhiteListed(oldWhitelist.getCid())) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         if (this.whitelistService.isCIDWhiteListed(request.getCid())) {
             throw new CIDAlreadyWhitelistedResponse();
@@ -86,7 +86,7 @@ public final class UsersWhitelistAdminController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeWhitelist(@PathVariable("id") String id) {
         if (!this.whitelistService.isCIDWhiteListed(UUID.fromString(id))) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         this.whitelistService.removeWhiteListedCID(UUID.fromString(id));
         return new UserDeletedResponse();
@@ -100,7 +100,7 @@ public final class UsersWhitelistAdminController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Whitelist> getWhitelist(@PathVariable("id") String id) {
         if (!this.whitelistService.isCIDWhiteListed(UUID.fromString(id))) {
-            throw new CidNotFoundResponse();
+            throw new UserNotFoundResponse();
         }
         return new GetWhitelistResponse(this.whitelistService.getWhitelistById(id));
     }

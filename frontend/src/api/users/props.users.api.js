@@ -1,8 +1,10 @@
-export const FIRST_NAME = "first_name";
-export const LAST_NAME = "last_name";
-export const NICKNAME = "nickname";
+export const FIRST_NAME = "firstName";
+export const LAST_NAME = "lastName";
+export const NICK = "nickname";
 export const EMAIL = "email";
-export const ACCEPTANCE_YEAR = "acceptance_year";
+export const ACCEPTANCE_YEAR = "acceptanceYear";
 export const WEBSITES = "websites";
 export const ID = "id";
 export const CID = "cid";
+export const USER_AGREEMENT = "userAgreement";
+export const PASSWORD = "password";

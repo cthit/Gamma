@@ -1,14 +1,1 @@
-{
-    "FirstName": ["First name", "Förnamn"],
-    "LastName": ["Last name", "Efternamn"],
-    "Cid": ["Cid", "Cid"],
-    "Nick": ["Nick", "Nick"],
-    "AcceptanceYear": ["Acceptance year", "Antagningsår"],
-    "Details": ["Details", "Detaljer"],
-    "NoUsers": [
-        "There's no users, wait how are you logged in?!?!?!?!",
-        "Det finns inga användare, wait hur är du inloggad?!?!?!?!"
-    ],
-    "Users": ["Users", "Användare"],
-    "SearchForUsers": ["Search for users", "Sök efter användare"]
-}
+{}

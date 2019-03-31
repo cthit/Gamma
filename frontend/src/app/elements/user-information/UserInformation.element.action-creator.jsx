@@ -19,48 +19,48 @@ export function userUpdateMe() {
         };
     } else {
         return dispatch => {
-            axios
-                .get("http://localhost:8081/api/users/me", {
-                    headers: {
-                        Authorization: "Bearer " + token()
-                    }
-                })
-                .then(response => {
-                    dispatch(userUpdatedSuccessfully(response.data));
-                })
-                .catch(error => {
-                    dispatch(userUpdatedFailed(error));
-                    const statusCode =
-                        error.response == null
-                            ? -1
-                            : error.response.data.status;
-                    switch (statusCode) {
-                        case 403:
-                            dispatch(userLogout());
-                            break;
-                        default:
-                            //TODO DISPATCH REDIRECT TO ERROR PAGE
-                            break;
-                    }
-                });
+            return new Promise((resolve, reject) => {
+                axios
+                    .get((process.env.REACT_APP_BACKEND_URL || "http://localhost:8081") + "/api/users/me", {
+                        headers: {
+                            Authorization: "Bearer " + token()
+                        }
+                    })
+                    .then(response => {
+                        resolve();
+                        dispatch(userUpdatedSuccessfully(response.data));
+                    })
+                    .catch(error => {
+                        reject();
+                        dispatch(userUpdatedFailed(error));
+                        const statusCode =
+                            error.response == null
+                                ? -1
+                                : error.response.data.status;
+                        switch (statusCode) {
+                            case 403:
+                                dispatch(userLogout());
+                                break;
+                            default:
+                                //TODO DISPATCH REDIRECT TO ERROR PAGE
+                                break;
+                        }
+                    });
+            });
         };
     }
 }
 
-export function userLogout(loggedOutText) {
+export function userLogout() {
     return dispatch => {
         delete localStorage.token;
         delete sessionStorage.token;
-        dispatch(userLogoutSuccessfully());
-        dispatch(DigitRedirectActions.redirectTo("/login"));
-        if (loggedOutText != null) {
-            dispatch(
-                DigitToastActions.digitToastOpen({
-                    duration: 3000,
-                    text: loggedOutText
-                })
-            );
-        }
+        dispatch(
+            DigitRedirectActions.digitRedirectTo(
+                (process.env.REACT_APP_BACKEND_URL|| "http://localhost:8081") + "/api/logout",
+                true
+            )
+        );
     };
 }
 

@@ -12,6 +12,7 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
@@ -35,6 +36,7 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
@@ -45,6 +47,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final MembershipService membershipService;
     private final AuthorityService authorityService;
     private final ITClientService itClientService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     @Value("${application.frontend-client-details.client-id}")
     private String clientId;
@@ -64,7 +67,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                          AuthorityLevelService authorityLevelService, PostService postService,
                          MembershipService membershipService, AuthorityService authorityService,
                          ITClientService itClientService,
-                         FKITSuperGroupService fkitSuperGroupService) {
+                         FKITSuperGroupService fkitSuperGroupService,
+                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.userservice = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
@@ -73,6 +77,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
         this.authorityService = authorityService;
         this.itClientService = itClientService;
         this.fkitSuperGroupService = fkitSuperGroupService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @Override
@@ -97,6 +102,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
+            this.redirectUri = this.redirectUri.trim();
             itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
@@ -131,7 +137,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setBecomesActive(start);
             request.setBecomesInactive(end);
             FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
-            FKITGroup group = this.groupService.createGroup(request, superGroup);
+            FKITGroup group = this.groupService.createGroup(request);
+            this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);

@@ -7,34 +7,44 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupCreatedResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
-import it.chalmers.gamma.response.GroupsResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 
+import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.WebsiteService;
 
+import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
@@ -45,21 +55,26 @@ public final class GroupAdminController {
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
+    private final MembershipService membershipService;
+    private final AuthorityLevelService authorityLevelService;
 
     public GroupAdminController(
             FKITService fkitService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
-            FKITSuperGroupService fkitSuperGroupService) {
+            FKITSuperGroupService fkitSuperGroupService,
+            FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+            MembershipService membershipService,
+            AuthorityLevelService authorityLevelService) {
         this.fkitService = fkitService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<FKITGroup>> getGroups() {
-        return new GroupsResponse(this.fkitService.getGroups());
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.membershipService = membershipService;
+        this.authorityLevelService = authorityLevelService;
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -92,8 +107,17 @@ public final class GroupAdminController {
             websiteURL.setUrl(websiteInfo.getUrl());
             websiteURLs.add(websiteURL);
         }
-        this.groupWebsiteService.addGroupWebsites(
-                this.fkitService.createGroup(createGroupRequest, superGroup), websiteURLs);
+        FKITGroup group = this.fkitService.createGroup(createGroupRequest);
+        try {
+            this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+        } catch (DataIntegrityViolationException e) {
+            LOGGER.warn(e.getMessage());
+            LOGGER.warn("Warning was non-fatal, continuing without adding websites");
+        }
+
+        this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
+        // Adds each group as an authoritylevel which
+        this.authorityLevelService.addAuthorityLevel(group.getId().toString());
         return new GroupCreatedResponse();
     }
 
@@ -125,8 +149,24 @@ public final class GroupAdminController {
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
                 this.fkitService.getGroup(UUID.fromString(id))
         );
+        this.membershipService.removeAllUsersFromGroup(this.fkitService.getGroup(UUID.fromString(id)));
         this.fkitService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
+    }
+
+    @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
+    public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
+        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
+        }
+        try {
+            String url = ImageITUtils.saveImage(file);
+            this.fkitService.editGroupAvatar(group, url);
+        } catch (IOException e) {
+            throw new FileNotSavedException();
+        }
+        return new GroupEditedResponse();
     }
 
 }

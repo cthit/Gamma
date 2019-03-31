@@ -1,7 +1,6 @@
 import { putRequest } from "../utils/api";
-import { WEBSITES_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_WEBSITES_ENDPOINT } from "../utils/endpoints";
 
 export function editWebsite(websiteId, newWebsiteData) {
-    console.log(WEBSITES_ENDPOINT + websiteId);
-    return putRequest(WEBSITES_ENDPOINT + websiteId, newWebsiteData);
+    return putRequest(ADMIN_WEBSITES_ENDPOINT + websiteId, newWebsiteData);
 }
