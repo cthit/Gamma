@@ -1,6 +1,6 @@
 export const FIRST_NAME = "firstName";
 export const LAST_NAME = "lastName";
-export const NICK = "nick";
+export const NICK = "nickname";
 export const EMAIL = "email";
 export const ACCEPTANCE_YEAR = "acceptanceYear";
 export const WEBSITES = "websites";

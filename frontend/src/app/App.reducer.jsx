@@ -11,6 +11,7 @@ import { editUsersInGroup } from "../use-cases/groups/screens/edit-users-in-grou
 import { clients } from "../use-cases/clients/Clients.reducer";
 import { gammaIntegration } from "./views/gamma-integration/GammaIntegration.view.reducer";
 import { superGroups } from "../use-cases/super-groups/SuperGroups.reducer";
+import { gdpr } from "../use-cases/gdpr/Gdpr.reducer";
 
 export const rootReducer = {
     createAccount,
@@ -25,5 +26,6 @@ export const rootReducer = {
     editUsersInGroup,
     clients,
     gammaIntegration,
-    superGroups
+    superGroups,
+    gdpr
 };
