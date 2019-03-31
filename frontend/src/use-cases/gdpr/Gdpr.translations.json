@@ -1,1 +1,9 @@
-{}
+{
+    "Cid": ["Cid", "Cid"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "Nick": ["Nick", "Nick"],
+    "Users": ["Users", "Användare"],
+    "SearchForUsers": ["Search for users", "Sök efter användare"],
+    "HasGDPR": ["Have finished GDPR training", "Har genomfört GDPR utbildning"]
+}
