@@ -30,8 +30,8 @@ class CreateNewUser extends React.Component {
         output[LAST_NAME] = "";
         output[CID] = "";
         output[NICK] = "";
-        output[PASSWORD] = "";
         output[EMAIL] = "";
+        output[PASSWORD] = "";
         output[WEBSITES] = [];
 
         return output;

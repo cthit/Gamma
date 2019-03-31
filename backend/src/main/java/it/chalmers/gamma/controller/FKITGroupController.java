@@ -3,6 +3,7 @@ package it.chalmers.gamma.controller;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.GROUP_ID;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
 import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @RestController
 @RequestMapping("/groups")
 public final class FKITGroupController {
@@ -106,7 +108,7 @@ public final class FKITGroupController {
         List<FKITGroup> groups = this.fkitGroupService.getGroups();
         List<JSONObject> minifiedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, GROUP_ID, TYPE)
         );
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
@@ -125,7 +127,7 @@ public final class FKITGroupController {
             return null;
         }
         FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, FKITGroupSerializer.Properties.ID, TYPE)
+                Arrays.asList(NAME, FUNC, GROUP_ID, TYPE)
         );
         return serializer.serialize(group, null, null);
     }
@@ -136,7 +138,7 @@ public final class FKITGroupController {
         List<JSONObject> serializedGroups = new ArrayList<>();
         FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
         ITUserSerializer userSerializer = new ITUserSerializer(
-                Arrays.asList(CID, NICK, FIRST_NAME, LAST_NAME, ITUserSerializer.Properties.ID));
+                Arrays.asList(CID, NICK, FIRST_NAME, LAST_NAME, ID));
         for (FKITGroup group : groups) {
             List<ITUser> members = this.membershipService.getUsersInGroup(group);
             List<JSONObject> jsonMembers = new ArrayList<>();

@@ -23,7 +23,7 @@ public class ITUserSerializer {
 
     public static List<JSONObject> getGroupsAsJson(List<Membership> memberships) {
         FKITGroupSerializer groupSerializer = new FKITGroupSerializer(Arrays.asList(
-                FKITGroupSerializer.Properties.ID,
+                FKITGroupSerializer.Properties.GROUP_ID,
                 FKITGroupSerializer.Properties.NAME,
                 FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.SUPER_GROUP));

@@ -53,4 +53,8 @@ const DisplayUsersTable = ({ users, noUsersText }) => (
     />
 );
 
+DisplayUsersTable.defaultProps = {
+    users: []
+};
+
 export default DisplayUsersTable;

@@ -123,7 +123,8 @@ public final class GroupMemberAdminController {
             throw new UserNotFoundResponse();
         }
         Membership membership = this.membershipService.getMembershipByUserAndGroup(user, group);
-        this.membershipService.editMembership(membership, request);
+        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
+        this.membershipService.editMembership(membership, request.getUnofficialName(), post);
         return new EditedMembershipResponse();
     }
 }

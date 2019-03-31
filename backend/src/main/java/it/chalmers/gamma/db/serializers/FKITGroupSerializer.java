@@ -21,7 +21,7 @@ public class FKITGroupSerializer {
             @Nullable List<WebsiteView> websites) {
         List<SerializerValue> values = new ArrayList<>();
         values.add(new SerializerValue(
-                this.properties.contains(Properties.ID), value.getId(), "id")
+                this.properties.contains(Properties.GROUP_ID), value.getId(), "id")
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.NAME), value.getName(), "name")
@@ -56,7 +56,7 @@ public class FKITGroupSerializer {
     }
 
     public enum Properties {
-        ID,
+        GROUP_ID,
         AVATAR_URL,
         NAME,
         PRETTY_NAME,
@@ -70,7 +70,7 @@ public class FKITGroupSerializer {
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
-                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
+                GROUP_ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
             };
             return new ArrayList<>(Arrays.asList(props));
         }

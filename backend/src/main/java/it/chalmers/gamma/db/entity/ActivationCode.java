@@ -22,7 +22,7 @@ public class ActivationCode {
 
     @JoinColumn(name = "cid", insertable = true, updatable = false, unique = true)
     @OneToOne(fetch = FetchType.EAGER)
-    private Whitelist cid;    // Has a foreign key referencing the Whitelist ID
+    private Whitelist cid;    // Has a foreign key referencing the Whitelist GROUP_ID
 
     @Column(name = "code", length = 30)
     private String code;

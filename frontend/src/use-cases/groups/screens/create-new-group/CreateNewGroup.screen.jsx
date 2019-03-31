@@ -7,7 +7,8 @@ import {
     DESCRIPTION,
     EMAIL,
     FUNCTION,
-    NAME
+    NAME,
+    PRETTY_NAME
 } from "../../../../api/groups/props.groups.api";
 import {
     SWEDISH_LANGUAGE,
@@ -18,6 +19,7 @@ function generateInitialValues() {
     const output = {};
 
     output[NAME] = "";
+    output[PRETTY_NAME] = "";
     output[EMAIL] = "";
 
     const description = {};
