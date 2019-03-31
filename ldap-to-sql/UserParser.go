@@ -1,34 +1,33 @@
 package main
 
 import (
-	"os"
-	"strings"
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 )
 
 var userQuery string = "insert into ituser (id, cid, password, nick, first_name, last_name, email, phone, language, avatar_url, gdpr, user_agreement, acceptance_year) \nvalues "
 
-var userMap = make(map[string] string)
-
+var userMap = make(map[string]string)
 
 type ITUser struct {
-	id string
-	cid string
-	password string
-	nick string
-	firstName string
-	lastName string
-	email string
-	phone string
-	language string
-	avatarUrl string
-	gpdr string
-	useragreement string
+	id             string
+	cid            string
+	password       string
+	nick           string
+	firstName      string
+	lastName       string
+	email          string
+	phone          string
+	language       string
+	avatarUrl      string
+	gpdr           string
+	useragreement  string
 	acceptanceYear string
 }
 
-
-func WriteUser(user ITUser, file *os.File){
+func WriteUser(user ITUser, file *os.File) {
 	file.WriteString("('" + user.id + "', ")
 	file.WriteString("'" + user.cid + "', ")
 	file.WriteString("'" + user.password + "', ")
@@ -59,9 +58,17 @@ func ParseUsers(file *os.File, record [][]string) {
 		if gdpr != "TRUE" {
 			gdpr = "FALSE"
 		}
+		year, _ := strconv.Atoi(line[4])
+		if year < 2001 {
+			year = 2001
+		}
+		cid := line[18]
+		if len(cid) > 10 {
+			cid = cid[:10]
+		}
 		WriteUser(ITUser{
 			id:             GenerateUUID(),
-			cid:            line[18],
+			cid:            cid,
 			password:       line[20],
 			nick:           line[14],
 			firstName:      line[10],
@@ -72,7 +79,7 @@ func ParseUsers(file *os.File, record [][]string) {
 			avatarUrl:      line[5],
 			gpdr:           gdpr,
 			useragreement:  line[3],
-			acceptanceYear: line[4],
+			acceptanceYear: strconv.Itoa(year),
 		}, file)
 		if j == len(record)-1 {
 			file.WriteString(";")
