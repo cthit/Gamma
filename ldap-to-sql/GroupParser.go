@@ -10,9 +10,10 @@ import (
 var superGroupQuery = "\n insert into fkit_super_group (id, name, pretty_name, type) \nvalues "
 var postAddQuery = "\n insert into post (id, post_name) \nvalues "
 var membershipQuery = "\n insert into membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
-var membershipQueryNoUser = "\n insert into no_account_membership (it_user, fkit_group_id, post_id, unofficial_post_name) \nvalues"
-var groupQuery = "\n insert into fkit_group (id, name, super_group, pretty_name, description, function, email, becomes_active, becomes_inactive, internal_year) \nvalues"
+var membershipQueryNoUser = "\n insert into no_account_membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
+var groupQuery = "\n insert into fkit_group (id, name, pretty_name, description, function, email, becomes_active, becomes_inactive, internal_year) \nvalues"
 var TextQuery = "\n insert into internal_text (id, sv, en) \nvalues"
+var groupToSuperGroupQuery = "\n insert into fkit_group_to_super_group (fkit_super_group_id, fkit_group_id) \nvalues"
 
 var superGroupMap = make(map[string]string)
 var postMap = make(map[string]string)
@@ -29,7 +30,6 @@ type SuperGroup struct {
 type Group struct {
 	id               string
 	name             string
-	super_group      string
 	pretty_name      string
 	description      string
 	function         string
@@ -44,6 +44,11 @@ type Membership struct {
 	fkit_group_id       string
 	post_id             string
 	unoficial_post_name string
+}
+
+type group_to_super_group struct {
+	super_group 	string
+	group			string
 }
 
 type Text struct {
@@ -104,7 +109,6 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 			WriteGroup(Group{
 				id:               GenerateUUID(),
 				name:             name,
-				super_group:      superGroupMap[supergroup],
 				pretty_name:      data[i][5],
 				description:      descriptionUUID,
 				function:         functionUUID,
@@ -113,7 +117,10 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				becomes_inactive: "'" + year + "1231'",
 				internal_year:    year,
 			}, file)
-
+			writeGroupToSuperGroup(group_to_super_group{
+				super_group:superGroupMap[supergroup],
+				group:groupMap[name],
+			}, file)
 			if strings.Contains(data[i][8], "uid") {
 				mems := strings.Split(data[i][8], "uid=")
 				postNameq1 := strings.Split(data[i][10], "|")
@@ -284,7 +291,6 @@ func WriteGroup(group Group, file *os.File) {
 	file.WriteString(groupQuery)
 	file.WriteString("('" + group.id + "', ")
 	file.WriteString("'" + group.name + "', ")
-	file.WriteString("'" + group.super_group + "', ")
 	file.WriteString("'" + group.pretty_name + "', ")
 	file.WriteString("'" + group.description + "', ")
 	file.WriteString("'" + group.function + "', ")
@@ -293,4 +299,10 @@ func WriteGroup(group Group, file *os.File) {
 	file.WriteString(group.becomes_inactive + ", ")
 	file.WriteString("'" + group.internal_year + "'); ")
 	groupMap[group.name] = group.id
+}
+
+func writeGroupToSuperGroup(group group_to_super_group, file *os.File) {
+	file.WriteString(groupToSuperGroupQuery)
+	file.WriteString("('" + group.super_group + "', ")
+	file.WriteString("'" + group.group + "');")
 }
