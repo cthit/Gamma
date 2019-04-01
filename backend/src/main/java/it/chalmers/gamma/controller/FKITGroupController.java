@@ -13,6 +13,8 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressFBWarnings(justification = "I don't know", value = "UC_USELESS_OBJECT")
 @SuppressWarnings("PMD.ExcessiveImports")
 @RestController
 @RequestMapping("/groups")
