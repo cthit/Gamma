@@ -23,15 +23,15 @@ const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => (
         <DigitDesign.CardBody>
             <DigitText.Title text="Nuvarande" />
             {currentMembers.map(member => (
-                <MemberCurrent member={member} />
+                <MemberCurrent key={member.id} member={member} />
             ))}
             <DigitText.Title text="Tillägg" />
             {findAdditions(currentMembers, selectedMembers).map(member => (
-                <MemberAddition member={member} />
+                <MemberAddition key={member.id} member={member} />
             ))}
-            <DigitText.Title text="Borttaggningar" />
+            <DigitText.Title text="Borttagningar" />
             {findDeletions(currentMembers, selectedMembers).map(member => (
-                <MemberDeletion member={member} />
+                <MemberDeletion key={member.id} member={member} />
             ))}
         </DigitDesign.CardBody>
     </DigitDesign.Card>

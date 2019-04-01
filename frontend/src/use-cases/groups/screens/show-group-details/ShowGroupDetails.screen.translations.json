@@ -9,5 +9,9 @@
     "Society": ["Society", "Förening"],
     "Committee": ["Committee", "Kommitté"],
     "Board": ["Board", "Nämnd"],
-    "Id": ["Id", "Id"]
+    "Id": ["Id", "Id"],
+    "NoGroupMembers": [
+        "There's no users in this group",
+        "Det finns inga användare i den här gruppen"
+    ]
 }

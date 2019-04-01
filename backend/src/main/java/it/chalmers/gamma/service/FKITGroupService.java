@@ -11,11 +11,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FKITService {
+public class FKITGroupService {
 
     private final FKITGroupRepository repo;
 
-    public FKITService(FKITGroupRepository repo) {
+    public FKITGroupService(FKITGroupRepository repo) {
         this.repo = repo;
     }
 
@@ -24,7 +24,6 @@ public class FKITService {
         fkitGroup.setName(request.getName().toLowerCase());
         fkitGroup.setFunc(request.getFunc());
         fkitGroup.setDescription(request.getDescription());
-        fkitGroup.setYear(request.getYear());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
                 request.getBecomesActive(), request.getBecomesInactive(),
                 request.getEmail(), request.getAvatarURL());
@@ -36,7 +35,6 @@ public class FKITService {
         if (group == null) {
             return null;
         }
-        group.setYear(request.getYear() == 0 ? group.getYear() : request.getYear());
         group.setSVFunction(request.getFunc() == null ? group.getSVFunction() : request.getFunc().getSv());
         group.setENFunction(request.getFunc() == null ? group.getENFunction() : request.getFunc().getEn());
         if (request.getDescription() != null && group.getDescription() != null) {
@@ -90,4 +88,9 @@ public class FKITService {
         group.setAvatarURL(url);
         this.repo.save(group);
     }
+
+    public void save(FKITGroup group) {
+        this.repo.save(group);
+    }
+
 }

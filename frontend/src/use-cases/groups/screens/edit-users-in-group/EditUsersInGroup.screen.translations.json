@@ -6,5 +6,9 @@
     "SetPostNames": [
         "Set post names for members",
         "Sätt postnamn för medlemmarna"
+    ],
+    "ReviewChanges": [
+        "Review changes before saving",
+        "Granska ändringar innan du sparar"
     ]
 }

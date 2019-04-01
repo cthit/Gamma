@@ -23,15 +23,8 @@ class SelectMembers extends React.Component {
     constructor(props) {
         super(props);
 
-        const { savedSelectedGroups } = this.props;
-
         this.state = {
-            unsavedEdits:
-                savedSelectedGroups != null ||
-                (savedSelectedGroups != null &&
-                    savedSelectedGroups.length === 0),
-            selectedMemberIds:
-                savedSelectedGroups == null ? [] : savedSelectedGroups,
+            selectedMemberIds: [],
             currentMembers: [],
             currentMemberIds: []
         };
@@ -43,28 +36,57 @@ class SelectMembers extends React.Component {
             nextProps.users != null &&
             !nextState.hasLoadedCurrentMembers
         ) {
-            console.log("OMGOMGOMGOMG");
             const group = nextProps.group;
-            console.log(group);
-            this.setState({
-                currentMembers: group.groupMembers,
-                selectedMemberIds: this.state.selectedMemberIds.concat(
-                    group.groupMembers.map(member => member.id)
-                ),
-                hasLoadedCurrentMembers: true
-            });
+
+            var selectedMembers = sessionStorage.getItem(
+                group.id + ".selectedMembers"
+            );
+
+            if (selectedMembers != null) {
+                selectedMembers = JSON.parse(selectedMembers);
+            }
+
+            if (selectedMembers == null || selectedMembers.length === 0) {
+                selectedMembers = group.groupMembers.map(member => member.id);
+            }
+
+            this.setState(
+                {
+                    currentMembers: group.groupMembers,
+                    currentMemberIds: group.groupMembers.map(
+                        member => member.id
+                    ),
+                    selectedMemberIds: selectedMembers,
+                    hasLoadedCurrentMembers: true
+                },
+                () => {
+                    this._save(selectedMembers);
+                }
+            );
         }
     }
 
-    componentWillUnmount() {
-        const {
-            groupId,
-            temporarySaveSelectedUsersToGroup,
-            gammaLoadingStart
-        } = this.props;
-        const { selectedMemberIds, currentUsers } = this.state;
+    _save = selectedMembers => {
+        console.log(selectedMembers);
+        sessionStorage.setItem(
+            this.props.group.id + ".selectedMembers",
+            JSON.stringify(selectedMembers)
+        );
+    };
 
-        temporarySaveSelectedUsersToGroup(groupId, selectedMemberIds);
+    _unsavedEdits = () => {
+        const { selectedMemberIds, currentMemberIds } = this.state;
+
+        return !_.isEqual(
+            _.sortBy(selectedMemberIds),
+            _.sortBy(currentMemberIds)
+        );
+    };
+
+    componentWillUnmount() {
+        const { selectedMemberIds } = this.state;
+
+        this._save(selectedMemberIds);
     }
 
     onSelectedChange = selected => {
@@ -72,6 +94,8 @@ class SelectMembers extends React.Component {
             selectedMemberIds: selected,
             unsavedEdits: selected.length > 0
         });
+
+        this._save(selected);
     };
 
     generateHeaderTexts = text => {
@@ -88,8 +112,12 @@ class SelectMembers extends React.Component {
     };
 
     render() {
-        const { selectedMemberIds, unsavedEdits, currentMembers } = this.state;
-        const { users, group } = this.props;
+        const { selectedMemberIds, currentMembers } = this.state;
+        const { users, group, onMembersSelected } = this.props;
+
+        console.log(selectedMemberIds);
+
+        const unsavedEdits = this._unsavedEdits();
 
         return (
             <DigitIfElseRendering
@@ -117,11 +145,12 @@ class SelectMembers extends React.Component {
                                             />
                                             <div>
                                                 <DigitButton
+                                                    disabled={!unsavedEdits}
                                                     raised
                                                     primary
                                                     text={"Nästa"}
                                                     onClick={() => {
-                                                        console.log(
+                                                        onMembersSelected(
                                                             selectedMemberIds
                                                         );
                                                     }}

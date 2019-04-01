@@ -15,8 +15,8 @@ import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 
@@ -51,7 +51,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/groups")
 public final class GroupAdminController {
 
-    private final FKITService fkitService;
+    private final FKITGroupService fkitGroupService;
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
@@ -61,14 +61,14 @@ public final class GroupAdminController {
     private final AuthorityLevelService authorityLevelService;
 
     public GroupAdminController(
-            FKITService fkitService,
+            FKITGroupService fkitGroupService,
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             FKITSuperGroupService fkitSuperGroupService,
             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
             MembershipService membershipService,
             AuthorityLevelService authorityLevelService) {
-        this.fkitService = fkitService;
+        this.fkitGroupService = fkitGroupService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
@@ -81,41 +81,45 @@ public final class GroupAdminController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
                                               BindingResult result) {
-        if (this.fkitService.groupExists(createGroupRequest.getName())) {
+        if (this.fkitGroupService.groupExists(createGroupRequest.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
 
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
-                UUID.fromString(createGroupRequest.getSuperGroup()));
 
-        if (superGroup == null) {
-            throw new GroupDoesNotExistResponse();
-        }
+        FKITGroup group = this.fkitGroupService.createGroup(createGroupRequest);
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
-        if (websites == null || websites.isEmpty()) {
-            return new GroupCreatedResponse();
-        }
-        List<WebsiteURL> websiteURLs = new ArrayList<>();
-        for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
-            Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL = new WebsiteURL();
-            websiteURL.setWebsite(website);
-            websiteURL.setUrl(websiteInfo.getUrl());
-            websiteURLs.add(websiteURL);
-        }
-        FKITGroup group = this.fkitService.createGroup(createGroupRequest);
-        try {
-            this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
-        } catch (DataIntegrityViolationException e) {
-            LOGGER.warn(e.getMessage());
-            LOGGER.warn("Warning was non-fatal, continuing without adding websites");
+        if (websites != null && !websites.isEmpty()) {
+            List<WebsiteURL> websiteURLs = new ArrayList<>();
+            for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
+                Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
+                WebsiteURL websiteURL = new WebsiteURL();
+                websiteURL.setWebsite(website);
+                websiteURL.setUrl(websiteInfo.getUrl());
+                websiteURLs.add(websiteURL);
+            }
+
+            try {
+                this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+            } catch (DataIntegrityViolationException e) {
+                LOGGER.warn(e.getMessage());
+                LOGGER.warn("Warning was non-fatal, continuing without adding websites");
+            }
         }
 
-        this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
+        if (createGroupRequest.getSuperGroup() != null) {
+            FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+                    UUID.fromString(createGroupRequest.getSuperGroup()));
+            if (superGroup == null) {
+                throw new GroupDoesNotExistResponse();
+            }
+
+            this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
+        }
+
         // Adds each group as an authoritylevel which
         this.authorityLevelService.addAuthorityLevel(group.getId().toString());
         return new GroupCreatedResponse();
@@ -125,11 +129,11 @@ public final class GroupAdminController {
     public ResponseEntity<String> editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
-        if (!this.fkitService.groupExists(UUID.fromString(id))) {
+        if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
-        this.fkitService.editGroup(UUID.fromString(id), request);
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        this.fkitGroupService.editGroup(UUID.fromString(id), request);
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteInterface> entityWebsites = new ArrayList<>(
                 this.groupWebsiteService.getWebsites(group)
@@ -143,26 +147,26 @@ public final class GroupAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
-        if (!this.fkitService.groupExists(UUID.fromString(id))) {
+        if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-                this.fkitService.getGroup(UUID.fromString(id))
+                this.fkitGroupService.getGroup(UUID.fromString(id))
         );
-        this.membershipService.removeAllUsersFromGroup(this.fkitService.getGroup(UUID.fromString(id)));
-        this.fkitService.removeGroup(UUID.fromString(id));
+        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getGroup(UUID.fromString(id)));
+        this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
     public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroup group = this.fkitService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
         try {
             String url = ImageITUtils.saveImage(file);
-            this.fkitService.editGroupAvatar(group, url);
+            this.fkitGroupService.editGroupAvatar(group, url);
         } catch (IOException e) {
             throw new FileNotSavedException();
         }

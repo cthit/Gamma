@@ -5,8 +5,7 @@ import {
     DigitIfElseRendering,
     DigitTranslations,
     DigitLayout,
-    DigitDesign,
-    DigitText
+    DigitDesign
 } from "@cthit/react-digit-components";
 import translations from "./ShowSuperGroupDetails.screen.translations";
 import {

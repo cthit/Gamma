@@ -29,11 +29,10 @@ app.post("/auth", (req, res) => {
     params.append("redirect_uri", (process.env.REDIRECT_URI || "http://localhost:3000") + "/login");
     params.append("code", code);
     const c = Buffer.from(id + ":" + secret).toString("base64");
-    process.stdout.write()
     axios
         .post(
             (process.env.BACKEND_URL || "http://localhost:8081") + "/api/oauth/token?" + params.toString(),
-            {},
+            null,
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -42,7 +41,6 @@ app.post("/auth", (req, res) => {
             }
         )
         .then(response => {
-            console.log(response)
             res.send(response.data.access_token);
         })
         .catch(error => {

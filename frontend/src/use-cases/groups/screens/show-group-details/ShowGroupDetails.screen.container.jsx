@@ -3,7 +3,6 @@ import {
     DigitRedirectActions,
     DigitToastActions
 } from "@cthit/react-digit-components";
-import _ from "lodash";
 import { connect } from "react-redux";
 import {
     createDeleteGroupAction,

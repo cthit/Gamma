@@ -6,7 +6,6 @@ import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
-import it.chalmers.gamma.requests.EditMembershipRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class MembershipService {
     //TODO check which methods should be left in this class,
     // many are probably never going to be used.
 
-    //TODO this should perhaps be rewritten to return actual objects instead of the ID:s of objects.
+    //TODO this should perhaps be rewritten to return actual objects instead of the GROUP_ID:s of objects.
 
 
     /**
@@ -128,8 +127,9 @@ public class MembershipService {
         this.membershipRepository.delete(membership);
     }
 
-    public void editMembership(Membership membership, EditMembershipRequest request) {
-        membership.setUnofficialPostName(request.getUnofficialName());
+    public void editMembership(Membership membership, String unofficialName, Post post) {
+        membership.setUnofficialPostName(unofficialName);
+        membership.setPost(post);
         this.membershipRepository.save(membership);
     }
 

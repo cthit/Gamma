@@ -6,18 +6,18 @@ import javax.validation.constraints.NotEmpty;
 public class AddUserGroupRequest {
 
     @NotEmpty(message = "USER_MUST_BE_PROVIDED")
-    private String user;
+    private String userId;
 
     @NotEmpty(message = "POST_MUST_BE_PROVIDED")
     private String post;
     private String unofficialName;
 
-    public String getUser() {
-        return this.user;
+    public String getUserId() {
+        return this.userId;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getPost() {
@@ -45,20 +45,20 @@ public class AddUserGroupRequest {
             return false;
         }
         AddUserGroupRequest that = (AddUserGroupRequest) o;
-        return this.user.equals(that.user)
+        return this.userId.equals(that.userId)
             && this.post.equals(that.post)
             && this.unofficialName.equals(that.unofficialName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.user, this.post, this.unofficialName);
+        return Objects.hash(this.userId, this.post, this.unofficialName);
     }
 
     @Override
     public String toString() {
         return "AddUserGroupRequest{"
-            + "user='" + this.user + '\''
+            + "userId='" + this.userId + '\''
             + ", post='" + this.post + '\''
             + ", unofficialName='" + this.unofficialName + '\''
             + '}';

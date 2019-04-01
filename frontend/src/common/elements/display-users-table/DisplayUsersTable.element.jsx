@@ -1,9 +1,5 @@
 import React from "react";
-import {
-    DigitFAB,
-    DigitTable,
-    DigitTranslations
-} from "@cthit/react-digit-components";
+import { DigitTable, DigitTranslations } from "@cthit/react-digit-components";
 
 import translations from "./DisplayUsersTable.element.translations";
 
@@ -28,7 +24,7 @@ function generateHeaderTexts(text) {
     return headerTexts;
 }
 
-const DisplayUsersTable = ({ users }) => (
+const DisplayUsersTable = ({ users, noUsersText }) => (
     <DigitTranslations
         translations={translations}
         render={text => (
@@ -51,10 +47,14 @@ const DisplayUsersTable = ({ users }) => (
                         __link: "/users/" + user.id
                     };
                 })}
-                emptyTableText={text.NoUsers}
+                emptyTableText={noUsersText || text.NoUsers}
             />
         )}
     />
 );
+
+DisplayUsersTable.defaultProps = {
+    users: []
+};
 
 export default DisplayUsersTable;

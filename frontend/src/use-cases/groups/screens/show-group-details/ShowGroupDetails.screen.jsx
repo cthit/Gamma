@@ -156,7 +156,10 @@ class ShowGroupDetails extends Component {
                                         />
                                     </DigitDesign.CardButtons>
                                 </DigitDesign.Card>
-                                <DisplayUsersTable users={group.groupMembers} />
+                                <DisplayUsersTable
+                                    users={group.groupMembers}
+                                    noUsersText={text.NoGroupMembers}
+                                />
                             </DigitLayout.Column>
                         )}
                     />

@@ -22,8 +22,10 @@ function generateInitialValues() {
 class CreateNewSuperGroup extends React.Component {
     constructor(props) {
         super(props);
+    }
 
-        props.gammaLoadingFinished();
+    componentDidMount() {
+        this.props.gammaLoadingFinished();
     }
 
     render() {

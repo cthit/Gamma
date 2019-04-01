@@ -4,10 +4,8 @@ import ResetPasswordInitalize from "./screens/reset-password-initalize";
 import ResetPasswordFinish from "./screens/reset-password-finish";
 
 class ResetPassword extends React.Component {
-    constructor(props) {
-        super();
-
-        props.gammaLoadingFinished();
+    componentDidMount() {
+        this.props.gammaLoadingFinished();
     }
 
     render() {
