@@ -3,15 +3,19 @@ import { connect } from "react-redux";
 import Gdpr from "./Gdpr";
 
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
-import { createGetUsersAction } from "../../api/users/action-creator.users.api";
+import {
+    createGetGDPRMinifiedRequest,
+    createSetGDPRRequest
+} from "../../api/gdpr/action-creator.gdpr.api";
 
 const mapStateToProps = (state, ownProps) => ({
-    users: state.users
+    users: state.gdpr
 });
 
 const mapDispatchToProps = dispatch => ({
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
-    usersLoad: () => dispatch(createGetUsersAction())
+    getUsersWithGDPR: () => dispatch(createGetGDPRMinifiedRequest()),
+    setGDPRValue: (userId, data) => dispatch(createSetGDPRRequest(userId, data))
 });
 
 export default connect(

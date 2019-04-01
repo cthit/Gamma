@@ -5,6 +5,7 @@ export const ADMIN_USERS_ENDPOINT = "/admin/users/";
 export const ADMIN_CLIENTS_ENDPOINT = "/admin/clients/";
 export const ADMIN_WEBSITES_ENDPOINT = "/admin/websites/";
 export const ADMIN_SUPER_GROUPS_ENDPOINT = "/admin/superGroups/";
+export const ADMIN_GDPR_ENDPOINT = "/admin/gdpr/";
 
 export const WHITELIST_ENDPOINT = "/whitelist/";
 export const POSTS_ENDPOINT = "/admin/groups/posts/";
