@@ -115,8 +115,6 @@ class SelectMembers extends React.Component {
         const { selectedMemberIds, currentMembers } = this.state;
         const { users, group, onMembersSelected } = this.props;
 
-        console.log(selectedMemberIds);
-
         const unsavedEdits = this._unsavedEdits();
 
         return (
