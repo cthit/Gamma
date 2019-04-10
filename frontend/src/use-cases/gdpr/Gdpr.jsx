@@ -66,9 +66,6 @@ class Gdpr extends React.Component {
                                     _.isEqual
                                 );
 
-                                console.log(c);
-                                console.log(selected);
-
                                 if (c.length > 0) {
                                     var newGDPRValue = false;
 

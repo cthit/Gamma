@@ -1,34 +1,18 @@
 import {
-    DigitButton,
     DigitTranslations,
-    DigitDisplayData,
-    DigitDesign,
     DigitLayout,
-    DigitIfElseRendering
+    DigitIfElseRendering,
+    DigitFAB
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import translations from "./ShowUserDetails.screen.translations.json";
+import DisplayUserDetails from "../../../../common/elements/display-user-details/DisplayUserDetails.element";
+import Delete from "@material-ui/icons/Delete";
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    EMAIL,
     FIRST_NAME,
     LAST_NAME,
     NICK
 } from "../../../../api/users/props.users.api";
-
-function createKeysTexts(text) {
-    const output = {};
-
-    output[CID] = text.cid;
-    output[FIRST_NAME] = text.firstName;
-    output[LAST_NAME] = text.lastName;
-    output[NICK] = text.nick;
-    output[EMAIL] = text.email;
-    output[ACCEPTANCE_YEAR] = text.acceptanceYear;
-
-    return output;
-}
 
 class ShowUserDetails extends Component {
     componentDidMount() {
@@ -58,93 +42,63 @@ class ShowUserDetails extends Component {
                 ifRender={() => (
                     <DigitTranslations
                         translations={translations}
-                        uniquePath="Users.Screen.ShowUserDetails"
                         render={text => (
-                            <DigitLayout.Center>
-                                <DigitDesign.Card
-                                    minWidth="300px"
-                                    maxWidth="600px"
-                                >
-                                    <DigitDesign.CardTitle
-                                        text={
-                                            user[FIRST_NAME] +
-                                            " '" +
-                                            user[NICK] +
-                                            "' " +
-                                            user[LAST_NAME]
-                                        }
-                                    />
-                                    <DigitDesign.CardBody>
-                                        <DigitDisplayData
-                                            data={user}
-                                            keysText={createKeysTexts(text)}
-                                            keysOrder={[
-                                                CID,
-                                                FIRST_NAME,
-                                                LAST_NAME,
-                                                NICK,
-                                                EMAIL,
-                                                ACCEPTANCE_YEAR
-                                            ]}
-                                        />
-                                    </DigitDesign.CardBody>
-                                    <DigitDesign.CardButtons reverseDirection>
-                                        <DigitDesign.Link
-                                            to={"/users/" + user.id + "/edit"}
-                                        >
-                                            <DigitButton
-                                                text={text.Edit}
-                                                primary
-                                                raised
-                                            />
-                                        </DigitDesign.Link>
-                                        <DigitLayout.Spacing />
-                                        <DigitButton
-                                            onClick={() =>
-                                                dialogOpen({
-                                                    title:
-                                                        text.WouldYouLikeToDelete +
-                                                        " " +
-                                                        user.firstName +
-                                                        " '" +
-                                                        user.nick +
-                                                        "' " +
-                                                        user.lastName,
-                                                    confirmButtonText:
-                                                        text.DeleteUser,
-                                                    cancelButtonText:
-                                                        text.Cancel,
-                                                    onConfirm: () => {
-                                                        usersDelete(user.id)
-                                                            .then(response => {
-                                                                toastOpen({
-                                                                    text:
-                                                                        text.DeleteSuccessfully +
-                                                                        " " +
-                                                                        user.firstName +
-                                                                        " '" +
-                                                                        user.nick +
-                                                                        "' " +
-                                                                        user.lastName
-                                                                });
-                                                                redirectTo(
-                                                                    "/users"
-                                                                );
-                                                            })
-                                                            .catch(error => {
-                                                                toastOpen({
-                                                                    text:
-                                                                        text.SomethingWentWrong
-                                                                });
+                            <>
+                                <DigitLayout.Center>
+                                    <DisplayUserDetails user={user} />
+                                </DigitLayout.Center>
+                                <DigitLayout.DownRightPosition>
+                                    <DigitLayout.Spacing />
+                                    <DigitFAB
+                                        onClick={() =>
+                                            dialogOpen({
+                                                title:
+                                                    text.WouldYouLikeToDelete +
+                                                    " " +
+                                                    user.firstName +
+                                                    " '" +
+                                                    user.nick +
+                                                    "' " +
+                                                    user.lastName,
+                                                confirmButtonText:
+                                                    text.DeleteUser,
+                                                cancelButtonText: text.Cancel,
+                                                onConfirm: () => {
+                                                    usersDelete(user.id)
+                                                        .then(response => {
+                                                            toastOpen({
+                                                                text:
+                                                                    text.DeleteSuccessfully +
+                                                                    " " +
+                                                                    user[
+                                                                        FIRST_NAME
+                                                                    ] +
+                                                                    " '" +
+                                                                    user[NICK] +
+                                                                    "' " +
+                                                                    user[
+                                                                        LAST_NAME
+                                                                    ]
                                                             });
-                                                    }
-                                                })
-                                            }
-                                            text={text.Delete}
-                                        />
-                                    </DigitDesign.CardButtons>
-                                </DigitDesign.Card>
-                            </DigitLayout.Center>
+                                                            redirectTo(
+                                                                "/users"
+                                                            );
+                                                        })
+                                                        .catch(error => {
+                                                            toastOpen({
+                                                                text:
+                                                                    text.SomethingWentWrong
+                                                            });
+                                                        });
+                                                }
+                                            })
+                                        }
+                                        icon={Delete}
+                                        text={text.Delete}
+                                        secondary
+                                    />
+                                </DigitLayout.DownRightPosition>
+                            </>
                         )}
                     />
                 )}

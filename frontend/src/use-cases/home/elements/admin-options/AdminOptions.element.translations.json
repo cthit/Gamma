@@ -1,0 +1,10 @@
+{
+    "AdminOptions": ["Admin options", "Admin alternativ"],
+    "AllUsers": ["All users", "Alla användare"],
+    "AllGroups": ["All groups", "Alla grupper"],
+    "ActivationCodes": ["Activation codes", "Aktiveringskoder"],
+    "GDPR": ["GDPR certified", "GDPR certifierade"],
+    "GroupPosts": ["Group posts", "Grupp poster"],
+    "PossibleWebsites": ["Possible websites", "Möjliga hemsidor"],
+    "Whitelist": ["Whitelist of cids", "Whitelist av cids"]
+}

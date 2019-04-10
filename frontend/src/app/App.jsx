@@ -28,6 +28,7 @@ import GammaLoading from "./views/gamma-loading";
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
+import Me from "../use-cases/me";
 
 export class App extends Component {
     state = {
@@ -74,6 +75,7 @@ export class App extends Component {
 
         const drawer = closeDrawer => (
             <DigitLayout.Column padding="0">
+                <DigitNavLink onClick={closeDrawer} text="Me" link="/me" />
                 <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
                 <DigitNavLink
                     onClick={closeDrawer}
@@ -138,7 +140,6 @@ export class App extends Component {
         userLoaded = userLoaded != null ? userLoaded : false;
         return (
             <DigitTranslations
-                uniquePath="App"
                 translations={appTranslations}
                 render={text => (
                     <DigitHeader
@@ -218,6 +219,10 @@ export class App extends Component {
                                             <Route
                                                 path="/super-groups"
                                                 component={SuperGroups}
+                                            />
+                                            <Route
+                                                path={"/me"}
+                                                component={Me}
                                             />
                                             <Route
                                                 path="/"
