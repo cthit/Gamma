@@ -177,7 +177,6 @@ public final class ITUserController {
     public JSONObject getUser(@PathVariable("id") String id) {
         ITUser user;
         try {
-            System.out.println("id " + id);
             user = this.itUserService.getUserById(UUID.fromString(id));
         } catch (IllegalArgumentException e) {
             user = this.itUserService.loadUser(id);
