@@ -20,24 +20,22 @@ spring:
 
 server:
   port: ${SERVER_PORT:9090}
-  servlet:
-    context-path: /api
 
 logging:
   file: ${LOGGING_FILE:production.log}
   level:
-    root: WARN
+    root: DEBUG
     org:
       springframework:
-        web: WARN
-      hibernate: ERROR
+        web: DEBUG
+      hibernate: DEBUG
 
 security:
   jwt:
     token:
       secret-key: ${JWT_SECRET_KEY:jwtkey} # This is only for Development, should also be a secret one for Production
       expire-length: ${JWT_EXPIRE_LENGTH:2592000000} #One Month. Subject to change.
-      issuer: http://localhost:9090
+      issuer: ${JWT-ISSUER:http://localhost:9090}
 
 
 
