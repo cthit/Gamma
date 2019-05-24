@@ -18,7 +18,7 @@
         "Would you like to delete the user",
         "Vill du radera användaren"
     ],
-    "DeleteAdmin":[
+    "DeleteAdmin": [
         "Are you 100% sure that you want to delete the admin user? It would break everything! ",
         "Är du 100% säker på att du vill radera adminanvändaren? Detta skulle förstöra nästan allt!"
     ]

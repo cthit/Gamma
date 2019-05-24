@@ -53,7 +53,16 @@ class ShowUserDetails extends Component {
                                     <DigitFAB
                                         onClick={() =>
                                             dialogOpen({
-                                                title: (user.cid == signedInUser.cid)  ? text.DeleteAdmin : text.WouldYouLikeToDelete + " " +  user.firstName + " '" + user.nick + "' " + user.lastName ,
+                                                title:
+                                                    user.cid == signedInUser.cid
+                                                        ? text.DeleteAdmin
+                                                        : text.WouldYouLikeToDelete +
+                                                          " " +
+                                                          user.firstName +
+                                                          " '" +
+                                                          user.nick +
+                                                          "' " +
+                                                          user.lastName,
                                                 confirmButtonText:
                                                     text.DeleteUser,
                                                 cancelButtonText: text.Cancel,
