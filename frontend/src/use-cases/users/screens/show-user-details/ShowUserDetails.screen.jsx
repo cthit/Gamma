@@ -33,7 +33,8 @@ class ShowUserDetails extends Component {
             dialogOpen,
             usersDelete,
             redirectTo,
-            toastOpen
+            toastOpen,
+            signedInUser
         } = this.props;
 
         return (
@@ -53,13 +54,15 @@ class ShowUserDetails extends Component {
                                         onClick={() =>
                                             dialogOpen({
                                                 title:
-                                                    text.WouldYouLikeToDelete +
-                                                    " " +
-                                                    user.firstName +
-                                                    " '" +
-                                                    user.nick +
-                                                    "' " +
-                                                    user.lastName,
+                                                    user.cid === signedInUser.cid
+                                                        ? text.DeleteAdmin
+                                                        : text.WouldYouLikeToDelete +
+                                                          " " +
+                                                          user.firstName +
+                                                          " '" +
+                                                          user.nick +
+                                                          "' " +
+                                                          user.lastName,
                                                 confirmButtonText:
                                                     text.DeleteUser,
                                                 cancelButtonText: text.Cancel,
