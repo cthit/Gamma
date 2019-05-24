@@ -20,6 +20,6 @@
     ],
     "DeleteAdmin": [
         "Are you sure that you want to delete an admin account? ",
-        "Är du 100% säker på att du vill radera adminanvändaren? Detta skulle förstöra nästan allt!"
+        "Är du säker på att du vill radera ett adminkonto?"
     ]
 }
