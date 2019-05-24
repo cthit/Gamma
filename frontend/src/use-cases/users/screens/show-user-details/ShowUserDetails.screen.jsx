@@ -54,7 +54,7 @@ class ShowUserDetails extends Component {
                                         onClick={() =>
                                             dialogOpen({
                                                 title:
-                                                    user.cid == signedInUser.cid
+                                                    user.cid === signedInUser.cid
                                                         ? text.DeleteAdmin
                                                         : text.WouldYouLikeToDelete +
                                                           " " +
