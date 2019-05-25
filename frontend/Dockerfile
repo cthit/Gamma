@@ -1,8 +1,7 @@
 FROM node:10.15 as build
 
 COPY /package.json /
-RUN ping -c 6 8.8.8.8
-RUN yarn install --production
+RUN yarn install --network-timeout 1000000 --production
 RUN yarn global add react-scripts 
 
 COPY . .
