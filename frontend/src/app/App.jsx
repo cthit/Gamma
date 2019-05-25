@@ -63,7 +63,7 @@ export class App extends Component {
     render() {
         const baseUrl =
             (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081") +
-            "/api/oauth/authorize";
+            "/oauth/authorize";
         const responseType = "response_type=code";
         const clientId =
             "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
