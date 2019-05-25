@@ -20,6 +20,8 @@ spring:
 
 server:
   port: ${SERVER_PORT:9090}
+  servlet:
+    context-path: /
 
 logging:
   file: ${LOGGING_FILE:production.log}
