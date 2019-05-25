@@ -21,7 +21,7 @@ spring:
 server:
   port: ${SERVER_PORT:9090}
   servlet:
-    context-path: /
+    context-path: /api
 
 logging:
   file: ${LOGGING_FILE:production.log}
