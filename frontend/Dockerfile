@@ -1,4 +1,4 @@
-from node:10.15 as build
+FROM node:10.15 as build
 
 COPY /package.json /
 

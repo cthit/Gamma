@@ -20,7 +20,7 @@ export function userUpdateMe() {
                 axios
                     .get(
                         (process.env.REACT_APP_BACKEND_URL ||
-                            "http://localhost:8081") + "/api/users/me",
+                            "http://localhost:8081") + "/users/me",
                         {
                             headers: {
                                 Authorization: "Bearer " + token()
