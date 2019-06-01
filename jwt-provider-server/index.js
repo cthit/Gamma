@@ -35,7 +35,7 @@ app.post("/auth", (req, res) => {
     axios
         .post(
             (process.env.BACKEND_URL || "http://localhost:8081") +
-                "/api/oauth/token?" +
+                "/oauth/token?" +
                 params.toString(),
             null,
             {
