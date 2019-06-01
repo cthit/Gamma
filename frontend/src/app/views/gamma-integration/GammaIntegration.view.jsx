@@ -13,7 +13,7 @@ class GammaIntegration extends React.Component {
                 axios
                     .post(
                         (process.env.REACT_APP_JWT_URL ||
-                            "http://localhost:8082") + "/auth",
+                            "http://localhost:8082/auth"),
                         {
                             code: code
                         }
