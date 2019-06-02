@@ -39,6 +39,7 @@ app.post("/auth", (req, res) => {
                 params.toString(),
             null,
             {
+                
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     Authorization: "Basic " + c
@@ -46,6 +47,7 @@ app.post("/auth", (req, res) => {
             }
         )
         .then(response => {
+            console.log(response)
             if (response.data == null) {
                 console.log(response);
                 console.log("Åh nej");
@@ -55,6 +57,7 @@ app.post("/auth", (req, res) => {
             }
         })
         .catch(error => {
+            console.log(error)
             console.log(error.response.data);
         });
 });
