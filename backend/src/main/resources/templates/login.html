@@ -48,14 +48,14 @@
                 drops[x] = 1;
 
             //drawing the characters
-            var lastTime = -1000
+            var lastTime = -1000;
             //drawing the characters
             function draw(time) {
                 if (time - lastTime < 17) {
                     requestAnimationFrame(draw);
                     return
                 }
-                lastTime = time
+                lastTime = time;
                 //Black BG for the canvas
                 //translucent BG to show trail
                 ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
@@ -85,7 +85,9 @@
             requestAnimationFrame(draw);
         }
     </script>
+    <style>
 
+    </style>
 </head>
 <body onload="onload()">
     <canvas id="c"></canvas>
@@ -173,7 +175,9 @@
                 <div class="padding"></div>
 
                 <div class="row row--space-between">
-                    <button id="createAccountButton" class="black-color foo-button mdc-button text--small">Register</button>
+                    <a href="http://localhost:3000/create-account" class="center-vertical">
+                        <button type=button class="black-color foo-button mdc-button text--small">Register</button>
+                    </a>
                     <button id="forgotPasswordButton" class="black-color foo-button mdc-button text--small">Forgot password</button>
                 </div>
             </div>
