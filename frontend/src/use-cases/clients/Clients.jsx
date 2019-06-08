@@ -6,7 +6,7 @@ class Clients extends Component {
     render() {
         return (
             <Switch>
-                <Route paht={"/clients"} component={ShowAllClients} />
+                <Route path={"/clients"} component={ShowAllClients} />
             </Switch>
         );
     }
