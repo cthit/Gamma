@@ -1,6 +1,7 @@
 export const DESCRIPTION = "description";
 export const CLIENT_ID = "clientId";
-
+export const CLIENT_NAME = "name";
+export const CLIENT_REDIRECT = "webServerRedirectUri";
 //     accessTokenValidity: 2592000
 // accessTokenValiditySeconds: 2592000
 // additionalInformation: {name: "Gamma Frontend", description: {…}}

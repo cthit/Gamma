@@ -1,7 +1,5 @@
 {
     "Id":               ["Id", "Id"],
-    "Swedish":          ["Swedish", "Svenska"],
-    "English":          ["English", "Engelska"],
     "Details":          ["Details", "Detaljer"],
     "Name":             ["Name", "Namn"],
     "ClientId":         ["Client Id", "Klient Id"],

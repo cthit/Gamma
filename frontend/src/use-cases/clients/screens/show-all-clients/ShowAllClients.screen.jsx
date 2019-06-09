@@ -7,12 +7,15 @@ import {
 import translations from "./ShowAllClients.screen.translations.json"
 import {
     CLIENT_ID,
-    CLIENT_NAME
+    CLIENT_NAME,
+    CLIENT_REDIRECT
 } from "../../../../api/clients/props.clients.api"
 function generateHeaderTexts(text) {
     const headerTexts = {};
 
     headerTexts[CLIENT_NAME] = text.Name;
+    headerTexts[CLIENT_ID] = text.ClientId;
+    headerTexts[CLIENT_REDIRECT] = text.RedirectURI;
     return headerTexts;
 }
 
@@ -36,7 +39,7 @@ class ShowAllClients extends React.Component {
                             searchText={text.SearchForClients}
                             idProp={CLIENT_ID}
                             startOrderBy="sv"
-                            columnsOrder={[CLIENT_NAME, "sv", "en"]}
+                            columnsOrder={[CLIENT_NAME, CLIENT_ID, CLIENT_REDIRECT]}
                             headerTexts={generateHeaderTexts(text)}
                             data={clients.map(client => {
                                 return {
