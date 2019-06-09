@@ -16,6 +16,7 @@ function generateHeaderTexts(text) {
     headerTexts[CLIENT_NAME] = text.Name;
     headerTexts[CLIENT_ID] = text.ClientId;
     headerTexts[CLIENT_REDIRECT] = text.RedirectURI;
+    headerTexts["__link"] = text.Details;
     return headerTexts;
 }
 
