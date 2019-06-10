@@ -1,4 +1,5 @@
-export const DESCRIPTION = "description";
+export const DESCRIPTION_EN = "descriptionEn";
+export const DESCRIPTION_SV = "descriptionSv";
 export const CLIENT_ID = "clientId";
 export const CLIENT_NAME = "name";
 export const CLIENT_REDIRECT = "webServerRedirectUri";

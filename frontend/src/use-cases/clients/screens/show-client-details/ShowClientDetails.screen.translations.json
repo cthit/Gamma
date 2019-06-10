@@ -1,0 +1,8 @@
+{
+  "ClientId": ["Client id", " klientens id"],
+  "InternalId": ["Internal id", "Internt id"],
+  "Name": ["Name", "Namn"],
+  "DescriptionEn": ["English description", "Engelsk beskrivning"],
+  "DescriptionSv": ["Swedish description", "Svensk beskrivning"],
+  "Redirect": ["Redirecting to", "Omdirigera till"]
+}
