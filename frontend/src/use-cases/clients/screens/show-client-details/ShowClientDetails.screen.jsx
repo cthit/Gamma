@@ -27,25 +27,19 @@ function createKeyTexts(text) {
     return(output);
 }
 class ShowClientDetails extends React.Component {
-    constructor(props) {
-        super(props);
+    componentDidMount() {
+        const { getClient, clientId, gammaLoadingFinished } = this.props;
 
-        const {
-            getClient,
-            client,
-            gammaLoadingFinished
-        } = this.props;
-
-        Promise.all([
-            getClient(client)
-            ]).then(() => {
-                gammaLoadingFinished();
-        });
+        getClient(clientId).then( () => {
+            gammaLoadingFinished();
+        })
+    }
+    componentWillUnmount() {
+        this.props.gammaLoadingStart();
     }
 
     render() {
-        const { client } = this.props;
-        console.log(client);
+        const { client, clientId } = this.props;
         return (
             <DigitIfElseRendering
             test={      // Lägg till conditions för att kolla så värden inte är null.
@@ -83,7 +77,7 @@ class ShowClientDetails extends React.Component {
                                         DESCRIPTION_EN,
                                         DESCRIPTION_SV,
                                         CLIENT_REDIRECT,
-                                        //CLIENT_ID     // Breaks the alignment, should be fixed in digIT React components
+                                        CLIENT_ID     // Breaks the alignment, should be fixed in digIT React components
                                     ]}
                                 />
                             </DigitDesign.CardBody>
