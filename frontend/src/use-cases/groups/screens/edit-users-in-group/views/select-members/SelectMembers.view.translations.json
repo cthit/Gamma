@@ -6,6 +6,6 @@
     "UsersFor": ["Users for ", "Användare för "],
     "Link": ["Details", "Detaljer"],
     "UnsavedEdits": ["You have unsaved edits", "Du har osparade ändringar"],
-    "Nickname": ["Nickname", "Nick"],
+    "Nick": ["Nickname", "Nick"],
     "NoChanges": ["You have no changes", "Du har inga ändringar"]
 }
