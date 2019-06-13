@@ -1,13 +1,14 @@
 import React from 'react';
 import {
-    DigitButton,
     DigitDisplayData,
     DigitIfElseRendering,
     DigitTranslations,
     DigitLayout,
-    DigitDesign
+    DigitDesign,
+    DigitFAB,
 } from "@cthit/react-digit-components";
 import translations from "./ShowClientDetails.screen.translations.json";
+import Delete from "@material-ui/icons/Delete";
 import {
     CLIENT_NAME,
     CLIENT_REDIRECT,
@@ -39,7 +40,12 @@ class ShowClientDetails extends React.Component {
     }
 
     render() {
-        const { client, clientId } = this.props;
+        const {
+            client,
+            dialogOpen,
+            toastOpen,
+            deleteClient,
+            redirectTo, } = this.props;
         return (
             <DigitIfElseRendering
             test={      // Lägg till conditions för att kolla så värden inte är null.
@@ -49,7 +55,8 @@ class ShowClientDetails extends React.Component {
                 <DigitTranslations
                 translations={translations}
                 render={text => (
-                    <DigitLayout.Column centerHorizontal>
+                    <>
+                    <DigitLayout.Center centerHorizontal>
                         <DigitDesign.Card
                             minWidth="300px"
                             maxWidth="600px"
@@ -82,7 +89,49 @@ class ShowClientDetails extends React.Component {
                                 />
                             </DigitDesign.CardBody>
                         </DigitDesign.Card>
-                    </DigitLayout.Column>
+                    </DigitLayout.Center>
+                    <DigitLayout.DownRightPosition>
+                        <DigitLayout.Spacing/>
+                        <DigitFAB
+                            onClick={() =>
+                                dialogOpen({
+                                    title: text.DeleteClient +
+                                        " " +
+                                        client.name +
+                                        "?",
+                                    confirmButtonText:
+                                        text.Delete,
+                                    cancelButtonText:
+                                        text.Cancel,
+                                    onConfirm: () => {
+                                        deleteClient(client.id)
+                                            .then(response => {
+                                                    toastOpen({
+                                                        text:
+                                                            text.DeleteSuccessfully +
+                                                            client.name,
+                                                    });
+                                                redirectTo(
+                                                    "/clients"
+                                                );
+                                                })
+                                            .catch(error => {
+                                                toastOpen({
+                                                    text:
+                                                        text.DeleteFailed
+                                                });
+                                            });
+                                    }
+
+                            })
+
+                            }
+                            icon={Delete}
+                            text={text.Delete}
+                            secondary
+                            />
+                    </DigitLayout.DownRightPosition>
+                    </>
                 )}/>
             )}/>
         )

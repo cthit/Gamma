@@ -4,5 +4,11 @@
   "Name": ["Name", "Namn"],
   "DescriptionEn": ["English description", "Engelsk beskrivning"],
   "DescriptionSv": ["Swedish description", "Svensk beskrivning"],
-  "Redirect": ["Redirecting to", "Omdirigera till"]
+  "Redirect": ["Redirecting to", "Omdirigera till"],
+  "Delete": ["Delete", "Radera"],
+  "DeleteClient": ["Would you like to Delete Oauth2 client", "Vill du radera Oauth2 klienten"],
+  "Cancel": ["Cancel", "Avbryt"],
+  "DeleteSuccessfully": ["Successfully deleted client", "Lyckades radera klienten"],
+  "DeleteFailed": ["Something went wrong while deleting the client",
+                   "Något gick fel under bortagandet av klienten"]
 }
