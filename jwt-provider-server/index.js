@@ -32,9 +32,11 @@ app.post("/auth", (req, res) => {
     );
     params.append("code", code);
     const c = Buffer.from(id + ":" + secret).toString("base64");
+    console.log(process.env.BACKEND_URL);
+    console.log(process.env.REDIRECT_URI);
     axios
         .post(
-            (process.env.BACKEND_URL || "http://localhost:8081") +
+            (process.env.BACKEND_URL || "http://localhost:8081/api") +
                 "/oauth/token?" +
                 params.toString(),
             null,
@@ -47,7 +49,7 @@ app.post("/auth", (req, res) => {
             }
         )
         .then(response => {
-            console.log(response)
+            console.log(response);
             if (response.data == null) {
                 console.log(response);
                 console.log("Åh nej");
@@ -57,7 +59,7 @@ app.post("/auth", (req, res) => {
             }
         })
         .catch(error => {
-            console.log(error)
+            console.log(error);
             console.log(error.response.data);
         });
 });
