@@ -6,5 +6,6 @@
     "GDPR": ["GDPR certified", "GDPR certifierade"],
     "GroupPosts": ["Group posts", "Grupp poster"],
     "PossibleWebsites": ["Possible websites", "Möjliga hemsidor"],
-    "Whitelist": ["Whitelist of cids", "Whitelist av cids"]
+    "Whitelist": ["Whitelist of cids", "Whitelist av cids"],
+    "Clients": ["Clients", "Klienter"]
 }

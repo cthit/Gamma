@@ -33,6 +33,7 @@ const AdminOptions = () => (
                             link={"/websites"}
                         />
                         <HomeLink text={text.Whitelist} link={"/whitelist"} />
+                        <HomeLink text={text.Clients} link={"/clients"} />
                     </DigitLayout.Grid>
                 </DigitDesign.CardBody>
             </DigitDesign.Card>
