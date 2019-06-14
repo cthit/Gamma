@@ -4,7 +4,9 @@ import {
     DigitTranslations,
     DigitLayout,
     DigitEditData,
-    DigitTextField
+    DigitTextField,
+    DigitButton,
+    DigitText
 } from "@cthit/react-digit-components";
 import {
     ENGLISH_LANGUAGE,
@@ -89,7 +91,12 @@ function generateInitialValues() {
     return output;
 }
 
-const AddNewClient = ({ gammaLoadingFinished, addClient }) => {
+const AddNewClient = ({
+    gammaLoadingFinished,
+    openDialog,
+    closeDialog,
+    addClient
+}) => {
     useEffect(() => {
         gammaLoadingFinished();
     }, []);
@@ -112,7 +119,22 @@ const AddNewClient = ({ gammaLoadingFinished, addClient }) => {
                             client[DESCRIPTION][ENGLISH_LANGUAGE] =
                                 values[DESCRIPTION + "-" + ENGLISH_LANGUAGE];
 
-                            addClient(client);
+                            addClient(client).then(response => {
+                                openDialog({
+                                    title: text.YourClientSecret,
+                                    renderMain: () => (
+                                        <DigitText.Text
+                                            text={response.data.clientSecret}
+                                        />
+                                    )
+                                    // renderButtons: () => (
+                                    //     <DigitButton
+                                    //         text={text.CloseDialog}
+                                    //         onClick={closeDialog}
+                                    //     />
+                                    // )
+                                });
+                            });
                         }}
                         keysComponentData={generateKeysComponentData(text)}
                         initialValues={generateInitialValues()}

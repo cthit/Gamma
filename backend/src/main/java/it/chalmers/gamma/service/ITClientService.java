@@ -39,7 +39,7 @@ public class ITClientService implements ClientDetailsService {
         return this.itClientRepository.findByClientId(clientId);
     }
 
-    public void createITClient(AddITClientRequest request) {
+    public String createITClient(AddITClientRequest request) {
         ITClient client = new ITClient();
         client.setName(request.getName());
         Text description = new Text();
@@ -53,8 +53,10 @@ public class ITClientService implements ClientDetailsService {
         client.setAutoApprove(this.autoApprove);
         client.setRefreshTokenValidity(this.refreshTokenValidityTime);
         client.setClientId(TokenUtils.generateToken());
-        client.setClientSecret(TokenUtils.generateToken());
+        String clientSecret = TokenUtils.generateToken();
+        client.setClientSecret(clientSecret);
         this.itClientRepository.save(client);
+        return clientSecret;
     }
 
     public List<ITClient> getAllClients() {
