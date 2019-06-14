@@ -46,7 +46,7 @@ public class ITClientService implements ClientDetailsService {
         description.setEn(request.getDescription().getEn());
         description.setSv(request.getDescription().getSv());
         client.setDescription(description);
-        client.setWebServerRedirectUri(request.getUrlRedirect());
+        client.setWebServerRedirectUri(request.getWebServerRedirectUri());
         client.setCreatedAt(Instant.now());
         client.setLastModifiedAt(Instant.now());
         client.setAccessTokenValidity(this.accessTokenValidityTime);
@@ -74,8 +74,8 @@ public class ITClientService implements ClientDetailsService {
         client.setLastModifiedAt(Instant.now());
         client.setName(request.getName() == null ? client.getName() : request.getName());
         client.setDescription(request.getDescription() == null ? client.getDescription() : request.getDescription());
-        client.setWebServerRedirectUri(request.getUrlRedirect() == null
-                ? client.getWebServerRedirectUri() : request.getUrlRedirect());
+        client.setWebServerRedirectUri(request.getWebServerRedirectUri() == null
+                ? client.getWebServerRedirectUri() : request.getWebServerRedirectUri());
     }
 
     public boolean clientExists(UUID id) {
