@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -39,6 +40,7 @@ public class ITClient implements ClientDetails {
     private String clientId;
 
     @Column(name = "client_secret", length = 256, nullable = false)
+    @JsonIgnore
     private String clientSecret;
 
     @Column(name = "web_server_redirect_uri", length = 256, nullable = false)

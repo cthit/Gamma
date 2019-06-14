@@ -126,7 +126,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
-            request.setFunc(new Text());
+            request.setFunction(new Text());
             request.setDescription(description);
             request.setEmail(adminMail);
             Calendar end = new GregorianCalendar();

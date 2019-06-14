@@ -14,7 +14,7 @@ export function resetPasswordInitalize(cid) {
         return new Promise((resolve, reject) => {
             axios
                 .post(
-                    process.env.REACT_APP_BACKEND_URL || ("http://localhost:8081") + "/user/reset_password",
+                    process.env.REACT_APP_BACKEND_URL || ("http://localhost:8081/api") + "/user/reset_password",
                     {
                         cid: cid
                     },
@@ -41,7 +41,7 @@ export function resetPasswordFinish(data) {
         return new Promise((resolve, reject) => {
             axios
                 .put(
-                    (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081") + "/users/reset_password/finish",
+                    (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") + "/users/reset_password/finish",
                     data,
                     {
                         headers: {

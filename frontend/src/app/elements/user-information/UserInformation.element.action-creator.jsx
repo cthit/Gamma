@@ -58,8 +58,8 @@ export function userLogout() {
         delete sessionStorage.token;
         dispatch(
             DigitRedirectActions.digitRedirectTo(
-                (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081") +
-                    "/api/logout",
+                (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") +
+                    "/logout",
                 true
             )
         );

@@ -5,7 +5,6 @@ import it.chalmers.gamma.requests.AddITClientRequest;
 import it.chalmers.gamma.response.EditedClientResponse;
 import it.chalmers.gamma.response.GetAllClientsResponse;
 import it.chalmers.gamma.response.GetITClient;
-import it.chalmers.gamma.response.ITClientAdded;
 import it.chalmers.gamma.response.ITClientRemovedResponse;
 import it.chalmers.gamma.response.NoSuchClientExistsResponse;
 import it.chalmers.gamma.service.ITClientService;
@@ -13,6 +12,7 @@ import it.chalmers.gamma.service.ITClientService;
 import java.util.List;
 import java.util.UUID;
 
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,9 +31,11 @@ public class ITClientAdminController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addITClient(@RequestBody AddITClientRequest request) {
-        this.itClientService.createITClient(request);
-        return new ITClientAdded();
+    public JSONObject addITClient(@RequestBody AddITClientRequest request) {
+        String clientSecret = this.itClientService.createITClient(request);
+        JSONObject response = new JSONObject();
+        response.put("clientSecret", clientSecret);
+        return response;
     }
 
     @RequestMapping(method = RequestMethod.GET)

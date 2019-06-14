@@ -1,0 +1,10 @@
+{
+    "Id":               ["Id", "Id"],
+    "Details":          ["Details", "Detaljer"],
+    "Name":             ["Name", "Namn"],
+    "ClientId":         ["Client Id", "Klient Id"],
+    "RedirectURI":      ["Redirect URI", "Redirect URI"],
+    "SearchForClients": ["Search for client", "Sök efter klient"],
+    "NoClients":        ["No Clients Registered", "Inga klienter registrerade"],
+    "Clients":          ["Registered clients", "Registrerade klienter"]
+}
