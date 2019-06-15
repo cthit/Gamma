@@ -30,6 +30,8 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
                 this.secretKey,
                 this.issuer
         );
+        ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter();
         builder.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+        builder.addFilterAfter(UsernamePasswordAuthenticationFilter.class)
     }
 }
