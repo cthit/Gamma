@@ -1,7 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.CollectionId;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -17,9 +16,9 @@ public class ApiKey {
     private UUID id;
 
     @Column(name = "name", length = 30, nullable = false)
-    private String text;
+    private String name;
 
-    @Column(name = "description")
+    @JoinColumn(name = "description")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
@@ -49,12 +48,12 @@ public class ApiKey {
         this.id = id;
     }
 
-    public String getText() {
-        return text;
+    public String getName() {
+        return name;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Text getDescription() {
@@ -95,7 +94,7 @@ public class ApiKey {
         if (o == null || getClass() != o.getClass()) return false;
         ApiKey apiKey = (ApiKey) o;
         return Objects.equals(id, apiKey.id) &&
-                Objects.equals(text, apiKey.text) &&
+                Objects.equals(name, apiKey.name) &&
                 Objects.equals(description, apiKey.description) &&
                 Objects.equals(key, apiKey.key) &&
                 Objects.equals(createdAt, apiKey.createdAt) &&
@@ -104,14 +103,14 @@ public class ApiKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, description, key, createdAt, lastModifiedAt);
+        return Objects.hash(id, name, description, key, createdAt, lastModifiedAt);
     }
 
     @Override
     public String toString() {
         return "ApiKey{" +
                 "id=" + id +
-                ", text='" + text + '\'' +
+                ", name='" + name + '\'' +
                 ", description=" + description +
                 ", key='" + key + '\'' +
                 ", createdAt=" + createdAt +
