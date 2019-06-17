@@ -39,11 +39,19 @@ public class ApiKeyService {
         return this.apiKeyRepository.getById(id);
     }
 
+    public ApiKey getApiKeyDetails(String name) {
+        return this.apiKeyRepository.getByName(name);
+    }
+
     public void deleteApiKey(UUID id) {
         this.apiKeyRepository.deleteById(id);
     }
 
     public List<ApiKey> getAllApiKeys() {
         return this.apiKeyRepository.findAll();
+    }
+
+    public boolean apiKeyExists(UUID id) {
+        return this.apiKeyRepository.existsById(id);
     }
 }
