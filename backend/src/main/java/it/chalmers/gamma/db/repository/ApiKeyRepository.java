@@ -1,8 +1,6 @@
 package it.chalmers.gamma.db.repository;
 
-import com.sun.mail.imap.AppendUID;
 import it.chalmers.gamma.db.entity.ApiKey;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

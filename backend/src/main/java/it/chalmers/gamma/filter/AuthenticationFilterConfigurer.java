@@ -36,7 +36,6 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
                 this.issuer
         );
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
-                this.secretKey,
                 this.apiKeyService,
                 this.itUserService
         );

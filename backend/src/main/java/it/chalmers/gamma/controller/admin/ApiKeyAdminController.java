@@ -51,7 +51,7 @@ public class ApiKeyAdminController {
         return new GetApiKeyResponse(apiKey);
     }
 
-    @RequestMapping(value = "/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteApiKeyDetails(@PathVariable("id") String idString) {
         UUID id = UUID.fromString(idString);
         if(!this.apiKeyService.apiKeyExists(id)) {

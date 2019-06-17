@@ -4,7 +4,6 @@ import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;

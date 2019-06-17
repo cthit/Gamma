@@ -90,8 +90,12 @@ public class ApiKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o){
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
         ApiKey apiKey = (ApiKey) o;
         return Objects.equals(id, apiKey.id) &&
                 Objects.equals(name, apiKey.name) &&
