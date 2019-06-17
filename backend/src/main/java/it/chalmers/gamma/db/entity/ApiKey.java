@@ -1,12 +1,20 @@
 package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "apikey")
@@ -41,7 +49,7 @@ public class ApiKey {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -49,7 +57,7 @@ public class ApiKey {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -57,7 +65,7 @@ public class ApiKey {
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(Text description) {
@@ -65,7 +73,7 @@ public class ApiKey {
     }
 
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public void setKey(String key) {
@@ -73,7 +81,7 @@ public class ApiKey {
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public void setCreatedAt(Instant createdAt) {
@@ -81,7 +89,7 @@ public class ApiKey {
     }
 
     public Instant getLastModifiedAt() {
-        return lastModifiedAt;
+        return this.lastModifiedAt;
     }
 
     public void setLastModifiedAt(Instant lastModifiedAt) {
@@ -90,35 +98,41 @@ public class ApiKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o){
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()){
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         ApiKey apiKey = (ApiKey) o;
-        return Objects.equals(id, apiKey.id) &&
-                Objects.equals(name, apiKey.name) &&
-                Objects.equals(description, apiKey.description) &&
-                Objects.equals(key, apiKey.key) &&
-                Objects.equals(createdAt, apiKey.createdAt) &&
-                Objects.equals(lastModifiedAt, apiKey.lastModifiedAt);
+        return Objects.equals(this.id, apiKey.id)
+                && Objects.equals(this.name, apiKey.name)
+                && Objects.equals(this.description, apiKey.description)
+                && Objects.equals(this.key, apiKey.key)
+                && Objects.equals(this.createdAt, apiKey.createdAt)
+                && Objects.equals(this.lastModifiedAt, apiKey.lastModifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, key, createdAt, lastModifiedAt);
+        return Objects.hash(
+                this.id,
+                this.name,
+                this.description,
+                this.key,
+                this.createdAt,
+                this.lastModifiedAt);
     }
 
     @Override
     public String toString() {
-        return "ApiKey{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description=" + description +
-                ", key='" + key + '\'' +
-                ", createdAt=" + createdAt +
-                ", lastModifiedAt=" + lastModifiedAt +
-                '}';
+        return "ApiKey{"
+                + "id=" + this.id
+                + ", name='" + this.name + '\''
+                + ", description=" + this.description
+                + ", key='" + this.key + '\''
+                + ", createdAt=" + this.createdAt
+                + ", lastModifiedAt=" + this.lastModifiedAt
+                + '}';
     }
 }

@@ -2,9 +2,10 @@ package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Text;
 
+import java.util.Objects;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class CreateApiKeyRequest {
     @NotNull
@@ -13,7 +14,7 @@ public class CreateApiKeyRequest {
     private Text description;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -21,7 +22,7 @@ public class CreateApiKeyRequest {
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public void setDescription(Text description) {
@@ -30,10 +31,10 @@ public class CreateApiKeyRequest {
 
     @Override
     public String toString() {
-        return "CreateApiKeyRequest{" +
-                "name='" + name + '\'' +
-                ", description='" + description.toString() + '\'' +
-                '}';
+        return "CreateApiKeyRequest{"
+                + "name='" + this.name + '\''
+                + ", description='" + this.description.toString() + '\''
+                + '}';
     }
 
     @Override
@@ -45,12 +46,12 @@ public class CreateApiKeyRequest {
             return false;
         }
         CreateApiKeyRequest that = (CreateApiKeyRequest) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description);
+        return Objects.equals(this.name, that.name)
+                && Objects.equals(this.description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description);
+        return Objects.hash(this.name, this.description);
     }
 }

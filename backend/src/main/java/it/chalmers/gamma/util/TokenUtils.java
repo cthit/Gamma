@@ -7,7 +7,7 @@ public final class TokenUtils {
     private TokenUtils() {
     }
 
-    public static String generateToken(){
+    public static String generateToken() {
         return generateToken(100);
     }
 

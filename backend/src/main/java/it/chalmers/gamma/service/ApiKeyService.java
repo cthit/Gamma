@@ -5,10 +5,11 @@ import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ApiKeyRepository;
 import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.util.TokenUtils;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class ApiKeyService {
@@ -22,7 +23,7 @@ public class ApiKeyService {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
-    public String CreateApiKey(CreateApiKeyRequest request) {
+    public String createApiKey(CreateApiKeyRequest request) {
         ApiKey apiKey = new ApiKey();
         Text description = new Text();
         description.setEn(request.getDescription().getEn());
