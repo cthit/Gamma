@@ -2,6 +2,7 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
@@ -38,18 +39,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String frontendUrl;
 
     private final ITUserService itUserService;
-
     private final AuthorityService authorityService;
-
     private final FKITGroupToSuperGroupService groupToSuperGroupService;
+    private final ApiKeyService apiKeyService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
-                             FKITGroupToSuperGroupService groupToSuperGroupService) {
+                             FKITGroupToSuperGroupService groupToSuperGroupService,
+                             ApiKeyService apiKeyService) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.groupToSuperGroupService = groupToSuperGroupService;
+        this.apiKeyService = apiKeyService;
     }
 
     @Override
@@ -108,7 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AuthenticationFilterConfigurer(
                             this.itUserService,
                             this.secretKey,
-                            this.issuer
+                            this.issuer,
+                            this.apiKeyService
+
                     )
             );
         } catch (Exception e) {
@@ -122,7 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                 .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl((frontendUrl) + "/", false)      //TODO Add an environment variable
+                    .defaultSuccessUrl((frontendUrl) + "/", false)
                     .permitAll()
             .and()
                 .logout()
