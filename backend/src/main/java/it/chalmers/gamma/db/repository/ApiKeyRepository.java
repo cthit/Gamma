@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
     boolean existsByKey(String apiKey);
     ApiKey getById(UUID id);
+
+    ApiKey getByName(String apiKey);
 }
