@@ -30,7 +30,6 @@ public class ApiKey {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
-    @JsonIgnore
     @Column(name = "key", length = 150, nullable = false)
     private String key;
 

@@ -37,10 +37,10 @@ server:
 
 logging:
   level:
-    root: WARNING
+    root: DEBUG
     org:
       springframework:
-        web: WARNING
+        web: DEBUG
       hibernate: INFO
 
 security:

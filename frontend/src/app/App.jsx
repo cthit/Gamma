@@ -23,6 +23,7 @@ import Home from "../use-cases/home";
 import Posts from "../use-cases/posts";
 import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
+import ApiKeys from "../use-cases/api-keys";
 import Websites from "../use-cases/websites";
 import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
@@ -124,11 +125,17 @@ export class App extends Component {
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text={"Clients"}
-                    link={"/clients"}
+                    text="Clients"
+                    link="/clients"
+                />
+                <DigitNavLink
+                    onClick={closeDrawer}
+                    text="Api Keys"
+                    link="/api_keys"
                 />
             </DigitLayout.Column>
         );
+
 
         const header = () => (
             <Route
@@ -289,6 +296,10 @@ export class App extends Component {
                                                         <Route
                                                             path="/clients"
                                                             component={Clients}
+                                                        />
+                                                        <Route
+                                                            path="/api_keys"
+                                                            component={ApiKeys}
                                                         />
                                                         <Route
                                                             path="/super-groups"
