@@ -30,7 +30,7 @@ export function createGetApiKeysAction() {
 }
 
 export function createGetApiKeyAction(apiKeyId) {
-    requestPromise(
+    return requestPromise(
         () => {
             return getApiKey(apiKeyId);
         },

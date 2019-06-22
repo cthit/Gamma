@@ -53,7 +53,7 @@ class ShowAllApiKeys extends React.Component {
                                 data={apiKeys.map(apiKey => {
                                     return {
                                         ...apiKey,
-                                        __link: "/clients/" + apiKey.id
+                                        __link: "/api_keys/" + apiKey.id
                                     };
                                 })}
                                 emptyTableText={text.NoClients}
