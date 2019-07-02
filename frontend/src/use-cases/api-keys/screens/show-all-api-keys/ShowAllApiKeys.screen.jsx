@@ -1,5 +1,7 @@
 import React from "react";
 import {
+    DigitDesign,
+    DigitFAB,
     DigitLayout,
     DigitTable,
     DigitTranslations
@@ -61,6 +63,11 @@ class ShowAllApiKeys extends React.Component {
                         </DigitLayout.Fill>
                     )}
                 />
+                <DigitLayout.DownRightPosition>
+                    <DigitDesign.Link to="/api_keys/new">
+                        <DigitFAB icon={Add} secondary />
+                    </DigitDesign.Link>
+                </DigitLayout.DownRightPosition>
                 </>
         );
     }

@@ -1,8 +1,8 @@
 {
     "ClientName": ["Client name", "Klientnamn"],
     "ClientRedirect": ["Client redirect", "Klient omdirigeringslänk"],
-    "DescriptionSv": ["Description swedish", "Beskrivning svenska"],
-    "DescriptionEn": ["Description engelska", "Beskrivning engelska"],
+    "DescriptionSv": ["Description Swedish", "Beskrivning Svenska"],
+    "DescriptionEn": ["Description English", "Beskrivning Engelska"],
     "CreateClient": ["Create new client", "Skapa ny klient"],
     "SubmitClient": ["Create client", "Skapa klient"],
     "YourClientSecret": ["Your client secret", "Din klient secret"],
