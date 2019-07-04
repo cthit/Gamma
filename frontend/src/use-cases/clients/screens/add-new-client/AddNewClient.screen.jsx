@@ -74,7 +74,6 @@ function generateKeysComponentData(text) {
         }
     };
 
-    console.log(componentData);
 
     return componentData;
 }

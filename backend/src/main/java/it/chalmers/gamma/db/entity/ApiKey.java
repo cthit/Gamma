@@ -1,7 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -30,7 +28,6 @@ public class ApiKey {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
-    @JsonIgnore
     @Column(name = "key", length = 150, nullable = false)
     private String key;
 
