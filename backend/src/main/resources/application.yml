@@ -51,6 +51,7 @@ security:
       issuer: http://localhost:8081
 
 application:
+  production: false
   frontend-client-details:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
     client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
@@ -60,7 +61,7 @@ application:
     password: ${ADMIN_PASSWORD:password}
   gotify:
     key: "key"                  # This is not needed, but application crashes since it looks for these values.
-    url: "gotify.chalmers.it"
+    url: "https://gotify.chalmers.it"
   allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:3000}
   auth:
     accessTokenValidityTime: 3600
