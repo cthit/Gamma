@@ -95,11 +95,11 @@
         <form name="f" th:action="@{/login}" method="post">
             <div class="card mdc-elevation--z8">
 
-                <div th:if="${param.error}" class="text text--roboto alert alert-error">
+                <div th:if="${error}" class="text text--roboto alert alert-error">
                     Invalid cid/email and password.
                     <div class="padding"></div>
                 </div>
-                <div th:if="${param.logout}" class="text text--roboto alert alert-success">
+                <div th:if="${logout}" class="text text--roboto alert alert-success">
                     You have been logged out.
                     <div class="padding"></div>
                 </div>
@@ -175,10 +175,12 @@
                 <div class="padding"></div>
 
                 <div class="row row--space-between">
-                    <a href="http://localhost:3000/create-account" class="center-vertical">
+                    <a th:href="${createAccountUrl}" class="center-vertical">
                         <button type=button class="black-color foo-button mdc-button text--small">Register</button>
                     </a>
-                    <button id="forgotPasswordButton" class="black-color foo-button mdc-button text--small">Forgot password</button>
+                    <a th:href="${forgotPasswordUrl}" class="center-vertical">
+                        <button type=button id="forgotPasswordButton" class="black-color foo-button mdc-button text--small">Forgot password</button>
+                    </a>
                 </div>
             </div>
         </form>
