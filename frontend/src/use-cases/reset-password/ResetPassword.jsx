@@ -1,12 +1,9 @@
 import React from "react";
-
+import { Switch, Route } from "react-router-dom";
 import ResetPasswordInitalize from "./screens/reset-password-initalize";
 import ResetPasswordFinish from "./screens/reset-password-finish";
 
 class ResetPassword extends React.Component {
-    componentDidMount() {
-        this.props.gammaLoadingFinished();
-    }
 
     render() {
         return (
@@ -23,3 +20,5 @@ class ResetPassword extends React.Component {
         );
     }
 }
+
+export default ResetPassword;
