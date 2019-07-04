@@ -1,7 +1,5 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
