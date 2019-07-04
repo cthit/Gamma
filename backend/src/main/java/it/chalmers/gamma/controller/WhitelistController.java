@@ -36,7 +36,6 @@ public final class WhitelistController {
     private static final String MAIL_POSTFIX = "@student.chalmers.se";
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
 
-    @Value("${spring.profiles.active:development}")
     private String profile;
 
     public WhitelistController(
@@ -68,12 +67,7 @@ public final class WhitelistController {
         String code = activationCode.getCode();
         String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
-        LOGGER.info(this.profile);
-        if (this.profile.equals("profile")) {
-            this.mailSenderService.sendMail(to, "Chalmers activation code", message);
-        } else {
-            LOGGER.info(code);
-        }
+        this.mailSenderService.trySendingMail(to, "Chalmers activation code", message);
     }
 }
 

@@ -15,11 +15,15 @@ import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
+import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
+import it.chalmers.gamma.requests.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.EditedProfilePicture;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.PasswordChangedResponse;
+import it.chalmers.gamma.response.PasswordResetResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -27,11 +31,14 @@ import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
 import java.io.IOException;
@@ -67,17 +74,23 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
+    private final PasswordResetService passwordResetService;
+    private final MailSenderService mailSenderService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService) {
+                            MembershipService membershipService,
+                            PasswordResetService passwordResetService,
+                            MailSenderService mailSenderService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
+        this.passwordResetService = passwordResetService;
+        this.mailSenderService = mailSenderService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -231,5 +244,53 @@ public final class ITUserController {
         }
 
         return new EditedProfilePicture();
+    }
+
+    @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
+    public ResponseEntity<String> resetPasswordRequest(
+            @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
+        System.out.println(request);
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        if (!this.itUserService.userExists(request.getCid())) {
+            throw new UserNotFoundResponse();
+        }
+        ITUser user = this.itUserService.loadUser(request.getCid());
+        String token = TokenUtils.generateToken();
+        if (this.passwordResetService.userHasActiveReset(user)) {
+            this.passwordResetService.editToken(user, token);
+        } else {
+            this.passwordResetService.addToken(user, token);
+        }
+        sendMail(user, token);
+        return new PasswordResetResponse();
+    }
+
+    @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
+    public ResponseEntity<String> resetPassword(
+            @Valid @RequestBody ResetPasswordFinishRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        if (!this.itUserService.userExists(request.getCid())) {
+            throw new UserNotFoundResponse();
+        }
+        ITUser user = this.itUserService.loadUser(request.getCid());
+        if (!this.passwordResetService.userHasActiveReset(user)
+                || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
+            throw new CodeOrCidIsWrongResponse();
+        }
+        this.itUserService.setPassword(user, request.getPassword());
+        this.passwordResetService.removeToken(user);
+        return new PasswordChangedResponse();
+    }
+
+    // TODO Make sure that an URL is added to the email
+    private void sendMail(ITUser user, String token) {
+        String subject = "Password reset for Account at IT division of Chalmers";
+        String message = "A password reset have been requested for this account, if you have not requested "
+                + "this mail, feel free to ignore it. \n Your reset code : " + token + "URL : ";
+        this.mailSenderService.trySendingMail(user.getCid(), subject, message);
     }
 }
