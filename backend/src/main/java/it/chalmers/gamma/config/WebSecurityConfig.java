@@ -147,7 +147,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/oauth/token",
                     "/users/create",
                     "/whitelist/activate_cid",
-                    "/users/reset_password/*",
+                    "/users/reset_password",
+                    "/users/reset_password/finish",
                     "/css/**",
                     "/js/**",
                     "/img/**"

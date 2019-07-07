@@ -274,7 +274,7 @@ public final class ITUserController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (!this.itUserService.userExists(request.getCid())) {
-            throw new UserNotFoundResponse();
+            throw new CodeOrCidIsWrongResponse();
         }
         ITUser user = this.itUserService.loadUser(request.getCid());
         if (!this.passwordResetService.userHasActiveReset(user)
@@ -290,7 +290,7 @@ public final class ITUserController {
     private void sendMail(ITUser user, String token) {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
-                + "this mail, feel free to ignore it. \n Your reset code : " + token + "URL : ";
+                + "this mail, feel free to ignore it. \n Your reset code : " + token;
         this.mailSenderService.trySendingMail(user.getCid(), subject, message);
     }
 }
