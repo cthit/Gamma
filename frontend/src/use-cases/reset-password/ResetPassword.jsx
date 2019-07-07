@@ -1,25 +1,24 @@
 import React from "react";
-
-import ResetPasswordInitalize from "./screens/reset-password-initalize";
+import { Switch, Route } from "react-router-dom";
+import ResetPasswordInitialize from "./screens/reset-password-initalize";
 import ResetPasswordFinish from "./screens/reset-password-finish";
 
 class ResetPassword extends React.Component {
-    componentDidMount() {
-        this.props.gammaLoadingFinished();
-    }
 
     render() {
         return (
             <Switch>
                 <Route
-                    path="/reset-password"
-                    component={ResetPasswordInitalize}
+                    path="/reset-password/finish"
+                    component={ResetPasswordFinish}
                 />
                 <Route
-                    path="/reset-password/finish/:token"
-                    component={ResetPasswordFinish}
+                    path="/reset-password"
+                    component={ResetPasswordInitialize}
                 />
             </Switch>
         );
     }
 }
+
+export default ResetPassword;

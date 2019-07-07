@@ -88,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void disableCsrf(HttpSecurity http) {
         try {
             http
-                .csrf().disable();
+                    .csrf().disable();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when disabling csrf");
             LOGGER.error(e.getMessage());
@@ -124,14 +124,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void addFormLogin(HttpSecurity http) {
         try {
             http
-                .formLogin()
+                    .formLogin()
                     .loginPage("/login")
                     .defaultSuccessUrl((frontendUrl) + "/", false)
                     .permitAll()
-            .and()
-                .logout()
-            .and()
-                .httpBasic();
+                    .and()
+                    .logout()
+                    .and()
+                    .httpBasic();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding form login");
             LOGGER.error(e.getMessage());
@@ -142,20 +142,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
 
             String[] permittedPaths = {
-                "/login",
-                "/oauth/authorize",
-                "/oauth/token",
-                "/users/create",
-                "/whitelist/activate_cid",
-                "/css/**",
-                "/js/**",
-                "/img/**"
+                    "/login",
+                    "/oauth/authorize",
+                    "/oauth/token",
+                    "/users/create",
+                    "/whitelist/activate_cid",
+                    "/users/reset_password",
+                    "/users/reset_password/finish",
+                    "/css/**",
+                    "/js/**",
+                    "/img/**"
             };
 
 
             http
-                .authorizeRequests()
-                .antMatchers(permittedPaths).permitAll();
+                    .authorizeRequests()
+                    .antMatchers(permittedPaths).permitAll();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting");
             LOGGER.error(e.getMessage());

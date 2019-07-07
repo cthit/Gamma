@@ -33,7 +33,7 @@ import commonTranslations from "../common/utils/translations/CommonTranslations.
 import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
 import Me from "../use-cases/me";
-
+import ResetPassword from "../use-cases/reset-password"
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -310,6 +310,10 @@ export class App extends Component {
                                                         <Route
                                                             path={"/me"}
                                                             component={Me}
+                                                        />
+                                                        <Route
+                                                            path="/reset-password"
+                                                            component={ResetPassword}
                                                         />
                                                         <Route
                                                             path="/"
