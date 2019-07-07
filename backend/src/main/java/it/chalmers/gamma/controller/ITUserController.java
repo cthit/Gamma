@@ -249,7 +249,6 @@ public final class ITUserController {
     @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
     public ResponseEntity<String> resetPasswordRequest(
             @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
-        System.out.println(request);
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
