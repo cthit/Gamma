@@ -15,8 +15,8 @@ public class LoginController {
     public String getLogin(@RequestParam(value = "error", required = false) String error,
                            @RequestParam(value = "logout", required = false) String logout,
                            Model model) {
-        model.addAttribute("createAccountUrl", baseFrontendUrl + "/create-account");
-        model.addAttribute("forgotPasswordUrl", baseFrontendUrl + "/reset-password");
+        model.addAttribute("createAccountUrl", this.baseFrontendUrl + "/create-account");
+        model.addAttribute("forgotPasswordUrl", this.baseFrontendUrl + "/reset-password");
         model.addAttribute("error", error);
         model.addAttribute("logout", logout);
 
