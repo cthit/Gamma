@@ -33,7 +33,6 @@ class ResetPasswordInitalize extends React.Component {
                                     })}
                                     initialValues={{ cid: "" }}
                                     onSubmit={(values, actions) => {
-                                        console.log(values.cid);
                                         sendPasswordReset(values.cid)
                                             .then(response => {
                                                 actions.resetForm();

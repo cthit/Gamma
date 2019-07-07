@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import ResetPasswordInitalize from "./screens/reset-password-initalize";
+import ResetPasswordInitialize from "./screens/reset-password-initalize";
 import ResetPasswordFinish from "./screens/reset-password-finish";
 
 class ResetPassword extends React.Component {
@@ -9,12 +9,12 @@ class ResetPassword extends React.Component {
         return (
             <Switch>
                 <Route
-                    path="/reset-password"
-                    component={ResetPasswordInitalize}
+                    path="/reset-password/finish"
+                    component={ResetPasswordFinish}
                 />
                 <Route
-                    path="/reset-password/finish/:token"
-                    component={ResetPasswordFinish}
+                    path="/reset-password"
+                    component={ResetPasswordInitialize}
                 />
             </Switch>
         );
