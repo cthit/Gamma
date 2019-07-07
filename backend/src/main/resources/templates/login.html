@@ -85,9 +85,6 @@
             requestAnimationFrame(draw);
         }
     </script>
-    <style>
-
-    </style>
 </head>
 <body onload="onload()">
     <canvas id="c"></canvas>
@@ -176,7 +173,7 @@
 
                 <div class="row row--space-between">
                     <a th:href="${createAccountUrl}" class="center-vertical">
-                        <button type=button class="black-color foo-button mdc-button text--small">Register</button>
+                        <button type=button id="createAccountButton" class="black-color foo-button mdc-button text--small">Register</button>
                     </a>
                     <a th:href="${forgotPasswordUrl}" class="center-vertical">
                         <button type=button id="forgotPasswordButton" class="black-color foo-button mdc-button text--small">Forgot password</button>
