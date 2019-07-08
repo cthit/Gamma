@@ -44,7 +44,7 @@ public final class TokenUtils {
     }
 
 
-    public static String generateToken(int length, CharacterTypes[] types) {
+    public static String generateToken(int length, CharacterTypes...types) {
         String characters = Arrays.stream(types)
                 .map(CharacterTypes::getCharacters)
                 .collect(Collectors.joining());

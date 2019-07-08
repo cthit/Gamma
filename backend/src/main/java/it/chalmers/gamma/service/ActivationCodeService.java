@@ -27,18 +27,6 @@ public class ActivationCodeService {
         this.activationCodeRepository = activationCodeRepository;
     }
 
-    public String generateActivationCode() {
-        Random rand = new Random();
-        StringBuilder word = new StringBuilder(WORDS[rand.nextInt(WORDS.length - 1)]);
-        StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            int index = rand.nextInt(word.length());
-            code.append(word.charAt(index));
-            word.replace(index, index + 1, "");
-        }
-        return code.toString();
-    }
-
     /**
      * connects and places a whitelisted user and a code in the database.
      *

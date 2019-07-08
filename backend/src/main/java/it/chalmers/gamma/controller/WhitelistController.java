@@ -13,6 +13,7 @@ import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.TokenUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -39,7 +40,6 @@ public final class WhitelistController {
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.mailSenderService = mailSenderService;
-
     }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
@@ -50,7 +50,7 @@ public final class WhitelistController {
         }
         if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
             Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
-            String code = this.activationCodeService.generateActivationCode();
+            String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
         }
