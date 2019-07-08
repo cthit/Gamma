@@ -13,6 +13,9 @@ import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.util.InputValidationUtils;
 import it.chalmers.gamma.util.TokenUtils;
+
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/users/reset_password")
@@ -68,7 +71,7 @@ public class UserPasswordResetController {
         }
         String userCredentials = request.getCid();
         ITUser user = this.findByCidOrEmail(userCredentials);
-        if(user == null) {
+        if (user == null) {
             throw new CodeOrCidIsWrongResponse();
         }
         if (!this.passwordResetService.userHasActiveReset(user)

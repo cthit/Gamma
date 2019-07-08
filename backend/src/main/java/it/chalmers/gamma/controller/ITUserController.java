@@ -27,9 +27,7 @@ import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.ImageITUtils;
@@ -69,23 +67,17 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
-    private final PasswordResetService passwordResetService;
-    private final MailSenderService mailSenderService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService,
-                            PasswordResetService passwordResetService,
-                            MailSenderService mailSenderService) {
+                            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
-        this.passwordResetService = passwordResetService;
-        this.mailSenderService = mailSenderService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
