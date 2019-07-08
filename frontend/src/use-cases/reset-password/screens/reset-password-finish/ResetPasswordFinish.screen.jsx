@@ -71,8 +71,6 @@ class ResetPasswordFinish extends React.Component {
                                                 const message = statusMessage(error);
                                                 let errorMessage =
                                                 text.SomethingWentWrong;
-                                                console.log(code);
-                                                console.log(message);
                                                 if (code === 422) {
                                                     switch (message) {
                                                         case "CODE_OR_CID_IS_WRONG":
