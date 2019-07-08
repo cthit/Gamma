@@ -10,10 +10,10 @@ import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
 
 import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.gamma.util.TokenUtils;
 
 import javax.validation.Valid;
 
-import it.chalmers.gamma.util.TokenUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
