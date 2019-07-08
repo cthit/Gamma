@@ -1,12 +1,10 @@
 import axios from "axios";
 
-import token from "../../common/utils/retrievers/token.retrieve";
-
 import {
     RESET_PASSWORD_FINISH_SUCCESSFULLY,
     RESET_PASSWORD_FINISH_FAILED,
     RESET_PASSWORD_INITALIZE_SUCCESSFULLY,
-    RESET_PASSWORD_INITALIZE_FAILED
+    RESET_PASSWORD_INITALIZE_FAILED,
 } from "./ResetPassword.actions";
 
 export function resetPasswordInitalize(cid) {
@@ -18,11 +16,6 @@ export function resetPasswordInitalize(cid) {
                     {
                         cid: cid
                     },
-                    {
-                        headers: {
-                            Authorization: "Bearer " + token()
-                        }
-                    }
                 )
                 .then(response => {
                     dispatch(resetPasswordInitalizeSuccessfully());
@@ -43,11 +36,6 @@ export function resetPasswordFinish(data) {
                 .put(
                     (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") + "/users/reset_password/finish",
                     data,
-                    {
-                        headers: {
-                            Authorization: "Bearer " + token()
-                        }
-                    }
                 )
                 .then(response => {
                     dispatch(resetPasswordFinishSuccessfully());
@@ -70,7 +58,7 @@ function resetPasswordInitalizeSuccessfully() {
 
 function resetPasswordInitalizeFailed(error) {
     return {
-        type: RESET_PASSWORD_FINISH_FAILED,
+        type: RESET_PASSWORD_INITALIZE_FAILED,
         error: true,
         payload: {
             error: error
@@ -80,7 +68,7 @@ function resetPasswordInitalizeFailed(error) {
 
 function resetPasswordFinishSuccessfully() {
     return {
-        type: RESET_PASSWORD_INITALIZE_SUCCESSFULLY,
+        type: RESET_PASSWORD_FINISH_SUCCESSFULLY,
         error: false
     };
 }
@@ -94,3 +82,4 @@ function resetPasswordFinishFailed(error) {
         }
     };
 }
+
