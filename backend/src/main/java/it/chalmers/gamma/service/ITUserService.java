@@ -66,7 +66,9 @@ public class ITUserService implements UserDetailsService {
 
     public ITUser loadUser(String cid) throws UsernameNotFoundException {
         ITUser user = this.itUserRepository.findByCid(cid);
-        user.setAuthority(getAuthorities(user));
+        if (user != null) {
+            user.setAuthority(getAuthorities(user));
+        }
         return user;
     }
 
@@ -141,8 +143,18 @@ public class ITUserService implements UserDetailsService {
     }
 
     public ITUser getUserById(UUID id) {
-        ITUser user = this.itUserRepository.findById(id).orElseThrow();
-        user.setAuthority(getAuthorities(user));
+        ITUser user = this.itUserRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setAuthority(getAuthorities(user));
+        }
+        return user;
+    }
+
+    public ITUser getUserByEmail(String email) {
+        ITUser user = this.itUserRepository.findByEmail(email);
+        if (user != null) {
+            user.setAuthority(getAuthorities(user));
+        }
         return user;
     }
 

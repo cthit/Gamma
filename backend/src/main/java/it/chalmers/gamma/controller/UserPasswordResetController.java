@@ -45,10 +45,11 @@ public class UserPasswordResetController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(request.getCid())) {
+        String userCredentials = request.getCid(); // CID can either be CID or email.
+        ITUser user = this.findByCidOrEmail(userCredentials);
+        if (user == null) {
             throw new UserNotFoundResponse();
         }
-        ITUser user = this.itUserService.loadUser(request.getCid());
         String token = TokenUtils.generateToken();
         if (this.passwordResetService.userHasActiveReset(user)) {
             this.passwordResetService.editToken(user, token);
@@ -65,10 +66,11 @@ public class UserPasswordResetController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(request.getCid())) {
+        String userCredentials = request.getCid();
+        ITUser user = this.findByCidOrEmail(userCredentials);
+        if(user == null) {
             throw new CodeOrCidIsWrongResponse();
         }
-        ITUser user = this.itUserService.loadUser(request.getCid());
         if (!this.passwordResetService.userHasActiveReset(user)
                 || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
             throw new CodeOrCidIsWrongResponse();
@@ -84,5 +86,13 @@ public class UserPasswordResetController {
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
         this.mailSenderService.trySendingMail(user.getCid(), subject, message);
+    }
+
+    private ITUser findByCidOrEmail(String userCredentials) {
+        ITUser user = this.itUserService.loadUser(userCredentials);
+        if (user == null) {
+            return this.itUserService.getUserByEmail(userCredentials);
+        }
+        return user;
     }
 }
