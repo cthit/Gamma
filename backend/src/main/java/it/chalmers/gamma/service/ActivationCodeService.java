@@ -6,7 +6,6 @@ import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -18,25 +17,8 @@ public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
 
-    //TODO should probably change to some other WORDS, or a new system of creating codes.
-
-    // Add some random WORDS in here.
-    private static final String[] WORDS = {"ITSMURFARNA", "DIGIT<3DIDIT", "SOCKERARGOTT", "HUBBEN2.0.1"};
-
     public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
         this.activationCodeRepository = activationCodeRepository;
-    }
-
-    public String generateActivationCode() {
-        Random rand = new Random();
-        StringBuilder word = new StringBuilder(WORDS[rand.nextInt(WORDS.length - 1)]);
-        StringBuilder code = new StringBuilder();
-        for (int i = 0; i < 10; i++) {
-            int index = rand.nextInt(word.length());
-            code.append(word.charAt(index));
-            word.replace(index, index + 1, "");
-        }
-        return code.toString();
     }
 
     /**
