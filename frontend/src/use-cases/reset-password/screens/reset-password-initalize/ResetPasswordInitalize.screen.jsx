@@ -9,6 +9,8 @@ import {
     DigitButton, } from "@cthit/react-digit-components";
 import translations from "./ResetPasswordInitalize.screen.translations";
 import * as yup from "yup";
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
 class ResetPasswordInitalize extends React.Component {
     componentDidMount() {
@@ -42,8 +44,17 @@ class ResetPasswordInitalize extends React.Component {
                                                 );
                                             })
                                             .catch(error => {
+                                                const code = statusCode(error);
+                                                const message = statusMessage(error);
+                                                let errorMessage =
+                                                    text.SomethingWentWrong;
+                                                if (code === 422) {
+                                                    if (message === "NO_USER_FOUND") {
+                                                            errorMessage = text.CredentialsDoNotMatch;
+                                                    }
+                                                }
                                                 toastOpen({
-                                                    text: text.SomethingWentWrong,
+                                                    text: errorMessage,
                                                     duration: 5000,
                                                 })
                                             })
