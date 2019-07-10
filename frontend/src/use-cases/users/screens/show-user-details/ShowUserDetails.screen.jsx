@@ -46,7 +46,7 @@ class ShowUserDetails extends Component {
                         render={text => (
                             <>
                                 <DigitLayout.Center>
-                                    <DisplayUserDetails user={user} />
+                                    <DisplayUserDetails user={user} isMe={false}/>
                                 </DigitLayout.Center>
                                 <DigitLayout.DownRightPosition>
                                     <DigitLayout.Spacing />

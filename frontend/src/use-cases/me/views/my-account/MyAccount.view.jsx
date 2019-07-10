@@ -25,7 +25,7 @@ class MyAccount extends React.Component {
                         translations={translations}
                         render={text => (
                             <DigitLayout.Center>
-                                <DisplayUserDetails user={me} />
+                                <DisplayUserDetails user={me} isMe={true} />
                             </DigitLayout.Center>
                         )}
                     />
