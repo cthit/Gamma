@@ -13,11 +13,13 @@ import {
     USERS_LOAD_MINIFIED_FAILED,
     USERS_LOAD_MINIFIED_LOADING,
     USERS_LOAD_MINIFIED_SUCCESSFULLY,
-    USERS_LOAD_SUCCESSFULLY
+    USERS_LOAD_SUCCESSFULLY,
+    USER_CHANGE_PASSWORD_SUCCESSFULLY,
+    USER_CHANGE_PASSWORD_FAILED,
 } from "./actions.users.api";
 
 import { deleteUser } from "./delete.users.api";
-import { editUser } from "./put.users.api";
+import { editUser, editPassword } from "./put.users.api";
 import { getUser, getUsers, getUsersMinified } from "./get.users.api";
 import { requestPromise } from "../utils/requestPromise";
 import { failed, loading, successfully } from "../utils/simpleActionCreators";
@@ -28,7 +30,7 @@ export function createGetUsersMinifiedAction() {
         getUsersMinified,
         usersGetMinifiedLoading,
         usersGetMinifiedSuccessfully,
-        usersGetMinifiedFailed
+        usersGetMinifiedFailed,
     );
 }
 
@@ -100,6 +102,22 @@ export function createAddUserAction(userData) {
         addUserSuccessfully,
         addUserFailed
     );
+}
+
+export function createEditUserPasswordAction(id, passwordData) {
+    return dispatch => {
+        return new Promise((resolve, reject) => {
+            editPassword(id, passwordData)
+                .then( response => {
+                    dispatch(usersChangePasswordSuccessfully());
+                    resolve(response);
+            })
+                .catch(error => {
+                    dispatch(usersChangePasswordFailed());
+                    reject(error);
+                });
+        });
+    };
 }
 
 function addUserLoading() {
@@ -220,4 +238,24 @@ function usersGetMinifiedFailed(error) {
             error: error
         }
     };
+}
+
+function usersChangePasswordSuccessfully(response) {
+    return {
+        type: USER_CHANGE_PASSWORD_SUCCESSFULLY,
+        error: false,
+        payload: {
+            data: response.data,
+        },
+    }
+}
+
+function usersChangePasswordFailed(error) {
+    return {
+        type: USER_CHANGE_PASSWORD_FAILED,
+        error: true,
+        payload: {
+            error: error,
+        },
+    }
 }
