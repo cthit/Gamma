@@ -1,2 +1,2 @@
-import ChangeUserPassword from "ChangeUserPassword.screen.container";
+import ChangeUserPassword from "./ChangeUserPassword.screen.container";
 export default ChangeUserPassword;
