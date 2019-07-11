@@ -2,7 +2,8 @@ import React from "react";
 import translations from "./ChangeUserPassword.screen.translations";
 import ChangeUserPasswordForm from "../../../../common/elements/change-user-password";
 import {
-    DigitIfElseRendering
+    DigitIfElseRendering,
+    DigitTranslations
 } from "@cthit/react-digit-components";
 
 class ChangeUserPassword extends React.Component {
@@ -22,26 +23,37 @@ class ChangeUserPassword extends React.Component {
             user,
             changePassword,
             redirectTo,
-            toastOpen,
+            toastOpen
         } = this.props;
         return (
             <DigitIfElseRendering
                 test={user != null}
                 ifRender={() => (
-                    <ChangeUserPasswordForm
-                        renderOldPassword={false}
-                        user={user.cid}
-                        onSubmit={(values, actions) => {
-                            changePassword(user.id, values).then(
-                                response => {console.log(response)}
-                            );
-                        }}
+                    <DigitTranslations
+                        translations={translations}
+                        render={text => (
+
+                            <ChangeUserPasswordForm
+                                renderOldPassword={false}
+                                user={user.cid}
+                                onSubmit={(values, actions) => {
+                                    changePassword(user.id, values).then(
+                                        response => {
+                                            toastOpen({
+                                                text: text.ChangePasswordSuccessfully +
+                                                        ' "' + user.cid + '"',
+                                                duration: 5000,
+                                            });
+                                            redirectTo("/users/" + user.id);
+                                        }
+                                    );
+                                }}
+                            />
+                        )}
                     />
                 )}
             />
-
-        )
-            ;
+        );
     }
 }
 

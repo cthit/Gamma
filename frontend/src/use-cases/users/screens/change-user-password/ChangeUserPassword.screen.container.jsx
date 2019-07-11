@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
     changePassword: (userId, passwordData) =>
         dispatch(createEditUserPasswordAction(userId, passwordData)),
     getUser: userId => dispatch(createGetUserAction(userId)),
-    toastOpen: toastData => dispatch(DigitToastActions.digitToastActions(toastData)),
+    toastOpen: toastData => dispatch(DigitToastActions.digitToastOpen(toastData)),
     redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart()),
