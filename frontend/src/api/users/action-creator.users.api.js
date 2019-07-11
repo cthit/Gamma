@@ -244,9 +244,6 @@ function usersChangePasswordSuccessfully(response) {
     return {
         type: USER_CHANGE_PASSWORD_SUCCESSFULLY,
         error: false,
-        payload: {
-            data: response.data,
-        },
     }
 }
 

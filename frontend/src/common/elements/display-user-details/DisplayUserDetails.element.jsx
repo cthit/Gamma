@@ -70,7 +70,7 @@ const DisplayUserDetails = ({ user, isMe}) =>
                     <DigitDesign.Link to={getUserPath(user, isMe) + "/edit"}>
                         <DigitButton text={text.Edit} primary raised />
                     </DigitDesign.Link>
-                    <DigitDesign.Link to={getUserPath(user, isMe) + "/change-password"}>
+                    <DigitDesign.Link to={getUserPath(user, isMe) + "/change_password"}>
                         <DigitButton text={text.ChangePassword} primary raised/>
                     </DigitDesign.Link>
                 </DigitDesign.CardButtons>
