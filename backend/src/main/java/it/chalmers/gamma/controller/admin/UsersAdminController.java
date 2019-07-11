@@ -60,8 +60,8 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
     public ResponseEntity<String> changePassword(
-            @Valid @PathVariable("id") String id, BindingResult result,
-            @RequestBody AdminChangePasswordRequest request) {
+            @PathVariable("id") String id,
+            @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
