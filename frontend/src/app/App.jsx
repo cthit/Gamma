@@ -190,7 +190,7 @@ export class App extends Component {
                                                         onClick={() => {
                                                             this.setState({
                                                                 tryAgainButtonDisabled: true
-                                                  });
+                                                            });
                                                             userUpdateMe()
                                                                 .then(() =>
                                                                     this.setState(
