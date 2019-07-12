@@ -11,6 +11,7 @@ import { clients } from "../use-cases/clients/Clients.reducer";
 import { gammaIntegration } from "./views/gamma-integration/GammaIntegration.view.reducer";
 import { superGroups } from "../use-cases/super-groups/SuperGroups.reducer";
 import { gdpr } from "../use-cases/gdpr/Gdpr.reducer";
+import { apiKeys } from "../use-cases/api-keys/ApiKeys.reducer";
 
 export const rootReducer = {
     createAccount,
@@ -25,5 +26,6 @@ export const rootReducer = {
     clients,
     gammaIntegration,
     superGroups,
-    gdpr
+    gdpr,
+    apiKeys,
 };

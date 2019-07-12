@@ -23,6 +23,7 @@ import Home from "../use-cases/home";
 import Posts from "../use-cases/posts";
 import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
+import ApiKeys from "../use-cases/api-keys";
 import Websites from "../use-cases/websites";
 import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
@@ -32,7 +33,7 @@ import commonTranslations from "../common/utils/translations/CommonTranslations.
 import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
 import Me from "../use-cases/me";
-
+import ResetPassword from "../use-cases/reset-password"
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -124,11 +125,17 @@ export class App extends Component {
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text={"Clients"}
-                    link={"/clients"}
+                    text="Clients"
+                    link="/clients"
+                />
+                <DigitNavLink
+                    onClick={closeDrawer}
+                    text="Api Keys"
+                    link="/api_keys"
                 />
             </DigitLayout.Column>
         );
+
 
         const header = () => (
             <Route
@@ -291,6 +298,10 @@ export class App extends Component {
                                                             component={Clients}
                                                         />
                                                         <Route
+                                                            path="/api_keys"
+                                                            component={ApiKeys}
+                                                        />
+                                                        <Route
                                                             path="/super-groups"
                                                             component={
                                                                 SuperGroups
@@ -299,6 +310,10 @@ export class App extends Component {
                                                         <Route
                                                             path={"/me"}
                                                             component={Me}
+                                                        />
+                                                        <Route
+                                                            path="/reset-password"
+                                                            component={ResetPassword}
                                                         />
                                                         <Route
                                                             path="/"

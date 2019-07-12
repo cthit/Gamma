@@ -1,0 +1,9 @@
+{
+  "Id":               ["Id", "Id"],
+  "Name":             ["Name", "Namn"],
+  "Description":      ["Description", "Beskrivning"],
+  "ShowApiKey":       ["Show API Key", "Visa API nyckel"],
+  "NoApiKeys":        ["No API keys connected", "Inga API nycklar att visa"],
+  "SearchForApiKeys": ["Search for API key name", "Sök efter API nyckelnamn"],
+  "ApiKeys":          ["API keys",  "API nycklar"]
+}

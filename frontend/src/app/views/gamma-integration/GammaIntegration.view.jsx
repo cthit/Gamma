@@ -47,6 +47,9 @@ class GammaIntegration extends React.Component {
                     });
             }
         }
+        else {
+            props.redirectTo("/");
+        }
     }
 
     render() {

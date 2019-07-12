@@ -2,6 +2,7 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
@@ -38,18 +39,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String frontendUrl;
 
     private final ITUserService itUserService;
-
     private final AuthorityService authorityService;
-
     private final FKITGroupToSuperGroupService groupToSuperGroupService;
+    private final ApiKeyService apiKeyService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
-                             FKITGroupToSuperGroupService groupToSuperGroupService) {
+                             FKITGroupToSuperGroupService groupToSuperGroupService,
+                             ApiKeyService apiKeyService) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.groupToSuperGroupService = groupToSuperGroupService;
+        this.apiKeyService = apiKeyService;
     }
 
     @Override
@@ -86,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void disableCsrf(HttpSecurity http) {
         try {
             http
-                .csrf().disable();
+                    .csrf().disable();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when disabling csrf");
             LOGGER.error(e.getMessage());
@@ -108,7 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AuthenticationFilterConfigurer(
                             this.itUserService,
                             this.secretKey,
-                            this.issuer
+                            this.issuer,
+                            this.apiKeyService
+
                     )
             );
         } catch (Exception e) {
@@ -120,14 +124,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void addFormLogin(HttpSecurity http) {
         try {
             http
-                .formLogin()
+                    .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl((frontendUrl) + "/", false)      //TODO Add an environment variable
+                    .defaultSuccessUrl((frontendUrl) + "/", false)
                     .permitAll()
-            .and()
-                .logout()
-            .and()
-                .httpBasic();
+                    .and()
+                    .logout()
+                    .and()
+                    .httpBasic();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding form login");
             LOGGER.error(e.getMessage());
@@ -138,20 +142,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
 
             String[] permittedPaths = {
-                "/login",
-                "/oauth/authorize",
-                "/oauth/token",
-                "/users/create",
-                "/whitelist/activate_cid",
-                "/css/**",
-                "/js/**",
-                "/img/**"
+                    "/login",
+                    "/oauth/authorize",
+                    "/oauth/token",
+                    "/users/create",
+                    "/whitelist/activate_cid",
+                    "/users/reset_password",
+                    "/users/reset_password/finish",
+                    "/css/**",
+                    "/js/**",
+                    "/img/**"
             };
 
 
             http
-                .authorizeRequests()
-                .antMatchers(permittedPaths).permitAll();
+                    .authorizeRequests()
+                    .antMatchers(permittedPaths).permitAll();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting");
             LOGGER.error(e.getMessage());

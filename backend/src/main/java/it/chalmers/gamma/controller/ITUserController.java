@@ -232,4 +232,5 @@ public final class ITUserController {
 
         return new EditedProfilePicture();
     }
+
 }

@@ -20,7 +20,23 @@ public class MailSenderService {
     @Value("${application.gotify.url}")
     private String gotifyURL;
 
+    @Value("${application.production}")
+    private boolean production;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
+
+    public boolean trySendingMail(String cid, String subject, String body) {
+        if (this.production) {
+            return sendMail(cid, subject, body);
+
+        } else {
+            LOGGER.warn("Not in production environment, printing mail: \n "
+                    + "to: " + cid + "\n"
+                    + "subject: " + subject + "\n"
+                    + "body: " + body);
+            return false;
+        }
+    }
 
     /**
      * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
@@ -31,7 +47,6 @@ public class MailSenderService {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
-
         JSONObject object = new JSONObject();
         object.put("to", cid);
         object.put("from", "no-reply@chalmers.it");

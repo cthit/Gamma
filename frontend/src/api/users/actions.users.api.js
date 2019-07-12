@@ -19,3 +19,6 @@ export const USERS_DELETE_FAILED = "users_delete_failed";
 export const USER_GET_LOADING = "user_get_loading";
 export const USER_GET_SUCCESSFULLY = "user_get_successfully";
 export const USER_GET_FAILED = "user_get_failed";
+
+export const USER_CHANGE_PASSWORD_SUCCESSFULLY = "user_change_password_successfully";
+export const USER_CHANGE_PASSWORD_FAILED = "user_change_password_failed";
