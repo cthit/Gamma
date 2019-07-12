@@ -103,7 +103,7 @@ public final class FKITGroupController {
                 FKITGroupSerializer.Properties.getAllProperties()
         );
         // serializes all selected data from the group
-        return serializer.serialize(group, null, websiteViews);
+        return serializer.serialize(group, minifiedMembers, websiteViews);
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
