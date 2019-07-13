@@ -19,7 +19,7 @@ import {
     ENGLISH_LANGUAGE
 } from "../../../../api/utils/commonProps";
 
-function generateInitialValues(text) {
+function generateInitialValues() {
     const output = {};
 
     output[NAME] = "";
