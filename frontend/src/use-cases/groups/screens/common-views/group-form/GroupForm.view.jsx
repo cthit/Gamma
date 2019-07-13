@@ -2,7 +2,8 @@ import {
     DigitTextField,
     DigitTranslations,
     DigitEditData,
-    DigitDatePicker
+    DigitDatePicker,
+    DigitSelect
 } from "@cthit/react-digit-components";
 import React from "react";
 import * as yup from "yup";
@@ -14,12 +15,14 @@ import {
     EMAIL,
     FUNCTION,
     BECOMES_ACTIVE,
-    BECOMES_INACTIVE
+    BECOMES_INACTIVE,
+    SUPER_GROUP
 } from "../../../../../api/groups/props.groups.api";
 import {
     ENGLISH_LANGUAGE,
     SWEDISH_LANGUAGE
 } from "../../../../../api/utils/commonProps";
+import SuperGroups from "../../../../super-groups";
 
 const DESCRIPTION_SV = "description_sv";
 const DESCRIPTION_EN = "description_en";
@@ -45,7 +48,7 @@ function generateValidationSchema(text) {
     return yup.object().shape(schema);
 }
 
-function generateEditComponentData(text) {
+function generateEditComponentData(text, superGroups) {
     const componentData = {};
 
     componentData[NAME] = {
@@ -124,6 +127,21 @@ function generateEditComponentData(text) {
         component: DigitDatePicker,
         componentProps: {
             upperLabel: text.BecomesInactive,
+            lowerLabel: " ",
+            filled: true
+        }
+    };
+
+    const superGroupMap = {};
+    for (let i = 0; i < superGroups.length; i++) {
+        superGroupMap[superGroups[i].id] = superGroups[i].prettyName;
+    }
+
+    componentData[SUPER_GROUP] = {
+        component: DigitSelect,
+        componentProps: {
+            upperLabel: text.SuperGroup,
+            valueToTextMap: superGroupMap,
             filled: true
         }
     };
@@ -145,6 +163,8 @@ function convertToFormFormat(input) {
 
     output[FUNCTION_SV] = input[FUNCTION][SWEDISH_LANGUAGE];
     output[FUNCTION_EN] = input[FUNCTION][ENGLISH_LANGUAGE];
+
+    output[SUPER_GROUP] = input[SUPER_GROUP];
 
     return output;
 }
@@ -171,7 +191,7 @@ function convertToCorrectFormat(input) {
     return output;
 }
 
-const GroupForm = ({ initialValues, onSubmit }) => (
+const GroupForm = ({ initialValues, onSubmit, superGroups }) => (
     <DigitTranslations
         translations={translations}
         render={text => (
@@ -183,7 +203,7 @@ const GroupForm = ({ initialValues, onSubmit }) => (
                     actions.setSubmitting(false);
                     onSubmit(convertToCorrectFormat(values));
                 }}
-                initialValues={convertToFormFormat(initialValues)}
+                initialValues={convertToFormFormat(initialValues, superGroups)}
                 keysOrder={[
                     NAME,
                     PRETTY_NAME,
@@ -193,9 +213,10 @@ const GroupForm = ({ initialValues, onSubmit }) => (
                     FUNCTION_SV,
                     FUNCTION_EN,
                     BECOMES_ACTIVE,
-                    BECOMES_INACTIVE
+                    BECOMES_INACTIVE,
+                    SUPER_GROUP
                 ]}
-                keysComponentData={generateEditComponentData(text)}
+                keysComponentData={generateEditComponentData(text, superGroups)}
             />
         )}
     />

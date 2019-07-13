@@ -1,4 +1,7 @@
-import { DigitLayout } from "@cthit/react-digit-components";
+import {
+    DigitLayout,
+    DigitIfElseRendering
+} from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import GroupForm from "../common-views/group-form";
 import {
@@ -8,14 +11,15 @@ import {
     EMAIL,
     FUNCTION,
     NAME,
-    PRETTY_NAME
+    PRETTY_NAME,
+    SUPER_GROUP
 } from "../../../../api/groups/props.groups.api";
 import {
     SWEDISH_LANGUAGE,
     ENGLISH_LANGUAGE
 } from "../../../../api/utils/commonProps";
 
-function generateInitialValues() {
+function generateInitialValues(text) {
     const output = {};
 
     output[NAME] = "";
@@ -40,25 +44,35 @@ function generateInitialValues() {
     output[BECOMES_ACTIVE] = today;
     output[BECOMES_INACTIVE] = tomorrow;
 
+    output[SUPER_GROUP] = "";
+
     return output;
 }
 
 class CreateNewGroup extends Component {
     componentDidMount() {
+        const { gammaLoadingFinished, getSuperGroups } = this.props;
+        getSuperGroups().then(() => gammaLoadingFinished());
         this.props.gammaLoadingFinished();
     }
 
     render() {
-        const { groupsAdd } = this.props;
+        const { groupsAdd, superGroups } = this.props;
         return (
-            <DigitLayout.Center>
-                <GroupForm
-                    onSubmit={(values, actions) => {
-                        groupsAdd(values);
-                    }}
-                    initialValues={generateInitialValues()}
-                />
-            </DigitLayout.Center>
+            <DigitIfElseRendering
+                test={superGroups != null}
+                ifRender={() => (
+                    <DigitLayout.Center>
+                        <GroupForm
+                            onSubmit={(values, actions) => {
+                                groupsAdd(values);
+                            }}
+                            initialValues={generateInitialValues()}
+                            superGroups={superGroups}
+                        />
+                    </DigitLayout.Center>
+                )}
+            />
         );
     }
 }
