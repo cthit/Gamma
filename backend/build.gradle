@@ -62,7 +62,7 @@ dependencies {
 	compile('com.sun.xml.bind:jaxb-core:2.2.11')
 	compile('javax.xml.bind:jaxb-api:2.3.1')
 	compile('javax.activation:activation:1.1.1')
-	compile group: 'commons-collections', name: 'commons-collections', version: '4.4'
+	compile group: 'commons-collections', name: 'commons-collections4', version: '4.4'
 	compile group: 'com.h2database', name: 'h2', version: '1.4.199'
 	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     compile('org.flywaydb:flyway-core:5.2.4')
