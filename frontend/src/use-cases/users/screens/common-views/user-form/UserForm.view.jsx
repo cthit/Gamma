@@ -14,10 +14,15 @@ import {
     LAST_NAME,
     NICK,
     PASSWORD,
-    WEBSITES
+    WEBSITES,
+    LANGUAGE
 } from "../../../../../api/users/props.users.api";
 import EditWebsites from "../../../../../common/views/edit-websites";
 import translations from "./UserForm.view.translations.json";
+import {
+    ENGLISH_LANGUAGE,
+    SWEDISH_LANGUAGE
+} from "../../../../../api/utils/commonProps";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";
@@ -28,7 +33,7 @@ function _generateAcceptanceYears() {
     const startYear = 2001;
     const currentYear = _getCurrentYear();
     for (var i = currentYear; i >= startYear; i--) {
-        output[i] = i;
+        output["" + i] = i;
     }
 
     return output;
@@ -100,6 +105,19 @@ function generateEditComponentData(
         }
     };
 
+    const languageOptions = {};
+    languageOptions[SWEDISH_LANGUAGE] = "Svenska";
+    languageOptions[ENGLISH_LANGUAGE] = "English";
+
+    componentData[LANGUAGE] = {
+        component: DigitSelect,
+        componentProps: {
+            upperLabel: text.Language,
+            valueToTextMap: languageOptions,
+            outlined: true
+        }
+    };
+
     componentData[WEBSITES] = {
         array: true,
         component: EditWebsites,
@@ -135,6 +153,7 @@ function getKeysOrder(includeCidAndPassword) {
         NICK,
         EMAIL,
         ACCEPTANCE_YEAR,
+        LANGUAGE,
         WEBSITES
     ];
 
@@ -160,7 +179,10 @@ const UserForm = ({
             <DigitEditData
                 titleText={titleText}
                 submitText={submitText}
-                initialValues={initialValues}
+                initialValues={{
+                    language: ENGLISH_LANGUAGE,
+                    ...initialValues
+                }}
                 onSubmit={(values, actions) => {
                     actions.setSubmitting(false);
                     onSubmit(values, actions);
