@@ -26,7 +26,13 @@ class EditUserDetails extends React.Component {
     }
 
     render() {
-        const { user, usersChange, websites } = this.props;
+        const {
+            user,
+            usersChange,
+            websites,
+            toastOpen,
+            redirectTo
+        } = this.props;
         return (
             <DigitIfElseRendering
                 test={user != null && websites != null}
@@ -49,7 +55,14 @@ class EditUserDetails extends React.Component {
                                     }}
                                     onSubmit={(values, actions) => {
                                         usersChange(values, user.id).then(
-                                            response => {}
+                                            response => {
+                                                toastOpen({
+                                                    text:
+                                                        text.UserUpdated +
+                                                        user.cid
+                                                });
+                                                redirectTo("/users/" + user.id);
+                                            }
                                         );
                                     }}
                                 />
@@ -61,4 +74,5 @@ class EditUserDetails extends React.Component {
         );
     }
 }
+
 export default EditUserDetails;
