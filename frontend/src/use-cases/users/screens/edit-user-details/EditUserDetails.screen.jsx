@@ -33,7 +33,6 @@ class EditUserDetails extends React.Component {
                 ifRender={() => (
                     <DigitTranslations
                         translations={translations}
-                        uniquePath="Users.Screen.EditUserDetails"
                         render={text => (
                             <DigitLayout.Center>
                                 <UserForm

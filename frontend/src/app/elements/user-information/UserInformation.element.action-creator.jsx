@@ -1,4 +1,7 @@
-import { DigitRedirectActions } from "@cthit/react-digit-components";
+import {
+    DigitRedirectActions,
+    DigitTranslationsActions
+} from "@cthit/react-digit-components";
 import axios from "axios";
 import token from "../../../common/utils/retrievers/token.retrieve";
 import {
@@ -7,6 +10,7 @@ import {
     USER_UPDATED_FAILED,
     USER_UPDATED_SUCCESSFULLY
 } from "./UserInformation.element.actions";
+import { ENGLISH_LANGUAGE } from "../../../api/utils/commonProps";
 
 export function userUpdateMe() {
     if (token() == null) {
@@ -29,7 +33,15 @@ export function userUpdateMe() {
                     )
                     .then(response => {
                         resolve();
+
                         dispatch(userUpdatedSuccessfully(response.data));
+
+                        const lang = response.data.language;
+                        dispatch(
+                            DigitTranslationsActions.setActiveLanguage(
+                                lang == null ? ENGLISH_LANGUAGE : lang
+                            )
+                        );
                     })
                     .catch(error => {
                         reject();
@@ -58,8 +70,8 @@ export function userLogout() {
         delete sessionStorage.token;
         dispatch(
             DigitRedirectActions.digitRedirectTo(
-                (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") +
-                    "/logout",
+                (process.env.REACT_APP_BACKEND_URL ||
+                    "http://localhost:8081/api") + "/logout",
                 true
             )
         );
