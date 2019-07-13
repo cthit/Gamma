@@ -121,7 +121,7 @@ public final class GroupAdminController {
         }
 
         // Adds each group as an authoritylevel which
-        this.authorityLevelService.addAuthorityLevel(group.getId().toString());
+        this.authorityLevelService.addAuthorityLevel(group.getName());
         return new GroupCreatedResponse();
     }
 
