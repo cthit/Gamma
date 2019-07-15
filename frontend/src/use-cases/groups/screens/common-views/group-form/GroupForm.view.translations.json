@@ -13,5 +13,7 @@
     "Committee": ["Committee", "Kommitté"],
     "Board": ["Board", "Nämnd"],
     "BecomesActive": ["Becomes active", "Blir aktiva"],
-    "BecomesInactive": ["Becomes inactitve", "Blir inaktiva"]
+    "BecomesInactive": ["Becomes inactitve", "Blir inaktiva"],
+    "NoGroup": ["None", "Ingen"],
+    "SuperGroup": ["Super group", "Super grupp"]
 }

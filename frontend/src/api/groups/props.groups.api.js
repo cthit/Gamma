@@ -6,3 +6,4 @@ export const EMAIL = "email";
 export const FUNCTION = "function";
 export const BECOMES_ACTIVE = "becomesActive";
 export const BECOMES_INACTIVE = "becomesInactive";
+export const SUPER_GROUP = "superGroup";

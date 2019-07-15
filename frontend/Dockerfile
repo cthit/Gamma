@@ -1,8 +1,8 @@
-from node:10.15 as build
+FROM node:10.15 as build
 
 COPY /package.json /
 
-RUN yarn install --production
+RUN yarn install --production --network-timeout 1000000000
 RUN yarn global add react-scripts 
 
 COPY . .
