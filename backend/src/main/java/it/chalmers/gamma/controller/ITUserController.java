@@ -12,6 +12,7 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
@@ -19,7 +20,9 @@ import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.EditedProfilePicture;
 import it.chalmers.gamma.response.FileNotSavedException;
+import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.PasswordChangedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
@@ -217,7 +220,8 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me/avatar", method = RequestMethod.PUT)
-    public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file) {
+    public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file,
+                                                   BindingResult result) {
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
         if (user == null) {
@@ -231,6 +235,24 @@ public final class ITUserController {
         }
 
         return new EditedProfilePicture();
+    }
+
+    @RequestMapping(value = "/me/change_password")
+    public ResponseEntity<String> changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
+                                                 BindingResult result) {
+        if(result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if(user == null) {
+            throw new UserNotFoundResponse();
+        }
+        if(!this.itUserService.passwordMatches(user, request.getOldPassword())) {
+            throw new IncorrectCidOrPasswordResponse();
+        }
+        this.itUserService.setPassword(user, request.getNewPassword());
+        return new PasswordChangedResponse();
     }
 
 }
