@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@babel/runtime": "7.5.4",
-        "@cthit/react-digit-components": "1.0.0-beta.18",
+        "@cthit/react-digit-components": "1.0.0-beta.20",
         "axios": "0.19.0",
         "react-scripts": "3.0.1",
         "redux-logger": "3.0.6",

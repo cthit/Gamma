@@ -157,6 +157,7 @@ export class App extends Component {
 
         loggedIn = loggedIn != null ? loggedIn : false;
         userLoaded = userLoaded != null ? userLoaded : false;
+
         return (
             <DigitTranslations
                 translations={appTranslations}
@@ -327,21 +328,30 @@ export class App extends Component {
                                                                         !fetchingAccessToken
                                                                     }
                                                                     ifRender={() => (
-                                                                        <DigitContainUser
-                                                                            currentPath={
-                                                                                props
-                                                                                    .location
-                                                                                    .pathname
-                                                                            }
-                                                                            allowedBasePaths={[
-                                                                                "/create-account",
-                                                                                "/reset-password"
-                                                                            ]}
-                                                                            to={
-                                                                                loginRedirect
-                                                                            }
-                                                                            externalRedirect
-                                                                        />
+                                                                        <>
+                                                                            {props
+                                                                                .location
+                                                                                .pathname ===
+                                                                                "/" &&
+                                                                                window.location.replace(
+                                                                                    loginRedirect
+                                                                                )}
+                                                                            <DigitContainUser
+                                                                                currentPath={
+                                                                                    props
+                                                                                        .location
+                                                                                        .pathname
+                                                                                }
+                                                                                allowedBasePaths={[
+                                                                                    "/create-account",
+                                                                                    "/reset-password"
+                                                                                ]}
+                                                                                to={
+                                                                                    loginRedirect
+                                                                                }
+                                                                                externalRedirect
+                                                                            />
+                                                                        </>
                                                                     )}
                                                                     elseRender={() => (
                                                                         <Home />
