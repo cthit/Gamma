@@ -27,6 +27,8 @@ class GammaIntegration extends React.Component {
 
             const c = Buffer.from(id + ":" + secret).toString("base64");
 
+            alert(code);
+
             if (code) {
                 axios
                     .post(path + "/oauth/token?" + params.toString(), null, {
