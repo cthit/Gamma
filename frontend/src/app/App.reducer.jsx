@@ -27,5 +27,5 @@ export const rootReducer = {
     gammaIntegration,
     superGroups,
     gdpr,
-    apiKeys,
+    apiKeys
 };

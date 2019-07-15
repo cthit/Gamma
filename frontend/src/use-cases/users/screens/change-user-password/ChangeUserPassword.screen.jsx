@@ -8,23 +8,14 @@ import {
 
 class ChangeUserPassword extends React.Component {
     componentDidMount() {
-        const {
-            getUser,
-            userId,
-            gammaLoadingFinished
-        } = this.props;
+        const { getUser, userId, gammaLoadingFinished } = this.props;
         getUser(userId).then(() => {
             gammaLoadingFinished();
         });
     }
 
     render() {
-        const {
-            user,
-            changePassword,
-            redirectTo,
-            toastOpen
-        } = this.props;
+        const { user, changePassword, redirectTo, toastOpen } = this.props;
         return (
             <DigitIfElseRendering
                 test={user != null}
@@ -32,7 +23,6 @@ class ChangeUserPassword extends React.Component {
                     <DigitTranslations
                         translations={translations}
                         render={text => (
-
                             <ChangeUserPasswordForm
                                 renderOldPassword={false}
                                 user={user.cid}
@@ -40,9 +30,12 @@ class ChangeUserPassword extends React.Component {
                                     changePassword(user.id, values).then(
                                         response => {
                                             toastOpen({
-                                                text: text.ChangePasswordSuccessfully +
-                                                        ' "' + user.cid + '"',
-                                                duration: 5000,
+                                                text:
+                                                    text.ChangePasswordSuccessfully +
+                                                    ' "' +
+                                                    user.cid +
+                                                    '"',
+                                                duration: 5000
                                             });
                                             redirectTo("/users/" + user.id);
                                         }

@@ -15,7 +15,7 @@ import {
     USERS_LOAD_MINIFIED_SUCCESSFULLY,
     USERS_LOAD_SUCCESSFULLY,
     USER_CHANGE_PASSWORD_SUCCESSFULLY,
-    USER_CHANGE_PASSWORD_FAILED,
+    USER_CHANGE_PASSWORD_FAILED
 } from "./actions.users.api";
 
 import { deleteUser } from "./delete.users.api";
@@ -30,7 +30,7 @@ export function createGetUsersMinifiedAction() {
         getUsersMinified,
         usersGetMinifiedLoading,
         usersGetMinifiedSuccessfully,
-        usersGetMinifiedFailed,
+        usersGetMinifiedFailed
     );
 }
 
@@ -108,10 +108,10 @@ export function createEditUserPasswordAction(id, passwordData) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             editPassword(id, passwordData)
-                .then( response => {
+                .then(response => {
                     dispatch(usersChangePasswordSuccessfully());
                     resolve(response);
-            })
+                })
                 .catch(error => {
                     dispatch(usersChangePasswordFailed());
                     reject(error);
@@ -243,8 +243,8 @@ function usersGetMinifiedFailed(error) {
 function usersChangePasswordSuccessfully(response) {
     return {
         type: USER_CHANGE_PASSWORD_SUCCESSFULLY,
-        error: false,
-    }
+        error: false
+    };
 }
 
 function usersChangePasswordFailed(error) {
@@ -252,7 +252,7 @@ function usersChangePasswordFailed(error) {
         type: USER_CHANGE_PASSWORD_FAILED,
         error: true,
         payload: {
-            error: error,
-        },
-    }
+            error: error
+        }
+    };
 }

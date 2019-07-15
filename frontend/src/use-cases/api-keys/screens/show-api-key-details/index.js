@@ -1,2 +1,2 @@
-import ShowApiKeyDetails from "./ShowApiKeyDetails.screen.container"
+import ShowApiKeyDetails from "./ShowApiKeyDetails.screen.container";
 export default ShowApiKeyDetails;

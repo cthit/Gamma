@@ -4,7 +4,7 @@ import {
     RESET_PASSWORD_FINISH_SUCCESSFULLY,
     RESET_PASSWORD_FINISH_FAILED,
     RESET_PASSWORD_INITALIZE_SUCCESSFULLY,
-    RESET_PASSWORD_INITALIZE_FAILED,
+    RESET_PASSWORD_INITALIZE_FAILED
 } from "./ResetPassword.actions";
 
 export function resetPasswordInitalize(cid) {
@@ -12,10 +12,11 @@ export function resetPasswordInitalize(cid) {
         return new Promise((resolve, reject) => {
             axios
                 .post(
-                    process.env.REACT_APP_BACKEND_URL || ("http://localhost:8081/api") + "/users/reset_password",
+                    process.env.REACT_APP_BACKEND_URL ||
+                        "http://localhost:8081/api" + "/users/reset_password",
                     {
                         cid: cid
-                    },
+                    }
                 )
                 .then(response => {
                     dispatch(resetPasswordInitalizeSuccessfully());
@@ -34,8 +35,10 @@ export function resetPasswordFinish(data) {
         return new Promise((resolve, reject) => {
             axios
                 .put(
-                    (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") + "/users/reset_password/finish",
-                    data,
+                    (process.env.REACT_APP_BACKEND_URL ||
+                        "http://localhost:8081/api") +
+                        "/users/reset_password/finish",
+                    data
                 )
                 .then(response => {
                     dispatch(resetPasswordFinishSuccessfully());
@@ -82,4 +85,3 @@ function resetPasswordFinishFailed(error) {
         }
     };
 }
-

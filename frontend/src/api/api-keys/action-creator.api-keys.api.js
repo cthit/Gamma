@@ -25,7 +25,7 @@ export function createGetApiKeysAction() {
         },
         apiKeysLoadLoading,
         apiKeysLoadSuccessfully,
-        apiKeysLoadFailed,
+        apiKeysLoadFailed
     );
 }
 
@@ -36,7 +36,7 @@ export function createGetApiKeyAction(apiKeyId) {
         },
         apiKeyGetLoading,
         apiKeyGetSuccessfully,
-        apiKeyGetFailed,
+        apiKeyGetFailed
     );
 }
 
@@ -47,7 +47,7 @@ export function createDeleteApiKeyAction(apiKeyId) {
         },
         apiKeyDeleteLoading,
         apiKeyDeleteSuccessfully,
-        apiKeyDeleteFailed,
+        apiKeyDeleteFailed
     );
 }
 
@@ -58,15 +58,15 @@ export function createAddApiKeyAction(apiKey) {
         },
         apiKeyAddLoading,
         apiKeyAddSuccessfully,
-        apiKeyAddFailed,
+        apiKeyAddFailed
     );
 }
 
 function apiKeysLoadLoading() {
     return {
         type: API_KEYS_LOAD_LOADING,
-        error: false,
-    }
+        error: false
+    };
 }
 
 function apiKeysLoadSuccessfully(response) {
@@ -74,8 +74,8 @@ function apiKeysLoadSuccessfully(response) {
         type: API_KEYS_LOAD_SUCCESSFULLY,
         error: false,
         payload: {
-            data: response.data,
-        },
+            data: response.data
+        }
     };
 }
 
@@ -84,15 +84,15 @@ function apiKeysLoadFailed(error) {
         type: API_KEYS_LOAD_FAILED,
         error: true,
         payload: {
-            error: error,
-        },
+            error: error
+        }
     };
 }
 
 function apiKeyGetLoading() {
     return {
         type: API_KEY_GET_LOADING,
-        error: false,
+        error: false
     };
 }
 
@@ -101,8 +101,8 @@ function apiKeyGetSuccessfully(response) {
         type: API_KEY_GET_SUCCESSFULLY,
         error: false,
         payload: {
-            data: response.data,
-        },
+            data: response.data
+        }
     };
 }
 
@@ -111,15 +111,15 @@ function apiKeyGetFailed(error) {
         type: API_KEY_GET_FAILED,
         error: true,
         payload: {
-            error: error,
-        },
+            error: error
+        }
     };
 }
 
 function apiKeyDeleteLoading() {
     return {
         type: API_KEY_DELETE_LOADING,
-        error: false,
+        error: false
     };
 }
 
@@ -128,8 +128,8 @@ function apiKeyDeleteSuccessfully(response) {
         type: API_KEY_DELETE_SUCCESSFULLY,
         error: false,
         payload: {
-            data: response.data,
-        },
+            data: response.data
+        }
     };
 }
 
@@ -138,15 +138,15 @@ function apiKeyDeleteFailed(error) {
         type: API_KEY_DELETE_FAILED,
         error: true,
         payload: {
-            error: error,
-        },
+            error: error
+        }
     };
 }
 
 function apiKeyAddLoading() {
     return {
         type: API_KEY_ADD_LOADING,
-        error: false,
+        error: false
     };
 }
 
@@ -155,8 +155,8 @@ function apiKeyAddSuccessfully(response) {
         type: API_KEY_ADD_SUCCESSFULLY,
         error: false,
         payload: {
-            data: response.data,
-        },
+            data: response.data
+        }
     };
 }
 
@@ -165,7 +165,7 @@ function apiKeyAddFailed(error) {
         type: API_KEY_ADD_FAILED,
         error: true,
         payload: {
-            error: error,
-        },
+            error: error
+        }
     };
 }

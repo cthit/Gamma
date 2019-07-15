@@ -29,11 +29,11 @@ public class CorsFilter implements Filter {
         response.setHeader(
                 "Access-Control-Allow-Headers",
                 "x-requested-with, "
-                    + "authorization, "
-                    + "Content-Type, "
-                    + "Authorization, "
-                    + "credential, "
-                    + "X-XSRF-TOKEN"
+                + "authorization, "
+                + "Content-Type, "
+                + "Authorization, "
+                + "credential, "
+                + "X-XSRF-TOKEN"
         );
 
         HttpServletRequest request = (HttpServletRequest) req;

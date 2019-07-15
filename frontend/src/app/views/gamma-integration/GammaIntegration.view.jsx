@@ -46,8 +46,7 @@ class GammaIntegration extends React.Component {
                         props.finishedFetchingAccessToken();
                     });
             }
-        }
-        else {
+        } else {
             props.redirectTo("/");
         }
     }

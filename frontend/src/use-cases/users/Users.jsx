@@ -14,7 +14,11 @@ const Users = () => (
             <Route path="/users" exact component={ShowAllUsers} />
             <Route path="/users/:id" exact component={ShowUserDetails} />
             <Route path="/users/:id/edit" exact component={EditUserDetails} />
-            <Route path="/users/:id/change_password" exact component={ChangeUserPassword} />
+            <Route
+                path="/users/:id/change_password"
+                exact
+                component={ChangeUserPassword}
+            />
         </Switch>
     </DigitLayout.Fill>
 );

@@ -10,10 +10,14 @@ import translations from "./ShowAllApiKeys.screen.translations.json";
 import {
     API_KEY_NAME,
     DESCRIPTION,
-    API_KEY_ID,
+    API_KEY_ID
 } from "../../../../api/api-keys/props.api-keys.api";
 import { Add } from "@material-ui/icons";
-import { CLIENT_ID, CLIENT_NAME, CLIENT_REDIRECT } from "../../../../api/clients/props.clients.api";
+import {
+    CLIENT_ID,
+    CLIENT_NAME,
+    CLIENT_REDIRECT
+} from "../../../../api/clients/props.clients.api";
 
 function generateHeaderTexts(text) {
     const headerTexts = {};
@@ -47,10 +51,7 @@ class ShowAllApiKeys extends React.Component {
                                 searchText={text.SearchForApiKeys}
                                 idProp={API_KEY_ID}
                                 startOrderBy="sv"
-                                columnsOrder={[
-                                    API_KEY_NAME,
-                                    API_KEY_ID,
-                                ]}
+                                columnsOrder={[API_KEY_NAME, API_KEY_ID]}
                                 headerTexts={generateHeaderTexts(text)}
                                 data={apiKeys.map(apiKey => {
                                     return {
@@ -68,7 +69,7 @@ class ShowAllApiKeys extends React.Component {
                         <DigitFAB icon={Add} secondary />
                     </DigitDesign.Link>
                 </DigitLayout.DownRightPosition>
-                </>
+            </>
         );
     }
 }

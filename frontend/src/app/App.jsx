@@ -33,7 +33,7 @@ import commonTranslations from "../common/utils/translations/CommonTranslations.
 import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
 import Me from "../use-cases/me";
-import ResetPassword from "../use-cases/reset-password"
+import ResetPassword from "../use-cases/reset-password";
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -136,7 +136,6 @@ export class App extends Component {
             </DigitLayout.Column>
         );
 
-
         const header = () => (
             <Route
                 render={props => (
@@ -158,6 +157,7 @@ export class App extends Component {
 
         loggedIn = loggedIn != null ? loggedIn : false;
         userLoaded = userLoaded != null ? userLoaded : false;
+
         return (
             <DigitTranslations
                 translations={appTranslations}
@@ -313,7 +313,9 @@ export class App extends Component {
                                                         />
                                                         <Route
                                                             path="/reset-password"
-                                                            component={ResetPassword}
+                                                            component={
+                                                                ResetPassword
+                                                            }
                                                         />
                                                         <Route
                                                             path="/"
@@ -326,21 +328,30 @@ export class App extends Component {
                                                                         !fetchingAccessToken
                                                                     }
                                                                     ifRender={() => (
-                                                                        <DigitContainUser
-                                                                            currentPath={
-                                                                                props
-                                                                                    .location
-                                                                                    .pathname
-                                                                            }
-                                                                            allowedBasePaths={[
-                                                                                "/create-account",
-                                                                                "/reset-password"
-                                                                            ]}
-                                                                            to={
-                                                                                loginRedirect
-                                                                            }
-                                                                            externalRedirect
-                                                                        />
+                                                                        <>
+                                                                            {props
+                                                                                .location
+                                                                                .pathname ===
+                                                                                "/" &&
+                                                                                window.location.replace(
+                                                                                    loginRedirect
+                                                                                )}
+                                                                            <DigitContainUser
+                                                                                currentPath={
+                                                                                    props
+                                                                                        .location
+                                                                                        .pathname
+                                                                                }
+                                                                                allowedBasePaths={[
+                                                                                    "/create-account",
+                                                                                    "/reset-password"
+                                                                                ]}
+                                                                                to={
+                                                                                    loginRedirect
+                                                                                }
+                                                                                externalRedirect
+                                                                            />
+                                                                        </>
                                                                     )}
                                                                     elseRender={() => (
                                                                         <Home />

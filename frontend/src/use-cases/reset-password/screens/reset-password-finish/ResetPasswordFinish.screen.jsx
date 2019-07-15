@@ -10,9 +10,8 @@ import {
 } from "@cthit/react-digit-components";
 import * as yup from "yup";
 import translations from "./ResetPasswordFinish.screen.translations";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter"
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-
 
 class ResetPasswordFinish extends React.Component {
     componentDidMount() {
@@ -26,7 +25,8 @@ class ResetPasswordFinish extends React.Component {
             redirectTo,
             toastOpen,
             gammaLoadingStart,
-            gammaLoadingFinished } = this.props;
+            gammaLoadingFinished
+        } = this.props;
         return (
             <div>
                 <DigitTranslations
@@ -48,8 +48,10 @@ class ResetPasswordFinish extends React.Component {
                                             .required(text.FieldRequired),
                                         passwordConfirmation: yup
                                             .string()
-                                            .oneOf([yup.ref("password")],
-                                                text.PasswordDoNotMatch)
+                                            .oneOf(
+                                                [yup.ref("password")],
+                                                text.PasswordDoNotMatch
+                                            )
                                             .required(text.FieldRequired)
                                     })}
                                     initialValues={{
@@ -68,9 +70,11 @@ class ResetPasswordFinish extends React.Component {
                                             })
                                             .catch(error => {
                                                 const code = statusCode(error);
-                                                const message = statusMessage(error);
+                                                const message = statusMessage(
+                                                    error
+                                                );
                                                 let errorMessage =
-                                                text.SomethingWentWrong;
+                                                    text.SomethingWentWrong;
                                                 if (code === 422) {
                                                     switch (message) {
                                                         case "CODE_OR_CID_IS_WRONG":
@@ -109,38 +113,50 @@ class ResetPasswordFinish extends React.Component {
                                                 <DigitLayout.Center>
                                                     <DigitFormField
                                                         name="cid"
-                                                        component={DigitTextField}
+                                                        component={
+                                                            DigitTextField
+                                                        }
                                                         componentProps={{
-                                                            upperLabel: text.Cid,
+                                                            upperLabel:
+                                                                text.Cid,
                                                             filled: false,
-                                                            outlined: true,
+                                                            outlined: true
                                                         }}
                                                     />
                                                     <DigitFormField
                                                         name="token"
-                                                        component={DigitTextField}
+                                                        component={
+                                                            DigitTextField
+                                                        }
                                                         componentProps={{
-                                                            upperLabel: text.Code,
+                                                            upperLabel:
+                                                                text.Code,
                                                             filled: false,
-                                                            outlined: true,
+                                                            outlined: true
                                                         }}
                                                     />
                                                     <DigitFormField
                                                         name="password"
-                                                        component={DigitTextField}
+                                                        component={
+                                                            DigitTextField
+                                                        }
                                                         componentProps={{
-                                                            upperLabel: text.Password,
+                                                            upperLabel:
+                                                                text.Password,
                                                             password: true,
-                                                            outlined: true,
+                                                            outlined: true
                                                         }}
                                                     />
                                                     <DigitFormField
                                                         name="passwordConfirmation"
-                                                        component={DigitTextField}
+                                                        component={
+                                                            DigitTextField
+                                                        }
                                                         componentProps={{
-                                                            upperLabel: text.PasswordConfirmation,
+                                                            upperLabel:
+                                                                text.PasswordConfirmation,
                                                             password: true,
-                                                            outlined: true,
+                                                            outlined: true
                                                         }}
                                                     />
                                                 </DigitLayout.Center>
@@ -156,8 +172,7 @@ class ResetPasswordFinish extends React.Component {
                                                 />
                                             </DigitDesign.CardButtons>
                                         </DigitDesign.Card>
-                                    )
-                                    }
+                                    )}
                                 />
                             </DigitLayout.Center>
                         </DigitLayout.MarginTop>
