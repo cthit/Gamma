@@ -13,7 +13,7 @@ import {
     API_KEY_NAME,
     API_KEY_ID,
     DESCRIPTION,
-    API_KEY_KEY,
+    API_KEY_KEY
 } from "../../../../api/api-keys/props.api-keys.api";
 import { Add } from "@material-ui/icons";
 
@@ -28,7 +28,7 @@ function createKeyTexts(text) {
 
 class ShowApiKeyDetails extends React.Component {
     componentDidMount() {
-        const {getApiKey, apiKeyId, gammaLoadingFinished} = this.props;
+        const { getApiKey, apiKeyId, gammaLoadingFinished } = this.props;
         getApiKey(apiKeyId).then(() => {
             gammaLoadingFinished();
         });
@@ -67,20 +67,20 @@ class ShowApiKeyDetails extends React.Component {
                                                 data={{
                                                     name: apiKey.name,
                                                     id: apiKey.id,
-                                                    key: apiKey.key,
+                                                    key: apiKey.key
                                                 }}
                                                 keysText={createKeyTexts(text)}
                                                 keysOrder={[
                                                     API_KEY_NAME,
                                                     API_KEY_ID,
-                                                    API_KEY_KEY,
+                                                    API_KEY_KEY
                                                 ]}
                                             />
                                         </DigitDesign.CardBody>
                                     </DigitDesign.Card>
                                 </DigitLayout.Center>
                                 <DigitLayout.DownRightPosition>
-                                    <DigitLayout.Spacing/>
+                                    <DigitLayout.Spacing />
                                     <DigitFAB
                                         onClick={() =>
                                             dialogOpen({
@@ -105,9 +105,10 @@ class ShowApiKeyDetails extends React.Component {
                                                         })
                                                         .catch(error => {
                                                             toastOpen({
-                                                                text: text.DeleteFailed
-                                                            })
-                                                        })
+                                                                text:
+                                                                    text.DeleteFailed
+                                                            });
+                                                        });
                                                 }
                                             })
                                         }
@@ -116,7 +117,7 @@ class ShowApiKeyDetails extends React.Component {
                                         secondary
                                     />
                                 </DigitLayout.DownRightPosition>
-                                </>
+                            </>
                         )}
                     />
                 )}

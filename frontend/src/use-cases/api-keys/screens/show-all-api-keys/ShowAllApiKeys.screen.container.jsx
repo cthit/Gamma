@@ -4,15 +4,15 @@ import { gammaLoadingFinished } from "../../../../app/views/gamma-loading/GammaL
 import { createGetApiKeysAction } from "../../../../api/api-keys/action-creator.api-keys.api";
 
 const mapStateToProps = (state, ownProps) => ({
-    apiKeys: state.apiKeys,
+    apiKeys: state.apiKeys
 });
 
 const mapDispatchToProps = dispatch => ({
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
-    getApiKeys: () => dispatch(createGetApiKeysAction()),
+    getApiKeys: () => dispatch(createGetApiKeysAction())
 });
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(ShowAllApiKeys);

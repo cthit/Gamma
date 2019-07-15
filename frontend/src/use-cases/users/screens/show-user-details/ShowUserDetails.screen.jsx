@@ -46,7 +46,10 @@ class ShowUserDetails extends Component {
                         render={text => (
                             <>
                                 <DigitLayout.Center>
-                                    <DisplayUserDetails user={user} isMe={false}/>
+                                    <DisplayUserDetails
+                                        user={user}
+                                        isMe={false}
+                                    />
                                 </DigitLayout.Center>
                                 <DigitLayout.DownRightPosition>
                                     <DigitLayout.Spacing />
@@ -54,7 +57,8 @@ class ShowUserDetails extends Component {
                                         onClick={() =>
                                             dialogOpen({
                                                 title:
-                                                    user.cid === signedInUser.cid
+                                                    user.cid ===
+                                                    signedInUser.cid
                                                         ? text.DeleteAdmin
                                                         : text.WouldYouLikeToDelete +
                                                           " " +

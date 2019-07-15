@@ -11,10 +11,10 @@ const mapDispatchToProps = dispatch => ({
     addApiKey: apiKey => dispatch(createAddApiKeyAction(apiKey)),
     openDialog: dialogData =>
         dispatch(DigitDialogActions.digitDialogCustomOpen(dialogData)),
-    closeDialog: () => dispatch(DigitDialogActions.digitDialogClosedCancel()),
+    closeDialog: () => dispatch(DigitDialogActions.digitDialogClosedCancel())
 });
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(AddNewApiKey);

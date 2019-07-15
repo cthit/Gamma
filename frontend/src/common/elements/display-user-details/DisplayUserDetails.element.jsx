@@ -31,14 +31,12 @@ function createKeysTexts(text) {
 
 function getUserPath(user, isMe) {
     if (isMe) {
-        return "/me"
+        return "/me";
     }
     return "/users/" + user.id;
 }
 
-const DisplayUserDetails = ({ user, isMe}) =>
-
-    (
+const DisplayUserDetails = ({ user, isMe }) => (
     <DigitTranslations
         translations={translations}
         render={text => (
@@ -70,8 +68,14 @@ const DisplayUserDetails = ({ user, isMe}) =>
                     <DigitDesign.Link to={getUserPath(user, isMe) + "/edit"}>
                         <DigitButton text={text.Edit} primary raised />
                     </DigitDesign.Link>
-                    <DigitDesign.Link to={getUserPath(user, isMe) + "/change_password"}>
-                        <DigitButton text={text.ChangePassword} primary raised/>
+                    <DigitDesign.Link
+                        to={getUserPath(user, isMe) + "/change_password"}
+                    >
+                        <DigitButton
+                            text={text.ChangePassword}
+                            primary
+                            raised
+                        />
                     </DigitDesign.Link>
                 </DigitDesign.CardButtons>
             </DigitDesign.Card>

@@ -6,7 +6,8 @@ import {
     DigitDesign,
     DigitTextField,
     DigitFormField,
-    DigitButton, } from "@cthit/react-digit-components";
+    DigitButton
+} from "@cthit/react-digit-components";
 import translations from "./ResetPasswordInitalize.screen.translations";
 import * as yup from "yup";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
@@ -45,21 +46,27 @@ class ResetPasswordInitalize extends React.Component {
                                             })
                                             .catch(error => {
                                                 const code = statusCode(error);
-                                                const message = statusMessage(error);
+                                                const message = statusMessage(
+                                                    error
+                                                );
                                                 let errorMessage =
                                                     text.SomethingWentWrong;
                                                 if (code === 422) {
-                                                    if (message === "NO_USER_FOUND") {
-                                                            errorMessage = text.CredentialsDoNotMatch;
+                                                    if (
+                                                        message ===
+                                                        "NO_USER_FOUND"
+                                                    ) {
+                                                        errorMessage =
+                                                            text.CredentialsDoNotMatch;
                                                     }
                                                 }
                                                 toastOpen({
                                                     text: errorMessage,
-                                                    duration: 5000,
-                                                })
-                                            })
+                                                    duration: 5000
+                                                });
+                                            });
                                     }}
-                                    render={({errors, touched}) => (
+                                    render={({ errors, touched }) => (
                                         <DigitDesign.Card
                                             absWidth="300px"
                                             absHeight="300px"
@@ -75,12 +82,15 @@ class ResetPasswordInitalize extends React.Component {
                                                 <DigitLayout.Center>
                                                     <DigitFormField
                                                         name="cid"
-                                                        component={DigitTextField}
+                                                        component={
+                                                            DigitTextField
+                                                        }
                                                         componentProps={{
-                                                            upperLabel: text.Cid,
-                                                            filled: false,
+                                                            upperLabel:
+                                                                text.Cid,
+                                                            filled: false
                                                         }}
-                                                        />
+                                                    />
                                                 </DigitLayout.Center>
                                             </DigitDesign.CardBody>
                                             <DigitDesign.CardButtons
@@ -94,7 +104,6 @@ class ResetPasswordInitalize extends React.Component {
                                                 />
                                             </DigitDesign.CardButtons>
                                         </DigitDesign.Card>
-
                                     )}
                                 />
                             </DigitLayout.Center>
