@@ -27,8 +27,6 @@ import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -51,9 +49,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     @Value("${application.frontend-client-details.client-id}")
     private String clientId;
-
-    @Value("${application.frontend-client-details.client-secret}")
-    private String clientSecret;
 
     @Value("${application.frontend-client-details.redirect-uri}")
     private String redirectUri;
@@ -92,11 +87,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             description.setEn("The client details for the frontend of Gamma");
             description.setSv("Klient detaljerna för Gammas frontend");
 
-            PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
             ITClient itClient = new ITClient();
             itClient.setClientId(this.clientId);
-            itClient.setClientSecret(passwordEncoder.encode(this.clientSecret));
+            itClient.setClientSecret("{noop}secret");
             itClient.setAutoApprove(true);
             itClient.setName("Gamma Frontend");
             itClient.setCreatedAt(Instant.now());
