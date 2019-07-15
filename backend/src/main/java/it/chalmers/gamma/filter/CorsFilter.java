@@ -1,6 +1,8 @@
 package it.chalmers.gamma.filter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -24,7 +26,12 @@ public class CorsFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+
+        String rqHd = request.getHeader("Access-Control-Request-Headers");
+        if(rqHd != null){
+            String rqHeader = URLEncoder.encode(rqHd, StandardCharsets.UTF_8.displayName());
+            response.addHeader("Access-Control-Allow-Headers", rqHeader);
+        }
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader(
