@@ -116,8 +116,4 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         }
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 }
