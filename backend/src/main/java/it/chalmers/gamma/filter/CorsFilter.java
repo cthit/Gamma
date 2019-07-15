@@ -1,8 +1,6 @@
 package it.chalmers.gamma.filter;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -24,26 +22,21 @@ public class CorsFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-
-        String rqHd = request.getHeader("Access-Control-Request-Headers");
-        if(rqHd != null){
-            String rqHeader = URLEncoder.encode(rqHd, StandardCharsets.UTF_8.displayName());
-            response.addHeader("Access-Control-Allow-Headers", rqHeader);
-        }
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader(
                 "Access-Control-Allow-Headers",
                 "x-requested-with, "
-                    + "authorization, "
-                    + "Content-Type, "
-                    + "Authorization, "
-                    + "credential, "
-                    + "X-XSRF-TOKEN"
+                + "authorization, "
+                + "Content-Type, "
+                + "Authorization, "
+                + "credential, "
+                + "X-XSRF-TOKEN"
         );
 
+        HttpServletRequest request = (HttpServletRequest) req;
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
