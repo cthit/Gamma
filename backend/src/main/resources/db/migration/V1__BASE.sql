@@ -56,14 +56,14 @@ create table fkit_super_group (
   id            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
-  email         varchar(100)   not null constraint fkit_super_group_email_unique        unique,
+  email         varchar(100)   not null,
   type          varchar(30)    not null
 );
 
 create table fkit_group (
   id                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
-  pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
+  pretty_name       varchar(50)  not null,
   description       uuid         null     references internal_text,
   function          uuid         not null references internal_text,
   becomes_active    date         not null,
