@@ -26,7 +26,7 @@ public class FKITGroupService {
         fkitGroup.setDescription(request.getDescription());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
                 request.getBecomesActive(), request.getBecomesInactive(),
-                request.getEmail(), request.getAvatarURL());
+                request.getAvatarURL());
     }
 
     //TODO if no info, don't change value.
@@ -42,14 +42,13 @@ public class FKITGroupService {
             group.setENDescription(request.getDescription().getEn());
         }
         return saveGroup(group, request.getPrettyName(), request.getBecomesActive(), request.getBecomesInactive(),
-                request.getEmail(), request.getAvatarURL());
+                 request.getAvatarURL());
     }
 
     private FKITGroup saveGroup(FKITGroup group, String prettyName,
                                 Calendar becomesActive, Calendar becomesInactive,
-                                String email, String avatarURL) {
+                                String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
-        group.setEmail(email == null ? group.getEmail() : email);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
         group.setBecomesActive(becomesActive == null ? group.getBecomesActive() : becomesActive);
         group.setBecomesInactive(becomesInactive == null ? group.getBecomesInactive() : becomesInactive);

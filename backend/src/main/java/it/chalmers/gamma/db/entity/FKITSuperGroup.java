@@ -29,6 +29,17 @@ public class FKITSuperGroup {
     @Column(name = "type")
     private GroupType type;
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Column(name = "email")
+    private String email;
+
     public FKITSuperGroup() {
         this.id = UUID.randomUUID();
     }
@@ -67,33 +78,29 @@ public class FKITSuperGroup {
 
     @Override
     public String toString() {
-        return "FKITSuperGroup{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + ", prettyName='" + prettyName + '\''
-                + ", type=" + type
-                + '}';
+        return "FKITSuperGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", prettyName='" + prettyName + '\'' +
+                ", type=" + type +
+                ", email='" + email + '\'' +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FKITSuperGroup that = (FKITSuperGroup) o;
-        return Objects.equals(this.id, that.id)
-                && Objects.equals(this.name, that.name)
-                && Objects.equals(this.prettyName, that.prettyName)
-                && this.type == that.type;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(prettyName, that.prettyName) &&
+                type == that.type &&
+                Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(this.id, this.name, this.prettyName, this.type);
+        return Objects.hash(id, name, prettyName, type, email);
     }
-
 }

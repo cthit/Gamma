@@ -21,10 +21,6 @@ public class CreateGroupRequest {
 
     private Text description;
 
-    @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
-    @Email(message = "NOT_A_VALID_EMAIL")
-    private String email;
-
     @NotNull(message = "A_FUNCTION_MUST_BE_PROVIDED")
     private Text function;
     private String avatarURL;
@@ -84,14 +80,6 @@ public class CreateGroupRequest {
         this.name = name;
     }
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPrettyName() {
         return this.prettyName;
     }
@@ -128,7 +116,6 @@ public class CreateGroupRequest {
         return this.name.equals(that.name)
             && this.prettyName.equals(that.prettyName)
             && this.description.equals(that.description)
-            && this.email.equals(that.email)
             && this.function.equals(that.function)
             && this.avatarURL.equals(that.avatarURL)
             && this.websites.equals(that.websites);
@@ -136,7 +123,7 @@ public class CreateGroupRequest {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.prettyName, this.description, this.email,
+        return Objects.hash(this.name, this.prettyName, this.description,
              this.function, this.avatarURL, this.websites);
     }
 
@@ -146,7 +133,6 @@ public class CreateGroupRequest {
             + "name='" + this.name + '\''
             + ", prettyName='" + this.prettyName + '\''
             + ", description=" + this.description
-            + ", email='" + this.email + '\''
             + ", function=" + this.function
             + ", avatarURL='" + this.avatarURL + '\''
             + ", websites=" + this.websites

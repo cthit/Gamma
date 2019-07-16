@@ -41,8 +41,6 @@ public class FKITGroup {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text func;
 
-    @Column(name = "email", length = 100, nullable = false)
-    private String email;
 
     @Column(name = "becomes_active")
     private Calendar becomesActive;
@@ -76,14 +74,6 @@ public class FKITGroup {
 
     public void setDescription(Text description) {
         this.description = description;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getAvatarURL() {
@@ -182,7 +172,6 @@ public class FKITGroup {
             + ", prettyName='" + prettyName + '\''
             + ", description=" + description
             + ", func=" + func
-            + ", email='" + email + '\''
             + '}';
     }
 
@@ -200,8 +189,7 @@ public class FKITGroup {
             && Objects.equals(this.name, fkitGroup.name)
             && Objects.equals(this.prettyName, fkitGroup.prettyName)
             && Objects.equals(this.description, fkitGroup.description)
-            && Objects.equals(this.func, fkitGroup.func)
-            && Objects.equals(this.email, fkitGroup.email);
+            && Objects.equals(this.func, fkitGroup.func);
     }
 
     @Override
@@ -212,7 +200,6 @@ public class FKITGroup {
             this.name,
             this.prettyName,
             this.description,
-            this.func,
-            this.email);
+            this.func);
     }
 }
