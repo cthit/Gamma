@@ -50,9 +50,9 @@ func ParseUsers(file *os.File, record [][]string) {
 		line := record[j]
 		language := line[15]
 		if language == "en" {
-			language = "ENGLISH"
+			language = "en"
 		} else {
-			language = "SWEDISH"
+			language = "sv"
 		}
 		gdpr := line[8]
 		if gdpr != "TRUE" {
