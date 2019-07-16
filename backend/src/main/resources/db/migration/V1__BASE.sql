@@ -56,6 +56,7 @@ create table fkit_super_group (
   id            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
+  email         varchar(100)   not null constraint fkit_super_group_email_unique        unique,
   type          varchar(30)    not null
 );
 
@@ -65,7 +66,6 @@ create table fkit_group (
   pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
   description       uuid         null     references internal_text,
   function          uuid         not null references internal_text,
-  email             varchar(100) not null constraint fkit_group_email_unique unique,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
   avatar_url        varchar(255) null
