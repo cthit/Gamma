@@ -10,8 +10,8 @@ import (
 var superGroupQuery = "\n insert into fkit_super_group (id, name, pretty_name, type) \nvalues "
 var postAddQuery = "\n insert into post (id, post_name) \nvalues "
 var membershipQuery = "\n insert into membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
-var membershipQueryNoUser = "\n insert into no_account_membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
-var groupQuery = "\n insert into fkit_group (id, name, pretty_name, description, function, email, becomes_active, becomes_inactive, internal_year) \nvalues"
+var membershipQueryNoUser = "\n insert into no_account_membership (user_name, fkit_group_id, post_id, unofficial_post_name) \nvalues"
+var groupQuery = "\n insert into fkit_group (id, name, pretty_name, description, function, email, becomes_active, becomes_inactive) \nvalues"
 var TextQuery = "\n insert into internal_text (id, sv, en) \nvalues"
 var groupToSuperGroupQuery = "\n insert into fkit_group_to_super_group (fkit_super_group_id, fkit_group_id) \nvalues"
 
@@ -36,7 +36,6 @@ type Group struct {
 	email            string
 	becomes_active   string
 	becomes_inactive string
-	internal_year    string
 }
 
 type Membership struct {
@@ -47,8 +46,8 @@ type Membership struct {
 }
 
 type group_to_super_group struct {
-	super_group 	string
-	group			string
+	super_group string
+	group       string
 }
 
 type Text struct {
@@ -62,8 +61,7 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 	AddDefaultPosts(file)
 	for i := 2; i < len(data); i++ {
 		if strings.Contains(data[i][0], "cn=ordf") || strings.Contains(data[i][0], "cn=kassor") {
-			isSpecialMember[ExtractMember(data[i][8])+ExtractGroupNameUser(data[i][0])] = true
-			fmt.Println(data[i][0])
+			isSpecialMember[ExtractMember(data[i][7])+ExtractGroupNameUser(data[i][0])] = true
 		}
 	}
 	for i := 2; i < len(data); i++ {
@@ -77,7 +75,7 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				id:          GenerateUUID(),
 				name:        data[i-1][2],
 				pretty_name: prettyName,
-				grouptype:   data[i][9],
+				grouptype:   data[i][8],
 			}, file)
 		} else if strings.Contains(data[i][1], "itGroup") {
 			superGroupq1 := strings.SplitAfter(data[i][0], ",ou=")
@@ -112,46 +110,53 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				pretty_name:      data[i][5],
 				description:      descriptionUUID,
 				function:         functionUUID,
-				email:            data[i][7],
+				email:            data[i][11],
 				becomes_active:   "'" + lastYear + "1231'",
 				becomes_inactive: "'" + year + "1231'",
-				internal_year:    year,
 			}, file)
 			writeGroupToSuperGroup(group_to_super_group{
-				super_group:superGroupMap[supergroup],
-				group:groupMap[name],
+				super_group: superGroupMap[supergroup],
+				group:       groupMap[name],
 			}, file)
-			if strings.Contains(data[i][8], "uid") {
-				mems := strings.Split(data[i][8], "uid=")
+			if strings.Contains(data[i][7], "uid") {
+				mems := strings.Split(data[i][7], "uid=")
 				postNameq1 := strings.Split(data[i][10], "|")
-				leng := len(postNameq1)
-				for j := 1; j < len(mems); j++ {
-					fmt.Println(mems[j-1])
-					mems1 := strings.Split(mems[j-1], ",")
+				nPostNames := len(postNameq1)
+				if nPostNames == 1 {
+					nPostNames = 0
+				}
+				i := 0
+				for j := 0; j < len(mems)-1; j++ {
+					mems1 := strings.Split(mems[j], ",")
 					nm := strings.Replace(name, "1", "", -1)
 					nm = strings.Replace(nm, "8", "", -1)
 					nm = strings.Replace(nm, "9", "", -1)
-					if isSpecialMember[mems1[0]+nm] {
-						fmt.Println(mems1[0] + " " + nm)
-						continue
-					}
 					postname := "medlem"
-					if leng > 1 {
-						postNameq2 := strings.Split(postNameq1[j-1], ";")
-						fmt.Println(postNameq2)
+					userName := mems1[0]
+					fmt.Println(nPostNames)
+					fmt.Println(i)
+					if i < nPostNames {
+						fmt.Println(postNameq1[j])
+						postNameq2 := strings.Split(postNameq1[j], ";")
+						if isSpecialMember[strings.Replace(postNameq2[1], " ", "", -1)+nm] {
+							i++
+							continue
+						}
 						postname = postNameq2[0]
-						leng--
+						userName = strings.Replace(postNameq2[1], " ", "", -1)
+						i++
 					}
-					if userMap[mems1[0]] != "" {
+
+					if userMap[userName] != "" {
 						WriteMembership(Membership{
-							ituser_id:           userMap[mems1[0]],
+							ituser_id:           userMap[userName],
 							fkit_group_id:       groupMap[name],
 							post_id:             postMap["member"],
 							unoficial_post_name: postname,
 						}, file)
 					} else {
 						WriteMembershipNoUser(Membership{
-							ituser_id:           mems1[0],
+							ituser_id:           userName,
 							fkit_group_id:       groupMap[name],
 							post_id:             postMap["member"],
 							unoficial_post_name: postname,
@@ -165,14 +170,14 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 
 		if strings.Contains(data[i][0], "cn=ordf") {
 			WriteMembership(Membership{
-				ituser_id:           userMap[ExtractMember(data[i][8])],
+				ituser_id:           userMap[ExtractMember(data[i][7])],
 				fkit_group_id:       groupMap[ExtractGroupNameFromPost(data[i][0])+getYear(ExtractGroupNameFromPost(data[i][0]))],
 				post_id:             postMap["chairman"],
 				unoficial_post_name: data[i][5],
 			}, file)
 		} else if strings.Contains(data[i][0], "cn=kassor") {
 			WriteMembership(Membership{
-				ituser_id:           userMap[ExtractMember(data[i][8])],
+				ituser_id:           userMap[ExtractMember(data[i][7])],
 				fkit_group_id:       groupMap[ExtractGroupNameFromPost(data[i][0])+getYear(ExtractGroupNameFromPost(data[i][0]))],
 				post_id:             postMap["treasurer"],
 				unoficial_post_name: data[i][5],
@@ -219,7 +224,6 @@ func ExtractGroupName(data string) string {
 
 func ExtractGroupNameUser(data string) string {
 	nameq1 := strings.SplitAfter(data, "cn=")
-	fmt.Println(nameq1)
 	nameq2 := strings.Split(nameq1[2], ",ou")
 	return nameq2[0]
 }
@@ -297,7 +301,6 @@ func WriteGroup(group Group, file *os.File) {
 	file.WriteString("'" + group.email + "', ")
 	file.WriteString(group.becomes_active + ", ")
 	file.WriteString(group.becomes_inactive + ", ")
-	file.WriteString("'" + group.internal_year + "'); ")
 	groupMap[group.name] = group.id
 }
 
