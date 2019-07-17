@@ -20,7 +20,7 @@ export function posts(state = [], action) {
                 const newState = [...state];
                 newState[indexPGS] = {
                     ...state[indexPGS],
-                    usages: action.payload.data
+                    ...action.payload.data
                 };
                 return newState;
             }
