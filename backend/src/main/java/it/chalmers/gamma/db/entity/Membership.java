@@ -17,9 +17,6 @@ public class Membership {
     @EmbeddedId
     private MembershipPK id;
 
-    @ManyToOne
-    private Post post;
-
     @Column(name = "unofficial_post_name", length = 100)
     private String unofficialPostName;
 
@@ -31,13 +28,6 @@ public class Membership {
         this.id = id;
     }
 
-    public Post getPost() {
-        return this.post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
-    }
 
     public String getUnofficialPostName() {
         return this.unofficialPostName;
@@ -57,20 +47,18 @@ public class Membership {
         }
         Membership that = (Membership) o;
         return Objects.equals(this.id, that.id)
-            && Objects.equals(this.post, that.post)
             && Objects.equals(this.unofficialPostName, that.unofficialPostName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.post, this.unofficialPostName);
+        return Objects.hash(this.id, this.unofficialPostName);
     }
 
     @Override
     public String toString() {
         return "Membership{"
             + "id=" + this.id
-            + ", post=" + this.post
             + ", unofficialPostName='" + this.unofficialPostName + '\''
             + '}';
     }

@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -27,6 +29,7 @@ public class FKITSuperGroup {
     private String prettyName;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private GroupType type;
 
     public String getEmail() {
