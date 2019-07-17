@@ -11,7 +11,7 @@ var superGroupQuery = "\n insert into fkit_super_group (id, name, pretty_name, e
 var postAddQuery = "\n insert into post (id, post_name) \nvalues "
 var membershipQuery = "\n insert into membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
 var membershipQueryNoUser = "\n insert into no_account_membership (user_name, fkit_group_id, post_id, unofficial_post_name) \nvalues"
-var groupQuery = "\n insert into fkit_group (id, name, pretty_name, description, function, becomes_active, becomes_inactive) \nvalues"
+var groupQuery = "\n insert into fkit_group (id, name, pretty_name, description, function, email, becomes_active, becomes_inactive) \nvalues"
 var TextQuery = "\n insert into internal_text (id, sv, en) \nvalues"
 var groupToSuperGroupQuery = "\n insert into fkit_group_to_super_group (fkit_super_group_id, fkit_group_id) \nvalues"
 
@@ -36,6 +36,7 @@ type Group struct {
 	function         string
 	becomes_active   string
 	becomes_inactive string
+	email            string
 }
 
 type Membership struct {
@@ -65,7 +66,7 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 		}
 	}
 	for i := 2; i < len(data); i++ {
-		if strings.Contains(data[i][1], "organizationalUnit") {
+		if strings.Contains(data[i][1], "organizationalUnit") && data[i][2] != "fkit" {
 			prettyName := data[i][5]
 			if prettyName == "" {
 				prettyName = data[i][2]
@@ -76,7 +77,7 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				name:        data[i-1][2],
 				pretty_name: prettyName,
 				grouptype:   data[i][8],
-				email:       data[i][11],
+				email:       data[i][9],
 			}, file)
 		} else if strings.Contains(data[i][1], "itGroup") {
 			superGroupq1 := strings.SplitAfter(data[i][0], ",ou=")
@@ -111,6 +112,7 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				pretty_name:      data[i][5],
 				description:      descriptionUUID,
 				function:         functionUUID,
+				email:            data[i][9],
 				becomes_active:   "'" + lastYear + "1231'",
 				becomes_inactive: "'" + year + "1231'",
 			}, file)
@@ -134,9 +136,6 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 					nm = strings.Replace(nm, "9", "", -1)
 					postname := "medlem"
 					userName := mems1[0]
-					if isSpecialMember[strings.Replace(userName, " ", "", -1)+nm] {
-						continue
-					}
 					if i < nPostNames {
 						postNameq2 := strings.Split(postNameq1[j], ";")
 						if isSpecialMember[strings.Replace(postNameq2[1], " ", "", -1)+nm] {
@@ -148,8 +147,6 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 						i++
 
 					}
-					fmt.Println(userName)
-					fmt.Println(name)
 					if contains(loggedUsers, userName) {
 						continue
 					}
@@ -170,6 +167,33 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 						}, file)
 					}
 				}
+			}
+		}
+	}
+	for i := 2; i < len(data); i++ {
+		if strings.Contains(data[i][7], "cn=") && data[i][8] == "Alumni" {
+			subGroupsq1 := strings.Split(data[i][7], "|")
+			superGroupName := strings.Replace(strings.Split(data[i][0], ",ou=")[0], "cn=", "", -1)
+			superGroupPrettyName := data[i][5]
+			superGroupId := GenerateUUID()
+			superGroupMail := data[i][9]
+			superGroupType := "ALUMI"
+			WriteSuperGroup(SuperGroup{
+				id:          superGroupId,
+				name:        superGroupName,
+				pretty_name: superGroupPrettyName,
+				email:       superGroupMail,
+				grouptype:   superGroupType,
+			}, file)
+			for j := 0; j < len(subGroupsq1); j++ {
+				subGroupq1 := strings.Split(subGroupsq1[j], ",ou=")[0]
+				subGroupq2 := strings.Replace(subGroupq1, "cn=", "", -1)
+				subGroup := strings.Replace(subGroupq2, " ", "", -1)
+				fmt.Println(subGroup)
+				writeGroupToSuperGroup(group_to_super_group{
+					super_group: superGroupId,
+					group:       groupMap[subGroup],
+				}, file)
 			}
 		}
 	}
@@ -289,13 +313,10 @@ func AddDefaultPosts(file *os.File) {
 }
 
 func getYear(group string) string {
-	if group == "8bit" {
-		return "17"
+	if group == "dpo" || group == "hookit" || group == "revisorer" || group == "valberedningen" {
+		return "18"
 	}
-	if group == "prit" || group == "sexit" {
-		return "19"
-	}
-	return "18"
+	return "19"
 }
 
 func WriteSuperGroup(group SuperGroup, file *os.File) {
@@ -315,6 +336,7 @@ func WriteGroup(group Group, file *os.File) {
 	file.WriteString("'" + group.pretty_name + "', ")
 	file.WriteString("'" + group.description + "', ")
 	file.WriteString("'" + group.function + "', ")
+	file.WriteString("'" + group.email + "', ")
 	file.WriteString(group.becomes_active + ", ")
 	file.WriteString(group.becomes_inactive + "); ")
 	groupMap[group.name] = group.id
