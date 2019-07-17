@@ -59,7 +59,6 @@ class ShowPostDetails extends React.Component {
                 ifRender={() => (
                     <DigitTranslations
                         translations={translations}
-                        uniquePath="Posts.Screen.ShowPostDetails"
                         render={(text, activeLanguage) => (
                             <DigitLayout.Fill>
                                 <DigitLayout.Center>
