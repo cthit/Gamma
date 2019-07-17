@@ -134,6 +134,8 @@ public class FKITGroup {
         return this.description.getEn();
     }
 
+    public String email;
+
     public void setENDescription(String description) {
         this.description.setEn(description);
     }
@@ -163,43 +165,48 @@ public class FKITGroup {
         return now.after(this.becomesActive) && now.before(this.becomesInactive);
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
-    public String toString() {
-        return "FKITGroup{"
-            + "id=" + id
-            + ", avatarURL='" + avatarURL + '\''
-            + ", name='" + name + '\''
-            + ", prettyName='" + prettyName + '\''
-            + ", description=" + description
-            + ", func=" + func
-            + '}';
+    public String
+    toString() {
+        return "FKITGroup{" +
+                "id=" + id +
+                ", avatarURL='" + avatarURL + '\'' +
+                ", name='" + name + '\'' +
+                ", prettyName='" + prettyName + '\'' +
+                ", description=" + description +
+                ", func=" + func +
+                ", becomesActive=" + becomesActive +
+                ", becomesInactive=" + becomesInactive +
+                ", email='" + email + '\'' +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         FKITGroup fkitGroup = (FKITGroup) o;
-        return Objects.equals(this.id, fkitGroup.id)
-            && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
-            && Objects.equals(this.name, fkitGroup.name)
-            && Objects.equals(this.prettyName, fkitGroup.prettyName)
-            && Objects.equals(this.description, fkitGroup.description)
-            && Objects.equals(this.func, fkitGroup.func);
+        return Objects.equals(id, fkitGroup.id) &&
+                Objects.equals(avatarURL, fkitGroup.avatarURL) &&
+                Objects.equals(name, fkitGroup.name) &&
+                Objects.equals(prettyName, fkitGroup.prettyName) &&
+                Objects.equals(description, fkitGroup.description) &&
+                Objects.equals(func, fkitGroup.func) &&
+                Objects.equals(becomesActive, fkitGroup.becomesActive) &&
+                Objects.equals(becomesInactive, fkitGroup.becomesInactive) &&
+                Objects.equals(email, fkitGroup.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            this.id,
-            this.avatarURL,
-            this.name,
-            this.prettyName,
-            this.description,
-            this.func);
+        return Objects.hash(id, avatarURL, name, prettyName, description, func, becomesActive, becomesInactive, email);
     }
 }

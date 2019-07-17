@@ -68,6 +68,7 @@ create table fkit_group (
   function          uuid         not null references internal_text,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
+  email             varchar(100) null,
   avatar_url        varchar(255) null
 );
 

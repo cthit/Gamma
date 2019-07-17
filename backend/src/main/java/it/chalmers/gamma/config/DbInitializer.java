@@ -115,13 +115,14 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
             superGroupRequest.setType(GroupType.COMMITTEE);
-            superGroupRequest.setEmail("admin@chalmers.it");
             String adminMail = "admin@chalmers.it";
+            superGroupRequest.setEmail(adminMail);
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
             request.setFunction(new Text());
             request.setDescription(description);
+            request.setEmail(adminMail);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();

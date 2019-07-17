@@ -33,6 +33,9 @@ public class FKITGroupSerializer {
                 this.properties.contains(Properties.FUNC), value.getFunc(), "function")
         );
         values.add(new SerializerValue(
+                this.properties.contains(Properties.EMAIL), value.getEmail(), "email")
+        );
+        values.add(new SerializerValue(
                 this.properties.contains(Properties.PRETTY_NAME), value.getPrettyName(), "prettyName")
         );
         values.add(new SerializerValue(

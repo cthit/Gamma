@@ -34,6 +34,10 @@ public class CreateGroupRequest {
 
     private String superGroup;
 
+    private String email;
+
+
+
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
     }
@@ -96,47 +100,62 @@ public class CreateGroupRequest {
         this.becomesActive = becomesActive;
     }
 
-    public Calendar getBecomesInactive() {
+    public Calendar getBecomesInactive()
+    {
         return this.becomesInactive;
     }
 
-    public void setBecomesInactive(Calendar becomesInactive) {
+    public void setBecomesInactive(Calendar becomesInactive)
+
+    {
         this.becomesInactive = becomesInactive;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         CreateGroupRequest that = (CreateGroupRequest) o;
-        return this.name.equals(that.name)
-            && this.prettyName.equals(that.prettyName)
-            && this.description.equals(that.description)
-            && this.function.equals(that.function)
-            && this.avatarURL.equals(that.avatarURL)
-            && this.websites.equals(that.websites);
+        return Objects.equals(name, that.name) &&
+                Objects.equals(prettyName, that.prettyName) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(function, that.function) &&
+                Objects.equals(avatarURL, that.avatarURL) &&
+                Objects.equals(websites, that.websites) &&
+                Objects.equals(becomesActive, that.becomesActive) &&
+                Objects.equals(becomesInactive, that.becomesInactive) &&
+                Objects.equals(superGroup, that.superGroup) &&
+                Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.prettyName, this.description,
-             this.function, this.avatarURL, this.websites);
+        return Objects.hash(name, prettyName, description, function, avatarURL, websites, becomesActive, becomesInactive, superGroup, email);
     }
 
     @Override
     public String toString() {
-        return "CreateGroupRequest{"
-            + "name='" + this.name + '\''
-            + ", prettyName='" + this.prettyName + '\''
-            + ", description=" + this.description
-            + ", function=" + this.function
-            + ", avatarURL='" + this.avatarURL + '\''
-            + ", websites=" + this.websites
-            + '}';
+        return "CreateGroupRequest{" +
+                "name='" + name + '\'' +
+                ", prettyName='" + prettyName + '\'' +
+                ", description=" + description +
+                ", function=" + function +
+                ", avatarURL='" + avatarURL + '\'' +
+                ", websites=" + websites +
+                ", becomesActive=" + becomesActive +
+                ", becomesInactive=" + becomesInactive +
+                ", superGroup='" + superGroup + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 
     public static class WebsiteInfo {
