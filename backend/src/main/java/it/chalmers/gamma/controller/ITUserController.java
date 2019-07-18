@@ -237,7 +237,7 @@ public final class ITUserController {
         return new EditedProfilePicture();
     }
 
-    @RequestMapping(value = "/me/change_password")
+    @RequestMapping(value = "/me/change_password", method = RequestMethod.PUT)
     public ResponseEntity<String> changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
                                                  BindingResult result) {
         if(result.hasErrors()) {
