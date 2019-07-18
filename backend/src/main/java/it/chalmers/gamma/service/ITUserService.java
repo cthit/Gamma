@@ -175,7 +175,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public boolean passwordMatches(ITUser user, String password) {
-        return passwordEncoder.matches(password, user.getPassword());
+        return this.passwordEncoder.matches(password, user.getPassword());
     }
 
 }

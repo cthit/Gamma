@@ -240,15 +240,15 @@ public final class ITUserController {
     @RequestMapping(value = "/me/change_password", method = RequestMethod.PUT)
     public ResponseEntity<String> changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
                                                  BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         String cid = principal.getName();
         ITUser user = this.itUserService.loadUser(cid);
-        if(user == null) {
+        if (user == null) {
             throw new UserNotFoundResponse();
         }
-        if(!this.itUserService.passwordMatches(user, request.getOldPassword())) {
+        if (!this.itUserService.passwordMatches(user, request.getOldPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
         this.itUserService.setPassword(user, request.getNewPassword());

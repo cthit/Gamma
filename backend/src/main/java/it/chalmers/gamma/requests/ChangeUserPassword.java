@@ -1,8 +1,8 @@
 package it.chalmers.gamma.requests;
 
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class ChangeUserPassword {
 
@@ -15,7 +15,7 @@ public class ChangeUserPassword {
     private String newPassword;
 
     public String getOldPassword() {
-        return oldPassword;
+        return this.oldPassword;
     }
 
     public void setOldPassword(String oldPassword) {
@@ -23,7 +23,7 @@ public class ChangeUserPassword {
     }
 
     public String getNewPassword() {
-        return newPassword;
+        return this.newPassword;
     }
 
     public void setNewPassword(String newPassword) {
@@ -39,20 +39,20 @@ public class ChangeUserPassword {
             return false;
         }
         ChangeUserPassword that = (ChangeUserPassword) o;
-        return Objects.equals(oldPassword, that.oldPassword) &&
-                Objects.equals(newPassword, that.newPassword);
+        return Objects.equals(this.oldPassword, that.oldPassword)
+                && Objects.equals(this.newPassword, that.newPassword);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(oldPassword, newPassword);
+        return Objects.hash(this.oldPassword, this.newPassword);
     }
 
     @Override
     public String toString() {
-        return "ChangeUserPassword{" +
-                "oldPassword='" + oldPassword + '\'' +
-                ", newPassword='" + newPassword + '\'' +
-                '}';
+        return "ChangeUserPassword{"
+                + "oldPassword='" + this.oldPassword + '\''
+                + ", newPassword='" + this.newPassword + '\''
+                + '}';
     }
 }
