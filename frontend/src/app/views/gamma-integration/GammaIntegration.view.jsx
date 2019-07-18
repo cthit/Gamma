@@ -16,14 +16,14 @@ class GammaIntegration extends React.Component {
             params.append("client_id", id);
             params.append(
                 "redirect_uri",
-                (process.env.REDIRECT_URI || "http://localhost:3000") + "/login"
+                (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") + "/login"
             );
             params.append("code", code);
             props.startedFetchingAccessToken();
 
             const path =
-                process.env.REACT_APP_BACKEND_URL ||
-                "http://localhost:8081/api";
+                (process.env.REACT_APP_BACKEND_URL ||
+                "http://localhost:8081/api");
 
             const c = Buffer.from(id + ":" + secret).toString("base64");
 
@@ -46,8 +46,7 @@ class GammaIntegration extends React.Component {
                         props.finishedFetchingAccessToken();
                     });
             }
-        }
-        else {
+        } else {
             props.redirectTo("/");
         }
     }

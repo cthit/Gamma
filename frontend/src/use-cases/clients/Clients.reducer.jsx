@@ -1,7 +1,7 @@
 import {
     CLIENT_GET_SUCCESSFULLY,
     CLIENTS_LOAD_SUCCESSFULLY
-} from "../../api/clients/actions.clients.api"
+} from "../../api/clients/actions.clients.api";
 
 export function clients(state = [], action) {
     switch (action.type) {

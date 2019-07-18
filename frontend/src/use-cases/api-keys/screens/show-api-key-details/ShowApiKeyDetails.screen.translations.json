@@ -1,11 +1,16 @@
 {
-  "Name":               ["Name", "Namn"],
-  "Id":                 ["Id", "Id"],
-  "Key":                ["Key", "Nyckel"],
-  "DeleteApiKey":       ["Delete API key", "Radera API nyckel"],
-  "Delete":             ["Delete", "Radera"],
-  "Cancel":             ["Cancel", "Avbryt"],
-  "DeleteSuccessfully": ["Successfully deleted API key", "Lyckades Radera API nyckeln"],
-  "DeleteFailed":       ["Something went wrong when trying to delete the API key",
-                         "Något gick fel under bortagandet av API nyckeln"]
+    "Name": ["Name", "Namn"],
+    "Id": ["Id", "Id"],
+    "Key": ["Key", "Nyckel"],
+    "DeleteApiKey": ["Delete API key", "Radera API nyckel"],
+    "Delete": ["Delete", "Radera"],
+    "Cancel": ["Cancel", "Avbryt"],
+    "DeleteSuccessfully": [
+        "Successfully deleted API key",
+        "Lyckades Radera API nyckeln"
+    ],
+    "DeleteFailed": [
+        "Something went wrong when trying to delete the API key",
+        "Något gick fel under bortagandet av API nyckeln"
+    ]
 }

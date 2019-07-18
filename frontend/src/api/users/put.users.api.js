@@ -11,5 +11,8 @@ export function editUser(userId, newUserData) {
 }
 
 export function editPassword(userId, passwordData) {
-    return putRequest(ADMIN_USERS_ENDPOINT + userId + "/change_password/", passwordData);
+    return putRequest(
+        ADMIN_USERS_ENDPOINT + userId + "/change_password/",
+        passwordData
+    );
 }

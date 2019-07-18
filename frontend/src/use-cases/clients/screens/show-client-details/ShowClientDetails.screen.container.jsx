@@ -1,20 +1,23 @@
 import {
     DigitRedirectActions,
     DigitDialogActions,
-    DigitToastActions,
+    DigitToastActions
 } from "@cthit/react-digit-components";
 import { connect } from "react-redux";
 import ShowClientDetails from "./ShowClientDetails.screen";
 import _ from "lodash";
-import { gammaLoadingFinished, gammaLoadingStart } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import {
+    gammaLoadingFinished,
+    gammaLoadingStart
+} from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import {
     createGetClientAction,
-    createDeleteClientAction,
+    createDeleteClientAction
 } from "../../../../api/clients/action-creator.clients.api";
 
 const mapStateToProps = (state, ownProps) => ({
-    client: _.find(state.clients, {id: ownProps.match.params.id}),
-    clientId: ownProps.match.params.id,
+    client: _.find(state.clients, { id: ownProps.match.params.id }),
+    clientId: ownProps.match.params.id
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -26,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
-    gammaLoadingStart: () => dispatch(gammaLoadingStart()),
+    gammaLoadingStart: () => dispatch(gammaLoadingStart())
 });
 
 export default connect(

@@ -13,10 +13,10 @@ const mapDispatchToProps = dispatch => ({
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     sendPasswordReset: cid => dispatch(resetPasswordInitalize(cid)),
     redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
-    toastOpen: data => dispatch(DigitToastActions.digitToastOpen(data)),
+    toastOpen: data => dispatch(DigitToastActions.digitToastOpen(data))
 });
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(ResetPasswordInitialize);

@@ -37,7 +37,7 @@ security:
     token:
       secret-key: ${JWT_SECRET_KEY:jwtkey} # This is only for Development, should also be a secret one for Production
       expire-length: ${JWT_EXPIRE_LENGTH:2592000000} #One Month. Subject to change.
-      issuer: http://localhost:9090
+      issuer: ${JWT_ISSUER:http://localhost:9090}
 
 
 

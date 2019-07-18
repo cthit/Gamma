@@ -7,7 +7,7 @@ import {
     DigitTextField,
     DigitForm,
     DigitButton,
-    DigitIfElseRendering,
+    DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import * as yup from "yup";
 import translations from "./ChangeUserPassword.element.translations";
@@ -15,30 +15,31 @@ import translations from "./ChangeUserPassword.element.translations";
 const ChangeUserPassword = ({ user, onSubmit, renderOldPassword }) => (
     <DigitTranslations
         translations={translations}
-        render={(text) => (
+        render={text => (
             <DigitLayout.MarginTop>
                 <DigitLayout.Center>
                     <DigitForm
                         validationSchema={yup.object().shape({
-                            oldPassword: yup
-                                .string(),
+                            oldPassword: yup.string(),
                             password: yup
                                 .string()
                                 .min(8, text.MinimumLength)
                                 .required(text.FieldRequired),
                             confirmNewPassword: yup
                                 .string()
-                                .oneOf([yup.ref("password")],
-                                    text.PasswordDoNotMatch)
-                                .required(text.FieldRequired),
+                                .oneOf(
+                                    [yup.ref("password")],
+                                    text.PasswordDoNotMatch
+                                )
+                                .required(text.FieldRequired)
                         })}
                         initialValues={{
                             oldPassword: "",
                             password: "",
-                            confirmNewPassword: "",
+                            confirmNewPassword: ""
                         }}
                         onSubmit={onSubmit}
-                        render={({errors, touched}) => (
+                        render={({ errors, touched }) => (
                             <DigitDesign.Card
                                 absWidth="300px"
                                 absHeight="370px"
@@ -55,9 +56,10 @@ const ChangeUserPassword = ({ user, onSubmit, renderOldPassword }) => (
                                                     name="oldPassword"
                                                     component={DigitTextField}
                                                     componentProps={{
-                                                        upperLabel: text.OldPassword,
+                                                        upperLabel:
+                                                            text.OldPassword,
                                                         password: true,
-                                                        outlined: true,
+                                                        outlined: true
                                                     }}
                                                 />
                                             )}
@@ -69,23 +71,22 @@ const ChangeUserPassword = ({ user, onSubmit, renderOldPassword }) => (
                                             componentProps={{
                                                 upperLabel: text.NewPassword,
                                                 password: true,
-                                                outlined: true,
+                                                outlined: true
                                             }}
                                         />
                                         <DigitFormField
                                             name="confirmNewPassword"
                                             component={DigitTextField}
                                             componentProps={{
-                                                upperLabel: text.ConfirmNewPassword,
+                                                upperLabel:
+                                                    text.ConfirmNewPassword,
                                                 password: true,
-                                                outlined: true,
+                                                outlined: true
                                             }}
                                         />
                                     </DigitLayout.Center>
                                 </DigitDesign.CardBody>
-                                <DigitDesign.CardButtons
-                                    reverseDirection
-                                >
+                                <DigitDesign.CardButtons reverseDirection>
                                     <DigitButton
                                         text={text.ChangePassword}
                                         primary
@@ -98,8 +99,7 @@ const ChangeUserPassword = ({ user, onSubmit, renderOldPassword }) => (
                     />
                 </DigitLayout.Center>
             </DigitLayout.MarginTop>
-        )
-        }
+        )}
     />
 );
 

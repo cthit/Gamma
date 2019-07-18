@@ -4,7 +4,6 @@ import ResetPasswordInitialize from "./screens/reset-password-initalize";
 import ResetPasswordFinish from "./screens/reset-password-finish";
 
 class ResetPassword extends React.Component {
-
     render() {
         return (
             <Switch>

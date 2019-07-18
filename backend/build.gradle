@@ -7,9 +7,9 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
-        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
-        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.+'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.+'
+        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.+'
         classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
     }
 }
@@ -50,26 +50,26 @@ dependencies {
         'com.github.spotbugs:spotbugs-annotations:3.1.8'
     )
 
-	compile('com.google.api-client:google-api-client:1.23.0')
-	compile('com.google.apis:google-api-services-gmail:v1-rev83-1.23.0')
+	compile('com.google.api-client:google-api-client:1.30.2')
+	compile('com.google.apis:google-api-services-gmail:v1-rev105-1.25.0')
 	compile('org.springframework.boot:spring-boot-starter-actuator')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-mail')
-	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.RELEASE')
+	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.6.RELEASE')
 	compile('org.springframework.boot:spring-boot-starter-web')
     compile('com.sun.xml.bind:jaxb-impl:2.2.11')
 	compile('com.sun.xml.bind:jaxb-core:2.2.11')
-	compile('javax.xml.bind:jaxb-api:2.3.0')
+	compile('javax.xml.bind:jaxb-api:2.3.1')
 	compile('javax.activation:activation:1.1.1')
-	compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 	compile group: 'com.h2database', name: 'h2', version: '1.4.199'
-	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
     compile('org.flywaydb:flyway-core:5.2.4')
     compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile 'io.jsonwebtoken:jjwt:0.9.1'
 
-    compile "org.apache.httpcomponents:httpmime:4.5.7"
+    compile "org.apache.httpcomponents:httpmime:4.5.9"
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('org.postgresql:postgresql')
 
