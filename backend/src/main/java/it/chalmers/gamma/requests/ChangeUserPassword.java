@@ -7,12 +7,12 @@ import javax.validation.constraints.Size;
 public class ChangeUserPassword {
 
     @Size(min = 8, message = "OLD_PASSWORD_TOO_SHORT")
-    @NotNull
+    @NotNull(message = "OLD_PASSWORD_MUST_NOT_BE_NULL")
     private String oldPassword;
 
     @Size(min = 8, message = "NEW_PASSWORD_TOO_SHORT")
-    @NotNull
-    private String newPassword;
+    @NotNull(message = "PASSWORD_MUST_NOT_BE_NULL")
+    private String password;
 
     public String getOldPassword() {
         return this.oldPassword;
@@ -22,12 +22,12 @@ public class ChangeUserPassword {
         this.oldPassword = oldPassword;
     }
 
-    public String getNewPassword() {
-        return this.newPassword;
+    public String getPassword() {
+        return this.password;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -40,19 +40,19 @@ public class ChangeUserPassword {
         }
         ChangeUserPassword that = (ChangeUserPassword) o;
         return Objects.equals(this.oldPassword, that.oldPassword)
-                && Objects.equals(this.newPassword, that.newPassword);
+                && Objects.equals(this.password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.oldPassword, this.newPassword);
+        return Objects.hash(this.oldPassword, this.password);
     }
 
     @Override
     public String toString() {
         return "ChangeUserPassword{"
                 + "oldPassword='" + this.oldPassword + '\''
-                + ", newPassword='" + this.newPassword + '\''
+                + ", password='" + this.password + '\''
                 + '}';
     }
 }

@@ -251,7 +251,7 @@ public final class ITUserController {
         if (!this.itUserService.passwordMatches(user, request.getOldPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
-        this.itUserService.setPassword(user, request.getNewPassword());
+        this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
 
