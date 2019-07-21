@@ -67,8 +67,7 @@ public class FKITSuperGroup {
         return this.type;
     }
 
-    public void setType(GroupType type)
-    {
+    public void setType(GroupType type) {
         this.type = type;
     }
 
