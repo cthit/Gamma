@@ -13,7 +13,8 @@ const mapStateToProps = (state, ownProps) => ({
     loading: state.loading,
     userLoaded: state.user.loaded,
     loggedIn: state.user.loggedIn,
-    fetchingAccessToken: state.gammaIntegration.fetchingAccessToken
+    fetchingAccessToken: state.gammaIntegration.fetchingAccessToken,
+    errorLoadingUser: state.user.errorLoadingUser
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -114,7 +114,10 @@ function clientGetLoading() {
 function clientGetSuccessfully(response) {
     return {
         type: CLIENT_GET_SUCCESSFULLY,
-        error: false
+        error: false,
+        payload: {
+            data: response.data
+        }
     };
 }
 

@@ -23,7 +23,7 @@ public class ITUserSerializer {
 
     public static List<JSONObject> getGroupsAsJson(List<Membership> memberships) {
         FKITGroupSerializer groupSerializer = new FKITGroupSerializer(Arrays.asList(
-                FKITGroupSerializer.Properties.ID,
+                FKITGroupSerializer.Properties.GROUP_ID,
                 FKITGroupSerializer.Properties.NAME,
                 FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.SUPER_GROUP));
@@ -41,7 +41,7 @@ public class ITUserSerializer {
         values.add(serializeValue(Properties.ID, value.getId(), "id"));
         values.add(serializeValue(Properties.AVATAR_URL, value.getAvatarUrl(), "avatarUrl"));
         values.add(serializeValue(Properties.CID, value.getCid(), "cid"));
-        values.add(serializeValue(Properties.NICK, value.getNick(), "nickname"));
+        values.add(serializeValue(Properties.NICK, value.getNick(), "nick"));
         values.add(serializeValue(Properties.FIRST_NAME, value.getFirstName(), "firstName"));
         values.add(serializeValue(Properties.LAST_NAME, value.getLastName(), "lastName"));
         values.add(serializeValue(Properties.EMAIL, value.getEmail(), "email"));
@@ -55,6 +55,7 @@ public class ITUserSerializer {
         values.add(serializeValue(Properties.WEBSITE, websites, "websites"));
         values.add(serializeValue(Properties.AUTHORITIES, value.getAuthorities(), "authorities"));
         values.add(serializeValue(Properties.GROUPS, groups, "groups"));
+        values.add(serializeValue(Properties.GDPR, value.isGdpr(), "gdpr"));
         return SerializerUtils.serialize(values, false);
     }
 
@@ -79,7 +80,8 @@ public class ITUserSerializer {
         LAST_MODIFIED_AT,
         AUTHORITIES,
         WEBSITE,
-        GROUPS;
+        GROUPS,
+        GDPR;
 
         public static List<ITUserSerializer.Properties> getAllProperties() {
             ITUserSerializer.Properties[] props = {
@@ -99,7 +101,9 @@ public class ITUserSerializer {
                 LAST_MODIFIED_AT,
                 AUTHORITIES,
                 WEBSITE,
-                GROUPS
+                GROUPS,
+                GDPR
+
             };
             return new ArrayList<>(Arrays.asList(props));
         }

@@ -13,33 +13,7 @@ import javax.annotation.Nullable;
 import org.json.simple.JSONObject;
 
 public class FKITGroupSerializer {
-
-    public enum Properties {
-        ID,
-        AVATAR_URL,
-        NAME,
-        PRETTY_NAME,
-        DESCRIPTION,
-        FUNC,
-        EMAIL,
-        TYPE,
-        WEBSITES,
-        USERS,
-        SUPER_GROUP;
-
-        public static List<Properties> getAllProperties() {
-            Properties[] props = {
-                ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
-            };
-            return new ArrayList<>(Arrays.asList(props));
-        }
-    }
-
     private final List<Properties> properties;
-
-    public FKITGroupSerializer(List<Properties> properties) {
-        this.properties = new ArrayList<>(properties);
-    }
 
     public JSONObject serialize(
             FKITGroup value,
@@ -47,7 +21,7 @@ public class FKITGroupSerializer {
             @Nullable List<WebsiteView> websites) {
         List<SerializerValue> values = new ArrayList<>();
         values.add(new SerializerValue(
-                this.properties.contains(Properties.ID), value.getId(), "id")
+                this.properties.contains(Properties.GROUP_ID), value.getId(), "id")
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.NAME), value.getName(), "name")
@@ -75,5 +49,30 @@ public class FKITGroupSerializer {
         );
         return SerializerUtils.serialize(values, false);
 
+    }
+
+    public FKITGroupSerializer(List<Properties> properties) {
+        this.properties = new ArrayList<>(properties);
+    }
+
+    public enum Properties {
+        GROUP_ID,
+        AVATAR_URL,
+        NAME,
+        PRETTY_NAME,
+        DESCRIPTION,
+        FUNC,
+        EMAIL,
+        TYPE,
+        WEBSITES,
+        USERS,
+        SUPER_GROUP;
+
+        public static List<Properties> getAllProperties() {
+            Properties[] props = {
+                GROUP_ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
+            };
+            return new ArrayList<>(Arrays.asList(props));
+        }
     }
 }

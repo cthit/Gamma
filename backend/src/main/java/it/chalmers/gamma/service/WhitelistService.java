@@ -67,8 +67,8 @@ public class WhitelistService {
     /**
      * gets whitelist object by id.
      *
-     * @param id the ID of the whitelist object to get
-     * @return the whitelist object that has corresponding ID
+     * @param id the GROUP_ID of the whitelist object to get
+     * @return the whitelist object that has corresponding GROUP_ID
      */
     public Whitelist getWhitelistById(String id) {
         Optional<Whitelist> whitelist = this.whitelistRepository.findById(UUID.fromString(id));

@@ -10,9 +10,9 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    logout: loggedOutText => dispatch(userLogout(loggedOutText)),
     toastOpen: toastData =>
-        dispatch(DigitToastActions.digitToastOpen(toastData))
+        dispatch(DigitToastActions.digitToastOpen(toastData)),
+    logout: () => dispatch(userLogout())
 });
 
 export default connect(

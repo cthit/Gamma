@@ -1,10 +1,14 @@
 {
-    "FirstName": ["First name", "Förnamn"],
-    "LastName": ["Last name", "Efternamn"],
-    "Id": ["Id", "Id"],
-    "Checkbox": ["Choose users", "Välj användare"],
-    "UsersFor": ["Users for ", "Användare för "],
-    "Link": ["Details", "Detaljer"],
-    "UnsavedEdits": ["You have unsaved edits", "Du har osparade ändringar"],
-    "Nickname": ["Nickname", "Nick"]
+    "SelectMembers": [
+        "Select members for the group",
+        "Välj medlemmar för gruppen"
+    ],
+    "SetPostNames": [
+        "Set post names for members",
+        "Sätt postnamn för medlemmarna"
+    ],
+    "ReviewChanges": [
+        "Review changes before saving",
+        "Granska ändringar innan du sparar"
+    ]
 }

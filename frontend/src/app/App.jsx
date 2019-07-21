@@ -1,14 +1,16 @@
 import {
+    DigitButton,
     DigitContainUser,
+    DigitDesign,
     DigitDialog,
     DigitHeader,
     DigitIfElseRendering,
     DigitLayout,
     DigitNavLink,
     DigitRedirect,
+    DigitText,
     DigitToast,
-    DigitTranslations,
-    DigitRedirectExternal
+    DigitTranslations
 } from "@cthit/react-digit-components";
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
@@ -21,6 +23,7 @@ import Home from "../use-cases/home";
 import Posts from "../use-cases/posts";
 import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
+import ApiKeys from "../use-cases/api-keys";
 import Websites from "../use-cases/websites";
 import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
@@ -29,10 +32,12 @@ import GammaLoading from "./views/gamma-loading";
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
-
+import Me from "../use-cases/me";
+import ResetPassword from "../use-cases/reset-password";
 export class App extends Component {
     state = {
-        lastPath: "/"
+        lastPath: "/",
+        tryAgainButtonDisabled: false
     };
 
     constructor(props) {
@@ -57,11 +62,16 @@ export class App extends Component {
     }
 
     render() {
-        const baseUrl = "http://localhost:8081/api/oauth/authorize";
+        const baseUrl =
+            (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") +
+            "/oauth/authorize";
         const responseType = "response_type=code";
         const clientId =
             "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
-        const redirectUri = "redirect_uri=http://localhost:3000/login";
+        const redirectUri =
+            "redirect_uri=" +
+            (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") +
+            "/login";
 
         const loginRedirect =
             baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri;
@@ -70,6 +80,7 @@ export class App extends Component {
 
         const drawer = closeDrawer => (
             <DigitLayout.Column padding="0">
+                <DigitNavLink onClick={closeDrawer} text="Me" link="/me" />
                 <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
                 <DigitNavLink
                     onClick={closeDrawer}
@@ -106,7 +117,7 @@ export class App extends Component {
                     text="Websites"
                     link="/websites"
                 />
-                <DigitNavLink onClick={closeDrawer} text="Gdpr" link="/gdpr" />
+                <DigitNavLink onClick={closeDrawer} text="GDPR" link="/gdpr" />
                 <DigitNavLink
                     onClick={closeDrawer}
                     text="Activation codes"
@@ -114,8 +125,13 @@ export class App extends Component {
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text={"Clients"}
-                    link={"/clients"}
+                    text="Clients"
+                    link="/clients"
+                />
+                <DigitNavLink
+                    onClick={closeDrawer}
+                    text="Api Keys"
+                    link="/api_keys"
                 />
             </DigitLayout.Column>
         );
@@ -128,14 +144,22 @@ export class App extends Component {
             />
         );
 
-        var { loggedIn, userLoaded, loading, fetchingAccessToken } = this.props;
+        var {
+            loggedIn,
+            userLoaded,
+            loading,
+            fetchingAccessToken,
+            errorLoadingUser,
+            userUpdateMe
+        } = this.props;
+
+        const { tryAgainButtonDisabled } = this.state;
 
         loggedIn = loggedIn != null ? loggedIn : false;
         userLoaded = userLoaded != null ? userLoaded : false;
 
         return (
             <DigitTranslations
-                uniquePath="App"
                 translations={appTranslations}
                 render={text => (
                     <DigitHeader
@@ -146,132 +170,206 @@ export class App extends Component {
                         renderHeader={header}
                         renderMain={() => (
                             <DigitLayout.Fill>
-                                <DigitTranslations
-                                    translations={appTranslations}
-                                    uniquePath="App"
-                                    render={text => (
-                                        <DigitIfElseRendering
-                                            test={!loggedIn && userLoaded}
-                                            ifRender={() => (
-                                                <Route
-                                                    render={props => (
-                                                        <DigitContainUser
-                                                            currentPath={
-                                                                props.location
-                                                                    .pathname
-                                                            }
-                                                            allowedBasePaths={[
-                                                                "/create-account",
-                                                                "/reset-password"
-                                                            ]}
-                                                            to={loginRedirect}
-                                                            externalRedirect
-                                                        />
-                                                    )}
+                                <DigitIfElseRendering
+                                    test={errorLoadingUser}
+                                    ifRender={() => (
+                                        <DigitLayout.Center>
+                                            <DigitDesign.Card absWidth="300px">
+                                                <DigitDesign.CardTitle
+                                                    text={text.BackendDownTitle}
                                                 />
-                                            )}
-                                        />
+                                                <DigitDesign.CardHeaderImage src="/theofficeno.gif" />
+                                                <DigitDesign.CardBody>
+                                                    <DigitText.Text
+                                                        text={text.BackendDown}
+                                                    />
+                                                </DigitDesign.CardBody>
+                                                <DigitDesign.CardButtons
+                                                    reverseDirection
+                                                >
+                                                    <DigitButton
+                                                        disabled={
+                                                            tryAgainButtonDisabled
+                                                        }
+                                                        text={text.TryAgain}
+                                                        primary
+                                                        raised
+                                                        onClick={() => {
+                                                            this.setState({
+                                                                tryAgainButtonDisabled: true
+                                                            });
+                                                            userUpdateMe()
+                                                                .then(() =>
+                                                                    this.setState(
+                                                                        {
+                                                                            tryAgainButtonDisabled: false
+                                                                        }
+                                                                    )
+                                                                )
+                                                                .catch(() =>
+                                                                    this.setState(
+                                                                        {
+                                                                            tryAgainButtonDisabled: false
+                                                                        }
+                                                                    )
+                                                                );
+                                                        }}
+                                                    />
+                                                </DigitDesign.CardButtons>
+                                            </DigitDesign.Card>
+                                        </DigitLayout.Center>
+                                    )}
+                                    elseRender={() => (
+                                        <>
+                                            <DigitLayout.HideFill
+                                                hidden={!loading}
+                                            >
+                                                <DigitLayout.Center>
+                                                    <GammaLoading />
+                                                </DigitLayout.Center>
+                                            </DigitLayout.HideFill>
+
+                                            <DigitRedirect window={window} />
+                                            <DigitDialog />
+                                            <DigitToast />
+
+                                            <Route
+                                                render={props => {
+                                                    this.onRouteChanged(props);
+                                                    return null;
+                                                }}
+                                            />
+
+                                            <DigitLayout.HideFill
+                                                hidden={loading}
+                                            >
+                                                <DigitLayout.Padding>
+                                                    <Switch>
+                                                        <Route
+                                                            path="/login"
+                                                            render={() => (
+                                                                <GammaIntegration />
+                                                            )}
+                                                        />
+                                                        <Route
+                                                            path="/clients"
+                                                            component={Clients}
+                                                        />
+                                                        <Route
+                                                            path="/users"
+                                                            component={Users}
+                                                        />
+                                                        <Route
+                                                            path="/groups"
+                                                            component={Groups}
+                                                        />
+                                                        <Route
+                                                            path="/create-account"
+                                                            component={
+                                                                CreateAccount
+                                                            }
+                                                        />
+                                                        <Route
+                                                            path="/whitelist"
+                                                            component={
+                                                                Whitelist
+                                                            }
+                                                        />
+                                                        <Route
+                                                            path="/posts"
+                                                            component={Posts}
+                                                        />
+                                                        <Route
+                                                            path="/websites"
+                                                            component={Websites}
+                                                        />
+                                                        <Route
+                                                            path="/activation-codes"
+                                                            component={
+                                                                ActivationCodes
+                                                            }
+                                                        />
+                                                        <Route
+                                                            path="/gdpr"
+                                                            component={Gdpr}
+                                                        />
+                                                        <Route
+                                                            path="/clients"
+                                                            component={Clients}
+                                                        />
+                                                        <Route
+                                                            path="/api_keys"
+                                                            component={ApiKeys}
+                                                        />
+                                                        <Route
+                                                            path="/super-groups"
+                                                            component={
+                                                                SuperGroups
+                                                            }
+                                                        />
+                                                        <Route
+                                                            path={"/me"}
+                                                            component={Me}
+                                                        />
+                                                        <Route
+                                                            path="/reset-password"
+                                                            component={
+                                                                ResetPassword
+                                                            }
+                                                        />
+                                                        <Route
+                                                            path="/"
+                                                            render={props => (
+                                                                <DigitIfElseRendering
+                                                                    test={
+                                                                        !loading &&
+                                                                        !loggedIn &&
+                                                                        userLoaded &&
+                                                                        !fetchingAccessToken
+                                                                    }
+                                                                    ifRender={() => (
+                                                                        <>
+                                                                            {props
+                                                                                .location
+                                                                                .pathname ===
+                                                                                "/" &&
+                                                                                window.location.replace(
+                                                                                    loginRedirect
+                                                                                )}
+                                                                            <DigitContainUser
+                                                                                currentPath={
+                                                                                    props
+                                                                                        .location
+                                                                                        .pathname
+                                                                                }
+                                                                                allowedBasePaths={[
+                                                                                    "/create-account",
+                                                                                    "/reset-password"
+                                                                                ]}
+                                                                                to={
+                                                                                    loginRedirect
+                                                                                }
+                                                                                externalRedirect
+                                                                            />
+                                                                        </>
+                                                                    )}
+                                                                    elseRender={() => (
+                                                                        <Home />
+                                                                    )}
+                                                                />
+                                                            )}
+                                                        />
+                                                        <Route
+                                                            component={
+                                                                FourOFour
+                                                            }
+                                                        />
+                                                    </Switch>
+                                                </DigitLayout.Padding>
+                                            </DigitLayout.HideFill>
+                                        </>
                                     )}
                                 />
-
-                                <DigitLayout.HideFill hidden={!loading}>
-                                    <DigitLayout.Center>
-                                        <GammaLoading />
-                                    </DigitLayout.Center>
-                                </DigitLayout.HideFill>
-
-                                <DigitRedirect window={window} />
-                                <DigitDialog />
-                                <DigitToast />
-
-                                <Route
-                                    render={props => {
-                                        this.onRouteChanged(props);
-                                        return null;
-                                    }}
-                                />
-
-                                <DigitLayout.HideFill hidden={loading}>
-                                    <DigitLayout.Padding>
-                                        <Switch>
-                                            <Route
-                                                path="/login"
-                                                render={() => (
-                                                    <GammaIntegration />
-                                                )}
-                                            />
-                                            <Route
-                                                path="/clients"
-                                                component={Clients}
-                                            />
-                                            <Route
-                                                path="/users"
-                                                component={Users}
-                                            />
-                                            <Route
-                                                path="/groups"
-                                                component={Groups}
-                                            />
-                                            <Route
-                                                path="/create-account"
-                                                component={CreateAccount}
-                                            />
-                                            <Route
-                                                path="/whitelist"
-                                                component={Whitelist}
-                                            />
-                                            <Route
-                                                path="/posts"
-                                                component={Posts}
-                                            />
-                                            <Route
-                                                path="/websites"
-                                                component={Websites}
-                                            />
-                                            <Route
-                                                path="/activation-codes"
-                                                component={ActivationCodes}
-                                            />
-                                            <Route
-                                                path="/gdpr"
-                                                component={Gdpr}
-                                            />
-                                            <Route
-                                                path="/clients"
-                                                component={Clients}
-                                            />
-                                            <Route
-                                                path="/super-groups"
-                                                component={SuperGroups}
-                                            />
-                                            <Route
-                                                path="/"
-                                                render={() => (
-                                                    <DigitIfElseRendering
-                                                        test={
-                                                            !loading &&
-                                                            !loggedIn &&
-                                                            userLoaded &&
-                                                            !fetchingAccessToken
-                                                        }
-                                                        ifRender={() => (
-                                                            <DigitRedirectExternal
-                                                                window={window}
-                                                                to={
-                                                                    loginRedirect
-                                                                }
-                                                            />
-                                                        )}
-                                                        elseRender={() => (
-                                                            <Home />
-                                                        )}
-                                                    />
-                                                )}
-                                            />
-                                            <Route component={FourOFour} />
-                                        </Switch>
-                                    </DigitLayout.Padding>
-                                </DigitLayout.HideFill>
                             </DigitLayout.Fill>
                         )}
                     />

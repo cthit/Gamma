@@ -8,24 +8,17 @@ import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
-import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
-import it.chalmers.gamma.requests.ResetPasswordRequest;
-import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordChangedResponse;
-import it.chalmers.gamma.response.PasswordResetResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
 import java.time.Year;
@@ -51,27 +44,24 @@ public final class UsersAdminController {
 
     private final ITUserService itUserService;
     private final UserWebsiteService userWebsiteService;
-    private final PasswordResetService passwordResetService;
-    private final MailSenderService mailSenderService;
+
+
     private final MembershipService membershipService;
 
     public UsersAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
-            PasswordResetService passwordResetService,
-            MailSenderService mailSenderService,
             MembershipService membershipService) {
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
-        this.passwordResetService = passwordResetService;
-        this.mailSenderService = mailSenderService;
+
         this.membershipService = membershipService;
     }
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
     public ResponseEntity<String> changePassword(
-            @Valid @PathVariable("id") String id, BindingResult result,
-            @RequestBody AdminChangePasswordRequest request) {
+            @PathVariable("id") String id,
+            @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -85,7 +75,11 @@ public final class UsersAdminController {
 
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editUser(@PathVariable("id") String id, @RequestBody EditITUserRequest request) {
+    public ResponseEntity<String> editUser(@PathVariable("id") String id,
+                                           @Valid @RequestBody EditITUserRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
         if (!this.itUserService.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
@@ -123,7 +117,11 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JSONObject getUser(@PathVariable("id") String id) {
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
+        try {
+            if (!this.itUserService.userExists(UUID.fromString(id))) {
+                throw new UserNotFoundResponse();
+            }
+        } catch (IllegalArgumentException e) {
             throw new UserNotFoundResponse();
         }
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
@@ -181,52 +179,6 @@ public final class UsersAdminController {
         return new UserCreatedResponse();
     }
 
-    //TODO MOVE THIS TO ITUSERCONTROLLER
-    @RequestMapping(value = "/reset_password", method = RequestMethod.POST)
-    public ResponseEntity<String> resetPasswordRequest(
-            @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-        if (!this.itUserService.userExists(request.getCid())) {
-            throw new UserNotFoundResponse();
-        }
-        ITUser user = this.itUserService.loadUser(request.getCid());
-        String token = TokenUtils.generateToken();
-        if (this.passwordResetService.userHasActiveReset(user)) {
-            this.passwordResetService.editToken(user, token);
-        } else {
-            this.passwordResetService.addToken(user, token);
-        }
-        sendMail(user, token);
-        return new PasswordResetResponse();
-    }
 
-    //TODO MOVE THIS TO ITUSERCONTROLLER
-    @RequestMapping(value = "/reset_password/finish", method = RequestMethod.PUT)
-    public ResponseEntity<String> resetPassword(
-            @Valid @RequestBody ResetPasswordFinishRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-        if (!this.itUserService.userExists(request.getCid())) {
-            throw new UserNotFoundResponse();
-        }
-        ITUser user = this.itUserService.loadUser(request.getCid());
-        if (!this.passwordResetService.userHasActiveReset(user)
-                || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
-            throw new CodeOrCidIsWrongResponse();
-        }
-        this.itUserService.setPassword(user, request.getPassword());
-        this.passwordResetService.removeToken(user);
-        return new PasswordChangedResponse();
-    }
-    // TODO Make sure that an URL is added to the email
-    private void sendMail(ITUser user, String token) {
-        String subject = "Password reset for Account at IT division of Chalmers";
-        String message = "A password reset have been requested for this account, if you have not requested "
-                + "this mail, feel free to ignore it. \n Your reset code : " + token + "URL : ";
-        this.mailSenderService.sendMail(user.getCid(), subject, message);
-    }
 
 }

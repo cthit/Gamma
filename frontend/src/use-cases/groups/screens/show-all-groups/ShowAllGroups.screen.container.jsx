@@ -8,7 +8,7 @@ import {
 import { createGetGroupsMinifiedAction } from "../../../../api/groups/action-creator.groups.api";
 
 const mapStateToProps = (state, ownProps) => ({
-    groups: state.groups
+    groups: state.groups != null ? state.groups.all : null
 });
 
 const mapDispatchToProps = dispatch => ({

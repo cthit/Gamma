@@ -68,6 +68,7 @@ public class AuthorityService {
                     ),
                     membership.getPost()
             );
+
             if (authority != null) {
                 Calendar start = membership.getId().getFKITGroup().getBecomesActive();
                 Calendar end = membership.getId().getFKITGroup().getBecomesInactive();
@@ -91,6 +92,7 @@ public class AuthorityService {
     public Authority getAuthority(UUID id) {
         return this.authorityRepository.findByInternalId(id);
     }
+
     public boolean authorityExists(UUID id) {
         return this.authorityRepository.existsById(id);
     }

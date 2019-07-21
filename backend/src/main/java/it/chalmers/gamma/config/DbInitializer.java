@@ -12,8 +12,8 @@ import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
@@ -27,8 +27,6 @@ import java.util.GregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -36,11 +34,12 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
     private final ITUserService userservice;
-    private final FKITService groupService;
+    private final FKITGroupService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
@@ -51,9 +50,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.frontend-client-details.client-id}")
     private String clientId;
 
-    @Value("${application.frontend-client-details.client-secret}")
-    private String clientSecret;
-
     @Value("${application.frontend-client-details.redirect-uri}")
     private String redirectUri;
 
@@ -62,7 +58,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.standard-admin-account.password}")
     private String password;
 
-    public DbInitializer(ITUserService userService, FKITService groupService,
+    public DbInitializer(ITUserService userService, FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService, PostService postService,
                          MembershipService membershipService, AuthorityService authorityService,
                          ITClientService itClientService,
@@ -91,16 +87,15 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             description.setEn("The client details for the frontend of Gamma");
             description.setSv("Klient detaljerna för Gammas frontend");
 
-            PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
             ITClient itClient = new ITClient();
             itClient.setClientId(this.clientId);
-            itClient.setClientSecret(passwordEncoder.encode(this.clientSecret));
+            itClient.setClientSecret("{noop}secret");
             itClient.setAutoApprove(true);
             itClient.setName("Gamma Frontend");
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);
+            this.redirectUri = this.redirectUri.trim();
             itClient.setWebServerRedirectUri(this.redirectUri);
             itClient.setDescription(description);
             itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
@@ -124,10 +119,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
-            request.setFunc(new Text());
+            request.setFunction(new Text());
             request.setDescription(description);
             request.setEmail(adminMail);
-            request.setYear(2018);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();

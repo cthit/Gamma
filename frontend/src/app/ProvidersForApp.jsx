@@ -14,13 +14,15 @@ const theme = {
     }
 };
 
-export const ProvidersForApp = ({ children }) => (
+const ProvidersForApp = ({ children }) => (
     <DigitProviders
         rootReducer={rootReducer}
         preloadedState={preloadedState}
-        defaultLanguage="sv"
+        defaultLanguage="en"
         theme={theme}
     >
         {children}
     </DigitProviders>
 );
+
+export default ProvidersForApp;

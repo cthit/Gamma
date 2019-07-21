@@ -7,19 +7,29 @@ import {
     GROUPS_DELETE_FAILED,
     GROUPS_CHANGE_SUCCESSFULLY,
     GROUPS_CHANGE_FAILED,
-    GROUPS_GET_LOADING,
-    GROUPS_GET_SUCCESSFULLY,
-    GROUPS_GET_FAILED,
+    GROUP_GET_LOADING,
+    GROUP_GET_SUCCESSFULLY,
+    GROUP_GET_FAILED,
     GROUPS_GET_MINIFIED_LOADING,
     GROUPS_GET_MINIFIED_FAILED,
-    GROUPS_GET_MINIFIED_SUCCESSFULLY
+    GROUPS_GET_MINIFIED_SUCCESSFULLY,
+    GROUPS_ADD_USER_SUCCESSFULLY,
+    GROUPS_ADD_USER_FAILED,
+    GROUPS_ADD_USER_LOADING,
+    GROUPS_REMOVE_USER_FAILED,
+    GROUPS_REMOVE_USER_LOADING,
+    GROUPS_EDIT_USER_SUCCESSFULLY,
+    GROUPS_EDIT_USER_FAILED,
+    GROUPS_EDIT_USER_LOADING,
+    GROUPS_REMOVE_USER_SUCCESSFULLY
 } from "./actions.groups.api";
 
-import { addGroup } from "./post.groups.api";
+import { addGroup, addUserToGroup } from "./post.groups.api";
 import { getGroup, getGroups, getGroupsMinified } from "./get.groups.api";
-import { editGroup } from "./put.groups.api";
-import { deleteGroup } from "./delete.groups.api";
+import { editGroup, editUserInGroup } from "./put.groups.api";
+import { deleteGroup, removeUserFromGroup } from "./delete.groups.api";
 import { requestPromise } from "../utils/requestPromise";
+import { failed, loading, successfully } from "../utils/simpleActionCreators";
 
 export function createGetGroupsMinifiedAction() {
     return requestPromise(
@@ -51,9 +61,9 @@ export function createGetGroupAction(groupId) {
         () => {
             return getGroup(groupId);
         },
-        groupsGetLoading,
-        groupsGetSuccessfully,
-        groupsGetFailed
+        groupGetLoading,
+        groupGetSuccessfully,
+        groupGetFailed
     );
 }
 
@@ -105,22 +115,73 @@ export function createDeleteGroupAction(groupId) {
     };
 }
 
-export function groupsAddUser() {
-    return dispatch => {
-        return new Promise((resolve, reject) => {});
-    };
+export function createAddUserToGroupRequest(groupId, memberData) {
+    return requestPromise(
+        () => {
+            return addUserToGroup(groupId, memberData);
+        },
+        addUserToGroupLoading,
+        addUserToGroupSuccessfully,
+        addUserToGroupFailed
+    );
 }
 
-export function groupsDeleteUser() {
-    return dispatch => {
-        return new Promise((resolve, reject) => {});
-    };
+export function createDeleteUserFromGroupRequest(groupId, userId) {
+    return requestPromise(
+        () => {
+            return removeUserFromGroup(groupId, userId);
+        },
+        removeUserFromGroupLoading,
+        removeUserFromGroupSuccessfully,
+        removeUserFromGroupFailed
+    );
 }
 
-export function groupsChangePost() {
-    return dispatch => {
-        return new Promise((resolve, reject) => {});
-    };
+export function createEditUserInGroupRequest(groupId, userId, memberData) {
+    return requestPromise(
+        () => {
+            return editUserInGroup(groupId, userId, memberData);
+        },
+        editUserInGroupLoading,
+        editUserInGroupSuccessfully,
+        editUserInGroupFailed
+    );
+}
+
+function editUserInGroupSuccessfully(response) {
+    return successfully(GROUPS_EDIT_USER_SUCCESSFULLY, response);
+}
+
+function editUserInGroupFailed(error) {
+    return failed(GROUPS_EDIT_USER_FAILED, error);
+}
+
+function editUserInGroupLoading() {
+    return loading(GROUPS_EDIT_USER_LOADING);
+}
+
+function removeUserFromGroupSuccessfully(response) {
+    return successfully(GROUPS_REMOVE_USER_SUCCESSFULLY, response);
+}
+
+function removeUserFromGroupFailed(error) {
+    return failed(GROUPS_REMOVE_USER_FAILED, error);
+}
+
+function removeUserFromGroupLoading() {
+    return loading(GROUPS_REMOVE_USER_LOADING);
+}
+
+function addUserToGroupSuccessfully(response) {
+    return successfully(GROUPS_ADD_USER_SUCCESSFULLY, response);
+}
+
+function addUserToGroupFailed(error) {
+    return failed(GROUPS_ADD_USER_FAILED, error);
+}
+
+function addUserToGroupLoading() {
+    return loading(GROUPS_ADD_USER_LOADING);
 }
 
 function groupsAddSuccessfully() {
@@ -140,16 +201,16 @@ function groupsAddFailed(error) {
     };
 }
 
-function groupsGetLoading() {
+function groupGetLoading() {
     return {
-        type: GROUPS_GET_LOADING,
+        type: GROUP_GET_LOADING,
         error: false
     };
 }
 
-function groupsGetSuccessfully(response) {
+function groupGetSuccessfully(response) {
     return {
-        type: GROUPS_GET_SUCCESSFULLY,
+        type: GROUP_GET_SUCCESSFULLY,
         error: false,
         payload: {
             data: response.data
@@ -157,9 +218,9 @@ function groupsGetSuccessfully(response) {
     };
 }
 
-function groupsGetFailed(error) {
+function groupGetFailed(error) {
     return {
-        type: GROUPS_GET_FAILED,
+        type: GROUP_GET_FAILED,
         error: true,
         payload: {
             error: error

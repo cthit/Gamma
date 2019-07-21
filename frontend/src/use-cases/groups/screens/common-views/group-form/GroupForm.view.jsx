@@ -2,6 +2,7 @@ import {
     DigitTextField,
     DigitTranslations,
     DigitEditData,
+    DigitDatePicker,
     DigitSelect
 } from "@cthit/react-digit-components";
 import React from "react";
@@ -13,132 +14,209 @@ import {
     DESCRIPTION,
     EMAIL,
     FUNCTION,
-    TYPE,
-    TYPE_SOCIETY,
-    TYPE_COMMITTEE,
-    TYPE_BOARD
+    BECOMES_ACTIVE,
+    BECOMES_INACTIVE,
+    SUPER_GROUP
 } from "../../../../../api/groups/props.groups.api";
 import {
-    SWEDISH_LANGUAGE,
-    ENGLISH_LANGUAGE
+    ENGLISH_LANGUAGE,
+    SWEDISH_LANGUAGE
 } from "../../../../../api/utils/commonProps";
+import SuperGroups from "../../../../super-groups";
+
+const DESCRIPTION_SV = "description_sv";
+const DESCRIPTION_EN = "description_en";
+const FUNCTION_SV = "function_sv";
+const FUNCTION_EN = "function_en";
 
 function generateValidationSchema(text) {
-    const descriptionSchema = {};
-    descriptionSchema[SWEDISH_LANGUAGE] = yup.string().required();
-    descriptionSchema[ENGLISH_LANGUAGE] = yup.string().required();
-
-    const functionSchema = {};
-    functionSchema[SWEDISH_LANGUAGE] = yup.string().required();
-    functionSchema[ENGLISH_LANGUAGE] = yup.string().required();
-
     const schema = {};
+
     schema[NAME] = yup.string().required();
     schema[PRETTY_NAME] = yup.string().required();
-    schema[DESCRIPTION] = yup
-        .object()
-        .shape(descriptionSchema)
-        .required();
     schema[EMAIL] = yup.string().required();
-    schema[FUNCTION] = yup
-        .object()
-        .shape(functionSchema)
-        .required();
-    schema[TYPE] = yup.string().required();
+
+    schema[DESCRIPTION_SV] = yup.string().required();
+    schema[DESCRIPTION_EN] = yup.string().required();
+
+    schema[FUNCTION_SV] = yup.string().required();
+    schema[FUNCTION_EN] = yup.string().required();
+
+    schema[BECOMES_ACTIVE] = yup.date().required();
+    schema[BECOMES_INACTIVE] = yup.date().required();
 
     return yup.object().shape(schema);
 }
 
-function generateEditComponentData(text) {
+function generateEditComponentData(text, superGroups) {
     const componentData = {};
 
     componentData[NAME] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.Name
+            upperLabel: text.Name,
+            maxLength: 50,
+            filled: true
         }
     };
 
     componentData[PRETTY_NAME] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.PrettyName
+            upperLabel: text.PrettyName,
+            maxLength: 50,
+            filled: true
         }
     };
 
-    componentData[DESCRIPTION + "." + SWEDISH_LANGUAGE] = {
+    componentData[DESCRIPTION_SV] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.DescriptionSv
+            upperLabel: text.DescriptionSv,
+            maxLength: 100,
+            filled: true
         }
     };
 
-    componentData[DESCRIPTION + "." + ENGLISH_LANGUAGE] = {
+    componentData[DESCRIPTION_EN] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.DescriptionEn
+            upperLabel: text.DescriptionEn,
+            maxLength: 100,
+            filled: true
         }
     };
 
     componentData[EMAIL] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.Email
+            upperLabel: text.Email,
+            maxLength: 100,
+            filled: true
         }
     };
 
-    componentData[FUNCTION + "." + SWEDISH_LANGUAGE] = {
+    componentData[FUNCTION_SV] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.FunctionSv
+            upperLabel: text.FunctionSv,
+            maxLength: 100,
+            filled: true
         }
     };
 
-    componentData[FUNCTION + "." + ENGLISH_LANGUAGE] = {
+    componentData[FUNCTION_EN] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.FunctionEn
+            maxLength: 100,
+            upperLabel: text.FunctionEn,
+            filled: true
         }
     };
 
-    const typeValueToTextMap = {};
-    typeValueToTextMap[TYPE_SOCIETY] = text.Society;
-    typeValueToTextMap[TYPE_COMMITTEE] = text.Committee;
-    typeValueToTextMap[TYPE_BOARD] = text.Board;
+    componentData[BECOMES_ACTIVE] = {
+        component: DigitDatePicker,
+        componentProps: {
+            upperLabel: text.BecomesActive,
+            lowerLabel: " ",
+            filled: true
+        }
+    };
 
-    componentData[TYPE] = {
+    componentData[BECOMES_INACTIVE] = {
+        component: DigitDatePicker,
+        componentProps: {
+            upperLabel: text.BecomesInactive,
+            lowerLabel: " ",
+            filled: true
+        }
+    };
+
+    const superGroupMap = {};
+    for (let i = 0; i < superGroups.length; i++) {
+        superGroupMap[superGroups[i].id] = superGroups[i].prettyName;
+    }
+
+    componentData[SUPER_GROUP] = {
         component: DigitSelect,
         componentProps: {
-            upperLabel: text.Type,
-            valueToTextMap: typeValueToTextMap
+            upperLabel: text.SuperGroup,
+            valueToTextMap: superGroupMap,
+            filled: true
         }
     };
 
     return componentData;
 }
 
-const GroupForm = ({ initialValues, onSubmit }) => (
+function convertToFormFormat(input) {
+    const output = {};
+
+    output[NAME] = input[NAME];
+    output[PRETTY_NAME] = input[PRETTY_NAME];
+    output[EMAIL] = input[EMAIL];
+    output[BECOMES_ACTIVE] = input[BECOMES_ACTIVE];
+    output[BECOMES_INACTIVE] = input[BECOMES_INACTIVE];
+
+    output[DESCRIPTION_SV] = input[DESCRIPTION][SWEDISH_LANGUAGE];
+    output[DESCRIPTION_EN] = input[DESCRIPTION][ENGLISH_LANGUAGE];
+
+    output[FUNCTION_SV] = input[FUNCTION][SWEDISH_LANGUAGE];
+    output[FUNCTION_EN] = input[FUNCTION][ENGLISH_LANGUAGE];
+
+    output[SUPER_GROUP] = input[SUPER_GROUP];
+
+    return output;
+}
+
+function convertToCorrectFormat(input) {
+    const output = {};
+
+    output[NAME] = input[NAME];
+    output[PRETTY_NAME] = input[PRETTY_NAME];
+    output[EMAIL] = input[EMAIL];
+    output[BECOMES_ACTIVE] = input[BECOMES_ACTIVE];
+    output[BECOMES_INACTIVE] = input[BECOMES_INACTIVE];
+
+    output[DESCRIPTION] = {};
+
+    output[DESCRIPTION][SWEDISH_LANGUAGE] = input[DESCRIPTION_SV];
+    output[DESCRIPTION][ENGLISH_LANGUAGE] = input[DESCRIPTION_EN];
+
+    output[FUNCTION] = {};
+
+    output[FUNCTION][SWEDISH_LANGUAGE] = input[FUNCTION_SV];
+    output[FUNCTION][ENGLISH_LANGUAGE] = input[FUNCTION_EN];
+
+    return output;
+}
+
+const GroupForm = ({ initialValues, onSubmit, superGroups }) => (
     <DigitTranslations
         translations={translations}
-        uniquePath="Groups.Screen.GroupForm"
         render={text => (
             <DigitEditData
                 titleText={text.Group}
                 submitText={text.SaveGroup}
                 validationSchema={generateValidationSchema(text)}
-                onSubmit={onSubmit}
-                initialValues={initialValues}
+                onSubmit={(values, actions) => {
+                    actions.setSubmitting(false);
+                    onSubmit(convertToCorrectFormat(values));
+                }}
+                initialValues={convertToFormFormat(initialValues, superGroups)}
                 keysOrder={[
                     NAME,
                     PRETTY_NAME,
-                    DESCRIPTION + "." + SWEDISH_LANGUAGE,
-                    DESCRIPTION + "." + ENGLISH_LANGUAGE,
+                    DESCRIPTION_SV,
+                    DESCRIPTION_EN,
                     EMAIL,
-                    FUNCTION + "." + SWEDISH_LANGUAGE,
-                    FUNCTION + "." + ENGLISH_LANGUAGE,
-                    TYPE
+                    FUNCTION_SV,
+                    FUNCTION_EN,
+                    BECOMES_ACTIVE,
+                    BECOMES_INACTIVE,
+                    SUPER_GROUP
                 ]}
-                keysComponentData={generateEditComponentData(text)}
+                keysComponentData={generateEditComponentData(text, superGroups)}
             />
         )}
     />

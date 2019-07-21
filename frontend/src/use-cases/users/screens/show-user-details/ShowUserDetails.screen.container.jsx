@@ -16,6 +16,7 @@ import {
 } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
+    signedInUser: state.user,
     user: _.find(state.users, { id: ownProps.match.params.id }),
     userId: ownProps.match.params.id
 });

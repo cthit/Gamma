@@ -9,19 +9,19 @@ import javax.validation.constraints.NotNull;
 public class AddITClientRequest {
 
     @NotNull
-    private String urlRedirect;
+    private String webServerRedirectUri;
 
     @NotNull
     private String name;
 
     private Text description;
 
-    public String getUrlRedirect() {
-        return this.urlRedirect;
+    public String getWebServerRedirectUri() {
+        return this.webServerRedirectUri;
     }
 
-    public void setUrlRedirect(String urlRedirect) {
-        this.urlRedirect = urlRedirect;
+    public void setWebServerRedirectUri(String webServerRedirectUri) {
+        this.webServerRedirectUri = webServerRedirectUri;
     }
 
     public String getName() {
@@ -49,20 +49,20 @@ public class AddITClientRequest {
             return false;
         }
         AddITClientRequest that = (AddITClientRequest) o;
-        return Objects.equals(this.urlRedirect, that.urlRedirect)
+        return Objects.equals(this.webServerRedirectUri, that.webServerRedirectUri)
             && Objects.equals(this.name, that.name)
             && Objects.equals(this.description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.urlRedirect, this.name, this.description);
+        return Objects.hash(this.webServerRedirectUri, this.name, this.description);
     }
 
     @Override
     public String toString() {
         return "AddITClientRequest{"
-            + ", urlRedirect='" + this.urlRedirect + '\''
+            + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''
             + ", name='" + this.name + '\''
             + ", description=" + this.description
             + '}';

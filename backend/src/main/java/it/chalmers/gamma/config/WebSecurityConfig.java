@@ -1,7 +1,13 @@
 package it.chalmers.gamma.config;
 
+import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.service.ApiKeyService;
+import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +35,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
+    @Value("${application.frontend-client-details.successful-login-uri}")
+    private String frontendUrl;
+
     private final ITUserService itUserService;
+    private final AuthorityService authorityService;
+    private final FKITGroupToSuperGroupService groupToSuperGroupService;
+    private final ApiKeyService apiKeyService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(ITUserService itUserService) {
+    public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
+                             FKITGroupToSuperGroupService groupToSuperGroupService,
+                             ApiKeyService apiKeyService) {
         this.itUserService = itUserService;
+        this.authorityService = authorityService;
+        this.groupToSuperGroupService = groupToSuperGroupService;
+        this.apiKeyService = apiKeyService;
     }
 
     @Override
@@ -44,6 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         addAuthenticationFilter(http);
         addFormLogin(http);
         setPermittedPaths(http);
+        setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
     }
 
@@ -70,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void disableCsrf(HttpSecurity http) {
         try {
             http
-                .csrf().disable();
+                    .csrf().disable();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when disabling csrf");
             LOGGER.error(e.getMessage());
@@ -92,7 +110,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     new AuthenticationFilterConfigurer(
                             this.itUserService,
                             this.secretKey,
-                            this.issuer
+                            this.issuer,
+                            this.apiKeyService
+
                     )
             );
         } catch (Exception e) {
@@ -104,14 +124,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void addFormLogin(HttpSecurity http) {
         try {
             http
-                .formLogin()
+                    .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("http://localhost:3000/", false)
+                    .defaultSuccessUrl((frontendUrl) + "/", false)
                     .permitAll()
-            .and()
-                .logout()
-            .and()
-                .httpBasic();
+                    .and()
+                    .logout()
+                    .and()
+                    .httpBasic();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding form login");
             LOGGER.error(e.getMessage());
@@ -122,25 +142,55 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
 
             String[] permittedPaths = {
-                "/login",
-                "/oauth/authorize",
-                "/oauth/token",
-                "/users/create",
-                "/whitelist/activate_cid",
-                "/css/**",
-                "/js/**",
-                "/img/**"
+                    "/login",
+                    "/oauth/authorize",
+                    "/oauth/token",
+                    "/users/create",
+                    "/whitelist/activate_cid",
+                    "/users/reset_password",
+                    "/users/reset_password/finish",
+                    "/css/**",
+                    "/js/**",
+                    "/img/**"
             };
 
 
             http
-                .authorizeRequests()
-                .antMatchers(permittedPaths).permitAll();
+                    .authorizeRequests()
+                    .antMatchers(permittedPaths).permitAll();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting");
             LOGGER.error(e.getMessage());
         }
+    }
 
+    private void setAdminPaths(HttpSecurity http) {
+        try {
+            List<FKITGroupToSuperGroup> relationships = this.groupToSuperGroupService.getAllRelationships();
+            for (FKITGroupToSuperGroup relationship : relationships) {
+                addPathRole(http, relationship);
+            }
+            http.authorizeRequests().antMatchers("/admin/**")
+                    .hasAuthority("admin");
+        } catch (Exception e) {
+            LOGGER.error("something went wrong when setting admin paths");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
+        this.authorityService.getAllAuthorities().forEach(a -> {
+            if (a.getId().getFkitSuperGroup().equals(relationship.getId().getSuperGroup())) {
+                try {
+                    http.authorizeRequests().antMatchers("/admin/groups/"
+                            + relationship.getId().getGroup().getId() + "/**")
+                            .hasAuthority(a.getAuthorityLevel().getAuthority());
+                } catch (Exception e) {
+                    LOGGER.error("Something went wrong when setting authorized paths");
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        });
     }
 
     private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
@@ -151,6 +201,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             LOGGER.error(e.getMessage());
         }
     }
-
-
 }

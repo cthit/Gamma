@@ -1,0 +1,9 @@
+{
+    "ApiKeyName": ["API Key name", "API-nyckelns namn"],
+    "DescriptionEn": ["Description English", "Beskrivning Engelska"],
+    "DescriptionSv": ["Description Swedish", "Beskrivning Svenska"],
+    "CreateApiKey": ["Create new API key", "Skapa ny API-nyckel"],
+    "SubmitApiKey": ["Create API key", "Skapa API nyckel"],
+    "CloseDialog": ["Close", "Stäng"],
+    "GeneratedAPIKey": ["Generated API key", "Genererad API nyckel"]
+}

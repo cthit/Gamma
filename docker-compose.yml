@@ -1,7 +1,7 @@
 version: "2"
 services:
     db:
-        image: postgres
+        image: postgres:10
         restart: always
         environment:
             POSTGRES_PASSWORD: example
@@ -23,20 +23,6 @@ services:
         volumes:
             - ./frontend/src:/usr/src/app/src
             - ./frontend/public:/usr/src/app/public
-
-    jwt_provider_server:
-        build:
-            context: ./jwt-provider-server
-            dockerfile: dev.Dockerfile
-        image: jwt_provider_server:dev
-        ports:
-            - "8082:8082"
-        volumes:
-            - ./jwt-provider-server:/usr/src/app
-            - /usr/src/app/node_modules
-        environment:
-            - NODE_ENV=development
-        network_mode: host
     
     imageit:
         image: cthit/imageit

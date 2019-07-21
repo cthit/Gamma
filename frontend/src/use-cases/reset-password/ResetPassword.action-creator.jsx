@@ -1,7 +1,5 @@
 import axios from "axios";
 
-import token from "../../common/utils/retrievers/token.retrieve";
-
 import {
     RESET_PASSWORD_FINISH_SUCCESSFULLY,
     RESET_PASSWORD_FINISH_FAILED,
@@ -14,14 +12,10 @@ export function resetPasswordInitalize(cid) {
         return new Promise((resolve, reject) => {
             axios
                 .post(
-                    "http://localhost:8081/user/reset_password",
+                    process.env.REACT_APP_BACKEND_URL ||
+                        "http://localhost:8081/api" + "/users/reset_password",
                     {
                         cid: cid
-                    },
-                    {
-                        headers: {
-                            Authorization: "Bearer " + token()
-                        }
                     }
                 )
                 .then(response => {
@@ -41,13 +35,10 @@ export function resetPasswordFinish(data) {
         return new Promise((resolve, reject) => {
             axios
                 .put(
-                    "http://localhost:8081/users/reset_password/finish",
-                    data,
-                    {
-                        headers: {
-                            Authorization: "Bearer " + token()
-                        }
-                    }
+                    (process.env.REACT_APP_BACKEND_URL ||
+                        "http://localhost:8081/api") +
+                        "/users/reset_password/finish",
+                    data
                 )
                 .then(response => {
                     dispatch(resetPasswordFinishSuccessfully());
@@ -70,7 +61,7 @@ function resetPasswordInitalizeSuccessfully() {
 
 function resetPasswordInitalizeFailed(error) {
     return {
-        type: RESET_PASSWORD_FINISH_FAILED,
+        type: RESET_PASSWORD_INITALIZE_FAILED,
         error: true,
         payload: {
             error: error
@@ -80,7 +71,7 @@ function resetPasswordInitalizeFailed(error) {
 
 function resetPasswordFinishSuccessfully() {
     return {
-        type: RESET_PASSWORD_INITALIZE_SUCCESSFULLY,
+        type: RESET_PASSWORD_FINISH_SUCCESSFULLY,
         error: false
     };
 }

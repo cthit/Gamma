@@ -118,7 +118,7 @@ public final class GroupPostAdminController {
     /**
      * gets all places where a post is used, meaning which groups have the post and who currently is assigned that post.
      *
-     * @param id the ID of the post
+     * @param id the GROUP_ID of the post
      * @return a list of groups that has the post and who in the group currently is assigned that post
      */
     @RequestMapping("/{id}/usage")
@@ -135,7 +135,7 @@ public final class GroupPostAdminController {
         List<FKITGroupSerializer.Properties> fkitGroupProperties = Arrays.asList(
                 FKITGroupSerializer.Properties.PRETTY_NAME,
                 FKITGroupSerializer.Properties.NAME,
-                FKITGroupSerializer.Properties.ID,
+                FKITGroupSerializer.Properties.GROUP_ID,
                 FKITGroupSerializer.Properties.USERS);
         Post post = this.postService.getPost(UUID.fromString(id));
         List<FKITGroup> groups = this.membershipService.getGroupsWithPost(post);

@@ -4,5 +4,7 @@
     "LastName": ["Last name", "Efternamn"],
     "Nick": ["Nick", "Nick"],
     "Email": ["Email", "Email"],
-    "AcceptanceYear": ["Acceptance year", "Antagningsår"]
+    "AcceptanceYear": ["Acceptance year", "Antagningsår"],
+    "Password": ["Password", "Lösenord"],
+    "Language": ["Language", "Språk"]
 }

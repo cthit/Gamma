@@ -1,133 +1,137 @@
 import React from "react";
+import { Switch, Route } from "react-router-dom";
+import { DigitStepper, DigitTranslations } from "@cthit/react-digit-components";
+import SelectMembers from "./views/select-members";
+import SetPostNames from "./views/set-post-names";
+import ReviewChanges from "./views/review-changes";
 
-import {
-    DigitTable,
-    DigitTranslations,
-    DigitIfElseRendering,
-    DigitLayout,
-    DigitText
-} from "@cthit/react-digit-components";
-
-import {
-    FIRST_NAME,
-    LAST_NAME,
-    NICKNAME,
-    ID
-} from "../../../../api/users/props.users.api";
-
-import { PRETTY_NAME } from "../../../../api/groups/props.groups.api";
-
-import EditUsersInGroupTranslations from "./EditUsersInGroup.screen.translations";
+import translations from "./EditUsersInGroup.screen.translations";
+import { NAME } from "../../../../api/groups/props.groups.api";
 
 class EditUsersInGroup extends React.Component {
     constructor(props) {
         super(props);
 
-        const { savedSelectedGroups } = this.props;
-
-        this.state = {
-            unsavedEdits:
-                savedSelectedGroups != null ||
-                (savedSelectedGroups != null &&
-                    savedSelectedGroups.length === 0),
-            selectedUsers:
-                savedSelectedGroups == null ? [] : savedSelectedGroups
-        };
-
-        props.loadUsers();
-    }
-
-    componentDidMount() {
         const {
             loadUsers,
             getGroup,
             groupId,
-            gammaLoadingFinished
+            gammaLoadingFinished,
+            getPosts
         } = this.props;
 
-        Promise.all([loadUsers(), getGroup(groupId)]).then(() => {
-            gammaLoadingFinished();
-        });
+        Promise.all([loadUsers(), getGroup(groupId), getPosts()]).then(
+            result => {
+                gammaLoadingFinished();
+            }
+        );
     }
 
-    componentWillUnmount() {
-        const {
-            groupId,
-            temporarySaveSelectedUsersToGroup,
-            gammaLoadingStart
-        } = this.props;
-        const { selectedUsers } = this.state;
-
-        temporarySaveSelectedUsersToGroup(groupId, selectedUsers);
-
-        gammaLoadingStart();
-    }
-
-    onSelectedChange = selected => {
-        this.setState({
-            selectedUsers: selected,
-            unsavedEdits: selected.length > 0
-        });
+    _getDataFromSessionStorage = groupId => {
+        return JSON.parse(sessionStorage.getItem(groupId + ".selectedMembers"));
     };
 
-    generateHeaderTexts = text => {
-        const headerTexts = {};
-
-        headerTexts[FIRST_NAME] = text.FirstName;
-        headerTexts[LAST_NAME] = text.LastName;
-        headerTexts[NICKNAME] = text.Nickname;
-        headerTexts[ID] = text.Id;
-        headerTexts["__link"] = text.Link;
-        headerTexts["__checkbox"] = text.Checkbox;
-
-        return headerTexts;
+    onMembersSelected = (memberIdsSelected, redirectTo, group) => {
+        this.setState(
+            {
+                activeStep: 1,
+                memberIdsSelected
+            },
+            () => {
+                redirectTo("/groups/" + group.id + "/members/posts");
+            }
+        );
     };
 
     render() {
-        const { selectedUsers, unsavedEdits } = this.state;
-        const { users, group } = this.props;
+        const { groupId, group, users, posts, route, redirectTo } = this.props;
 
-        return (
-            <DigitIfElseRendering
-                test={group != null}
-                ifRender={() => (
-                    <DigitTranslations
-                        translations={EditUsersInGroupTranslations}
-                        uniquePath="Groups.EditUsersInGroup"
-                        render={text => (
-                            <DigitLayout.Column>
-                                <DigitText.Heading5
-                                    text={unsavedEdits ? text.UnsavedEdits : ""}
+        var step = 0; //Ends with members
+
+        if (route.endsWith("/posts")) {
+            step = 1;
+        } else if (route.endsWith("/review")) {
+            step = 2;
+        }
+
+        if (
+            group != null &&
+            users != null &&
+            posts != null &&
+            users.length > 0
+        ) {
+            return (
+                <DigitTranslations
+                    translations={translations}
+                    render={text => (
+                        <>
+                            <DigitStepper
+                                activeStep={step}
+                                steps={[
+                                    { text: text.SelectMembers },
+                                    { text: text.SetPostNames },
+                                    { text: text.ReviewChanges }
+                                ]}
+                            />
+
+                            <Switch>
+                                <Route
+                                    path="/groups/:id/members"
+                                    exact
+                                    render={() => (
+                                        <SelectMembers
+                                            group={group}
+                                            users={users}
+                                            groupId={groupId}
+                                            onMembersSelected={members =>
+                                                this.onMembersSelected(
+                                                    members,
+                                                    redirectTo,
+                                                    group
+                                                )
+                                            }
+                                        />
+                                    )}
                                 />
-                                <DigitTable
-                                    selected={selectedUsers}
-                                    onSelectedUpdated={this.onSelectedChange}
-                                    search
-                                    titleText={
-                                        text.UsersFor + group[PRETTY_NAME]
-                                    }
-                                    searchText="Search for users"
-                                    showSearchableProps
-                                    idProp="id"
-                                    startOrderBy={NICKNAME}
-                                    columnsOrder={[
-                                        ID,
-                                        FIRST_NAME,
-                                        NICKNAME,
-                                        LAST_NAME
-                                    ]}
-                                    headerTexts={this.generateHeaderTexts(text)}
-                                    data={users.map(user => ({
-                                        ...user,
-                                        __link: "/users/" + user.cid
-                                    }))}
+                                <Route
+                                    path="/groups/:id/members/posts"
+                                    exact
+                                    render={() => (
+                                        <SetPostNames
+                                            groupId={groupId}
+                                            posts={posts}
+                                            currentMembers={group.groupMembers}
+                                            users={users}
+                                            onNewMembers={() =>
+                                                redirectTo(
+                                                    "/groups/" +
+                                                        group.id +
+                                                        "/members/review"
+                                                )
+                                            }
+                                        />
+                                    )}
                                 />
-                            </DigitLayout.Column>
-                        )}
-                    />
-                )}
-            />
-        );
+                                <Route
+                                    path="/groups/:id/members/review"
+                                    exact
+                                    render={() => (
+                                        <ReviewChanges
+                                            groupName={group[NAME]}
+                                            posts={posts}
+                                            previousMembers={group.groupMembers}
+                                            groupId={groupId}
+                                        />
+                                    )}
+                                />
+                            </Switch>
+                        </>
+                    )}
+                />
+            );
+        } else {
+            return null;
+        }
     }
 }
 
