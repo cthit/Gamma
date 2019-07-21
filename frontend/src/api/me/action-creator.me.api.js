@@ -6,7 +6,7 @@ import {
     ME_GET_SUCCESSFULLY,
     ME_CHANGE_PASSWORD_FAILED,
     ME_CHANGE_PASSWORD_SUCCESSFULLY
-} from "actions.me.api";
+} from "./actions.me.api";
 
 import { editMe, editPassword } from "./put.me.api";
 import { getMe } from "./get.me.api";
