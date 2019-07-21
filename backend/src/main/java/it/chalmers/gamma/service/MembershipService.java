@@ -37,12 +37,12 @@ public class MembershipService {
      * @param postname what the unoficial-post name is
      */
     public void addUserToGroup(FKITGroup group, ITUser user, Post post, String postname) {
-        Membership membership = new Membership();
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(group);
         pk.setITUser(user);
+        pk.setPost(post);
+        Membership membership = new Membership();
         membership.setId(pk);
-        membership.setPost(post);
         membership.setUnofficialPostName(postname);
         this.membershipRepository.save(membership);
     }
@@ -54,7 +54,7 @@ public class MembershipService {
      * @return the users UUID, the identifier for the user
      */
     public List<ITUser> getPostHoldersIds(Post post) {
-        List<Membership> memberships = this.membershipRepository.findAllByPost(post);
+        List<Membership> memberships = this.membershipRepository.findAllById_Post(post);
         List<ITUser> usersId = new ArrayList<>();
         for (Membership membership : memberships) {
             usersId.add(membership.getId().getITUser());
@@ -90,12 +90,12 @@ public class MembershipService {
      * finds which group the user has a specific post in.
      */
     public FKITGroup getGroupIdByUserAndPost(ITUser user, Post post) {
-        Membership membership = this.membershipRepository.findById_ItUserAndPost(user, post);
+        Membership membership = this.membershipRepository.findById_ItUserAndId_Post(user, post);
         return membership.getId().getFKITGroup();
     }
 
     public List<ITUser> getUserByGroupAndPost(FKITGroup group, Post post) {
-        List<Membership> memberships = this.membershipRepository.findAllById_FkitGroupAndPost(group, post);
+        List<Membership> memberships = this.membershipRepository.findAllById_FkitGroupAndId_Post(group, post);
         List<ITUser> users = new ArrayList<>();
         for (Membership membership : memberships) {
             users.add(membership.getId().getITUser());
@@ -104,7 +104,7 @@ public class MembershipService {
     }
 
     public List<FKITGroup> getGroupsWithPost(Post post) {
-        List<Membership> memberships = this.membershipRepository.findAllByPost(post);
+        List<Membership> memberships = this.membershipRepository.findAllById_Post(post);
         List<FKITGroup> groups = new ArrayList<>();
         for (Membership membership : memberships) {
             if (!groups.contains(membership.getId().getFKITGroup())) {
@@ -129,7 +129,7 @@ public class MembershipService {
 
     public void editMembership(Membership membership, String unofficialName, Post post) {
         membership.setUnofficialPostName(unofficialName);
-        membership.setPost(post);
+        membership.getId().setPost(post);
         this.membershipRepository.save(membership);
     }
 

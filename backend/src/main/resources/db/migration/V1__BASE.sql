@@ -56,18 +56,19 @@ create table fkit_super_group (
   id            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
+  email         varchar(100)   not null,
   type          varchar(30)    not null
 );
 
 create table fkit_group (
   id                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
-  pretty_name       varchar(50)  not null constraint fkit_group_pretty_name_unique unique,
+  pretty_name       varchar(50)  not null,
   description       uuid         null     references internal_text,
   function          uuid         not null references internal_text,
-  email             varchar(100) not null constraint fkit_group_email_unique unique,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
+  email             varchar(100) null,
   avatar_url        varchar(255) null
 );
 
@@ -101,9 +102,17 @@ create table fkit_group_website(
 create table membership (   -- Should this be rebuilt to look like all other tables? probably
   ituser_id            uuid         constraint membership_ituser_fk references ituser,
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
-  post_id              uuid         not null constraint membership_post_fk references post,
+  post_id              uuid         constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (ituser_id, fkit_group_id)
+  constraint membership_pk primary key (ituser_id, fkit_group_id, post_id)
+);
+
+create table no_account_membership (
+    user_name            varchar(20) not null,
+    fkit_group_id        uuid         constraint no_account_membership_fkit_group_fk references fkit_group,
+    post_id              uuid         not null constraint no_account_membership_post_fk references post,
+    unofficial_post_name varchar(100) null,
+    constraint no_account_membership_pk primary key (user_name, fkit_group_id)
 );
 
 create table whitelist (

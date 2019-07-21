@@ -66,7 +66,7 @@ public class AuthorityService {
                     this.fkitGroupToSuperGroupService.getSuperGroup(
                             membership.getId().getFKITGroup()
                     ),
-                    membership.getPost()
+                    membership.getId().getPost()
             );
 
             if (authority != null) {

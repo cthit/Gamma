@@ -4,6 +4,7 @@ import it.chalmers.gamma.domain.GroupType;
 
 import java.util.Objects;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -19,6 +20,11 @@ public class CreateSuperGroupRequest {
 
     @NotNull(message = "TYPE_MUST_BE_PROVIDED")
     private GroupType type;
+
+    @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
+    @Email(message = "FIELD_EMAIL_DOES_NOT_MATCH_EMAIL_ADDRESS")
+    private String email;
+
 
     public String getName() {
         return this.name;
@@ -44,13 +50,12 @@ public class CreateSuperGroupRequest {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "CreateSuperGroupRequest{"
-                + "name='" + this.name + '\''
-                + ", prettyName='" + this.prettyName + '\''
-                + ", type=" + this.type
-                + '}';
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
@@ -64,12 +69,23 @@ public class CreateSuperGroupRequest {
         CreateSuperGroupRequest that = (CreateSuperGroupRequest) o;
         return Objects.equals(this.name, that.name)
                 && Objects.equals(this.prettyName, that.prettyName)
-                && this.type == that.type;
+                && this.type == that.type
+                && Objects.equals(this.email, that.email);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(this.name, this.prettyName, this.type);
+        return Objects.hash(this.name, this.prettyName, this.type, this.email);
     }
+
+    @Override
+    public String toString() {
+        return "CreateSuperGroupRequest{"
+                + "name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", type=" + this.type
+                + ", email='" + this.email + '\''
+                + '}';
+    }
+
 }
