@@ -48,6 +48,9 @@ public class FKITGroup {
     @Column(name = "becomes_inactive")
     private Calendar becomesInactive;
 
+    @Column(name = "email")
+    public String email;
+
     public FKITGroup() {
         this.id = UUID.randomUUID();
     }
@@ -134,7 +137,7 @@ public class FKITGroup {
         return this.description.getEn();
     }
 
-    public String email;
+
 
     public void setENDescription(String description) {
         this.description.setEn(description);

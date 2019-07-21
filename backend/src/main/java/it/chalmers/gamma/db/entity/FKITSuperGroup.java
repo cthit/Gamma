@@ -32,14 +32,6 @@ public class FKITSuperGroup {
     @Enumerated(EnumType.STRING)
     private GroupType type;
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Column(name = "email")
     private String email;
 
@@ -75,8 +67,17 @@ public class FKITSuperGroup {
         return this.type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(GroupType type)
+    {
         this.type = type;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
