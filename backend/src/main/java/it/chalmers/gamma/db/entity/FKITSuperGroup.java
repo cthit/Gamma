@@ -33,7 +33,7 @@ public class FKITSuperGroup {
     private GroupType type;
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -81,29 +81,38 @@ public class FKITSuperGroup {
 
     @Override
     public String toString() {
-        return "FKITSuperGroup{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", prettyName='" + prettyName + '\'' +
-                ", type=" + type +
-                ", email='" + email + '\'' +
-                '}';
+        return "FKITSuperGroup{"
+                + "id=" + this.id
+                + ", name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", type=" + this.type
+                + ", email='" + this.email + '\''
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FKITSuperGroup that = (FKITSuperGroup) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(prettyName, that.prettyName) &&
-                type == that.type &&
-                Objects.equals(email, that.email);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.prettyName, that.prettyName)
+                && this.type == that.type
+                && Objects.equals(this.email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, prettyName, type, email);
+        return Objects.hash(
+                this.id,
+                this.name,
+                this.prettyName,
+                this.type,
+                this.email);
     }
 }

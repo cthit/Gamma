@@ -2,13 +2,13 @@ package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
 @SuppressFBWarnings(justification = "Fields should be serializable", value = "SE_BAD_FIELD")
@@ -39,24 +39,28 @@ public class NoAccountMembershipPK implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         NoAccountMembershipPK that = (NoAccountMembershipPK) o;
-        return Objects.equals(itUser, that.itUser) &&
-                Objects.equals(fkitGroup, that.fkitGroup);
+        return Objects.equals(this.itUser, that.itUser)
+                && Objects.equals(this.fkitGroup, that.fkitGroup);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(itUser, fkitGroup);
+        return Objects.hash(this.itUser, this.fkitGroup);
     }
 
     @Override
     public String toString() {
-        return "NoAccountMembershipPK{" +
-                "itUser='" + itUser + '\'' +
-                ", fkitGroup=" + fkitGroup +
-                '}';
+        return "NoAccountMembershipPK{"
+                + "itUser='" + this.itUser + '\''
+                + ", fkitGroup=" + this.fkitGroup
+                + '}';
     }
 }

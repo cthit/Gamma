@@ -46,7 +46,7 @@ public class MembershipPK implements Serializable {
     }
 
     public Post getPost() {
-        return post;
+        return this.post;
     }
 
     public void setPost(Post post) {
@@ -54,28 +54,31 @@ public class MembershipPK implements Serializable {
     }
 
     @Override
-    public String
-    toString() {
-        return "MembershipPK{" +
-                "itUser=" + itUser +
-                ", fkitGroup=" + fkitGroup +
-                ", post=" + post +
-                '}';
+    public String toString() {
+        return "MembershipPK{"
+                + "itUser=" + this.itUser
+                + ", fkitGroup=" + this.fkitGroup
+                + ", post=" + this.post
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         MembershipPK that = (MembershipPK) o;
-        return Objects.equals(itUser, that.itUser) &&
-                Objects.equals(fkitGroup, that.fkitGroup) &&
-                Objects.equals(post, that.post);
+        return Objects.equals(this.itUser, that.itUser)
+                && Objects.equals(this.fkitGroup, that.fkitGroup)
+                && Objects.equals(this.post, that.post);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itUser, fkitGroup, post);
+        return Objects.hash(this.itUser, this.fkitGroup, this.post);
     }
 
 

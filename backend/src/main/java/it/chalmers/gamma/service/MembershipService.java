@@ -37,11 +37,11 @@ public class MembershipService {
      * @param postname what the unoficial-post name is
      */
     public void addUserToGroup(FKITGroup group, ITUser user, Post post, String postname) {
-        Membership membership = new Membership();
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(group);
         pk.setITUser(user);
         pk.setPost(post);
+        Membership membership = new Membership();
         membership.setId(pk);
         membership.setUnofficialPostName(postname);
         this.membershipRepository.save(membership);
