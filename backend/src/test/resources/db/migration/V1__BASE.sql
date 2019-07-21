@@ -56,7 +56,7 @@ create table fkit_super_group (
   id            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
-  type          varchar(30)    not null constraint fkit_super_group_type_unique         unique
+  type          varchar(30)    not null
 );
 
 create table fkit_group (
@@ -128,7 +128,16 @@ create table itclient (
     refresh_token_validity integer not null,
     auto_approve boolean default false not null,
     name varchar(30) not null,
-    description uuid not null references internal_text,
+    description uuid references internal_text,
+    created_at       timestamp    not null default current_timestamp,
+    last_modified_at timestamp    not null default current_timestamp
+);
+
+create table apikey (
+    id               uuid constraint apikey_pk primary key,
+    name             varchar(30) not null,
+    description      uuid references internal_text,
+    key              varchar(150) not null,
     created_at       timestamp    not null default current_timestamp,
     last_modified_at timestamp    not null default current_timestamp
 )
