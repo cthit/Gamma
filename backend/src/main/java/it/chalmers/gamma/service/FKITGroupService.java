@@ -42,7 +42,7 @@ public class FKITGroupService {
             group.setENDescription(request.getDescription().getEn());
         }
         return saveGroup(group, request.getPrettyName(), request.getBecomesActive(), request.getBecomesInactive(),
-                request.getEmail(), request.getAvatarURL());
+                 request.getEmail(), request.getAvatarURL());
     }
 
     private FKITGroup saveGroup(FKITGroup group, String prettyName,

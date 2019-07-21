@@ -41,14 +41,15 @@ public class FKITGroup {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text func;
 
-    @Column(name = "email", length = 100, nullable = false)
-    private String email;
 
     @Column(name = "becomes_active")
     private Calendar becomesActive;
 
     @Column(name = "becomes_inactive")
     private Calendar becomesInactive;
+
+    @Column(name = "email")
+    public String email;
 
     public FKITGroup() {
         this.id = UUID.randomUUID();
@@ -76,14 +77,6 @@ public class FKITGroup {
 
     public void setDescription(Text description) {
         this.description = description;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getAvatarURL() {
@@ -144,6 +137,8 @@ public class FKITGroup {
         return this.description.getEn();
     }
 
+
+
     public void setENDescription(String description) {
         this.description.setEn(description);
     }
@@ -173,17 +168,27 @@ public class FKITGroup {
         return now.after(this.becomesActive) && now.before(this.becomesInactive);
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "FKITGroup{"
-            + "id=" + id
-            + ", avatarURL='" + avatarURL + '\''
-            + ", name='" + name + '\''
-            + ", prettyName='" + prettyName + '\''
-            + ", description=" + description
-            + ", func=" + func
-            + ", email='" + email + '\''
-            + '}';
+                + "id=" + this.id
+                + ", avatarURL='" + this.avatarURL + '\''
+                + ", name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", description=" + this.description
+                + ", func=" + this.func
+                + ", becomesActive=" + this.becomesActive
+                + ", becomesInactive=" + this.becomesInactive
+                + ", email='" + this.email + '\''
+                + '}';
     }
 
     @Override
@@ -196,23 +201,27 @@ public class FKITGroup {
         }
         FKITGroup fkitGroup = (FKITGroup) o;
         return Objects.equals(this.id, fkitGroup.id)
-            && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
-            && Objects.equals(this.name, fkitGroup.name)
-            && Objects.equals(this.prettyName, fkitGroup.prettyName)
-            && Objects.equals(this.description, fkitGroup.description)
-            && Objects.equals(this.func, fkitGroup.func)
-            && Objects.equals(this.email, fkitGroup.email);
+                && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
+                && Objects.equals(this.name, fkitGroup.name)
+                && Objects.equals(this.prettyName, fkitGroup.prettyName)
+                && Objects.equals(this.description, fkitGroup.description)
+                && Objects.equals(this.func, fkitGroup.func)
+                && Objects.equals(this.becomesActive, fkitGroup.becomesActive)
+                && Objects.equals(this.becomesInactive, fkitGroup.becomesInactive)
+                && Objects.equals(this.email, fkitGroup.email);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-            this.id,
-            this.avatarURL,
-            this.name,
-            this.prettyName,
-            this.description,
-            this.func,
-            this.email);
+                this.id,
+                this.avatarURL,
+                this.name,
+                this.prettyName,
+                this.description,
+                this.func,
+                this.becomesActive,
+                this.becomesInactive,
+                this.email);
     }
 }

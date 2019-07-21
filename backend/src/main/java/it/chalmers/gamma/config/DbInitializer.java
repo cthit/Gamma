@@ -116,6 +116,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             superGroupRequest.setPrettyName("super admin");
             superGroupRequest.setType(GroupType.COMMITTEE);
             String adminMail = "admin@chalmers.it";
+            superGroupRequest.setEmail(adminMail);
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
