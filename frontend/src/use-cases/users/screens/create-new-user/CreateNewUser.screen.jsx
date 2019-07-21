@@ -1,5 +1,5 @@
 import React from "react";
-import UserForm from "../common-views/user-form";
+import UserForm from "../../../../common/elements/user-form";
 import translations from "./CreateNewUser.screen.translations";
 import { DigitTranslations, DigitLayout } from "@cthit/react-digit-components";
 import {
