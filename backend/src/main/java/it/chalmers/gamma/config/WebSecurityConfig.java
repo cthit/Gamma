@@ -21,7 +21,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 @Configuration
@@ -42,16 +42,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthorityService authorityService;
     private final FKITGroupToSuperGroupService groupToSuperGroupService;
     private final ApiKeyService apiKeyService;
+    private final PasswordEncoder passwordEncoder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
                              FKITGroupToSuperGroupService groupToSuperGroupService,
-                             ApiKeyService apiKeyService) {
+                             ApiKeyService apiKeyService, PasswordEncoder passwordEncoder) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(this.itUserService);
-        authProvider.setPasswordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
+        authProvider.setPasswordEncoder(this.passwordEncoder);
         return authProvider;
     }
 

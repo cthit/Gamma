@@ -4,7 +4,7 @@ import {
     DigitIfElseRendering
 } from "@cthit/react-digit-components";
 import React from "react";
-import UserForm from "../common-views/user-form/UserForm.view";
+import UserForm from "../../../../common/elements/user-form/UserForm.view";
 import translations from "./EditUserDetails.screen.translations.json";
 
 class EditUserDetails extends React.Component {

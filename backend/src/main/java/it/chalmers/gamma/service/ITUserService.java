@@ -174,4 +174,8 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
+    public boolean passwordMatches(ITUser user, String password) {
+        return this.passwordEncoder.matches(password, user.getPassword());
+    }
+
 }
