@@ -92,7 +92,7 @@ public final class FKITGroupController {
         for (ITUser user : members) {
             JSONObject userObject = itUserSerializer.serialize(user, null, null);
             Membership userMembership = this.membershipService.getMembershipByUserAndGroup(user, group);
-            userObject.put("post", userMembership.getPost());
+            userObject.put("post", userMembership.getId().getPost());
             userObject.put("unofficialPostName", userMembership.getUnofficialPostName());
             minifiedMembers.add(userObject);
         }

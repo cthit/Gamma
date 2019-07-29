@@ -13,15 +13,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MembershipRepository extends JpaRepository<Membership, UUID> {
-    Membership findByPost(Post post);
-
-    List<Membership> findAllByPost(Post post);
+    List<Membership> findAllById_Post(Post post);
 
     List<Membership> findAllById_ItUser(ITUser itUser);
 
-    Membership findById_ItUserAndPost(ITUser user, Post post);
+    Membership findById_ItUserAndId_Post(ITUser user, Post post);
 
-    List<Membership> findAllById_FkitGroupAndPost(FKITGroup group, Post post);
+    List<Membership> findAllById_FkitGroupAndId_Post(FKITGroup group, Post post);
 
     List<Membership> findAllById_FkitGroup(FKITGroup group);
 

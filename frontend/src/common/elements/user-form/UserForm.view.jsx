@@ -16,13 +16,13 @@ import {
     PASSWORD,
     WEBSITES,
     LANGUAGE
-} from "../../../../../api/users/props.users.api";
-import EditWebsites from "../../../../../common/views/edit-websites";
+} from "../../../api/users/props.users.api";
+import EditWebsites from "../../views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 import {
     ENGLISH_LANGUAGE,
     SWEDISH_LANGUAGE
-} from "../../../../../api/utils/commonProps";
+} from "../../../api/utils/commonProps";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";
