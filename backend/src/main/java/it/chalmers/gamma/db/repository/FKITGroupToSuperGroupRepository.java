@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FKITGroupToSuperGroupRepository extends JpaRepository<FKITGroupToSuperGroup, UUID> {
     List<FKITGroupToSuperGroup> findFKITGroupToSuperGroupsById_SuperGroup(FKITSuperGroup superGroup);
-    FKITGroupToSuperGroup findFKITGroupToSuperGroupsById_Group(FKITGroup group);
+    List<FKITGroupToSuperGroup> findAllFKITGroupToSuperGroupsById_Group(FKITGroup group);
     FKITGroupToSuperGroup findFKITGroupToSuperGroupsById_GroupAndId_SuperGroup(FKITGroup group,
                                                                                FKITSuperGroup superGroup);
 }

@@ -9,6 +9,7 @@ import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,9 +30,11 @@ public class FKITGroupToSuperGroupService {
         return this.repository.findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
     }
 
-    public FKITSuperGroup getSuperGroup(FKITGroup group) {
-        FKITGroupToSuperGroup fkitGroupToSuperGroup = this.repository.findFKITGroupToSuperGroupsById_Group(group);
-        return fkitGroupToSuperGroup == null ? null : fkitGroupToSuperGroup.getId().getSuperGroup();
+    public List<FKITSuperGroup> getSuperGroups(FKITGroup group) {
+        List<FKITGroupToSuperGroup> fkitGroupToSuperGroups =
+                this.repository.findAllFKITGroupToSuperGroupsById_Group(group);
+        return fkitGroupToSuperGroups.stream().map(fkitGroupToSuperGroup -> fkitGroupToSuperGroup.getId()
+                .getSuperGroup()).collect(Collectors.toList());
     }
 
     public void deleteRelationship(FKITGroup group, FKITSuperGroup superGroup) {
