@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -27,7 +29,11 @@ public class FKITSuperGroup {
     private String prettyName;
 
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private GroupType type;
+
+    @Column(name = "email")
+    private String email;
 
     public FKITSuperGroup() {
         this.id = UUID.randomUUID();
@@ -65,13 +71,22 @@ public class FKITSuperGroup {
         this.type = type;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "FKITSuperGroup{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + ", prettyName='" + prettyName + '\''
-                + ", type=" + type
+                + "id=" + this.id
+                + ", name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", type=" + this.type
+                + ", email='" + this.email + '\''
                 + '}';
     }
 
@@ -87,13 +102,17 @@ public class FKITSuperGroup {
         return Objects.equals(this.id, that.id)
                 && Objects.equals(this.name, that.name)
                 && Objects.equals(this.prettyName, that.prettyName)
-                && this.type == that.type;
+                && this.type == that.type
+                && Objects.equals(this.email, that.email);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(this.id, this.name, this.prettyName, this.type);
+        return Objects.hash(
+                this.id,
+                this.name,
+                this.prettyName,
+                this.type,
+                this.email);
     }
-
 }

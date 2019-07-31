@@ -19,7 +19,6 @@ plugins {
 	id "eclipse"
 	id "application"
 	id "checkstyle"
-	id "com.github.spotbugs" version "1.6.5"
 	id "pmd"
 	id 'io.franzbecker.gradle-lombok' version '1.14'
 	id "jacoco"

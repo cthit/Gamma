@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -62,19 +63,18 @@ public class AuthorityService {
     public List<AuthorityLevel> getAuthorities(List<Membership> memberships) {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
         for (Membership membership : memberships) {
-            Authority authority = getAuthorityLevel(
-                    this.fkitGroupToSuperGroupService.getSuperGroup(
-                            membership.getId().getFKITGroup()
-                    ),
-                    membership.getPost()
-            );
-
-            if (authority != null) {
-                Calendar start = membership.getId().getFKITGroup().getBecomesActive();
-                Calendar end = membership.getId().getFKITGroup().getBecomesInactive();
-                Calendar now = Calendar.getInstance();
-                if (now.after(start) && now.before(end)) {
-                    authorityLevels.add(authority.getAuthorityLevel());
+            List<Authority> authorities = this.fkitGroupToSuperGroupService
+                    .getSuperGroups(membership.getId().getFKITGroup())
+                    .stream().map(group -> this.getAuthorityLevel(group,
+                            membership.getId().getPost())).collect(Collectors.toList());
+            for (Authority authority : authorities) {
+                if (authority != null) {
+                    Calendar start = membership.getId().getFKITGroup().getBecomesActive();
+                    Calendar end = membership.getId().getFKITGroup().getBecomesInactive();
+                    Calendar now = Calendar.getInstance();
+                    if (now.after(start) && now.before(end)) {
+                        authorityLevels.add(authority.getAuthorityLevel());
+                    }
                 }
             }
         }

@@ -37,11 +37,11 @@ server:
 
 logging:
   level:
-    root: DEBUG
+    root: ${ROOT_DEBUG_LEVEL:INFO}
     org:
       springframework:
-        web: DEBUG
-      hibernate: INFO
+        web: ${WEB_DEBUG_LEVEL:INFO}
+      hibernate: ${HIBERNATE_DEBUG_LEVEL:INFO}
 
 security:
   jwt:

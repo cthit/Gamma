@@ -26,11 +26,11 @@ server:
 logging:
   file: ${LOGGING_FILE:production.log}
   level:
-    root: WARN
+    root: ${ROOT_DEBUG_LEVEL:WARN}
     org:
       springframework:
-        web: WARN
-      hibernate: ERROR
+        web: ${WEB_DEBUG_LEVEL:WARN}
+      hibernate: ${HIBERNATE_DEBUG_LEVEL:ERROR}
 
 security:
   jwt:

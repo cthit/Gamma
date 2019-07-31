@@ -22,6 +22,7 @@ public class FKITSuperGroupService {
         group.setName(request.getName());
         group.setPrettyName(request.getPrettyName() == null ? request.getName() : request.getPrettyName());
         group.setType(request.getType());
+        group.setEmail(request.getEmail());
         return this.repository.save(group);
     }
 
@@ -48,5 +49,6 @@ public class FKITSuperGroupService {
         group.setType(request.getType() == null ? group.getType() : request.getType());
         group.setName(request.getName() == null ? group.getName() : request.getName());
         group.setPrettyName(request.getPrettyName() == null ? group.getPrettyName() : request.getPrettyName());
+        group.setEmail(request.getEmail() == null ? group.getEmail() : request.getEmail());
     }
 }

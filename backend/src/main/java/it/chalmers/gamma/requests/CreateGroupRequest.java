@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,10 +20,6 @@ public class CreateGroupRequest {
 
     private Text description;
 
-    @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
-    @Email(message = "NOT_A_VALID_EMAIL")
-    private String email;
-
     @NotNull(message = "A_FUNCTION_MUST_BE_PROVIDED")
     private Text function;
     private String avatarURL;
@@ -38,9 +33,13 @@ public class CreateGroupRequest {
 
     private String superGroup;
 
+    private String email;
+
+
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
     }
+
     public String getSuperGroup() {
         return this.superGroup;
     }
@@ -48,6 +47,7 @@ public class CreateGroupRequest {
     public void setSuperGroup(String superGroup) {
         this.superGroup = superGroup;
     }
+
     public void setWebsites(List<WebsiteInfo> websites) {
         this.websites = websites;
     }
@@ -84,14 +84,6 @@ public class CreateGroupRequest {
         this.name = name;
     }
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPrettyName() {
         return this.prettyName;
     }
@@ -116,6 +108,15 @@ public class CreateGroupRequest {
         this.becomesInactive = becomesInactive;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -125,32 +126,47 @@ public class CreateGroupRequest {
             return false;
         }
         CreateGroupRequest that = (CreateGroupRequest) o;
-        return this.name.equals(that.name)
-            && this.prettyName.equals(that.prettyName)
-            && this.description.equals(that.description)
-            && this.email.equals(that.email)
-            && this.function.equals(that.function)
-            && this.avatarURL.equals(that.avatarURL)
-            && this.websites.equals(that.websites);
+        return Objects.equals(this.name, that.name)
+                && Objects.equals(this.prettyName, that.prettyName)
+                && Objects.equals(this.description, that.description)
+                && Objects.equals(this.function, that.function)
+                && Objects.equals(this.avatarURL, that.avatarURL)
+                && Objects.equals(this.websites, that.websites)
+                && Objects.equals(this.becomesActive, that.becomesActive)
+                && Objects.equals(this.becomesInactive, that.becomesInactive)
+                && Objects.equals(this.superGroup, that.superGroup)
+                && Objects.equals(this.email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.prettyName, this.description, this.email,
-             this.function, this.avatarURL, this.websites);
+        return Objects.hash(
+                this.name,
+                this.prettyName,
+                this.description,
+                this.function,
+                this.avatarURL,
+                this.websites,
+                this.becomesActive,
+                this.becomesInactive,
+                this.superGroup,
+                this.email);
     }
 
     @Override
     public String toString() {
         return "CreateGroupRequest{"
-            + "name='" + this.name + '\''
-            + ", prettyName='" + this.prettyName + '\''
-            + ", description=" + this.description
-            + ", email='" + this.email + '\''
-            + ", function=" + this.function
-            + ", avatarURL='" + this.avatarURL + '\''
-            + ", websites=" + this.websites
-            + '}';
+                + "name='" + name + '\''
+                + ", prettyName='" + prettyName + '\''
+                + ", description=" + description
+                + ", function=" + function
+                + ", avatarURL='" + avatarURL + '\''
+                + ", websites=" + websites
+                + ", becomesActive=" + becomesActive
+                + ", becomesInactive=" + becomesInactive
+                + ", superGroup='" + superGroup + '\''
+                + ", email='" + email + '\''
+                + '}';
     }
 
     public static class WebsiteInfo {
@@ -183,7 +199,7 @@ public class CreateGroupRequest {
             }
             WebsiteInfo that = (WebsiteInfo) o;
             return this.website.equals(that.website)
-                && this.url.equals(that.url);
+                    && this.url.equals(that.url);
         }
 
         @Override
@@ -194,9 +210,9 @@ public class CreateGroupRequest {
         @Override
         public String toString() {
             return "WebsiteInfo{"
-                + "website='" + this.website + '\''
-                + ", url='" + this.url + '\''
-                + '}';
+                    + "website='" + this.website + '\''
+                    + ", url='" + this.url + '\''
+                    + '}';
         }
     }
 }

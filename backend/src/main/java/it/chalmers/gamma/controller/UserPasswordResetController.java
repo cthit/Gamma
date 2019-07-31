@@ -93,7 +93,7 @@ public class UserPasswordResetController {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
-        this.mailSenderService.trySendingMail(user.getCid(), subject, message);
+        this.mailSenderService.trySendingMail(user.getEmail(), subject, message);
     }
 
     private ITUser findByCidOrEmail(String userCredentials) {
