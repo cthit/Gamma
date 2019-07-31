@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import EditUsersInGroup from "./EditUsersInGroup.screen";
 
-import { createGetUsersAction } from "../../../../api/users/action-creator.users.api";
+import { createGetUsersMinifiedAction } from "../../../../api/users/action-creator.users.api";
 import { createGetGroupAction } from "../../../../api/groups/action-creator.groups.api";
 import {
     gammaLoadingFinished,
@@ -24,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
     getPosts: () => dispatch(createGetPostsAction()),
     gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
     gammaLoadingStart: () => dispatch(gammaLoadingStart()),
-    loadUsers: () => dispatch(createGetUsersAction()),
+    loadUsers: () => dispatch(createGetUsersMinifiedAction()),
     redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to))
 });
 
