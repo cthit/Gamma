@@ -15,6 +15,7 @@ import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
+import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
@@ -26,6 +27,7 @@ import it.chalmers.gamma.response.PasswordChangedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
@@ -243,16 +245,38 @@ public final class ITUserController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        String cid = principal.getName();
-        ITUser user = this.itUserService.loadUser(cid);
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
+        ITUser user = this.extractUser(principal);
         if (!this.itUserService.passwordMatches(user, request.getOldPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
         this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
+                                           BindingResult result) {
+        if(result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        ITUser user = this.extractUser(principal);
+        if(!this.itUserService.passwordMatches(user, request.getPassword())) {
+            throw new IncorrectCidOrPasswordResponse();
+        }
+        this.userWebsiteService.deleteWebsitesConnectedToUser(
+                this.itUserService.getUserById(user.getId())
+        );
+        this.itUserService.removeUser(user.getId());
+        return new UserDeletedResponse();
+    }
+
+    private ITUser extractUser(Principal principal) {
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        return user;
     }
 
 }
