@@ -1149,10 +1149,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-9.0.1.tgz#c27b391d8457d1e893f1eddeaf5e5412d12ffbb5"
   integrity sha512-6It2EVfGskxZCQhuykrfnALg7oVeiI6KclWSmGDqB0AiInVrTGB9Jp9i4/Ad21u9Jde/voVQz6eFX/eSg/UsPA==
 
-"@cthit/react-digit-components@^1.0.0-beta.32":
-  version "1.0.0-beta.32"
-  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0-beta.32.tgz#644467b4ef26301b18362562a1ffd9db28f1c536"
-  integrity sha512-4pIT9a8VFV0KbsJwt0RNHJWMwSvzWhRiki4jpt9pq8AEVmL8iciOvbxdu+9LQ0IC5k0DuAaMHoSwiS7vM2Xz1g==
+"@cthit/react-digit-components@^1.0.0-beta.33":
+  version "1.0.0-beta.33"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0-beta.33.tgz#73a5568ac79f70b3c35bb0c0b7dc37dd59646657"
+  integrity sha512-FR/pW9mnL+GW1QL52JvMxzwadviH4ElnuklVms8FIdk30HHXXH9DUuNOV2uSZqntyuFiD89pw3e3PgKvysAxmA==
   dependencies:
     "@date-io/core" "1.3.8"
     "@date-io/date-fns" "1.3.8"
@@ -7348,13 +7348,6 @@ markdown-escapes@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/markdown-escapes/-/markdown-escapes-1.0.2.tgz#e639cbde7b99c841c0bacc8a07982873b46d2122"
   integrity sha512-lbRZ2mE3Q9RtLjxZBZ9+IMl68DKIXaVAhwvwn9pmjnPLS0h/6kyBMgNhqi1xFJ/2yv6cSyv0jbiZavZv93JkkA==
-
-material-ui-image@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/material-ui-image/-/material-ui-image-3.2.0.tgz#557a2838c33a975a223947707736f90439bd47c1"
-  integrity sha512-4eee8BOEXLqAVqj+Vlck7b8+vdlo+8UzuxOGFO3/7w8lnJv7fdy0c6pAXnB5A5rsy3S3JzTKrhzpceN2nPKxLQ==
-  dependencies:
-    prop-types "^15.5.8"
 
 md5.js@^1.3.4:
   version "1.3.5"

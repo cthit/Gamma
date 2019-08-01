@@ -3,13 +3,24 @@ import _ from "lodash";
 
 const path = process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api";
 
-export function getRequest(endpoint, includeAuthorization = true) {
+export function getRequest(endpoint, includeAuthorization = true, convert) {
     var headers = {};
 
     if (includeAuthorization) {
         headers = {
             Authorization: "Bearer " + token()
         };
+    }
+
+    if (convert != null) {
+        return new Promise((resolve, reject) => {
+            axios
+                .get(removeLastSlash(path + endpoint), {
+                    headers
+                })
+                .then(response => resolve(convert(response)))
+                .catch(error => reject(error));
+        });
     }
 
     return axios.get(removeLastSlash(path + endpoint), {

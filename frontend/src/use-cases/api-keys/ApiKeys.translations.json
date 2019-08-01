@@ -1,0 +1,17 @@
+{
+    "ApiKeysTitle": ["API keys", "API nycklar"],
+    "DialogDeleteTitle": ["Are you sure?", "Är du säker?"],
+    "DialogDeleteDescription1": [
+        "Are you sure that you want to delete the API key ",
+        "Är du säker att du vill radera API nyckeln "
+    ],
+    "DialogDeleteDescription2": [
+        "? This is permanent.",
+        "? Detta är permanent."
+    ],
+    "Name": ["API key name", "API nyckelnamn"],
+    "ToastDelete1": ["Deletion of ", "Radering av "],
+    "ToastDeleteFailed2": [" failed", " misslyckades"],
+    "ToastDeleteSuccessful2": [" was successful", " lyckades"],
+    "CreateNewApiKey": ["Create a new API key", "Skapa en ny API nyckel"]
+}
