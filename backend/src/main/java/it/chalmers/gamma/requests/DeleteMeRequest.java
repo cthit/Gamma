@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 
 public class DeleteMeRequest {
-    @NotNull
+    @NotNull(message = "PASSWORD_MUST_NOT_BE_NULL")
     @Size(min = 8, message = "PASSWORD_TOO_SHORT")
     private String password;
 

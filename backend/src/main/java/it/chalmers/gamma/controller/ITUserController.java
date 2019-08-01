@@ -266,6 +266,7 @@ public final class ITUserController {
         this.userWebsiteService.deleteWebsitesConnectedToUser(
                 this.itUserService.getUserById(user.getId())
         );
+        this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
         return new UserDeletedResponse();
     }
