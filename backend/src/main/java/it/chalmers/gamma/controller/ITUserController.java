@@ -256,11 +256,11 @@ public final class ITUserController {
     @RequestMapping(value = "/me", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
                                            BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         ITUser user = this.extractUser(principal);
-        if(!this.itUserService.passwordMatches(user, request.getPassword())) {
+        if (!this.itUserService.passwordMatches(user, request.getPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
         this.userWebsiteService.deleteWebsitesConnectedToUser(

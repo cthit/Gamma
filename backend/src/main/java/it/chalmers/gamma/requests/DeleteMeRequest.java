@@ -3,7 +3,6 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.springframework.http.ResponseEntity;
 
 public class DeleteMeRequest {
     @NotNull(message = "PASSWORD_MUST_NOT_BE_NULL")
@@ -11,7 +10,7 @@ public class DeleteMeRequest {
     private String password;
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
