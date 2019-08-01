@@ -7,10 +7,11 @@ export const ADMIN_WEBSITES_ENDPOINT = "/admin/websites/";
 export const ADMIN_SUPER_GROUPS_ENDPOINT = "/admin/superGroups/";
 export const ADMIN_GDPR_ENDPOINT = "/admin/gdpr/";
 export const ADMIN_API_KEYS_ENDPOINT = "/admin/api_keys/";
+export const ADMIN_POSTS_ENDPOINT = "/admin/groups/posts/";
 
 export const WHITELIST_ENDPOINT = "/whitelist/";
-export const POSTS_ENDPOINT = "/admin/groups/posts/";
 export const ACTIVATION_CODES_ENDPOINT = "/activation_codes/";
+export const POSTS_ENDPOINT = "/groups/posts/";
 export const CREATE_ACCOUNT_ENDPOINT = "/users/";
 export const LOGIN_ENDPOINT = "/users/login/";
 export const GROUPS_ENDPOINT = "/groups/";
