@@ -52,9 +52,13 @@ public class ITClientService implements ClientDetailsService {
         client.setAccessTokenValidity(this.accessTokenValidityTime);
         client.setAutoApprove(this.autoApprove);
         client.setRefreshTokenValidity(this.refreshTokenValidityTime);
-        client.setClientId(TokenUtils.generateToken());
-        String clientSecret = TokenUtils.generateToken();
-        client.setClientSecret(clientSecret);
+        client.setClientId(TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
+                TokenUtils.CharacterTypes.UPPERCASE,
+                TokenUtils.CharacterTypes.NUMBERS));
+        String clientSecret = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
+                TokenUtils.CharacterTypes.UPPERCASE,
+                TokenUtils.CharacterTypes.NUMBERS);
+        client.setClientSecret("{noop}" + clientSecret);
         this.itClientRepository.save(client);
         return clientSecret;
     }
