@@ -20,8 +20,6 @@ const ApiKeys = () => {
         dispatch(gammaLoadingFinished());
     }, []);
 
-    console.log(text);
-
     return (
         <DigitCRUD
             readOneRequest={getApiKey}
