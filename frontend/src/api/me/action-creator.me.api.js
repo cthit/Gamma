@@ -5,7 +5,9 @@ import {
     ME_GET_FAILED,
     ME_GET_SUCCESSFULLY,
     ME_CHANGE_PASSWORD_FAILED,
-    ME_CHANGE_PASSWORD_SUCCESSFULLY
+    ME_CHANGE_PASSWORD_SUCCESSFULLY,
+    ME_DELETED_FAILED,
+    ME_DELETED_SUCCESSFULLY
 } from "./actions.me.api";
 
 import { editMe, editPassword } from "./put.me.api";
@@ -13,6 +15,7 @@ import { getMe } from "./get.me.api";
 
 import { requestPromise } from "../utils/requestPromise";
 import { failed, loading, successfully } from "../utils/simpleActionCreators";
+import { deleteMe } from "./delete.me.api";
 
 export function createGetMeAction() {
     return requestPromise(
@@ -51,6 +54,22 @@ export function createChangeMePasswordAction(passwordData) {
                 })
                 .catch(error => {
                     dispatch(meChangePasswordFailed());
+                    reject(error);
+                });
+        });
+    };
+}
+
+export function createDeleteMeAction(passwordData) {
+    return dispatch => {
+        return new Promise((resolve, reject) => {
+            deleteMe(passwordData)
+                .then(response => {
+                    dispatch(meDeleteSuccessfully());
+                    resolve(response);
+                })
+                .catch(error => {
+                    dispatch(meDeleteFailed());
                     reject(error);
                 });
         });
@@ -111,6 +130,23 @@ function meChangePasswordSuccessfully() {
 function meChangePasswordFailed(error) {
     return {
         type: ME_CHANGE_PASSWORD_FAILED,
+        error: true,
+        payload: {
+            error: error
+        }
+    };
+}
+
+function meDeleteSuccessfully() {
+    return {
+        type: ME_DELETED_SUCCESSFULLY,
+        error: false
+    };
+}
+
+function meDeleteFailed(error) {
+    return {
+        type: ME_DELETED_FAILED,
         error: true,
         payload: {
             error: error
