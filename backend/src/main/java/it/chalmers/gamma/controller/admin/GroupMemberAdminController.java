@@ -9,7 +9,6 @@ import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
 
 import it.chalmers.gamma.response.EditedMembershipResponse;
-import it.chalmers.gamma.response.GetMembershipsResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PostDoesNotExistResponse;
@@ -23,8 +22,6 @@ import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -75,20 +72,6 @@ public final class GroupMemberAdminController {
         Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new UserAddedToGroupResponse();
-    }
-
-    @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
-    public ResponseEntity<List<Membership>> getUsersInGroup(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
-        if (group == null) {
-            throw new GroupDoesNotExistResponse();
-        }
-        List<ITUser> members = this.membershipService.getUsersInGroup(group);
-        List<Membership> groupMembers = new ArrayList<>();
-        for (ITUser member : members) {
-            groupMembers.add(this.membershipService.getMembershipByUserAndGroup(member, group));
-        }
-        return new GetMembershipsResponse(groupMembers);
     }
 
     @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)

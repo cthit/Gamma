@@ -7,8 +7,6 @@ import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.AddPostRequest;
 import it.chalmers.gamma.response.EditedPostResponse;
-import it.chalmers.gamma.response.GetMultiplePostsResponse;
-import it.chalmers.gamma.response.GetPostResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PostAlreadyExistsResponse;
 import it.chalmers.gamma.response.PostCreatedResponse;
@@ -87,14 +85,6 @@ public final class GroupPostAdminController {
         return new EditedPostResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Post> getPost(@PathVariable("id") String id) {
-        Post post = this.postService.getPost(UUID.fromString(id));
-        if (post == null) {
-            throw new PostDoesNotExistResponse();
-        }
-        return new GetPostResponse(post);
-    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deletePost(@PathVariable("id") String id) {
@@ -105,15 +95,6 @@ public final class GroupPostAdminController {
         return new PostDeletedResponse();
     }
 
-    /**
-     * gets all posts in the system.
-     *
-     * @return all posts currently in the system
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Post>> getPosts() {
-        return new GetMultiplePostsResponse(this.postService.getAllPosts());
-    }
 
     /**
      * gets all places where a post is used, meaning which groups have the post and who currently is assigned that post.

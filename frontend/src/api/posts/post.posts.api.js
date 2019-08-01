@@ -1,5 +1,5 @@
 import { postRequest } from "../utils/api";
-import { POSTS_ENDPOINT } from "../utils/endpoints";
+import { ADMIN_POSTS_ENDPOINT } from "../utils/endpoints";
 
 /**
  * {
@@ -10,5 +10,5 @@ import { POSTS_ENDPOINT } from "../utils/endpoints";
  * }
  */
 export function addPost(postData) {
-    return postRequest(POSTS_ENDPOINT, postData);
+    return postRequest(ADMIN_POSTS_ENDPOINT, postData);
 }
