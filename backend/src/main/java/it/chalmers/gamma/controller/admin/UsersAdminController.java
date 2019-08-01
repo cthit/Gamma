@@ -108,10 +108,10 @@ public final class UsersAdminController {
         if (!this.itUserService.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
-        this.userWebsiteService.deleteWebsitesConnectedToUser(
-                this.itUserService.getUserById(UUID.fromString(id))
-        );
-        this.itUserService.removeUser(UUID.fromString(id));
+        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
+        this.userWebsiteService.deleteWebsitesConnectedToUser(user);
+        this.membershipService.removeAllMemberships(user);
+        this.itUserService.removeUser(user.getId());
         return new UserDeletedResponse();
     }
 
