@@ -74,7 +74,18 @@ public class FKITGroupSerializer {
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
-                GROUP_ID, AVATAR_URL, IS_ACTIVE, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
+                    GROUP_ID,
+                    AVATAR_URL,
+                    IS_ACTIVE,
+                    NAME,
+                    PRETTY_NAME,
+                    DESCRIPTION,
+                    FUNC,
+                    EMAIL,
+                    TYPE,
+                    WEBSITES,
+                    USERS,
+                    SUPER_GROUP
             };
             return new ArrayList<>(Arrays.asList(props));
         }
