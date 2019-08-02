@@ -139,4 +139,9 @@ public class MembershipService {
             this.membershipRepository.delete(this.getMembershipByUserAndGroup(user, group));
         }
     }
+
+    public void removeAllMemberships(ITUser user) {
+        List<Membership> memberships = this.membershipRepository.findAllById_ItUser(user);
+        memberships.forEach(this.membershipRepository::delete);
+    }
 }

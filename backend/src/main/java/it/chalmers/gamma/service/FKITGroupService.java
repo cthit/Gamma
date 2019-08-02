@@ -22,7 +22,7 @@ public class FKITGroupService {
     public FKITGroup createGroup(CreateGroupRequest request) {
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(request.getName().toLowerCase());
-        fkitGroup.setFunc(request.getFunction());
+        fkitGroup.setFunction(request.getFunction());
         fkitGroup.setDescription(request.getDescription());
         return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
                 request.getBecomesActive(), request.getBecomesInactive(),
