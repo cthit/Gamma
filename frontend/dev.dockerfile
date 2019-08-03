@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 
 COPY package.json .
 
-RUN yarn install
+RUN yarn install --network-timeout 10000000
 RUN yarn global add react-scripts
 
 EXPOSE 3000
