@@ -2,7 +2,6 @@ import { activationCodes } from "../use-cases/activation-codes/ActivationCodes.r
 import { createAccount } from "../use-cases/create-account/CreateAccount.reducer";
 import { groups } from "../use-cases/groups/Groups.reducer";
 import { users } from "../use-cases/users/Users.reducer";
-import { websites } from "../use-cases/websites/Websites.reducer";
 import { user } from "./elements/user-information/UserInformation.element.reducer";
 import { loading } from "./views/gamma-loading/GammaLoading.view.reducer";
 import { clients } from "../use-cases/clients/Clients.reducer";
@@ -15,7 +14,6 @@ export const rootReducer = {
     user,
     users,
     groups,
-    websites,
     activationCodes,
     loading,
     clients,
