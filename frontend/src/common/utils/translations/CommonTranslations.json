@@ -18,5 +18,6 @@
     "LoggedOut": ["You have logged out", "Du har loggat ut"],
     "Save": ["Save", "Spara"],
     "Swedish": ["Swedish", "Svenska"],
-    "English": ["English", "Engelska"]
+    "English": ["English", "Engelska"],
+    "Id": ["Id", "Id"]
 }
