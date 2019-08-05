@@ -1,0 +1,30 @@
+{
+    "Id": ["Id", "Id"],
+    "Name": ["Name", "Namn"],
+    "PrettyName": ["Pretty name", "Pretty namn"],
+    "Type": ["Group type", "Grupp typ"],
+    "Society": ["Society", "Förening"],
+    "Committee": ["Committee", "Kommitté"],
+    "Board": ["Board", "Nämnd"],
+    "DeleteSuperGroup": ["Delete super group", "Radera supergrupp"],
+    "WouldYouLikeToDelete": [
+        "Would you like to delete the super group",
+        "Vill du radera supergruppen"
+    ],
+    "SubGroups": ["Sub groups", "Subgrupper"],
+    "Details": ["Details", "Detaljer"],
+    "NoSuperGroups": [
+        "There's no super groups",
+        "Det finns inga super grupper"
+    ],
+    "EditSuperGroup": ["Edit super group", "Redigera super gruppen"],
+    "CreateSuperGroup": ["Create Super group", "Skapa super grupp"],
+    "SuperGroup": ["Super group", "Supergrupp"],
+    "SaveSuperGroup": ["Save super group", "Spara supergrupp"],
+    "DescriptionSv": ["Description swedish", "Beskrivning svenska"],
+    "DescriptionEn": ["Description english", "Beskrivning engelska"],
+    "Email": ["Email", "Email"],
+    "FunctionSv": ["Function swedish", "Uppdrag svenska"],
+    "FunctionEn": ["Function english", "Uppdrag engelska"],
+    "SuperGroups": ["Super groups", "Supergrupper"]
+}
