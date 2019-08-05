@@ -2,6 +2,7 @@
     "Cancel": ["Cancel", "Avbryt"],
     "Back": ["Back", "Tillbaka"],
     "Edit": ["Edit", "Redigera"],
+    "Update": ["Edit", "Redigera"],
     "Delete": ["Delete", "Radera"],
     "Create": ["Create", "Skapa"],
     "Details": ["Details", "Detaljer"],

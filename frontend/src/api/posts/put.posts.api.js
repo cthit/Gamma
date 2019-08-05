@@ -9,6 +9,6 @@ import { POSTS_ENDPOINT } from "../utils/endpoints";
  *     }
  * }
  */
-export function editPost(postId, newPostId) {
-    return putRequest(POSTS_ENDPOINT + postId, newPostId);
+export function editPost(postId, newPostData) {
+    return putRequest(POSTS_ENDPOINT + postId, newPostData);
 }

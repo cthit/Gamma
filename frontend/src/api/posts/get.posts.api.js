@@ -10,5 +10,7 @@ export function getPost(postId) {
 }
 
 export function getPostUsage(postId) {
-    return getRequest(POSTS_ENDPOINT + postId + "/usage");
+    return getRequest(POSTS_ENDPOINT + postId + "/usage", true, input => ({
+        data: { usages: input.data }
+    }));
 }

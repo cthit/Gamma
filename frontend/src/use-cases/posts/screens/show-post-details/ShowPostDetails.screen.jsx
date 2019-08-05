@@ -77,10 +77,6 @@ class ShowPostDetails extends React.Component {
                                                 }}
                                                 keysOrder={["id", "sv", "en"]}
                                             />
-                                            <DigitText.Title text="Usages" />
-                                            <DisplayPostUsages
-                                                usages={post.usages}
-                                            />
                                         </DigitDesign.CardBody>
                                         <DigitDesign.CardButtons
                                             reverseDirection
