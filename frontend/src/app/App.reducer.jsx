@@ -1,4 +1,3 @@
-import { activationCodes } from "../use-cases/activation-codes/ActivationCodes.reducer";
 import { createAccount } from "../use-cases/create-account/CreateAccount.reducer";
 import { groups } from "../use-cases/groups/Groups.reducer";
 import { users } from "../use-cases/users/Users.reducer";
@@ -14,7 +13,6 @@ export const rootReducer = {
     user,
     users,
     groups,
-    activationCodes,
     loading,
     clients,
     gammaIntegration,

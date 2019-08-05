@@ -1,5 +1,5 @@
 {
-    "Id": ["Id", "Id"],
+    "ActivationCodes": ["Activation codes", "Aktiveringskoder"],
     "Cid": ["Cid", "Cid"],
     "Code": ["Code", "Kod"],
     "CreatedAt": ["Created at", "Skapad"],
@@ -12,5 +12,14 @@
     "YouHaveDeleted": [
         "You have deleted the activation code for",
         "Du har raderat aktiveringskoden för"
+    ],
+    "Details": ["Details", "Detaljer"],
+    "NoActivationCodes": [
+        "There's no activation codes",
+        "Det finns inga aktiveringskoder"
+    ],
+    "SearchForActivationCodes": [
+        "Search for activation codes",
+        "Sök efter aktiveringskoder"
     ]
 }
