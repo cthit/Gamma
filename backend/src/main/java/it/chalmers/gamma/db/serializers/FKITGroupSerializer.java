@@ -27,10 +27,13 @@ public class FKITGroupSerializer {
                 this.properties.contains(Properties.NAME), value.getName(), "name")
         );
         values.add(new SerializerValue(
+                this.properties.contains(Properties.IS_ACTIVE), value.isActive(), "isActive")
+        );
+        values.add(new SerializerValue(
                 this.properties.contains(Properties.DESCRIPTION), value.getDescription(), "description")
         );
         values.add(new SerializerValue(
-                this.properties.contains(Properties.FUNC), value.getFunc(), "function")
+                this.properties.contains(Properties.FUNC), value.getFunction(), "function")
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.EMAIL), value.getEmail(), "email")
@@ -58,6 +61,7 @@ public class FKITGroupSerializer {
     public enum Properties {
         GROUP_ID,
         AVATAR_URL,
+        IS_ACTIVE,
         NAME,
         PRETTY_NAME,
         DESCRIPTION,
@@ -70,7 +74,18 @@ public class FKITGroupSerializer {
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
-                GROUP_ID, AVATAR_URL, NAME, PRETTY_NAME, DESCRIPTION, FUNC, EMAIL, TYPE, WEBSITES, USERS, SUPER_GROUP
+                    GROUP_ID,
+                    AVATAR_URL,
+                    IS_ACTIVE,
+                    NAME,
+                    PRETTY_NAME,
+                    DESCRIPTION,
+                    FUNC,
+                    EMAIL,
+                    TYPE,
+                    WEBSITES,
+                    USERS,
+                    SUPER_GROUP
             };
             return new ArrayList<>(Arrays.asList(props));
         }

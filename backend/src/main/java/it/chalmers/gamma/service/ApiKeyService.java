@@ -30,7 +30,9 @@ public class ApiKeyService {
         description.setSv(request.getDescription().getSv());
         apiKey.setName(request.getName());
         apiKey.setDescription(description);
-        String key = TokenUtils.generateToken(50, TokenUtils.CharacterTypes.allValues());
+        String key = TokenUtils.generateToken(50, TokenUtils.CharacterTypes.LOWERCASE,
+                TokenUtils.CharacterTypes.UPPERCASE,
+                TokenUtils.CharacterTypes.NUMBERS);
         apiKey.setKey(key);
         this.apiKeyRepository.save(apiKey);
         return key;

@@ -25,13 +25,13 @@ public class MailSenderService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
 
-    public boolean trySendingMail(String cid, String subject, String body) {
+    public boolean trySendingMail(String email, String subject, String body) {
         if (this.production) {
-            return sendMail(cid, subject, body);
+            return sendMail(email, subject, body);
 
         } else {
             LOGGER.warn("Not in production environment, printing mail: \n "
-                    + "to: " + cid + "\n"
+                    + "to: " + email + "\n"
                     + "subject: " + subject + "\n"
                     + "body: " + body);
             return false;
@@ -43,12 +43,12 @@ public class MailSenderService {
      *
      * @return true if message was successfully sent false if not
      */
-    public boolean sendMail(String cid, String subject, String body) {
+    public boolean sendMail(String email,  String subject, String body) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject object = new JSONObject();
-        object.put("to", cid);
+        object.put("to", email);
         object.put("from", "no-reply@chalmers.it");
         object.put("subject", subject);
         object.put("body", body);

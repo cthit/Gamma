@@ -42,7 +42,7 @@ export function postRequest(endpoint, data, includeAuthorization = true) {
     });
 }
 
-export function deleteRequest(endpoint, includeAuthorization = true) {
+export function deleteRequest(endpoint, data, includeAuthorization = true) {
     var headers = {};
 
     if (includeAuthorization) {
@@ -50,8 +50,9 @@ export function deleteRequest(endpoint, includeAuthorization = true) {
             Authorization: "Bearer " + token()
         };
     }
-
+    console.log(data);
     return axios.delete(removeLastSlash(path + endpoint), {
+        data: data,
         headers
     });
 }
