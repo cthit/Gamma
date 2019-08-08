@@ -101,7 +101,6 @@ const ApiKeys = () => {
             deleteButtonText={data => text.Delete + " " + data.name}
             createButtonText={text.Create}
             createTitle={text.CreateNewApiKey}
-            dialogDeleteCancel={text.Cancel}
         />
     );
 };
