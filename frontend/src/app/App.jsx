@@ -298,7 +298,7 @@ export class App extends Component {
                                                             component={Clients}
                                                         />
                                                         <Route
-                                                            path="/api_keys"
+                                                            path="/api-keys"
                                                             component={ApiKeys}
                                                         />
                                                         <Route
