@@ -1,6 +1,11 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import { DigitStepper, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitStepper,
+    DigitTranslations,
+    DigitLayout,
+    DigitLoading
+} from "@cthit/react-digit-components";
 import SelectMembers from "./views/select-members";
 import SetPostNames from "./views/set-post-names";
 import ReviewChanges from "./views/review-changes";
@@ -130,7 +135,11 @@ class EditUsersInGroup extends React.Component {
                 />
             );
         } else {
-            return null;
+            return (
+                <DigitLayout.Center>
+                    <DigitLoading loading />
+                </DigitLayout.Center>
+            );
         }
     }
 }
