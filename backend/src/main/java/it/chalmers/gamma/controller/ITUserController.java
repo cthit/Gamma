@@ -7,7 +7,9 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
+import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
@@ -31,6 +33,8 @@ import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
+import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -72,17 +76,20 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService) {
+                            MembershipService membershipService,
+                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -197,7 +204,9 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-
+        List<Membership> memberships = this.membershipService.getMembershipsByUser(user);
+        memberships.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.
+                getSuperGroups(membership.getId().getFKITGroup())));
         return serializer.serialize(user, websites,
                 ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
     }

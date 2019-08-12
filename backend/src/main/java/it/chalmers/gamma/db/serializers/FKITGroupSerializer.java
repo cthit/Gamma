@@ -1,6 +1,7 @@
 package it.chalmers.gamma.db.serializers;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.util.SerializerUtils;
 import it.chalmers.gamma.views.WebsiteView;
 
@@ -18,7 +19,8 @@ public class FKITGroupSerializer {
     public JSONObject serialize(
             FKITGroup value,
             @Nullable List<JSONObject> groupMembers,
-            @Nullable List<WebsiteView> websites) {
+            @Nullable List<WebsiteView> websites,
+            List<FKITSuperGroup> superGroups) {
         List<SerializerValue> values = new ArrayList<>();
         values.add(new SerializerValue(
                 this.properties.contains(Properties.GROUP_ID), value.getId(), "id")
@@ -50,6 +52,12 @@ public class FKITGroupSerializer {
         values.add(new SerializerValue(
                 this.properties.contains(Properties.WEBSITES), websites, "websites")
         );
+        if(superGroups != null) {
+            superGroups.forEach(superGroup -> values.add(new SerializerValue(
+                    this.properties.contains(Properties.SUPER_GROUP), superGroup, "superGroup"
+            )));
+        }
+
         return SerializerUtils.serialize(values, false);
 
     }
