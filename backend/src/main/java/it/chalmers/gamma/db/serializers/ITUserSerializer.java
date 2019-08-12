@@ -30,7 +30,8 @@ public class ITUserSerializer {
                 FKITGroupSerializer.Properties.SUPER_GROUP));
         List<JSONObject> groups = new ArrayList<>();
         for (Membership membership : memberships) {
-            groups.add(groupSerializer.serialize(membership.getId().getFKITGroup(), null, null, membership.getFkitSuperGroups()));
+            groups.add(groupSerializer.serialize(membership.getId().getFKITGroup(), null,
+                    null, membership.getFkitSuperGroups()));
         }
         return groups;
     }

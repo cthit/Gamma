@@ -7,7 +7,6 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
@@ -34,7 +33,6 @@ import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -205,8 +203,8 @@ public final class ITUserController {
                         this.userWebsiteService.getWebsites(user)
                 );
         List<Membership> memberships = this.membershipService.getMembershipsByUser(user);
-        memberships.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.
-                getSuperGroups(membership.getId().getFKITGroup())));
+        memberships.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService
+                .getSuperGroups(membership.getId().getFKITGroup())));
         return serializer.serialize(user, websites,
                 ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
     }

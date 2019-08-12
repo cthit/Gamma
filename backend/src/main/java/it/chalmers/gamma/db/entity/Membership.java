@@ -43,7 +43,7 @@ public class Membership {
     }
 
     public List<FKITSuperGroup> getFkitSuperGroups() {
-        return fkitSuperGroups;
+        return this.fkitSuperGroups;
     }
 
     public void setFkitSuperGroups(List<FKITSuperGroup> fkitSuperGroups) {

@@ -52,7 +52,7 @@ public class FKITGroupSerializer {
         values.add(new SerializerValue(
                 this.properties.contains(Properties.WEBSITES), websites, "websites")
         );
-        if(superGroups != null) {
+        if (superGroups != null) {
             superGroups.forEach(superGroup -> values.add(new SerializerValue(
                     this.properties.contains(Properties.SUPER_GROUP), superGroup, "superGroup"
             )));
