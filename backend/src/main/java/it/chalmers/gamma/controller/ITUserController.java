@@ -157,8 +157,8 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websites,
-                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+        List<Membership> memberships = this.addSuperGroupInfo(this.membershipService.getMembershipsByUser(user));
+        return serializer.serialize(user, websites, ITUserSerializer.getGroupsAsJson(memberships));
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -202,11 +202,8 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        List<Membership> memberships = this.membershipService.getMembershipsByUser(user);
-        memberships.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService
-                .getSuperGroups(membership.getId().getFKITGroup())));
-        return serializer.serialize(user, websites,
-                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+        List<Membership> memberships = this.addSuperGroupInfo(this.membershipService.getMembershipsByUser(user));
+        return serializer.serialize(user, websites, ITUserSerializer.getGroupsAsJson(memberships));
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
@@ -285,6 +282,13 @@ public final class ITUserController {
             throw new UserNotFoundResponse();
         }
         return user;
+    }
+    // This should probably do a deep copy instead. But that is not in MVP...
+    private List<Membership> addSuperGroupInfo(List<Membership> memberships) {
+        List<Membership> membershipsCopy = new ArrayList<>(memberships);
+        membershipsCopy.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService
+                .getSuperGroups(membership.getId().getFKITGroup())));
+        return membershipsCopy;
     }
 
 }
