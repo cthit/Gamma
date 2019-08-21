@@ -36,7 +36,7 @@ const ApiKeys = () => {
             }
             idProp={"id"}
             name={"api"}
-            path={"/api-keys"}
+            path={"/access-keys"}
             keysText={{
                 name: text.Name,
                 descriptionSv: text.Swedish,

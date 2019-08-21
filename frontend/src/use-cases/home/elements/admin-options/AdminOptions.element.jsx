@@ -38,7 +38,7 @@ const AdminOptions = () => (
                             text={text.SuperGroups}
                             link={"/super-groups"}
                         />
-                        <HomeLink text={text.ApiKeys} link={"/api-keys"} />
+                        <HomeLink text={text.ApiKeys} link={"/access-keys"} />
                     </DigitLayout.Grid>
                 </DigitDesign.CardBody>
             </DigitDesign.Card>
