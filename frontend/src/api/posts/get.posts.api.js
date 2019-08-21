@@ -2,6 +2,7 @@ import { getRequest } from "../utils/api";
 import { POSTS_ENDPOINT, ADMIN_POSTS_ENDPOINT } from "../utils/endpoints";
 
 export function getPosts() {
+    console.log("yay");
     return getRequest(POSTS_ENDPOINT);
 }
 

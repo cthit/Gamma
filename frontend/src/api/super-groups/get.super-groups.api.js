@@ -10,5 +10,9 @@ export function getSuperGroup(id) {
 }
 
 export function getSuperGroupSubGroups(id) {
-    return getRequest(SUPER_GROUPS_ENDPOINT + id + "/subgroups");
+    return getRequest(
+        SUPER_GROUPS_ENDPOINT + id + "/subgroups",
+        true,
+        input => ({ data: { subGroups: input.data } })
+    );
 }

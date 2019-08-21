@@ -20,11 +20,13 @@ import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import {
     getSuperGroup,
-    getSuperGroups
+    getSuperGroups,
+    getSuperGroupSubGroups
 } from "../../api/super-groups/get.super-groups.api";
 import { addSuperGroup } from "../../api/super-groups/post.super-groups.api";
 import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api";
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
+import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -91,7 +93,9 @@ const SuperGroups = () => {
             name={"superGroups"}
             path={"/super-groups"}
             readAllRequest={getSuperGroups}
-            readOneRequest={getSuperGroup}
+            readOneRequest={id =>
+                Promise.all([getSuperGroup(id), getSuperGroupSubGroups(id)])
+            }
             createRequest={addSuperGroup}
             deleteRequest={deleteSuperGroup}
             updateRequest={editSuperGroup}
@@ -115,6 +119,17 @@ const SuperGroups = () => {
                 search: true
             }}
             idProp={"id"}
+            detailsRenderCardEnd={one => (
+                <div
+                    style={{
+                        minWidth: "280px",
+                        maxWidth: "500px",
+                        margin: "8px"
+                    }}
+                >
+                    <ShowSubGroups subGroups={one.subGroups} />
+                </div>
+            )}
         />
     );
 };
