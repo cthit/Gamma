@@ -3,6 +3,7 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.response.ActivationCodeAddedResonse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.WhitelistAddedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
@@ -54,7 +55,7 @@ public final class WhitelistController {
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
         }
-        return new WhitelistAddedResponse(); // For security reasons
+        return new ActivationCodeAddedResonse(); // For security reasons
     }
 
     private void sendEmail(ActivationCode activationCode) {
