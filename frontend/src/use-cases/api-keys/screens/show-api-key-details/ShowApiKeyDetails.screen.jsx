@@ -100,7 +100,7 @@ class ShowApiKeyDetails extends React.Component {
                                                                     apiKey.name
                                                             });
                                                             redirectTo(
-                                                                "/api_keys"
+                                                                "/access_keys"
                                                             );
                                                         })
                                                         .catch(error => {

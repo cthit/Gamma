@@ -7,9 +7,13 @@ import AddNewApiKey from "./screens/add-new-api-key";
 const ApiKeys = () => (
     <DigitLayout.Fill>
         <Switch>
-            <Route path={"/api_keys"} exact component={ShowAllApiKeys} />
-            <Route path={"/api_keys/new"} exact component={AddNewApiKey} />
-            <Route path={"/api_keys/:id"} exact component={ShowApiKeyDetails} />
+            <Route path={"/access_keys"} exact component={ShowAllApiKeys} />
+            <Route path={"/access_keys/new"} exact component={AddNewApiKey} />
+            <Route
+                path={"/access_keys/:id"}
+                exact
+                component={ShowApiKeyDetails}
+            />
         </Switch>
     </DigitLayout.Fill>
 );

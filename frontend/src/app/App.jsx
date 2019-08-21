@@ -131,7 +131,7 @@ export class App extends Component {
                 <DigitNavLink
                     onClick={closeDrawer}
                     text="Api Keys"
-                    link="/api_keys"
+                    link="/access_keys"
                 />
             </DigitLayout.Column>
         );
@@ -298,7 +298,7 @@ export class App extends Component {
                                                             component={Clients}
                                                         />
                                                         <Route
-                                                            path="/api_keys"
+                                                            path="/access_keys"
                                                             component={ApiKeys}
                                                         />
                                                         <Route

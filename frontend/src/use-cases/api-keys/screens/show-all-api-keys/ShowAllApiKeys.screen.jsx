@@ -56,7 +56,7 @@ class ShowAllApiKeys extends React.Component {
                                 data={apiKeys.map(apiKey => {
                                     return {
                                         ...apiKey,
-                                        __link: "/api_keys/" + apiKey.id
+                                        __link: "/access_keys/" + apiKey.id
                                     };
                                 })}
                                 emptyTableText={text.NoClients}
@@ -65,7 +65,7 @@ class ShowAllApiKeys extends React.Component {
                     )}
                 />
                 <DigitLayout.DownRightPosition>
-                    <DigitDesign.Link to="/api_keys/new">
+                    <DigitDesign.Link to="/access_keys/new">
                         <DigitFAB icon={Add} secondary />
                     </DigitDesign.Link>
                 </DigitLayout.DownRightPosition>
