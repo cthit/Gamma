@@ -54,7 +54,7 @@ public final class UsersWhitelistAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         List<String> cids = request.getCids();
-        int nNotAdded = 0;
+        int numNotAdded = 0;
 
         for (String cid : cids) {
             try {
@@ -68,14 +68,14 @@ public final class UsersWhitelistAdminController {
                 LOGGER.info("Added user " + cid + " to whitelist");
             } catch (UserAlreadyExistsResponse | CIDAlreadyWhitelistedResponse e) {
                 LOGGER.info("Did not add user " + cid + " message: " + e.getMessage());
-                nNotAdded++;
+                numNotAdded++;
             }
         }
-        int nAdded = (cids.size() - nNotAdded);
-        if(nAdded == 0) {
+        int numAdded = cids.size() - numNotAdded;
+        if (numAdded == 0) {
             throw new UserAlreadyExistsResponse();
         }
-        return new WhitelistAddedResponse(nAdded, nNotAdded);
+        return new WhitelistAddedResponse(numAdded, numNotAdded);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
