@@ -38,6 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String frontendUrl;
 
+    @Value("${application.production}")
+    private boolean inProduction;
+
     private final ITUserService itUserService;
     private final AuthorityService authorityService;
     private final FKITGroupToSuperGroupService groupToSuperGroupService;
@@ -58,7 +61,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) {
-        disableCsrf(http);
+        if (!this.inProduction) {
+            disableCsrf(http);
+        }
         setSessionManagementToIfRequired(http);
         addAuthenticationFilter(http);
         addFormLogin(http);
