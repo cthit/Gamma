@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 
 public class WhitelistAddedResponse extends ResponseEntity<String> {
 
-    public WhitelistAddedResponse(int n_added, int n_total) {
-        super("Added" + n_added + "of requested" + n_total, HttpStatus.ACCEPTED);
+    public WhitelistAddedResponse(int nAdded, int nTotal) {
+        super("Added" + nAdded + "of requested" + nTotal, HttpStatus.ACCEPTED);
     }
 
 }

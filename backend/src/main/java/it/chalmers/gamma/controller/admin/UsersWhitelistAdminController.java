@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals","PMD.CyclomaticComplexity"})
 @RestController
 @RequestMapping("/admin/users/whitelist")
 public final class UsersWhitelistAdminController {
@@ -54,7 +54,7 @@ public final class UsersWhitelistAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         List<String> cids = request.getCids();
-        int n_not_added = 0;
+        int nNotAdded = 0;
 
         for (String cid : cids) {
             try {
@@ -68,14 +68,14 @@ public final class UsersWhitelistAdminController {
                 LOGGER.info("Added user " + cid + " to whitelist");
             } catch (UserAlreadyExistsResponse | CIDAlreadyWhitelistedResponse e) {
                 LOGGER.info("Did not add user " + cid + " message: " + e.getMessage());
-                n_not_added++;
+                nNotAdded++;
             }
         }
-        int n_added = (cids.size() - n_not_added);
-        if(n_added == 0) {
+        int nAdded = (cids.size() - nNotAdded);
+        if(nAdded == 0) {
             throw new UserAlreadyExistsResponse();
         }
-        return new WhitelistAddedResponse(n_added, n_not_added);
+        return new WhitelistAddedResponse(nAdded, nNotAdded);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
