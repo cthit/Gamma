@@ -54,9 +54,8 @@ public class UserPasswordResetController {
             throw new UserNotFoundResponse();
         }
 
-        String token = TokenUtils.generateToken(60,
+        String token = TokenUtils.generateToken(10,
                 TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
 
         if (this.passwordResetService.userHasActiveReset(user)) {
