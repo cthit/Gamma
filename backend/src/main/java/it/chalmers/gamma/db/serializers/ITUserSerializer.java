@@ -26,10 +26,12 @@ public class ITUserSerializer {
                 FKITGroupSerializer.Properties.GROUP_ID,
                 FKITGroupSerializer.Properties.NAME,
                 FKITGroupSerializer.Properties.PRETTY_NAME,
+                FKITGroupSerializer.Properties.IS_ACTIVE,
                 FKITGroupSerializer.Properties.SUPER_GROUP));
         List<JSONObject> groups = new ArrayList<>();
         for (Membership membership : memberships) {
-            groups.add(groupSerializer.serialize(membership.getId().getFKITGroup(), null, null));
+            groups.add(groupSerializer.serialize(membership.getId().getFKITGroup(), null,
+                    null, membership.getFkitSuperGroups()));
         }
         return groups;
     }
@@ -82,6 +84,7 @@ public class ITUserSerializer {
         WEBSITE,
         GROUPS,
         GDPR;
+
 
         public static List<ITUserSerializer.Properties> getAllProperties() {
             ITUserSerializer.Properties[] props = {

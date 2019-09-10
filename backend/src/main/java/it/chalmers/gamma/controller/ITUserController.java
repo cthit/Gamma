@@ -8,6 +8,7 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_
 import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
@@ -15,6 +16,7 @@ import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
+import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
@@ -26,9 +28,11 @@ import it.chalmers.gamma.response.PasswordChangedResponse;
 import it.chalmers.gamma.response.PasswordTooShortResponse;
 import it.chalmers.gamma.response.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.UserCreatedResponse;
+import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -70,17 +74,20 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService) {
+                            MembershipService membershipService,
+                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -150,8 +157,8 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        return serializer.serialize(user, websites,
-                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+        List<Membership> memberships = this.addSuperGroupInfo(this.membershipService.getMembershipsByUser(user));
+        return serializer.serialize(user, websites, ITUserSerializer.getGroupsAsJson(memberships));
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -195,9 +202,8 @@ public final class ITUserController {
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-
-        return serializer.serialize(user, websites,
-                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+        List<Membership> memberships = this.addSuperGroupInfo(this.membershipService.getMembershipsByUser(user));
+        return serializer.serialize(user, websites, ITUserSerializer.getGroupsAsJson(memberships));
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
@@ -243,16 +249,46 @@ public final class ITUserController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        String cid = principal.getName();
-        ITUser user = this.itUserService.loadUser(cid);
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
+        ITUser user = this.extractUser(principal);
         if (!this.itUserService.passwordMatches(user, request.getOldPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
         this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
+                                           BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        ITUser user = this.extractUser(principal);
+        if (!this.itUserService.passwordMatches(user, request.getPassword())) {
+            throw new IncorrectCidOrPasswordResponse();
+        }
+        this.userWebsiteService.deleteWebsitesConnectedToUser(
+                this.itUserService.getUserById(user.getId())
+        );
+        this.membershipService.removeAllMemberships(user);
+        this.itUserService.removeUser(user.getId());
+        return new UserDeletedResponse();
+    }
+
+    private ITUser extractUser(Principal principal) {
+        String cid = principal.getName();
+        ITUser user = this.itUserService.loadUser(cid);
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        return user;
+    }
+    // This should probably do a deep copy instead. But that is not in MVP...
+    private List<Membership> addSuperGroupInfo(List<Membership> memberships) {
+        List<Membership> membershipsCopy = new ArrayList<>(memberships);
+        membershipsCopy.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService
+                .getSuperGroups(membership.getId().getFKITGroup())));
+        return membershipsCopy;
     }
 
 }
