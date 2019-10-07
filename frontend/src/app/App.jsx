@@ -164,7 +164,7 @@ export class App extends Component {
                 render={text => (
                     <DigitHeader
                         headerHeight={"200px"}
-                        cssImageString={"url(/matterhorn.jpg)"}
+                        cssImageString={"url(/enbarsskar.jpg)"}
                         title={title}
                         renderDrawer={loggedIn ? drawer : () => null}
                         renderHeader={header}
