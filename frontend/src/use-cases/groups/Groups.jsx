@@ -1,21 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Route, Switch } from "react-router-dom";
+import { DigitCRUD, useDigitTranslations } from "@cthit/react-digit-components";
+import translations from "./Groups.translations";
+import { useDispatch } from "react-redux";
+import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { getGroupsMinified } from "../../api/groups/get.groups.api";
+import {
+    DESCRIPTION,
+    EMAIL,
+    FUNCTION,
+    ID,
+    NAME
+} from "../../api/groups/props.groups.api";
 
-import ShowAllGroups from "./screens/show-all-groups";
-import CreateNewGroup from "./screens/create-new-group";
-import EditGroupDetails from "./screens/edit-group-details";
-import ShowGroupDetails from "./screens/show-group-details";
-import EditUsersInGroup from "./screens/edit-users-in-group";
+const Groups = () => {
+    const [text] = useDigitTranslations(translations);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(gammaLoadingFinished());
+    }, []);
 
-const Groups = () => (
-    <Switch>
-        <Route path="/groups" exact component={ShowAllGroups} />
-        <Route path="/groups/new" exact component={CreateNewGroup} />
-        <Route path="/groups/:id/edit" exact component={EditGroupDetails} />
-        <Route path="/groups/:id" exact component={ShowGroupDetails} />
-        <Route path="/groups/:id/members" exace component={EditUsersInGroup} />
-    </Switch>
-);
+    return (
+        <DigitCRUD
+            name={"groups"}
+            path={"/groups"}
+            readAllRequest={getGroupsMinified}
+            keysOrder={[ID, NAME, DESCRIPTION, EMAIL, FUNCTION]}
+            keysText={{
+                id: text.Id,
+                name: text.Name,
+                description: text.Description,
+                email: text.Email,
+                function: text.Function
+            }}
+            tableProps={{
+                columnsOrder: [ID, NAME, DESCRIPTION, EMAIL, FUNCTION],
+                orderBy: NAME,
+                startOrderBy: NAME
+            }}
+            idProp={"id"}
+        />
+    );
+};
 
 export default Groups;

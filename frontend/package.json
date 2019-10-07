@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@babel/runtime": "7.5.4",
-        "@cthit/react-digit-components": "^1.0.0-beta.37",
+        "@cthit/react-digit-components": "^1.0.0-beta.41",
         "@date-io/date-fns": "1.3.8",
         "@material-ui/core": "4.1.3",
         "@material-ui/icons": "4.2.1",

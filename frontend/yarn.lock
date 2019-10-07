@@ -1149,10 +1149,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-9.0.1.tgz#c27b391d8457d1e893f1eddeaf5e5412d12ffbb5"
   integrity sha512-6It2EVfGskxZCQhuykrfnALg7oVeiI6KclWSmGDqB0AiInVrTGB9Jp9i4/Ad21u9Jde/voVQz6eFX/eSg/UsPA==
 
-"@cthit/react-digit-components@^1.0.0-beta.36":
-  version "1.0.0-beta.36"
-  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0-beta.36.tgz#aac554ae8697c267423a1ffb64047050a15a7391"
-  integrity sha512-VxfLldmiNU92mf8CWgdNxqTVk3KP1nA7RJUJiBlHstWYG/QNYqp89ial6pLE77qAQT4W+j/p4NCvb7w/zmsXLw==
+"@cthit/react-digit-components@^1.0.0-beta.41":
+  version "1.0.0-beta.41"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0-beta.41.tgz#41a9978e3975f5d7fabb465e0124cac7dabb0a1a"
+  integrity sha512-ZYlzYrwiK5t0tLdjGKGB5/Xl5F2EfisHgn8zkTfo2YL5hHFwErNYI83G3jaehB6OY3X6uutAQrWeALa2UlV7gQ==
   dependencies:
     "@date-io/core" "1.3.8"
     "@date-io/date-fns" "1.3.8"

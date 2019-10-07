@@ -178,7 +178,7 @@ export class App extends Component {
                                                 <DigitDesign.CardTitle
                                                     text={text.BackendDownTitle}
                                                 />
-                                                <DigitDesign.CardHeaderImage src="/theofficeno.gif" />
+                                                <DigitDesign.CardHeaderImage src="/nope.gif" />
                                                 <DigitDesign.CardBody>
                                                     <DigitText.Text
                                                         text={text.BackendDown}
