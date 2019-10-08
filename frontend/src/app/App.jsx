@@ -34,6 +34,7 @@ import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
+import Drawer from "./elements/drawer";
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -78,64 +79,6 @@ export class App extends Component {
 
         const title = "Gamma - IT-konto";
 
-        const drawer = closeDrawer => (
-            <DigitLayout.Column padding="0">
-                <DigitNavLink onClick={closeDrawer} text="Me" link="/me" />
-                <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Create account"
-                    link="/create-account"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Users"
-                    link="/users"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Groups"
-                    link="/groups"
-                />
-                <DigitNavLink
-                    onClose={closeDrawer}
-                    text="Super groups"
-                    link="/super-groups"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Posts"
-                    link="/posts"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Whitelist"
-                    link="/whitelist"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Websites"
-                    link="/websites"
-                />
-                <DigitNavLink onClick={closeDrawer} text="GDPR" link="/gdpr" />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Activation codes"
-                    link="/activation-codes"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Clients"
-                    link="/clients"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Api Keys"
-                    link="/access-keys"
-                />
-            </DigitLayout.Column>
-        );
-
         const header = () => (
             <Route
                 render={props => (
@@ -166,7 +109,11 @@ export class App extends Component {
                         headerHeight={"200px"}
                         cssImageString={"url(/enbarsskar.jpg)"}
                         title={title}
-                        renderDrawer={loggedIn ? drawer : () => null}
+                        renderDrawer={closeDrawer =>
+                            loggedIn ? (
+                                <Drawer closeDrawer={closeDrawer} />
+                            ) : null
+                        }
                         renderHeader={header}
                         renderMain={() => (
                             <DigitLayout.Fill>
@@ -319,6 +266,7 @@ export class App extends Component {
                                                         />
                                                         <Route
                                                             path="/"
+                                                            exact
                                                             render={props => (
                                                                 <DigitIfElseRendering
                                                                     test={
