@@ -12,6 +12,8 @@ import { addApiKey } from "../../api/api-keys/post.api-keys.api";
 import * as yup from "yup";
 import { deleteApiKey } from "../../api/api-keys/delete.api-keys.api";
 import translations from "./ApiKeys.translations";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);
@@ -19,6 +21,11 @@ const ApiKeys = () => {
     useEffect(() => {
         dispatch(gammaLoadingFinished());
     }, []);
+
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
 
     return (
         <DigitCRUD

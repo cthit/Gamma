@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import * as yup from "yup";
 import { deleteClient } from "../../api/clients/delete.clients.api";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Clients = () => {
     const [text] = useDigitTranslations(translations);
@@ -22,6 +24,11 @@ const Clients = () => {
     useEffect(() => {
         dispatch(gammaLoadingFinished());
     }, []);
+
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
 
     return (
         <DigitCRUD

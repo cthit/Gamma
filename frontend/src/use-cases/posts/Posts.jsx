@@ -21,6 +21,8 @@ import {
 
 import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -57,6 +59,11 @@ const Posts = () => {
     useEffect(() => {
         dispatch(gammaLoadingFinished());
     }, []);
+
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
 
     return (
         <DigitCRUD

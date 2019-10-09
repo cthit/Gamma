@@ -11,8 +11,15 @@ import SelectMembers from "../groups/screens/edit-users-in-group/views/select-me
 import SetPostNames from "../groups/screens/edit-users-in-group/views/set-post-names";
 import ReviewChanges from "../groups/screens/edit-users-in-group/views/review-changes";
 import { NAME } from "../../api/groups/props.groups.api";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Members = ({ groupId, group, users, posts, route, redirectTo }) => {
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
+
     var step = 0; //Ends with members
 
     if (route.endsWith("/posts")) {

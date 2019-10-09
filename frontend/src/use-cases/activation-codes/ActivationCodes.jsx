@@ -8,6 +8,8 @@ import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
 import translations from "./ActivationCodes.translations";
 import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);
@@ -15,6 +17,11 @@ const ActivationCodes = () => {
     useEffect(() => {
         dispatch(gammaLoadingFinished());
     }, []);
+
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
 
     return (
         <DigitCRUD

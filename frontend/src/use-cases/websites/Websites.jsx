@@ -12,13 +12,21 @@ import { deleteWebsite } from "../../api/websites/delete.websites.api";
 import { addWebsite } from "../../api/websites/post.websites.api";
 import translations from "./Websites.translations";
 import * as yup from "yup";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Websites = () => {
     const [text] = useDigitTranslations(translations);
     const dispatch = useDispatch();
+
     useEffect(() => {
         dispatch(gammaLoadingFinished());
     }, []);
+
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
 
     return (
         <DigitCRUD
