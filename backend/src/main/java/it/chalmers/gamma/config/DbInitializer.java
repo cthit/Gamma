@@ -1,5 +1,6 @@
 package it.chalmers.gamma.config;
 
+import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
@@ -10,6 +11,7 @@ import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupService;
@@ -46,6 +48,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final AuthorityService authorityService;
     private final ITClientService itClientService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final ApiKeyService apiKeyService;
 
     @Value("${application.frontend-client-details.client-id}")
     private String clientId;
@@ -58,27 +61,46 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.standard-admin-account.password}")
     private String password;
 
-    public DbInitializer(ITUserService userService, FKITGroupService groupService,
-                         AuthorityLevelService authorityLevelService, PostService postService,
-                         MembershipService membershipService, AuthorityService authorityService,
-                         ITClientService itClientService,
-                         FKITSuperGroupService fkitSuperGroupService,
-                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
-        this.userservice = userService;
+    @Value("${application.default-oauth2-client.client-name}")
+    private String oauth2ClientName;
+    @Value("${application.default-oauth2-client.client-id}")
+    private String oauth2ClientId;
+    @Value("${application.default-oauth2-client.client-secret}")
+    private String oauth2ClientSecret;
+    @Value("${application.default-oauth2-client.redirect-uri}")
+    private String oauth2ClientRedirectUri;
+    @Value("${application.default-oauth2-client.api-key}")
+    private String oauth2ClientApiKey;
+    @Value("${application.default-oauth2-client.mock-client}")
+    private boolean isMocking;
+    @Value("${application.auth.accessTokenValidityTime}")       // TODO Fix this
+    private int accessTokenValidityTime;
+    @Value("${application.auth.autoApprove}")
+    private boolean autoApprove;
+    @Value("${application.auth.refreshTokenValidityTime}")
+    private int refreshTokenValidityTime;
+
+    public DbInitializer(ITUserService userservice, FKITGroupService groupService, AuthorityLevelService authorityLevelService, PostService postService, MembershipService membershipService, AuthorityService authorityService, ITClientService itClientService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, ApiKeyService apiKeyService, FKITSuperGroupService fkitSuperGroupService) {
+        this.userservice = userservice;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
         this.postService = postService;
         this.membershipService = membershipService;
         this.authorityService = authorityService;
         this.itClientService = itClientService;
-        this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.apiKeyService = apiKeyService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @Override
     public void run(String... args) {
         ensureAdminUser();
         ensureFrontendClientDetails();
+        System.out.println(isMocking);
+        if(isMocking){
+            ensureOauthClient();
+        }
     }
 
     private void ensureFrontendClientDetails() {
@@ -153,6 +175,29 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             ); // This might break on a new year
             AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
+        }
+    }
+    private void ensureOauthClient() {
+        if (!this.itClientService.clientExistsByClientId(oauth2ClientId)) {
+            ITClient client = new ITClient();
+            client.setName(this.oauth2ClientName);
+            Text description = new Text();
+            description.setEn("Client for mocking " + this.oauth2ClientName);
+            description.setSv("Klient för att mocka " + this.oauth2ClientName);
+            client.setDescription(description);
+            client.setWebServerRedirectUri(this.oauth2ClientRedirectUri);
+            client.setCreatedAt(Instant.now());
+            client.setLastModifiedAt(Instant.now());
+            client.setAccessTokenValidity(this.accessTokenValidityTime);
+            client.setAutoApprove(this.autoApprove);
+            client.setRefreshTokenValidity(this.refreshTokenValidityTime);
+            client.setClientId(this.oauth2ClientId);
+            client.setClientSecret("{noop}" + this.oauth2ClientSecret);
+            this.itClientService.addITClient(client);
+            ApiKey apiKey = new ApiKey();
+            apiKey.setName(this.oauth2ClientName);
+            apiKey.setKey(this.oauth2ClientApiKey);
+            this.apiKeyService.addApiKey(apiKey);
         }
     }
 }
