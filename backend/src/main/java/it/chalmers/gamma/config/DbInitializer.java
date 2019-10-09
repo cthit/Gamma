@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.ExcessiveParameterList"})
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
@@ -80,7 +80,16 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
-    public DbInitializer(ITUserService userservice, FKITGroupService groupService, AuthorityLevelService authorityLevelService, PostService postService, MembershipService membershipService, AuthorityService authorityService, ITClientService itClientService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, ApiKeyService apiKeyService, FKITSuperGroupService fkitSuperGroupService) {
+    public DbInitializer(ITUserService userservice,
+                         FKITGroupService groupService,
+                         AuthorityLevelService authorityLevelService,
+                         PostService postService,
+                         MembershipService membershipService,
+                         AuthorityService authorityService,
+                         ITClientService itClientService,
+                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+                         ApiKeyService apiKeyService,
+                         FKITSuperGroupService fkitSuperGroupService) {
         this.userservice = userservice;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
@@ -97,8 +106,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     public void run(String... args) {
         ensureAdminUser();
         ensureFrontendClientDetails();
-        System.out.println(isMocking);
-        if(isMocking){
+        if (this.isMocking) {
             ensureOauthClient();
         }
     }
@@ -178,7 +186,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
         }
     }
     private void ensureOauthClient() {
-        if (!this.itClientService.clientExistsByClientId(oauth2ClientId)) {
+        if (!this.itClientService.clientExistsByClientId(this.oauth2ClientId)) {
             ITClient client = new ITClient();
             client.setName(this.oauth2ClientName);
             Text description = new Text();
