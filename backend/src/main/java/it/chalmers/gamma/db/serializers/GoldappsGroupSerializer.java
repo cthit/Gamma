@@ -14,6 +14,6 @@ public class GoldappsGroupSerializer {
         values.add(new SerializerValue(true, value.getEmail(), "email"));
         values.add(new SerializerValue(true, groupMembers, "members"));
         values.add(new SerializerValue(true, null, "aliases"));
-        return SerializerUtils.serialize(values, false);
+        return SerializerUtils.serialize(values, true);
     }
 }
