@@ -9,7 +9,6 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.ApiKeyService;
@@ -174,8 +173,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     Year.of(2018),
                     true,
                     adminMail,
-                    this.password,
-                    Language.sv
+                    this.password
             );
             this.membershipService.addUserToGroup(
                     group,
