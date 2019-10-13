@@ -100,8 +100,7 @@ public class CreateITUserRequest {
         return this.acceptanceYear;
     }
 
-    public void setAcceptanceYear(int acceptanceYear)
-    {
+    public void setAcceptanceYear(int acceptanceYear) {
         this.acceptanceYear = acceptanceYear;
     }
 
@@ -115,33 +114,37 @@ public class CreateITUserRequest {
 
     @Override
     public String toString() {
-        return "CreateITUserRequest{" +
-                "code='" + this.code + '\'' +
-                ", password='" + this.password + '\'' +
-                ", nick='" + this.nick + '\'' +
-                ", firstName='" + this.firstName + '\'' +
-                ", lastName='" + this.lastName + '\'' +
-                ", userAgreement=" + this.userAgreement +
-                ", acceptanceYear=" + this.acceptanceYear +
-                ", whitelist=" + this.whitelist +
-                ", language=" + this.language +
-                '}';
+        return "CreateITUserRequest{"
+                + "code='" + this.code + '\''
+                + ", password='" + this.password + '\''
+                + ", nick='" + this.nick + '\''
+                + ", firstName='" + this.firstName + '\''
+                + ", lastName='" + this.lastName + '\''
+                + ", userAgreement=" + this.userAgreement
+                + ", acceptanceYear=" + this.acceptanceYear
+                + ", whitelist=" + this.whitelist
+                + ", language=" + this.language
+                + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CreateITUserRequest that = (CreateITUserRequest) o;
-        return this.userAgreement == that.userAgreement &&
-                this.acceptanceYear == that.acceptanceYear &&
-                Objects.equals(this.code, that.code) &&
-                Objects.equals(this.password, that.password) &&
-                Objects.equals(this.nick, that.nick) &&
-                Objects.equals(this.firstName, that.firstName) &&
-                Objects.equals(this.lastName, that.lastName) &&
-                Objects.equals(this.whitelist, that.whitelist) &&
-                this.language == that.language;
+        return this.userAgreement == that.userAgreement
+                && this.acceptanceYear == that.acceptanceYear
+                && Objects.equals(this.code, that.code)
+                && Objects.equals(this.password, that.password)
+                && Objects.equals(this.nick, that.nick)
+                && Objects.equals(this.firstName, that.firstName)
+                && Objects.equals(this.lastName, that.lastName)
+                && Objects.equals(this.whitelist, that.whitelist)
+                && this.language == that.language;
     }
 
     @Override

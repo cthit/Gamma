@@ -99,13 +99,12 @@ public class AdminViewCreateITUserRequest {
         return this.acceptanceYear;
     }
 
-    public void setAcceptanceYear(int acceptanceYear)
-    {
+    public void setAcceptanceYear(int acceptanceYear) {
         this.acceptanceYear = acceptanceYear;
     }
 
     public Language getLanguage() {
-        return language;
+        return this.language;
     }
 
     public void setLanguage(Language language) {
@@ -114,22 +113,34 @@ public class AdminViewCreateITUserRequest {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AdminViewCreateITUserRequest that = (AdminViewCreateITUserRequest) o;
-        return userAgreement == that.userAgreement &&
-                acceptanceYear == that.acceptanceYear &&
-                Objects.equals(cid, that.cid) &&
-                Objects.equals(password, that.password) &&
-                Objects.equals(nick, that.nick) &&
-                Objects.equals(firstName, that.firstName) &&
-                Objects.equals(lastName, that.lastName) &&
-                Objects.equals(email, that.email) &&
-                language == that.language;
+        return this.userAgreement == that.userAgreement
+                && this.acceptanceYear == that.acceptanceYear
+                && Objects.equals(this.cid, that.cid)
+                && Objects.equals(this.password, that.password)
+                && Objects.equals(this.nick, that.nick)
+                && Objects.equals(this.firstName, that.firstName)
+                && Objects.equals(this.lastName, that.lastName)
+                && Objects.equals(this.email, that.email)
+                && this.language == that.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cid, password, nick, firstName, lastName, email, userAgreement, acceptanceYear, language);
+        return Objects.hash(this.cid,
+                this.password,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.userAgreement,
+                this.acceptanceYear,
+                this.language);
     }
 }
