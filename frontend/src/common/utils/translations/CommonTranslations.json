@@ -19,5 +19,10 @@
     "Save": ["Save", "Spara"],
     "Swedish": ["Swedish", "Svenska"],
     "English": ["English", "Engelska"],
-    "Id": ["Id", "Id"]
+    "Id": ["Id", "Id"],
+    "AreYouSure": ["Are you sure?", "Är du säker?"],
+    "AreYouSureYouWantToDelete": [
+        "Are you sure you want to delete",
+        "Är du säker att du vill radera"
+    ]
 }

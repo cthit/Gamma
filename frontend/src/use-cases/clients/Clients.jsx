@@ -17,6 +17,7 @@ import * as yup from "yup";
 import { deleteClient } from "../../api/clients/delete.clients.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import { CLIENT_NAME } from "../../api/clients/props.clients.api";
 
 const Clients = () => {
     const [text] = useDigitTranslations(translations);
@@ -71,7 +72,8 @@ const Clients = () => {
                 )
             }
             tableProps={{
-                titleText: text.Clients
+                titleText: text.Clients,
+                search: true
             }}
             keysOrder={[
                 "id",
@@ -104,30 +106,64 @@ const Clients = () => {
                 webServerRedirectUri: {
                     component: DigitTextField,
                     componentProps: {
+                        upperLabel: text.RedirectURI,
                         outlined: true
                     }
                 },
                 name: {
                     component: DigitTextField,
                     componentProps: {
+                        upperLabel: text.Name,
                         outlined: true
                     }
                 },
                 descriptionSv: {
                     component: DigitTextArea,
                     componentProps: {
+                        upperLabel: text.DescriptionSv,
                         outlined: true,
-                        rows: 3
+                        rows: 3,
+                        maxRows: 5,
+                        maxLength: 500
                     }
                 },
                 descriptionEn: {
                     component: DigitTextArea,
                     componentProps: {
+                        upperLabel: text.DescriptionEn,
                         outlined: true,
-                        rows: 3
+                        rows: 3,
+                        maxRows: 5,
+                        maxLength: 500
                     }
                 }
             }}
+            createTitle={text.CreateClient}
+            createButtonText={text.CreateClient}
+            detailsTitle={data => data[CLIENT_NAME]}
+            toastCreateSuccessful={data =>
+                data[CLIENT_NAME] + " " + text.ClientCreatingSuccessful
+            }
+            toastCreateFailed={() => text.ErrorCreatingClient}
+            toastDeleteSuccessful={data =>
+                data[CLIENT_NAME] + " " + text.ClientDeletionSuccessful
+            }
+            toastDeleteFailed={data =>
+                text.ClientDeletionFailed1 +
+                " " +
+                data[CLIENT_NAME] +
+                " " +
+                text.ClientDeletionFailed2
+            }
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={data =>
+                text.AreYouSureYouWantToDelete + " " + data[CLIENT_NAME]
+            }
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteCancel={() => text.Cancel}
+            backButtonText={text.Back}
+            detailsButtonText={text.Details}
+            deleteButtonText={data => text.Delete + " " + data[CLIENT_NAME]}
         />
     );
 };
