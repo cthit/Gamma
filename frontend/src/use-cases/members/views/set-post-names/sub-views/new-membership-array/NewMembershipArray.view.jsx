@@ -2,19 +2,6 @@ import React, { useState } from "react";
 import CreateMembership from "../create-membership";
 
 const NewPostsArray = ({ groupId, posts, form, replace }) => {
-    const [firstRender, setFirstRender] = useState(true);
-
-    if (firstRender) {
-        console.log(
-            form.validateForm().then(response => {
-                console.log(response);
-            })
-        );
-        setFirstRender(false);
-    }
-
-    console.log(form);
-
     return (
         <>
             {form.values.members.map((value, i) => (

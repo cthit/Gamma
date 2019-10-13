@@ -9,13 +9,14 @@ import {
     DigitTranslations
 } from "@cthit/react-digit-components";
 import NewMember from "./elements/new-member";
+
+import * as _ from "lodash";
+import translations from "./ReviewChanges.view.translations";
 import {
     FIRST_NAME,
     LAST_NAME,
     NICK
-} from "../../../../../../api/users/props.users.api";
-import * as _ from "lodash";
-import translations from "./ReviewChanges.view.translations";
+} from "../../../../api/users/props.users.api";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -46,7 +47,8 @@ const ReviewChanges = ({
     addUserToGroup,
     removeUserFromGroup,
     editUserInGroup,
-    posts
+    posts,
+    onFinished
 }) => {
     var savedPostNames = sessionStorage.getItem(groupId + ".postNames");
     if (savedPostNames == null) {
@@ -89,8 +91,6 @@ const ReviewChanges = ({
                                 icon={Save}
                                 primary
                                 onClick={() => {
-                                    console.log(members);
-
                                     const additions = getAdditions(
                                         previousMembers,
                                         members
@@ -117,9 +117,9 @@ const ReviewChanges = ({
                                         previousMembers,
                                         members
                                     ).map(member =>
-                                        addUserToGroup(groupId, {
+                                        editUserInGroup(groupId, member.id, {
                                             userId: member.id,
-                                            post: member.postId,
+                                            post: member.post.id,
                                             unofficialName:
                                                 member.unofficialPostName
                                         })
@@ -129,10 +129,15 @@ const ReviewChanges = ({
                                         ...additions,
                                         ...deletions,
                                         ...edits
-                                    ]).then(() => {
-                                        console.log("yay");
-                                        sessionStorage.clear();
-                                    });
+                                    ])
+                                        .then(() => {
+                                            sessionStorage.clear();
+                                            onFinished();
+                                        })
+                                        .catch(() => {
+                                            sessionStorage.clear();
+                                            onFinished();
+                                        });
                                 }}
                             />
                         </DigitLayout.DownRightPosition>

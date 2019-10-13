@@ -4,7 +4,7 @@ import {
     DigitCRUD,
     useDigitTranslations,
     DigitTextField,
-    DigitDatePicker,
+    DigitButton,
     DigitSelect,
     DigitTextArea
 } from "@cthit/react-digit-components";
@@ -24,6 +24,8 @@ import { editGroup } from "../../api/groups/put.groups.api";
 import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import DisplayUsersTable from "../../common/elements/display-users-table";
 
 const DESCRIPTION_SV = "descriptionSv";
 const DESCRIPTION_EN = "descriptionEn";
@@ -133,9 +135,10 @@ function generateEditComponentData(text, superGroups = []) {
     return componentData;
 }
 
-const Groups = () => {
+const Groups = ({ history }) => {
     const [text] = useDigitTranslations(translations);
     const dispatch = useDispatch();
+    const admin = useIsAdmin();
     const [superGroups, setSuperGroups] = useState([]);
 
     useEffect(() => {
@@ -158,10 +161,41 @@ const Groups = () => {
             path={"/groups"}
             readAllRequest={getGroupsMinified}
             readOneRequest={getGroup}
-            updateRequest={editGroup}
-            createRequest={addGroup}
+            updateRequest={(id, data) =>
+                editGroup(id, {
+                    name: data.name,
+                    function: {
+                        sv: data.functionSv,
+                        en: data.functionEn
+                    },
+                    description: {
+                        sv: data.descriptionSv,
+                        en: data.descriptionEn
+                    },
+                    email: data.email,
+                    superGroup: data.superGroup,
+                    prettyName: data.prettyName
+                })
+            }
+            createRequest={data =>
+                addGroup({
+                    name: data.name,
+                    function: {
+                        sv: data.functionSv,
+                        en: data.functionEn
+                    },
+                    description: {
+                        sv: data.descriptionSv,
+                        en: data.descriptionEn
+                    },
+                    email: data.email,
+                    superGroup: data.superGroup,
+                    prettyName: data.prettyName
+                })
+            }
             keysOrder={[
                 ID,
+                PRETTY_NAME,
                 NAME,
                 EMAIL,
                 "descriptionSv",
@@ -177,7 +211,9 @@ const Groups = () => {
                 descriptionSv: text.DescriptionSv,
                 descriptionEn: text.DescriptionEn,
                 functionSv: text.FunctionSv,
-                functionEn: text.FunctionEn
+                functionEn: text.FunctionEn,
+                superGroup: text.SuperGroup,
+                prettyName: text.PrettyName
             }}
             tableProps={{
                 columnsOrder: [ID, NAME, EMAIL],
@@ -192,11 +228,31 @@ const Groups = () => {
                 descriptionEn: "",
                 functionSv: "",
                 functionEn: "",
-                superGroup: ""
+                superGroup: "",
+                prettyName: ""
             }}
             formValidationSchema={generateValidationSchema(text)}
             formComponentData={generateEditComponentData(text, superGroups)}
             idProp={"id"}
+            detailsRenderCardEnd={data => {
+                if (!admin) {
+                    return null;
+                }
+
+                return (
+                    <>
+                        <DisplayUsersTable
+                            noUsersText={text.NoGroupMembers}
+                            users={data.groupMembers}
+                        />
+                        <DigitButton
+                            outlined
+                            text={"Edit members"}
+                            onClick={() => history.push("/members/" + data.id)}
+                        />
+                    </>
+                );
+            }}
         />
     );
 };

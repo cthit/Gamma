@@ -6,8 +6,8 @@ export function getApiKeys() {
         data: input.data.map(api => ({
             id: api.id,
             name: api.name,
-            descriptionSv: api.description.sv,
-            descriptionEn: api.description.en
+            descriptionSv: api.description != null ? api.description.sv : "",
+            descriptionEn: api.description != null ? api.description.en : ""
         }))
     }));
 }
@@ -17,8 +17,8 @@ export function getApiKey(apiKeyId) {
         data: {
             id: data.id,
             name: data.name,
-            descriptionSv: data.description.sv,
-            descriptionEn: data.description.en
+            descriptionSv: data.description != null ? data.description.sv : "",
+            descriptionEn: data.description != null ? data.description.en : ""
         }
     }));
 }

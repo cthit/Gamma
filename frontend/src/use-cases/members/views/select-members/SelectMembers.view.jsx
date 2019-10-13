@@ -11,13 +11,13 @@ import {
 import translations from "./SelectMembers.view.translations";
 import UsersInGroupChanges from "./elements/users-in-group-changes";
 import * as _ from "lodash";
-import { PRETTY_NAME } from "../../../../../../api/groups/props.groups.api";
+import { PRETTY_NAME } from "../../../../api/groups/props.groups.api";
 import {
     FIRST_NAME,
     ID,
     LAST_NAME,
     NICK
-} from "../../../../../../api/users/props.users.api";
+} from "../../../../api/users/props.users.api";
 
 class SelectMembers extends React.Component {
     constructor(props) {
@@ -67,7 +67,6 @@ class SelectMembers extends React.Component {
     }
 
     _save = selectedMembers => {
-        console.log(selectedMembers);
         sessionStorage.setItem(
             this.props.group.id + ".selectedMembers",
             JSON.stringify(selectedMembers)

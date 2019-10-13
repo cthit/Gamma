@@ -5,7 +5,7 @@ import {
     createAddUserToGroupRequest,
     createDeleteUserFromGroupRequest,
     createEditUserInGroupRequest
-} from "../../../../../../api/groups/action-creator.groups.api";
+} from "../../../../api/groups/action-creator.groups.api";
 
 const mapStateToProps = (state, ownProps) => ({});
 

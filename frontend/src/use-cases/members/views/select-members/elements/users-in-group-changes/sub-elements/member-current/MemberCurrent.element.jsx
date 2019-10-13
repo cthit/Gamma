@@ -5,7 +5,7 @@ import {
     FIRST_NAME,
     LAST_NAME,
     NICK
-} from "../../../../../../../../../../api/users/props.users.api";
+} from "../../../../../../../../api/users/props.users.api";
 
 const MemberCurrent = ({ member }) => (
     <DigitLayout.Column>

@@ -50,7 +50,7 @@ export function deleteRequest(endpoint, data, includeAuthorization = true) {
             Authorization: "Bearer " + token()
         };
     }
-    console.log(data);
+
     return axios.delete(removeLastSlash(path + endpoint), {
         data: data,
         headers

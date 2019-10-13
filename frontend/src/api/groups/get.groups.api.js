@@ -10,13 +10,12 @@ export function getGroups() {
 export function getGroup(groupId) {
     return getRequest(GROUPS_ENDPOINT + groupId, true, input => ({
         data: {
-            id: input.data.id,
-            name: input.data.name,
+            ...input.data,
             functionSv: input.data["function"].sv,
             functionEn: input.data["function"].en,
             descriptionSv: input.data.description.sv,
             descriptionEn: input.data.description.en,
-            email: input.data.email
+            superGroup: input.data.superGroup.id
         }
     }));
 }

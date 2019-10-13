@@ -35,6 +35,7 @@ import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.co
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
 import Drawer from "./elements/drawer";
+import Members from "../use-cases/members";
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -257,6 +258,10 @@ export class App extends Component {
                                                         <Route
                                                             path={"/me"}
                                                             component={Me}
+                                                        />
+                                                        <Route
+                                                            path="/members"
+                                                            component={Members}
                                                         />
                                                         <Route
                                                             path="/reset-password"

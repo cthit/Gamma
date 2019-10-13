@@ -1,26 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     DigitLayout,
     DigitLoading,
     DigitStepper,
     DigitTranslations
 } from "@cthit/react-digit-components";
-import translations from "../groups/screens/edit-users-in-group/EditUsersInGroup.screen.translations";
 import { Route, Switch } from "react-router";
-import SelectMembers from "../groups/screens/edit-users-in-group/views/select-members";
-import SetPostNames from "../groups/screens/edit-users-in-group/views/set-post-names";
-import ReviewChanges from "../groups/screens/edit-users-in-group/views/review-changes";
 import { NAME } from "../../api/groups/props.groups.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import translations from "./Members.translations";
+import SetPostNames from "./views/set-post-names";
+import ReviewChanges from "./views/review-changes";
+import SelectMembers from "./views/select-members";
+import { useDispatch } from "react-redux";
+import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { getPosts } from "../../api/posts/get.posts.api";
+import { getUsersMinified } from "../../api/users/get.users.api";
+import { getGroup } from "../../api/groups/get.groups.api";
 
-const Members = ({ groupId, group, users, posts, route, redirectTo }) => {
+const Members = ({ history }) => {
+    const groupId = history.location.pathname.split("/")[2];
+    const [data, setData] = useState({
+        group: null,
+        users: null,
+        posts: null
+    });
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(gammaLoadingFinished());
+    }, []);
+
     const admin = useIsAdmin();
+
+    useEffect(() => {
+        if (admin) {
+            Promise.all([
+                getPosts(),
+                getUsersMinified(),
+                getGroup(groupId)
+            ]).then(response => {
+                setData({
+                    posts: response[0].data,
+                    users: response[1].data,
+                    group: response[2].data
+                });
+            });
+        }
+    }, [admin]);
+
     if (!admin) {
         return <InsufficientAccess />;
     }
 
+    const redirectTo = to => history.push(to);
+
+    const { group, users, posts } = data;
+
     var step = 0; //Ends with members
+
+    const route = history.location.pathname;
+
+    const onMembersSelected = () => {
+        redirectTo("/members/" + group.id + "/posts");
+    };
 
     if (route.endsWith("/posts")) {
         step = 1;
@@ -45,25 +89,19 @@ const Members = ({ groupId, group, users, posts, route, redirectTo }) => {
 
                         <Switch>
                             <Route
-                                path="/groups/:id/members"
+                                path="/members/:id"
                                 exact
                                 render={() => (
                                     <SelectMembers
                                         group={group}
                                         users={users}
                                         groupId={groupId}
-                                        onMembersSelected={members =>
-                                            this.onMembersSelected(
-                                                members,
-                                                redirectTo,
-                                                group
-                                            )
-                                        }
+                                        onMembersSelected={onMembersSelected}
                                     />
                                 )}
                             />
                             <Route
-                                path="/groups/:id/members/posts"
+                                path="/members/:id/posts"
                                 exact
                                 render={() => (
                                     <SetPostNames
@@ -73,16 +111,16 @@ const Members = ({ groupId, group, users, posts, route, redirectTo }) => {
                                         users={users}
                                         onNewMembers={() =>
                                             redirectTo(
-                                                "/groups/" +
-                                                    group.id +
-                                                    "/members/review"
+                                                "/members/" +
+                                                    groupId +
+                                                    "/review"
                                             )
                                         }
                                     />
                                 )}
                             />
                             <Route
-                                path="/groups/:id/members/review"
+                                path="/members/:id/review"
                                 exact
                                 render={() => (
                                     <ReviewChanges
@@ -90,6 +128,9 @@ const Members = ({ groupId, group, users, posts, route, redirectTo }) => {
                                         posts={posts}
                                         previousMembers={group.groupMembers}
                                         groupId={groupId}
+                                        onFinished={() => {
+                                            redirectTo("/groups/" + group.id);
+                                        }}
                                     />
                                 )}
                             />
