@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals","PMD.CyclomaticComplexity"})
 @RestController
 @RequestMapping("/admin/users/whitelist")
 public final class UsersWhitelistAdminController {
@@ -37,8 +39,10 @@ public final class UsersWhitelistAdminController {
     private final WhitelistService whitelistService;
     private final ITUserService itUserService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UsersWhitelistAdminController.class);
+
     public UsersWhitelistAdminController(WhitelistService whitelistService,
-                                          ITUserService itUserService) {
+                                         ITUserService itUserService) {
         this.whitelistService = whitelistService;
         this.itUserService = itUserService;
     }
@@ -50,16 +54,28 @@ public final class UsersWhitelistAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         List<String> cids = request.getCids();
+        int numNotAdded = 0;
+
         for (String cid : cids) {
-            if (this.whitelistService.isCIDWhiteListed(cid)) {
-                throw new CIDAlreadyWhitelistedResponse();
+            try {
+                if (this.whitelistService.isCIDWhiteListed(cid)) {
+                    throw new CIDAlreadyWhitelistedResponse();
+                }
+                if (this.itUserService.userExists(cid)) {
+                    throw new UserAlreadyExistsResponse();
+                }
+                this.whitelistService.addWhiteListedCID(cid);
+                LOGGER.info("Added user " + cid + " to whitelist");
+            } catch (UserAlreadyExistsResponse | CIDAlreadyWhitelistedResponse e) {
+                LOGGER.info("Did not add user " + cid + " message: " + e.getMessage());
+                numNotAdded++;
             }
-            if (this.itUserService.userExists(cid)) {
-                throw new UserAlreadyExistsResponse();
-            }
-            this.whitelistService.addWhiteListedCID(cid);
         }
-        return new WhitelistAddedResponse();
+        int numAdded = cids.size() - numNotAdded;
+        if (numAdded == 0) {
+            throw new UserAlreadyExistsResponse();
+        }
+        return new WhitelistAddedResponse(numAdded, numNotAdded);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)

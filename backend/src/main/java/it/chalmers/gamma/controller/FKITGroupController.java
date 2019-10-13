@@ -16,12 +16,14 @@ import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITGroupService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.views.WebsiteView;
@@ -49,14 +51,16 @@ public final class FKITGroupController {
     private final FKITGroupService fkitGroupService;
     private final GroupWebsiteService groupWebsiteService;
     private final MembershipService membershipService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public FKITGroupController(
             FKITGroupService fkitGroupService,
             GroupWebsiteService groupWebsiteService,
-            MembershipService membershipService) {
+            MembershipService membershipService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.fkitGroupService = fkitGroupService;
         this.groupWebsiteService = groupWebsiteService;
         this.membershipService = membershipService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -96,14 +100,14 @@ public final class FKITGroupController {
             userObject.put("unofficialPostName", userMembership.getUnofficialPostName());
             minifiedMembers.add(userObject);
         }
-
+        List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
         // This should change the database setup probably.
         FKITGroupSerializer serializer = new FKITGroupSerializer(
                 // which fields should be sent to frontend
                 FKITGroupSerializer.Properties.getAllProperties()
         );
         // serializes all selected data from the group
-        return serializer.serialize(group, minifiedMembers, websiteViews);
+        return serializer.serialize(group, minifiedMembers, websiteViews, superGroups);
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -116,6 +120,7 @@ public final class FKITGroupController {
         groups.forEach(fkitGroup -> minifiedGroups.add(
                 serializer.serialize(
                         fkitGroup,
+                        null,
                         null,
                         null
                 )
@@ -132,7 +137,7 @@ public final class FKITGroupController {
         FKITGroupSerializer serializer = new FKITGroupSerializer(
                 Arrays.asList(NAME, FUNC, GROUP_ID, TYPE)
         );
-        return serializer.serialize(group, null, null);
+        return serializer.serialize(group, null, null, null);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -150,10 +155,12 @@ public final class FKITGroupController {
             for (ITUser member : members) {
                 jsonMembers.add(userSerializer.serialize(member, null, null));
             }
+            List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
             serializedGroups.add(serializer.serialize(
                     group,
                     jsonMembers,
-                    websites
+                    websites,
+                    superGroups
             ));
         }
         return serializedGroups;
@@ -172,8 +179,10 @@ public final class FKITGroupController {
             for (ITUser member : members) {
                 serializedUsers.add(userSerializer.serialize(member, null, null));
             }
+            List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
             serializedGroups.add(groupSerializer.serialize(group, serializedUsers,
-                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group))));
+                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)),
+                    superGroups));
         }
         return serializedGroups;
     }

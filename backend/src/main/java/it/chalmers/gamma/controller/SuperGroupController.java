@@ -89,7 +89,7 @@ public class SuperGroupController {
                 serializedUsers.add(userSerializer.serialize(user, null, null));
             }
             serializedGroups.add(serializer.serialize(group, serializedUsers, this.groupWebsiteService
-                    .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group))));
+                    .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)), null));
         }
         return serializedGroups;
     }

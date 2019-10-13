@@ -38,6 +38,10 @@ public class ApiKeyService {
         return key;
     }
 
+    public void addApiKey(ApiKey apiKey) {
+        this.apiKeyRepository.save(apiKey);
+    }
+
     public ApiKey getApiKeyDetails(UUID id) {
         return this.apiKeyRepository.getById(id);
     }

@@ -23,6 +23,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableResourceServer
@@ -37,6 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String frontendUrl;
+
+    //@Value("${application.production}")
+    //private boolean inProduction;
 
     private final ITUserService itUserService;
     private final AuthorityService authorityService;
@@ -58,7 +62,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) {
+        //if (!this.inProduction) {
         disableCsrf(http);
+        // }
         setSessionManagementToIfRequired(http);
         addAuthenticationFilter(http);
         addFormLogin(http);
@@ -132,6 +138,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .permitAll()
                     .and()
                     .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login")
                     .and()
                     .httpBasic();
         } catch (Exception e) {

@@ -106,7 +106,8 @@ public class ITUserService implements UserDetailsService {
                              Year year,
                              boolean userAgreement,
                              String email,
-                             String password) {
+                             String password,
+                             Language language) {
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
         itUser.setFirstName(firstName);
@@ -115,6 +116,7 @@ public class ITUserService implements UserDetailsService {
         itUser.setAcceptanceYear(year);
         itUser.setUserAgreement(userAgreement);
         itUser.setGdpr(false);
+        itUser.setLanguage(language);
         itUser.setAccountLocked(false);
         if (itUser.getCid() != null) {
             itUser.setEmail(email);

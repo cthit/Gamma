@@ -131,7 +131,7 @@ public final class GroupPostAdminController {
             for (ITUser user : userIDs) {
                 users.add(itUserSerializer.serialize(user, null, null));
             }
-            groupAndUser.add(fkitGroupSerializer.serialize(group, users, null));
+            groupAndUser.add(fkitGroupSerializer.serialize(group, users, null, null));
         }
         return groupAndUser;
     }
