@@ -1,19 +1,76 @@
-import React from "react";
+import React, { useEffect } from "react";
+import {
+    DigitCRUD,
+    DigitTextField,
+    useDigitTranslations
+} from "@cthit/react-digit-components";
+import { useDispatch } from "react-redux";
+import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { getWebsite, getWebsites } from "../../api/websites/get.websites.api";
+import { editWebsite } from "../../api/websites/put.websites.api";
+import { deleteWebsite } from "../../api/websites/delete.websites.api";
+import { addWebsite } from "../../api/websites/post.websites.api";
+import translations from "./Websites.translations";
+import * as yup from "yup";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
-import { Route, Switch } from "react-router-dom";
+const Websites = () => {
+    const [text] = useDigitTranslations(translations);
+    const dispatch = useDispatch();
 
-import ShowAllWebsites from "./screens/show-all-websites";
-import AddNewWebsite from "./screens/add-new-website";
-import EditWebsiteDetails from "./screens/edit-website-details";
-import ShowWebsiteDetails from "./screens/show-website-details";
+    useEffect(() => {
+        dispatch(gammaLoadingFinished());
+    }, []);
 
-const Websites = () => (
-    <Switch>
-        <Route path="/websites" exact component={ShowAllWebsites} />
-        <Route path="/websites/add" exact component={AddNewWebsite} />
-        <Route path="/websites/:id/edit" exact component={EditWebsiteDetails} />
-        <Route path="/websites/:id" exact component={ShowWebsiteDetails} />
-    </Switch>
-);
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
+    }
+
+    return (
+        <DigitCRUD
+            name={"websites"}
+            path={"/websites"}
+            readAllRequest={getWebsites}
+            readOneRequest={getWebsite}
+            updateRequest={editWebsite}
+            deleteRequest={deleteWebsite}
+            createRequest={addWebsite}
+            tableProps={{
+                titleText: text.Websites
+            }}
+            keysOrder={["id", "name", "prettyName"]}
+            keysText={{
+                id: text.Id,
+                name: text.Swedish,
+                prettyName: text.English
+            }}
+            idProp={"id"}
+            formComponentData={{
+                name: {
+                    component: DigitTextField,
+                    componentProps: {
+                        outlined: true
+                    }
+                },
+                prettyName: {
+                    component: DigitTextField,
+                    componentProps: {
+                        outlined: true
+                    }
+                }
+            }}
+            formValidationSchema={yup.object().shape({
+                name: yup.string().required(),
+                prettyName: yup.string().required()
+            })}
+            formInitialValues={{
+                name: "",
+                prettyName: ""
+            }}
+        />
+    );
+};
 
 export default Websites;

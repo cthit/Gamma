@@ -19,7 +19,6 @@ class FourOFour extends React.Component {
     render() {
         return (
             <DigitTranslations
-                uniquePath="FourOFour"
                 translations={FourOFourTranslations}
                 render={text => (
                     <DigitLayout.Center>

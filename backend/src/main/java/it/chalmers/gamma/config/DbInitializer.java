@@ -142,6 +142,10 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
+            Text function = new Text();
+            function.setEn(descriptionText);
+            function.setSv(descriptionText);
+
             CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
@@ -151,8 +155,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
-            request.setFunction(new Text());
             request.setDescription(description);
+            request.setFunction(function);
             request.setEmail(adminMail);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
@@ -207,6 +211,13 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             ApiKey apiKey = new ApiKey();
             apiKey.setName(this.oauth2ClientName);
             apiKey.setKey(this.oauth2ClientApiKey);
+
+            Text apiDescription = new Text();
+            apiDescription.setSv("API key");
+            apiDescription.setEn("API key");
+
+            apiKey.setDescription(apiDescription);
+
             this.apiKeyService.addApiKey(apiKey);
         }
     }

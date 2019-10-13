@@ -1,0 +1,20 @@
+{
+    "AddNewPost": ["Add new post", "Lägg till ny post"],
+    "SwedishInput": [
+        "The swedish name of the post",
+        "Det svenska namnet för posten"
+    ],
+    "EnglishInput": [
+        "The english name of the post",
+        "Det engelska namnet för posten"
+    ],
+    "CreatePost": ["Create post", "Skapa post"],
+    "PostAdded": ["Post added", "Post tillagd"],
+    "PostAlreadyExists": ["Post already exists", "Posten finns redan"],
+    "Posts": ["Posts", "Poster"],
+    "Usages": ["Group usages", "Gruppanvändningar"],
+    "NoUsages": [
+        "This post isn't used by any group",
+        "Denna används inte av någon grupp"
+    ]
+}

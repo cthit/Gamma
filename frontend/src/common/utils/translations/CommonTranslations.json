@@ -2,8 +2,10 @@
     "Cancel": ["Cancel", "Avbryt"],
     "Back": ["Back", "Tillbaka"],
     "Edit": ["Edit", "Redigera"],
+    "Update": ["Edit", "Redigera"],
     "Delete": ["Delete", "Radera"],
     "Create": ["Create", "Skapa"],
+    "Details": ["Details", "Detaljer"],
     "FieldRequired": [
         "This field is required",
         "Det här fältet är obligatoriskt"
@@ -14,5 +16,8 @@
     ],
     "Logout": ["Logout", "Logga ut"],
     "LoggedOut": ["You have logged out", "Du har loggat ut"],
-    "Save": ["Save", "Spara"]
+    "Save": ["Save", "Spara"],
+    "Swedish": ["Swedish", "Svenska"],
+    "English": ["English", "Engelska"],
+    "Id": ["Id", "Id"]
 }

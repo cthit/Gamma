@@ -1,0 +1,18 @@
+{
+    "Id": ["Id", "Id"],
+    "Details": ["Details", "Detaljer"],
+    "Name": ["Name", "Namn"],
+    "ClientId": ["Client Id", "Klient Id"],
+    "RedirectURI": ["Redirect URI", "Redirect URI"],
+    "SearchForClients": ["Search for client", "Sök efter klient"],
+    "NoClients": ["No Clients Registered", "Inga klienter registrerade"],
+    "Clients": ["Registered clients", "Registrerade klienter"],
+    "ClientName": ["Client name", "Klientnamn"],
+    "ClientRedirect": ["Client redirect", "Klient omdirigeringslänk"],
+    "DescriptionSv": ["Description Swedish", "Beskrivning Svenska"],
+    "DescriptionEn": ["Description English", "Beskrivning Engelska"],
+    "CreateClient": ["Create new client", "Skapa ny klient"],
+    "SubmitClient": ["Create client", "Skapa klient"],
+    "YourClientSecret": ["Your client secret", "Din klient secret"],
+    "CloseDialog": ["Close", "Stäng"]
+}

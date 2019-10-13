@@ -1,0 +1,28 @@
+{
+    "Cid": ["Cid", "Cid"],
+    "SaveCidToWhitelist": [
+        "Add cid to the whitelist",
+        "Lägg till cid till whitelist"
+    ],
+    "SaveCid": ["Save cid", "Spara cid"],
+    "SuccessfulAdd": [
+        "You've successfully added cids to the whitelist",
+        "Du har sparat cids"
+    ],
+    "EditCid": ["Edit whitelist item", "Redigera"],
+    "SuccessfullyEdit": ["You've saved the cid", "Du har sparat cidet"],
+    "Details": ["Details", "Detaljer"],
+    "EmptyWhitelist": ["The whitelist is empty", "Whitelist är tom"],
+    "Whitelist": ["Whitelist", "Whitelist"],
+    "SearchForWhitelistItem": [
+        "Search for whitelist item",
+        "Sök efter whitelist inlägg"
+    ],
+    "DeleteWhitelistItem": ["Delete whitelist item", "Radera whitelist inlägg"],
+    "EditWhitelistItem": ["Edit whitelist item", "Redigera whitelist inlägg"],
+    "WouldYouLikeToDelete": [
+        "Would you like to delete the whitelist item ",
+        "Vill du radera whitelist inlägget"
+    ],
+    "DeleteSuccessfully": ["You have deleted", "Du har raderat"]
+}
