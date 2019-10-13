@@ -134,7 +134,8 @@ public final class ITUserController {
                     Year.of(createITUserRequest.getAcceptanceYear()),
                     createITUserRequest.isUserAgreement(),
                     null,
-                    createITUserRequest.getPassword());
+                    createITUserRequest.getPassword(),
+                    createITUserRequest.getLanguage());
             removeCidFromWhitelist(createITUserRequest);
             return new UserCreatedResponse();
         }

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.domain.Language;
 
 import java.util.Objects;
 
@@ -36,6 +37,8 @@ public class CreateITUserRequest {
 
     @NotNull(message = "WHITELIST_MUST_BE_PROVIDED")
     private Whitelist whitelist;
+
+    private Language language = Language.sv;
 
     public Whitelist getWhitelist() {
         return this.whitelist;
@@ -97,46 +100,60 @@ public class CreateITUserRequest {
         return this.acceptanceYear;
     }
 
-    public void setAcceptanceYear(int acceptanceYear) {
+    public void setAcceptanceYear(int acceptanceYear)
+    {
         this.acceptanceYear = acceptanceYear;
+    }
+
+    public Language getLanguage() {
+        return this.language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     @Override
     public String toString() {
-        return "CreateITUserRequest{"
-            + "code='" + this.code + '\''
-            + ", password='" + this.password + '\''
-            + ", nick='" + this.nick + '\''
-            + ", firstName='" + this.firstName + '\''
-            + ", lastName='" + this.lastName + '\''
-            + ", userAgreement=" + this.userAgreement
-            + ", acceptanceYear=" + this.acceptanceYear
-            + ", whitelist=" + this.whitelist
-            + '}';
+        return "CreateITUserRequest{" +
+                "code='" + this.code + '\'' +
+                ", password='" + this.password + '\'' +
+                ", nick='" + this.nick + '\'' +
+                ", firstName='" + this.firstName + '\'' +
+                ", lastName='" + this.lastName + '\'' +
+                ", userAgreement=" + this.userAgreement +
+                ", acceptanceYear=" + this.acceptanceYear +
+                ", whitelist=" + this.whitelist +
+                ", language=" + this.language +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         CreateITUserRequest that = (CreateITUserRequest) o;
-        return this.userAgreement == that.userAgreement
-            && this.acceptanceYear == that.acceptanceYear
-            && Objects.equals(this.code, that.code)
-            && Objects.equals(this.password, that.password)
-            && Objects.equals(this.nick, that.nick)
-            && Objects.equals(this.firstName, that.firstName)
-            && Objects.equals(this.lastName, that.lastName)
-            && Objects.equals(this.whitelist, that.whitelist);
+        return this.userAgreement == that.userAgreement &&
+                this.acceptanceYear == that.acceptanceYear &&
+                Objects.equals(this.code, that.code) &&
+                Objects.equals(this.password, that.password) &&
+                Objects.equals(this.nick, that.nick) &&
+                Objects.equals(this.firstName, that.firstName) &&
+                Objects.equals(this.lastName, that.lastName) &&
+                Objects.equals(this.whitelist, that.whitelist) &&
+                this.language == that.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.code, this.password, this.nick, this.firstName,
-            this.lastName, this.userAgreement, this.acceptanceYear, this.whitelist);
+        return Objects.hash(this.code,
+                this.password,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.userAgreement,
+                this.acceptanceYear,
+                this.whitelist,
+                this.language);
     }
 }

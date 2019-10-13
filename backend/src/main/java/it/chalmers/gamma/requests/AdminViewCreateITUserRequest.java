@@ -1,5 +1,7 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.domain.Language;
+
 import java.util.Objects;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
@@ -34,6 +36,8 @@ public class AdminViewCreateITUserRequest {
 
     @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
+
+    private Language language = Language.sv;
 
     public String getCid() {
         return this.cid;
@@ -95,32 +99,37 @@ public class AdminViewCreateITUserRequest {
         return this.acceptanceYear;
     }
 
-    public void setAcceptanceYear(int acceptanceYear) {
+    public void setAcceptanceYear(int acceptanceYear)
+    {
         this.acceptanceYear = acceptanceYear;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         AdminViewCreateITUserRequest that = (AdminViewCreateITUserRequest) o;
-        return this.userAgreement == that.userAgreement
-            && this.acceptanceYear == that.acceptanceYear
-            && this.cid.equals(that.cid)
-            && this.password.equals(that.password)
-            && this.nick.equals(that.nick)
-            && this.firstName.equals(that.firstName)
-            && this.lastName.equals(that.lastName)
-            && this.email.equals(that.email);
+        return userAgreement == that.userAgreement &&
+                acceptanceYear == that.acceptanceYear &&
+                Objects.equals(cid, that.cid) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(nick, that.nick) &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(email, that.email) &&
+                language == that.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.cid, this.password, this.nick, this.firstName,
-            this.lastName, this.email, this.userAgreement, this.acceptanceYear);
+        return Objects.hash(cid, password, nick, firstName, lastName, email, userAgreement, acceptanceYear, language);
     }
 }
