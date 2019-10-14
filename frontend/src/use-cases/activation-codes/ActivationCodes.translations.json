@@ -6,12 +6,8 @@
     "DeleteActivationCode": ["Delete activation code", "Radera aktiveringskod"],
     "EditActivationCode": ["Edit activation code", "Redigera aktiveringskod"],
     "WouldYouLikeToDelete": [
-        "Would you like to delete the activation code for",
-        "Vill du radera aktiveringskoden för"
-    ],
-    "YouHaveDeleted": [
-        "You have deleted the activation code for",
-        "Du har raderat aktiveringskoden för"
+        "Would you like to delete the activation code for the cid",
+        "Vill du radera aktiveringskoden för cid:et"
     ],
     "Details": ["Details", "Detaljer"],
     "NoActivationCodes": [
@@ -21,5 +17,10 @@
     "SearchForActivationCodes": [
         "Search for activation codes",
         "Sök efter aktiveringskoder"
-    ]
+    ],
+    "ActivationCodeDeletionFailed1": [
+        "Something went wrong when trying to delete the activation code for the cid",
+        "Någonting gick fel när aktiveringskoden för cid:et"
+    ],
+    "ActivationCodeDeletionFailed2": ["", "försökte raderas"]
 }

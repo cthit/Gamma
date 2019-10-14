@@ -150,11 +150,11 @@ const SuperGroups = () => {
                 data[NAME] + " " + text.WasDeletedSuccessfully
             }
             toastDeleteFailed={data =>
-                text.SuperGropuDeletionFailed1 +
+                text.SuperGroupDeletionFailed1 +
                 " " +
                 data[NAME] +
                 " " +
-                text.SuperGropuDeletionFailed2
+                text.SuperGroupDeletionFailed2
             }
             toastUpdateSuccessful={data =>
                 data[NAME] + " " + text.WasUpdatedSuccessfully
