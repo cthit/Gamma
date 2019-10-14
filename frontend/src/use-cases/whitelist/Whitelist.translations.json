@@ -9,9 +9,9 @@
         "You've successfully added cids to the whitelist",
         "Du har sparat cids"
     ],
+    "AddWhitelist": ["Add cid", "Lägg till cid"],
     "EditCid": ["Edit whitelist item", "Redigera"],
     "SuccessfullyEdit": ["You've saved the cid", "Du har sparat cidet"],
-    "Details": ["Details", "Detaljer"],
     "EmptyWhitelist": ["The whitelist is empty", "Whitelist är tom"],
     "Whitelist": ["Whitelist", "Whitelist"],
     "SearchForWhitelistItem": [
@@ -24,5 +24,14 @@
         "Would you like to delete the whitelist item ",
         "Vill du radera whitelist inlägget"
     ],
-    "DeleteSuccessfully": ["You have deleted", "Du har raderat"]
+    "DeleteSuccessfully": ["You have deleted", "Du har raderat"],
+    "FailedCreatingWhitelist": [
+        "Failed to add cid to whitelist",
+        "Misslyckades att lägga in cid i whitelist"
+    ],
+    "WhitelistUpdateFailed1": [
+        "Something went wrong when trying to update the cid for the whitelist",
+        "Någonting gick fel när whitelist för cid:et"
+    ],
+    "WhitelistUpdateFailed2": ["", "försökte uppdateras"]
 }

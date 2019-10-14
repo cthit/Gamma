@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
@@ -46,7 +47,8 @@ const Whitelist = () => {
                 cid: {
                     component: DigitTextField,
                     componentProps: {
-                        outlined: true
+                        outlined: true,
+                        maxLength: 12
                     }
                 }
             }}
@@ -61,6 +63,38 @@ const Whitelist = () => {
                 titleText: text.Whitelist,
                 search: true
             }}
+            toastCreateSuccessful={data =>
+                data.cid + " " + text.WasCreatedSuccessfully
+            }
+            toastCreateFailed={() => text.FailedCreatingWhitelist}
+            toastDeleteSuccessful={data =>
+                data.cid + " " + text.WasDeletedSuccessfully
+            }
+            toastDeleteFailed={data => text.FailedDeleting + " " + data.cid}
+            toastUpdateSuccessful={data =>
+                data.cid + " " + text.WasUpdatedSuccessfully
+            }
+            toastUpdateFailed={data =>
+                text.WhitelistUpdateFailed1 +
+                " " +
+                data.cid +
+                " " +
+                text.WhitelistUpdateFailed2
+            }
+            createTitle={text.SaveCidToWhitelist}
+            createButtonText={text.AddWhitelist}
+            updateTitle={data => text.Update + " " + data.cid}
+            updateButtonText={data => text.Update + " " + data.cid}
+            backButtonText={text.Back}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteCancel={() => text.Cancel}
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteDescription={data =>
+                text.WouldYouLikeToDelete + " " + data.cid + "?"
+            }
+            detailsTitle={data => data.cid}
+            deleteButtonText={data => text.Delete + " " + data.cid}
+            detailsButtonText={text.Details}
         />
     );
 };
