@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);
@@ -41,6 +42,26 @@ const ActivationCodes = () => {
                 createdAt: text.CreatedAt
             }}
             idProp={"id"}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={data =>
+                text.WouldYouLikeToDelete + " " + data.cid
+            }
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteCancel={() => text.Cancel}
+            toastDeleteSuccessful={data =>
+                data.cid + " " + text.WasDeletedSuccessfully
+            }
+            toastDeleteFailed={data =>
+                text.ActivationCodeDeletionFailed1 +
+                " " +
+                data[NAME] +
+                " " +
+                text.ActivationCodeDeletionFailed2
+            }
+            detailsTitle={data => data.cid}
+            deleteButtonText={data => text.Delete + " " + data.cid}
+            detailsButtonText={text.Details}
+            backButtonText={text.Back}
         />
     );
 };
