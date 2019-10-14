@@ -9,7 +9,6 @@ import {
 
 import translations from "./Posts.translations";
 import { getPost, getPosts, getPostUsage } from "../../api/posts/get.posts.api";
-import DisplayPostUsages from "./elements/display-post-usages";
 import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { addPost } from "../../api/posts/post.posts.api";
@@ -23,6 +22,8 @@ import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
+import { ID, NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -39,14 +40,18 @@ function generateEditComponentData(text) {
     componentData[SWEDISH_LANGUAGE] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.SwedishInput
+            upperLabel: text.SwedishInput,
+            outlined: true,
+            maxLength: 50
         }
     };
 
     componentData[ENGLISH_LANGUAGE] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.EnglishInput
+            upperLabel: text.EnglishInput,
+            outlined: true,
+            maxLength: 50
         }
     };
 
@@ -93,23 +98,87 @@ const Posts = () => {
             idProp={"id"}
             detailsRenderCardEnd={data => (
                 <>
-                    {data.usage != null && data.usages.length > 0 && (
-                        <>
-                            <DigitText.Title text={text.Usages} />
-
-                            <DisplayPostUsages usages={data.usages} />
-                        </>
-                    )}
                     {(data.usages == null || data.usages.length) === 0 && (
                         <DigitText.Title text={text.NoUsages} />
                     )}
                 </>
+            )}
+            detailsRenderEnd={data => (
+                <div style={{ marginTop: "8px" }}>
+                    {data.usages != null && data.usages.length > 0 && (
+                        <DisplayGroupsTable
+                            groups={data.usages}
+                            title={text.Usages}
+                            columnsOrder={[ID, NAME, PRETTY_NAME]}
+                        />
+                    )}
+                </div>
             )}
             formComponentData={generateEditComponentData(text)}
             formValidationSchema={generateValidationSchema(text)}
             createButtonText={text.CreatePost}
             backButtonText={text.Back}
             updateButtonText={() => text.Update}
+            toastCreateSuccessful={data =>
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE] +
+                " " +
+                text.WasCreatedSuccessfully
+            }
+            toastCreateFailed={() => text.FailedCreatingPostt}
+            toastDeleteSuccessful={data =>
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE] +
+                " " +
+                text.WasDeletedSuccessfully
+            }
+            toastDeleteFailed={data =>
+                text.PostDeletionFailed1 +
+                " " +
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE] +
+                " " +
+                text.PostDeletionFailed2
+            }
+            toastUpdateSuccessful={data =>
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE] +
+                " " +
+                text.WasUpdatedSuccessfully
+            }
+            toastUpdateFailed={data =>
+                text.PostDeletionFailed1 +
+                " " +
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE] +
+                " " +
+                text.PostDeletionFailed2
+            }
+            dialogDeleteCancel={() => text.Cancel}
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={data =>
+                text.AreYouSureYouWantToDelete +
+                " " +
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE] +
+                "?"
+            }
+            updateTitle={data =>
+                text.Update +
+                " " +
+                data[SWEDISH_LANGUAGE] +
+                "/" +
+                data[ENGLISH_LANGUAGE]
+            }
+            deleteButtonText={() => text.DeletePost}
+            detailsTitle={() => text.Details}
         />
     );
 };

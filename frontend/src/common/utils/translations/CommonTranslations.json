@@ -37,5 +37,9 @@
     "WasUpdatedSuccessfully": [
         "was updated successfully",
         "uppdaterades framgångsrikt"
+    ],
+    "FailedDeleting": [
+        "Failed when trying to delete",
+        "Misslyckades att radera"
     ]
 }
