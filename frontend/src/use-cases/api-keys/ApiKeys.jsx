@@ -55,7 +55,8 @@ const ApiKeys = () => {
                     component: DigitTextField,
                     componentProps: {
                         outlined: true,
-                        upperLabel: text.Name
+                        upperLabel: text.Name,
+                        maxLength: 50
                     }
                 },
                 descriptionSv: {
@@ -64,7 +65,8 @@ const ApiKeys = () => {
                         numbersOnly: true,
                         outlined: true,
                         rows: 3,
-                        upperLabel: text.Swedish
+                        upperLabel: text.Swedish,
+                        maxLength: 500
                     }
                 },
                 descriptionEn: {
@@ -73,7 +75,8 @@ const ApiKeys = () => {
                         numbersOnly: true,
                         outlined: true,
                         rows: 3,
-                        upperLabel: text.English
+                        upperLabel: text.English,
+                        maxLength: 500
                     }
                 }
             }}
