@@ -14,6 +14,7 @@ import translations from "./Websites.translations";
 import * as yup from "yup";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const Websites = () => {
     const [text] = useDigitTranslations(translations);
@@ -51,13 +52,17 @@ const Websites = () => {
                 name: {
                     component: DigitTextField,
                     componentProps: {
-                        outlined: true
+                        upperLabel: text.PrettyName,
+                        outlined: true,
+                        maxLength: 50
                     }
                 },
                 prettyName: {
                     component: DigitTextField,
                     componentProps: {
-                        outlined: true
+                        upperLabel: text.PrettyName,
+                        outlined: true,
+                        maxLength: 50
                     }
                 }
             }}
@@ -69,6 +74,40 @@ const Websites = () => {
                 name: "",
                 prettyName: ""
             }}
+            backButtonText={text.Back}
+            detailsButtonText={text.Details}
+            deleteButtonText={data => text.Delete + " " + data.prettyName}
+            detailsTitle={data => data.prettyName}
+            updateTitle={data => text.Update + " " + data.prettyName}
+            createTitle={text.CreateWebsite}
+            createButtonText={text.CreateWebsite}
+            updateButtonText={data => text.Update + " " + data.prettyName}
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteCancel={() => text.Cancel}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={data =>
+                text.AreYouSureYouWantToDelete + " " + data.prettyName
+            }
+            toastCreateSuccessful={data =>
+                data.prettyName + " " + text.WasCreatedSuccessfully
+            }
+            toastCreateFailed={() => text.FailedCreatingWebsite}
+            toastDeleteSuccessful={data =>
+                data.prettyName + " " + text.WasDeletedSuccessfully
+            }
+            toastDeleteFailed={data =>
+                text.FailedDeleting + " " + data.prettyName
+            }
+            toastUpdateSuccessful={data =>
+                data.prettyName + " " + text.WasUpdatedSuccessfully
+            }
+            toastUpdateFailed={data =>
+                text.WebsiteUpdateFailed1 +
+                " " +
+                data.prettyName +
+                " " +
+                text.WebsiteUpdateFailed2
+            }
         />
     );
 };
