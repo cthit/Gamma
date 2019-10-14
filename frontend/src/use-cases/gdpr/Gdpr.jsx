@@ -1,7 +1,8 @@
 import {
     DigitTable,
     DigitTranslations,
-    DigitLayout
+    DigitLayout,
+    DigitToastActions
 } from "@cthit/react-digit-components";
 import React, { useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
@@ -15,6 +16,7 @@ import {
 import * as _ from "lodash";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import { useDispatch } from "react-redux";
 
 function _generateHeaderTexts(text) {
     const output = {};
@@ -34,20 +36,22 @@ const Gdpr = ({
     getUsersWithGDPR,
     gammaLoadingFinished
 }) => {
+    const dispatch = useDispatch();
     const [lastSelected, setLastSelected] = useState([]);
+    const admin = useIsAdmin();
 
     useEffect(() => {
         if (admin) {
             getUsersWithGDPR().then(response => {
+                console.log(response);
                 setLastSelected(
                     response.data.filter(user => user.gdpr).map(user => user.id)
                 );
                 gammaLoadingFinished();
             });
         }
-    }, []);
+    }, [admin]);
 
-    const admin = useIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }
@@ -59,7 +63,6 @@ const Gdpr = ({
                 render={text => (
                     <DigitTable
                         search
-                        showSearchableProps
                         titleText={text.Users}
                         searchText={text.SearchForUsers}
                         idProp={ID}
@@ -81,15 +84,36 @@ const Gdpr = ({
 
                                 setGDPRValue(c[0], {
                                     gdpr: newGDPRValue
-                                }).then(() =>
-                                    getUsersWithGDPR().then(response => {
-                                        setLastSelected(
-                                            response.data
-                                                .filter(user => user.gdpr)
-                                                .map(user => user.id)
+                                })
+                                    .then(() => {
+                                        dispatch(
+                                            DigitToastActions.digitToastOpen({
+                                                text:
+                                                    text.SuccessfullySetOfGDPRTo +
+                                                    " " +
+                                                    c[0] +
+                                                    " " +
+                                                    text.To +
+                                                    ": " +
+                                                    newGDPRValue
+                                            })
                                         );
+
+                                        getUsersWithGDPR().then(response => {
+                                            setLastSelected(
+                                                response.data
+                                                    .filter(user => user.gdpr)
+                                                    .map(user => user.id)
+                                            );
+                                        });
                                     })
-                                );
+                                    .catch(() => {
+                                        dispatch(
+                                            DigitToastActions.digitToastOpen({
+                                                text: text.SomethingWentWrong
+                                            })
+                                        );
+                                    });
                             }
                         }}
                         selected={users
