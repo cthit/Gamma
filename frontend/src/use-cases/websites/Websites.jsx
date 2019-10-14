@@ -39,7 +39,9 @@ const Websites = () => {
             deleteRequest={deleteWebsite}
             createRequest={addWebsite}
             tableProps={{
-                titleText: text.Websites
+                titleText: text.Websites,
+                startOrderBy: "name",
+                search: true
             }}
             keysOrder={["id", "name", "prettyName"]}
             keysText={{

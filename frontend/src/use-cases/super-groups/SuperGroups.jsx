@@ -130,6 +130,7 @@ const SuperGroups = () => {
             formValidationSchema={generateValidationSchema(text)}
             tableProps={{
                 titleText: text.SuperGroups,
+                startOrderBy: NAME,
                 search: true
             }}
             idProp={"id"}

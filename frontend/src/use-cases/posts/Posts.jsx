@@ -91,6 +91,7 @@ const Posts = () => {
             keysOrder={["id", "sv", "en"]}
             tableProps={{
                 titleText: text.Posts,
+                startOrderBy: "id",
                 search: true
             }}
             detailsButtonText={text.Details}
