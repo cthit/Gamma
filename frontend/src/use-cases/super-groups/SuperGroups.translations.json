@@ -17,8 +17,8 @@
         "There's no super groups",
         "Det finns inga super grupper"
     ],
-    "EditSuperGroup": ["Edit super group", "Redigera super gruppen"],
-    "CreateSuperGroup": ["Create Super group", "Skapa super grupp"],
+    "EditSuperGroup": ["Edit super group", "Redigera supergruppen"],
+    "CreateSuperGroup": ["Create Super group", "Skapa supergrupp"],
     "SuperGroup": ["Super group", "Supergrupp"],
     "SaveSuperGroup": ["Save super group", "Spara supergrupp"],
     "DescriptionSv": ["Description swedish", "Beskrivning svenska"],
@@ -26,5 +26,20 @@
     "Email": ["Email", "Email"],
     "FunctionSv": ["Function swedish", "Uppdrag svenska"],
     "FunctionEn": ["Function english", "Uppdrag engelska"],
-    "SuperGroups": ["Super groups", "Supergrupper"]
+    "SuperGroups": ["Super groups", "Supergrupper"],
+    "FailedCreatingSuperGroup": [
+        "Failed to create super group",
+        "Misslyckades att skapa supergrupp"
+    ],
+    "FailedDeletingSuperGroup": ["Failed to delete"],
+    "SuperGroupDeletionFailed1": [
+        "Something went wrong when trying to delete the super group",
+        "Någonting gick fel när supergruppen"
+    ],
+    "SuperGroupDeletionFailed2": ["", "försökte raderas"],
+    "SuperGroupUpdateFailed1": [
+        "Something went wrong when trying to update the super group",
+        "Någonting gick fel när supergruppen"
+    ],
+    "SuperGroupUpdateFailed2": ["", "försökte uppdateras"]
 }
