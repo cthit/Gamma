@@ -34,7 +34,6 @@ class InputDataAndCode extends React.Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="CreateAccount"
                 render={text => (
                     <DigitLayout.Center>
                         <DigitForm
