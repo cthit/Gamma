@@ -73,6 +73,7 @@ const Clients = () => {
             }
             tableProps={{
                 titleText: text.Clients,
+                startOrderBy: "name",
                 search: true
             }}
             keysOrder={[
