@@ -32,9 +32,13 @@ import InsufficientAccess from "../../common/views/insufficient-access";
 
 function generateValidationSchema(text) {
     const schema = {};
-    schema[NAME] = yup.string().required();
-    schema[PRETTY_NAME] = yup.string().required();
-    schema[TYPE] = yup.string().required();
+    schema[NAME] = yup.string().required(text.FieldRequired);
+    schema[PRETTY_NAME] = yup.string().required(text.FieldRequired);
+    schema[TYPE] = yup.string().required(text.FieldRequired);
+    schema[EMAIL] = yup
+        .string()
+        .email(text.FieldNotEmail)
+        .required(text.FieldRequired);
 
     return yup.object().shape(schema);
 }
@@ -46,7 +50,8 @@ function generateEditComponentData(text) {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Name,
-            outlined: true
+            outlined: true,
+            maxLength: 50
         }
     };
 
@@ -54,7 +59,8 @@ function generateEditComponentData(text) {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.PrettyName,
-            outlined: true
+            outlined: true,
+            maxLength: 50
         }
     };
 
@@ -62,7 +68,8 @@ function generateEditComponentData(text) {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Email,
-            outlined: true
+            outlined: true,
+            maxLength: 100
         }
     };
 
@@ -126,17 +133,53 @@ const SuperGroups = () => {
                 search: true
             }}
             idProp={"id"}
-            detailsRenderCardEnd={one => (
+            detailsRenderEnd={one => (
                 <div
                     style={{
-                        minWidth: "280px",
-                        maxWidth: "500px",
-                        margin: "8px"
+                        marginTop: "8px"
                     }}
                 >
                     <ShowSubGroups subGroups={one.subGroups} />
                 </div>
             )}
+            toastCreateSuccessful={data =>
+                data[NAME] + " " + text.WasCreatedSuccessfully
+            }
+            toastCreateFailed={() => text.FailedCreatingSuperGroup}
+            toastDeleteSuccessful={data =>
+                data[NAME] + " " + text.WasDeletedSuccessfully
+            }
+            toastDeleteFailed={data =>
+                text.SuperGropuDeletionFailed1 +
+                " " +
+                data[NAME] +
+                " " +
+                text.SuperGropuDeletionFailed2
+            }
+            toastUpdateSuccessful={data =>
+                data[NAME] + " " + text.WasUpdatedSuccessfully
+            }
+            toastUpdateFailed={data =>
+                text.SuperGroupUpdateFailed1 +
+                " " +
+                data[NAME] +
+                " " +
+                text.SuperGroupUpdateFailed2
+            }
+            dialogDeleteCancel={() => text.Cancel}
+            dialogDeleteConfirm={() => text.Confirm}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={data =>
+                text.AreYouSureYouWantToDelete + " " + data[NAME] + "?"
+            }
+            backButtonText={text.Back}
+            detailsButtonText={text.Details}
+            createTitle={text.CreateSuperGroup}
+            createButtonText={text.CreateSuperGroup}
+            updateTitle={data => text.Update + " " + data[NAME]}
+            updateButtonText={data => text.Update + " " + data[NAME]}
+            deleteButtonText={data => text.Delete + " " + data[NAME]}
+            detailsTitle={data => data[NAME]}
         />
     );
 };
