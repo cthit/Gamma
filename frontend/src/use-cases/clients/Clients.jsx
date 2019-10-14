@@ -108,14 +108,16 @@ const Clients = () => {
                     component: DigitTextField,
                     componentProps: {
                         upperLabel: text.RedirectURI,
-                        outlined: true
+                        outlined: true,
+                        maxLength: 100
                     }
                 },
                 name: {
                     component: DigitTextField,
                     componentProps: {
                         upperLabel: text.Name,
-                        outlined: true
+                        outlined: true,
+                        maxLength: 50
                     }
                 },
                 descriptionSv: {
