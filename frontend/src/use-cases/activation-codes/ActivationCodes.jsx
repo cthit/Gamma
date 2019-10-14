@@ -32,7 +32,9 @@ const ActivationCodes = () => {
             readOneRequest={getActivationCode}
             deleteRequest={deleteActivationCode}
             tableProps={{
-                titleText: text.ActivationCodes
+                titleText: text.ActivationCodes,
+                startOrderBy: "cid",
+                search: true
             }}
             keysOrder={["id", "cid", "code", "createdAt"]}
             keysText={{
