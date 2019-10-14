@@ -88,7 +88,9 @@ const ApiKeys = () => {
                 descriptionEn: ""
             }}
             tableProps={{
-                titleText: text.ApiKeysTitle
+                titleText: text.ApiKeysTitle,
+                startOrderBy: "name",
+                search: true
             }}
             detailsButtonText={text.Details}
             dialogDeleteConfirm={data => text.Delete + " " + data.name}
