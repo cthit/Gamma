@@ -69,7 +69,7 @@ class InputCid extends React.Component {
                                                     component={DigitTextField}
                                                     componentProps={{
                                                         upperLabel: text.Cid,
-                                                        filled: true
+                                                        outlined: true
                                                     }}
                                                 />
                                             </DigitLayout.Center>

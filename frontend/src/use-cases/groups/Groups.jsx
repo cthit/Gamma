@@ -56,7 +56,7 @@ function generateEditComponentData(text, superGroups = []) {
         componentProps: {
             upperLabel: text.Name,
             maxLength: 50,
-            filled: true
+            outlined: true
         }
     };
 
@@ -65,7 +65,7 @@ function generateEditComponentData(text, superGroups = []) {
         componentProps: {
             upperLabel: text.PrettyName,
             maxLength: 50,
-            filled: true
+            outlined: true
         }
     };
 
@@ -76,7 +76,7 @@ function generateEditComponentData(text, superGroups = []) {
             maxLength: 500,
             rows: 5,
             maxRows: 10,
-            filled: true
+            outlined: true
         }
     };
 
@@ -87,7 +87,7 @@ function generateEditComponentData(text, superGroups = []) {
             maxLength: 500,
             rows: 5,
             maxRows: 10,
-            filled: true
+            outlined: true
         }
     };
 
@@ -96,7 +96,7 @@ function generateEditComponentData(text, superGroups = []) {
         componentProps: {
             upperLabel: text.Email,
             maxLength: 100,
-            filled: true
+            outlined: true
         }
     };
 
@@ -105,7 +105,7 @@ function generateEditComponentData(text, superGroups = []) {
         componentProps: {
             upperLabel: text.FunctionSv,
             maxLength: 100,
-            filled: true
+            outlined: true
         }
     };
 
@@ -114,7 +114,7 @@ function generateEditComponentData(text, superGroups = []) {
         componentProps: {
             maxLength: 100,
             upperLabel: text.FunctionEn,
-            filled: true
+            outlined: true
         }
     };
 
@@ -128,7 +128,7 @@ function generateEditComponentData(text, superGroups = []) {
         componentProps: {
             upperLabel: text.SuperGroup,
             valueToTextMap: superGroupMap,
-            filled: true
+            outlined: true
         }
     };
 
