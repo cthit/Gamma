@@ -167,7 +167,7 @@ const SuperGroups = () => {
                 text.SuperGroupUpdateFailed2
             }
             dialogDeleteCancel={() => text.Cancel}
-            dialogDeleteConfirm={() => text.Confirm}
+            dialogDeleteConfirm={() => text.Delete}
             dialogDeleteTitle={() => text.AreYouSure}
             dialogDeleteDescription={data =>
                 text.AreYouSureYouWantToDelete + " " + data[NAME] + "?"

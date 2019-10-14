@@ -31,7 +31,6 @@
         "Failed to create super group",
         "Misslyckades att skapa supergrupp"
     ],
-    "FailedDeletingSuperGroup": ["Failed to delete"],
     "SuperGroupDeletionFailed1": [
         "Something went wrong when trying to delete the super group",
         "Någonting gick fel när supergruppen"
