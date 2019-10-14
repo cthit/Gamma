@@ -14,5 +14,22 @@
     "CreateClient": ["Create new client", "Skapa ny klient"],
     "SubmitClient": ["Create client", "Skapa klient"],
     "YourClientSecret": ["Your client secret", "Din klient secret"],
-    "CloseDialog": ["Close", "Stäng"]
+    "CloseDialog": ["Close", "Stäng"],
+    "ClientCreatingSuccessful": [
+        "was successfully created",
+        "skapades framgångsrikt"
+    ],
+    "ErrorCreatingClient": [
+        "Something went wrong when trying to add the client",
+        "Någonting gick fel när klienten försökter läggas till"
+    ],
+    "ClientDeletionSuccessful": [
+        "was successfully deleted",
+        "raderades framgångsrikt"
+    ],
+    "ClientDeletionFailed1": [
+        "Something went wrong when trying to delete the client",
+        "Någonting gick fel när klienten"
+    ],
+    "ClientDeletionFailed2": ["", "försökte raderas"]
 }
