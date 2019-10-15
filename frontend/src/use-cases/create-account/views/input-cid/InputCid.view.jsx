@@ -23,7 +23,6 @@ class InputCid extends React.Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="CreateAccount"
                 render={text => (
                     <DigitLayout.MarginTop>
                         <DigitLayout.Center>
@@ -69,7 +68,7 @@ class InputCid extends React.Component {
                                                     component={DigitTextField}
                                                     componentProps={{
                                                         upperLabel: text.Cid,
-                                                        filled: true
+                                                        outlined: true
                                                     }}
                                                 />
                                             </DigitLayout.Center>

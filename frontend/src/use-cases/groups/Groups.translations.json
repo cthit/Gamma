@@ -1,0 +1,29 @@
+{
+    "Group": ["Group", "Grupp"],
+    "SaveGroup": ["Save group", "Spara grupp"],
+    "Name": ["Name", "Namn"],
+    "PrettyName": ["Pretty name", "Pretty name"],
+    "DescriptionSv": ["Description swedish", "Beskrivning svenska"],
+    "DescriptionEn": ["Description english", "Beskrivning engelska"],
+    "Email": ["Email", "Email"],
+    "FunctionSv": ["Function swedish", "Uppdrag svenska"],
+    "FunctionEn": ["Function english", "Uppdrag engelska"],
+    "Type": ["Group type", "Grupp typ"],
+    "Society": ["Society", "Förening"],
+    "Committee": ["Committee", "Kommitté"],
+    "Board": ["Board", "Nämnd"],
+    "BecomesActive": ["Becomes active", "Blir aktiva"],
+    "BecomesInactive": ["Becomes inactitve", "Blir inaktiva"],
+    "NoGroup": ["None", "Ingen"],
+    "SuperGroup": ["Super group", "Super grupp"],
+    "Groups": ["Groups", "Grupper"],
+    "Description": ["Description", "Beskrivning"],
+    "Function": ["Function", "Uppdrag"],
+    "Details": ["Details", "Detaljer"],
+    "NoGroups": ["There's no groups", "Det finns inga grupper"],
+    "SearchForGroups": ["Search for groups", "Sök efter grupper"],
+    "NoGroupMembers": [
+        "There's no users in this group",
+        "Det finns inga användare i den här gruppen"
+    ]
+}

@@ -21,7 +21,6 @@ class EditableWebsite extends React.Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="Common.Views.EditWebsites.SubView.EditableWebsite"
                 render={text => (
                     <DigitLayout.Column justifyContent="space-between">
                         <DigitLayout.Column>

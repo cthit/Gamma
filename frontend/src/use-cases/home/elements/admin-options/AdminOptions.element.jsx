@@ -34,6 +34,11 @@ const AdminOptions = () => (
                         />
                         <HomeLink text={text.Whitelist} link={"/whitelist"} />
                         <HomeLink text={text.Clients} link={"/clients"} />
+                        <HomeLink
+                            text={text.SuperGroups}
+                            link={"/super-groups"}
+                        />
+                        <HomeLink text={text.ApiKeys} link={"/access-keys"} />
                     </DigitLayout.Grid>
                 </DigitDesign.CardBody>
             </DigitDesign.Card>

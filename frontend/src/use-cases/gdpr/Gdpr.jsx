@@ -1,9 +1,10 @@
 import {
     DigitTable,
     DigitTranslations,
-    DigitLayout
+    DigitLayout,
+    DigitToastActions
 } from "@cthit/react-digit-components";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
 import {
     CID,
@@ -13,97 +14,124 @@ import {
     NICK
 } from "../../api/users/props.users.api";
 import * as _ from "lodash";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
+import { useDispatch } from "react-redux";
 
-class Gdpr extends React.Component {
-    constructor(props) {
-        super();
-        this.state = {
-            lastSelected: []
-        };
+function _generateHeaderTexts(text) {
+    const output = {};
 
-        props.getUsersWithGDPR().then(response => {
-            this.setState({
-                lastSelected: response.data
-                    .filter(user => user.gdpr)
-                    .map(user => user.id)
+    output[CID] = text.Cid;
+    output[FIRST_NAME] = text.FirstName;
+    output[LAST_NAME] = text.LastName;
+    output[NICK] = text.Nick;
+    output["__checkbox"] = text.HasGDPR;
+
+    return output;
+}
+
+const Gdpr = ({
+    users,
+    setGDPRValue,
+    getUsersWithGDPR,
+    gammaLoadingFinished
+}) => {
+    const dispatch = useDispatch();
+    const [lastSelected, setLastSelected] = useState([]);
+    const admin = useIsAdmin();
+
+    useEffect(() => {
+        if (admin) {
+            getUsersWithGDPR().then(response => {
+                console.log(response);
+                setLastSelected(
+                    response.data.filter(user => user.gdpr).map(user => user.id)
+                );
+                gammaLoadingFinished();
             });
-            props.gammaLoadingFinished();
-        });
+        }
+    }, [admin]);
+
+    if (!admin) {
+        return <InsufficientAccess />;
     }
 
-    _generateHeaderTexts = text => {
-        const output = {};
+    return (
+        <DigitLayout.Center>
+            <DigitTranslations
+                translations={translations}
+                render={text => (
+                    <DigitTable
+                        search
+                        titleText={text.Users}
+                        searchText={text.SearchForUsers}
+                        idProp={ID}
+                        startOrderBy={FIRST_NAME}
+                        onSelectedUpdated={selected => {
+                            const c = _.xorWith(
+                                selected,
+                                lastSelected,
+                                _.isEqual
+                            );
 
-        output[CID] = text.Cid;
-        output[FIRST_NAME] = text.FirstName;
-        output[LAST_NAME] = text.LastName;
-        output[NICK] = text.Nick;
-        output["__checkbox"] = text.HasGDPR;
+                            if (c.length > 0) {
+                                var newGDPRValue = false;
 
-        return output;
-    };
+                                if (selected.length > lastSelected.length) {
+                                    //add
+                                    newGDPRValue = true;
+                                }
 
-    render() {
-        const { lastSelected } = this.state;
-        const { users, setGDPRValue, getUsersWithGDPR } = this.props;
+                                setGDPRValue(c[0], {
+                                    gdpr: newGDPRValue
+                                })
+                                    .then(() => {
+                                        dispatch(
+                                            DigitToastActions.digitToastOpen({
+                                                text:
+                                                    text.SuccessfullySetOfGDPRTo +
+                                                    " " +
+                                                    c[0] +
+                                                    " " +
+                                                    text.To +
+                                                    ": " +
+                                                    newGDPRValue
+                                            })
+                                        );
 
-        return (
-            <DigitLayout.Center>
-                <DigitTranslations
-                    translations={translations}
-                    render={text => (
-                        <DigitTable
-                            search
-                            showSearchableProps
-                            titleText={text.Users}
-                            searchText={text.SearchForUsers}
-                            idProp={ID}
-                            startOrderBy={FIRST_NAME}
-                            onSelectedUpdated={selected => {
-                                const c = _.xorWith(
-                                    selected,
-                                    lastSelected,
-                                    _.isEqual
-                                );
-
-                                if (c.length > 0) {
-                                    var newGDPRValue = false;
-
-                                    if (selected.length > lastSelected.length) {
-                                        //add
-                                        newGDPRValue = true;
-                                    }
-
-                                    setGDPRValue(c[0], {
-                                        gdpr: newGDPRValue
-                                    }).then(() =>
                                         getUsersWithGDPR().then(response => {
-                                            this.setState({
-                                                lastSelected: response.data
+                                            setLastSelected(
+                                                response.data
                                                     .filter(user => user.gdpr)
                                                     .map(user => user.id)
-                                            });
-                                        })
-                                    );
-                                }
-                            }}
-                            selected={users
-                                .filter(user => user.gdpr)
-                                .map(user => user.id)}
-                            columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
-                            headerTexts={this._generateHeaderTexts(text)}
-                            data={users.map(user => {
-                                return {
-                                    ...user,
-                                    __checkbox: user.gdpr
-                                };
-                            })}
-                        />
-                    )}
-                />
-            </DigitLayout.Center>
-        );
-    }
-}
+                                            );
+                                        });
+                                    })
+                                    .catch(() => {
+                                        dispatch(
+                                            DigitToastActions.digitToastOpen({
+                                                text: text.SomethingWentWrong
+                                            })
+                                        );
+                                    });
+                            }
+                        }}
+                        selected={users
+                            .filter(user => user.gdpr)
+                            .map(user => user.id)}
+                        columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
+                        headerTexts={_generateHeaderTexts(text)}
+                        data={users.map(user => {
+                            return {
+                                ...user,
+                                __checkbox: user.gdpr
+                            };
+                        })}
+                    />
+                )}
+            />
+        </DigitLayout.Center>
+    );
+};
 
 export default Gdpr;

@@ -17,7 +17,6 @@ class CreationOfAccountFinished extends React.Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="CreateAccount"
                 render={text => (
                     <DigitLayout.Center>
                         <DigitDesign.Card>
