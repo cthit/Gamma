@@ -71,6 +71,10 @@ public class MembershipService {
         return groupIds;
     }
 
+    public List<Membership> getMembershipsInGroup(FKITGroup group) {
+        return this.membershipRepository.findAllById_FkitGroup(group);
+    }
+
     /**
      * gets which groups a user is a part of.
      *

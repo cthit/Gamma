@@ -4,8 +4,10 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.db.serializers.MembershipSerializer;
 import it.chalmers.gamma.response.GetGroupsResponse;
 import it.chalmers.gamma.response.GetSuperGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
@@ -84,18 +86,18 @@ public class SuperGroupController {
                 throw new GroupDoesNotExistResponse();
             }
         }
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
         List<FKITGroup> groups = this.fkitGroupToSuperGroupService.getActiveGroups(superGroup);
         FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
-        ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        MembershipSerializer membershipSerializer = new MembershipSerializer(
+                MembershipSerializer.Properties.getAllProperties());
         List<JSONObject> serializedGroups = new ArrayList<>();
         for (FKITGroup group : groups) {
-            List<ITUser> users = this.membershipService.getUsersInGroup(group);
-            List<JSONObject> serializedUsers = new ArrayList<>();
-            for (ITUser user : users) {
-                serializedUsers.add(userSerializer.serialize(user, null, null));
+            List<Membership> memberships = this.membershipService.getMembershipsInGroup(group);
+            List<JSONObject> serializedMembers = new ArrayList<>();
+            for (Membership membership : memberships) {
+                serializedMembers.add(membershipSerializer.serialize(membership));
             }
-            serializedGroups.add(serializer.serialize(group, serializedUsers, this.groupWebsiteService
+            serializedGroups.add(serializer.serialize(group, serializedMembers, this.groupWebsiteService
                     .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)), null));
         }
         return serializedGroups;
