@@ -30,6 +30,10 @@ public class FKITSuperGroupService {
         return this.repository.getById(id);
     }
 
+    public FKITSuperGroup getGroup(String name) {
+        return this.repository.getByName(name);
+    }
+
     public boolean groupExists(String name) {
         return this.repository.existsByName(name);
     }

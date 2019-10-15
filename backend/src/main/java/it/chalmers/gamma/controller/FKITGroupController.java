@@ -65,14 +65,15 @@ public final class FKITGroupController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public JSONObject getGroup(@PathVariable("id") String id) {
-
+        FKITGroup group;
         // finds the group
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
-        if (group == null) {
+        try {
+            group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        } catch (IllegalArgumentException e) {
             group = this.fkitGroupService.getGroup(id);
-        }
-        if (group == null) {
-            throw new GroupDoesNotExistResponse();
+            if (group == null) {
+                throw new GroupDoesNotExistResponse();
+            }
         }
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
@@ -184,6 +185,7 @@ public final class FKITGroupController {
                     this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)),
                     superGroups));
         }
+        System.out.println(serializedGroups.toString());
         return serializedGroups;
     }
 

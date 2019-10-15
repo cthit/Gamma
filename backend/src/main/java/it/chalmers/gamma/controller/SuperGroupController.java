@@ -74,8 +74,15 @@ public class SuperGroupController {
 
     @RequestMapping(value = "/{id}/active", method = RequestMethod.GET)
     public List<JSONObject> getActiveGroup(@PathVariable("id") String id) {
-        if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
-            throw new GroupDoesNotExistResponse();
+        FKITSuperGroup superGroup;
+        // finds the group
+        try {
+            superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
+        } catch (IllegalArgumentException e) {
+            superGroup = this.fkitSuperGroupService.getGroup(id);
+            if (superGroup == null) {
+                throw new GroupDoesNotExistResponse();
+            }
         }
         FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
         List<FKITGroup> groups = this.fkitGroupToSuperGroupService.getActiveGroups(superGroup);
