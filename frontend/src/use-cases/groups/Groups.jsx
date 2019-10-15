@@ -234,13 +234,13 @@ const Groups = ({ history }) => {
             formValidationSchema={generateValidationSchema(text)}
             formComponentData={generateEditComponentData(text, superGroups)}
             idProp={"id"}
-            detailsRenderCardEnd={data => {
+            detailsRenderEnd={data => {
                 if (!admin) {
                     return null;
                 }
 
                 return (
-                    <>
+                    <div style={{ marginTop: "8px" }}>
                         <DisplayUsersTable
                             noUsersText={text.NoGroupMembers}
                             users={data.groupMembers}
@@ -250,7 +250,7 @@ const Groups = ({ history }) => {
                             text={"Edit members"}
                             onClick={() => history.push("/members/" + data.id)}
                         />
-                    </>
+                    </div>
                 );
             }}
         />
