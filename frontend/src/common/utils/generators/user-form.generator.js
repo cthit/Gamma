@@ -3,6 +3,7 @@ import {
     CID,
     EMAIL,
     FIRST_NAME,
+    ID,
     LANGUAGE,
     LAST_NAME,
     NICK,
@@ -19,6 +20,7 @@ import EditWebsites from "../../views/edit-websites";
 export function generateUserKeysTexts(text) {
     const output = {};
 
+    output[ID] = text.Id;
     output[CID] = text.Cid;
     output[FIRST_NAME] = text.FirstName;
     output[LAST_NAME] = text.LastName;
