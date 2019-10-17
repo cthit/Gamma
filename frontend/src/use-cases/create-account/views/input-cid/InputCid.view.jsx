@@ -68,7 +68,8 @@ class InputCid extends React.Component {
                                                     component={DigitTextField}
                                                     componentProps={{
                                                         upperLabel: text.Cid,
-                                                        outlined: true
+                                                        outlined: true,
+                                                        maxLength: 12
                                                     }}
                                                 />
                                             </DigitLayout.Center>
