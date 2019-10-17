@@ -234,25 +234,26 @@ const Groups = ({ history }) => {
             formValidationSchema={generateValidationSchema(text)}
             formComponentData={generateEditComponentData(text, superGroups)}
             idProp={"id"}
-            detailsRenderEnd={data => {
-                if (!admin) {
-                    return null;
-                }
-
-                return (
+            detailsRenderCardEnd={data => (
+                <>
+                    <div style={{ marginTop: "8px" }} />
+                    <DigitButton
+                        outlined
+                        text={"Edit members"}
+                        onClick={() => history.push("/members/" + data.id)}
+                    />
+                </>
+            )}
+            detailsRenderEnd={data =>
+                admin ? (
                     <div style={{ marginTop: "8px" }}>
                         <DisplayUsersTable
                             noUsersText={text.NoGroupMembers}
                             users={data.groupMembers}
                         />
-                        <DigitButton
-                            outlined
-                            text={"Edit members"}
-                            onClick={() => history.push("/members/" + data.id)}
-                        />
                     </div>
-                );
-            }}
+                ) : null
+            }
         />
     );
 };
