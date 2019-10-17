@@ -1,4 +1,4 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;

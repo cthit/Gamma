@@ -18,7 +18,7 @@ import {
     DigitSelect
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { editMe } from "../../api/me/put.me.api";
 import { getWebsites } from "../../api/websites/get.websites.api";
 import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
@@ -38,7 +38,7 @@ const Me = () => {
     useEffect(() => {
         getWebsites().then(response => {
             setWebsites(response.data);
-            dispatch(gammaLoadingFinished());
+            dispatch(deltaLoadingFinished());
         });
     }, []);
 

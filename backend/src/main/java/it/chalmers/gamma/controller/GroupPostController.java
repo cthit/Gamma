@@ -1,10 +1,10 @@
-package it.chalmers.gamma.controller;
+package it.chalmers.delta.controller;
 
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.response.GetMultiplePostsResponse;
-import it.chalmers.gamma.response.GetPostResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
-import it.chalmers.gamma.service.PostService;
+import it.chalmers.delta.db.entity.Post;
+import it.chalmers.delta.response.GetMultiplePostsResponse;
+import it.chalmers.delta.response.GetPostResponse;
+import it.chalmers.delta.response.PostDoesNotExistResponse;
+import it.chalmers.delta.service.PostService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;

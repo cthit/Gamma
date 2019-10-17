@@ -1,7 +1,7 @@
-package it.chalmers.gamma.requests;
+package it.chalmers.delta.requests;
 
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.delta.db.entity.Whitelist;
+import it.chalmers.delta.domain.Language;
 
 import java.util.Objects;
 

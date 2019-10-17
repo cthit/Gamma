@@ -12,7 +12,7 @@ import { getClient, getClients } from "../../api/clients/get.clients.api";
 import { addClient } from "../../api/clients/post.clients.api";
 import translations from "./Clients.translations";
 import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import * as yup from "yup";
 import { deleteClient } from "../../api/clients/delete.clients.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
@@ -23,7 +23,7 @@ const Clients = () => {
     const [text] = useDigitTranslations(translations);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     const admin = useIsAdmin();

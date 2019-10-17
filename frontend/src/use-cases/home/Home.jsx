@@ -7,9 +7,9 @@ import AdminOptions from "./elements/admin-options";
 import WelcomeUser from "./elements/welcome-user";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 
-const Home = ({ user, gammaLoadingFinished }) => {
+const Home = ({ user, deltaLoadingFinished }) => {
     useEffect(() => {
-        gammaLoadingFinished();
+        deltaLoadingFinished();
     });
 
     const admin = useIsAdmin();

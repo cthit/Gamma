@@ -1,4 +1,4 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.delta.db.entity;
 
 import java.util.Objects;
 import java.util.UUID;

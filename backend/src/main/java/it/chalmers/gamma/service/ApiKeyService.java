@@ -1,10 +1,10 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.ApiKey;
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.ApiKeyRepository;
-import it.chalmers.gamma.requests.CreateApiKeyRequest;
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.delta.db.entity.ApiKey;
+import it.chalmers.delta.db.entity.Text;
+import it.chalmers.delta.db.repository.ApiKeyRepository;
+import it.chalmers.delta.requests.CreateApiKeyRequest;
+import it.chalmers.delta.util.TokenUtils;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,8 +1,8 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteURL;
-import it.chalmers.gamma.db.repository.WebsiteURLRepository;
+import it.chalmers.delta.db.entity.Website;
+import it.chalmers.delta.db.entity.WebsiteURL;
+import it.chalmers.delta.db.repository.WebsiteURLRepository;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 import {
     GAMMA_LOADING_FINISHED,
     GAMMA_LOADING_START
-} from "./GammaLoading.view.actions";
+} from "./DeltaLoading.view.actions";
 
 export function loading(state = true, action) {
     switch (action.type) {

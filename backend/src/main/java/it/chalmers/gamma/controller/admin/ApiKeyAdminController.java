@@ -1,14 +1,14 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.ApiKey;
-import it.chalmers.gamma.requests.CreateApiKeyRequest;
-import it.chalmers.gamma.response.ApiKeyDeletedResponse;
-import it.chalmers.gamma.response.ApiKeyDoesNotExistResponse;
-import it.chalmers.gamma.response.GetAllAPIKeysResponse;
-import it.chalmers.gamma.response.GetApiKeyResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.service.ApiKeyService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.db.entity.ApiKey;
+import it.chalmers.delta.requests.CreateApiKeyRequest;
+import it.chalmers.delta.response.ApiKeyDeletedResponse;
+import it.chalmers.delta.response.ApiKeyDoesNotExistResponse;
+import it.chalmers.delta.response.GetAllAPIKeysResponse;
+import it.chalmers.delta.response.GetApiKeyResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.service.ApiKeyService;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.util.List;
 import java.util.UUID;

@@ -28,10 +28,10 @@ import Websites from "../use-cases/websites";
 import Whitelist from "../use-cases/whitelist";
 import appTranslations from "./App.translations.json";
 import UserInformation from "./elements/user-information";
-import GammaLoading from "./views/gamma-loading";
+import DeltaLoading from "./views/delta-loading";
 import commonTranslations from "../common/utils/translations/CommonTranslations.json";
 import SuperGroups from "../use-cases/super-groups";
-import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
+import DeltaIntegration from "./views/delta-integration/DeltaIntegration.view.container";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
 import Drawer from "./elements/drawer";
@@ -54,7 +54,7 @@ export class App extends Component {
             const currentBaseUrl = data.location.pathname.split("/")[1];
 
             if (lastBaseUrl !== currentBaseUrl) {
-                this.props.gammaLoadingStart();
+                this.props.deltaLoadingStart();
             }
 
             this.setState({
@@ -78,7 +78,7 @@ export class App extends Component {
         const loginRedirect =
             baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri;
 
-        const title = "Gamma - IT-konto";
+        const title = "Delta - IT-konto";
 
         const header = () => (
             <Route
@@ -173,7 +173,7 @@ export class App extends Component {
                                                 hidden={!loading}
                                             >
                                                 <DigitLayout.Center>
-                                                    <GammaLoading />
+                                                    <DeltaLoading />
                                                 </DigitLayout.Center>
                                             </DigitLayout.HideFill>
 
@@ -196,7 +196,7 @@ export class App extends Component {
                                                         <Route
                                                             path="/login"
                                                             render={() => (
-                                                                <GammaIntegration />
+                                                                <DeltaIntegration />
                                                             )}
                                                         />
                                                         <Route

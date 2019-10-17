@@ -1,10 +1,10 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.ITClient;
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.ITClientRepository;
-import it.chalmers.gamma.requests.AddITClientRequest;
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.delta.db.entity.ITClient;
+import it.chalmers.delta.db.entity.Text;
+import it.chalmers.delta.db.repository.ITClientRepository;
+import it.chalmers.delta.requests.AddITClientRequest;
+import it.chalmers.delta.util.TokenUtils;
 
 import java.time.Instant;
 import java.util.List;

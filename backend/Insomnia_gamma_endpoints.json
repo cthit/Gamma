@@ -86,7 +86,7 @@
       "environment": {},
       "metaSortKey": -1559494924048,
       "modified": 1559495087058,
-      "name": "Gamma",
+      "name": "Delta",
       "parentId": "wrk_e128b6afbd1b4c408f3c249804f82cc7",
       "_type": "request_group"
     },
@@ -97,7 +97,7 @@
       "environment": {},
       "metaSortKey": -1559494923998,
       "modified": 1559495101637,
-      "name": "Gamma",
+      "name": "Delta",
       "parentId": "wrk_e128b6afbd1b4c408f3c249804f82cc7",
       "_type": "request_group"
     },

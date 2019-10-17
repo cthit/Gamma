@@ -11,7 +11,7 @@ import Delete from "@material-ui/icons/Delete";
 
 class MyAccount extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.deltaLoadingFinished();
     }
 
     render() {

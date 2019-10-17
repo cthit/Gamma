@@ -1,4 +1,4 @@
-package it.chalmers.gamma.filter;
+package it.chalmers.delta.filter;
 
 import java.io.IOException;
 

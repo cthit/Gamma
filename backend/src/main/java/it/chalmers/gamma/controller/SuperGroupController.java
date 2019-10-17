@@ -1,19 +1,19 @@
-package it.chalmers.gamma.controller;
+package it.chalmers.delta.controller;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.response.GetGroupsResponse;
-import it.chalmers.gamma.response.GetSuperGroupResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupsResponse;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.GroupWebsiteService;
-import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITGroupToSuperGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.serializers.FKITGroupSerializer;
+import it.chalmers.delta.db.serializers.ITUserSerializer;
+import it.chalmers.delta.response.GetGroupsResponse;
+import it.chalmers.delta.response.GetSuperGroupResponse;
+import it.chalmers.delta.response.GroupDoesNotExistResponse;
+import it.chalmers.delta.response.GroupsResponse;
+import it.chalmers.delta.service.FKITGroupToSuperGroupService;
+import it.chalmers.delta.service.FKITSuperGroupService;
+import it.chalmers.delta.service.GroupWebsiteService;
+import it.chalmers.delta.service.MembershipService;
 
 import java.util.ArrayList;
 import java.util.List;

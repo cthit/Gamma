@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import axios from "axios";
 
-class GammaIntegration extends React.Component {
+class DeltaIntegration extends React.Component {
     constructor(props) {
         super(props);
         if (props.location.search !== "") {
@@ -57,4 +57,4 @@ class GammaIntegration extends React.Component {
     }
 }
 
-export default withRouter(GammaIntegration);
+export default withRouter(DeltaIntegration);

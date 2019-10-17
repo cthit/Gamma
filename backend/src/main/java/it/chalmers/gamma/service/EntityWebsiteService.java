@@ -1,10 +1,10 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.delta.db.entity.Website;
+import it.chalmers.delta.db.entity.WebsiteInterface;
+import it.chalmers.delta.db.entity.WebsiteURL;
+import it.chalmers.delta.requests.CreateGroupRequest;
+import it.chalmers.delta.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.List;

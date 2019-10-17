@@ -1,21 +1,21 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.GDPR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.GDPR;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.ID;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.NICK;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
-import it.chalmers.gamma.response.GDPRStatusEdited;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.serializers.ITUserSerializer;
+import it.chalmers.delta.requests.ChangeGDPRStatusRequest;
+import it.chalmers.delta.response.GDPRStatusEdited;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.response.UserNotFoundResponse;
+import it.chalmers.delta.service.ITUserService;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

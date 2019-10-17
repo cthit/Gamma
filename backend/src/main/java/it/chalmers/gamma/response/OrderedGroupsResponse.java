@@ -1,6 +1,6 @@
-package it.chalmers.gamma.response;
+package it.chalmers.delta.response;
 
-import it.chalmers.gamma.views.FKITGroupView;
+import it.chalmers.delta.views.FKITGroupView;
 
 import java.util.List;
 

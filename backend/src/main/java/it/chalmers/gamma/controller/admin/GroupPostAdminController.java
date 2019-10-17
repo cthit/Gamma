@@ -1,20 +1,20 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.requests.AddPostRequest;
-import it.chalmers.gamma.response.EditedPostResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PostAlreadyExistsResponse;
-import it.chalmers.gamma.response.PostCreatedResponse;
-import it.chalmers.gamma.response.PostDeletedResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PostService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Post;
+import it.chalmers.delta.db.serializers.FKITGroupSerializer;
+import it.chalmers.delta.db.serializers.ITUserSerializer;
+import it.chalmers.delta.requests.AddPostRequest;
+import it.chalmers.delta.response.EditedPostResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.response.PostAlreadyExistsResponse;
+import it.chalmers.delta.response.PostCreatedResponse;
+import it.chalmers.delta.response.PostDeletedResponse;
+import it.chalmers.delta.response.PostDoesNotExistResponse;
+import it.chalmers.delta.service.MembershipService;
+import it.chalmers.delta.service.PostService;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

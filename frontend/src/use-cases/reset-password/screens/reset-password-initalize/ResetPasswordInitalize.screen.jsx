@@ -15,8 +15,8 @@ import statusMessage from "../../../../common/utils/formatters/statusMessage.for
 
 class ResetPasswordInitalize extends React.Component {
     componentDidMount() {
-        const { gammaLoadingFinished } = this.props;
-        gammaLoadingFinished();
+        const { deltaLoadingFinished } = this.props;
+        deltaLoadingFinished();
     }
 
     render() {

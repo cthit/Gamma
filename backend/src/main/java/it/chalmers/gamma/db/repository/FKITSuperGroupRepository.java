@@ -1,6 +1,6 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.delta.db.repository;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

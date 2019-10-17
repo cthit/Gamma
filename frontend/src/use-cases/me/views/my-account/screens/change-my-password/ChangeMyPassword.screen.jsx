@@ -8,8 +8,8 @@ import {
 
 class ChangeMyPassword extends React.Component {
     componentDidMount() {
-        const { gammaLoadingFinished } = this.props;
-        gammaLoadingFinished();
+        const { deltaLoadingFinished } = this.props;
+        deltaLoadingFinished();
     }
 
     render() {

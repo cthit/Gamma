@@ -1,6 +1,6 @@
-package it.chalmers.gamma.requests;
+package it.chalmers.delta.requests;
 
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.delta.db.entity.Text;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 

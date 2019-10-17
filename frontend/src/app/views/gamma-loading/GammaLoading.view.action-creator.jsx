@@ -1,16 +1,16 @@
 import {
     GAMMA_LOADING_FINISHED,
     GAMMA_LOADING_START
-} from "./GammaLoading.view.actions";
+} from "./DeltaLoading.view.actions";
 
-export function gammaLoadingFinished() {
+export function deltaLoadingFinished() {
     return {
         type: GAMMA_LOADING_FINISHED,
         error: false
     };
 }
 
-export function gammaLoadingStart() {
+export function deltaLoadingStart() {
     return {
         type: GAMMA_LOADING_START,
         error: false

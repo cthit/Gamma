@@ -1,2 +1,2 @@
-export const GAMMA_LOADING_FINISHED = "gamma_loading_finished";
-export const GAMMA_LOADING_START = "gamma_loading_start";
+export const GAMMA_LOADING_FINISHED = "delta_loading_finished";
+export const GAMMA_LOADING_START = "delta_loading_start";

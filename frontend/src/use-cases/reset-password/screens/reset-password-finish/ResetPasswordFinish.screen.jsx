@@ -15,8 +15,8 @@ import statusMessage from "../../../../common/utils/formatters/statusMessage.for
 
 class ResetPasswordFinish extends React.Component {
     componentDidMount() {
-        const { gammaLoadingFinished } = this.props;
-        gammaLoadingFinished();
+        const { deltaLoadingFinished } = this.props;
+        deltaLoadingFinished();
     }
 
     render() {
@@ -24,8 +24,8 @@ class ResetPasswordFinish extends React.Component {
             sendPasswordResetFinish,
             redirectTo,
             toastOpen,
-            gammaLoadingStart,
-            gammaLoadingFinished
+            deltaLoadingStart,
+            deltaLoadingFinished
         } = this.props;
         return (
             <div>
@@ -61,7 +61,7 @@ class ResetPasswordFinish extends React.Component {
                                         passwordConfirmation: ""
                                     }}
                                     onSubmit={(values, actions) => {
-                                        gammaLoadingStart();
+                                        deltaLoadingStart();
                                         sendPasswordResetFinish(values)
                                             .then(response => {
                                                 actions.resetForm();
@@ -95,7 +95,7 @@ class ResetPasswordFinish extends React.Component {
                                                     duration: 5000
                                                 });
                                             });
-                                        gammaLoadingFinished();
+                                        deltaLoadingFinished();
                                     }}
                                     render={({ errors, touched }) => (
                                         <DigitDesign.Card

@@ -1,13 +1,13 @@
 import { connect } from "react-redux";
 
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 
 import ResetPassword from "./ResetPassword";
 
 const mapStateToProps = (state, ownProps) => ({});
 
 const mapDispatchToProps = dispatch => ({
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished())
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished())
 });
 
 export default connect(

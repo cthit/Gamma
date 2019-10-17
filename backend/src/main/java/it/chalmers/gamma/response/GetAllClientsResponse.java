@@ -1,6 +1,6 @@
-package it.chalmers.gamma.response;
+package it.chalmers.delta.response;
 
-import it.chalmers.gamma.db.entity.ITClient;
+import it.chalmers.delta.db.entity.ITClient;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.delta.db.repository;
 
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.delta.db.entity.Text;
 
 import java.util.UUID;
 

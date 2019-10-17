@@ -1,8 +1,8 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.delta.db.repository;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.UserWebsite;
-import it.chalmers.gamma.db.entity.Website;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.UserWebsite;
+import it.chalmers.delta.db.entity.Website;
 
 import java.util.List;
 import java.util.UUID;

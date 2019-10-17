@@ -1,11 +1,11 @@
-package it.chalmers.gamma.config;
+package it.chalmers.delta.config;
 
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
-import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
-import it.chalmers.gamma.service.ApiKeyService;
-import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.delta.db.entity.FKITGroupToSuperGroup;
+import it.chalmers.delta.filter.AuthenticationFilterConfigurer;
+import it.chalmers.delta.service.ApiKeyService;
+import it.chalmers.delta.service.AuthorityService;
+import it.chalmers.delta.service.FKITGroupToSuperGroupService;
+import it.chalmers.delta.service.ITUserService;
 
 import java.util.List;
 

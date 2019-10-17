@@ -1,30 +1,30 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.Website;
+import it.chalmers.delta.db.entity.WebsiteInterface;
+import it.chalmers.delta.db.entity.WebsiteURL;
 
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.response.FileNotSavedException;
-import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
-import it.chalmers.gamma.response.GroupCreatedResponse;
-import it.chalmers.gamma.response.GroupDeletedResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupEditedResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.service.AuthorityLevelService;
-import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.GroupWebsiteService;
+import it.chalmers.delta.requests.CreateGroupRequest;
+import it.chalmers.delta.response.FileNotSavedException;
+import it.chalmers.delta.response.GroupAlreadyExistsResponse;
+import it.chalmers.delta.response.GroupCreatedResponse;
+import it.chalmers.delta.response.GroupDeletedResponse;
+import it.chalmers.delta.response.GroupDoesNotExistResponse;
+import it.chalmers.delta.response.GroupEditedResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.service.AuthorityLevelService;
+import it.chalmers.delta.service.FKITGroupService;
+import it.chalmers.delta.service.FKITGroupToSuperGroupService;
+import it.chalmers.delta.service.FKITSuperGroupService;
+import it.chalmers.delta.service.GroupWebsiteService;
 
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.WebsiteService;
+import it.chalmers.delta.service.MembershipService;
+import it.chalmers.delta.service.WebsiteService;
 
-import it.chalmers.gamma.util.ImageITUtils;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.util.ImageITUtils;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

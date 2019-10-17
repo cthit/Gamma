@@ -1,18 +1,18 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.requests.CreateWebsiteRequest;
-import it.chalmers.gamma.response.EditedWebsiteResponse;
-import it.chalmers.gamma.response.GetAllWebsitesResponse;
-import it.chalmers.gamma.response.GetWebsiteResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.WebsiteAddedResponse;
-import it.chalmers.gamma.response.WebsiteDeletedResponse;
-import it.chalmers.gamma.response.WebsiteNotFoundResponse;
-import it.chalmers.gamma.service.GroupWebsiteService;
-import it.chalmers.gamma.service.UserWebsiteService;
-import it.chalmers.gamma.service.WebsiteService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.db.entity.Website;
+import it.chalmers.delta.requests.CreateWebsiteRequest;
+import it.chalmers.delta.response.EditedWebsiteResponse;
+import it.chalmers.delta.response.GetAllWebsitesResponse;
+import it.chalmers.delta.response.GetWebsiteResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.response.WebsiteAddedResponse;
+import it.chalmers.delta.response.WebsiteDeletedResponse;
+import it.chalmers.delta.response.WebsiteNotFoundResponse;
+import it.chalmers.delta.service.GroupWebsiteService;
+import it.chalmers.delta.service.UserWebsiteService;
+import it.chalmers.delta.service.WebsiteService;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.util.List;
 import java.util.UUID;

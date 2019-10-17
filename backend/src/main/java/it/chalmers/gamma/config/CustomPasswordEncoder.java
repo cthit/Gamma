@@ -1,4 +1,4 @@
-package it.chalmers.gamma.config;
+package it.chalmers.delta.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

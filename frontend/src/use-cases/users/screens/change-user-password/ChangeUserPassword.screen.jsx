@@ -15,14 +15,14 @@ const ChangeUserPassword = ({
     toastOpen,
     getUser,
     userId,
-    gammaLoadingFinished
+    deltaLoadingFinished
 }) => {
     const admin = useIsAdmin();
 
     useEffect(() => {
         if (!admin) {
             getUser(userId).then(() => {
-                gammaLoadingFinished();
+                deltaLoadingFinished();
             });
         }
     });

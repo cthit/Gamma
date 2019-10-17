@@ -34,7 +34,7 @@ const Gdpr = ({
     users,
     setGDPRValue,
     getUsersWithGDPR,
-    gammaLoadingFinished
+    deltaLoadingFinished
 }) => {
     const dispatch = useDispatch();
     const [lastSelected, setLastSelected] = useState([]);
@@ -47,7 +47,7 @@ const Gdpr = ({
                 setLastSelected(
                     response.data.filter(user => user.gdpr).map(user => user.id)
                 );
-                gammaLoadingFinished();
+                deltaLoadingFinished();
             });
         }
     }, [admin]);

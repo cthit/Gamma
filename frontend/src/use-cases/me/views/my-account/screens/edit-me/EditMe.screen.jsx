@@ -9,15 +9,15 @@ import translations from "./EditMe.screen.translations.json";
 
 class EditMe extends React.Component {
     componentDidMount() {
-        const { websitesLoad, gammaLoadingFinished } = this.props;
+        const { websitesLoad, deltaLoadingFinished } = this.props;
 
         websitesLoad().then(() => {
-            gammaLoadingFinished();
+            deltaLoadingFinished();
         });
     }
 
     componentWillUnmount() {
-        this.props.gammaLoadingStart();
+        this.props.deltaLoadingStart();
     }
 
     render() {

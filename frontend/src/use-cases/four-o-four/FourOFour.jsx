@@ -13,7 +13,7 @@ class FourOFour extends React.Component {
     constructor(props) {
         super(props);
 
-        props.gammaLoadingFinished();
+        props.deltaLoadingFinished();
     }
 
     render() {

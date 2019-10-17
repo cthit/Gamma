@@ -1,32 +1,32 @@
-package it.chalmers.gamma.controller;
+package it.chalmers.delta.controller;
 
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.GROUP_ID;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
+import static it.chalmers.delta.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
+import static it.chalmers.delta.db.serializers.FKITGroupSerializer.Properties.EMAIL;
+import static it.chalmers.delta.db.serializers.FKITGroupSerializer.Properties.FUNC;
+import static it.chalmers.delta.db.serializers.FKITGroupSerializer.Properties.GROUP_ID;
+import static it.chalmers.delta.db.serializers.FKITGroupSerializer.Properties.NAME;
+import static it.chalmers.delta.db.serializers.FKITGroupSerializer.Properties.TYPE;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.CID;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.ID;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.LAST_NAME;
+import static it.chalmers.delta.db.serializers.ITUserSerializer.Properties.NICK;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.GroupWebsiteService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.db.serializers.FKITGroupSerializer;
+import it.chalmers.delta.db.serializers.ITUserSerializer;
+import it.chalmers.delta.response.GroupDoesNotExistResponse;
+import it.chalmers.delta.service.FKITGroupService;
+import it.chalmers.delta.service.FKITGroupToSuperGroupService;
+import it.chalmers.delta.service.GroupWebsiteService;
+import it.chalmers.delta.service.MembershipService;
+import it.chalmers.delta.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.Arrays;

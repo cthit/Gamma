@@ -1,6 +1,6 @@
-package it.chalmers.gamma.requests;
+package it.chalmers.delta.requests;
 
-import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.delta.domain.GroupType;
 
 import java.util.Objects;
 

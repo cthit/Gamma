@@ -8,7 +8,7 @@ import {
 
 import translations from "./InsufficientAccess.translations";
 import { useDispatch, useSelector } from "react-redux";
-import { gammaLoadingFinished } from "../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../../app/views/delta-loading/DeltaLoading.view.action-creator";
 
 const InsufficientAccess = () => {
     const userLoaded = useSelector(state => state.user.loaded);
@@ -17,7 +17,7 @@ const InsufficientAccess = () => {
 
     useEffect(() => {
         if (userLoaded) {
-            dispatch(gammaLoadingFinished());
+            dispatch(deltaLoadingFinished());
         }
     }, [userLoaded]);
 

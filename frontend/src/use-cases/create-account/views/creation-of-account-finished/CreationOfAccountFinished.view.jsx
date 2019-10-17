@@ -10,7 +10,7 @@ import translations from "./CreationOfAccountFinished.view.translations.json";
 
 class CreationOfAccountFinished extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.deltaLoadingFinished();
     }
 
     render() {

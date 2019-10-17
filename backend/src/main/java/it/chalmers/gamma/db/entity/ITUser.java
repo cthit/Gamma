@@ -1,9 +1,9 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.delta.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.delta.domain.Language;
 
 import java.time.Instant;
 import java.time.Year;

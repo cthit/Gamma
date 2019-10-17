@@ -1,6 +1,6 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.delta.db.entity;
 
-import it.chalmers.gamma.db.entity.pk.AuthorityPK;
+import it.chalmers.delta.db.entity.pk.AuthorityPK;
 
 import java.util.Objects;
 import java.util.UUID;

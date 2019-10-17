@@ -1,9 +1,9 @@
 import {
     GAMMA_INTEGRATION_FINISHED_FETCHING_ACCESS_TOKEN,
     GAMMA_INTEGRATION_STARTED_FETCHING_ACCESS_TOKEN
-} from "./GammaIntegration.view.actions";
+} from "./DeltaIntegration.view.actions";
 
-export function gammaIntegration(
+export function deltaIntegration(
     state = { fetchingAccessToken: false },
     action
 ) {

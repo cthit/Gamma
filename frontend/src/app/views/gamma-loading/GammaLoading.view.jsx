@@ -1,6 +1,6 @@
 import React from "react";
 import { DigitLoading } from "@cthit/react-digit-components";
 
-const GammaLoading = () => <DigitLoading loading />;
+const DeltaLoading = () => <DigitLoading loading />;
 
-export default GammaLoading;
+export default DeltaLoading;

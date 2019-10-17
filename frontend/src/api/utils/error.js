@@ -1,4 +1,4 @@
-class GammaError {
+class DeltaError {
     constructor(code, message) {
         this.code = code;
         this.message = message;
@@ -20,4 +20,4 @@ class GammaError {
     }
 }
 
-export default GammaError;
+export default DeltaError;

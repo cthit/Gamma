@@ -1,6 +1,6 @@
-package it.chalmers.gamma.views;
+package it.chalmers.delta.views;
 
-import it.chalmers.gamma.db.entity.Website;
+import it.chalmers.delta.db.entity.Website;
 
 import java.util.List;
 import java.util.UUID;

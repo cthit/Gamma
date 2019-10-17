@@ -43,7 +43,7 @@ ShallowWrapper {
                 <Styled(NavLink)
                         to="/create-account/input"
                 >
-                        <GammaButton
+                        <DeltaButton
                                 onClick={[Function]}
                                 primary={true}
                                 raised={true}
@@ -53,7 +53,7 @@ ShallowWrapper {
                 <Styled(NavLink)
                         to="/create-account"
                 >
-                        <GammaButton
+                        <DeltaButton
                                 onClick={[Function]}
                                 raised={true}
                                 text="Something"
@@ -84,7 +84,7 @@ ShallowWrapper {
             <Styled(NavLink)
                         to="/create-account/input"
             >
-                        <GammaButton
+                        <DeltaButton
                                     onClick={[Function]}
                                     primary={true}
                                     raised={true}
@@ -94,7 +94,7 @@ ShallowWrapper {
             <Styled(NavLink)
                         to="/create-account"
             >
-                        <GammaButton
+                        <DeltaButton
                                     onClick={[Function]}
                                     raised={true}
                                     text="Something"
@@ -150,7 +150,7 @@ ShallowWrapper {
               <Styled(NavLink)
                 to="/create-account/input"
 >
-                <GammaButton
+                <DeltaButton
                                 onClick={[Function]}
                                 primary={true}
                                 raised={true}
@@ -160,7 +160,7 @@ ShallowWrapper {
               <Styled(NavLink)
                 to="/create-account"
 >
-                <GammaButton
+                <DeltaButton
                                 onClick={[Function]}
                                 raised={true}
                                 text="Something"
@@ -177,7 +177,7 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "class",
               "props": Object {
-                "children": <GammaButton
+                "children": <DeltaButton
                   onClick={[Function]}
                   primary={true}
                   raised={true}
@@ -207,7 +207,7 @@ ShallowWrapper {
               "key": undefined,
               "nodeType": "class",
               "props": Object {
-                "children": <GammaButton
+                "children": <DeltaButton
                   onClick={[Function]}
                   raised={true}
                   text="Something"
@@ -263,7 +263,7 @@ ShallowWrapper {
                     <Styled(NavLink)
                               to="/create-account/input"
                     >
-                              <GammaButton
+                              <DeltaButton
                                         onClick={[Function]}
                                         primary={true}
                                         raised={true}
@@ -273,7 +273,7 @@ ShallowWrapper {
                     <Styled(NavLink)
                               to="/create-account"
                     >
-                              <GammaButton
+                              <DeltaButton
                                         onClick={[Function]}
                                         raised={true}
                                         text="Something"
@@ -304,7 +304,7 @@ ShallowWrapper {
               <Styled(NavLink)
                             to="/create-account/input"
               >
-                            <GammaButton
+                            <DeltaButton
                                           onClick={[Function]}
                                           primary={true}
                                           raised={true}
@@ -314,7 +314,7 @@ ShallowWrapper {
               <Styled(NavLink)
                             to="/create-account"
               >
-                            <GammaButton
+                            <DeltaButton
                                           onClick={[Function]}
                                           raised={true}
                                           text="Something"
@@ -370,7 +370,7 @@ ShallowWrapper {
                 <Styled(NavLink)
                   to="/create-account/input"
 >
-                  <GammaButton
+                  <DeltaButton
                                     onClick={[Function]}
                                     primary={true}
                                     raised={true}
@@ -380,7 +380,7 @@ ShallowWrapper {
                 <Styled(NavLink)
                   to="/create-account"
 >
-                  <GammaButton
+                  <DeltaButton
                                     onClick={[Function]}
                                     raised={true}
                                     text="Something"
@@ -397,7 +397,7 @@ ShallowWrapper {
                 "key": undefined,
                 "nodeType": "class",
                 "props": Object {
-                  "children": <GammaButton
+                  "children": <DeltaButton
                     onClick={[Function]}
                     primary={true}
                     raised={true}
@@ -427,7 +427,7 @@ ShallowWrapper {
                 "key": undefined,
                 "nodeType": "class",
                 "props": Object {
-                  "children": <GammaButton
+                  "children": <DeltaButton
                     onClick={[Function]}
                     raised={true}
                     text="Something"

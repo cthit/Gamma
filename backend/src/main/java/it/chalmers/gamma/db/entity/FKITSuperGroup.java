@@ -1,6 +1,6 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.delta.db.entity;
 
-import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.delta.domain.GroupType;
 
 import java.util.Objects;
 import java.util.UUID;

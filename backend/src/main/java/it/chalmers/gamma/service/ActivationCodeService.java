@@ -1,8 +1,8 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.db.repository.ActivationCodeRepository;
+import it.chalmers.delta.db.entity.ActivationCode;
+import it.chalmers.delta.db.entity.Whitelist;
+import it.chalmers.delta.db.repository.ActivationCodeRepository;
 
 import java.time.Instant;
 import java.util.List;

@@ -2,12 +2,12 @@ import { connect } from "react-redux";
 
 import { DigitRedirectActions } from "@cthit/react-digit-components";
 
-import GammaIntegration from "./GammaIntegration.view";
+import DeltaIntegration from "./DeltaIntegration.view";
 
 import {
     startedFetchingAccessToken,
     finishedFetchingAccessToken
-} from "./GammaIntegration.view.action-creator";
+} from "./DeltaIntegration.view.action-creator";
 import { userUpdateMe } from "../../elements/user-information/UserInformation.element.action-creator";
 
 const mapStateToProps = () => ({});
@@ -22,4 +22,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(GammaIntegration);
+)(DeltaIntegration);

@@ -1,6 +1,6 @@
-package it.chalmers.gamma.requests;
+package it.chalmers.delta.requests;
 
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.delta.domain.Language;
 import java.util.List;
 import java.util.Objects;
 

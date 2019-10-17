@@ -1,6 +1,6 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.delta.db.entity;
 
-import it.chalmers.gamma.db.entity.pk.MembershipPK;
+import it.chalmers.delta.db.entity.pk.MembershipPK;
 
 import java.util.List;
 import java.util.Objects;

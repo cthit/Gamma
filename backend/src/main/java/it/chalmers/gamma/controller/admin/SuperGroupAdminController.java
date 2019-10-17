@@ -1,15 +1,15 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.response.FKITSuperGroupCreatedResponse;
-import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
-import it.chalmers.gamma.response.GroupDeletedResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupEditedResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.requests.CreateSuperGroupRequest;
+import it.chalmers.delta.response.FKITSuperGroupCreatedResponse;
+import it.chalmers.delta.response.GroupAlreadyExistsResponse;
+import it.chalmers.delta.response.GroupDeletedResponse;
+import it.chalmers.delta.response.GroupDoesNotExistResponse;
+import it.chalmers.delta.response.GroupEditedResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.service.FKITSuperGroupService;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.util.UUID;
 

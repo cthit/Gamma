@@ -1,9 +1,9 @@
-package it.chalmers.gamma.db.entity.pk;
+package it.chalmers.delta.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Post;
 
 import java.io.Serializable;
 import java.util.Objects;

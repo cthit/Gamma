@@ -13,7 +13,7 @@ import {
     NICK
 } from "../../api/users/props.users.api";
 import { useDispatch, useSelector } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
@@ -33,7 +33,7 @@ const Users = () => {
     useEffect(() => {
         getWebsites().then(response => {
             setWebsites(response.data);
-            dispatch(gammaLoadingFinished());
+            dispatch(deltaLoadingFinished());
         });
     }, []);
 

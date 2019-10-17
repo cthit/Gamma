@@ -12,7 +12,7 @@ import { addUsersToWhitelist } from "../../api/whitelist/post.whitelist.api";
 import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
 import translations from "./Whitelist.translations";
 import * as yup from "yup";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { useDispatch } from "react-redux";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
@@ -24,7 +24,7 @@ const Whitelist = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     const admin = useIsAdmin();

@@ -1,1 +1,1 @@
-export { default } from "./GammaLoading.view";
+export { default } from "./DeltaLoading.view";

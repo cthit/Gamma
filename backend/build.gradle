@@ -29,14 +29,14 @@ apply plugin: 'io.spring.dependency-management'
 group = 'it.chalmers'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
-mainClassName = 'it.chalmers.gamma.GammaApplication'
+mainClassName = 'it.chalmers.delta.DeltaApplication'
 
 repositories {
 	mavenCentral()
 }
 jar {
     manifest {
-        attributes "Main-Class": "it.chalmers.GammaApplication"
+        attributes "Main-Class": "it.chalmers.DeltaApplication"
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

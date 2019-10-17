@@ -1,27 +1,27 @@
-package it.chalmers.gamma.config;
+package it.chalmers.delta.config;
 
-import it.chalmers.gamma.db.entity.ApiKey;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.ITClient;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.service.ApiKeyService;
-import it.chalmers.gamma.service.AuthorityLevelService;
-import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.ITClientService;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PostService;
+import it.chalmers.delta.db.entity.ApiKey;
+import it.chalmers.delta.db.entity.AuthorityLevel;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.ITClient;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Post;
+import it.chalmers.delta.db.entity.Text;
+import it.chalmers.delta.domain.GroupType;
+import it.chalmers.delta.domain.Language;
+import it.chalmers.delta.requests.CreateGroupRequest;
+import it.chalmers.delta.requests.CreateSuperGroupRequest;
+import it.chalmers.delta.service.ApiKeyService;
+import it.chalmers.delta.service.AuthorityLevelService;
+import it.chalmers.delta.service.AuthorityService;
+import it.chalmers.delta.service.FKITGroupService;
+import it.chalmers.delta.service.FKITGroupToSuperGroupService;
+import it.chalmers.delta.service.FKITSuperGroupService;
+import it.chalmers.delta.service.ITClientService;
+import it.chalmers.delta.service.ITUserService;
+import it.chalmers.delta.service.MembershipService;
+import it.chalmers.delta.service.PostService;
 
 import java.time.Instant;
 import java.time.Year;
@@ -115,14 +115,14 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private void ensureFrontendClientDetails() {
         if (!this.itClientService.clientExistsByClientId(this.clientId)) {
             Text description = new Text();
-            description.setEn("The client details for the frontend of Gamma");
-            description.setSv("Klient detaljerna för Gammas frontend");
+            description.setEn("The client details for the frontend of Delta");
+            description.setSv("Klient detaljerna för Deltas frontend");
 
             ITClient itClient = new ITClient();
             itClient.setClientId(this.clientId);
             itClient.setClientSecret("{noop}secret");
             itClient.setAutoApprove(true);
-            itClient.setName("Gamma Frontend");
+            itClient.setName("Delta Frontend");
             itClient.setCreatedAt(Instant.now());
             itClient.setLastModifiedAt(Instant.now());
             itClient.setRefreshTokenValidity(0);

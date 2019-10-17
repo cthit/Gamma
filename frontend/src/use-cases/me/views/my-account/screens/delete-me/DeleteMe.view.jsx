@@ -17,8 +17,8 @@ import statusMessage from "../../../../../../common/utils/formatters/statusMessa
 
 class DeleteMe extends React.Component {
     componentDidMount() {
-        const { gammaLoadingFinished } = this.props;
-        gammaLoadingFinished();
+        const { deltaLoadingFinished } = this.props;
+        deltaLoadingFinished();
     }
 
     render() {

@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 
 import Gdpr from "./Gdpr";
 
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import {
     createGetGDPRMinifiedRequest,
     createSetGDPRRequest
@@ -13,7 +13,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished()),
     getUsersWithGDPR: () => dispatch(createGetGDPRMinifiedRequest()),
     setGDPRValue: (userId, data) => dispatch(createSetGDPRRequest(userId, data))
 });

@@ -1,8 +1,8 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.repository.FKITGroupRepository;
-import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.repository.FKITGroupRepository;
+import it.chalmers.delta.requests.CreateGroupRequest;
 
 import java.util.Calendar;
 import java.util.List;

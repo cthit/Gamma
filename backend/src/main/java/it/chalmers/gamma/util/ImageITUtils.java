@@ -1,4 +1,4 @@
-package it.chalmers.gamma.util;
+package it.chalmers.delta.util;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

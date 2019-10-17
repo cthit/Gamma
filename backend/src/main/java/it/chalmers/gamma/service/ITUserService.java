@@ -1,10 +1,10 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.repository.ITUserRepository;
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.delta.db.entity.AuthorityLevel;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.db.repository.ITUserRepository;
+import it.chalmers.delta.domain.Language;
 
 import java.time.Instant;
 import java.time.Year;

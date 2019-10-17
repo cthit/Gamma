@@ -1,6 +1,6 @@
-package it.chalmers.gamma;
+package it.chalmers.delta;
 
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.delta.service.WhitelistService;
 
 import org.junit.Assert;
 import org.junit.Test;

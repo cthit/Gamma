@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 import ChangeUserPassword from "./ChangeUserPassword.screen";
 import {
-    gammaLoadingFinished,
-    gammaLoadingStart
-} from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+    deltaLoadingFinished,
+    deltaLoadingStart
+} from "../../../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import {
     createEditUserPasswordAction,
     createGetUserAction
@@ -26,8 +26,8 @@ const mapDispatchToProps = dispatch => ({
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to)),
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
-    gammaLoadingStart: () => dispatch(gammaLoadingStart())
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished()),
+    deltaLoadingStart: () => dispatch(deltaLoadingStart())
 });
 
 export default connect(

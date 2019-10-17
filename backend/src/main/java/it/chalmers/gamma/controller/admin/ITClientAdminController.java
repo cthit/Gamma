@@ -1,13 +1,13 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.ITClient;
-import it.chalmers.gamma.requests.AddITClientRequest;
-import it.chalmers.gamma.response.EditedClientResponse;
-import it.chalmers.gamma.response.GetAllClientsResponse;
-import it.chalmers.gamma.response.GetITClient;
-import it.chalmers.gamma.response.ITClientRemovedResponse;
-import it.chalmers.gamma.response.NoSuchClientExistsResponse;
-import it.chalmers.gamma.service.ITClientService;
+import it.chalmers.delta.db.entity.ITClient;
+import it.chalmers.delta.requests.AddITClientRequest;
+import it.chalmers.delta.response.EditedClientResponse;
+import it.chalmers.delta.response.GetAllClientsResponse;
+import it.chalmers.delta.response.GetITClient;
+import it.chalmers.delta.response.ITClientRemovedResponse;
+import it.chalmers.delta.response.NoSuchClientExistsResponse;
+import it.chalmers.delta.service.ITClientService;
 
 import java.util.List;
 import java.util.UUID;

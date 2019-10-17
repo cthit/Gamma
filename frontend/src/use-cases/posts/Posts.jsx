@@ -10,7 +10,7 @@ import {
 import translations from "./Posts.translations";
 import { getPost, getPosts, getPostUsage } from "../../api/posts/get.posts.api";
 import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { addPost } from "../../api/posts/post.posts.api";
 import { deletePost } from "../../api/posts/delete.posts.api";
 import {
@@ -62,7 +62,7 @@ const Posts = () => {
     const [text] = useDigitTranslations(translations);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     const admin = useIsAdmin();

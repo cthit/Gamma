@@ -1,12 +1,12 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.Authority;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.pk.AuthorityPK;
-import it.chalmers.gamma.db.repository.AuthorityRepository;
+import it.chalmers.delta.db.entity.Authority;
+import it.chalmers.delta.db.entity.AuthorityLevel;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.db.entity.Post;
+import it.chalmers.delta.db.entity.pk.AuthorityPK;
+import it.chalmers.delta.db.repository.AuthorityRepository;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,9 +1,9 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.delta.db.repository;
 
-import it.chalmers.gamma.db.entity.Authority;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.delta.db.entity.Authority;
+import it.chalmers.delta.db.entity.AuthorityLevel;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.Post;
 
 import java.util.List;
 import java.util.UUID;

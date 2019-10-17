@@ -14,7 +14,7 @@ import translations from "./InputCid.view.translations";
 
 class InputCid extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.deltaLoadingFinished();
     }
 
     render() {

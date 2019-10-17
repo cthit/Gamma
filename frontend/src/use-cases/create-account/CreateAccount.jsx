@@ -15,7 +15,7 @@ import InputDataAndCode from "./views/input-data-and-code";
 
 class CreateAccount extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.deltaLoadingFinished();
     }
 
     render() {

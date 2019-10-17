@@ -1,10 +1,10 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
-import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITGroupToSuperGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.pk.FKITGroupToSuperGroupPK;
+import it.chalmers.delta.db.repository.FKITGroupToSuperGroupRepository;
 
 import java.util.ArrayList;
 import java.util.List;

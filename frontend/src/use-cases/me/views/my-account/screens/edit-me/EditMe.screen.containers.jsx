@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 import { createGetWebsitesAction } from "../../../../../../api/websites/action-creator.websites.api";
 import {
-    gammaLoadingFinished,
-    gammaLoadingStart
-} from "../../../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+    deltaLoadingFinished,
+    deltaLoadingStart
+} from "../../../../../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import {
     DigitToastActions,
     DigitRedirectActions
@@ -19,8 +19,8 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
     editMe: userData => dispatch(createEditMeAction(userData)),
     websitesLoad: () => dispatch(createGetWebsitesAction()),
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
-    gammaLoadingStart: () => dispatch(gammaLoadingStart()),
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished()),
+    deltaLoadingStart: () => dispatch(deltaLoadingStart()),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to))

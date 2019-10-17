@@ -5,7 +5,7 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { getWebsite, getWebsites } from "../../api/websites/get.websites.api";
 import { editWebsite } from "../../api/websites/put.websites.api";
 import { deleteWebsite } from "../../api/websites/delete.websites.api";
@@ -21,7 +21,7 @@ const Websites = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     const admin = useIsAdmin();

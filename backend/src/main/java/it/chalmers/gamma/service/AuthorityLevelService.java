@@ -1,7 +1,7 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
+import it.chalmers.delta.db.entity.AuthorityLevel;
+import it.chalmers.delta.db.repository.AuthorityLevelRepository;
 
 import java.util.List;
 import java.util.UUID;

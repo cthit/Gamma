@@ -1,13 +1,13 @@
-package it.chalmers.gamma;
+package it.chalmers.delta;
 
-import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.db.repository.ActivationCodeRepository;
-import it.chalmers.gamma.db.repository.WhitelistRepository;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.delta.db.entity.ActivationCode;
+import it.chalmers.delta.db.entity.Whitelist;
+import it.chalmers.delta.db.repository.ActivationCodeRepository;
+import it.chalmers.delta.db.repository.WhitelistRepository;
+import it.chalmers.delta.service.ActivationCodeService;
+import it.chalmers.delta.service.WhitelistService;
 
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.delta.util.TokenUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

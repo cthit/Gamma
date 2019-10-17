@@ -1,12 +1,12 @@
-package it.chalmers.gamma.controller;
+package it.chalmers.delta.controller;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.response.GetMembershipsResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.response.GetMembershipsResponse;
+import it.chalmers.delta.response.GroupDoesNotExistResponse;
+import it.chalmers.delta.service.FKITGroupService;
+import it.chalmers.delta.service.MembershipService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

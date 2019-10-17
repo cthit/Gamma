@@ -1,6 +1,6 @@
-package it.chalmers.gamma.response;
+package it.chalmers.delta.response;
 
-import it.chalmers.gamma.db.entity.ApiKey;
+import it.chalmers.delta.db.entity.ApiKey;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package it.chalmers.gamma.util;
+package it.chalmers.delta.util;
 
-import it.chalmers.gamma.db.serializers.SerializerValue;
+import it.chalmers.delta.db.serializers.SerializerValue;
 
 import java.util.List;
 

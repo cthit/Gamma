@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain;
+package it.chalmers.delta.domain;
 
 public enum GroupType {
     SOCIETY,

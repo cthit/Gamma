@@ -1,9 +1,9 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.delta.db.repository;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.db.entity.Post;
 
 import java.util.List;
 import java.util.UUID;

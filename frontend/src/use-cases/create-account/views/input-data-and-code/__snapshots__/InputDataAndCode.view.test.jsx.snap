@@ -20,7 +20,7 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
-      "children": <GammaForm
+      "children": <DeltaForm
         initialValues={
                 Object {
                         "acceptanceYear": "2018",
@@ -708,7 +708,7 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "children": <GammaForm
+        "children": <DeltaForm
           initialValues={
                     Object {
                               "acceptanceYear": "2018",

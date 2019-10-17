@@ -1,4 +1,4 @@
-package it.chalmers.gamma.db.serializers;
+package it.chalmers.delta.db.serializers;
 
 public class SerializerValue {
 

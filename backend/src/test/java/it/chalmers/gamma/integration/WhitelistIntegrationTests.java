@@ -1,11 +1,11 @@
-package it.chalmers.gamma.integration;
+package it.chalmers.delta.integration;
 
-import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.TestUtils;
-import it.chalmers.gamma.db.repository.ActivationCodeRepository;
-import it.chalmers.gamma.db.repository.WhitelistRepository;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.delta.DeltaApplication;
+import it.chalmers.delta.TestUtils;
+import it.chalmers.delta.db.repository.ActivationCodeRepository;
+import it.chalmers.delta.db.repository.WhitelistRepository;
+import it.chalmers.delta.service.ActivationCodeService;
+import it.chalmers.delta.service.ITUserService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = GammaApplication.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = DeltaApplication.class)
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
 @TestPropertySource(locations = "classpath:application-test.properties")

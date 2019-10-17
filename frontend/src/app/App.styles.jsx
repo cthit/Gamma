@@ -26,7 +26,7 @@ export const StyledAppBar = styled(AppBar)`
     }
 `;
 
-export const GammaTitle = styled(Title)`
+export const DeltaTitle = styled(Title)`
     align-self: center;
 `;
 

@@ -4,9 +4,9 @@ import {
 } from "@cthit/react-digit-components";
 import { connect } from "react-redux";
 import {
-    gammaLoadingStart,
-    gammaLoadingFinished
-} from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+    deltaLoadingStart,
+    deltaLoadingFinished
+} from "../../../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { createAccountValidateCodeAndData } from "../../CreateAccount.action-creator";
 import InputDataAndCode from "./InputDataAndCode.view";
 
@@ -17,8 +17,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
         dispatch(DigitToastActions.digitToastOpen(toastData)),
     redirectTo: path => dispatch(DigitRedirectActions.digitRedirectTo(path)),
     sendDataAndCode: data => dispatch(createAccountValidateCodeAndData(data)),
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
-    gammaLoadingStart: () => dispatch(gammaLoadingStart())
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished()),
+    deltaLoadingStart: () => dispatch(deltaLoadingStart())
 });
 
 export default connect(

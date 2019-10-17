@@ -1,4 +1,4 @@
-package it.chalmers.gamma.db.entity;
+package it.chalmers.delta.db.entity;
 
 public interface WebsiteInterface {
     WebsiteURL getWebsite();

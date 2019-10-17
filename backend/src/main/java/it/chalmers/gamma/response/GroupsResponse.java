@@ -1,6 +1,6 @@
-package it.chalmers.gamma.response;
+package it.chalmers.delta.response;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITGroup;
 
 import java.util.List;
 

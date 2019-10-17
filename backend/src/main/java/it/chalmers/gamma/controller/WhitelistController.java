@@ -1,16 +1,16 @@
-package it.chalmers.gamma.controller;
+package it.chalmers.delta.controller;
 
-import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
-import it.chalmers.gamma.response.ActivationCodeAddedResonse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.MailSenderService;
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.delta.db.entity.ActivationCode;
+import it.chalmers.delta.db.entity.Whitelist;
+import it.chalmers.delta.requests.WhitelistCodeRequest;
+import it.chalmers.delta.response.ActivationCodeAddedResonse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.service.ActivationCodeService;
+import it.chalmers.delta.service.MailSenderService;
+import it.chalmers.delta.service.WhitelistService;
 
-import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.delta.util.InputValidationUtils;
+import it.chalmers.delta.util.TokenUtils;
 
 import javax.validation.Valid;
 
@@ -60,7 +60,7 @@ public final class WhitelistController {
     private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.getCode();
         String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
-        String message = "Your code to Gamma is: " + code;
+        String message = "Your code to Delta is: " + code;
         this.mailSenderService.trySendingMail(to, "Chalmers activation code", message);
     }
 }

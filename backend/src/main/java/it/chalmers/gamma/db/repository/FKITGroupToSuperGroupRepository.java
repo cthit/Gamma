@@ -1,8 +1,8 @@
-package it.chalmers.gamma.db.repository;
+package it.chalmers.delta.db.repository;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITGroupToSuperGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
 
 import java.util.List;
 import java.util.UUID;

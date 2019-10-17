@@ -17,7 +17,7 @@ const NoStyleLink = styled(Link)`
 
 class MyGroups extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.deltaLoadingFinished();
     }
 
     render() {

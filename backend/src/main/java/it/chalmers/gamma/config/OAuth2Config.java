@@ -1,7 +1,7 @@
-package it.chalmers.gamma.config;
+package it.chalmers.delta.config;
 
-import it.chalmers.gamma.service.ITClientService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.delta.service.ITClientService;
+import it.chalmers.delta.service.ITUserService;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -1,11 +1,11 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.pk.MembershipPK;
-import it.chalmers.gamma.db.repository.MembershipRepository;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.db.entity.Post;
+import it.chalmers.delta.db.entity.pk.MembershipPK;
+import it.chalmers.delta.db.repository.MembershipRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.PostRepository;
+import it.chalmers.delta.db.entity.Post;
+import it.chalmers.delta.db.entity.Text;
+import it.chalmers.delta.db.repository.PostRepository;
 
 import java.util.List;
 import java.util.Optional;

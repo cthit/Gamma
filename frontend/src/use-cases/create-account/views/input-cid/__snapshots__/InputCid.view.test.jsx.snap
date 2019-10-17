@@ -21,7 +21,7 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": <styled.div>
-        <GammaForm
+        <DeltaForm
                 initialValues={
                         Object {
                                 "cid": "",
@@ -100,7 +100,7 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
-        "children": <GammaForm
+        "children": <DeltaForm
           initialValues={
                     Object {
                               "cid": "",
@@ -259,7 +259,7 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": <styled.div>
-          <GammaForm
+          <DeltaForm
                     initialValues={
                               Object {
                                         "cid": "",
@@ -338,7 +338,7 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "class",
         "props": Object {
-          "children": <GammaForm
+          "children": <DeltaForm
             initialValues={
                         Object {
                                     "cid": "",

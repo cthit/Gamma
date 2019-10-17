@@ -60,7 +60,7 @@ application:
   gotify:
     key: ${GOTIFY_KEY:key}
     url: ${GOTIFY_URL:https://gotify.chalmers.it}
-  allowed-origin: ${CORS_ALLOWED_ORIGIN:https://gamma.chalmers.it}
+  allowed-origin: ${CORS_ALLOWED_ORIGIN:https://delta.chalmers.it}
   auth:
     accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
     autoApprove: ${AUTH_AUTO_APPROVE:true}

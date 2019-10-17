@@ -1,9 +1,9 @@
-package it.chalmers.gamma.db.serializers;
+package it.chalmers.delta.db.serializers;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.util.SerializerUtils;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.util.SerializerUtils;
+import it.chalmers.delta.views.WebsiteView;
 
 import java.util.ArrayList;
 import java.util.Arrays;

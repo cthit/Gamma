@@ -1,2 +1,2 @@
-import GammaIntegration from "./GammaIntegration.view.container";
-export default GammaIntegration;
+import DeltaIntegration from "./DeltaIntegration.view.container";
+export default DeltaIntegration;

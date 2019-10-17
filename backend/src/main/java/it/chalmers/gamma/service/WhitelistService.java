@@ -1,7 +1,7 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.db.repository.WhitelistRepository;
+import it.chalmers.delta.db.entity.Whitelist;
+import it.chalmers.delta.db.repository.WhitelistRepository;
 
 import java.util.List;
 import java.util.Optional;

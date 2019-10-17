@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 
-<ruleset name="Gamma rules"
+<ruleset name="Delta rules"
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.net/ruleset_2_0_0.xsd
 http://pmd.sourceforge.net/ruleset/2.0.0 ">
 
     <description>
-        PMD rule set for Gamma.
+        PMD rule set for Delta.
     </description>
 
 

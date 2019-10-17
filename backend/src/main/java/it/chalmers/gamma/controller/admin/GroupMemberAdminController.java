@@ -1,26 +1,26 @@
-package it.chalmers.gamma.controller.admin;
+package it.chalmers.delta.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.Membership;
+import it.chalmers.delta.db.entity.Post;
 
-import it.chalmers.gamma.requests.AddUserGroupRequest;
-import it.chalmers.gamma.requests.EditMembershipRequest;
+import it.chalmers.delta.requests.AddUserGroupRequest;
+import it.chalmers.delta.requests.EditMembershipRequest;
 
-import it.chalmers.gamma.response.EditedMembershipResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
-import it.chalmers.gamma.response.UserAddedToGroupResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
-import it.chalmers.gamma.response.UserRemovedFromGroupResponse;
+import it.chalmers.delta.response.EditedMembershipResponse;
+import it.chalmers.delta.response.GroupDoesNotExistResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.response.PostDoesNotExistResponse;
+import it.chalmers.delta.response.UserAddedToGroupResponse;
+import it.chalmers.delta.response.UserNotFoundResponse;
+import it.chalmers.delta.response.UserRemovedFromGroupResponse;
 
-import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PostService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.delta.service.FKITGroupService;
+import it.chalmers.delta.service.ITUserService;
+import it.chalmers.delta.service.MembershipService;
+import it.chalmers.delta.service.PostService;
+import it.chalmers.delta.util.InputValidationUtils;
 
 import java.util.UUID;
 

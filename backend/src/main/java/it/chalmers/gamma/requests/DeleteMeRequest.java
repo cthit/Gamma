@@ -1,4 +1,4 @@
-package it.chalmers.gamma.requests;
+package it.chalmers.delta.requests;
 
 import java.util.Objects;
 import javax.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package it.chalmers.gamma.filter;
+package it.chalmers.delta.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -6,8 +6,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
-import it.chalmers.gamma.response.InvalidJWTTokenResponse;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.delta.response.InvalidJWTTokenResponse;
+import it.chalmers.delta.service.ITUserService;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

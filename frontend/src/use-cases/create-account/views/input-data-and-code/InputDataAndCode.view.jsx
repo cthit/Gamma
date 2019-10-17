@@ -20,7 +20,7 @@ import translations from "./InputDataAndCode.view.translations.json";
 
 class InputDataAndCode extends React.Component {
     componentDidMount() {
-        this.props.gammaLoadingFinished();
+        this.props.deltaLoadingFinished();
     }
 
     render() {
@@ -28,7 +28,7 @@ class InputDataAndCode extends React.Component {
             sendDataAndCode,
             toastOpen,
             redirectTo,
-            gammaLoadingStart
+            deltaLoadingStart
         } = this.props;
 
         return (
@@ -38,7 +38,7 @@ class InputDataAndCode extends React.Component {
                     <DigitLayout.Center>
                         <DigitForm
                             onSubmit={(values, actions) => {
-                                gammaLoadingStart();
+                                deltaLoadingStart();
 
                                 const cid = values.cid;
                                 const user = {
@@ -81,7 +81,7 @@ class InputDataAndCode extends React.Component {
                                             text: errorMessage,
                                             duration: 5000
                                         });
-                                        this.props.gammaLoadingFinished();
+                                        this.props.deltaLoadingFinished();
                                     });
                             }}
                             initialValues={{

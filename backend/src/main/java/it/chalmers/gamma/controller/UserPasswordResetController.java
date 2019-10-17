@@ -1,18 +1,18 @@
-package it.chalmers.gamma.controller;
+package it.chalmers.delta.controller;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
-import it.chalmers.gamma.requests.ResetPasswordRequest;
-import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PasswordChangedResponse;
-import it.chalmers.gamma.response.PasswordResetResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
-import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MailSenderService;
-import it.chalmers.gamma.service.PasswordResetService;
-import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.requests.ResetPasswordFinishRequest;
+import it.chalmers.delta.requests.ResetPasswordRequest;
+import it.chalmers.delta.response.CodeOrCidIsWrongResponse;
+import it.chalmers.delta.response.InputValidationFailedResponse;
+import it.chalmers.delta.response.PasswordChangedResponse;
+import it.chalmers.delta.response.PasswordResetResponse;
+import it.chalmers.delta.response.UserNotFoundResponse;
+import it.chalmers.delta.service.ITUserService;
+import it.chalmers.delta.service.MailSenderService;
+import it.chalmers.delta.service.PasswordResetService;
+import it.chalmers.delta.util.InputValidationUtils;
+import it.chalmers.delta.util.TokenUtils;
 
 import javax.validation.Valid;
 

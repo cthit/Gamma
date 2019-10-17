@@ -1,7 +1,7 @@
-package it.chalmers.gamma.views;
+package it.chalmers.delta.views;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.delta.db.entity.FKITGroup;
+import it.chalmers.delta.db.entity.FKITSuperGroup;
 
 import java.util.ArrayList;
 import java.util.List;

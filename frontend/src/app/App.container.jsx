@@ -7,19 +7,19 @@ import { DigitTranslationsActions } from "@cthit/react-digit-components";
 
 import { userUpdateMe } from "./elements/user-information/UserInformation.element.action-creator";
 
-import { gammaLoadingStart } from "./views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingStart } from "./views/delta-loading/DeltaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
     loading: state.loading,
     userLoaded: state.user.loaded,
     loggedIn: state.user.loggedIn,
-    fetchingAccessToken: state.gammaIntegration.fetchingAccessToken,
+    fetchingAccessToken: state.deltaIntegration.fetchingAccessToken,
     errorLoadingUser: state.user.errorLoadingUser
 });
 
 const mapDispatchToProps = dispatch => ({
     userUpdateMe: () => dispatch(userUpdateMe()),
-    gammaLoadingStart: () => dispatch(gammaLoadingStart()),
+    deltaLoadingStart: () => dispatch(deltaLoadingStart()),
     setCommonTranslations: commonTranslations =>
         dispatch(
             DigitTranslationsActions.setCommonTranslations(commonTranslations)

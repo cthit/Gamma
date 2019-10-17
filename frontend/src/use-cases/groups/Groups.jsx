@@ -10,7 +10,7 @@ import {
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
 import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
 import {
     EMAIL,
@@ -142,7 +142,7 @@ const Groups = ({ history }) => {
     const [superGroups, setSuperGroups] = useState([]);
 
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     useEffect(() => {

@@ -14,7 +14,7 @@ import SetPostNames from "./views/set-post-names";
 import ReviewChanges from "./views/review-changes";
 import SelectMembers from "./views/select-members";
 import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { getPosts } from "../../api/posts/get.posts.api";
 import { getUsersMinified } from "../../api/users/get.users.api";
 import { getGroup } from "../../api/groups/get.groups.api";
@@ -29,7 +29,7 @@ const Members = ({ history }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     const admin = useIsAdmin();

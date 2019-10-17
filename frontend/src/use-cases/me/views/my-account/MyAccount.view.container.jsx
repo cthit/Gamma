@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import MyAccount from "./MyAccount.view";
-import { gammaLoadingFinished } from "../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { DigitRedirectActions } from "@cthit/react-digit-components";
 
 const mapStateToProps = (state, ownProps) => ({
@@ -8,7 +8,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished()),
     redirectTo: to => dispatch(DigitRedirectActions.digitRedirectTo(to))
 });
 

@@ -37,7 +37,7 @@ ShallowWrapper {
         <styled.div
                 reverseDirection={true}
         >
-                <GammaButton
+                <DeltaButton
                         onClick={[Function]}
                         primary={true}
                         raised={true}
@@ -66,7 +66,7 @@ ShallowWrapper {
           <styled.div
             reverseDirection={true}
 >
-            <GammaButton
+            <DeltaButton
                         onClick={[Function]}
                         primary={true}
                         raised={true}
@@ -130,7 +130,7 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "class",
           "props": Object {
-            "children": <GammaButton
+            "children": <DeltaButton
               onClick={[Function]}
               primary={true}
               raised={true}
@@ -180,7 +180,7 @@ ShallowWrapper {
           <styled.div
                     reverseDirection={true}
           >
-                    <GammaButton
+                    <DeltaButton
                               onClick={[Function]}
                               primary={true}
                               raised={true}
@@ -209,7 +209,7 @@ ShallowWrapper {
             <styled.div
               reverseDirection={true}
 >
-              <GammaButton
+              <DeltaButton
                             onClick={[Function]}
                             primary={true}
                             raised={true}
@@ -273,7 +273,7 @@ ShallowWrapper {
             "key": undefined,
             "nodeType": "class",
             "props": Object {
-              "children": <GammaButton
+              "children": <DeltaButton
                 onClick={[Function]}
                 primary={true}
                 raised={true}

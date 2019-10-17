@@ -6,7 +6,7 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../app/views/delta-loading/DeltaLoading.view.action-creator";
 import { getApiKey, getApiKeys } from "../../api/api-keys/get.api-keys.api";
 import { addApiKey } from "../../api/api-keys/post.api-keys.api";
 import * as yup from "yup";
@@ -19,7 +19,7 @@ const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(gammaLoadingFinished());
+        dispatch(deltaLoadingFinished());
     }, []);
 
     const admin = useIsAdmin();

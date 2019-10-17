@@ -6,14 +6,14 @@ import {
 } from "@cthit/react-digit-components";
 import DeleteMe from "./DeleteMe.view";
 import { createDeleteMeAction } from "../../../../../../api/me/action-creator.me.api";
-import { gammaLoadingFinished } from "../../../../../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { deltaLoadingFinished } from "../../../../../../app/views/delta-loading/DeltaLoading.view.action-creator";
 
 const mapStateToProps = (state, ownProps) => ({
     me: state.user
 });
 
 const mapDispatchToProps = dispatch => ({
-    gammaLoadingFinished: () => dispatch(gammaLoadingFinished()),
+    deltaLoadingFinished: () => dispatch(deltaLoadingFinished()),
     deleteMe: passwordData => dispatch(createDeleteMeAction(passwordData)),
     toastOpen: toastData =>
         dispatch(DigitToastActions.digitToastOpen(toastData)),

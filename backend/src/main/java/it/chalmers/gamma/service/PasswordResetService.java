@@ -1,8 +1,8 @@
-package it.chalmers.gamma.service;
+package it.chalmers.delta.service;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.PasswordResetToken;
-import it.chalmers.gamma.db.repository.PasswordResetTokenRepository;
+import it.chalmers.delta.db.entity.ITUser;
+import it.chalmers.delta.db.entity.PasswordResetToken;
+import it.chalmers.delta.db.repository.PasswordResetTokenRepository;
 
 import org.springframework.stereotype.Service;
 

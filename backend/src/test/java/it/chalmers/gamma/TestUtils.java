@@ -1,6 +1,6 @@
-package it.chalmers.gamma;
+package it.chalmers.delta;
 
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.delta.service.ITUserService;
 
 import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
