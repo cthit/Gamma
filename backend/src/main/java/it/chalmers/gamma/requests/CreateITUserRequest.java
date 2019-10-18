@@ -1,6 +1,7 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.domain.Language;
 
 import java.util.Objects;
 
@@ -36,6 +37,8 @@ public class CreateITUserRequest {
 
     @NotNull(message = "WHITELIST_MUST_BE_PROVIDED")
     private Whitelist whitelist;
+
+    private Language language = Language.sv;
 
     public Whitelist getWhitelist() {
         return this.whitelist;
@@ -101,6 +104,14 @@ public class CreateITUserRequest {
         this.acceptanceYear = acceptanceYear;
     }
 
+    public Language getLanguage() {
+        return this.language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
     @Override
     public String toString() {
         return "CreateITUserRequest{"
@@ -138,7 +149,14 @@ public class CreateITUserRequest {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.code, this.password, this.nick, this.firstName,
-            this.lastName, this.userAgreement, this.acceptanceYear, this.whitelist);
+        return Objects.hash(this.code,
+                this.password,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.userAgreement,
+                this.acceptanceYear,
+                this.whitelist,
+                this.language);
     }
 }

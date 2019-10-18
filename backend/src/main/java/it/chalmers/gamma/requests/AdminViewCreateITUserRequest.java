@@ -1,5 +1,7 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.domain.Language;
+
 import java.util.Objects;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
@@ -34,6 +36,8 @@ public class AdminViewCreateITUserRequest {
 
     @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
+
+    private Language language = Language.sv;
 
     public String getCid() {
         return this.cid;
