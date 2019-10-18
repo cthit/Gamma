@@ -53,12 +53,13 @@ public class GoldappsController {
         GoldappsGroupSerializer goldappsGroupSerializer = new GoldappsGroupSerializer();
 
         // Go through all groups and serialize them and their users.
+        groups.stream().filter(FKITGroup::isActive).forEach(g -> {
+                    usersJSON.addAll(
+                            this.membershipService.getUsersInGroup(g).stream()
+                                    .map(user -> goldappsUserSerializer.serialize(user, null, null))
+                                    .collect(Collectors.toList()));
+                });
         groups.forEach(g -> {
-            usersJSON.addAll(
-                    this.membershipService.getUsersInGroup(g).stream()
-                    .map(user -> goldappsUserSerializer.serialize(user, null, null))
-                    .collect(Collectors.toList()));
-
             groupsJSON.add(
                     goldappsGroupSerializer.serialize(g,
                     this.membershipService.getUsersInGroup(g).stream()
