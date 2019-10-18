@@ -32,11 +32,12 @@ export function userUpdateMe() {
                         }
                     )
                     .then(response => {
-                        resolve();
+                        resolve(response);
 
                         dispatch(userUpdatedSuccessfully(response.data));
 
                         const lang = response.data.language;
+
                         dispatch(
                             DigitTranslationsActions.setActiveLanguage(
                                 lang == null ? ENGLISH_LANGUAGE : lang

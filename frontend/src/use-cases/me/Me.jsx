@@ -1,23 +1,76 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import MyAccount from "./views/my-account";
-import MyGroups from "./views/my-groups";
-import ChangeMyPassword from "./views/my-account/screens/change-my-password";
-import EditMe from "./views/my-account/screens/edit-me";
-import DeleteMe from "./views/my-account/screens/delete-me";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    ACCEPTANCE_YEAR,
+    CID,
+    EMAIL,
+    FIRST_NAME,
+    LANGUAGE,
+    LAST_NAME,
+    NICK,
+    PASSWORD,
+    WEBSITES
+} from "../../api/users/props.users.api";
+import {
+    useDigitTranslations,
+    DigitCRUD,
+    DigitTextField,
+    DigitSelect
+} from "@cthit/react-digit-components";
+import translations from "./Me.translations.json";
+import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
+import { editMe } from "../../api/me/put.me.api";
+import { getWebsites } from "../../api/websites/get.websites.api";
+import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
+import {
+    generateUserCustomDetailsRenders,
+    generateUserEditComponentData,
+    generateUserKeysTexts,
+    generateUserValidationSchema
+} from "../../common/utils/generators/user-form.generator";
 
-const Me = () => (
-    <Switch>
-        <Route path={"/me/groups"} exact component={MyGroups} />
-        <Route
-            path={"/me/change_password"}
-            exact
-            component={ChangeMyPassword}
+const Me = () => {
+    const [text] = useDigitTranslations(translations);
+    const [websites, setWebsites] = useState(null);
+    const dispatch = useDispatch();
+    const me = useSelector(state => state.user);
+
+    useEffect(() => {
+        getWebsites().then(response => {
+            setWebsites(response.data);
+            dispatch(gammaLoadingFinished());
+        });
+    }, []);
+
+    if (!me.loaded || websites == null) {
+        return null;
+    }
+
+    return (
+        <DigitCRUD
+            backFromReadOneLink={"/"}
+            name={"me"}
+            path={"/me"}
+            staticId={null}
+            readOnePath={""}
+            updatePath={"/edit"}
+            readOneRequest={() => dispatch(userUpdateMe())}
+            keysOrder={[
+                FIRST_NAME,
+                LAST_NAME,
+                NICK,
+                EMAIL,
+                ACCEPTANCE_YEAR,
+                LANGUAGE,
+                WEBSITES
+            ]}
+            updateRequest={(id, newData) => editMe(newData)}
+            customDetailsRenders={generateUserCustomDetailsRenders()}
+            keysText={generateUserKeysTexts(text)}
+            formValidationSchema={generateUserValidationSchema(text)}
+            formComponentData={generateUserEditComponentData(text, websites)}
         />
-        <Route path={"/me/delete"} exact component={DeleteMe} />
-        <Route path={"/me/edit"} exact component={EditMe} />
-        <Route path={"/me"} exact component={MyAccount} />
-    </Switch>
-);
+    );
+};
 
 export default Me;

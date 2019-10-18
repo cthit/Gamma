@@ -44,7 +44,7 @@ class DeleteMe extends React.Component {
                                             deleteMe(values)
                                                 .then(() => {
                                                     toastOpen({
-                                                        text:text.MeDeleted
+                                                        text: text.MeDeleted
                                                     });
                                                     redirectTo("/login");
                                                 })

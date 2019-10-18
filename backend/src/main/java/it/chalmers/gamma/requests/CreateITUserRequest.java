@@ -104,15 +104,16 @@ public class CreateITUserRequest {
     @Override
     public String toString() {
         return "CreateITUserRequest{"
-            + "code='" + this.code + '\''
-            + ", password='" + this.password + '\''
-            + ", nick='" + this.nick + '\''
-            + ", firstName='" + this.firstName + '\''
-            + ", lastName='" + this.lastName + '\''
-            + ", userAgreement=" + this.userAgreement
-            + ", acceptanceYear=" + this.acceptanceYear
-            + ", whitelist=" + this.whitelist
-            + '}';
+                + "code='" + this.code + '\''
+                + ", password='" + this.password + '\''
+                + ", nick='" + this.nick + '\''
+                + ", firstName='" + this.firstName + '\''
+                + ", lastName='" + this.lastName + '\''
+                + ", userAgreement=" + this.userAgreement
+                + ", acceptanceYear=" + this.acceptanceYear
+                + ", whitelist=" + this.whitelist
+                + ", language=" + this.language
+                + '}';
     }
 
     @Override
@@ -125,13 +126,14 @@ public class CreateITUserRequest {
         }
         CreateITUserRequest that = (CreateITUserRequest) o;
         return this.userAgreement == that.userAgreement
-            && this.acceptanceYear == that.acceptanceYear
-            && Objects.equals(this.code, that.code)
-            && Objects.equals(this.password, that.password)
-            && Objects.equals(this.nick, that.nick)
-            && Objects.equals(this.firstName, that.firstName)
-            && Objects.equals(this.lastName, that.lastName)
-            && Objects.equals(this.whitelist, that.whitelist);
+                && this.acceptanceYear == that.acceptanceYear
+                && Objects.equals(this.code, that.code)
+                && Objects.equals(this.password, that.password)
+                && Objects.equals(this.nick, that.nick)
+                && Objects.equals(this.firstName, that.firstName)
+                && Objects.equals(this.lastName, that.lastName)
+                && Objects.equals(this.whitelist, that.whitelist)
+                && this.language == that.language;
     }
 
     @Override

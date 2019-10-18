@@ -99,6 +99,14 @@ public class AdminViewCreateITUserRequest {
         this.acceptanceYear = acceptanceYear;
     }
 
+    public Language getLanguage() {
+        return this.language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -109,18 +117,26 @@ public class AdminViewCreateITUserRequest {
         }
         AdminViewCreateITUserRequest that = (AdminViewCreateITUserRequest) o;
         return this.userAgreement == that.userAgreement
-            && this.acceptanceYear == that.acceptanceYear
-            && this.cid.equals(that.cid)
-            && this.password.equals(that.password)
-            && this.nick.equals(that.nick)
-            && this.firstName.equals(that.firstName)
-            && this.lastName.equals(that.lastName)
-            && this.email.equals(that.email);
+                && this.acceptanceYear == that.acceptanceYear
+                && Objects.equals(this.cid, that.cid)
+                && Objects.equals(this.password, that.password)
+                && Objects.equals(this.nick, that.nick)
+                && Objects.equals(this.firstName, that.firstName)
+                && Objects.equals(this.lastName, that.lastName)
+                && Objects.equals(this.email, that.email)
+                && this.language == that.language;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.cid, this.password, this.nick, this.firstName,
-            this.lastName, this.email, this.userAgreement, this.acceptanceYear);
+        return Objects.hash(this.cid,
+                this.password,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.userAgreement,
+                this.acceptanceYear,
+                this.language);
     }
 }

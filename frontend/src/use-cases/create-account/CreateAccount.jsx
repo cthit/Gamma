@@ -24,7 +24,6 @@ class CreateAccount extends React.Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="CreateAccount"
                 render={text => (
                     <DigitLayout.Fill>
                         <MapPathToStep

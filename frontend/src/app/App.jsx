@@ -34,6 +34,8 @@ import SuperGroups from "../use-cases/super-groups";
 import GammaIntegration from "./views/gamma-integration/GammaIntegration.view.container";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
+import Drawer from "./elements/drawer";
+import Members from "../use-cases/members";
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -78,64 +80,6 @@ export class App extends Component {
 
         const title = "Gamma - IT-konto";
 
-        const drawer = closeDrawer => (
-            <DigitLayout.Column padding="0">
-                <DigitNavLink onClick={closeDrawer} text="Me" link="/me" />
-                <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Create account"
-                    link="/create-account"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Users"
-                    link="/users"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Groups"
-                    link="/groups"
-                />
-                <DigitNavLink
-                    onClose={closeDrawer}
-                    text="Super groups"
-                    link="/super-groups"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Posts"
-                    link="/posts"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Whitelist"
-                    link="/whitelist"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Websites"
-                    link="/websites"
-                />
-                <DigitNavLink onClick={closeDrawer} text="GDPR" link="/gdpr" />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Activation codes"
-                    link="/activation-codes"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Clients"
-                    link="/clients"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
-                    text="Api Keys"
-                    link="/api_keys"
-                />
-            </DigitLayout.Column>
-        );
-
         const header = () => (
             <Route
                 render={props => (
@@ -164,9 +108,13 @@ export class App extends Component {
                 render={text => (
                     <DigitHeader
                         headerHeight={"200px"}
-                        cssImageString={"url(/matterhorn.jpg)"}
+                        cssImageString={"url(/enbarsskar.jpg)"}
                         title={title}
-                        renderDrawer={loggedIn ? drawer : () => null}
+                        renderDrawer={closeDrawer =>
+                            loggedIn ? (
+                                <Drawer closeDrawer={closeDrawer} />
+                            ) : null
+                        }
                         renderHeader={header}
                         renderMain={() => (
                             <DigitLayout.Fill>
@@ -178,7 +126,7 @@ export class App extends Component {
                                                 <DigitDesign.CardTitle
                                                     text={text.BackendDownTitle}
                                                 />
-                                                <DigitDesign.CardHeaderImage src="/theofficeno.gif" />
+                                                <DigitDesign.CardHeaderImage src="/nope.gif" />
                                                 <DigitDesign.CardBody>
                                                     <DigitText.Text
                                                         text={text.BackendDown}
@@ -298,7 +246,7 @@ export class App extends Component {
                                                             component={Clients}
                                                         />
                                                         <Route
-                                                            path="/api_keys"
+                                                            path="/access-keys"
                                                             component={ApiKeys}
                                                         />
                                                         <Route
@@ -312,6 +260,10 @@ export class App extends Component {
                                                             component={Me}
                                                         />
                                                         <Route
+                                                            path="/members"
+                                                            component={Members}
+                                                        />
+                                                        <Route
                                                             path="/reset-password"
                                                             component={
                                                                 ResetPassword
@@ -319,6 +271,7 @@ export class App extends Component {
                                                         />
                                                         <Route
                                                             path="/"
+                                                            exact
                                                             render={props => (
                                                                 <DigitIfElseRendering
                                                                     test={

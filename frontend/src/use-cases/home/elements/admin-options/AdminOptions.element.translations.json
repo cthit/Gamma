@@ -7,5 +7,7 @@
     "GroupPosts": ["Group posts", "Grupp poster"],
     "PossibleWebsites": ["Possible websites", "Möjliga hemsidor"],
     "Whitelist": ["Whitelist of cids", "Whitelist av cids"],
-    "Clients": ["Clients", "Klienter"]
+    "Clients": ["Clients", "Klienter"],
+    "SuperGroups": ["Super groups", "Supergrupper"],
+    "ApiKeys": ["API keys", "API nycklar"]
 }
