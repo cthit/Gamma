@@ -32,6 +32,12 @@ public class FKITGroupSerializer {
                 this.properties.contains(Properties.IS_ACTIVE), value.isActive(), "isActive")
         );
         values.add(new SerializerValue(
+                this.properties.contains(Properties.BECOMES_ACTIVE), value.getBecomesActive(), "becomesActive"
+        ));
+        values.add(new SerializerValue(
+                this.properties.contains(Properties.BECOMES_INACTIVE), value.getBecomesInactive(), "becomesInactive"
+        ));
+        values.add(new SerializerValue(
                 this.properties.contains(Properties.DESCRIPTION), value.getDescription(), "description")
         );
         values.add(new SerializerValue(
@@ -78,7 +84,9 @@ public class FKITGroupSerializer {
         TYPE,
         WEBSITES,
         USERS,
-        SUPER_GROUP;
+        SUPER_GROUP,
+        BECOMES_ACTIVE,
+        BECOMES_INACTIVE;
 
         public static List<Properties> getAllProperties() {
             Properties[] props = {
@@ -93,7 +101,9 @@ public class FKITGroupSerializer {
                     TYPE,
                     WEBSITES,
                     USERS,
-                    SUPER_GROUP
+                    SUPER_GROUP,
+                    BECOMES_ACTIVE,
+                    BECOMES_INACTIVE
             };
             return new ArrayList<>(Arrays.asList(props));
         }

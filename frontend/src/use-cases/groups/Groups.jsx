@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 
+import { addDays } from "date-fns";
+
 import {
     DigitCRUD,
     useDigitTranslations,
     DigitTextField,
     DigitButton,
     DigitSelect,
-    DigitTextArea
+    DigitTextArea,
+    DigitDatePicker
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
 import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
 import {
+    BECOMES_ACTIVE,
+    BECOMES_INACTIVE,
     EMAIL,
     ID,
     NAME,
@@ -31,6 +36,46 @@ const DESCRIPTION_SV = "descriptionSv";
 const DESCRIPTION_EN = "descriptionEn";
 const FUNCTION_SV = "functionSv";
 const FUNCTION_EN = "functionEn";
+
+{
+}
+
+function generateInitialValues() {
+    const output = {};
+
+    output[ID] = "";
+    output[NAME] = "";
+    output[EMAIL] = "";
+    output[DESCRIPTION_SV] = "";
+    output[DESCRIPTION_EN] = "";
+    output[FUNCTION_SV] = "";
+    output[FUNCTION_EN] = "";
+    output[SUPER_GROUP] = "";
+    output[PRETTY_NAME] = "";
+    output[BECOMES_ACTIVE] = new Date();
+
+    var aYearFromNow = new Date();
+    aYearFromNow.setFullYear(aYearFromNow.getFullYear() + 1);
+    output[BECOMES_INACTIVE] = aYearFromNow;
+
+    return output;
+}
+
+function generateKeyTexts(text) {
+    const output = {};
+
+    output[ID] = text.Id;
+    output[NAME] = text.Name;
+    output[EMAIL] = text.Email;
+    output[DESCRIPTION_SV] = text.DescriptionSv;
+    output[DESCRIPTION_EN] = text.DescriptionEn;
+    output[FUNCTION_SV] = text.FunctionSv;
+    output[FUNCTION_EN] = text.FunctionEn;
+    output[SUPER_GROUP] = text.SuperGroup;
+    output[PRETTY_NAME] = text.PrettyName;
+
+    return output;
+}
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -132,6 +177,20 @@ function generateEditComponentData(text, superGroups = []) {
         }
     };
 
+    componentData[BECOMES_ACTIVE] = {
+        component: DigitDatePicker,
+        componentProps: {
+            outlined: true
+        }
+    };
+
+    componentData[BECOMES_INACTIVE] = {
+        component: DigitDatePicker,
+        componentProps: {
+            outlined: true
+        }
+    };
+
     return componentData;
 }
 
@@ -161,8 +220,11 @@ const Groups = ({ history }) => {
             path={"/groups"}
             readAllRequest={getGroupsMinified}
             readOneRequest={getGroup}
-            updateRequest={(id, data) =>
-                editGroup(id, {
+            updateRequest={(id, data) => {
+                const becomesActive = addDays(data.becomesActive, 1);
+                const becomesInactive = addDays(data.becomesInactive, 1);
+
+                return editGroup(id, {
                     name: data.name,
                     function: {
                         sv: data.functionSv,
@@ -174,11 +236,16 @@ const Groups = ({ history }) => {
                     },
                     email: data.email,
                     superGroup: data.superGroup,
-                    prettyName: data.prettyName
-                })
-            }
-            createRequest={data =>
-                addGroup({
+                    prettyName: data.prettyName,
+                    becomesActive: becomesActive,
+                    becomesInactive: becomesInactive
+                });
+            }}
+            createRequest={data => {
+                const becomesActive = addDays(data.becomesActive, 1);
+                const becomesInactive = addDays(data.becomesInactive, 1);
+
+                return addGroup({
                     name: data.name,
                     function: {
                         sv: data.functionSv,
@@ -190,47 +257,31 @@ const Groups = ({ history }) => {
                     },
                     email: data.email,
                     superGroup: data.superGroup,
-                    prettyName: data.prettyName
-                })
-            }
+                    prettyName: data.prettyName,
+                    becomesActive: becomesActive,
+                    becomesInactive: becomesInactive
+                });
+            }}
             keysOrder={[
                 ID,
                 PRETTY_NAME,
                 NAME,
                 EMAIL,
-                "descriptionSv",
-                "descriptionEn",
-                "functionSv",
-                "functionEn",
-                SUPER_GROUP
+                DESCRIPTION_SV,
+                DESCRIPTION_EN,
+                FUNCTION_SV,
+                FUNCTION_EN,
+                SUPER_GROUP,
+                BECOMES_ACTIVE,
+                BECOMES_INACTIVE
             ]}
-            keysText={{
-                id: text.Id,
-                name: text.Name,
-                email: text.Email,
-                descriptionSv: text.DescriptionSv,
-                descriptionEn: text.DescriptionEn,
-                functionSv: text.FunctionSv,
-                functionEn: text.FunctionEn,
-                superGroup: text.SuperGroup,
-                prettyName: text.PrettyName
-            }}
+            keysText={generateKeyTexts(text)}
             tableProps={{
                 columnsOrder: [ID, NAME, EMAIL],
                 orderBy: NAME,
                 startOrderBy: NAME
             }}
-            formInitialValues={{
-                id: "",
-                name: "",
-                email: "",
-                descriptionSv: "",
-                descriptionEn: "",
-                functionSv: "",
-                functionEn: "",
-                superGroup: "",
-                prettyName: ""
-            }}
+            formInitialValues={generateInitialValues()}
             formValidationSchema={generateValidationSchema(text)}
             formComponentData={generateEditComponentData(text, superGroups)}
             idProp={"id"}
