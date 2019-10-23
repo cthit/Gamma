@@ -25,6 +25,7 @@ function _generateHeaderTexts(text) {
     output[FIRST_NAME] = text.FirstName;
     output[LAST_NAME] = text.LastName;
     output[NICK] = text.Nick;
+    output[ID] = text.Id;
     output["__checkbox"] = text.HasGDPR;
 
     return output;
@@ -91,7 +92,9 @@ const Gdpr = ({
                                                 text:
                                                     text.SuccessfullySetOfGDPRTo +
                                                     " " +
-                                                    c[0] +
+                                                    _.find(users, {
+                                                        id: c[0]
+                                                    })[NICK] +
                                                     " " +
                                                     text.To +
                                                     ": " +
@@ -119,7 +122,7 @@ const Gdpr = ({
                         selected={users
                             .filter(user => user.gdpr)
                             .map(user => user.id)}
-                        columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
+                        columnsOrder={[ID, CID, FIRST_NAME, NICK, LAST_NAME]}
                         headerTexts={_generateHeaderTexts(text)}
                         data={users.map(user => {
                             return {
