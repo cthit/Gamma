@@ -92,7 +92,9 @@ const Gdpr = ({
                                                 text:
                                                     text.SuccessfullySetOfGDPRTo +
                                                     " " +
-                                                    c[0] +
+                                                    _.find(users, {
+                                                        id: c[0]
+                                                    })[NICK] +
                                                     " " +
                                                     text.To +
                                                     ": " +
