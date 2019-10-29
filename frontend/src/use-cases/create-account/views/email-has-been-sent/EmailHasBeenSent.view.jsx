@@ -11,7 +11,6 @@ import translations from "./EmailHasBeenSent.view.translations.json";
 const EmailHasBeenSent = () => (
     <DigitTranslations
         translations={translations}
-        uniquePath="CreateAccount"
         render={text => (
             <DigitLayout.Center>
                 <DigitDesign.Card minWidth="300px" maxWidth="500px">

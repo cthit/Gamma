@@ -10,7 +10,7 @@ import HomeLink from "../../elements/home-link";
 
 import UserOptionsTranslations from "./UserOptions.element.translations.json";
 
-const UserOptions = () => (
+const UserOptions = ({ hasGroups }) => (
     <DigitTranslations
         translations={UserOptionsTranslations}
         render={text => (
@@ -19,7 +19,9 @@ const UserOptions = () => (
                 <DigitDesign.CardBody>
                     <DigitLayout.Column marginVertical={"4px"}>
                         <HomeLink text={text.MyAccount} link="/me" />
-                        <HomeLink text={text.MyGroups} link="/me/groups" />
+                        {hasGroups && (
+                            <HomeLink text={text.MyGroups} link="/me/groups" />
+                        )}
                     </DigitLayout.Column>
                 </DigitDesign.CardBody>
             </DigitDesign.Card>

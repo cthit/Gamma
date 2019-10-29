@@ -1,5 +1,6 @@
 package it.chalmers.gamma.config;
 
+import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
@@ -8,8 +9,10 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupService;
@@ -34,7 +37,7 @@ import org.springframework.stereotype.Component;
  * This class adds a superadmin on startup if one does not already exist, to make sure one
  * always exists, and to make development easier.
  */
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.ExcessiveParameterList"})
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
@@ -46,6 +49,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final AuthorityService authorityService;
     private final ITClientService itClientService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final ApiKeyService apiKeyService;
 
     @Value("${application.frontend-client-details.client-id}")
     private String clientId;
@@ -58,27 +62,54 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.standard-admin-account.password}")
     private String password;
 
-    public DbInitializer(ITUserService userService, FKITGroupService groupService,
-                         AuthorityLevelService authorityLevelService, PostService postService,
-                         MembershipService membershipService, AuthorityService authorityService,
+    @Value("${application.default-oauth2-client.client-name}")
+    private String oauth2ClientName;
+    @Value("${application.default-oauth2-client.client-id}")
+    private String oauth2ClientId;
+    @Value("${application.default-oauth2-client.client-secret}")
+    private String oauth2ClientSecret;
+    @Value("${application.default-oauth2-client.redirect-uri}")
+    private String oauth2ClientRedirectUri;
+    @Value("${application.default-oauth2-client.api-key}")
+    private String oauth2ClientApiKey;
+    @Value("${application.default-oauth2-client.mock-client}")
+    private boolean isMocking;
+    @Value("${application.auth.accessTokenValidityTime}")       // TODO Fix this
+    private int accessTokenValidityTime;
+    @Value("${application.auth.autoApprove}")
+    private boolean autoApprove;
+    @Value("${application.auth.refreshTokenValidityTime}")
+    private int refreshTokenValidityTime;
+
+    public DbInitializer(ITUserService userservice,
+                         FKITGroupService groupService,
+                         AuthorityLevelService authorityLevelService,
+                         PostService postService,
+                         MembershipService membershipService,
+                         AuthorityService authorityService,
                          ITClientService itClientService,
-                         FKITSuperGroupService fkitSuperGroupService,
-                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
-        this.userservice = userService;
+                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+                         ApiKeyService apiKeyService,
+                         FKITSuperGroupService fkitSuperGroupService) {
+        this.userservice = userservice;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
         this.postService = postService;
         this.membershipService = membershipService;
         this.authorityService = authorityService;
         this.itClientService = itClientService;
-        this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.apiKeyService = apiKeyService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
     @Override
     public void run(String... args) {
         ensureAdminUser();
         ensureFrontendClientDetails();
+        if (this.isMocking) {
+            ensureOauthClient();
+        }
     }
 
     private void ensureFrontendClientDetails() {
@@ -111,6 +142,10 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     + " as it is a way to always keep a privileged user on startup";
             description.setEn(descriptionText);
             description.setSv(descriptionText);
+            Text function = new Text();
+            function.setEn(descriptionText);
+            function.setSv(descriptionText);
+
             CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
             superGroupRequest.setName("superadmin");
             superGroupRequest.setPrettyName("super admin");
@@ -120,8 +155,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             CreateGroupRequest request = new CreateGroupRequest();
             request.setName("superadmin");
             request.setPrettyName("superAdmin");
-            request.setFunction(new Text());
             request.setDescription(description);
+            request.setFunction(function);
             request.setEmail(adminMail);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
@@ -143,7 +178,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     Year.of(2018),
                     true,
                     adminMail,
-                    this.password
+                    this.password,
+                    Language.sv
             );
             this.membershipService.addUserToGroup(
                     group,
@@ -153,6 +189,36 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             ); // This might break on a new year
             AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
+        }
+    }
+    private void ensureOauthClient() {
+        if (!this.itClientService.clientExistsByClientId(this.oauth2ClientId)) {
+            ITClient client = new ITClient();
+            client.setName(this.oauth2ClientName);
+            Text description = new Text();
+            description.setEn("Client for mocking " + this.oauth2ClientName);
+            description.setSv("Klient för att mocka " + this.oauth2ClientName);
+            client.setDescription(description);
+            client.setWebServerRedirectUri(this.oauth2ClientRedirectUri);
+            client.setCreatedAt(Instant.now());
+            client.setLastModifiedAt(Instant.now());
+            client.setAccessTokenValidity(this.accessTokenValidityTime);
+            client.setAutoApprove(this.autoApprove);
+            client.setRefreshTokenValidity(this.refreshTokenValidityTime);
+            client.setClientId(this.oauth2ClientId);
+            client.setClientSecret("{noop}" + this.oauth2ClientSecret);
+            this.itClientService.addITClient(client);
+            ApiKey apiKey = new ApiKey();
+            apiKey.setName(this.oauth2ClientName);
+            apiKey.setKey(this.oauth2ClientApiKey);
+
+            Text apiDescription = new Text();
+            apiDescription.setSv("API key");
+            apiDescription.setEn("API key");
+
+            apiKey.setDescription(apiDescription);
+
+            this.apiKeyService.addApiKey(apiKey);
         }
     }
 }

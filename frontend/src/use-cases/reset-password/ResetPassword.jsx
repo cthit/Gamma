@@ -1,23 +1,25 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import ResetPasswordInitialize from "./screens/reset-password-initalize";
 import ResetPasswordFinish from "./screens/reset-password-finish";
+import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
-class ResetPassword extends React.Component {
-    render() {
-        return (
-            <Switch>
-                <Route
-                    path="/reset-password/finish"
-                    component={ResetPasswordFinish}
-                />
-                <Route
-                    path="/reset-password"
-                    component={ResetPasswordInitialize}
-                />
-            </Switch>
-        );
+const ResetPassword = () => {
+    const admin = useIsAdmin();
+    if (!admin) {
+        return <InsufficientAccess />;
     }
-}
+
+    return (
+        <Switch>
+            <Route
+                path="/reset-password/finish"
+                component={ResetPasswordFinish}
+            />
+            <Route path="/reset-password" component={ResetPasswordInitialize} />
+        </Switch>
+    );
+};
 
 export default ResetPassword;

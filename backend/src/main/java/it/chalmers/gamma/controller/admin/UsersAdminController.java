@@ -174,7 +174,8 @@ public final class UsersAdminController {
                 Year.of(createITUserRequest.getAcceptanceYear()),
                 createITUserRequest.isUserAgreement(),
                 createITUserRequest.getEmail(),
-                createITUserRequest.getPassword()
+                createITUserRequest.getPassword(),
+                createITUserRequest.getLanguage()
         );
         return new UserCreatedResponse();
     }

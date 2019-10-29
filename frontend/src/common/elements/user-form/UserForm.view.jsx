@@ -139,6 +139,7 @@ function generateEditComponentData(
             component: DigitTextField,
             componentProps: {
                 upperLabel: text.Password,
+                password: true,
                 outlined: true
             }
         };

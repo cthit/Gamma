@@ -26,22 +26,26 @@ function generateHeaderTexts(text) {
     return output;
 }
 
-function modifyData(groups, text, activeLanguage) {
+function modifyData(groups, text, activeLanguage, columns) {
     return groups.map(group => {
         const newGroup = {};
 
         newGroup[ID] = group[ID];
         newGroup[NAME] = group[NAME];
-        newGroup[DESCRIPTION] = group[DESCRIPTION][activeLanguage];
+        newGroup[DESCRIPTION] = columns.includes(DESCRIPTION)
+            ? group[DESCRIPTION][activeLanguage]
+            : null;
         newGroup[EMAIL] = group[EMAIL];
-        newGroup[FUNCTION] = group[FUNCTION][activeLanguage];
+        newGroup[FUNCTION] = columns.includes(DESCRIPTION)
+            ? group[FUNCTION][activeLanguage]
+            : null;
         newGroup["__link"] = "/groups/" + group[ID];
 
         return newGroup;
     });
 }
 
-const DisplayGroupsTable = ({ title, groups }) => (
+const DisplayGroupsTable = ({ title, groups, columnsOrder }) => (
     <DigitTranslations
         translations={translations}
         render={(text, activeLanguage) => (
@@ -51,14 +55,23 @@ const DisplayGroupsTable = ({ title, groups }) => (
                     searchText={text.SearchForGroups}
                     idProp="id"
                     startOrderBy={NAME}
-                    columnsOrder={[ID, NAME, DESCRIPTION, EMAIL, FUNCTION]}
+                    columnsOrder={columnsOrder}
                     headerTexts={generateHeaderTexts(text)}
-                    data={modifyData(groups, text, activeLanguage)}
+                    data={modifyData(
+                        groups,
+                        text,
+                        activeLanguage,
+                        columnsOrder
+                    )}
                     emptyTableText={text.NoGroups}
                 />
             </DigitLayout.Fill>
         )}
     />
 );
+
+DisplayGroupsTable.defaultProps = {
+    columnsOrder: [ID, NAME, DESCRIPTION, EMAIL, FUNCTION]
+};
 
 export default DisplayGroupsTable;

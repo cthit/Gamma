@@ -34,7 +34,6 @@ class InputDataAndCode extends React.Component {
         return (
             <DigitTranslations
                 translations={translations}
-                uniquePath="CreateAccount"
                 render={text => (
                     <DigitLayout.Center>
                         <DigitForm
@@ -146,7 +145,8 @@ class InputDataAndCode extends React.Component {
                                                 component={DigitTextField}
                                                 componentProps={{
                                                     upperLabel: text.YourCid,
-                                                    outlined: true
+                                                    outlined: true,
+                                                    maxLength: 12
                                                 }}
                                             />
                                             <DigitLayout.Spacing />
@@ -156,7 +156,8 @@ class InputDataAndCode extends React.Component {
                                                 componentProps={{
                                                     upperLabel:
                                                         text.CodeFromYourStudentEmail,
-                                                    outlined: true
+                                                    outlined: true,
+                                                    maxLength: 15
                                                 }}
                                             />
                                             <DigitLayout.Spacing />
@@ -165,7 +166,8 @@ class InputDataAndCode extends React.Component {
                                                 component={DigitTextField}
                                                 componentProps={{
                                                     upperLabel: text.Nick,
-                                                    outlined: true
+                                                    outlined: true,
+                                                    maxLength: 20
                                                 }}
                                             />
                                             <DigitLayout.Spacing />
@@ -195,7 +197,8 @@ class InputDataAndCode extends React.Component {
                                                 component={DigitTextField}
                                                 componentProps={{
                                                     upperLabel: text.FirstName,
-                                                    outlined: true
+                                                    outlined: true,
+                                                    maxLength: 50
                                                 }}
                                             />
                                             <DigitLayout.Spacing />
@@ -204,7 +207,8 @@ class InputDataAndCode extends React.Component {
                                                 component={DigitTextField}
                                                 componentProps={{
                                                     upperLabel: text.LastName,
-                                                    outlined: true
+                                                    outlined: true,
+                                                    maxLength: 50
                                                 }}
                                             />
                                             <DigitLayout.Spacing />

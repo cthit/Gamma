@@ -8,11 +8,26 @@ export function getGroups() {
 }
 
 export function getGroup(groupId) {
-    return getRequest(GROUPS_ENDPOINT + groupId);
+    return getRequest(GROUPS_ENDPOINT + groupId, true, input => ({
+        data: {
+            ...input.data,
+            functionSv: input.data["function"].sv,
+            functionEn: input.data["function"].en,
+            descriptionSv: input.data.description.sv,
+            descriptionEn: input.data.description.en,
+            superGroup: input.data.superGroup.id
+        }
+    }));
 }
 
 export function getGroupsMinified() {
-    return getRequest(GROUPS_ENDPOINT + MINIFIED);
+    return getRequest(GROUPS_ENDPOINT + MINIFIED, true, input =>
+        input.data.map(one => ({
+            id: one.id,
+            name: one.name,
+            email: one.email
+        }))
+    );
 }
 
 export function getGroupMinified(groupId) {
