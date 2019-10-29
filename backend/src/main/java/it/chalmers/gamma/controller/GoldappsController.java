@@ -65,11 +65,11 @@ public class GoldappsController {
                     this.membershipService.getUsersInGroup(g).stream()
                     .map(ITUser::getEmail).collect(Collectors.toList())));
         });
-
         // Construct and send the payload
+        List<JSONObject> usersJSONFiltered = usersJSON.stream().distinct().collect(Collectors.toList());
         JSONObject payload = new JSONObject();
         payload.put("groups", groupsJSON);
-        payload.put("users", usersJSON);
+        payload.put("users", usersJSONFiltered);
 
         return new GoldappsReponse(payload);
     }
