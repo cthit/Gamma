@@ -5,13 +5,16 @@ import it.chalmers.gamma.response.GetAllWebsitesResponse;
 import it.chalmers.gamma.response.GetWebsiteResponse;
 import it.chalmers.gamma.response.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.WebsiteService;
+
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+
 @RestController
 @RequestMapping("/websites")
 public class WebsiteController {
