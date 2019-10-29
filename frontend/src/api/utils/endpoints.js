@@ -11,6 +11,7 @@ export const ADMIN_POSTS_ENDPOINT = "/admin/groups/posts/";
 
 export const WHITELIST_ENDPOINT = "/whitelist/";
 export const ACTIVATION_CODES_ENDPOINT = "/activation_codes/";
+export const WEBSITES_ENDPOINT = "/websites";
 export const POSTS_ENDPOINT = "/groups/posts/";
 export const CREATE_ACCOUNT_ENDPOINT = "/users/";
 export const LOGIN_ENDPOINT = "/users/login/";
