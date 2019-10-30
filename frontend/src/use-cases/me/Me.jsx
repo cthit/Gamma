@@ -21,13 +21,20 @@ import translations from "./Me.translations.json";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { editMe } from "../../api/me/put.me.api";
 import { getWebsites } from "../../api/websites/get.websites.api";
-import { userUpdateMe } from "../../app/elements/user-information/UserInformation.element.action-creator";
+import {
+    userLogout,
+    userUpdateMe
+} from "../../app/elements/user-information/UserInformation.element.action-creator";
 import {
     generateUserCustomDetailsRenders,
     generateUserEditComponentData,
+    generateUserInitialValues,
+    generateUserKeyOrder,
     generateUserKeysTexts,
     generateUserValidationSchema
 } from "../../common/utils/generators/user-form.generator";
+import { deleteMe } from "../../api/me/delete.me.api";
+import * as yup from "yup";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
@@ -46,6 +53,9 @@ const Me = () => {
         return null;
     }
 
+    const fullName = data =>
+        data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
+
     return (
         <DigitCRUD
             backFromReadOneLink={"/"}
@@ -55,20 +65,42 @@ const Me = () => {
             readOnePath={""}
             updatePath={"/edit"}
             readOneRequest={() => dispatch(userUpdateMe())}
-            keysOrder={[
-                FIRST_NAME,
-                LAST_NAME,
-                NICK,
-                EMAIL,
-                ACCEPTANCE_YEAR,
-                LANGUAGE,
-                WEBSITES
-            ]}
+            keysOrder={generateUserKeyOrder()}
             updateRequest={(id, newData) => editMe(newData)}
             customDetailsRenders={generateUserCustomDetailsRenders()}
             keysText={generateUserKeysTexts(text)}
             formValidationSchema={generateUserValidationSchema(text)}
             formComponentData={generateUserEditComponentData(text, websites)}
+            formInitialValues={generateUserInitialValues()}
+            detailsTitle={data => fullName(data)}
+            updateTitle={data => fullName(data)}
+            deleteRequest={(_, form) =>
+                deleteMe(form).then(() => dispatch(userLogout()))
+            }
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={() => text.AreYouReallySure}
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteCancel={() => text.Cancel}
+            deleteDialogFormKeysOrder={[PASSWORD]}
+            deleteDialogFormValidationSchema={() =>
+                yup.object().shape({
+                    password: yup
+                        .string()
+                        .min(8)
+                        .required(text.YouMustEnterPassword)
+                })
+            }
+            deleteDialogFormInitialValues={{ password: "" }}
+            deleteDialogFormComponentData={{
+                password: {
+                    component: DigitTextField,
+                    componentProps: {
+                        upperLabel: text.Password,
+                        password: true,
+                        outlined: true
+                    }
+                }
+            }}
         />
     );
 };
