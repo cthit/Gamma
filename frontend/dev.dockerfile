@@ -14,7 +14,8 @@ RUN yarn global add react-scripts
 
 EXPOSE 3000
 
-COPY . .
+COPY /src .
+COPY /public .
 
 CMD yarn start
 
