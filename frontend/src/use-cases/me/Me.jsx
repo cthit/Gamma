@@ -67,7 +67,7 @@ const Me = () => {
             readOneRequest={() => dispatch(userUpdateMe())}
             keysOrder={generateUserKeyOrder()}
             updateRequest={(id, newData) => editMe(newData)}
-            customDetailsRenders={generateUserCustomDetailsRenders()}
+            customDetailsRenders={generateUserCustomDetailsRenders(text)}
             keysText={generateUserKeysTexts(text)}
             formValidationSchema={generateUserValidationSchema(text)}
             formComponentData={generateUserEditComponentData(text, websites)}
