@@ -22,6 +22,7 @@ public class FKITGroupSerializer {
             @Nullable List<WebsiteView> websites,
             List<FKITSuperGroup> superGroups) {
         List<SerializerValue> values = new ArrayList<>();
+
         values.add(new SerializerValue(
                 this.properties.contains(Properties.GROUP_ID), value.getId(), "id")
         );
