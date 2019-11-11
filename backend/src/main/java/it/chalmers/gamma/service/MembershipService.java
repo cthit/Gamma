@@ -133,6 +133,14 @@ public class MembershipService {
         return groups;
     }
 
+    public List<GroupType> getGroupType(FKITGroup group) {
+        List<Membership> memberships = this.addSuperGroupInfo(this.membershipRepository.findAllById_FkitGroup(group));
+        List<FKITSuperGroup> superGroups = memberships.stream()
+                .map(Membership::getFkitSuperGroups).flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        return superGroups.stream().map(FKITSuperGroup::getType).collect(Collectors.toList());
+    }
+
     public List<Membership> getMembershipsByUser(ITUser user) {
         return this.membershipRepository.findAllById_ItUser(user);
     }
@@ -162,6 +170,12 @@ public class MembershipService {
     public void removeAllMemberships(ITUser user) {
         List<Membership> memberships = this.membershipRepository.findAllById_ItUser(user);
         memberships.forEach(this.membershipRepository::delete);
+    }
+
+    public boolean userHasActiveEmailGroup(ITUser user) {
+        List<FKITGroup> groups = this.getUsersGroupIds(user);
+        return groups.stream().filter(g -> this.getGroupType(g).stream()
+                .anyMatch(type -> type.equals(GroupType.COMMITTEE))).anyMatch(FKITGroup::isActive);
     }
 
     public List<Membership> getMembershipsFilterByPostAndGroupType(Post post, GroupType committee) {
