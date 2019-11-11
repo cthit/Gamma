@@ -1,6 +1,7 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
@@ -8,17 +9,24 @@ import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import it.chalmers.gamma.domain.GroupType;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MembershipService {
 
     private final MembershipRepository membershipRepository;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
-    public MembershipService(MembershipRepository membershipRepository) {
+    public MembershipService(MembershipRepository membershipRepository, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, FKITSuperGroupService fkitSuperGroupService) {
         this.membershipRepository = membershipRepository;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
 
@@ -54,12 +62,23 @@ public class MembershipService {
      * @return the users UUID, the identifier for the user
      */
     public List<ITUser> getPostHoldersIds(Post post) {
-        List<Membership> memberships = this.membershipRepository.findAllById_Post(post);
+        List<Membership> memberships = getMembershipsByPost(post);
         List<ITUser> usersId = new ArrayList<>();
         for (Membership membership : memberships) {
             usersId.add(membership.getId().getITUser());
         }
         return usersId;
+    }
+
+    public List<Membership> getMembershipsByPost(Post post) {
+        return addSuperGroupInfo(this.membershipRepository.findAllById_Post(post));
+    }
+
+    private List<Membership> addSuperGroupInfo(List<Membership> memberships) {
+        List<Membership> membershipsCopy = new ArrayList<>(memberships);
+        membershipsCopy.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService
+                .getSuperGroups(membership.getId().getFKITGroup())));
+        return membershipsCopy;
     }
 
     public List<ITUser> getUsersInGroup(FKITGroup group) {
@@ -143,5 +162,15 @@ public class MembershipService {
     public void removeAllMemberships(ITUser user) {
         List<Membership> memberships = this.membershipRepository.findAllById_ItUser(user);
         memberships.forEach(this.membershipRepository::delete);
+    }
+
+    public List<Membership> getMembershipsFilterByPostAndGroupType(Post post, GroupType committee) {
+        List<FKITSuperGroup> superGroups = this.fkitSuperGroupService.getAllGroups()
+                .stream().filter(g -> g.getType().equals(committee)).collect(Collectors.toList());
+        List<FKITGroup> groups = superGroups.stream()
+                .map(this.fkitGroupToSuperGroupService::getActiveGroups)
+                .flatMap(Collection::stream).collect(Collectors.toList());
+        return groups.stream().map(g -> this.membershipRepository
+                .findAllById_FkitGroupAndId_Post(g, post)).flatMap(Collection::stream).collect(Collectors.toList());
     }
 }
