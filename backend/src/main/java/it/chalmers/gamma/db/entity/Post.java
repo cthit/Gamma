@@ -57,13 +57,12 @@ public class Post {
         return this.postName.getSv();
     }
 
-    public String getENPostName()
-    {
+    public String getENPostName() {
         return this.postName.getEn();
     }
 
     public String getEmailPrefix() {
-        return emailPrefix;
+        return this.emailPrefix;
     }
 
     public void setEmailPrefix(String emailPrefix) {

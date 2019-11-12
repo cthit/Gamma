@@ -7,13 +7,13 @@ import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
+import it.chalmers.gamma.domain.GroupType;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.domain.GroupType;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +23,9 @@ public class MembershipService {
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private final FKITSuperGroupService fkitSuperGroupService;
 
-    public MembershipService(MembershipRepository membershipRepository, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, FKITSuperGroupService fkitSuperGroupService) {
+    public MembershipService(MembershipRepository membershipRepository,
+                             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+                             FKITSuperGroupService fkitSuperGroupService) {
         this.membershipRepository = membershipRepository;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.fkitSuperGroupService = fkitSuperGroupService;

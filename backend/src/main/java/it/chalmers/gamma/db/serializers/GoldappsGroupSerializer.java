@@ -1,6 +1,5 @@
 package it.chalmers.gamma.db.serializers;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.util.SerializerUtils;
 import java.util.ArrayList;
 import java.util.List;

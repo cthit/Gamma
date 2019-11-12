@@ -3,17 +3,14 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
 
 import it.chalmers.gamma.views.FKITGroupView;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import java.util.stream.Collectors;
-import javax.persistence.Tuple;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +18,8 @@ public class FKITGroupToSuperGroupService {
     private final FKITGroupToSuperGroupRepository repository;
     private final FKITSuperGroupService fkitSuperGroupService;
 
-    public FKITGroupToSuperGroupService(FKITGroupToSuperGroupRepository repository, FKITSuperGroupService fkitSuperGroupService) {
+    public FKITGroupToSuperGroupService(FKITGroupToSuperGroupRepository repository,
+                                        FKITSuperGroupService fkitSuperGroupService) {
         this.repository = repository;
         this.fkitSuperGroupService = fkitSuperGroupService;
     }

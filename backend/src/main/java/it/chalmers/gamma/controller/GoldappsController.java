@@ -1,10 +1,8 @@
 package it.chalmers.gamma.controller;
 
-import com.google.api.client.json.Json;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.serializers.GoldappsGroupSerializer;
 import it.chalmers.gamma.db.serializers.GoldappsUserSerializer;
@@ -13,14 +11,13 @@ import it.chalmers.gamma.response.GoldappsReponse;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.views.FKITGroupView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.service.PostService;
 import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,11 +61,11 @@ public class GoldappsController {
 
         // Go through all groups and serialize them and their users.
         groups.stream().filter(FKITGroup::isActive).forEach(g -> {
-                    usersJSON.addAll(
-                            this.membershipService.getUsersInGroup(g).stream()
-                                    .map(user -> goldappsUserSerializer.serialize(user, null, null))
-                                    .collect(Collectors.toList()));
-                });
+            usersJSON.addAll(
+                    this.membershipService.getUsersInGroup(g).stream()
+                            .map(user -> goldappsUserSerializer.serialize(user, null, null))
+                            .collect(Collectors.toList()));
+        });
         groups = this.fkitSuperGroupService.getAllGroups()          // Really ugly solution, should be refactored
                 .stream()
                 .filter(g -> !g.getType().equals(GroupType.ADMIN))
@@ -80,9 +77,19 @@ public class GoldappsController {
 
         groups.forEach(g -> groupsJSON.add(
                 goldappsGroupSerializer.serialize(g.getEmail(),
-                this.membershipService.getUsersInGroup(g).stream()
-                .map(user -> this.getCorrectEmail(user, g)).collect(Collectors.toList()))));
+                        this.membershipService.getUsersInGroup(g).stream()
+                                .map(user -> this.getCorrectEmail(user, g)).collect(Collectors.toList()))));
         // Construct and send the payload
+
+        List<FKITGroupView> activeGroups = this.fkitGroupToSuperGroupService.getAllActiveGroups();
+        groupsJSON.addAll(activeGroups.stream()
+                .map(view -> goldappsGroupSerializer.serialize(view.getSuperGroup().getEmail(),
+                view.getGroups().stream().map(FKITGroup::getEmail)
+                        .collect(Collectors.toList()))).collect(Collectors.toList()));
+        JSONObject payload = new JSONObject();
+        List<JSONObject> groupsJSONWithCustom = addCustomGroups(groupsJSON, goldappsGroupSerializer);
+        groupsJSONWithCustom = addAliases(groupsJSON, goldappsGroupSerializer);
+
         List<JSONObject> usersJSONFiltered = usersJSON.stream().distinct().collect(Collectors.toList());
         groupsJSON.addAll(this.fkitSuperGroupService.getAllGroups()
                 .stream().filter(g -> g.getType().equals(GroupType.ALUMNI))
@@ -90,13 +97,6 @@ public class GoldappsController {
                         this.fkitGroupToSuperGroupService.getRelationships(group).stream()
                                 .map(subgroup -> subgroup.getId().getGroup().getEmail())
                                 .collect(Collectors.toList()))).collect(Collectors.toList()));
-        List<FKITGroupView> activeGroups = fkitGroupToSuperGroupService.getAllActiveGroups();
-        groupsJSON.addAll(activeGroups.stream().map(view -> goldappsGroupSerializer.serialize(view.getSuperGroup().getEmail(),
-                view.getGroups().stream().map(FKITGroup::getEmail)
-                        .collect(Collectors.toList()))).collect(Collectors.toList()));
-        JSONObject payload = new JSONObject();
-        List<JSONObject> groupsJSONWithCustom = addCustomGroups(groupsJSON, goldappsGroupSerializer);
-        groupsJSONWithCustom = addAliases(groupsJSON, goldappsGroupSerializer);
         payload.put("groups", groupsJSONWithCustom);
         payload.put("users", usersJSONFiltered);
 
@@ -104,7 +104,7 @@ public class GoldappsController {
     }
 
     private List<JSONObject> addCustomGroups(List<JSONObject> groupsJSON,
-                                       GoldappsGroupSerializer goldappsGroupSerializer) {
+                                             GoldappsGroupSerializer goldappsGroupSerializer) {
 
         groupsJSON.add(goldappsGroupSerializer.serialize("fkit@chalmers.it",
                 this.fkitSuperGroupService.getAllGroups().stream().filter(group ->
@@ -147,17 +147,17 @@ public class GoldappsController {
 
         this.addAliasToJson(goldappsGroupSerializer, groupsJson, committeeGroups, ordf, "kassorer@chalmers.it");
 
-        List<Membership> chairmen = this.membershipService.getMembershipsByPost(ordf);
         this.addAliasToJson(goldappsGroupSerializer, groupsJson, committeeGroups, ordf, "ordforanden@chalmers.it");
 
         return groupsJson;
     }
+
     private List<JSONObject> addAliasToJson(GoldappsGroupSerializer goldappsGroupSerializer,
                                             List<JSONObject> groupsJson,
                                             List<FKITSuperGroup> groups,
                                             Post post,
                                             String mail
-                                            ) {
+    ) {
         groupsJson.add(goldappsGroupSerializer.serialize(mail,
                 groups.stream().map(group -> post.getEmailPrefix() + "."
                         + group.getEmail()).collect(Collectors.toList())));
