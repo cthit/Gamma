@@ -72,17 +72,7 @@ public final class FKITGroupController {
                         this.groupWebsiteService.getWebsites(group)
                 );
 
-        List<MembershipView> minifiedMembers = this.membershipService.getUsersInGroup(group).stream()
-                .map(user -> {
-                    Membership userMembership = this.membershipService.getMembershipByUserAndGroup(user, group);
-                    return new MembershipView(userMembership.getId().getPost(),
-                            userMembership.getUnofficialPostName(),
-                            new ITUserView(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
-                                    user.getLastName(), null, null, null, null,
-                                    user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
-                                    user.getAcceptanceYear(), null));
-
-                }).collect(Collectors.toList());
+        List<MembershipView> minifiedMembers = this.getMembershipView(group);
 
         return new FKITGroupView(
                 group.getId(),
@@ -151,15 +141,7 @@ public final class FKITGroupController {
                 g.isActive(),
                 g.getName(),
                 g.getPrettyName(),
-                this.membershipService.getUsersInGroup(g).stream().map(user -> {
-                    Membership membership = this.membershipService.getMembershipByUserAndGroup(user, g);
-                    return new MembershipView(membership.getId().getPost(),
-                            membership.getUnofficialPostName(),
-                            new ITUserView(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
-                                    user.getLastName(), null, null, null, null,
-                                    user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
-                                    user.getAcceptanceYear(), null));
-                }).collect(Collectors.toList()),
+                this.getMembershipView(g),
                 this.fkitGroupToSuperGroupService.getSuperGroups(g),
                 this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(g))
         )).collect(Collectors.toList()));
@@ -188,9 +170,26 @@ public final class FKITGroupController {
     }
 
     private FKITGroup getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
-        return Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(idOrName)))
-                .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(idOrName)))
-                .orElseThrow(GroupDoesNotExistResponse::new);
+        try {
+            return Optional.ofNullable(this.fkitGroupService.getGroup(idOrName))
+                    .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(idOrName))))
+                    .orElseThrow(GroupDoesNotExistResponse::new);
+        }
+        catch (IllegalArgumentException e) {
+            throw new GroupDoesNotExistResponse();
+        }
+    }
+
+    private List<MembershipView> getMembershipView(FKITGroup g) {
+        return this.membershipService.getUsersInGroup(g).stream().map(user -> {
+            Membership membership = this.membershipService.getMembershipByUserAndGroup(user, g);
+            return new MembershipView(membership.getId().getPost(),
+                    membership.getUnofficialPostName(),
+                    new ITUserView(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
+                            user.getLastName(), null, null, null, null,
+                            user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
+                            user.getAcceptanceYear(), null));
+        }).collect(Collectors.toList());
     }
 
 }
