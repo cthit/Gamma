@@ -90,7 +90,9 @@ public final class FKITGroupController {
                 .map(user -> {
                     Membership userMembership = this.membershipService.getMembershipByUserAndGroup(user, group);
                     return new MembershipView(userMembership.getId().getPost(), userMembership
-                            .getUnofficialPostName());
+                            .getUnofficialPostName(),
+                            user.getNick(), user.getFirstName(), user.getLastName(), user.getId(), user.getCid(),
+                            user.getAcceptanceYear());
                 }).collect(Collectors.toList());
 
         return new FKITGroupView(
