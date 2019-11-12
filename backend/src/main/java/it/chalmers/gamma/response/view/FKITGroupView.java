@@ -1,5 +1,6 @@
 package it.chalmers.gamma.response.view;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.views.WebsiteView;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @SuppressWarnings("PMD.ExcessiveParameterList")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FKITGroupView {
 
     private final UUID id;
@@ -22,7 +24,7 @@ public class FKITGroupView {
     private final String name;
     private final String prettyName;
     private final List<MembershipView> groupMembers;
-    private final FKITSuperGroup superGroup;
+    private final List<FKITSuperGroup> superGroup;
     private final List<WebsiteView> websites;
 
 
@@ -32,11 +34,11 @@ public class FKITGroupView {
                          Text description,
                          String email,
                          Text function,
-                         boolean isActive,
+                         Boolean isActive,
                          String name,
                          String prettyName,
                          List<MembershipView> groupMembers,
-                         FKITSuperGroup superGroup,
+                         List<FKITSuperGroup> superGroup,
                          List<WebsiteView> websites) {
         this.id = id;
         this.becomesActive = becomesActive;
@@ -92,7 +94,7 @@ public class FKITGroupView {
         return this.groupMembers;
     }
 
-    public FKITSuperGroup getSuperGroup() {
+    public List<FKITSuperGroup> getSuperGroup() {
         return this.superGroup;
     }
 

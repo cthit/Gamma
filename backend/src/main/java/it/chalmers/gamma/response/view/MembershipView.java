@@ -1,5 +1,6 @@
 package it.chalmers.gamma.response.view;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.db.entity.Post;
 
 import java.time.Year;
@@ -9,22 +10,15 @@ import java.util.UUID;
 public class MembershipView {
     private final Post post;
     private final String unofficialPostName;
-    private final String nick;
-    private final String firstName;
-    private final String lastName;
-    private final UUID id;
-    private final String cid;
-    private final Year acceptanceYear;
+    @JsonUnwrapped
+    private final ITUserView user;
 
-    public MembershipView(Post post, String unofficialPostName, String nick, String firstName, String lastName, UUID id, String cid, Year acceptanceYear) {
+    public MembershipView(Post post,
+                          String unofficialPostName,
+                          ITUserView user) {
         this.post = post;
         this.unofficialPostName = unofficialPostName;
-        this.nick = nick;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.id = id;
-        this.cid = cid;
-        this.acceptanceYear = acceptanceYear;
+        this.user = user;
     }
 
     public Post getPost() {
@@ -35,28 +29,8 @@ public class MembershipView {
         return this.unofficialPostName;
     }
 
-    public String getNick() {
-        return nick;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public Year getAcceptanceYear() {
-        return acceptanceYear;
+    public ITUserView getUser() {
+        return user;
     }
 
     @Override
@@ -70,23 +44,14 @@ public class MembershipView {
         MembershipView that = (MembershipView) o;
         return Objects.equals(this.post, that.post)
                 && Objects.equals(this.unofficialPostName, that.unofficialPostName)
-                && Objects.equals(this.nick, that.nick)
-                && Objects.equals(this.firstName, that.firstName)
-                && Objects.equals(this.lastName, that.lastName)
-                && Objects.equals(this.id, that.id)
-                && Objects.equals(this.cid, that.cid);
+                && Objects.equals(this.user, that.user);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.post,
                 this.unofficialPostName,
-                this.nick,
-                this.firstName,
-                this.lastName,
-                this.id,
-                this.cid);
-
+                this.user);
     }
 
     @Override
@@ -94,11 +59,7 @@ public class MembershipView {
         return "MembershipView{"
                 + "post=" + this.post
                 + ", unofficialPostName='" + this.unofficialPostName + '\''
-                + ", nick='" + this.nick + '\''
-                + ", firstName='" + this.firstName + '\''
-                + ", lastName='" + this.lastName + '\''
-                + ", id=" + this.id
-                + ", cid='" + this.cid + '\''
+                + ", user='" + this.user + '\''
                 + '}';
     }
 }

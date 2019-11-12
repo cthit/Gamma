@@ -1,17 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.DESCRIPTION;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.EMAIL;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.FUNC;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.GROUP_ID;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.NAME;
-import static it.chalmers.gamma.db.serializers.FKITGroupSerializer.Properties.TYPE;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
@@ -22,6 +10,7 @@ import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.view.FKITGroupView;
+import it.chalmers.gamma.response.view.ITUserView;
 import it.chalmers.gamma.response.view.MembershipView;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
@@ -30,7 +19,6 @@ import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.views.WebsiteView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,9 +56,7 @@ public final class FKITGroupController {
 
     @GetMapping("/{id}")
     public FKITGroupView getGroup(@PathVariable("id") String id) {
-        final FKITGroup group = Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(id)))
-                .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(id)))
-                .orElseThrow(GroupDoesNotExistResponse::new);
+        final FKITGroup group = this.getGroupByIdOrName(id);
 
         List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
         // This should change the database setup probably.
@@ -89,10 +75,13 @@ public final class FKITGroupController {
         List<MembershipView> minifiedMembers = this.membershipService.getUsersInGroup(group).stream()
                 .map(user -> {
                     Membership userMembership = this.membershipService.getMembershipByUserAndGroup(user, group);
-                    return new MembershipView(userMembership.getId().getPost(), userMembership
-                            .getUnofficialPostName(),
-                            user.getNick(), user.getFirstName(), user.getLastName(), user.getId(), user.getCid(),
-                            user.getAcceptanceYear());
+                    return new MembershipView(userMembership.getId().getPost(),
+                            userMembership.getUnofficialPostName(),
+                            new ITUserView(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
+                                    user.getLastName(), null, null, null, null,
+                                    user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
+                                    user.getAcceptanceYear(), null));
+
                 }).collect(Collectors.toList());
 
         return new FKITGroupView(
@@ -106,65 +95,74 @@ public final class FKITGroupController {
                 group.getName(),
                 group.getPrettyName(),
                 minifiedMembers,
-                superGroups.get(0),
+                superGroups,
                 websiteViews
         );
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
-    public List<JSONObject> getGroupsMinified() {
+    public List<FKITGroupView> getGroupsMinified() {
         List<FKITGroup> groups = this.fkitGroupService.getGroups();
-        List<JSONObject> minifiedGroups = new ArrayList<>();
-        FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, EMAIL, DESCRIPTION, GROUP_ID, TYPE)
-        );
-        groups.forEach(fkitGroup -> minifiedGroups.add(
-                serializer.serialize(
-                        fkitGroup,
-                        null,
-                        null,
-                        null
-                )
-        ));
-        return minifiedGroups;
+        return groups.stream().map(g -> new FKITGroupView(
+                g.getId(),
+                null,
+                null,
+                g.getDescription(),
+                g.getEmail(),
+                g.getFunction(),
+                g.isActive(),
+                g.getName(),
+                null,
+                null,
+                null,
+                null
+        )).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
-    public JSONObject getGroupMinified(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
-        if (group == null) {
-            return null;
-        }
-        FKITGroupSerializer serializer = new FKITGroupSerializer(
-                Arrays.asList(NAME, FUNC, GROUP_ID, TYPE)
+    public FKITGroupView getGroupMinified(@PathVariable("id") String id) {
+        final FKITGroup group = this.getGroupByIdOrName(id);
+        return new FKITGroupView(
+                group.getId(),
+                null,
+                null,
+                null,
+                group.getEmail(),
+                group.getFunction(),
+                group.isActive(),
+                group.getName(),
+                null,
+                null,
+                null,
+                null
         );
-        return serializer.serialize(group, null, null, null);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<JSONObject> getGroups() {
+    public List<FKITGroupView> getGroups() {
         List<FKITGroup> groups = this.fkitGroupService.getGroups();
-        List<JSONObject> serializedGroups = new ArrayList<>();
-        FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
-        ITUserSerializer userSerializer = new ITUserSerializer(
-                Arrays.asList(CID, NICK, FIRST_NAME, LAST_NAME, ID));
-        for (FKITGroup group : groups) {
-            List<ITUser> members = this.membershipService.getUsersInGroup(group);
-            List<JSONObject> jsonMembers = new ArrayList<>();
-            List<WebsiteView> websites =
-                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group));
-            for (ITUser member : members) {
-                jsonMembers.add(userSerializer.serialize(member, null, null));
-            }
-            List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
-            serializedGroups.add(serializer.serialize(
-                    group,
-                    jsonMembers,
-                    websites,
-                    superGroups
-            ));
-        }
-        return serializedGroups;
+        return new ArrayList<>(groups.stream().map(g -> new FKITGroupView(
+                g.getId(),
+                g.getBecomesActive(),
+                g.getBecomesInactive(),
+                g.getDescription(),
+                g.getEmail(),
+                g.getFunction(),
+                g.isActive(),
+                g.getName(),
+                g.getPrettyName(),
+                this.membershipService.getUsersInGroup(g).stream().map(user -> {
+                    Membership membership = this.membershipService.getMembershipByUserAndGroup(user, g);
+                    return new MembershipView(membership.getId().getPost(),
+                            membership.getUnofficialPostName(),
+                            new ITUserView(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
+                                    user.getLastName(), null, null, null, null,
+                                    user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
+                                    user.getAcceptanceYear(), null));
+                }).collect(Collectors.toList()),
+                this.fkitGroupToSuperGroupService.getSuperGroups(g),
+                this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(g))
+        )).collect(Collectors.toList()));
     }
 
     @RequestMapping(value = "/active", method = RequestMethod.GET)
@@ -187,6 +185,12 @@ public final class FKITGroupController {
                     superGroups));
         }
         return serializedGroups;
+    }
+
+    private FKITGroup getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
+        return Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(idOrName)))
+                .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(idOrName)))
+                .orElseThrow(GroupDoesNotExistResponse::new);
     }
 
 }

@@ -49,7 +49,7 @@ public class FKITGroup {
     private Calendar becomesInactive;
 
     @Column(name = "email")
-    public String email;
+    private String email;
 
     public FKITGroup() {
         this.id = UUID.randomUUID();
