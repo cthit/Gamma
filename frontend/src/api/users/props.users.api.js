@@ -9,3 +9,4 @@ export const CID = "cid";
 export const USER_AGREEMENT = "userAgreement";
 export const PASSWORD = "password";
 export const LANGUAGE = "language";
+export const GROUPS = "groups";

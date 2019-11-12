@@ -17,6 +17,7 @@ public class CreateITUserRequest {
     // TODO SPECIFY MINIMUM AND MAXIMUM LENGTH OF CODE
     private String code;
 
+    @NotEmpty(message = "PASSWORD_MUST_BE_PROVIDED")
     @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
     private String password;
 

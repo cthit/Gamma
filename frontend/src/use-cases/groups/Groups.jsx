@@ -73,6 +73,8 @@ function generateKeyTexts(text) {
     output[FUNCTION_EN] = text.FunctionEn;
     output[SUPER_GROUP] = text.SuperGroup;
     output[PRETTY_NAME] = text.PrettyName;
+    output[BECOMES_ACTIVE] = text.BecomesActive;
+    output[BECOMES_INACTIVE] = text.BecomesInactive;
 
     return output;
 }
@@ -220,27 +222,34 @@ const Groups = ({ history }) => {
             path={"/groups"}
             readAllRequest={getGroupsMinified}
             readOneRequest={getGroup}
-            updateRequest={(id, data) => {
-                const becomesActive = addDays(data.becomesActive, 1);
-                const becomesInactive = addDays(data.becomesInactive, 1);
+            updateRequest={
+                !admin
+                    ? null
+                    : (id, data) => {
+                          const becomesActive = addDays(data.becomesActive, 1);
+                          const becomesInactive = addDays(
+                              data.becomesInactive,
+                              1
+                          );
 
-                return editGroup(id, {
-                    name: data.name,
-                    function: {
-                        sv: data.functionSv,
-                        en: data.functionEn
-                    },
-                    description: {
-                        sv: data.descriptionSv,
-                        en: data.descriptionEn
-                    },
-                    email: data.email,
-                    superGroup: data.superGroup,
-                    prettyName: data.prettyName,
-                    becomesActive: becomesActive,
-                    becomesInactive: becomesInactive
-                });
-            }}
+                          return editGroup(id, {
+                              name: data.name,
+                              function: {
+                                  sv: data.functionSv,
+                                  en: data.functionEn
+                              },
+                              description: {
+                                  sv: data.descriptionSv,
+                                  en: data.descriptionEn
+                              },
+                              email: data.email,
+                              superGroup: data.superGroup,
+                              prettyName: data.prettyName,
+                              becomesActive: becomesActive,
+                              becomesInactive: becomesInactive
+                          });
+                      }
+            }
             createRequest={data => {
                 const becomesActive = addDays(data.becomesActive, 1);
                 const becomesInactive = addDays(data.becomesInactive, 1);
@@ -285,16 +294,18 @@ const Groups = ({ history }) => {
             formValidationSchema={generateValidationSchema(text)}
             formComponentData={generateEditComponentData(text, superGroups)}
             idProp={"id"}
-            detailsRenderCardEnd={data => (
-                <>
-                    <div style={{ marginTop: "8px" }} />
-                    <DigitButton
-                        outlined
-                        text={"Edit members"}
-                        onClick={() => history.push("/members/" + data.id)}
-                    />
-                </>
-            )}
+            detailsRenderCardEnd={data =>
+                admin ? (
+                    <>
+                        <div style={{ marginTop: "8px" }} />
+                        <DigitButton
+                            outlined
+                            text={"Edit members"}
+                            onClick={() => history.push("/members/" + data.id)}
+                        />
+                    </>
+                ) : null
+            }
             detailsRenderEnd={data =>
                 admin ? (
                     <div style={{ marginTop: "8px" }}>
@@ -305,6 +316,7 @@ const Groups = ({ history }) => {
                     </div>
                 ) : null
             }
+            dateProps={[BECOMES_ACTIVE, BECOMES_INACTIVE]}
         />
     );
 };
