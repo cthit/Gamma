@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.view;
+package it.chalmers.gamma.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @SuppressWarnings("PMD.ExcessiveParameterList")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FKITGroupView {
+public class FKITGroupDTO {
 
     private final UUID id;
     private final Calendar becomesActive;
@@ -23,23 +23,23 @@ public class FKITGroupView {
     private final boolean active;
     private final String name;
     private final String prettyName;
-    private final List<MembershipView> groupMembers;
+    private final List<MembershipDTO> groupMembers;
     private final List<FKITSuperGroup> superGroup;
     private final List<WebsiteView> websites;
 
 
-    public FKITGroupView(UUID id,
-                         Calendar becomesActive,
-                         Calendar becomesInactive,
-                         Text description,
-                         String email,
-                         Text function,
-                         Boolean isActive,
-                         String name,
-                         String prettyName,
-                         List<MembershipView> groupMembers,
-                         List<FKITSuperGroup> superGroup,
-                         List<WebsiteView> websites) {
+    public FKITGroupDTO(UUID id,
+                        Calendar becomesActive,
+                        Calendar becomesInactive,
+                        Text description,
+                        String email,
+                        Text function,
+                        Boolean isActive,
+                        String name,
+                        String prettyName,
+                        List<MembershipDTO> groupMembers,
+                        List<FKITSuperGroup> superGroup,
+                        List<WebsiteView> websites) {
         this.id = id;
         this.becomesActive = becomesActive;
         this.becomesInactive = becomesInactive;
@@ -90,7 +90,7 @@ public class FKITGroupView {
         return this.prettyName;
     }
 
-    public List<MembershipView> getGroupMembers() {
+    public List<MembershipDTO> getGroupMembers() {
         return this.groupMembers;
     }
 
@@ -111,7 +111,7 @@ public class FKITGroupView {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        FKITGroupView that = (FKITGroupView) o;
+        FKITGroupDTO that = (FKITGroupDTO) o;
         return this.active == that.active
                 && Objects.equals(this.id, that.id)
                 && Objects.equals(this.becomesActive, that.becomesActive)
@@ -144,7 +144,7 @@ public class FKITGroupView {
 
     @Override
     public String toString() {
-        return "FKITGroupView{"
+        return "FKITGroupDTO{"
                 + "id='" + id + '\''
                 + ", becomesActive=" + becomesActive
                 + ", becomesInactive=" + becomesInactive

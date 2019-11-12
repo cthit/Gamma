@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.view;
+package it.chalmers.gamma.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.Language;
@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ITUserView {
+public class ITUserDTO {
     private final UUID id;
     private final String cid;
     private final String nick;
@@ -22,21 +22,21 @@ public class ITUserView {
     private final boolean userAgreement;
     private final boolean accountLocked;
     private final Year acceptanceYear;
-    private final List<FKITGroupView> groups;
+    private final List<FKITGroupDTO> groups;
 
-    public ITUserView(UUID id,
-                      String cid,
-                      String nick,
-                      String firstName,
-                      String lastName,
-                      String email,
-                      String phone,
-                      Language language,
-                      String avatarUrl,
-                      boolean gdpr,
-                      boolean userAgreement,
-                      boolean accountLocked,
-                      Year acceptanceYear, List<FKITGroupView> groups) {
+    public ITUserDTO(UUID id,
+                     String cid,
+                     String nick,
+                     String firstName,
+                     String lastName,
+                     String email,
+                     String phone,
+                     Language language,
+                     String avatarUrl,
+                     boolean gdpr,
+                     boolean userAgreement,
+                     boolean accountLocked,
+                     Year acceptanceYear, List<FKITGroupDTO> groups) {
         this.id = id;
         this.cid = cid;
         this.nick = nick;
@@ -105,7 +105,7 @@ public class ITUserView {
         return this.acceptanceYear;
     }
 
-    public List<FKITGroupView> getGroups() {
+    public List<FKITGroupDTO> getGroups() {
         return this.groups;
     }
 
@@ -117,7 +117,7 @@ public class ITUserView {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ITUserView that = (ITUserView) o;
+        ITUserDTO that = (ITUserDTO) o;
         return this.gdpr == that.gdpr
                 && this.userAgreement == that.userAgreement
                 && this.accountLocked == that.accountLocked
@@ -154,7 +154,7 @@ public class ITUserView {
 
     @Override
     public String toString() {
-        return "ITUserView{"
+        return "ITUserDTO{"
                 + "id=" + this.id
                 + ", cid='" + this.cid + '\''
                 + ", nick='" + this.nick + '\''

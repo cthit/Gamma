@@ -8,10 +8,10 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.dto.FKITGroupDTO;
+import it.chalmers.gamma.dto.ITUserDTO;
+import it.chalmers.gamma.dto.MembershipDTO;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.view.FKITGroupView;
-import it.chalmers.gamma.response.view.ITUserView;
-import it.chalmers.gamma.response.view.MembershipView;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
@@ -55,7 +55,7 @@ public final class FKITGroupController {
     }
 
     @GetMapping("/{id}")
-    public FKITGroupView getGroup(@PathVariable("id") String id) {
+    public FKITGroupDTO getGroup(@PathVariable("id") String id) {
         final FKITGroup group = this.getGroupByIdOrName(id);
 
         List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
@@ -72,9 +72,9 @@ public final class FKITGroupController {
                         this.groupWebsiteService.getWebsites(group)
                 );
 
-        List<MembershipView> minifiedMembers = this.getMembershipView(group);
+        List<MembershipDTO> minifiedMembers = this.getMembershipView(group);
 
-        return new FKITGroupView(
+        return new FKITGroupDTO(
                 group.getId(),
                 group.getBecomesActive(),
                 group.getBecomesInactive(),
@@ -91,9 +91,9 @@ public final class FKITGroupController {
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
-    public List<FKITGroupView> getGroupsMinified() {
+    public List<FKITGroupDTO> getGroupsMinified() {
         List<FKITGroup> groups = this.fkitGroupService.getGroups();
-        return groups.stream().map(g -> new FKITGroupView(
+        return groups.stream().map(g -> new FKITGroupDTO(
                 g.getId(),
                 null,
                 null,
@@ -110,9 +110,9 @@ public final class FKITGroupController {
     }
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
-    public FKITGroupView getGroupMinified(@PathVariable("id") String id) {
+    public FKITGroupDTO getGroupMinified(@PathVariable("id") String id) {
         final FKITGroup group = this.getGroupByIdOrName(id);
-        return new FKITGroupView(
+        return new FKITGroupDTO(
                 group.getId(),
                 null,
                 null,
@@ -129,9 +129,9 @@ public final class FKITGroupController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<FKITGroupView> getGroups() {
+    public List<FKITGroupDTO> getGroups() {
         List<FKITGroup> groups = this.fkitGroupService.getGroups();
-        return new ArrayList<>(groups.stream().map(g -> new FKITGroupView(
+        return new ArrayList<>(groups.stream().map(g -> new FKITGroupDTO(
                 g.getId(),
                 g.getBecomesActive(),
                 g.getBecomesInactive(),
@@ -180,12 +180,12 @@ public final class FKITGroupController {
         }
     }
 
-    private List<MembershipView> getMembershipView(FKITGroup g) {
+    private List<MembershipDTO> getMembershipView(FKITGroup g) {
         return this.membershipService.getUsersInGroup(g).stream().map(user -> {
             Membership membership = this.membershipService.getMembershipByUserAndGroup(user, g);
-            return new MembershipView(membership.getId().getPost(),
+            return new MembershipDTO(membership.getId().getPost(),
                     membership.getUnofficialPostName(),
-                    new ITUserView(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
+                    new ITUserDTO(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
                             user.getLastName(), null, null, null, null,
                             user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
                             user.getAcceptanceYear(), null));
