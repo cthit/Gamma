@@ -172,10 +172,9 @@ public class MembershipService {
         memberships.forEach(this.membershipRepository::delete);
     }
 
-    public boolean userHasActiveEmailGroup(ITUser user) {
-        List<FKITGroup> groups = this.getUsersGroupIds(user);
-        return groups.stream().filter(g -> this.getGroupType(g).stream()
-                .anyMatch(type -> type.equals(GroupType.COMMITTEE))).anyMatch(FKITGroup::isActive);
+    public boolean groupIsActiveCommittee(FKITGroup group) {
+        return this.getGroupType(group).stream()
+                .anyMatch(type -> type.equals(GroupType.COMMITTEE)) && group.isActive();
     }
 
     public List<Membership> getMembershipsFilterByPostAndGroupType(Post post, GroupType committee) {
