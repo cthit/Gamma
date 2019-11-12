@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("PMD.ExcessiveParameterList")
 public class FKITGroupView {
 
     private final UUID id;
@@ -17,10 +18,10 @@ public class FKITGroupView {
     private final Text description;
     private final String email;
     private final Text function;
-    private final boolean isActive;
+    private final boolean active;
     private final String name;
     private final String prettyName;
-    private List<MembershipView> groupMembers;
+    private final List<MembershipView> groupMembers;
     private final FKITSuperGroup superGroup;
     private final List<WebsiteView> websites;
 
@@ -43,7 +44,7 @@ public class FKITGroupView {
         this.description = description;
         this.email = email;
         this.function = function;
-        this.isActive = isActive;
+        this.active = isActive;
         this.name = name;
         this.prettyName = prettyName;
         this.groupMembers = groupMembers;
@@ -52,93 +53,108 @@ public class FKITGroupView {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public Calendar getBecomesActive() {
-        return becomesActive;
+        return this.becomesActive;
     }
 
     public Calendar getBecomesInactive() {
-        return becomesInactive;
+        return this.becomesInactive;
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public Text getFunction() {
-        return function;
+        return this.function;
     }
 
     public boolean isActive() {
-        return isActive;
+        return this.active;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     public List<MembershipView> getGroupMembers() {
-        return groupMembers;
+        return this.groupMembers;
     }
 
     public FKITSuperGroup getSuperGroup() {
-        return superGroup;
+        return this.superGroup;
     }
 
     public List<WebsiteView> getWebsites() {
-        return websites;
+        return this.websites;
     }
+
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FKITGroupView that = (FKITGroupView) o;
-        return isActive == that.isActive &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(becomesActive, that.becomesActive) &&
-                Objects.equals(becomesInactive, that.becomesInactive) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(email, that.email) &&
-                Objects.equals(function, that.function) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(prettyName, that.prettyName) &&
-                Objects.equals(groupMembers, that.groupMembers) &&
-                Objects.equals(superGroup, that.superGroup) &&
-                Objects.equals(websites, that.websites);
+        return this.active == that.active
+                && Objects.equals(this.id, that.id)
+                && Objects.equals(this.becomesActive, that.becomesActive)
+                && Objects.equals(this.becomesInactive, that.becomesInactive)
+                && Objects.equals(this.description, that.description)
+                && Objects.equals(this.email, that.email)
+                && Objects.equals(this.function, that.function)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.prettyName, that.prettyName)
+                && Objects.equals(this.groupMembers, that.groupMembers)
+                && Objects.equals(this.superGroup, that.superGroup)
+                && Objects.equals(this.websites, that.websites);
     }
 
     @Override
     public int hashCode() {
-        return Objects
-                .hash(id, becomesActive, becomesInactive, description, email, function, isActive, name, prettyName, groupMembers, superGroup, websites);
+        return Objects.hash(this.id,
+                this.becomesActive,
+                this.becomesInactive,
+                this.description,
+                this.email,
+                this.function,
+                this.active,
+                this.name,
+                this.prettyName,
+                this.groupMembers,
+                this.superGroup,
+                this.websites);
     }
 
     @Override
     public String toString() {
-        return "FKITGroupView{" +
-                "id='" + id + '\'' +
-                ", becomesActive=" + becomesActive +
-                ", becomesInactive=" + becomesInactive +
-                ", text=" + description +
-                ", email='" + email + '\'' +
-                ", function=" + function +
-                ", isActive=" + isActive +
-                ", name='" + name + '\'' +
-                ", prettyName='" + prettyName + '\'' +
-                ", groupMembers=" + groupMembers +
-                ", superGroup=" + superGroup +
-                ", websites=" + websites +
-                '}';
+        return "FKITGroupView{"
+                + "id='" + id + '\''
+                + ", becomesActive=" + becomesActive
+                + ", becomesInactive=" + becomesInactive
+                + ", text=" + description
+                + ", email='" + email + '\''
+                + ", function=" + function
+                + ", isActive=" + active
+                + ", name='" + name + '\''
+                + ", prettyName='" + prettyName + '\''
+                + ", groupMembers=" + groupMembers
+                + ", superGroup=" + superGroup
+                + ", websites=" + websites
+                + '}';
     }
 }

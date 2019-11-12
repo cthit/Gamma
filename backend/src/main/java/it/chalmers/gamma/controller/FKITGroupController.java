@@ -20,8 +20,8 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.response.view.FKITGroupView;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.view.FKITGroupView;
 import it.chalmers.gamma.response.view.MembershipView;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
@@ -37,8 +37,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,8 +48,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/groups")
 public final class FKITGroupController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FKITGroupController.class);
 
     //TODO add groupmembers to serialize method call once that has been solved.
 
@@ -70,11 +66,18 @@ public final class FKITGroupController {
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public FKITGroupView getGroup(@PathVariable("id") String id) {
         final FKITGroup group = Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(id)))
                 .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(id)))
                 .orElseThrow(GroupDoesNotExistResponse::new);
+
+        List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
+        // This should change the database setup probably.
+
+        if (superGroups.isEmpty()) {
+            throw new RuntimeException("Why supergroup is empty?!");
+        }
 
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
@@ -89,15 +92,6 @@ public final class FKITGroupController {
                     return new MembershipView(userMembership.getId().getPost(), userMembership
                             .getUnofficialPostName());
                 }).collect(Collectors.toList());
-
-
-        List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
-        // This should change the database setup probably.
-
-        if (superGroups.isEmpty()) {
-            throw new RuntimeException("Why supergroup is empty?!");
-        }
-
 
         return new FKITGroupView(
                 group.getId(),

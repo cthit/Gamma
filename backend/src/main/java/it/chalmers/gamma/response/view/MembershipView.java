@@ -14,32 +14,36 @@ public class MembershipView {
     }
 
     public Post getPost() {
-        return post;
+        return this.post;
     }
 
     public String getUnofficialPostName() {
-        return unofficialPostName;
+        return this.unofficialPostName;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         MembershipView that = (MembershipView) o;
-        return Objects.equals(post, that.post) &&
-                Objects.equals(unofficialPostName, that.unofficialPostName);
+        return Objects.equals(this.post, that.post)
+                && Objects.equals(this.unofficialPostName, that.unofficialPostName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(post, unofficialPostName);
+        return Objects.hash(this.post, this.unofficialPostName);
     }
 
     @Override
     public String toString() {
-        return "MembershipView{" +
-                "post=" + post +
-                ", unofficialPostName='" + unofficialPostName + '\'' +
-                '}';
+        return "MembershipView{"
+                + "post=" + this.post
+                + ", unofficialPostName='" + this.unofficialPostName + '\''
+                + '}';
     }
 }
