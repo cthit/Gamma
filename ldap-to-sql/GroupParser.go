@@ -8,7 +8,7 @@ import (
 )
 
 var superGroupQuery = "\n insert into fkit_super_group (id, name, pretty_name, email, type) \nvalues "
-var postAddQuery = "\n insert into post (id, post_name) \nvalues "
+var postAddQuery = "\n insert into post (id, post_name, email_prefix) \nvalues "
 var membershipQuery = "\n insert into membership (ituser_id, fkit_group_id, post_id, unofficial_post_name) \nvalues"
 var membershipQueryNoUser = "\n insert into no_account_membership (user_name, fkit_group_id, post_id, unofficial_post_name) \nvalues"
 var groupQuery = "\n insert into fkit_group (id, name, pretty_name, description, function, email, becomes_active, becomes_inactive) \nvalues"
@@ -62,9 +62,17 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 	AddDefaultPosts(file)
 	for i := 2; i < len(data); i++ {
 		if strings.Contains(data[i][0], "cn=ordf") || strings.Contains(data[i][0], "cn=kassor") {
-			isSpecialMember[ExtractMember(data[i][7])+ExtractGroupNameUser(data[i][0])] = true
+			isSpecialMember[ExtractMember(data[i][7])+ExtractGroupNameUser(strings.Replace(data[i][0], "8", "", 1))] = true
 		}
 	}
+	for key, val := range isSpecialMember {
+		// Convert each key/value pair in m to a string
+		s := fmt.Sprintf("%s=\"%T\"", key, val)
+		// Do whatever you want to do with the string;
+		// in this example I just print out each of them.
+		fmt.Println(s)
+	}
+	fmt.Println(isSpecialMember["levenwstyrit"])
 	for i := 2; i < len(data); i++ {
 		if strings.Contains(data[i][1], "organizationalUnit") && data[i][2] != "fkit" {
 			prettyName := data[i][5]
@@ -129,26 +137,39 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				}
 				i := 0
 				loggedUsers := []string{}
-				for j := 0; j < len(mems)-1; j++ {
+				for j := 1; j < len(mems); j++ {
 					mems1 := strings.Split(mems[j], ",")
 					nm := strings.Replace(name, "1", "", -1)
-					nm = strings.Replace(nm, "8", "", -1)
 					nm = strings.Replace(nm, "9", "", -1)
 					postname := "medlem"
+
 					userName := mems1[0]
-					if i < nPostNames {
-						postNameq2 := strings.Split(postNameq1[j], ";")
+					if(isSpecialMember[userName + nm]){
+						loggedUsers = append(loggedUsers, userName+nm)
+					}
+					for i = 0; i < nPostNames; i++ {
+						postNameq2 := strings.Split(postNameq1[i], ";")
+						nameInPost := strings.Replace(postNameq2[1], " ", "", -1)
+						if name == "drawit18" {
+							println(userName)
+							println(nameInPost + " " + postNameq2[0])
+						}
+						if nameInPost == userName {
+							if name == "drawit18" {
+								println(userName + " matched")
+							}
+							postname = postNameq2[0]
+							break
+						}
 						if isSpecialMember[strings.Replace(postNameq2[1], " ", "", -1)+nm] {
-							i++
 							continue
 						}
-						postname = postNameq2[0]
-						userName = strings.Replace(postNameq2[1], " ", "", -1)
-						i++
-
 					}
-					if contains(loggedUsers, userName) {
+					if contains(loggedUsers, userName + nm) {
 						continue
+					}
+					if name == "drawit18" {
+						println("writing " + userName)
 					}
 					loggedUsers = append(loggedUsers, userName)
 					if userMap[userName] != "" {
@@ -177,7 +198,7 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 			superGroupPrettyName := data[i][5]
 			superGroupId := GenerateUUID()
 			superGroupMail := data[i][9]
-			superGroupType := "ALUMI"
+			superGroupType := "ALUMNI"
 			WriteSuperGroup(SuperGroup{
 				id:          superGroupId,
 				name:        superGroupName,
@@ -189,7 +210,6 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 				subGroupq1 := strings.Split(subGroupsq1[j], ",ou=")[0]
 				subGroupq2 := strings.Replace(subGroupq1, "cn=", "", -1)
 				subGroup := strings.Replace(subGroupq2, " ", "", -1)
-				fmt.Println(subGroup)
 				writeGroupToSuperGroup(group_to_super_group{
 					super_group: superGroupId,
 					group:       groupMap[subGroup],
@@ -198,7 +218,6 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 		}
 	}
 	for i := 2; i < len(data); i++ {
-
 		if strings.Contains(data[i][0], "cn=ordf") {
 			WriteMembership(Membership{
 				ituser_id:           userMap[ExtractMember(data[i][7])],
@@ -300,20 +319,27 @@ func AddDefaultPosts(file *os.File) {
 	uuid1 := GenerateUUID()
 	uuid2 := GenerateUUID()
 	uuid3 := GenerateUUID()
+	emailPrefix1 := "ordf"
+	emailPrefix2 := "kassor"
+	emailPrefix3 := ""
+
 
 	file.WriteString("('" + uuid1 + "', ")
-	file.WriteString("'" + textUUID1 + "'), \n")
+	file.WriteString("'" + textUUID1 + "', ")
+	file.WriteString("'" + emailPrefix1 + "'), \n")
 	file.WriteString("('" + uuid2 + "', ")
-	file.WriteString("'" + textUUID2 + "'), \n")
+	file.WriteString("'" + textUUID2 + "', ")
+	file.WriteString("'" + emailPrefix2 + "'), \n")
 	file.WriteString("('" + uuid3 + "', ")
-	file.WriteString("'" + textUUID3 + "'); \n")
+	file.WriteString("'" + textUUID3 + "', ")
+	file.WriteString("'" + emailPrefix3 + "'); \n")
 	postMap[chairman] = uuid1
 	postMap[treasurer] = uuid2
 	postMap[member] = uuid3
 }
 
 func getYear(group string) string {
-	if group == "dpo" || group == "hookit" || group == "revisorer" || group == "valberedningen" {
+	if group == "dpo" || group == "hookit" || group == "revisorer" || group == "valberedningen" || group == "equalit"{
 		return "18"
 	}
 	return "19"
