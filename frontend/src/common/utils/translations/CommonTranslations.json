@@ -41,5 +41,7 @@
     "FailedDeleting": [
         "Failed when trying to delete",
         "Misslyckades att radera"
-    ]
+    ],
+    "Groups": ["Groups", "Grupper"],
+    "NoGroups": ["No groups", "Inga grupper"]
 }

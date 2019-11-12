@@ -9,5 +9,16 @@
     "LastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
     "Edit": ["Edit account", "Redigera konto"],
     "ChangePassword": ["Change Password", "Ändra Lösenord"],
-    "Language": ["Language", "Språk"]
+    "Language": ["Language", "Språk"],
+    "LanguageLowerLabel": ["Your preferred language", "Din föredragna språk"],
+    "AcceptanceYearLowerLabel": ["When you started IT", "När du började IT"],
+    "Password": ["Your password", "Ditt lösenord"],
+    "AreYouReallySure": [
+        "Are you really sure you want to permanently delete your own account. This action is irreversibel.",
+        "Är du säker att du verkligen vill radera ditt konto permanent? Denna återgärd är oåterkallelig."
+    ],
+    "YouMustEnterPassword": [
+        "You need to confirm your password to be able to delete your account",
+        "Du måste bekräfta ditt lösenord för att kunna radera ditt konto"
+    ]
 }

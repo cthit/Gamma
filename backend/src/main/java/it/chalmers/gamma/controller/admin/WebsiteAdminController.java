@@ -3,8 +3,6 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.requests.CreateWebsiteRequest;
 import it.chalmers.gamma.response.EditedWebsiteResponse;
-import it.chalmers.gamma.response.GetAllWebsitesResponse;
-import it.chalmers.gamma.response.GetWebsiteResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.WebsiteAddedResponse;
 import it.chalmers.gamma.response.WebsiteDeletedResponse;
@@ -14,7 +12,6 @@ import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
 
@@ -54,15 +51,6 @@ public final class WebsiteAdminController {
         return new WebsiteAddedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Website> getWebsite(@PathVariable("id") String id) {
-        Website website = this.websiteService.getWebsiteById(id);
-        if (website == null) {
-            throw new WebsiteNotFoundResponse();
-        }
-        return new GetWebsiteResponse(website);
-    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<String> editWebsite(
             @PathVariable("id") String id,
@@ -86,9 +74,5 @@ public final class WebsiteAdminController {
         return new WebsiteDeletedResponse();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Website>> getAllWebsites() {
-        return new GetAllWebsitesResponse(this.websiteService.getAllWebsites());
-    }
 
 }
