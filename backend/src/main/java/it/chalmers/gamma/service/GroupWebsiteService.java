@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
         this.repository = repository;
     }
 
-    public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) throws DataIntegrityViolationException {
+    public void addGroupWebsites(FKITGroupDTO group, List<WebsiteURL> websiteURLs) throws DataIntegrityViolationException {
         if (websiteURLs == null || group == null) {
             return;
         }
@@ -69,7 +70,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
 
     }
 
-    public List<WebsiteInterface> getWebsites(FKITGroup group) {
+    public List<WebsiteInterface> getWebsites(FKITGroupDTO group) {
         List<GroupWebsite> groupWebsites = this.repository.findAllByGroup(group);
         return new ArrayList<>(groupWebsites);
     }
@@ -79,7 +80,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
     }
 
     @Transactional
-    public void deleteWebsitesConnectedToGroup(FKITGroup group) {
+    public void deleteWebsitesConnectedToGroup(FKITGroupDTO group) {
         this.repository.deleteAllByGroup(group);
     }
 

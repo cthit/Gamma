@@ -1,6 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
+import it.chalmers.gamma.domain.dto.MembershipDTO;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +26,14 @@ public class Membership {
     @Transient
     private List<FKITSuperGroup> fkitSuperGroups;
 
+    public MembershipDTO toDTO(){
+        return new MembershipDTO(
+            this.id.getPost(),
+            this.unofficialPostName,
+            this.id.getITUser().toDTO()
+        );
+    }
+
     public MembershipPK getId() {
         return this.id;
     }
@@ -32,7 +41,6 @@ public class Membership {
     public void setId(MembershipPK id) {
         this.id = id;
     }
-
 
     public String getUnofficialPostName() {
         return this.unofficialPostName;
@@ -77,4 +85,5 @@ public class Membership {
             + ", fkitSuperGroups='" + this.fkitSuperGroups + '\''
             + '}';
     }
+
 }

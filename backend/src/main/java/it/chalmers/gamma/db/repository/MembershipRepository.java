@@ -1,9 +1,9 @@
 package it.chalmers.gamma.db.repository;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Repository;
 public interface MembershipRepository extends JpaRepository<Membership, UUID> {
     List<Membership> findAllById_Post(Post post);
 
-    List<Membership> findAllById_ItUser(ITUser itUser);
+    List<Membership> findAllById_ItUser(ITUserDTO itUser);
 
-    Membership findById_ItUserAndId_Post(ITUser user, Post post);
+    Membership findById_ItUserAndId_Post(ITUserDTO user, Post post);
 
-    List<Membership> findAllById_FkitGroupAndId_Post(FKITGroup group, Post post);
+    List<Membership> findAllById_FkitGroupAndId_Post(FKITGroupDTO group, Post post);
 
-    List<Membership> findAllById_FkitGroup(FKITGroup group);
+    List<Membership> findAllById_FkitGroup(FKITGroupDTO group);
 
-    Membership findById_ItUserAndId_FkitGroup(ITUser user, FKITGroup group);
+    Membership findById_ItUserAndId_FkitGroup(ITUserDTO user, FKITGroupDTO group);
 }

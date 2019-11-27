@@ -4,7 +4,7 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +64,9 @@ public class EntityWebsiteService {
      * @param websites a list of websites to be ordered
      * @return a list of websites in an ordered fashion
      */
-    public List<WebsiteView> getWebsitesOrdered(List<WebsiteInterface> websites) {
+    public List<WebsiteDTO> getWebsitesOrdered(List<WebsiteInterface> websites) {
         List<Website> websiteTypes = new ArrayList<>();
-        List<WebsiteView> groupedWebsites = new ArrayList<>();
+        List<WebsiteDTO> groupedWebsites = new ArrayList<>();
 
         //loops through all websites added to group.
         for (WebsiteInterface website : websites) {
@@ -88,7 +88,7 @@ public class EntityWebsiteService {
 
                 // if the websitetype is not found, it is added.
                 websiteTypes.add(website.getWebsite().getWebsite());
-                WebsiteView newGroup = new WebsiteView(website.getWebsite().getWebsite());
+                WebsiteDTO newGroup = new WebsiteDTO(website.getWebsite().getWebsite());
                 newGroup.setUrl(new ArrayList<>());
                 newGroup.getUrl().add(website.getWebsite().getUrl());
                 groupedWebsites.add(newGroup);

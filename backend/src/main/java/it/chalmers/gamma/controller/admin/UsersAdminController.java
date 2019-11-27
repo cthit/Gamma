@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.CreateGroupRequest;
@@ -15,11 +16,12 @@ import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
+import it.chalmers.gamma.response.user.GetITUsersResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -125,9 +127,8 @@ public final class UsersAdminController {
             throw new UserNotFoundResponse();
         }
         List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
-        ITUserSerializer serializer = new ITUserSerializer(props);
-        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
-        List<WebsiteView> websiteViews =
+        ITUserDTO user = this.itUserService.getUserById(UUID.fromString(id));
+        List<WebsiteDTO> websiteViews =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
@@ -136,22 +137,22 @@ public final class UsersAdminController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<JSONObject> getAllUsers() {
-        List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
-        ITUserSerializer serializer = new ITUserSerializer(props);
-        List<ITUser> users = this.itUserService.loadAllUsers();
-        List<JSONObject> userViewList = new ArrayList<>();
-        for (ITUser user : users) {
-            List<WebsiteView> websiteViews =
-                    this.userWebsiteService.getWebsitesOrdered(
-                            this.userWebsiteService.getWebsites(user)
-                    );
-            JSONObject userView = serializer.serialize(user, websiteViews,
-                    ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
-            userViewList.add(userView);
-
-        }
-        return userViewList;
+    public GetITUsersResponse getAllUsers() {
+//        List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
+//        ITUserSerializer serializer = new ITUserSerializer(props);
+//        List<ITUser> users = this.itUserService.loadAllUsers();
+//        List<JSONObject> userViewList = new ArrayList<>();
+//        for (ITUser user : users) {
+//            List<WebsiteDTO> websiteViews =
+//                    this.userWebsiteService.getWebsitesOrdered(
+//                            this.userWebsiteService.getWebsites(user)
+//                    );
+//            JSONObject userView = serializer.serialize(user, websiteViews,
+//                    ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+//            userViewList.add(userView);
+//
+//        }
+        return this.itUserService.loadAllUsers();
     }
 
     /**

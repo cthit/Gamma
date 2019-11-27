@@ -8,15 +8,19 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.dto.FKITGroupDTO;
-import it.chalmers.gamma.dto.ITUserDTO;
-import it.chalmers.gamma.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.FKITMinifiedGroupDTO;
+import it.chalmers.gamma.domain.dto.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
+import it.chalmers.gamma.domain.dto.MembershipDTO;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
+import it.chalmers.gamma.response.group.GetFKITGroupResponse;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,121 +59,52 @@ public final class FKITGroupController {
     }
 
     @GetMapping("/{id}")
-    public FKITGroupDTO getGroup(@PathVariable("id") String id) {
-        final FKITGroup group = this.getGroupByIdOrName(id);
-
-        List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
-        // This should change the database setup probably.
-
-        if (superGroups.isEmpty()) {
-            throw new RuntimeException("Why supergroup is empty?!");
-        }
+    public GetFKITGroupResponse getGroup(@PathVariable("id") String id) {
+        final FKITGroupDTO group = this.getGroupByIdOrName(id);
 
         /* Retrieves all websites associated with a
            group ordered after website-type I.E. facebook pages */
-        List<WebsiteView> websiteViews =
+        List<WebsiteDTO> websiteViews =
                 this.groupWebsiteService.getWebsitesOrdered(
                         this.groupWebsiteService.getWebsites(group)
                 );
 
-        List<MembershipDTO> minifiedMembers = this.getMembershipView(group);
+        List<MembershipDTO> minifiedMembers = this.getMembershipDTO(group);
 
-        return new FKITGroupDTO(
-                group.getId(),
-                group.getBecomesActive(),
-                group.getBecomesInactive(),
-                group.getDescription(),
-                group.getEmail(),
-                group.getFunction(),
-                group.isActive(),
-                group.getName(),
-                group.getPrettyName(),
-                minifiedMembers,
-                superGroups,
-                websiteViews
-        );
+        return null;
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
-    public List<FKITGroupDTO> getGroupsMinified() {
-        List<FKITGroup> groups = this.fkitGroupService.getGroups();
-        return groups.stream().map(g -> new FKITGroupDTO(
-                g.getId(),
-                null,
-                null,
-                g.getDescription(),
-                g.getEmail(),
-                g.getFunction(),
-                g.isActive(),
-                g.getName(),
-                null,
-                null,
-                null,
-                null
-        )).collect(Collectors.toList());
+    public List<FKITMinifiedGroupDTO> getGroupsMinified() {
+        return this.fkitGroupService.getGroups().stream().map(FKITGroupDTO::toMinifiedDTO).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
-    public FKITGroupDTO getGroupMinified(@PathVariable("id") String id) {
-        final FKITGroup group = this.getGroupByIdOrName(id);
-        return new FKITGroupDTO(
-                group.getId(),
-                null,
-                null,
-                null,
-                group.getEmail(),
-                group.getFunction(),
-                group.isActive(),
-                group.getName(),
-                null,
-                null,
-                null,
-                null
-        );
+    public FKITMinifiedGroupDTO getGroupMinified(@PathVariable("id") String id) {
+        return this.getGroupByIdOrName(id).toMinifiedDTO();
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public List<FKITGroupDTO> getGroups() {
-        List<FKITGroup> groups = this.fkitGroupService.getGroups();
-        return new ArrayList<>(groups.stream().map(g -> new FKITGroupDTO(
-                g.getId(),
-                g.getBecomesActive(),
-                g.getBecomesInactive(),
-                g.getDescription(),
-                g.getEmail(),
-                g.getFunction(),
-                g.isActive(),
-                g.getName(),
-                g.getPrettyName(),
-                this.getMembershipView(g),
-                this.fkitGroupToSuperGroupService.getSuperGroups(g),
-                this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(g))
-        )).collect(Collectors.toList()));
+        return this.fkitGroupService.getGroups();
     }
 
     @RequestMapping(value = "/active", method = RequestMethod.GET)
-    public List<JSONObject> getActiveGroups() {
-        List<FKITGroup> groups = this.fkitGroupService.getGroups().stream()
-                .filter(FKITGroup::isActive).collect(Collectors.toList());
-        FKITGroupSerializer groupSerializer = new FKITGroupSerializer(FKITGroupSerializer.Properties
-                .getAllProperties());
-        ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
-        List<JSONObject> serializedUsers = new ArrayList<>();
-        List<JSONObject> serializedGroups = new ArrayList<>();
-        for (FKITGroup group : groups) {
-            List<ITUser> members = this.membershipService.getUsersInGroup(group);
-            for (ITUser member : members) {
-                serializedUsers.add(userSerializer.serialize(member, null, null));
-            }
-            List<FKITSuperGroup> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
-            serializedGroups.add(groupSerializer.serialize(group, serializedUsers,
-                    this.groupWebsiteService.getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)),
-                    superGroups));
+    public GetActiveFKITGroupsResponse getActiveGroups() {
+        List<FKITGroupDTO> groups = this.fkitGroupService.getGroups().stream()
+                .filter(FKITGroupDTO::isActive).collect(Collectors.toList());
+
+        for (FKITGroupDTO group : groups) {
+            List<ITUserDTO> members = this.membershipService.getUsersInGroup(group);
+
+            List<FKITSuperGroupDTO> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
         }
-        return serializedGroups;
+
+        //TODO
+        return null;
     }
 
-    private FKITGroup getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
+    private FKITGroupDTO getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
         try {
             return Optional.ofNullable(this.fkitGroupService.getGroup(idOrName))
                     .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(idOrName))))
@@ -180,16 +115,17 @@ public final class FKITGroupController {
         }
     }
 
-    private List<MembershipDTO> getMembershipView(FKITGroup g) {
+    private List<MembershipDTO> getMembershipDTO(FKITGroupDTO g) {
         return this.membershipService.getUsersInGroup(g).stream().map(user -> {
-            Membership membership = this.membershipService.getMembershipByUserAndGroup(user, g);
+            MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, g);
             return new MembershipDTO(membership.getId().getPost(),
                     membership.getUnofficialPostName(),
-                    new ITUserDTO(user.getId(), user.getCid(), user.getNick(), user.getFirstName(),
-                            user.getLastName(), null, null, null, null,
-                            user.isGdpr(), user.isUserAgreement(), user.isAccountLocked(),
-                            user.getAcceptanceYear(), null));
+                    membership.getId().getITUser().toDTO());
         }).collect(Collectors.toList());
+    }
+
+    private List<FKITSuperGroupDTO> getSuperGroupsDTO(FKITGroupDTO g) {
+        return this.fkitGroupToSuperGroupService.getSuperGroups(g);
     }
 
 }

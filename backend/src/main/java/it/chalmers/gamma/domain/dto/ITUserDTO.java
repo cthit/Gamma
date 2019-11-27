@@ -1,4 +1,4 @@
-package it.chalmers.gamma.dto;
+package it.chalmers.gamma.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.Language;
@@ -22,7 +22,6 @@ public class ITUserDTO {
     private final boolean userAgreement;
     private final boolean accountLocked;
     private final Year acceptanceYear;
-    private final List<FKITGroupDTO> groups;
 
     public ITUserDTO(UUID id,
                      String cid,
@@ -36,7 +35,7 @@ public class ITUserDTO {
                      boolean gdpr,
                      boolean userAgreement,
                      boolean accountLocked,
-                     Year acceptanceYear, List<FKITGroupDTO> groups) {
+                     Year acceptanceYear) {
         this.id = id;
         this.cid = cid;
         this.nick = nick;
@@ -50,7 +49,6 @@ public class ITUserDTO {
         this.userAgreement = userAgreement;
         this.accountLocked = accountLocked;
         this.acceptanceYear = acceptanceYear;
-        this.groups = groups;
     }
 
     public UUID getId() {
@@ -105,10 +103,6 @@ public class ITUserDTO {
         return this.acceptanceYear;
     }
 
-    public List<FKITGroupDTO> getGroups() {
-        return this.groups;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -130,8 +124,7 @@ public class ITUserDTO {
                 && Objects.equals(this.phone, that.phone)
                 && this.language == that.language
                 && Objects.equals(this.avatarUrl, that.avatarUrl)
-                && Objects.equals(this.acceptanceYear, that.acceptanceYear)
-                && Objects.equals(this.groups, that.groups);
+                && Objects.equals(this.acceptanceYear, that.acceptanceYear);
     }
 
     @Override
@@ -148,8 +141,7 @@ public class ITUserDTO {
                 this.gdpr,
                 this.userAgreement,
                 this.accountLocked,
-                this.acceptanceYear,
-                this.groups);
+                this.acceptanceYear);
     }
 
     @Override
@@ -168,7 +160,6 @@ public class ITUserDTO {
                 + ", userAgreement=" + this.userAgreement
                 + ", accountLocked=" + this.accountLocked
                 + ", acceptanceYear=" + this.acceptanceYear
-                + ", groups=" + this.groups
                 + '}';
     }
 }

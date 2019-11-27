@@ -8,13 +8,13 @@ import java.util.UUID;
 /**
  * object to store websites in ordered way, used by getWebsitesOrdered method.
  */
-public class WebsiteView {
+public class WebsiteDTO {
     private UUID id;
     private String name;
     private final String prettyName;
     private List<String> url;
 
-    public WebsiteView(Website website) {
+    public WebsiteDTO(Website website) {
         this.id = website.getId();
         this.name = website.getName();
         this.prettyName = website.getPrettyName();

@@ -7,6 +7,7 @@ import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
+import it.chalmers.gamma.domain.dto.MembershipDTO;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,13 +61,13 @@ public class AuthorityService {
         this.authorityRepository.deleteByInternalId(id);
     }
 
-    public List<AuthorityLevel> getAuthorities(List<Membership> memberships) {
+    public List<AuthorityLevel> getAuthorities(List<MembershipDTO> memberships) {
         List<AuthorityLevel> authorityLevels = new ArrayList<>();
-        for (Membership membership : memberships) {
+        for (MembershipDTO membership : memberships) {
             List<Authority> authorities = this.fkitGroupToSuperGroupService
-                    .getSuperGroups(membership.getId().getFKITGroup())
+                    .getSuperGroups(membership.getGroup())
                     .stream().map(group -> this.getAuthorityLevel(group,
-                            membership.getId().getPost())).collect(Collectors.toList());
+                            membership.getPost())).collect(Collectors.toList());
             for (Authority authority : authorities) {
                 if (authority != null) {
                     Calendar start = membership.getId().getFKITGroup().getBecomesActive();

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.dto.FKITSuperGroupDTO;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -79,6 +80,12 @@ public class FKITSuperGroup {
         this.email = email;
     }
 
+    public FKITSuperGroupDTO toDTO(){
+        return new FKITSuperGroupDTO(
+            this.id, this.name, this.prettyName, this.type, this.email
+        );
+    }
+
     @Override
     public String toString() {
         return "FKITSuperGroup{"
@@ -88,31 +95,5 @@ public class FKITSuperGroup {
                 + ", type=" + this.type
                 + ", email='" + this.email + '\''
                 + '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        FKITSuperGroup that = (FKITSuperGroup) o;
-        return Objects.equals(this.id, that.id)
-                && Objects.equals(this.name, that.name)
-                && Objects.equals(this.prettyName, that.prettyName)
-                && this.type == that.type
-                && Objects.equals(this.email, that.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                this.id,
-                this.name,
-                this.prettyName,
-                this.type,
-                this.email);
     }
 }

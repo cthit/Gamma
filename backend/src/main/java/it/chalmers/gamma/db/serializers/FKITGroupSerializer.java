@@ -3,7 +3,7 @@ package it.chalmers.gamma.db.serializers;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.util.SerializerUtils;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class FKITGroupSerializer {
     public JSONObject serialize(
             FKITGroup value,
             @Nullable List<JSONObject> groupMembers,
-            @Nullable List<WebsiteView> websites,
+            @Nullable List<WebsiteDTO> websites,
             List<FKITSuperGroup> superGroups) {
         List<SerializerValue> values = new ArrayList<>();
 
@@ -28,9 +28,6 @@ public class FKITGroupSerializer {
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.NAME), value.getName(), "name")
-        );
-        values.add(new SerializerValue(
-                this.properties.contains(Properties.IS_ACTIVE), value.isActive(), "isActive")
         );
         values.add(new SerializerValue(
                 this.properties.contains(Properties.BECOMES_ACTIVE), value.getBecomesActive(), "becomesActive"

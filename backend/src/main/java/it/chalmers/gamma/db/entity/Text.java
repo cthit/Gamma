@@ -25,12 +25,17 @@ public class Text {
     @Column(name = "en")
     private String en;
 
+    public Text(String sv, String en) {
+        this.sv = sv;
+        this.en = en;
+        this.id = UUID.randomUUID();
+    }
+
     public Text() {
         this.sv = "";
         this.en = "";
         this.id = UUID.randomUUID();
     }
-
 
     public UUID getId() {
         return this.id;

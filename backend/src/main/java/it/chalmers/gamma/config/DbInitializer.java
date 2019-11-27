@@ -9,6 +9,8 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.service.ApiKeyService;
@@ -164,13 +166,13 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             request.setBecomesActive(start);
             request.setBecomesInactive(end);
             FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
-            FKITGroup group = this.groupService.createGroup(request);
+            FKITGroupDTO group = null;//this.groupService.createGroup(request);
             this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
             Post post = this.postService.addPost(p);
-            ITUser user = this.userservice.createUser(admin,
+            ITUserDTO user = this.userservice.createUser(admin,
                     admin,
                     admin,
                     admin,

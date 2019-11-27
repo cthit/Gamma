@@ -5,12 +5,15 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
+import it.chalmers.gamma.domain.dto.MembershipDTO;
 
 import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,24 +61,24 @@ public class ITUserService implements UserDetailsService {
             details = this.itUserRepository.findByCid(cidOrEmail);
         }
 
-        if (details != null) {
-            details.setAuthority(getAuthorities(details));
-        }
+//        if (details != null) {
+//            details.setAuthority(getAuthorities(details));
+//        }
         return details;
     }
 
-    public ITUser loadUser(String cid) throws UsernameNotFoundException {
-        ITUser user = this.itUserRepository.findByCid(cid);
-        if (user != null) {
-            user.setAuthority(getAuthorities(user));
-        }
+    public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
+        ITUserDTO user = this.itUserRepository.findByCid(cid).toDTO();
+//        if (user != null) {
+//            user.setAuthority(getAuthorities(user));
+//        }
         return user;
     }
 
-    private List<GrantedAuthority> getAuthorities(ITUser details) {
-        List<Membership> memberships = this.membershipService.getMembershipsByUser(details);
+    private List<GrantedAuthority> getAuthorities(ITUserDTO details) {
+        List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Membership membership : memberships) {
+        for (MembershipDTO membership : memberships) {
             AuthorityLevel authorityLevel = this.authorityLevelService
                     .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString());
             if (authorityLevel != null) {
@@ -86,10 +89,9 @@ public class ITUserService implements UserDetailsService {
         return authorities;
     }
 
-    public List<ITUser> loadAllUsers() {
-        return this.itUserRepository.findAll();
+    public List<ITUserDTO> loadAllUsers() {
+        return this.itUserRepository.findAll().stream().map(ITUser::toDTO).collect(Collectors.toList());
     }
-
 
     public boolean userExists(String cid) {
         return this.itUserRepository.existsByCid(cid);
@@ -99,7 +101,7 @@ public class ITUserService implements UserDetailsService {
         return this.itUserRepository.existsById(id);
     }
 
-    public ITUser createUser(String nick,
+    public ITUserDTO createUser(String nick,
                              String firstName,
                              String lastname,
                              String cid,
@@ -122,7 +124,7 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
         itUser.setPassword(this.passwordEncoder.encode(password));
         this.itUserRepository.save(itUser);
-        return itUser;
+        return itUser.toDTO();
     }
 
     public void removeUser(UUID id) {
@@ -142,19 +144,19 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUser getUserById(UUID id) {
-        ITUser user = this.itUserRepository.findById(id).orElse(null);
-        if (user != null) {
-            user.setAuthority(getAuthorities(user));
-        }
+    public ITUserDTO getUserById(UUID id) {
+        ITUserDTO user = this.itUserRepository.findById(id).map(ITUser::toDTO).orElse(null);
+//        if (user != null) {
+//            user.setAuthority(getAuthorities(user));
+//        }
         return user;
     }
 
     public ITUser getUserByEmail(String email) {
         ITUser user = this.itUserRepository.findByEmail(email);
-        if (user != null) {
-            user.setAuthority(getAuthorities(user));
-        }
+//        if (user != null) {
+//            user.setAuthority(getAuthorities(user));
+//        }
         return user;
     }
 
@@ -164,7 +166,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editGdpr(UUID id, boolean gdpr) {
-        ITUser user = getUserById(id);
+        //ITUser user = getUserById(id);
         user.setGdpr(gdpr);
         this.itUserRepository.save(user);
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
 
 import java.time.Instant;
 import java.time.Year;
@@ -90,11 +91,28 @@ public class ITUser implements UserDetails {
     @Transient
     private List<GrantedAuthority> authorities;
 
-
     public ITUser() {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.lastModifiedAt = Instant.now();
+    }
+
+    public ITUserDTO toDTO(){
+        return new ITUserDTO(
+            this.id,
+            this.cid,
+            this.nick,
+            this.firstName,
+            this.lastName,
+            this.email,
+            this.phone,
+            this.language,
+            this.avatarUrl,
+            this.gdpr,
+            this.userAgreement,
+            this.accountLocked,
+            Year.of(this.acceptanceYear)
+        );
     }
 
     public UUID getId() {

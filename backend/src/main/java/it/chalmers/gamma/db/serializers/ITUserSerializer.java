@@ -3,7 +3,7 @@ package it.chalmers.gamma.db.serializers;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.util.SerializerUtils;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class ITUserSerializer {
     }
 
     public JSONObject serialize(ITUser value,
-                                @Nullable List<WebsiteView> websites,
+                                @Nullable List<WebsiteDTO> websites,
                                 @Nullable List<JSONObject> groups) {
         List<SerializerValue> values = new ArrayList<>();
         values.add(serializeValue(Properties.ID, value.getId(), "id"));

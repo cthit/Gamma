@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
 import it.chalmers.gamma.response.GetGroupsResponse;
 import it.chalmers.gamma.response.GetSuperGroupResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
@@ -65,7 +66,7 @@ public class SuperGroupController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<FKITSuperGroup> getSuperGroup(@PathVariable("id") String id) {
+    public GetSuperGroupResponse getSuperGroup(@PathVariable("id") String id) {
         if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
@@ -83,14 +84,10 @@ public class SuperGroupController {
         ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
         List<JSONObject> serializedGroups = new ArrayList<>();
         for (FKITGroup group : groups) {
-            List<ITUser> users = this.membershipService.getUsersInGroup(group);
-            List<JSONObject> serializedUsers = new ArrayList<>();
-            for (ITUser user : users) {
-                serializedUsers.add(userSerializer.serialize(user, null, null));
-            }
-            serializedGroups.add(serializer.serialize(group, serializedUsers, this.groupWebsiteService
-                    .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)), null));
+            List<ITUserDTO> users = this.membershipService.getUsersInGroup(group);
+//            serializedGroups.add(serializer.serialize(group, serializedUsers, this.groupWebsiteService
+//                    .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)), null));
         }
-        return serializedGroups;
+        return null;
     }
 }

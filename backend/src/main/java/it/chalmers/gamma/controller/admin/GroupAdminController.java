@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
@@ -89,7 +90,7 @@ public final class GroupAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
 
-        FKITGroup group = this.fkitGroupService.createGroup(createGroupRequest);
+        FKITGroupDTO group = this.fkitGroupService.createGroup(createGroupRequest);
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
         if (websites != null && !websites.isEmpty()) {
@@ -132,8 +133,8 @@ public final class GroupAdminController {
         if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
-        this.fkitGroupService.editGroup(UUID.fromString(id), request);
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
+//        this.fkitGroupService.editGroup(UUID.fromString(id), request);
+        FKITGroupDTO group = this.fkitGroupService.getGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteInterface> entityWebsites = new ArrayList<>(
                 this.groupWebsiteService.getWebsites(group)
@@ -160,7 +161,7 @@ public final class GroupAdminController {
 
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
     public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroupDTO group = this.fkitGroupService.getGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }

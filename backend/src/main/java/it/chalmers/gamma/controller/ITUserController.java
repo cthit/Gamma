@@ -39,7 +39,7 @@ import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.views.WebsiteView;
+import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -153,7 +153,7 @@ public final class ITUserController {
         ITUser user = this.itUserService.loadUser(cid);
         ITUserSerializer serializer =
                 new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
-        List<WebsiteView> websites =
+        List<WebsiteDTO> websites =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
@@ -198,7 +198,7 @@ public final class ITUserController {
         ITUserSerializer serializer = new ITUserSerializer(
                 ITUserSerializer.Properties.getAllProperties()
         );
-        List<WebsiteView> websites =
+        List<WebsiteDTO> websites =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );

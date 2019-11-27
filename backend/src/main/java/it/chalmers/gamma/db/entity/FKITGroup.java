@@ -1,10 +1,8 @@
 package it.chalmers.gamma.db.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -41,7 +39,6 @@ public class FKITGroup {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text function;
 
-
     @Column(name = "becomes_active")
     private Calendar becomesActive;
 
@@ -53,6 +50,19 @@ public class FKITGroup {
 
     public FKITGroup() {
         this.id = UUID.randomUUID();
+    }
+
+    public FKITGroupDTO toDTO(){
+        return new FKITGroupDTO(
+            this.id,
+            this.becomesActive,
+            this.becomesInactive,
+            this.description,
+            this.email,
+            this.function,
+            this.name,
+            this.prettyName
+        );
     }
 
     public UUID getId() {
@@ -95,52 +105,8 @@ public class FKITGroup {
         this.function = function;
     }
 
-    @JsonIgnore
-    public String getSVFunction() {
-        return this.function.getSv();
-    }
-
-    public void setSVFunction(String function) {
-        this.function.setSv(function);
-    }
-
-    @JsonIgnore
-    public String getENFunction() {
-        return this.function.getEn();
-    }
-
-    public void setENFunction(String function) {
-        this.function.setEn(function);
-    }
-
     public String getPrettyName() {
         return this.prettyName;
-    }
-
-    @JsonIgnore
-    public String getSVDescription() {
-        if (this.description == null) {
-            return null;
-        }
-        return this.description.getSv();
-    }
-
-    public void setSVDescription(String description) {
-        this.description.setSv(description);
-    }
-
-    @JsonIgnore
-    public String getENDescription() {
-        if (this.description == null) {
-            return null;
-        }
-        return this.description.getEn();
-    }
-
-
-
-    public void setENDescription(String description) {
-        this.description.setEn(description);
     }
 
     public void setPrettyName(String prettyName) {
@@ -161,11 +127,6 @@ public class FKITGroup {
 
     public void setBecomesInactive(Calendar becomesInactive) {
         this.becomesInactive = becomesInactive;
-    }
-
-    public boolean isActive() {
-        Calendar now = new GregorianCalendar();
-        return now.after(this.becomesActive) && now.before(this.becomesInactive);
     }
 
     public String getEmail() {
@@ -191,37 +152,4 @@ public class FKITGroup {
                 + '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        FKITGroup fkitGroup = (FKITGroup) o;
-        return Objects.equals(this.id, fkitGroup.id)
-                && Objects.equals(this.avatarURL, fkitGroup.avatarURL)
-                && Objects.equals(this.name, fkitGroup.name)
-                && Objects.equals(this.prettyName, fkitGroup.prettyName)
-                && Objects.equals(this.description, fkitGroup.description)
-                && Objects.equals(this.function, fkitGroup.function)
-                && Objects.equals(this.becomesActive, fkitGroup.becomesActive)
-                && Objects.equals(this.becomesInactive, fkitGroup.becomesInactive)
-                && Objects.equals(this.email, fkitGroup.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                this.id,
-                this.avatarURL,
-                this.name,
-                this.prettyName,
-                this.description,
-                this.function,
-                this.becomesActive,
-                this.becomesInactive,
-                this.email);
-    }
 }

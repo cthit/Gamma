@@ -35,6 +35,23 @@ public class CreateGroupRequest {
 
     private String email;
 
+    public CreateGroupRequest(String name, String prettyName, Text description, Text function,
+                              String avatarURL, List<WebsiteInfo> websites,
+                              Calendar becomesActive, Calendar becomesInactive,
+                              String superGroup, String email) {
+        this.name = name;
+        this.prettyName = prettyName;
+        this.description = description;
+        this.function = function;
+        this.avatarURL = avatarURL;
+        this.websites = websites;
+        this.becomesActive = becomesActive;
+        this.becomesInactive = becomesInactive;
+        this.superGroup = superGroup;
+        this.email = email;
+    }
+
+    public CreateGroupRequest() {}
 
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
@@ -116,7 +133,6 @@ public class CreateGroupRequest {
         this.email = email;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -126,31 +142,21 @@ public class CreateGroupRequest {
             return false;
         }
         CreateGroupRequest that = (CreateGroupRequest) o;
-        return Objects.equals(this.name, that.name)
-                && Objects.equals(this.prettyName, that.prettyName)
-                && Objects.equals(this.description, that.description)
-                && Objects.equals(this.function, that.function)
-                && Objects.equals(this.avatarURL, that.avatarURL)
-                && Objects.equals(this.websites, that.websites)
-                && Objects.equals(this.becomesActive, that.becomesActive)
-                && Objects.equals(this.becomesInactive, that.becomesInactive)
-                && Objects.equals(this.superGroup, that.superGroup)
-                && Objects.equals(this.email, that.email);
+        return Objects.equals(name, that.name) &&
+            Objects.equals(prettyName, that.prettyName) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(function, that.function) &&
+            Objects.equals(avatarURL, that.avatarURL) &&
+            Objects.equals(websites, that.websites) &&
+            Objects.equals(becomesActive, that.becomesActive) &&
+            Objects.equals(becomesInactive, that.becomesInactive) &&
+            Objects.equals(superGroup, that.superGroup) &&
+            Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                this.name,
-                this.prettyName,
-                this.description,
-                this.function,
-                this.avatarURL,
-                this.websites,
-                this.becomesActive,
-                this.becomesInactive,
-                this.superGroup,
-                this.email);
+        return Objects.hash(name, prettyName, description, function, avatarURL, websites, becomesActive, becomesInactive, superGroup, email);
     }
 
     @Override

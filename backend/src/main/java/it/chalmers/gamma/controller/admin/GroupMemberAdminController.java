@@ -5,6 +5,9 @@ import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 
+import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.ITUserDTO;
+import it.chalmers.gamma.domain.dto.MembershipDTO;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
 
@@ -97,15 +100,15 @@ public final class GroupMemberAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(groupId));
+        FKITGroupDTO group = this.fkitGroupService.getGroup(UUID.fromString(groupId));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
+        ITUserDTO user = this.itUserService.getUserById(UUID.fromString(userId));
         if (user == null) {
             throw new UserNotFoundResponse();
         }
-        Membership membership = this.membershipService.getMembershipByUserAndGroup(user, group);
+        MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, group);
         Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         this.membershipService.editMembership(membership, request.getUnofficialName(), post);
         return new EditedMembershipResponse();

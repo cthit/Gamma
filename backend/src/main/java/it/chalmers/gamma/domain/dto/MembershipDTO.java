@@ -1,4 +1,4 @@
-package it.chalmers.gamma.dto;
+package it.chalmers.gamma.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.db.entity.Post;
