@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -54,6 +55,10 @@ public class AuthorityLevel implements GrantedAuthority {
         AuthorityLevel that = (AuthorityLevel) o;
         return Objects.equals(this.id, that.id)
                 && Objects.equals(this.authorityLevel, that.authorityLevel);
+    }
+
+    public AuthorityLevelDTO toDTO() {
+        return new AuthorityLevelDTO(this.id, this.authorityLevel);
     }
 
     @Override
