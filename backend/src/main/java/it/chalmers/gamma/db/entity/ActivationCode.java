@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
@@ -89,6 +90,14 @@ public class ActivationCode {
 
     public boolean isValid() {
         return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(this.passwordExpirationTime)));
+    }
+
+    public ActivationCodeDTO toDTO() {
+        return new ActivationCodeDTO(this.id,
+                this.cid.toDTO(),
+                this.code,
+                this.createdAt,
+                this.passwordExpirationTime);
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,10 +40,10 @@ public class ActivationCodeService {
                     this.activationCodeRepository.findByCid_Cid(user));
         }
         Whitelist whitelist = this.whitelistService.getWhitelist(whitelistDTO);
-        ActivationCode activationCode = new ActivationCode(cid);
+        ActivationCode activationCode = new ActivationCode(whitelist);
         activationCode.setCode(code);
         this.activationCodeRepository.save(activationCode);
-        return activationCode;
+        return activationCode.toDTO();
     }
 
     public boolean codeMatches(String code, String user) {
@@ -53,7 +54,7 @@ public class ActivationCodeService {
         return activationCode.getCode().equals(code);
     }
 
-    public boolean userHasCode(String cid) {
+    private boolean userHasCode(String cid) {
         return this.activationCodeRepository.findByCid_Cid(cid) != null;
     }
 
@@ -70,11 +71,12 @@ public class ActivationCodeService {
         return this.activationCodeRepository.existsById(id);
     }
 
-    public List<ActivationCode> getAllActivationCodes() {
-        return this.activationCodeRepository.findAll();
+    public List<ActivationCodeDTO> getAllActivationCodes() {
+        return this.activationCodeRepository.findAll().stream()
+                .map(ActivationCode::toDTO).collect(Collectors.toList());
     }
 
-    public ActivationCode getActivationCode(UUID id) {
-        return this.activationCodeRepository.findById(id).orElse(null);
+    public ActivationCodeDTO getActivationCode(UUID id) {
+        return this.activationCodeRepository.findById(id).map(ActivationCode::toDTO).orElse(null);
     }
 }

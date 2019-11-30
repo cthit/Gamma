@@ -216,7 +216,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
             apiKey.setDescription(apiDescription);
 
-            this.apiKeyService.addApiKey(apiKey);
+            this.apiKeyService.addApiKey(this.oauth2ClientName, this.oauth2ClientApiKey, apiDescription);
         }
     }
 }

@@ -3,12 +3,14 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ApiKeyRepository;
+import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,24 +40,25 @@ public class ApiKeyService {
         return key;
     }
 
-    public void addApiKey(ApiKey apiKey) {
+    public void addApiKey(String clientName, String clientApiKey, Text description) {
+        ApiKey apiKey = new ApiKey(clientName, clientApiKey, description);
         this.apiKeyRepository.save(apiKey);
     }
 
-    public ApiKey getApiKeyDetails(UUID id) {
-        return this.apiKeyRepository.getById(id);
+    public ApiKeyDTO getApiKeyDetails(UUID id) {
+        return this.apiKeyRepository.getById(id).toDTO();
     }
 
-    public ApiKey getApiKeyDetails(String name) {
-        return this.apiKeyRepository.getByName(name);
+    public ApiKeyDTO getApiKeyDetails(String name) {
+        return this.apiKeyRepository.getByName(name).toDTO();
     }
 
     public void deleteApiKey(UUID id) {
         this.apiKeyRepository.deleteById(id);
     }
 
-    public List<ApiKey> getAllApiKeys() {
-        return this.apiKeyRepository.findAll();
+    public List<ApiKeyDTO> getAllApiKeys() {
+        return this.apiKeyRepository.findAll().stream().map(ApiKey::toDTO).collect(Collectors.toList());
     }
 
     public boolean apiKeyExists(UUID id) {
