@@ -20,12 +20,12 @@ public class FKITSuperGroupService {
         this.repository = repository;
     }
 
-    public FKITSuperGroupDTO createSuperGroup(CreateSuperGroupRequest request) {
+    public FKITSuperGroupDTO createSuperGroup(FKITSuperGroupDTO superGroupDTO) {
         FKITSuperGroup group = new FKITSuperGroup();
-        group.setName(request.getName());
-        group.setPrettyName(request.getPrettyName() == null ? request.getName() : request.getPrettyName());
-        group.setType(request.getType());
-        group.setEmail(request.getEmail());
+        group.setName(superGroupDTO.getName());
+        group.setPrettyName(superGroupDTO.getPrettyName() == null ? superGroupDTO.getName() : superGroupDTO.getPrettyName());
+        group.setType(superGroupDTO.getType());
+        group.setEmail(superGroupDTO.getEmail());
         return this.repository.save(group).toDTO();
     }
 
@@ -47,12 +47,12 @@ public class FKITSuperGroupService {
         return this.repository.findAll().stream().map(FKITSuperGroup::toDTO).collect(Collectors.toList());
     }
 
-    public void updateSuperGroup(UUID id, CreateSuperGroupRequest request) {
+    public void updateSuperGroup(UUID id, FKITSuperGroupDTO superGroupDTO) {
         FKITSuperGroup group = this.repository.getById(id);
-        group.setType(request.getType() == null ? group.getType() : request.getType());
-        group.setName(request.getName() == null ? group.getName() : request.getName());
-        group.setPrettyName(request.getPrettyName() == null ? group.getPrettyName() : request.getPrettyName());
-        group.setEmail(request.getEmail() == null ? group.getEmail() : request.getEmail());
+        group.setType(superGroupDTO.getType() == null ? group.getType() : superGroupDTO.getType());
+        group.setName(superGroupDTO.getName() == null ? group.getName() : superGroupDTO.getName());
+        group.setPrettyName(superGroupDTO.getPrettyName() == null ? group.getPrettyName() : superGroupDTO.getPrettyName());
+        group.setEmail(superGroupDTO.getEmail() == null ? group.getEmail() : superGroupDTO.getEmail());
         this.repository.save(group);
     }
 
