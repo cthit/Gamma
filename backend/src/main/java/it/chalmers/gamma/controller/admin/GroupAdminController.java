@@ -111,7 +111,7 @@ public final class GroupAdminController {
         }
 
         if (createGroupRequest.getSuperGroup() != null) {
-            FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(
+            FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroupDTO(
                     UUID.fromString(createGroupRequest.getSuperGroup()));
             if (superGroup == null) {
                 throw new GroupDoesNotExistResponse();
@@ -133,7 +133,7 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
 //        this.fkitGroupService.editGroup(UUID.fromString(id), request);
-        FKITGroupDTO group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
         List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteInterface> entityWebsites = new ArrayList<>(
                 this.groupWebsiteService.getWebsites(group)
@@ -151,16 +151,16 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-                this.fkitGroupService.getGroup(UUID.fromString(id))
+                this.fkitGroupService.getDTOGroup(UUID.fromString(id))
         );
-        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getGroup(UUID.fromString(id)));
+        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getDTOGroup(UUID.fromString(id)));
         this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
     public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroupDTO group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }

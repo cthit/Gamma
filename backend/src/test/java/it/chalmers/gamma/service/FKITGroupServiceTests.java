@@ -43,7 +43,7 @@ public class FKITGroupServiceTests {
         );
 
 //        fkitGroupService.createGroup(createGroupRequest);
-//        FKITGroup group = fkitGroupService.getGroup(createGroupRequest.getName());
+//        FKITGroup group = fkitGroupService.getDTOGroup(createGroupRequest.getName());
 
 //        assertRequestEntityEquals(createGroupRequest, group);
     }

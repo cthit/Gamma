@@ -39,11 +39,11 @@ public class FKITGroupService {
         return this.repo.findAll().stream().map(FKITGroup::toDTO).collect(Collectors.toList());
     }
 
-    public FKITGroupDTO getGroup(String name) {
+    public FKITGroupDTO getDTOGroup(String name) {
         return this.repo.findByName(name).map(FKITGroup::toDTO).orElse(null);
     }
 
-    public FKITGroupDTO getGroup(UUID id) {
+    public FKITGroupDTO getDTOGroup(UUID id) {
         return this.repo.findById(id).map(FKITGroup::toDTO).orElse(null);
     }
 
@@ -54,6 +54,10 @@ public class FKITGroupService {
 
     public void save(FKITGroup group) {
         this.repo.save(group);
+    }
+
+    protected FKITGroup getGroup(FKITGroupDTO group) {
+        return this.repo.findById(group.getId()).orElse(null);
     }
 
 }

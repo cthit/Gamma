@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -41,6 +43,10 @@ public class Whitelist {
 
     public void setCid(String cid) {
         this.cid = cid;
+    }
+
+    public WhitelistDTO toDTO() {
+        return new WhitelistDTO(this.id, this.cid);
     }
 
     @Override

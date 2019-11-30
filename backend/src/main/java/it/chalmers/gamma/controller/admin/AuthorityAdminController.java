@@ -67,7 +67,7 @@ public final class AuthorityAdminController {
         if (post == null) {
             throw new PostDoesNotExistResponse();
         }
-        FKITSuperGroup group = this.fkitSuperGroupService.getGroup(UUID.fromString(request.getSuperGroup()));
+        FKITSuperGroup group = this.fkitSuperGroupService.getGroupDTO(UUID.fromString(request.getSuperGroup()));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }

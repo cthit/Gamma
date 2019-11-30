@@ -47,7 +47,7 @@ public class SuperGroupController {
 
     @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
     public ResponseEntity<List<FKITGroup>> getAllSubGroups(@PathVariable("id") String id) {
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroupDTO(UUID.fromString(id));
         if (superGroup == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -69,7 +69,7 @@ public class SuperGroupController {
         if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
-        return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroup(UUID.fromString(id)));
+        return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroupDTO(UUID.fromString(id)));
     }
 
     @RequestMapping(value = "/{id}/active", method = RequestMethod.GET)
@@ -77,7 +77,7 @@ public class SuperGroupController {
         if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
             throw new GroupDoesNotExistResponse();
         }
-        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(UUID.fromString(id));
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroupDTO(UUID.fromString(id));
         List<FKITGroup> groups = this.fkitGroupToSuperGroupService.getActiveGroups(superGroup);
         FKITGroupSerializer serializer = new FKITGroupSerializer(FKITGroupSerializer.Properties.getAllProperties());
         ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());

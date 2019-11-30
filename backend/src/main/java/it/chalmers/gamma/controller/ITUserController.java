@@ -99,7 +99,7 @@ public final class ITUserController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        Whitelist user = this.whitelistService.getWhitelist(
+        Whitelist user = this.whitelistService.getWhitelistDTO(
                 createITUserRequest.getWhitelist().getCid()
         );
 

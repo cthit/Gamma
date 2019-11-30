@@ -70,7 +70,7 @@ public final class GroupMemberAdminController {
             throw new PostDoesNotExistResponse();
         }
         ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUserId()));
-        FKITGroup fkitGroup = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroup fkitGroup = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
         Post post = this.postService.getPost(UUID.fromString(request.getPost()));
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new UserAddedToGroupResponse();
@@ -79,7 +79,7 @@ public final class GroupMemberAdminController {
     @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteUserFromGroup(@PathVariable("id") String id,
                                                       @PathVariable("user") String userId) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
+        FKITGroup group = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -99,7 +99,7 @@ public final class GroupMemberAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITGroupDTO group = this.fkitGroupService.getGroup(UUID.fromString(groupId));
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(UUID.fromString(groupId));
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }

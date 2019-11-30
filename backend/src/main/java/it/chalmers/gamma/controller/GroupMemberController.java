@@ -38,12 +38,13 @@ public class GroupMemberController {
 
     private FKITGroupDTO getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
         try {
-            return Optional.ofNullable(this.fkitGroupService.getGroup(idOrName))
-                    .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(idOrName))))
+            return Optional.ofNullable(this.fkitGroupService.getDTOGroup(idOrName))
+                    .or(() -> Optional.ofNullable(this.fkitGroupService.getDTOGroup(UUID.fromString(idOrName))))
                     .orElseThrow(GroupDoesNotExistResponse::new);
         }
         catch (IllegalArgumentException e) {
             throw new GroupDoesNotExistResponse();
         }
     }
+
 }

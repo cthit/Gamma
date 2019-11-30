@@ -6,7 +6,9 @@ import it.chalmers.gamma.db.repository.WhitelistRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,8 +44,8 @@ public class WhitelistService {
      * @param cid the cid thats searched for
      * @return if found the whitelist object searched for, otherwise null
      */
-    public Whitelist getWhitelist(String cid) {
-        return this.whitelistRepository.findByCid(cid);
+    public WhitelistDTO getWhitelistDTO(String cid) {
+        return this.whitelistRepository.findByCid(cid).toDTO();
     }
 
     /**
@@ -60,8 +62,9 @@ public class WhitelistService {
         return this.whitelistRepository.existsById(id);
     }
 
-    public List<Whitelist> getAllWhitelist() {
-        return this.whitelistRepository.findAll();
+    public List<WhitelistDTO> getAllWhitelist() {
+        return this.whitelistRepository.findAll()
+                .stream().map(Whitelist::toDTO).collect(Collectors.toList());
     }
 
     /**
@@ -70,20 +73,26 @@ public class WhitelistService {
      * @param id the GROUP_ID of the whitelist object to get
      * @return the whitelist object that has corresponding GROUP_ID
      */
-    public Whitelist getWhitelistById(String id) {
-        Optional<Whitelist> whitelist = this.whitelistRepository.findById(UUID.fromString(id));
+    public WhitelistDTO getWhitelistById(String id) {
+        Optional<WhitelistDTO> whitelist = this.whitelistRepository
+                .findById(UUID.fromString(id)).map(Whitelist::toDTO);
         return whitelist.orElse(null);
     }
 
     /**
      * edits the cid of a already whitelisted object.
      *
-     * @param whitelist the old whitelist object that should be edited
+     * @param whitelistDTO the old whitelist object that should be edited
      * @param newCid    the new cid that will replace the old whitelisted cid
      */
-    public void editWhitelist(Whitelist whitelist, String newCid) {
+    public void editWhitelist(WhitelistDTO whitelistDTO, String newCid) {
+        Whitelist whitelist = this.whitelistRepository.findByCid(whitelistDTO.getCid());
         whitelist.setCid(newCid);
         this.whitelistRepository.save(whitelist);
+    }
+
+    public Whitelist getWhitelist(WhitelistDTO whitelistDTO) {
+        return this.whitelistRepository.findById(whitelistDTO.getId()).orElse(null);
     }
 
 }

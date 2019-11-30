@@ -49,7 +49,7 @@ public final class WhitelistController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
-            Whitelist whitelist = this.whitelistService.getWhitelist(cid.getCid());
+            Whitelist whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
             String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
             ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);

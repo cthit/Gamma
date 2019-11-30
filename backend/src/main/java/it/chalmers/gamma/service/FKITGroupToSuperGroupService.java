@@ -17,19 +17,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class FKITGroupToSuperGroupService {
     private final FKITGroupToSuperGroupRepository repository;
+    private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITGroupService fkitGroupService;
 
-    public FKITGroupToSuperGroupService(FKITGroupToSuperGroupRepository repository) {
+    public FKITGroupToSuperGroupService(FKITGroupToSuperGroupRepository repository, FKITSuperGroupService fkitSuperGroupService, FKITGroupService fkitGroupService) {
         this.repository = repository;
+        this.fkitSuperGroupService = fkitSuperGroupService;
+        this.fkitGroupService = fkitGroupService;
     }
 
-    public void addRelationship(FKITGroup group, FKITSuperGroup superGroup) {
+    public void addRelationship(FKITGroupDTO groupDTO, FKITSuperGroupDTO superGroupDTO) {
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(superGroupDTO);
+        FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
         FKITGroupToSuperGroupPK id = new FKITGroupToSuperGroupPK(superGroup, group);
         FKITGroupToSuperGroup relationship = new FKITGroupToSuperGroup(id);
         this.repository.save(relationship);
     }
 
-    public List<FKITGroupToSuperGroup> getRelationships(FKITSuperGroup superGroup) {
-        return this.repository.findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
+    public List<FKITGroupToSuperGroup> getRelationships(FKITSuperGroupDTO superGroup) {
+        return this.repository.findFKITGroupToSuperGroupsById_SuperGroup_Id(superGroup.getId());
     }
 
     public List<FKITSuperGroupDTO> getSuperGroups(FKITGroupDTO group) {
@@ -39,7 +45,8 @@ public class FKITGroupToSuperGroupService {
                 .getSuperGroup()).collect(Collectors.toList());
     }
 
-    public void deleteRelationship(FKITGroup group, FKITSuperGroup superGroup) {
+    public void deleteRelationship(FKITGroupDTO groupDTO, FKITSuperGroupDTO superGroupDTO) {
+
         this.repository.delete(this.repository.findFKITGroupToSuperGroupsById_GroupAndId_SuperGroup(group, superGroup));
     }
     public List<FKITGroupToSuperGroup> getAllRelationships() {
@@ -52,12 +59,12 @@ public class FKITGroupToSuperGroupService {
      * @param superGroup the super group to retrieve active group from
      * @return the fkit group that is active
      */
-    public List<FKITGroup> getActiveGroups(FKITSuperGroup superGroup) {
+    public List<FKITGroupDTO> getActiveGroups(FKITSuperGroupDTO superGroup) {
         List<FKITGroupToSuperGroup> relationships = this.repository
-                .findFKITGroupToSuperGroupsById_SuperGroup(superGroup);
-        List<FKITGroup> groups = new ArrayList<>();
-        relationships.stream().filter(e -> e.getId().getGroup().isActive())
-                .forEach(e -> groups.add(e.getId().getGroup()));
+                .findFKITGroupToSuperGroupsById_SuperGroup_Id(superGroup.getId());
+        List<FKITGroupDTO> groups = new ArrayList<>();
+        relationships.stream().filter(e -> e.getId().getGroup().toDTO().isActive())
+                .forEach(e -> groups.add(e.getId().getGroup().toDTO()));
         return groups;
     }
 }

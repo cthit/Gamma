@@ -1,14 +1,15 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
+import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Value;
+import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,24 +18,27 @@ import org.springframework.stereotype.Service;
 public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
+    private final WhitelistService whitelistService;
 
-    public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
+    public ActivationCodeService(ActivationCodeRepository activationCodeRepository, WhitelistService whitelistService) {
         this.activationCodeRepository = activationCodeRepository;
+        this.whitelistService = whitelistService;
     }
 
     /**
      * connects and places a whitelisted user and a code in the database.
      *
-     * @param cid  the already whiteslisted user
+     * @param whitelistDTO the information regarding the whitelistDTO
      * @param code the code that is associated with a user
      * @return a copy of the ActivationCode object added to the database
      */
-    public ActivationCode saveActivationCode(Whitelist cid, String code) {
-        if (userHasCode(cid.getCid())) {
+    public ActivationCodeDTO saveActivationCode(WhitelistDTO whitelistDTO, String code) {
+        String user = whitelistDTO.getCid();
+        if (userHasCode(user)) {
             this.activationCodeRepository.delete(
-                    this.activationCodeRepository.findByCid_Cid(cid.getCid())
-            );
+                    this.activationCodeRepository.findByCid_Cid(user));
         }
+        Whitelist whitelist = this.whitelistService.getWhitelist(whitelistDTO);
         ActivationCode activationCode = new ActivationCode(cid);
         activationCode.setCode(code);
         this.activationCodeRepository.save(activationCode);
