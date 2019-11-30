@@ -51,17 +51,21 @@ public class PostService {
         return this.repository.findAll().stream().map(Post::toDTO).collect(Collectors.toList());
     }
 
-    public PostDTO getPost(String post) {
+    public PostDTO getPostDTO(String post) {
         return this.repository.getByPostName_Sv(post).toDTO();
     }
 
-    public PostDTO getPost(UUID id) {
+    public PostDTO getPostDTO(UUID id) {
         Optional<PostDTO> post = this.repository.findById(id).map(Post::toDTO);
         return post.orElse(null);
     }
 
     public void deletePost(UUID id) {
         this.repository.deleteById(id);
+    }
+
+    protected Post getPost(PostDTO postDTO) {
+        return this.repository.findById(postDTO.getId()).orElse(null);
     }
 
 }

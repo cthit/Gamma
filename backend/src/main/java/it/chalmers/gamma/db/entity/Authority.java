@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 
+import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class Authority {
 
     @Target(AuthorityPK.class)
     @EmbeddedId
-    AuthorityPK id;
+    private AuthorityPK id;
 
     @Column(name = "id")
     private UUID internalId;
@@ -55,6 +56,15 @@ public class Authority {
 
     public Authority() {
         this.internalId = UUID.randomUUID();
+    }
+
+    public AuthorityDTO toDTO(){
+        return new AuthorityDTO(
+                this.id.getFkitSuperGroup().toDTO(),
+                this.id.getPost().toDTO(),
+                this.internalId,
+                this.authorityLevel.toDTO()
+                );
     }
 
 

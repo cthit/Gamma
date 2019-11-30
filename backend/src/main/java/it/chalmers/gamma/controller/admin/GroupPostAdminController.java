@@ -76,7 +76,7 @@ public final class GroupPostAdminController {
     public ResponseEntity<String> editPost(
             @RequestBody AddPostRequest request,
             @PathVariable("id") String id) {
-        Post post = this.postService.getPost(UUID.fromString(id));
+        Post post = this.postService.getPostDTO(UUID.fromString(id));
         if (post == null) {
             throw new PostDoesNotExistResponse();
 
@@ -118,7 +118,7 @@ public final class GroupPostAdminController {
                 FKITGroupSerializer.Properties.NAME,
                 FKITGroupSerializer.Properties.GROUP_ID,
                 FKITGroupSerializer.Properties.USERS);
-        Post post = this.postService.getPost(UUID.fromString(id));
+        Post post = this.postService.getPostDTO(UUID.fromString(id));
         List<FKITGroup> groups = this.membershipService.getGroupsWithPost(post);
         ITUserSerializer itUserSerializer = new ITUserSerializer(itUserProperties);
         FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(fkitGroupProperties);

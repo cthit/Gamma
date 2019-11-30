@@ -63,7 +63,7 @@ public final class AuthorityAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
+        Post post = this.postService.getPostDTO(UUID.fromString(request.getPost()));
         if (post == null) {
             throw new PostDoesNotExistResponse();
         }
@@ -72,7 +72,7 @@ public final class AuthorityAdminController {
             throw new GroupDoesNotExistResponse();
         }
         AuthorityLevel level =
-                this.authorityLevelService.getAuthorityLevel(
+                this.authorityLevelService.getAuthorityLevelDTO(
                         UUID.fromString(request.getAuthority())
                 );
         if (level == null) {

@@ -33,11 +33,11 @@ public class AuthorityLevelService {
         return this.authorityLevelRepository.existsById(id);
     }
 
-    public AuthorityLevelDTO getAuthorityLevel(UUID authorityLevel) {
+    public AuthorityLevelDTO getAuthorityLevelDTO(UUID authorityLevel) {
         return this.authorityLevelRepository.findById(authorityLevel).map(AuthorityLevel::toDTO).orElse(null);
     }
 
-    public AuthorityLevelDTO getAuthorityLevel(String authorityLevel) {
+    public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {
         return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel).toDTO();
     }
 
@@ -49,4 +49,7 @@ public class AuthorityLevelService {
         this.authorityLevelRepository.deleteById(id);
     }
 
+    protected AuthorityLevel getAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
+        return this.authorityLevelRepository.findById(authorityLevelDTO.getId()).orElse(null);
+    }
 }

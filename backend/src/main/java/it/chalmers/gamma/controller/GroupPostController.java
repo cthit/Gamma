@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.response.post.GetMultiplePostsResponse;
 import it.chalmers.gamma.response.post.GetMultiplePostsResponse.GetMultiplePostsResponseObject;
@@ -8,11 +7,9 @@ import it.chalmers.gamma.response.post.GetPostResponse;
 import it.chalmers.gamma.response.post.GetPostResponse.GetPostResponseObject;
 import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.service.PostService;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +27,7 @@ public class GroupPostController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetPostResponseObject getPost(@PathVariable("id") String id) {
-        PostDTO post = Optional.of(this.postService.getPost(UUID.fromString(id)))
+        PostDTO post = Optional.of(this.postService.getPostDTO(UUID.fromString(id)))
                 .orElseThrow(PostDoesNotExistResponse::new);
         return new GetPostResponse(post).getResponseObject();
     }

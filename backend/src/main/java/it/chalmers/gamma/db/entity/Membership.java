@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import java.util.List;
 import java.util.Objects;
 
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -26,13 +27,7 @@ public class Membership {
     @Transient
     private List<FKITSuperGroup> fkitSuperGroups;
 
-    public MembershipDTO toDTO(){
-        return new MembershipDTO(
-            this.id.getPost(),
-            this.unofficialPostName,
-            this.id.getITUser().toDTO()
-        );
-    }
+
 
     public MembershipPK getId() {
         return this.id;
@@ -56,6 +51,14 @@ public class Membership {
 
     public void setFkitSuperGroups(List<FKITSuperGroup> fkitSuperGroups) {
         this.fkitSuperGroups = fkitSuperGroups;
+    }
+
+    public MembershipDTO toDTO(){
+        return new MembershipDTO(
+                this.id.getPost().toDTO(),
+                fkitGroupDTO, this.unofficialPostName,
+                this.id.getITUser().toDTO(),
+                this.fkitSuperGroups.stream().map(FKITSuperGroup::toDTO).collect(Collectors.toList()));
     }
 
     @Override

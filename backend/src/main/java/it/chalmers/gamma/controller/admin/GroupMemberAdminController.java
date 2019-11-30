@@ -71,7 +71,7 @@ public final class GroupMemberAdminController {
         }
         ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUserId()));
         FKITGroup fkitGroup = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
-        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
+        Post post = this.postService.getPostDTO(UUID.fromString(request.getPost()));
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new UserAddedToGroupResponse();
     }
@@ -108,7 +108,7 @@ public final class GroupMemberAdminController {
             throw new UserNotFoundResponse();
         }
         MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, group);
-        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
+        Post post = this.postService.getPostDTO(UUID.fromString(request.getPost()));
         this.membershipService.editMembership(membership, request.getUnofficialName(), post);
         return new EditedMembershipResponse();
     }
