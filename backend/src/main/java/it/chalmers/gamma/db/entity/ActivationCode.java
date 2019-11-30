@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name = "activation_code")
@@ -29,6 +32,10 @@ public class ActivationCode {
 
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @Transient
+    @Value("${password-expiration-time}")
+    private final int passwordExpirationTime = 3600;
 
     public Instant getCreatedAt() {
         return this.createdAt;
@@ -80,6 +87,9 @@ public class ActivationCode {
         this.code = code;
     }
 
+    public boolean isValid() {
+        return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(this.passwordExpirationTime)));
+    }
 
     @Override
     public boolean equals(Object o) {

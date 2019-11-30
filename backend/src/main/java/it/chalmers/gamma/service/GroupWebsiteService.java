@@ -1,12 +1,11 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.GroupWebsite;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
 import java.util.ArrayList;
 import java.util.List;

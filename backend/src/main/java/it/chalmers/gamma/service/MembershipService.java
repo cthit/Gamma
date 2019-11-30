@@ -6,9 +6,9 @@ import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.ITUserDTO;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.util.ArrayList;
 import java.util.List;

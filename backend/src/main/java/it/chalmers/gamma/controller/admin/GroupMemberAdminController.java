@@ -2,19 +2,18 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.ITUserDTO;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
 
 import it.chalmers.gamma.response.EditedMembershipResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
+import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.response.UserAddedToGroupResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.UserRemovedFromGroupResponse;

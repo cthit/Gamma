@@ -2,12 +2,9 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 

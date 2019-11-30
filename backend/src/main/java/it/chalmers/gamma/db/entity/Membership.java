@@ -1,7 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.util.List;
 import java.util.Objects;

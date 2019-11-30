@@ -1,9 +1,8 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.dto.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.Column;

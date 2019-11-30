@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.chalmers.gamma.domain.dto.post.PostDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -55,6 +56,10 @@ public class Post {
 
     public String getENPostName() {
         return this.postName.getEn();
+    }
+
+    public PostDTO toDTO() {
+        return new PostDTO(id, postName);
     }
 
     @Override

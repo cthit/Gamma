@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.dto.ITUserDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
 import java.time.Instant;
 import java.time.Year;

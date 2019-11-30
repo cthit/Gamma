@@ -5,8 +5,8 @@ import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 
 import java.util.ArrayList;
 import java.util.List;

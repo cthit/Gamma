@@ -2,7 +2,7 @@ package it.chalmers.gamma.db.repository;
 
 import it.chalmers.gamma.db.entity.GroupWebsite;
 import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
 import java.util.List;
 import java.util.UUID;

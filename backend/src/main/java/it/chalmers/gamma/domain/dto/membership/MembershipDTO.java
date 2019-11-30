@@ -1,8 +1,9 @@
-package it.chalmers.gamma.domain.dto;
+package it.chalmers.gamma.domain.dto.membership;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.db.entity.Post;
 
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import java.util.Objects;
 
 public class MembershipDTO {

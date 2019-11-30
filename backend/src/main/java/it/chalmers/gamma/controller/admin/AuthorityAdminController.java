@@ -18,7 +18,7 @@ import it.chalmers.gamma.response.GetAllAuthorityLevelsResponse;
 import it.chalmers.gamma.response.GetAuthorityResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
+import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITSuperGroupService;

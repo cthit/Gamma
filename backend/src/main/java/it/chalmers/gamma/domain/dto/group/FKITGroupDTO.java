@@ -1,11 +1,10 @@
-package it.chalmers.gamma.domain.dto;
+package it.chalmers.gamma.domain.dto.group;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.db.entity.Text;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Objects;
 import java.util.UUID;
 
 @SuppressWarnings("PMD.ExcessiveParameterList")

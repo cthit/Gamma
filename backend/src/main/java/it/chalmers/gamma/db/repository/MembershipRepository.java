@@ -2,8 +2,8 @@ package it.chalmers.gamma.db.repository;
 
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.ITUserDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
 import java.util.List;
 import java.util.UUID;

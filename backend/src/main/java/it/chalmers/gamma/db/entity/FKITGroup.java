@@ -1,6 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
 import java.util.Calendar;
 import java.util.UUID;

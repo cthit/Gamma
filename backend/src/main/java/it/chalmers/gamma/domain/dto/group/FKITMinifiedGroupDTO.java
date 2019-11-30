@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.dto;
+package it.chalmers.gamma.domain.dto.group;
 
 import it.chalmers.gamma.db.entity.Text;
 

@@ -1,20 +1,13 @@
 package it.chalmers.gamma.controller;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.FKITMinifiedGroupDTO;
-import it.chalmers.gamma.domain.dto.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.dto.ITUserDTO;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITMinifiedGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
+import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
 import it.chalmers.gamma.response.group.GetFKITGroupResponse;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
@@ -28,7 +21,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.json.simple.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,17 +53,10 @@ public final class FKITGroupController {
     @GetMapping("/{id}")
     public GetFKITGroupResponse getGroup(@PathVariable("id") String id) {
         final FKITGroupDTO group = this.getGroupByIdOrName(id);
-
-        /* Retrieves all websites associated with a
-           group ordered after website-type I.E. facebook pages */
-        List<WebsiteDTO> websiteViews =
-                this.groupWebsiteService.getWebsitesOrdered(
-                        this.groupWebsiteService.getWebsites(group)
-                );
-
         List<MembershipDTO> minifiedMembers = this.getMembershipDTO(group);
-
-        return null;
+        List<FKITSuperGroupDTO> superGroups = this.getSuperGroupsDTO(group);
+        List<WebsiteDTO> websites = this.getWebsiteDTO(group);
+        return new GetFKITGroupResponse(group, minifiedMembers, superGroups, websites);
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -90,27 +75,31 @@ public final class FKITGroupController {
     }
 
     @RequestMapping(value = "/active", method = RequestMethod.GET)
-    public GetActiveFKITGroupsResponse getActiveGroups() {
+    public GetActiveFKITGroupResponseObject getActiveGroups() {
         List<FKITGroupDTO> groups = this.fkitGroupService.getGroups().stream()
                 .filter(FKITGroupDTO::isActive).collect(Collectors.toList());
 
+        List<GetFKITGroupResponse> groupResponses = new ArrayList<>();
         for (FKITGroupDTO group : groups) {
-            List<ITUserDTO> members = this.membershipService.getUsersInGroup(group);
+            List<MembershipDTO> members = this.getMembershipDTO(group);
+            List<WebsiteDTO> websites = this.getWebsiteDTO(group);
+            List<FKITSuperGroupDTO> superGroups = this.getSuperGroupsDTO(group);
 
-            List<FKITSuperGroupDTO> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
+            groupResponses.add(new GetFKITGroupResponse(group, members, superGroups, websites));
         }
 
-        //TODO
-        return null;
+        return new GetActiveFKITGroupsResponse(groupResponses).getResponseObject();
     }
+
+
+
 
     private FKITGroupDTO getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
         try {
             return Optional.ofNullable(this.fkitGroupService.getGroup(idOrName))
                     .or(() -> Optional.ofNullable(this.fkitGroupService.getGroup(UUID.fromString(idOrName))))
                     .orElseThrow(GroupDoesNotExistResponse::new);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new GroupDoesNotExistResponse();
         }
     }
@@ -118,14 +107,20 @@ public final class FKITGroupController {
     private List<MembershipDTO> getMembershipDTO(FKITGroupDTO g) {
         return this.membershipService.getUsersInGroup(g).stream().map(user -> {
             MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, g);
-            return new MembershipDTO(membership.getId().getPost(),
+            return new MembershipDTO(membership.getPost(),
                     membership.getUnofficialPostName(),
-                    membership.getId().getITUser().toDTO());
+                    membership.getUser());
         }).collect(Collectors.toList());
     }
 
     private List<FKITSuperGroupDTO> getSuperGroupsDTO(FKITGroupDTO g) {
         return this.fkitGroupToSuperGroupService.getSuperGroups(g);
+    }
+
+    private List<WebsiteDTO> getWebsiteDTO(FKITGroupDTO g) {
+        return this.groupWebsiteService.getWebsitesOrdered(
+                this.groupWebsiteService.getWebsites(g)
+        );
     }
 
 }

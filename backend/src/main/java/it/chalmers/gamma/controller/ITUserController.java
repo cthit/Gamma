@@ -13,6 +13,7 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
@@ -93,7 +94,7 @@ public final class ITUserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    public ResponseEntity<String> createUser(
+    public ResponseEntity<String> createUser(       // TODO, move checks to service, and return only if checks failed or passed
             @Valid @RequestBody CreateITUserRequest createITUserRequest, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -263,7 +264,7 @@ public final class ITUserController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUser user = this.extractUser(principal);
+        ITUserDTO user = this.extractUser(principal);
         if (!this.itUserService.passwordMatches(user, request.getPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
@@ -275,9 +276,9 @@ public final class ITUserController {
         return new UserDeletedResponse();
     }
 
-    private ITUser extractUser(Principal principal) {
+    private ITUserDTO extractUser(Principal principal) {
         String cid = principal.getName();
-        ITUser user = this.itUserService.loadUser(cid);
+        ITUserDTO user = this.itUserService.loadUser(cid);
         if (user == null) {
             throw new UserNotFoundResponse();
         }

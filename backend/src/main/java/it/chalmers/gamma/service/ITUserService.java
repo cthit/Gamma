@@ -2,11 +2,10 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.dto.ITUserDTO;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.time.Instant;
 import java.time.Year;

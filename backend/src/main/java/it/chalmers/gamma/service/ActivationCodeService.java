@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -63,19 +64,6 @@ public class ActivationCodeService {
 
     public boolean codeExists(UUID id) {
         return this.activationCodeRepository.existsById(id);
-    }
-
-    /**
-     * checks if a user has an expired code connected to their account.
-     *
-     * @param user  the name of the user to check
-     * @param hours the expiration time currently set by the system
-     * @return true of the code has expired, false if not
-     */
-    public boolean hasCodeExpired(String user, double hours) {
-        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user);
-        return activationCode.getCreatedAt().getEpochSecond()
-            + (hours * 3600) < Instant.now().getEpochSecond();
     }
 
     public List<ActivationCode> getAllActivationCodes() {

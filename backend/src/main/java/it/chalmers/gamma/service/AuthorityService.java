@@ -3,11 +3,10 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.util.ArrayList;
 import java.util.Calendar;

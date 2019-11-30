@@ -1,12 +1,17 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.response.GetMultiplePostsResponse;
-import it.chalmers.gamma.response.GetPostResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
+import it.chalmers.gamma.domain.dto.post.PostDTO;
+import it.chalmers.gamma.response.post.GetMultiplePostsResponse;
+import it.chalmers.gamma.response.post.GetMultiplePostsResponse.GetMultiplePostsResponseObject;
+import it.chalmers.gamma.response.post.GetPostResponse;
+import it.chalmers.gamma.response.post.GetPostResponse.GetPostResponseObject;
+import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.service.PostService;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +29,10 @@ public class GroupPostController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Post> getPost(@PathVariable("id") String id) {
-        Post post = this.postService.getPost(UUID.fromString(id));
-        if (post == null) {
-            throw new PostDoesNotExistResponse();
-        }
-        return new GetPostResponse(post);
+    public GetPostResponseObject getPost(@PathVariable("id") String id) {
+        PostDTO post = Optional.of(this.postService.getPost(UUID.fromString(id)))
+                .orElseThrow(PostDoesNotExistResponse::new);
+        return new GetPostResponse(post).getResponseObject();
     }
 
 
@@ -39,7 +42,8 @@ public class GroupPostController {
      * @return all posts currently in the system
      */
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Post>> getPosts() {
-        return new GetMultiplePostsResponse(this.postService.getAllPosts());
+    public GetMultiplePostsResponseObject getPosts() {
+        return new GetMultiplePostsResponse(this.postService.getAllPosts().stream()
+                .map(GetPostResponse::new).collect(Collectors.toList())).getResponseObject();
     }
 }

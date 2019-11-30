@@ -11,7 +11,7 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PostAlreadyExistsResponse;
 import it.chalmers.gamma.response.PostCreatedResponse;
 import it.chalmers.gamma.response.PostDeletedResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
+import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.util.InputValidationUtils;

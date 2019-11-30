@@ -1,8 +1,8 @@
 package it.chalmers.gamma.response.group;
 
-import it.chalmers.gamma.domain.dto.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.dto.MembershipDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.util.List;
