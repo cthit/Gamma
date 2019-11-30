@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -49,6 +50,10 @@ public class Website {
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
+    }
+
+    public WebsiteDTO toDTO() {
+        return new WebsiteDTO(this.id, this.name, this.prettyName);
     }
 
     @Override

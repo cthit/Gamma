@@ -95,12 +95,7 @@ public final class UsersAdminController {
                 request.getLanguage());
         // Below handles adding websites.
         ITUser user = this.itUserService.getUserById(UUID.fromString(id));
-        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
         List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<WebsiteInterface> userWebsite = new ArrayList<>(
-                this.userWebsiteService.getWebsites(user)
-        );
-        this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }

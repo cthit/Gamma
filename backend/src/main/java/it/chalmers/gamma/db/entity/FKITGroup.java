@@ -61,8 +61,8 @@ public class FKITGroup {
             this.email,
             this.function,
             this.name,
-            this.prettyName
-        );
+            this.prettyName,
+                avatarURL);
     }
 
     public UUID getId() {

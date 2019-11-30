@@ -19,6 +19,7 @@ public class FKITGroupDTO {
     private final Text function;
     private final String name;
     private final String prettyName;
+    private final String avatarURL;
 
     public FKITGroupDTO(UUID id,
                         Calendar becomesActive,
@@ -27,7 +28,7 @@ public class FKITGroupDTO {
                         String email,
                         Text function,
                         String name,
-                        String prettyName) {
+                        String prettyName, String avatarURL) {
         this.id = id;
         this.becomesActive = becomesActive;
         this.becomesInactive = becomesInactive;
@@ -36,6 +37,7 @@ public class FKITGroupDTO {
         this.function = function;
         this.name = name;
         this.prettyName = prettyName;
+        this.avatarURL = avatarURL;
     }
 
     public UUID getId() {
@@ -73,6 +75,10 @@ public class FKITGroupDTO {
 
     public String getPrettyName() {
         return this.prettyName;
+    }
+
+    public String getAvatarURL() {
+        return avatarURL;
     }
 
     public FKITMinifiedGroupDTO toMinifiedDTO(){

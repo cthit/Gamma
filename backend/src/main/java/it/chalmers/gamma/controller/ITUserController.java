@@ -221,7 +221,6 @@ public final class ITUserController {
         List<WebsiteInterface> userWebsite = new ArrayList<>(
                 this.userWebsiteService.getWebsites(user)
         );
-        this.userWebsiteService.addWebsiteToEntity(websiteInfos, userWebsite);
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }

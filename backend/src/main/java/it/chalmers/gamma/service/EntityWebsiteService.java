@@ -1,14 +1,12 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.views.WebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,76 +19,43 @@ public class EntityWebsiteService {
     }
 
     /**
-     * creates a list of websiteURLs from a list of websiteinfo
-     * and makes sure that no duplicates are made.
-     *
-     * @param websiteInfos   a list of websiteinfo, meaning
-     *                       a type of website and a url
-     * @param entityWebsites a list of objects that extends
-     *                       EntityWebsites IE either GroupWebsites or UserWebsites
-     * @return a list of websiteURLs created from the added website info
-     */
-    public List<WebsiteURL> addWebsiteToEntity(List<CreateGroupRequest.WebsiteInfo> websiteInfos,
-                                               List<WebsiteInterface> entityWebsites) {
-        if (entityWebsites == null || websiteInfos == null) {
-            return null;
-        }
-        List<WebsiteURL> websiteURLs = new ArrayList<>();
-        for (CreateGroupRequest.WebsiteInfo websiteInfo : websiteInfos) {
-            boolean websiteExists = false;
-            Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-            WebsiteURL websiteURL;
-
-            //makes sure that the URL has not been added to the entity already.
-            for (WebsiteInterface duplicateCheck : entityWebsites) {
-                if (duplicateCheck.getWebsite().getUrl().equals(websiteInfo.getUrl())) {
-                    websiteExists = true;
-                    break;
-                }
-            }
-            if (!websiteExists) {
-                websiteURL = new WebsiteURL();
-                websiteURL.setWebsite(website);
-                websiteURL.setUrl(websiteInfo.getUrl());
-                websiteURLs.add(websiteURL);
-            }
-        }
-        return websiteURLs;
-    }
-
-    /**
      * gets all websites ordered after type I.E all facebook pages are subpages of type facebook
      *
      * @param websites a list of websites to be ordered
      * @return a list of websites in an ordered fashion
      */
-    public List<WebsiteDTO> getWebsitesOrdered(List<WebsiteInterface> websites) {
-        List<Website> websiteTypes = new ArrayList<>();
+
+    // TODO I DONT THINK THIS FUNCTION ACCTUALLY DOES ANYTHING USEFULL
+    // Began rewriting it, but I'm unsure why I created it, leaving it for now.
+    public List<WebsiteDTO> getWebsitesOrdered(List<WebsiteInterfaceDTO> websites) {
         List<WebsiteDTO> groupedWebsites = new ArrayList<>();
+        // gets a list of all websiteTypes that an entity has
+        List<WebsiteDTO> websiteTypes = websites.stream().map(w -> w.getWebsiteURL()
+                .getWebsiteDTO()).distinct().collect(Collectors.toList());
 
         //loops through all websites added to group.
-        for (WebsiteInterface website : websites) {
+        for (WebsiteInterfaceDTO website : websites) {
             boolean websiteFound = false;
 
             //loops through all added website types.
             for (int y = 0; y < websiteTypes.size(); y++) {
 
                 // checks if the website has been added to found types.
-                if (websiteTypes.get(y).equals(website.getWebsite().getWebsite())) {
+                if (websiteTypes.get(y).equals(website.getWebsiteURL())) {
 
                     // if website has been found before the url
                     // is added to a list of websites connected to that.
-                    groupedWebsites.get(y).getUrl().add(website.getWebsite().getUrl());
+                    groupedWebsites.get(y).getUrl().add(website.getWebsiteURL().getUrl());
                     websiteFound = true;
                 }
             }
             if (!websiteFound) {
 
                 // if the websitetype is not found, it is added.
-                websiteTypes.add(website.getWebsite().getWebsite());
-                WebsiteDTO newGroup = new WebsiteDTO(website.getWebsite().getWebsite());
+                websiteTypes.add(website.getWebsiteURL().getWebsite());
+                WebsiteDTO newGroup = new WebsiteDTO(website.getWebsiteURL().getWebsite());
                 newGroup.setUrl(new ArrayList<>());
-                newGroup.getUrl().add(website.getWebsite().getUrl());
+                newGroup.getUrl().add(website.getWebsiteURL().getUrl());
                 groupedWebsites.add(newGroup);
             }
         }

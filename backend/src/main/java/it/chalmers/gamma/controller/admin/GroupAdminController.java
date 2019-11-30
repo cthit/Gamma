@@ -138,9 +138,6 @@ public final class GroupAdminController {
         List<WebsiteInterface> entityWebsites = new ArrayList<>(
                 this.groupWebsiteService.getWebsites(group)
         );
-        List<WebsiteURL> websiteURLs = this.groupWebsiteService.addWebsiteToEntity(
-                websiteInfos, entityWebsites
-        );
         this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
         return new GroupEditedResponse();
     }
