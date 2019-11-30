@@ -33,7 +33,6 @@ public class FKITGroupService {
                 fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());
     }
 
-    //TODO if no info, don't change value.
     public FKITGroupDTO editGroup(UUID id, FKITGroupDTO fkitGroupDTO) {
         FKITGroup group = this.repo.findById(id).orElse(null);
         if (group == null) {
@@ -89,12 +88,8 @@ public class FKITGroupService {
     }
 
     public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse{
-        FKITGroup group = this.repo.findById(groupDTO.getId()).orElseThrow(GroupDoesNotExistResponse::new);
+        FKITGroup group = this.getGroup(groupDTO);
         group.setAvatarURL(url);
-        this.repo.save(group);
-    }
-
-    public void save(FKITGroup group) {
         this.repo.save(group);
     }
 

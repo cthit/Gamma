@@ -38,15 +38,17 @@ public class FKITGroupToSuperGroupService {
         return this.repository.findFKITGroupToSuperGroupsById_SuperGroup_Id(superGroup.getId());
     }
 
-    public List<FKITSuperGroupDTO> getSuperGroups(FKITGroupDTO group) {
+    public List<FKITSuperGroupDTO> getSuperGroups(FKITGroupDTO groupDTO) {
+        FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
         List<FKITGroupToSuperGroup> fkitGroupToSuperGroups =
                 this.repository.findAllFKITGroupToSuperGroupsById_Group(group);
         return fkitGroupToSuperGroups.stream().map(fkitGroupToSuperGroup -> fkitGroupToSuperGroup.getId()
-                .getSuperGroup()).collect(Collectors.toList());
+                .getSuperGroup().toDTO()).collect(Collectors.toList());
     }
 
     public void deleteRelationship(FKITGroupDTO groupDTO, FKITSuperGroupDTO superGroupDTO) {
-
+        FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
+        FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroup(superGroupDTO);
         this.repository.delete(this.repository.findFKITGroupToSuperGroupsById_GroupAndId_SuperGroup(group, superGroup));
     }
     public List<FKITGroupToSuperGroup> getAllRelationships() {
@@ -67,4 +69,5 @@ public class FKITGroupToSuperGroupService {
                 .forEach(e -> groups.add(e.getId().getGroup().toDTO()));
         return groups;
     }
+
 }
