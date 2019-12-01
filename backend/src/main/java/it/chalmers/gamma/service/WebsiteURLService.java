@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.WebsiteURLRepository;
 
+import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +51,10 @@ public class WebsiteURLService {
     @Transactional
     public void deleteAllWebsites(Website website) {
         this.repository.deleteAllByWebsite(website);
+    }
+
+    protected WebsiteURL getWebsiteURL(WebsiteURLDTO websiteURLDTO) {
+        return this.repository.findById(websiteURLDTO.getId()).orElse(null);
     }
 
 }

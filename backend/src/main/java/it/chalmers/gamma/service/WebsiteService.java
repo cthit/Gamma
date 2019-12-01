@@ -3,6 +3,7 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.repository.WebsiteRepository;
 
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +55,10 @@ public class WebsiteService {
 
     public List<Website> getAllWebsites() {
         return this.repository.findAll();
+    }
+
+    protected Website getWebsite(WebsiteDTO websiteDTO) {
+        return this.repository.findById(websiteDTO.getId()).orElse(null);
     }
 
 }
