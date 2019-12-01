@@ -15,6 +15,11 @@ public class FKITGroupView {
         this.groups = new ArrayList<>();
     }
 
+    public FKITGroupView(FKITSuperGroup superGroup, List<FKITGroup> groups) {
+        this.superGroup = superGroup;
+        this.groups = new ArrayList<>(groups);
+    }
+
     public List<FKITGroup> getGroups() {
         return this.groups;
     }

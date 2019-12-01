@@ -2,11 +2,14 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.repository.FKITSuperGroupRepository;
+import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,7 +44,8 @@ public class FKITSuperGroupService {
         this.repository.deleteById(id);
     }
     public List<FKITSuperGroup> getAllGroups() {
-        return this.repository.findAll();
+        return Optional.of(this.repository.findAll().stream()
+                .filter(g -> !g.getType().equals(GroupType.ADMIN)).collect(Collectors.toList())).orElseThrow();
     }
 
     public void updateSuperGroup(UUID id, CreateSuperGroupRequest request) {
