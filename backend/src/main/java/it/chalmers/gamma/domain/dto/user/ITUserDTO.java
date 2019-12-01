@@ -3,11 +3,14 @@ package it.chalmers.gamma.domain.dto.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.Language;
 import java.time.Year;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ITUserDTO {
+public class ITUserDTO implements UserDetails {
     private final UUID id;
     private final String cid;
     private final String nick;
@@ -21,6 +24,7 @@ public class ITUserDTO {
     private final boolean userAgreement;
     private final boolean accountLocked;
     private final Year acceptanceYear;
+
 
     public ITUserDTO(UUID id,
                      String cid,
@@ -101,6 +105,42 @@ public class ITUserDTO {
     public Year getAcceptanceYear() {
         return this.acceptanceYear;
     }
+
+    @Override
+    public List<GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.cid;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !this.accountLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 
     @Override
     public boolean equals(Object o) {

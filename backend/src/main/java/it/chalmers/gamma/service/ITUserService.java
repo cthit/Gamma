@@ -60,17 +60,17 @@ public class ITUserService implements UserDetailsService {
             details = this.itUserRepository.findByCid(cidOrEmail);
         }
 
-//        if (details != null) {
-//            details.setAuthority(getAuthorities(details));
-//        }
+        if (details != null) {
+            details.setAuthority(getAuthorities(details));
+        }
         return details;
     }
 
     public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
         ITUserDTO user = this.itUserRepository.findByCid(cid).toDTO();
-//        if (user != null) {
-//            user.setAuthority(getAuthorities(user));
-//        }
+        if (user != null) {
+            user.setAuthority(getAuthorities(user));
+        }
         return user;
     }
 
@@ -145,17 +145,17 @@ public class ITUserService implements UserDetailsService {
 
     public ITUserDTO getUserById(UUID id) {
         ITUserDTO user = this.itUserRepository.findById(id).map(ITUser::toDTO).orElse(null);
-//        if (user != null) {
-//            user.setAuthority(getAuthorities(user));
-//        }
+        if (user != null) {
+            user.setAuthority(getAuthorities(user));
+        }
         return user;
     }
 
     public ITUser getUserByEmail(String email) {
         ITUser user = this.itUserRepository.findByEmail(email);
-//        if (user != null) {
-//            user.setAuthority(getAuthorities(user));
-//        }
+        if (user != null) {
+            user.setAuthority(getAuthorities(user));
+        }
         return user;
     }
 
