@@ -1,0 +1,2 @@
+ALTER TABLE post
+ADD email_prefix VARCHAR(20) NOT NULL DEFAULT ''

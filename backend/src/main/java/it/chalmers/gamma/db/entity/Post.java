@@ -26,9 +26,13 @@ public class Post {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Text postName;
 
+    @Column(name = "email_prefix")
+    private String emailPrefix;
+
     public Post() {
         this.postName = new Text();
         this.id = UUID.randomUUID();
+        this.emailPrefix = "";
     }
 
     public UUID getId() {
@@ -55,6 +59,14 @@ public class Post {
 
     public String getENPostName() {
         return this.postName.getEn();
+    }
+
+    public String getEmailPrefix() {
+        return this.emailPrefix;
+    }
+
+    public void setEmailPrefix(String emailPrefix) {
+        this.emailPrefix = emailPrefix;
     }
 
     @Override
