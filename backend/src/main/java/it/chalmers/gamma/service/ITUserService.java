@@ -119,7 +119,7 @@ public class ITUserService implements UserDetailsService {
         if (itUser.getCid() != null) {
             itUser.setEmail(email);
         }
-        itUser.setEmail(itUser.getCid() + "@student.chalmers.it");
+        itUser.setEmail(itUser.getCid() + "@student.chalmers.se");
         itUser.setPassword(this.passwordEncoder.encode(password));
         this.itUserRepository.save(itUser);
         return itUser;
