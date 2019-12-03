@@ -56,7 +56,8 @@ public class Membership {
     public MembershipDTO toDTO(){
         return new MembershipDTO(
                 this.id.getPost().toDTO(),
-                fkitGroupDTO, this.unofficialPostName,
+                id.getFKITGroup().toDTO(),
+                this.unofficialPostName,
                 this.id.getITUser().toDTO(),
                 this.fkitSuperGroups.stream().map(FKITSuperGroup::toDTO).collect(Collectors.toList()));
     }

@@ -7,10 +7,12 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
 import it.chalmers.gamma.response.InvalidJWTTokenResponse;
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import javax.servlet.FilterChain;
@@ -24,6 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
@@ -61,8 +64,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(String cid) {
-        UserDetails userDetails = this.itUserService.loadUserByUsername(cid);
-        if (userDetails == null) {
+        UserDetails userDetails;
+        try {
+           userDetails = this.itUserService.loadUserByUsername(cid);
+        }
+        catch (UsernameNotFoundException e) {
             throw new InvalidJWTTokenResponse();
         }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
@@ -77,7 +83,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             return Jwts.parser()
                 .requireIssuer(this.issuer)
                 .setSigningKey(Base64.getEncoder().encodeToString(
-                        this.secretKey.getBytes(Charset.forName("UTF-8")))
+                        this.secretKey.getBytes(StandardCharsets.UTF_8))
                 )
                 .parseClaimsJws(token);
         } catch (MalformedJwtException | SignatureException e) {

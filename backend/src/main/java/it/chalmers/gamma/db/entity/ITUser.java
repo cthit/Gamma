@@ -29,7 +29,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "ituser")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @SuppressWarnings({"PMD.TooManyFields"})
-public class ITUser implements UserDetails {
+public class ITUser {
 
     @Id
     @Column(updatable = false)
@@ -88,9 +88,6 @@ public class ITUser implements UserDetails {
     @ColumnDefault("current_timestamp")
     private Instant lastModifiedAt;
 
-    @Transient
-    private List<GrantedAuthority> authorities;
-
     public ITUser() {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
@@ -115,6 +112,26 @@ public class ITUser implements UserDetails {
         );
     }
 
+    public ITUserDTO toUserDetailsDTO(List<GrantedAuthority> authorities){
+        return new ITUserDTO(
+                this.id,
+                this.cid,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.phone,
+                this.language,
+                this.avatarUrl,
+                this.gdpr,
+                this.userAgreement,
+                this.accountLocked,
+                Year.of(this.acceptanceYear),
+                authorities,
+                password
+        );
+    }
+
     public UUID getId() {
         return this.id;
     }
@@ -129,41 +146,6 @@ public class ITUser implements UserDetails {
 
     public void setCid(String cid) {
         this.cid = cid;
-    }
-
-    @Override
-    public List<GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.cid;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !this.accountLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     public void setPassword(String password) {
@@ -274,10 +256,6 @@ public class ITUser implements UserDetails {
         this.accountLocked = accountLocked;
     }
 
-    public void setAuthority(List<GrantedAuthority> authority) {
-        this.authorities = new ArrayList<>(authority);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -343,7 +321,6 @@ public class ITUser implements UserDetails {
             + ", acceptanceYear=" + acceptanceYear
             + ", createdAt=" + createdAt
             + ", lastModifiedAt=" + lastModifiedAt
-            + ", authorities=" + authorities
             + '}';
     }
 }

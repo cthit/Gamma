@@ -6,6 +6,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,6 +25,8 @@ public class ITUserDTO implements UserDetails {
     private final boolean userAgreement;
     private final boolean accountLocked;
     private final Year acceptanceYear;
+    private final List<GrantedAuthority> authorities;
+    private final String password;
 
 
     public ITUserDTO(UUID id,
@@ -52,6 +55,40 @@ public class ITUserDTO implements UserDetails {
         this.userAgreement = userAgreement;
         this.accountLocked = accountLocked;
         this.acceptanceYear = acceptanceYear;
+        this.authorities = null;
+        this.password = null;
+    }
+
+    public ITUserDTO(UUID id,
+                     String cid,
+                     String nick,
+                     String firstName,
+                     String lastName,
+                     String email,
+                     String phone,
+                     Language language,
+                     String avatarUrl,
+                     boolean gdpr,
+                     boolean userAgreement,
+                     boolean accountLocked,
+                     Year acceptanceYear,
+                     List<GrantedAuthority> authorities,
+                     String password) {
+        this.id = id;
+        this.cid = cid;
+        this.nick = nick;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.language = language;
+        this.avatarUrl = avatarUrl;
+        this.gdpr = gdpr;
+        this.userAgreement = userAgreement;
+        this.accountLocked = accountLocked;
+        this.acceptanceYear = acceptanceYear;
+        this.authorities = authorities;
+        this.password = password;
     }
 
     public UUID getId() {
@@ -108,6 +145,9 @@ public class ITUserDTO implements UserDetails {
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
+        if(authorities == null) {
+            throw new AuthorizationServiceException("Internal error could not fetch authorities");
+        }
         return this.authorities;
     }
 

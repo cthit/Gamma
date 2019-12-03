@@ -2,8 +2,9 @@ package it.chalmers.gamma.domain.dto.authority;
 
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.security.core.GrantedAuthority;
 
-public class AuthorityLevelDTO {
+public class AuthorityLevelDTO implements GrantedAuthority {
     private final UUID id;
     private final String authorityLevel;
 
@@ -16,7 +17,8 @@ public class AuthorityLevelDTO {
         return id;
     }
 
-    public String getAuthorityLevel() {
+    @Override
+    public String getAuthority() {
         return authorityLevel;
     }
 

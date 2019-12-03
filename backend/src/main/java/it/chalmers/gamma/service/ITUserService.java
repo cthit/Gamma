@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
+import it.chalmers.gamma.response.UserNotFoundResponse;
 import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class ITUserService implements UserDetailsService {
 
     private final AuthorityLevelService authorityLevelService;
 
+    private final String userErrorMsg = "User could not be found";
+
     /*
      * These dependencies are needed for the authentication system to work,
      * since that does not go through the controller layer.
@@ -52,26 +55,16 @@ public class ITUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
-        ITUser details;
+        ITUser user = this.itUserRepository.findByEmail(cidOrEmail)
+                    .orElse(this.itUserRepository.findByCid(cidOrEmail)
+                            .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg)));
+        return user.toUserDetailsDTO(this.getAuthorities(user.toDTO()));
 
-        if (cidOrEmail.contains("@")) {
-            details = this.itUserRepository.findByEmail(cidOrEmail);
-        } else {
-            details = this.itUserRepository.findByCid(cidOrEmail);
-        }
-
-        if (details != null) {
-            details.setAuthority(getAuthorities(details));
-        }
-        return details;
     }
 
     public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
-        ITUserDTO user = this.itUserRepository.findByCid(cid).toDTO();
-        if (user != null) {
-            user.setAuthority(getAuthorities(user));
-        }
-        return user;
+        return this.itUserRepository.findByCid(cid).map(ITUser::toDTO)
+                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }
 
     private List<GrantedAuthority> getAuthorities(ITUserDTO details) {
@@ -79,7 +72,8 @@ public class ITUserService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (MembershipDTO membership : memberships) {
             AuthorityLevel authorityLevel = this.authorityLevelService
-                    .getAuthorityLevel(membership.getId().getFKITGroup().getId().toString());
+                    .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
+                            membership.getFkitGroupDTO().getId()));
             if (authorityLevel != null) {
                 authorities.add(authorityLevel);
             }
@@ -131,8 +125,10 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                            String email, String phone, Language language) {
-        ITUser itUser = this.itUserRepository.findById(user).orElse(null);
+                            String email, String phone, Language language) throws UsernameNotFoundException {
+        ITUser itUser = this.itUserRepository.findById(user)
+                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
+
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
         itUser.setLastName(lastName == null ? itUser.getLastName() : lastName);
@@ -143,29 +139,27 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUserDTO getUserById(UUID id) {
-        ITUserDTO user = this.itUserRepository.findById(id).map(ITUser::toDTO).orElse(null);
-        if (user != null) {
-            user.setAuthority(getAuthorities(user));
-        }
-        return user;
+    public ITUserDTO getUserById(UUID id) throws UsernameNotFoundException {
+        return this.itUserRepository.findById(id)
+                .map(u -> u.toUserDetailsDTO(this.getAuthorities(u.toDTO())))
+                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }
 
-    public ITUser getUserByEmail(String email) {
-        ITUser user = this.itUserRepository.findByEmail(email);
-        if (user != null) {
-            user.setAuthority(getAuthorities(user));
-        }
-        return user;
+    public ITUserDTO getUserByEmail(String email) throws UsernameNotFoundException {
+        return this.itUserRepository.findByCid(email)
+                .map(u -> u.toUserDetailsDTO(this.getAuthorities(u.toDTO())))
+                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }
 
-    public void setPassword(ITUser user, String password) {
+    public void setPassword(ITUserDTO userDTO, String password) {
+        ITUser user = this.getITUser(userDTO);
         user.setPassword(this.passwordEncoder.encode(password));
         this.itUserRepository.save(user);
     }
 
-    public void editGdpr(UUID id, boolean gdpr) {
-        //ITUser user = getUserById(id);
+    public void editGdpr(UUID id, boolean gdpr) throws UsernameNotFoundException {
+        ITUser user = this.itUserRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
         user.setGdpr(gdpr);
         this.itUserRepository.save(user);
     }
@@ -175,8 +169,13 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    public boolean passwordMatches(ITUser user, String password) {
+    public boolean passwordMatches(ITUserDTO user, String password) {
         return this.passwordEncoder.matches(password, user.getPassword());
+    }
+
+    protected ITUser getITUser(ITUserDTO userDTO) {
+        return this.itUserRepository.findById(userDTO.getId())
+                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }
 
 }

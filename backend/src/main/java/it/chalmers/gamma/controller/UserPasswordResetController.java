@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
 import it.chalmers.gamma.requests.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
@@ -95,8 +96,8 @@ public class UserPasswordResetController {
         this.mailSenderService.trySendingMail(user.getEmail(), subject, message);
     }
 
-    private ITUser findByCidOrEmail(String userCredentials) {
-        ITUser user = this.itUserService.loadUser(userCredentials);
+    private ITUserDTO findByCidOrEmail(String userCredentials) {
+        ITUserDTO user = this.itUserService.loadUser(userCredentials);
         if (user == null) {
             return this.itUserService.getUserByEmail(userCredentials);
         }
