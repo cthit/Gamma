@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,11 +32,12 @@ public class WebsiteService {
         this.repository.save(website);
     }
 
-    public Website getWebsite(String websiteName) {
-        return this.repository.findByName(websiteName);
+    public WebsiteDTO getWebsite(String websiteName) {
+        return this.repository.findByName(websiteName).map(Website::toDTO).orElse(null);
     }
 
-    public void editWebsite(Website website, String name, String prettyName) {
+    public void editWebsite(WebsiteDTO websiteDTO, String name, String prettyName) {
+        Website website = this.getWebsite(websiteDTO);
         website.setName(name.toLowerCase());
         website.setPrettyName(prettyName == null ? name.toLowerCase() : prettyName);
         this.repository.save(website);
@@ -45,16 +47,16 @@ public class WebsiteService {
         this.repository.deleteById(UUID.fromString(id));
     }
 
-    public Website getWebsiteById(String id) {
-        return this.repository.findById(UUID.fromString(id)).orElse(null);
+    public WebsiteDTO getWebsiteById(String id) {
+        return this.repository.findById(UUID.fromString(id)).map(Website::toDTO).orElse(null);
     }
 
     public boolean websiteExists(UUID id) {
         return this.repository.existsById(id);
     }
 
-    public List<Website> getAllWebsites() {
-        return this.repository.findAll();
+    public List<WebsiteDTO> getAllWebsites() {
+        return this.repository.findAll().stream().map(Website::toDTO).collect(Collectors.toList());
     }
 
     protected Website getWebsite(WebsiteDTO websiteDTO) {
