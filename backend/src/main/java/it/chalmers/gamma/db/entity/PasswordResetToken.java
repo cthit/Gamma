@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.user.PasswordResetTokenDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -59,6 +60,10 @@ public class PasswordResetToken {
             + ", token='" + this.token + '\''
             + ", itUser=" + this.itUser
             + '}';
+    }
+
+    public PasswordResetTokenDTO toDTO() {
+        return new PasswordResetTokenDTO(this.id, this.token, this.itUser.toDTO());
     }
 
     @Override
