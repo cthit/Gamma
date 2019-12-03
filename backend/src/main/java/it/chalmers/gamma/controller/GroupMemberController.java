@@ -31,7 +31,7 @@ public class GroupMemberController {
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
     public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
         FKITGroupDTO group = getGroupByIdOrName(id);
-        List<MembershipDTO> members = this.membershipService.getUsersInGroup(group).stream()
+        List<MembershipDTO> members = this.membershipService.getUsersInGroupDTO(group).stream()
                 .map(m -> this.membershipService.getMembershipByUserAndGroup(m, group)).collect(Collectors.toList());
         return new GetMembershipResponse(members).getResponseObject();
     }

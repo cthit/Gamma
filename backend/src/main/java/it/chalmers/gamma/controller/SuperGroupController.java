@@ -83,7 +83,7 @@ public class SuperGroupController {
         ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
         List<JSONObject> serializedGroups = new ArrayList<>();
         for (FKITGroup group : groups) {
-            List<ITUserDTO> users = this.membershipService.getUsersInGroup(group);
+            List<ITUserDTO> users = this.membershipService.getUsersInGroupDTO(group);
 //            serializedGroups.add(serializer.serialize(group, serializedUsers, this.groupWebsiteService
 //                    .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)), null));
         }

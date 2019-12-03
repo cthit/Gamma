@@ -126,7 +126,7 @@ public final class GroupPostAdminController {
         // Everything above this is just initialization things.
         List<JSONObject> groupAndUser = new ArrayList<>();
         for (FKITGroup group : groups) {
-            List<ITUser> userIDs = this.membershipService.getUserByGroupAndPost(group, post);
+            List<ITUser> userIDs = this.membershipService.getUserDTOByGroupAndPost(group, post);
             List<JSONObject> users = new ArrayList<>();
             for (ITUser user : userIDs) {
                 users.add(itUserSerializer.serialize(user, null, null));

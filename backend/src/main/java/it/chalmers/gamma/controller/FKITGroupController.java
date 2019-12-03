@@ -105,7 +105,7 @@ public final class FKITGroupController {
     }
 
     private List<MembershipDTO> getMembershipDTO(FKITGroupDTO g) {
-        return this.membershipService.getUsersInGroup(g).stream().map(user -> {
+        return this.membershipService.getUsersInGroupDTO(g).stream().map(user -> {
             MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, g);
             return new MembershipDTO(membership.getPost(),
                     fkitGroupDTO, membership.getUnofficialPostName(),
