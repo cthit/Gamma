@@ -1,16 +1,17 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.UserWebsite;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.UserWebsiteRepository;
 
-import java.util.ArrayList;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.website.UserWebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -19,10 +20,16 @@ import org.springframework.stereotype.Service;
 public class UserWebsiteService extends EntityWebsiteService {
 
     private final UserWebsiteRepository repository;
+    private final ITUserService itUserService;
+    private final WebsiteURLService websiteURLService;
+    private final WebsiteService websiteService;
 
-    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService) {
+    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService, ITUserService itUserService, WebsiteURLService websiteURLService, WebsiteService websiteService1) {
         super(websiteService);
         this.repository = repository;
+        this.itUserService = itUserService;
+        this.websiteURLService = websiteURLService;
+        this.websiteService = websiteService1;
     }
 
     /**
@@ -31,21 +38,21 @@ public class UserWebsiteService extends EntityWebsiteService {
      * @param user     the ITUser to handle
      * @param websites all websites that should be added to the user
      */
-    public void addWebsiteToUser(ITUser user, List<WebsiteURL> websites) {
-        for (WebsiteURL website : websites) {
+    public void addWebsiteToUser(ITUserDTO user, List<WebsiteURLDTO> websites) {
+        for (WebsiteURLDTO website : websites) {
             UserWebsite userWebsite = new UserWebsite();
-            userWebsite.setItUser(user);
-            userWebsite.setWebsite(website);
+            userWebsite.setItUser(this.itUserService.getITUser(user));
+            userWebsite.setWebsite(this.websiteURLService.getWebsiteURL(website));
             this.repository.save(userWebsite);
         }
     }
 
-    public List<UserWebsite> getAllUserWebsites() {
-        return this.repository.findAll();
+    public List<UserWebsiteDTO> getAllUserWebsites() {
+        return this.repository.findAll().stream().map(UserWebsite::toDTO).collect(Collectors.toList());
     }
 
-    public UserWebsite getUserWebsiteById(String id) {
-        return this.repository.findById(UUID.fromString(id)).orElse(null);
+    public UserWebsiteDTO getUserWebsiteById(String id) {
+        return this.repository.findById(UUID.fromString(id)).map(UserWebsite::toDTO).orElse(null);
     }
 
     //TODO function bellow
@@ -59,13 +66,14 @@ public class UserWebsiteService extends EntityWebsiteService {
      * @param user the user to search for connected websites
      * @return all websites connected to a user
      */
-    public List<WebsiteInterface> getWebsites(ITUser user) {
-        List<UserWebsite> userWebsites = this.repository.findAllByItUser(user);
-        return new ArrayList<>(userWebsites);
+    public List<WebsiteInterfaceDTO> getWebsites(ITUserDTO user) {
+        return this.repository.findAllByItUser(this.itUserService.getITUser(user))
+                .stream().map(UserWebsite::toDTO).collect(Collectors.toList());
     }
 
-    public UserWebsite getUserWebsiteByWebsite(Website website) {
-        return this.repository.findByWebsite(website);
+    public UserWebsiteDTO getUserWebsiteByWebsite(WebsiteDTO website) {
+        return this.repository.findByWebsite(this.websiteService.getWebsite(website)).map(UserWebsite::toDTO)
+                .orElse(null);
     }
 
     /**
@@ -75,8 +83,8 @@ public class UserWebsiteService extends EntityWebsiteService {
      * @param user the user
      */
     @Transactional
-    public void deleteWebsitesConnectedToUser(ITUser user) {
-        this.repository.deleteAllByItUser(user);
+    public void deleteWebsitesConnectedToUser(ITUserDTO user) {
+        this.repository.deleteAllByItUser(this.itUserService.getITUser(user));
     }
 
     /**
@@ -85,8 +93,8 @@ public class UserWebsiteService extends EntityWebsiteService {
      * @param website the type of website to delete
      */
     @Transactional
-    public void deleteUserWebsiteByWebsite(Website website) {
-        this.repository.deleteAllByWebsite_Website(website);
+    public void deleteUserWebsiteByWebsite(WebsiteDTO website) {
+        this.repository.deleteAllByWebsite_Website(this.websiteService.getWebsite(website));
     }
 
 }

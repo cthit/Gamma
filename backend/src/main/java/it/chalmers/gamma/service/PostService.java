@@ -30,8 +30,8 @@ public class PostService {
         return savePost(post, postName);
     }
 
-    public PostDTO editPost(Post post, Text text) {
-        return savePost(post, text);
+    public PostDTO editPost(PostDTO post, Text text) {
+        return savePost(this.getPost(post), text);
     }
 
     private PostDTO savePost(Post post, Text postName) {

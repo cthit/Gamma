@@ -1,5 +1,7 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.website.UserWebsiteDTO;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -54,5 +56,33 @@ public class UserWebsite implements WebsiteInterface {
 
     public void setWebsite(WebsiteURL website) {
         this.website = website;
+    }
+
+    public UserWebsiteDTO toDTO() {
+        return new UserWebsiteDTO(this.id, this.itUser.toDTO(), this.website.toDTO());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserWebsite that = (UserWebsite) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(itUser, that.itUser) &&
+                Objects.equals(website, that.website);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, itUser, website);
+    }
+
+    @Override
+    public String toString() {
+        return "UserWebsite{" +
+                "id=" + id +
+                ", itUser=" + itUser +
+                ", website=" + website +
+                '}';
     }
 }
