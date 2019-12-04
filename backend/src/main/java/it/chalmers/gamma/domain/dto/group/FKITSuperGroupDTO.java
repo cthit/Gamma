@@ -21,6 +21,10 @@ public class FKITSuperGroupDTO {
         this.email = email;
     }
 
+    public FKITSuperGroupDTO(String name, String prettyName, GroupType type, String email) {
+        this(null, name, prettyName, type, email);
+    }
+
     public UUID getId() {
         return id;
     }
