@@ -1,5 +1,6 @@
-package it.chalmers.gamma.response;
+package it.chalmers.gamma.response.post;
 
+import it.chalmers.gamma.response.CustomResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 public class PostAlreadyExistsResponse extends CustomResponseStatusException {

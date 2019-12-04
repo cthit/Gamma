@@ -41,11 +41,8 @@ public class PostService {
         return this.repository.save(post).toDTO();
     }
 
-    public boolean postExists(String postName) {
-        return this.repository.existsByPostName_Sv(postName);
-    }
-    public boolean postExists(UUID id) {
-        return this.repository.existsById(id);
+    public boolean postExists(String id) {
+        return this.repository.existsById(UUID.fromString(id)) || this.repository.existsByPostName_Sv(id);
     }
 
     public List<PostDTO> getAllPosts() {

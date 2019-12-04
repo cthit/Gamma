@@ -113,16 +113,10 @@ public class MembershipService {
         return membership.getId().getFKITGroup().toDTO();
     }
 
-    public List<ITUserDTO> getUserDTOByGroupAndPost(FKITGroupDTO group, PostDTO post) {
-        List<Membership> memberships = this.membershipRepository
-                .findAllById_FkitGroupAndId_Post(
+    public List<MembershipDTO> getUserDTOByGroupAndPost(FKITGroupDTO group, PostDTO post) {
+        return this.membershipRepository.findAllById_FkitGroupAndId_Post(
                         this.fkitGroupService.getGroup(group),
-                        this.postService.getPost(post));
-        List<ITUserDTO> users = new ArrayList<>();
-        for (Membership membership : memberships) {
-            users.add(membership.getId().getITUser().toDTO());
-        }
-        return users;
+                        this.postService.getPost(post)).stream().map(Membership::toDTO).collect(Collectors.toList());
     }
 
     public List<FKITGroupDTO> getGroupsWithPost(PostDTO postDTO) {

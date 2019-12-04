@@ -1,10 +1,10 @@
-package it.chalmers.gamma.response;
+package it.chalmers.gamma.response.post;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class EditedPostResponse extends ResponseEntity<String> {
-    public EditedPostResponse() {
+public class PostEditedResponse extends ResponseEntity<String> {
+    public PostEditedResponse() {
         super("POST_EDITED", HttpStatus.ACCEPTED);
     }
 }

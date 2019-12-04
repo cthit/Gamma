@@ -3,14 +3,17 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.serializers.FKITGroupSerializer;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.requests.AddPostRequest;
-import it.chalmers.gamma.response.EditedPostResponse;
+import it.chalmers.gamma.response.group.GetFKITGroupResponse;
+import it.chalmers.gamma.response.post.GetPostUsagesResponse;
+import it.chalmers.gamma.response.post.GetPostUsagesResponse.GetPostUsagesResponseObject;
+import it.chalmers.gamma.response.post.PostEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PostAlreadyExistsResponse;
-import it.chalmers.gamma.response.PostCreatedResponse;
-import it.chalmers.gamma.response.PostDeletedResponse;
+import it.chalmers.gamma.response.post.PostAlreadyExistsResponse;
+import it.chalmers.gamma.response.post.PostCreatedResponse;
+import it.chalmers.gamma.response.post.PostDeletedResponse;
 import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
@@ -21,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.json.simple.JSONObject;
@@ -54,7 +58,7 @@ public final class GroupPostAdminController {
      * @return what the result of trying to create the post was.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addOfficialPost(@Valid @RequestBody AddPostRequest request, BindingResult result) {
+    public PostCreatedResponse addOfficialPost(@Valid @RequestBody AddPostRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -73,22 +77,18 @@ public final class GroupPostAdminController {
      * @return the result of creating the post
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editPost(
+    public PostEditedResponse editPost(
             @RequestBody AddPostRequest request,
             @PathVariable("id") String id) {
-        Post post = this.postService.getPostDTO(UUID.fromString(id));
-        if (post == null) {
-            throw new PostDoesNotExistResponse();
-
-        }
+        PostDTO post = this.postService.getPostDTO(id);
         this.postService.editPost(post, request.getPost());
-        return new EditedPostResponse();
+        return new PostEditedResponse();
     }
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deletePost(@PathVariable("id") String id) {
-        if (this.postService.postExists(UUID.fromString(id))) {
+    public PostDeletedResponse deletePost(@PathVariable("id") String id) {
+        if (!this.postService.postExists(id)) {     // TODO Move to service?
             throw new PostDoesNotExistResponse();
         }
         this.postService.deletePost(UUID.fromString(id));
@@ -103,36 +103,17 @@ public final class GroupPostAdminController {
      * @return a list of groups that has the post and who in the group currently is assigned that post
      */
     @RequestMapping("/{id}/usage")
-    public List<JSONObject> getPostUsages(@PathVariable("id") String id) {
+    public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") String id) {
         if (this.postService.postExists(id)) {
             throw new PostDoesNotExistResponse();
         }
-        List<ITUserSerializer.Properties> itUserProperties = Arrays.asList(
-                ITUserSerializer.Properties.CID,
-                ITUserSerializer.Properties.NICK,
-                ITUserSerializer.Properties.ID,
-                ITUserSerializer.Properties.FIRST_NAME,
-                ITUserSerializer.Properties.LAST_NAME);
-        List<FKITGroupSerializer.Properties> fkitGroupProperties = Arrays.asList(
-                FKITGroupSerializer.Properties.PRETTY_NAME,
-                FKITGroupSerializer.Properties.NAME,
-                FKITGroupSerializer.Properties.GROUP_ID,
-                FKITGroupSerializer.Properties.USERS);
-        Post post = this.postService.getPostDTO(UUID.fromString(id));
-        List<FKITGroup> groups = this.membershipService.getGroupsWithPost(post);
-        ITUserSerializer itUserSerializer = new ITUserSerializer(itUserProperties);
-        FKITGroupSerializer fkitGroupSerializer = new FKITGroupSerializer(fkitGroupProperties);
-
+        PostDTO post = this.postService.getPostDTO(id);
+        List<FKITGroupDTO> groups = this.membershipService.getGroupsWithPost(post);
         // Everything above this is just initialization things.
-        List<JSONObject> groupAndUser = new ArrayList<>();
-        for (FKITGroup group : groups) {
-            List<ITUser> userIDs = this.membershipService.getUserDTOByGroupAndPost(group, post);
-            List<JSONObject> users = new ArrayList<>();
-            for (ITUser user : userIDs) {
-                users.add(itUserSerializer.serialize(user, null, null));
-            }
-            groupAndUser.add(fkitGroupSerializer.serialize(group, users, null, null));
-        }
-        return groupAndUser;
+
+        List<GetFKITGroupResponse> groupResponses = groups.stream()
+                .map(g -> new GetFKITGroupResponse(g, this.membershipService.getUserDTOByGroupAndPost(g, post)))
+                .collect(Collectors.toList());
+        return new GetPostUsagesResponse(groupResponses).getResponseObject();
     }
 }
