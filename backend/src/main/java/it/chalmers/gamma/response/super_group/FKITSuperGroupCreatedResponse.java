@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response;
+package it.chalmers.gamma.response.super_group;
 
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import org.springframework.http.HttpStatus;

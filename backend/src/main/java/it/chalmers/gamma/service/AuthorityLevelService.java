@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
 
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.response.authority.AuthorityLevelDoesNotExistException;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,20 +27,20 @@ public class AuthorityLevelService {
     }
 
     public boolean authorityLevelExists(String authorityLevel) {
-        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel.toUpperCase()) != null;
+        return this.authorityLevelRepository.existsByAuthorityLevel(authorityLevel)
+                || this.authorityLevelRepository.existsById(UUID.fromString(authorityLevel));
     }
 
     public boolean authorityLevelExists(UUID id) {
         return this.authorityLevelRepository.existsById(id);
     }
 
-    public AuthorityLevelDTO getAuthorityLevelDTO(UUID authorityLevel) {
-        return this.authorityLevelRepository.findById(authorityLevel).map(AuthorityLevel::toDTO).orElse(null);
+    public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {
+        return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
+                .orElse(this.authorityLevelRepository.findByAuthorityLevel(authorityLevel)
+                .orElseThrow(AuthorityLevelDoesNotExistException::new)).toDTO();
     }
 
-    public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {
-        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel).toDTO();
-    }
 
     public List<AuthorityLevelDTO> getAllAuthorityLevels() {
         return this.authorityLevelRepository.findAll().stream().map(AuthorityLevel::toDTO).collect(Collectors.toList());

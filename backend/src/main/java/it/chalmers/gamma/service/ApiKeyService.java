@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ApiKeyRepository;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.requests.CreateApiKeyRequest;
+import it.chalmers.gamma.response.api_key.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class ApiKeyService {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
-    public String createApiKey(CreateApiKeyRequest request) {
+    public ApiKeyDTO createApiKey(CreateApiKeyRequest request) {
         ApiKey apiKey = new ApiKey();
         Text description = new Text();
         description.setEn(request.getDescription().getEn());
@@ -36,8 +37,8 @@ public class ApiKeyService {
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
         apiKey.setKey(key);
-        this.apiKeyRepository.save(apiKey);
-        return key;
+        return this.apiKeyRepository.save(apiKey).toDTO();
+
     }
 
     public void addApiKey(String clientName, String clientApiKey, Text description) {
@@ -45,12 +46,10 @@ public class ApiKeyService {
         this.apiKeyRepository.save(apiKey);
     }
 
-    public ApiKeyDTO getApiKeyDetails(UUID id) {
-        return this.apiKeyRepository.getById(id).toDTO();
-    }
-
     public ApiKeyDTO getApiKeyDetails(String name) {
-        return this.apiKeyRepository.getByName(name).toDTO();
+        return this.apiKeyRepository.findById(UUID.fromString(name))
+                .orElse(this.apiKeyRepository.findByName(name)
+                        .orElseThrow(ApiKeyDoesNotExistResponse::new)).toDTO();
     }
 
     public void deleteApiKey(UUID id) {

@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 
+import it.chalmers.gamma.response.super_group.SuperGroupDoesNotExistResponse;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,15 +30,15 @@ public class FKITSuperGroupService {
         return this.repository.save(group).toDTO();
     }
 
-    public FKITSuperGroupDTO getGroupDTO(UUID id) {
-        return this.repository.getById(id).toDTO();
+    public FKITSuperGroupDTO getGroupDTO(String id) {
+        return this.repository.findById(UUID.fromString(id))
+                .orElse(this.repository.findByName(id)
+                .orElseThrow(SuperGroupDoesNotExistResponse::new))
+                .toDTO();
     }
 
     public boolean groupExists(String name) {
-        return this.repository.existsByName(name);
-    }
-    public boolean groupExists(UUID id) {
-        return this.repository.existsById(id);
+        return this.repository.existsByName(name) || this.repository.existsById(UUID.fromString(name));
     }
 
     public void removeGroup(UUID id) {
@@ -48,7 +49,7 @@ public class FKITSuperGroupService {
     }
 
     public void updateSuperGroup(UUID id, FKITSuperGroupDTO superGroupDTO) {
-        FKITSuperGroup group = this.repository.getById(id);
+        FKITSuperGroup group = this.getGroup(this.getGroupDTO(id.toString()));
         group.setType(superGroupDTO.getType() == null ? group.getType() : superGroupDTO.getType());
         group.setName(superGroupDTO.getName() == null ? group.getName() : superGroupDTO.getName());
         group.setPrettyName(superGroupDTO.getPrettyName() == null ? group.getPrettyName() : superGroupDTO.getPrettyName());
@@ -57,6 +58,7 @@ public class FKITSuperGroupService {
     }
 
     protected FKITSuperGroup getGroup(FKITSuperGroupDTO group) {
-        return this.repository.getById(group.getId());
+        return this.repository.findById(group.getId())
+                .orElse(null);
     }
 }

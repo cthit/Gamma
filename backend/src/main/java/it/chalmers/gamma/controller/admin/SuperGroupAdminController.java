@@ -2,7 +2,7 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.response.FKITSuperGroupCreatedResponse;
+import it.chalmers.gamma.response.super_group.FKITSuperGroupCreatedResponse;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.GroupDeletedResponse;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;

@@ -61,6 +61,10 @@ public class AuthorityService {
         authority.setAuthorityLevel(authorityLevel);
         this.authorityRepository.save(authority);
     }
+    // TODO Check for name?
+    public boolean authorityExists(String id) {
+        return this.authorityRepository.existsById(UUID.fromString(id));
+    }
 
     public AuthorityDTO getAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
@@ -115,7 +119,5 @@ public class AuthorityService {
         return this.authorityRepository.findByInternalId(id).toDTO();
     }
 
-    public boolean authorityExists(UUID id) {
-        return this.authorityRepository.existsById(id);
-    }
+
 }

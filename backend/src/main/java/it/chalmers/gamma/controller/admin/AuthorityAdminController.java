@@ -2,23 +2,24 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
+import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.requests.AuthorizationLevelRequest;
 import it.chalmers.gamma.requests.AuthorizationRequest;
-import it.chalmers.gamma.response.AuthorityAddedResponse;
-import it.chalmers.gamma.response.AuthorityLevelAddedResponse;
-import it.chalmers.gamma.response.AuthorityLevelAlreadyExists;
-import it.chalmers.gamma.response.AuthorityLevelNotFoundResponse;
-import it.chalmers.gamma.response.AuthorityLevelRemovedResponse;
-import it.chalmers.gamma.response.AuthorityNotFoundResponse;
-import it.chalmers.gamma.response.AuthorityRemovedResponse;
-import it.chalmers.gamma.response.GetAllAuthoritiesResponse;
-import it.chalmers.gamma.response.GetAllAuthorityLevelsResponse;
-import it.chalmers.gamma.response.GetAuthorityResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.authority.AuthorityAddedResponse;
+import it.chalmers.gamma.response.authority.AuthorityLevelAddedResponse;
+import it.chalmers.gamma.response.authority.AuthorityLevelAlreadyExists;
+import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
+import it.chalmers.gamma.response.authority.AuthorityNotFoundResponse;
+import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
+import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
+import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse;
+import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse.GetAllAuthorityLevelsResponseObject;
+import it.chalmers.gamma.response.authority.GetAuthorityResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
+import it.chalmers.gamma.response.authority.GetAuthorityResponse.GetAuthorityResponseObject;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
@@ -59,47 +60,35 @@ public final class AuthorityAdminController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addAuthority(@Valid @RequestBody AuthorizationRequest request, BindingResult result) {
+    public AuthorityAddedResponse addAuthority(@Valid @RequestBody AuthorizationRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        Post post = this.postService.getPostDTO(UUID.fromString(request.getPost()));
-        if (post == null) {
-            throw new PostDoesNotExistResponse();
-        }
-        FKITSuperGroup group = this.fkitSuperGroupService.getGroupDTO(UUID.fromString(request.getSuperGroup()));
-        if (group == null) {
-            throw new GroupDoesNotExistResponse();
-        }
-        AuthorityLevel level =
-                this.authorityLevelService.getAuthorityLevelDTO(
-                        UUID.fromString(request.getAuthority())
-                );
-        if (level == null) {
-            throw new AuthorityLevelNotFoundResponse();
-        }
+        PostDTO post = this.postService.getPostDTO(request.getPost());
+        FKITSuperGroupDTO group = this.fkitSuperGroupService.getGroupDTO(request.getSuperGroup());
+        AuthorityLevelDTO level = this.authorityLevelService.getAuthorityLevelDTO(request.getAuthority());
         this.authorityService.setAuthorityLevel(group, post, level);
         return new AuthorityAddedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeAuthority(@PathVariable("id") String id) {
-        if (!this.authorityService.authorityExists(UUID.fromString(id))) {
+    public AuthorityRemovedResponse removeAuthority(@PathVariable("id") String id) {
+        if (!this.authorityService.authorityExists(id)) {
             throw new AuthorityNotFoundResponse();
         }
-        this.authorityService.removeAuthority(UUID.fromString(id));
+        this.authorityService.removeAuthority(UUID.fromString(id)); // TODO move check to service?
         return new AuthorityRemovedResponse();
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Authority>> getAllAuthorities() {
-        List<Authority> authorities = this.authorityService.getAllAuthorities();
+    public GetAllAuthoritiesResponse getAllAuthorities() {
+        List<AuthorityDTO> authorities = this.authorityService.getAllAuthorities();
         return new GetAllAuthoritiesResponse(authorities);
     }
 
     // BELOW THIS SHOULD MAYBE BE MOVED TO A DIFFERENT FILE
     @RequestMapping(value = "/level", method = RequestMethod.POST)
-    public ResponseEntity<String> addAuthorityLevel(@Valid @RequestBody AuthorizationLevelRequest request,
+    public AuthorityLevelAddedResponse addAuthorityLevel(@Valid @RequestBody AuthorizationLevelRequest request,
                                                     BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -107,32 +96,32 @@ public final class AuthorityAdminController {
         if (this.authorityLevelService.authorityLevelExists(request.getAuthorityLevel())) {
             throw new AuthorityLevelAlreadyExists();
         }
-        this.authorityLevelService.addAuthorityLevel(request.getAuthorityLevel());
+        this.authorityLevelService.addAuthorityLevel(request.getAuthorityLevel());  //TODO Move check to service?
         return new AuthorityLevelAddedResponse();
     }
 
     @RequestMapping(value = "/level", method = RequestMethod.GET)
-    public ResponseEntity<List<AuthorityLevel>> getAllAuthorityLevels() {
-        List<AuthorityLevel> authorityLevels = this.authorityLevelService.getAllAuthorityLevels();
-        return new GetAllAuthorityLevelsResponse(authorityLevels);
+    public GetAllAuthorityLevelsResponseObject getAllAuthorityLevels() {
+        List<AuthorityLevelDTO> authorityLevels = this.authorityLevelService.getAllAuthorityLevels();
+        return new GetAllAuthorityLevelsResponse(authorityLevels).getResponseObject();
     }
 
     @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeAuthorityLevel(@PathVariable("id") String id) {
+    public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
         if (this.authorityLevelService.authorityLevelExists(UUID.fromString(id))) {
             throw new AuthorityNotFoundResponse();
         }
-        this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));
+        this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));       // TODO Move check to service?
         return new AuthorityLevelRemovedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Authority> getAuthority(@PathVariable("id") String id) {
-        Authority authority = this.authorityService.getAuthority(UUID.fromString(id));
+    public GetAuthorityResponseObject getAuthority(@PathVariable("id") String id) {
+        AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
         if (authority == null) {
             throw new AuthorityNotFoundResponse();
         }
-        return new GetAuthorityResponse(authority);
+        return new GetAuthorityResponse(authority).getResponseObject();
     }
 
 }
