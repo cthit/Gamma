@@ -1,10 +1,12 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.response.ActivationCodeDeletedResponse;
-import it.chalmers.gamma.response.ActivationCodeDoesNotExistResponse;
-import it.chalmers.gamma.response.GetActivationCodeResponse;
-import it.chalmers.gamma.response.GetAllActivationCodesResponse;
+import it.chalmers.gamma.response.activation_code.ActivationCodeDeletedResponse;
+import it.chalmers.gamma.response.activation_code.ActivationCodeDoesNotExistResponse;
+import it.chalmers.gamma.response.activation_code.GetActivationCodeResponse;
+import it.chalmers.gamma.response.activation_code.GetActivationCodeResponse.GetActivationCodeResponseObject;
+import it.chalmers.gamma.response.activation_code.GetAllActivationCodesResponse;
+import it.chalmers.gamma.response.activation_code.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
 import it.chalmers.gamma.service.ActivationCodeService;
 
 import java.util.List;
@@ -27,22 +29,23 @@ public final class UserActivationCodeAdminController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<ActivationCode>> getAllActivationCodes() {
-        return new GetAllActivationCodesResponse(this.activationCodeService.getAllActivationCodes());
+    public GetAllActivationCodesResponseObject getAllActivationCodes() {
+        return new GetAllActivationCodesResponse(
+                this.activationCodeService.getAllActivationCodes()).getResponseObject();
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.GET)
-    public ResponseEntity<ActivationCode> getActivationCode(
+    public GetActivationCodeResponseObject getActivationCode(
             @PathVariable("activationCode") String activationCode) {
         if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
             throw new ActivationCodeDoesNotExistResponse();
         }
         return new GetActivationCodeResponse(
-                this.activationCodeService.getActivationCode(UUID.fromString(activationCode)));
+                this.activationCodeService.getActivationCode(UUID.fromString(activationCode))).getResponseObject();
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeActivationCode(@PathVariable("activationCode") String activationCode) {
+    public ActivationCodeDeletedResponse removeActivationCode(@PathVariable("activationCode") String activationCode) {
         if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
             throw new ActivationCodeDoesNotExistResponse();
         }

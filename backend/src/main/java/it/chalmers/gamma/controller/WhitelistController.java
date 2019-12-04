@@ -3,7 +3,7 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
-import it.chalmers.gamma.response.ActivationCodeAddedResonse;
+import it.chalmers.gamma.response.activation_code.ActivationCodeAddedResonse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;

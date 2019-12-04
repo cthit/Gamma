@@ -1,5 +1,6 @@
-package it.chalmers.gamma.response;
+package it.chalmers.gamma.response.activation_code;
 
+import it.chalmers.gamma.response.CustomResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 public class ActivationCodeDoesNotExistResponse extends CustomResponseStatusException {

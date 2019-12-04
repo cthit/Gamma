@@ -52,7 +52,7 @@ public class SuperGroupAdminController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeSuperGroup(@PathVariable("id") String id) {
+    public GroupDeletedResponse removeSuperGroup(@PathVariable("id") String id) {
         if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
@@ -61,7 +61,7 @@ public class SuperGroupAdminController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateSuperGroup(@PathVariable("id") String id,
+    public GroupEditedResponse updateSuperGroup(@PathVariable("id") String id,
                                                    @RequestBody CreateSuperGroupRequest request) {
         if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
