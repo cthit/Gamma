@@ -46,7 +46,8 @@ public class GroupWebsiteService extends EntityWebsiteService {
         this.websiteService = websiteService1;
     }
 
-    public void addGroupWebsites(FKITGroupDTO groupDTO, List<WebsiteURLDTO> websiteURLDTOS) throws DataIntegrityViolationException {
+    public void addGroupWebsites(FKITGroupDTO groupDTO, List<WebsiteURLDTO> websiteURLDTOS)
+            throws DataIntegrityViolationException {
         if (websiteURLDTOS == null || groupDTO == null) {
             return;
         }

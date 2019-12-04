@@ -38,7 +38,7 @@ public class ApiKeyAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ApiKeyDTO apiKey = this.apiKeyService.createApiKey(request);
+        ApiKeyDTO apiKey = this.apiKeyService.createApiKey(requestToDTO(request));
         return new GetApiKeyResponse(apiKey).getResponseObject();
     }
 
@@ -62,6 +62,12 @@ public class ApiKeyAdminController {
         }
         this.apiKeyService.deleteApiKey(id);
         return new ApiKeyDeletedResponse();
+    }
+
+    ApiKeyDTO requestToDTO(CreateApiKeyRequest request) {
+        return new ApiKeyDTO(
+                request.getName(), request.getDescription()
+        );
     }
 
 }

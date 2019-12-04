@@ -40,6 +40,17 @@ public class FKITGroupDTO {
         this.avatarURL = avatarURL;
     }
 
+    public FKITGroupDTO(Calendar becomesActive,
+                        Calendar becomesInactive,
+                        Text description,
+                        String email,
+                        Text function,
+                        String name,
+                        String prettyName, String avatarURL) {
+        this(null, becomesActive, becomesInactive, description, email, function, name, prettyName, avatarURL);
+
+    }
+
     public UUID getId() {
         return this.id;
     }

@@ -26,7 +26,7 @@ public class ApiKeyService {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
-    public ApiKeyDTO createApiKey(CreateApiKeyRequest request) {
+    public ApiKeyDTO createApiKey(ApiKeyDTO request) {
         ApiKey apiKey = new ApiKey();
         Text description = new Text();
         description.setEn(request.getDescription().getEn());

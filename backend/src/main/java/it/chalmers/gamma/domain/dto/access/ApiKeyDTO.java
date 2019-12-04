@@ -20,6 +20,10 @@ public class ApiKeyDTO {
         this.lastModifiedAt = lastModifiedAt;
     }
 
+    public ApiKeyDTO(String name, Text description) {
+        this(null, name, description, null, null);
+    }
+
     public UUID getId() {
         return id;
     }

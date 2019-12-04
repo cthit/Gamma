@@ -14,6 +14,10 @@ public class WebsiteURLDTO {
         this.websiteDTO = websiteDTO;
     }
 
+    public WebsiteURLDTO(String url, WebsiteDTO websiteURLDTO) {
+        this(null, url, websiteURLDTO);
+    }
+
     public UUID getId() {
         return this.id;
     }

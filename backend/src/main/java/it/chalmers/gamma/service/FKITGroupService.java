@@ -33,8 +33,8 @@ public class FKITGroupService {
                 fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());
     }
 
-    public FKITGroupDTO editGroup(UUID id, FKITGroupDTO fkitGroupDTO) {
-        FKITGroup group = this.repo.findById(id).orElse(null);
+    public FKITGroupDTO editGroup(String id, FKITGroupDTO fkitGroupDTO) {
+        FKITGroup group = this.getGroup(this.getDTOGroup(id));
         if (group == null) {
             return null;
         }
@@ -60,11 +60,7 @@ public class FKITGroupService {
     }
 
     public boolean groupExists(String name) {
-        return this.repo.existsFKITGroupByName(name);
-    }
-
-    public boolean groupExists(UUID id) {
-        return this.repo.existsById(id);
+        return this.repo.existsFKITGroupByName(name) || this.repo.existsById(UUID.fromString(name));
     }
 
     public void removeGroup(String name) {
@@ -80,11 +76,10 @@ public class FKITGroupService {
     }
 
     public FKITGroupDTO getDTOGroup(String name) {
-        return this.repo.findByName(name).map(FKITGroup::toDTO).orElse(null);
-    }
-
-    public FKITGroupDTO getDTOGroup(UUID id) {
-        return this.repo.findById(id).map(FKITGroup::toDTO).orElse(null);
+        return this.repo.findById(UUID.fromString(name))
+                .orElse(this.repo.findByName(name)
+                .orElseThrow(GroupDoesNotExistResponse::new))
+                .toDTO();
     }
 
     public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse{

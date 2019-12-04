@@ -6,6 +6,10 @@ import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
@@ -31,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -79,26 +84,23 @@ public final class GroupAdminController {
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
+    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
                                               BindingResult result) {
-        if (this.fkitGroupService.groupExists(createGroupRequest.getName())) {
-            throw new GroupAlreadyExistsResponse();
-        }
-
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
+        if (this.fkitGroupService.groupExists(createGroupRequest.getName())) {  // TODO Move check to service?
+            throw new GroupAlreadyExistsResponse();
+        }
 
-        FKITGroupDTO group = this.fkitGroupService.createGroup(createGroupRequest);
+        FKITGroupDTO group = this.fkitGroupService.createGroup(requestToDTO(createGroupRequest));
 
-        List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();
+        List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();   // TODO move to service?
         if (websites != null && !websites.isEmpty()) {
-            List<WebsiteURL> websiteURLs = new ArrayList<>();
+            List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
             for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
-                Website website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-                WebsiteURL websiteURL = new WebsiteURL();
-                websiteURL.setWebsite(website);
-                websiteURL.setUrl(websiteInfo.getUrl());
+                WebsiteDTO website = this.websiteService.getWebsite(websiteInfo.getWebsite());
+                WebsiteURLDTO websiteURL = new WebsiteURLDTO(websiteInfo.getUrl(), website);
                 websiteURLs.add(websiteURL);
             }
 
@@ -110,54 +112,55 @@ public final class GroupAdminController {
             }
         }
 
-        if (createGroupRequest.getSuperGroup() != null) {
-            FKITSuperGroup superGroup = this.fkitSuperGroupService.getGroupDTO(
-                    UUID.fromString(createGroupRequest.getSuperGroup()));
+        if (createGroupRequest.getSuperGroup() != null) {   // TODO move to service?
+            FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(createGroupRequest.getSuperGroup());
             if (superGroup == null) {
                 throw new GroupDoesNotExistResponse();
             }
 
             this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
         }
-
-        // Adds each group as an authoritylevel which
         this.authorityLevelService.addAuthorityLevel(group.getName());
         return new GroupCreatedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editGroup(
-            @RequestBody CreateGroupRequest request,
-            @PathVariable("id") String id) {
-        if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
+    public GroupEditedResponse editGroup(
+            @Valid @RequestBody CreateGroupRequest request,
+            @PathVariable("id") String id,
+            BindingResult result) {
+        if (result.hasErrors()) {
+            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        }
+        if (!this.fkitGroupService.groupExists(id)) {      // TODO move to service?
             throw new GroupDoesNotExistResponse();
         }
-//        this.fkitGroupService.editGroup(UUID.fromString(id), request);
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
-        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
-        List<WebsiteInterface> entityWebsites = new ArrayList<>(
-                this.groupWebsiteService.getWebsites(group)
-        );
-        this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
+        this.fkitGroupService.editGroup(id, requestToDTO(request));
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        List<WebsiteURLDTO> websiteURLDTOS = request.getWebsites()
+                .stream().map(w -> new WebsiteURLDTO(
+                        w.getUrl(),
+                        this.websiteService.getWebsite(w.getWebsite()))).collect(Collectors.toList());
+        this.groupWebsiteService.addGroupWebsites(group, websiteURLDTOS);
         return new GroupEditedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteGroup(@PathVariable("id") String id) {
-        if (!this.fkitGroupService.groupExists(UUID.fromString(id))) {
+    public GroupDeletedResponse deleteGroup(@PathVariable("id") String id) {
+        if (!this.fkitGroupService.groupExists(id)) {  // TODO Move to service?
             throw new GroupDoesNotExistResponse();
         }
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-                this.fkitGroupService.getDTOGroup(UUID.fromString(id))
+                this.fkitGroupService.getDTOGroup(id)
         );
-        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getDTOGroup(UUID.fromString(id)));
+        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getDTOGroup(id));
         this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
-    public ResponseEntity<String> editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(UUID.fromString(id));
+    public GroupEditedResponse editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -168,6 +171,19 @@ public final class GroupAdminController {
             throw new FileNotSavedException();
         }
         return new GroupEditedResponse();
+    }
+
+    private FKITGroupDTO requestToDTO(CreateGroupRequest request) {
+        return new FKITGroupDTO(
+                request.getBecomesActive(),
+                request.getBecomesInactive(),
+                request.getDescription(),
+                request.getEmail(),
+                request.getFunction(),
+                request.getName(),
+                request.getPrettyName(),
+                request.getAvatarURL()
+        );
     }
 
 }
