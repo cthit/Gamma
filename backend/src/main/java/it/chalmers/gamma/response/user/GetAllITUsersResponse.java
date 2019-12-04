@@ -6,13 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllITUsersResponse {
-    private final List<ITUserDTO> users;
+    private final List<GetITUserResponse> users;
 
-    public GetAllITUsersResponse(List<ITUserDTO> users) {
+    public GetAllITUsersResponse(List<GetITUserResponse> users) {
         this.users = users;
     }
 
-    public List<ITUserDTO> getUsers() {
+    public List<GetITUserResponse> getUsers() {
         return users;
     }
 

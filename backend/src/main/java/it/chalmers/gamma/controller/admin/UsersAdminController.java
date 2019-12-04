@@ -1,13 +1,10 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
-import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.PasswordChangedResponse;
@@ -16,22 +13,23 @@ import it.chalmers.gamma.response.UserCreatedResponse;
 import it.chalmers.gamma.response.UserDeletedResponse;
 import it.chalmers.gamma.response.UserEditedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
-import it.chalmers.gamma.response.user.GetITUsersResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
+import it.chalmers.gamma.response.user.GetITUserResponse;
+import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
-import org.json.simple.JSONObject;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,23 +59,20 @@ public final class UsersAdminController {
     }
 
     @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
-    public ResponseEntity<String> changePassword(
+    public PasswordChangedResponse changePassword(
             @PathVariable("id") String id,
             @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
-            throw new UserNotFoundResponse();
-        }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
+        ITUserDTO user = this.itUserService.getUser(id);
         this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
 
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editUser(@PathVariable("id") String id,
+    public UserEditedResponse editUser(@PathVariable("id") String id,
                                            @Valid @RequestBody EditITUserRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -94,18 +89,15 @@ public final class UsersAdminController {
                 request.getPhone(),
                 request.getLanguage());
         // Below handles adding websites.
-        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
-        List<WebsiteURL> websiteURLs = new ArrayList<>();
+        ITUserDTO user = this.itUserService.getUser(id);
+        List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
-            throw new UserNotFoundResponse();
-        }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(id));
+    public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
+        ITUserDTO user = this.itUserService.getUser(id);
         this.userWebsiteService.deleteWebsitesConnectedToUser(user);
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
@@ -113,48 +105,29 @@ public final class UsersAdminController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public JSONObject getUser(@PathVariable("id") String id) {
-        try {
-            if (!this.itUserService.userExists(UUID.fromString(id))) {
-                throw new UserNotFoundResponse();
-            }
-        } catch (IllegalArgumentException e) {
-            throw new UserNotFoundResponse();
-        }
-        List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
-        ITUserDTO user = this.itUserService.getUserById(UUID.fromString(id));
-        List<WebsiteDTO> websiteViews =
-                this.userWebsiteService.getWebsitesOrdered(
-                        this.userWebsiteService.getWebsites(user)
-                );
-        return serializer.serialize(user, websiteViews,
-                ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
+    public GetITUserResponseObject getUser(@PathVariable("id") String id) {
+        ITUserDTO user = this.itUserService.getUser(id);
+       // List<WebsiteURLDTO> websites = this.userWebsiteService.getWebsitesOrdered(
+       //                 this.userWebsiteService.getWebsites(user));
+        List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
+        return new GetITUserResponse(user, groups, null).getResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public GetITUsersResponse getAllUsers() {
-//        List<ITUserSerializer.Properties> props = ITUserSerializer.Properties.getAllProperties();
-//        ITUserSerializer serializer = new ITUserSerializer(props);
-//        List<ITUser> users = this.itUserService.loadAllUsers();
-//        List<JSONObject> userViewList = new ArrayList<>();
-//        for (ITUser user : users) {
-//            List<WebsiteDTO> websiteViews =
-//                    this.userWebsiteService.getWebsitesOrdered(
-//                            this.userWebsiteService.getWebsites(user)
-//                    );
-//            JSONObject userView = serializer.serialize(user, websiteViews,
-//                    ITUserSerializer.getGroupsAsJson(this.membershipService.getMembershipsByUser(user)));
-//            userViewList.add(userView);
-//
-//        }
-        return this.itUserService.loadAllUsers();
+    public GetAllITUsersResponseObject getAllUsers() {
+
+        List<ITUserDTO> users = this.itUserService.loadAllUsers();
+        List<GetITUserResponse> userResponses = users.stream()
+                .map(u -> new GetITUserResponse(u, this.membershipService.getUsersGroupDTO(u), null))
+                .collect(Collectors.toList());
+        return new GetAllITUsersResponse(userResponses).getResponseObject();
     }
 
     /**
      * Administrative function that can add user without need for user to add it personally.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> addUser(
+    public UserCreatedResponse addUser(
             @Valid @RequestBody AdminViewCreateITUserRequest createITUserRequest, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -174,7 +147,4 @@ public final class UsersAdminController {
         );
         return new UserCreatedResponse();
     }
-
-
-
 }
