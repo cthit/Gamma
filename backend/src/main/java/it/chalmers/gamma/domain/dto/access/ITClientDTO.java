@@ -1,6 +1,5 @@
 package it.chalmers.gamma.domain.dto.access;
 
-import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import java.time.Instant;
 import java.util.Collection;
@@ -28,7 +27,17 @@ public class ITClientDTO implements ClientDetails {
     private final Instant lastModifiedAt;
 
 
-    public ITClientDTO(UUID id, String clientId, String clientSecret, String webServerRedirectUri, int accessTokenValidity, int refreshTokenValidity, boolean autoApprove, String name, Text description, Instant createdAt, Instant lastModifiedAt) {
+    public ITClientDTO(UUID id,
+                       String clientId,
+                       String clientSecret,
+                       String webServerRedirectUri,
+                       Integer accessTokenValidity,
+                       Integer refreshTokenValidity,
+                       Boolean autoApprove,
+                       String name,
+                       Text description,
+                       Instant createdAt,
+                       Instant lastModifiedAt) {
         this.id = id;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -40,6 +49,10 @@ public class ITClientDTO implements ClientDetails {
         this.description = description;
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
+    }
+
+    public ITClientDTO(String webServerRedirectUri, String name, Text description) {
+        this(null, null, null, webServerRedirectUri, null, null, null, name, description, null, null);
     }
 
     public UUID getId() {

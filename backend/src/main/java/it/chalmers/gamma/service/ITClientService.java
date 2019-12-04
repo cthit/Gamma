@@ -41,7 +41,7 @@ public class ITClientService implements ClientDetailsService {
         return this.itClientRepository.findByClientId(clientId).toDTO();
     }
 
-    public String createITClient(ITClientDTO clientDTO) {
+    public ITClientDTO createITClient(ITClientDTO clientDTO) {
         ITClient client = new ITClient();
         client.setName(clientDTO.getName());
         Text description = new Text();
@@ -61,8 +61,7 @@ public class ITClientService implements ClientDetailsService {
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
         client.setClientSecret("{noop}" + clientSecret);
-        this.itClientRepository.save(client);
-        return clientSecret;
+        return this.itClientRepository.save(client).toDTO();
     }
 
     public List<ITClientDTO> getAllClients() {
@@ -86,13 +85,11 @@ public class ITClientService implements ClientDetailsService {
                 ? client.getWebServerRedirectUri() : clientDTO.getWebServerRedirectUri());
     }
 
-    public boolean clientExists(UUID id) {
-        return this.itClientRepository.existsById(id);
+    public boolean clientExists(String id) {
+        return this.itClientRepository.existsById(UUID.fromString(id))
+                || this.itClientRepository.existsITClientByClientId(id);
     }
 
-    public boolean clientExistsByClientId(String clientId) {
-        return this.itClientRepository.existsITClientByClientId(clientId);
-    }
 
     public void addITClient(ITClientDTO itClientDTO) {
         this.itClientRepository.save(getITClient(itClientDTO));

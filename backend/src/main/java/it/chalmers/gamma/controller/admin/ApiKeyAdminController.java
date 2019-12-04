@@ -64,7 +64,7 @@ public class ApiKeyAdminController {
         return new ApiKeyDeletedResponse();
     }
 
-    ApiKeyDTO requestToDTO(CreateApiKeyRequest request) {
+    private ApiKeyDTO requestToDTO(CreateApiKeyRequest request) {
         return new ApiKeyDTO(
                 request.getName(), request.getDescription()
         );
