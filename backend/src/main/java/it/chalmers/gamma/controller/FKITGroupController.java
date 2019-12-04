@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITMinifiedGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;

@@ -3,6 +3,7 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 
+import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,13 +58,8 @@ public class WhitelistService {
      * @return true if exists in the database, false otherwise
      */
     public boolean isCIDWhiteListed(String cid) {
-        return this.whitelistRepository.existsByCid(cid);
+        return this.whitelistRepository.existsByCid(cid) || this.whitelistRepository.existsById(UUID.fromString(cid));
     }
-
-    public boolean isCIDWhiteListed(UUID id) {
-        return this.whitelistRepository.existsById(id);
-    }
-
     public List<WhitelistDTO> getAllWhitelist() {
         return this.whitelistRepository.findAll()
                 .stream().map(Whitelist::toDTO).collect(Collectors.toList());
@@ -75,8 +71,9 @@ public class WhitelistService {
      * @param id the GROUP_ID of the whitelist object to get
      * @return the whitelist object that has corresponding GROUP_ID
      */
-    public WhitelistDTO getWhitelistById(String id) {
-         return this.whitelistRepository.findById(UUID.fromString(id)).map(Whitelist::toDTO).orElse(null);
+    public WhitelistDTO getWhitelist(String id) {
+         return this.whitelistRepository.findById(UUID.fromString(id))
+                 .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
     }
 
     /**
