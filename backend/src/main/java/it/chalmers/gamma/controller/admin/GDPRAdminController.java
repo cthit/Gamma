@@ -1,15 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.GDPR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
-
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.user.GDPRStatusEditedResponse;
@@ -20,14 +10,11 @@ import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersRespon
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
-import org.json.simple.JSONObject;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -73,7 +73,7 @@ public class ITUserService implements UserDetailsService {
         for (MembershipDTO membership : memberships) {
             AuthorityLevel authorityLevel = this.authorityLevelService
                     .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
-                            membership.getFkitGroupDTO().getId()));
+                            membership.getFkitGroupDTO().getId().toString()));
             if (authorityLevel != null) {
                 authorities.add(authorityLevel);
             }
@@ -139,10 +139,10 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUserDTO getUserById(UUID id) throws UsernameNotFoundException {
-        return this.itUserRepository.findById(id)
-                .map(u -> u.toUserDetailsDTO(this.getAuthorities(u.toDTO())))
-                .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
+    public ITUserDTO getUser(String id) throws UsernameNotFoundException {
+        return this.itUserRepository.findByCid(id)
+                .orElse(this.itUserRepository.findById(UUID.fromString(id))
+                .orElseThrow(UserNotFoundResponse::new)).toDTO();
     }
 
     public ITUserDTO getUserByEmail(String email) throws UsernameNotFoundException {

@@ -154,10 +154,10 @@ public class MembershipService {
         this.membershipRepository.delete(this.getMembership(membershipDTO));
     }
 
-    public void editMembership(MembershipDTO membershipDTO, String unofficialName, Post post) {
+    public void editMembership(MembershipDTO membershipDTO, String unofficialName, PostDTO post) {
         Membership membership = this.getMembership(membershipDTO);
         membership.setUnofficialPostName(unofficialName);
-        membership.getId().setPost(post);
+        membership.getId().setPost(this.postService.getPost(post));
         this.membershipRepository.save(membership);
     }
 
