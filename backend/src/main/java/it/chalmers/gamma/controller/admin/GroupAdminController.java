@@ -126,12 +126,8 @@ public final class GroupAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public GroupEditedResponse editGroup(
-            @Valid @RequestBody CreateGroupRequest request,
-            @PathVariable("id") String id,
-            BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+            @RequestBody CreateGroupRequest request,
+            @PathVariable("id") String id) {
         if (!this.fkitGroupService.groupExists(id)) {      // TODO move to service?
             throw new GroupDoesNotExistResponse();
         }

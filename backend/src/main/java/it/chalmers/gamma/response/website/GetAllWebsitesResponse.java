@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response;
+package it.chalmers.gamma.response.website;
 
 import it.chalmers.gamma.db.entity.Website;
 

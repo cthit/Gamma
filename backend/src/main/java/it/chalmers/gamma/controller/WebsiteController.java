@@ -1,9 +1,9 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.response.GetAllWebsitesResponse;
-import it.chalmers.gamma.response.GetWebsiteResponse;
-import it.chalmers.gamma.response.WebsiteNotFoundResponse;
+import it.chalmers.gamma.response.website.GetAllWebsitesResponse;
+import it.chalmers.gamma.response.website.GetWebsiteResponse;
+import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.WebsiteService;
 
 import java.util.List;

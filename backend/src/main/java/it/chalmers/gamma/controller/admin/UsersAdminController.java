@@ -73,10 +73,7 @@ public final class UsersAdminController {
     //TODO Make sure that the code to add websites to users actually works
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public UserEditedResponse editUser(@PathVariable("id") String id,
-                                           @Valid @RequestBody EditITUserRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+                                           @RequestBody EditITUserRequest request) {
         if (!this.itUserService.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }

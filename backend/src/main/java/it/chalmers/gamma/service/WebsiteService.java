@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.repository.WebsiteRepository;
 
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +34,10 @@ public class WebsiteService {
     }
 
     public WebsiteDTO getWebsite(String websiteName) {
-        return this.repository.findByName(websiteName).map(Website::toDTO).orElse(null);
+        return this.repository.findByName(websiteName)
+                .orElse(this.repository.findById(UUID.fromString(websiteName))
+                .orElseThrow(WebsiteNotFoundResponse::new))
+                .toDTO();
     }
 
     public void editWebsite(WebsiteDTO websiteDTO, String name, String prettyName) {
@@ -47,9 +51,6 @@ public class WebsiteService {
         this.repository.deleteById(UUID.fromString(id));
     }
 
-    public WebsiteDTO getWebsiteById(String id) {
-        return this.repository.findById(UUID.fromString(id)).map(Website::toDTO).orElse(null);
-    }
 
     public boolean websiteExists(UUID id) {
         return this.repository.existsById(id);

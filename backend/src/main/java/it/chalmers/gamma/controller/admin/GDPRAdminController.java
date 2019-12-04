@@ -7,12 +7,15 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
+import it.chalmers.gamma.response.user.GetITUserResponse;
+import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
@@ -48,7 +51,8 @@ public class GDPRAdminController {
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public GetAllITUsersResponseObject getAllUserMini() {
-        List<ITUserDTO> itUsers = this.itUserService.loadAllUsers();
-        return new GetAllITUsersResponse(itUsers).getResponseObject();
+        List<GetITUserResponse> userResponses = this.itUserService.loadAllUsers()
+                .stream().map(GetITUserResponse::new).collect(Collectors.toList());
+        return new GetAllITUsersResponse(userResponses).getResponseObject();
     }
 }

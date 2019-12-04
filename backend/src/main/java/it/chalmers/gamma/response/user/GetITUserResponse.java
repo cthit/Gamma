@@ -22,6 +22,10 @@ public class GetITUserResponse {
         this.websiteURLs = websiteURLs;
     }
 
+    public GetITUserResponse(ITUserDTO user) {
+        this(user, null, null);
+    }
+
     public ITUserDTO getUsers() {
         return user;
     }
