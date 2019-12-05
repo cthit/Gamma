@@ -16,7 +16,7 @@ public class GetAllITUsersResponse {
         return users;
     }
 
-    public GetAllITUsersResponseObject getResponseObject() {
+    public GetAllITUsersResponseObject toResponseObject() {
         return new GetAllITUsersResponseObject(this);
     }
 

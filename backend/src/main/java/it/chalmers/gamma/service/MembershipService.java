@@ -19,15 +19,16 @@ public class MembershipService {
 
     private final MembershipRepository membershipRepository;
     private final FKITGroupService fkitGroupService;
-    private final ITUserService itUserService;
+    private final DTOToEntityService dtoToEntityService;
     private final PostService postService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private final FKITSuperGroupService fkitSuperGroupService;
 
-    public MembershipService(MembershipRepository membershipRepository, FKITGroupService fkitGroupService, ITUserService itUserService, PostService postService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, FKITSuperGroupService fkitSuperGroupService) {
+
+    public MembershipService(MembershipRepository membershipRepository, FKITGroupService fkitGroupService, DTOToEntityService dtoToEntityService, PostService postService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, FKITSuperGroupService fkitSuperGroupService) {
         this.membershipRepository = membershipRepository;
         this.fkitGroupService = fkitGroupService;
-        this.itUserService = itUserService;
+        this.dtoToEntityService = dtoToEntityService;
         this.postService = postService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.fkitSuperGroupService = fkitSuperGroupService;
@@ -51,7 +52,7 @@ public class MembershipService {
     public void addUserToGroup(FKITGroupDTO groupDTO, ITUserDTO userDTO, PostDTO postDTO, String postname) {
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(this.fkitGroupService.getGroup(groupDTO));
-        pk.setITUser(this.itUserService.getITUser(userDTO));
+        pk.setITUser(this.dtoToEntityService.fromDTO(userDTO));
         pk.setPost(this.postService.getPost(postDTO));
         Membership membership = new Membership();
         membership.setId(pk);
@@ -89,7 +90,7 @@ public class MembershipService {
      * @return The UUIDs of the groups the user is a part of
      */
     public List<FKITGroupDTO> getUsersGroupDTO(ITUserDTO user) {
-        List<Membership> memberships = this.membershipRepository.findAllById_ItUser(this.itUserService.getITUser(user));
+        List<Membership> memberships = this.membershipRepository.findAllById_ItUser(this.dtoToEntityService.fromDTO(user));
         List<FKITGroupDTO> groups = new ArrayList<>();
         for (Membership membership : memberships) {
             FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
@@ -106,7 +107,7 @@ public class MembershipService {
     public FKITGroupDTO getGroupDTOIdByUserAndPost(ITUserDTO userDTO, PostDTO postDTO) {
         Membership membership = this.membershipRepository
                 .findById_ItUserAndId_Post(
-                        this.itUserService.getITUser(userDTO),
+                        this.dtoToEntityService.fromDTO(userDTO),
                         this.postService.getPost(postDTO));
         return membership.getId().getFKITGroup().toDTO();
     }
@@ -131,7 +132,7 @@ public class MembershipService {
 
     public List<MembershipDTO> getMembershipsByUser(ITUserDTO userDTO) {
         List<Membership> memberships = this.membershipRepository
-                .findAllById_ItUser(this.itUserService.getITUser(userDTO));
+                .findAllById_ItUser(this.dtoToEntityService.fromDTO(userDTO));
         for (Membership membership : memberships) {
             FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
             membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.getSuperGroups(group)
@@ -143,7 +144,7 @@ public class MembershipService {
     public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO) {
         return this.membershipRepository
                 .findById_ItUserAndId_FkitGroup(
-                        this.itUserService.getITUser(userDTO),
+                        this.dtoToEntityService.fromDTO(userDTO),
                         this.fkitGroupService.getGroup(groupDTO)).toDTO();
     }
 
@@ -170,11 +171,11 @@ public class MembershipService {
 
     public void removeAllMemberships(ITUserDTO user) {
         List<Membership> memberships = this.membershipRepository
-                .findAllById_ItUser(this.itUserService.getITUser(user));
+                .findAllById_ItUser(this.dtoToEntityService.fromDTO(user));
         memberships.forEach(this.membershipRepository::delete);
     }
 
-    protected Membership getMembership(MembershipDTO membershipDTO) {
+    private Membership getMembership(MembershipDTO membershipDTO) {
         return this.membershipRepository.findById(membershipDTO.getFkitGroupDTO().getId()).orElse(null);
     }
 }

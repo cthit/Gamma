@@ -15,7 +15,7 @@ public class GetSuperGroupResponse {
         return fkitSuperGroup;
     }
 
-    public GetSuperGroupResponseObject getResponseObject() {
+    public GetSuperGroupResponseObject toResponseObject() {
         return new GetSuperGroupResponseObject(this);
     }
 

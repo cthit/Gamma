@@ -14,7 +14,7 @@ public class WhitelistIsValidResponse {
         return valid;
     }
 
-    public WhitelistIsValidResponseObject getResponseObject() {
+    public WhitelistIsValidResponseObject toResponseObject() {
         return new WhitelistIsValidResponseObject(this);
     }
 

@@ -15,7 +15,7 @@ public class GetWebsiteResponse {
         return website;
     }
 
-    public GetWebsiteResponseObject getResponseObject() {
+    public GetWebsiteResponseObject toResponseObject() {
         return new GetWebsiteResponseObject(this);
     }
 

@@ -56,19 +56,19 @@ public final class FKITGroupController {
         List<MembershipDTO> minifiedMembers = this.membershipService.getMembershipsInGroup(group);
         List<FKITSuperGroupDTO> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
         //List<WebsiteDTO> websites = this.getWebsiteDTO(group);
-        return new GetFKITGroupResponse(group, minifiedMembers, superGroups, null).getResponseObject();
+        return new GetFKITGroupResponse(group, minifiedMembers, superGroups, null).toResponseObject();
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public GetAllFKITGroupsMinifiedResponseObject getGroupsMinified() {
         List<GetFKITGroupMinifiedResponse> responses = this.fkitGroupService.getGroups()
                 .stream().map(g -> new GetFKITGroupMinifiedResponse(g.toMinifiedDTO())).collect(Collectors.toList());
-        return new GetAllFKITGroupsMinifiedResponse(responses).getResponseObject();
+        return new GetAllFKITGroupsMinifiedResponse(responses).toResponseObject();
     }
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public GetFKITGroupMinifiedResponseObject getGroupMinified(@PathVariable("id") String id) {
-        return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getDTOGroup(id).toMinifiedDTO()).getResponseObject();
+        return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getDTOGroup(id).toMinifiedDTO()).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -95,7 +95,7 @@ public final class FKITGroupController {
                 this.fkitGroupToSuperGroupService.getSuperGroups(g),
                 null
         )).collect(Collectors.toList());
-        return new GetActiveFKITGroupsResponse(groupResponses).getResponseObject();
+        return new GetActiveFKITGroupsResponse(groupResponses).toResponseObject();
     }
 
 }

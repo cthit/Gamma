@@ -16,7 +16,7 @@ public class GetApiKeyResponse {
         return apiKey;
     }
 
-    public GetApiKeyResponseObject getResponseObject() {
+    public GetApiKeyResponseObject toResponseObject() {
         return new GetApiKeyResponseObject(this);
     }
 

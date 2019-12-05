@@ -38,6 +38,6 @@ public class WebsiteController {
     @RequestMapping(method = RequestMethod.GET)
     public GetAllWebsitesResponseObject getAllWebsites() {
         return new GetAllWebsitesResponse(this.websiteService.getAllWebsites().stream().map(GetWebsiteResponse::new)
-        .collect(Collectors.toList())).getResponseObject();
+        .collect(Collectors.toList())).toResponseObject();
     }
 }

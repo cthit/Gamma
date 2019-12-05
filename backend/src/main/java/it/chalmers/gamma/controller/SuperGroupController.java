@@ -52,13 +52,13 @@ public class SuperGroupController {
                 this.fkitGroupToSuperGroupService.getRelationships(superGroup);
         List<GetFKITGroupMinifiedResponse> responses = groupRelationships.stream().map(
                 g -> new GetFKITGroupMinifiedResponse(g.getGroup().toMinifiedDTO())).collect(Collectors.toList());
-        return new GetAllFKITGroupsMinifiedResponse(responses).getResponseObject();
+        return new GetAllFKITGroupsMinifiedResponse(responses).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public GetAllSuperGroupsResponseObject getAllSuperGroups() {
         return new GetAllSuperGroupsResponse(this.fkitSuperGroupService.getAllGroups()
-                .stream().map(GetSuperGroupResponse::new).collect(Collectors.toList())).getResponseObject();
+                .stream().map(GetSuperGroupResponse::new).collect(Collectors.toList())).toResponseObject();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -77,6 +77,6 @@ public class SuperGroupController {
                         g,
                         this.membershipService.getMembershipsInGroup(g)))
                 .collect(Collectors.toList());
-        return new GetActiveFKITGroupsResponse(groups).getResponseObject();
+        return new GetActiveFKITGroupsResponse(groups).toResponseObject();
     }
 }

@@ -107,7 +107,7 @@ public final class UsersAdminController {
        // List<WebsiteURLDTO> websites = this.userWebsiteService.getWebsitesOrdered(
        //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
-        return new GetITUserResponse(user, groups, null).getResponseObject();
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -117,7 +117,7 @@ public final class UsersAdminController {
         List<GetITUserResponse> userResponses = users.stream()
                 .map(u -> new GetITUserResponse(u, this.membershipService.getUsersGroupDTO(u), null))
                 .collect(Collectors.toList());
-        return new GetAllITUsersResponse(userResponses).getResponseObject();
+        return new GetAllITUsersResponse(userResponses).toResponseObject();
     }
 
     /**

@@ -27,7 +27,7 @@ public class EntityWebsiteService {
 
     // TODO I DONT THINK THIS FUNCTION ACCTUALLY DOES ANYTHING USEFULL
     // Began rewriting it, but I'm unsure why I created it, leaving it for now.
-    public List<WebsiteDTO> getWebsitesOrdered(List<WebsiteInterfaceDTO> websites) {
+   /* public List<WebsiteDTO> getWebsitesOrdered(List<WebsiteInterfaceDTO> websites) {
         List<WebsiteDTO> groupedWebsites = new ArrayList<>();
         // gets a list of all websiteTypes that an entity has
         List<WebsiteDTO> websiteTypes = websites.stream().map(w -> w.getWebsiteURL()
@@ -61,5 +61,5 @@ public class EntityWebsiteService {
         }
         return groupedWebsites;
     }
-
+*/
 }

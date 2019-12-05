@@ -15,7 +15,7 @@ public class GetITClientResponse {
         return itClient;
     }
 
-    public GetITClientResponseObject getResponseObject() {
+    public GetITClientResponseObject toResponseObject() {
         return new GetITClientResponseObject(this);
     }
 

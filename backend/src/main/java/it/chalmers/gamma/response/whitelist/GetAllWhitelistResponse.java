@@ -15,7 +15,7 @@ public class GetAllWhitelistResponse {
         return whitelistResponses;
     }
 
-    public GetAllWhitelistResponseObject getResponseObject() {
+    public GetAllWhitelistResponseObject toResponseObject() {
         return new GetAllWhitelistResponseObject(this);
     }
 

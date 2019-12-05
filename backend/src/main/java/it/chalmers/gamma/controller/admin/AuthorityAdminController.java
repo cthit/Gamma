@@ -103,7 +103,7 @@ public final class AuthorityAdminController {
     @RequestMapping(value = "/level", method = RequestMethod.GET)
     public GetAllAuthorityLevelsResponseObject getAllAuthorityLevels() {
         List<AuthorityLevelDTO> authorityLevels = this.authorityLevelService.getAllAuthorityLevels();
-        return new GetAllAuthorityLevelsResponse(authorityLevels).getResponseObject();
+        return new GetAllAuthorityLevelsResponse(authorityLevels).toResponseObject();
     }
 
     @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
@@ -121,7 +121,7 @@ public final class AuthorityAdminController {
         if (authority == null) {
             throw new AuthorityNotFoundResponse();
         }
-        return new GetAuthorityResponse(authority).getResponseObject();
+        return new GetAuthorityResponse(authority).toResponseObject();
     }
 
 }

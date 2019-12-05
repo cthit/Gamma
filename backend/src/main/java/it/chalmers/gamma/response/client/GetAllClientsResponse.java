@@ -17,7 +17,7 @@ public class GetAllClientsResponse {
         return clients;
     }
 
-    public GetAllClientResponseObject getResponseObject() {
+    public GetAllClientResponseObject toResponseObject() {
         return new GetAllClientResponseObject(this);
     }
 

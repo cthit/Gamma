@@ -114,6 +114,6 @@ public final class GroupPostAdminController {
         List<GetFKITGroupResponse> groupResponses = groups.stream()
                 .map(g -> new GetFKITGroupResponse(g, this.membershipService.getUserDTOByGroupAndPost(g, post)))
                 .collect(Collectors.toList());
-        return new GetPostUsagesResponse(groupResponses).getResponseObject();
+        return new GetPostUsagesResponse(groupResponses).toResponseObject();
     }
 }

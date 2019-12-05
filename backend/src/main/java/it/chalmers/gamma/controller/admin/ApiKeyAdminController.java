@@ -39,19 +39,19 @@ public class ApiKeyAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         ApiKeyDTO apiKey = this.apiKeyService.createApiKey(requestToDTO(request));
-        return new GetApiKeyResponse(apiKey).getResponseObject();
+        return new GetApiKeyResponse(apiKey).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public GetAllAPIKeysResponseObject getAllApiKeys() {
         List<ApiKeyDTO> apiKeys = this.apiKeyService.getAllApiKeys();
-        return new GetAllAPIKeysResponse(apiKeys).getResponseObject();
+        return new GetAllAPIKeysResponse(apiKeys).toResponseObject();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetApiKeyResponseObject getApiKey(@PathVariable("id") String id) {
         ApiKeyDTO apiKey = this.apiKeyService.getApiKeyDetails(id);
-        return new GetApiKeyResponse(apiKey).getResponseObject();
+        return new GetApiKeyResponse(apiKey).toResponseObject();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

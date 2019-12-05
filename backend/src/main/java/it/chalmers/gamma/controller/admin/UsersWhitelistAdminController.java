@@ -113,12 +113,12 @@ public final class UsersWhitelistAdminController {
     public GetAllWhitelistResponseObject getAllWhiteList() {
         List<GetWhitelistResponse> whitelistResponses = this.whitelistService.getAllWhitelist()
                 .stream().map(GetWhitelistResponse::new).collect(Collectors.toList());
-        return new GetAllWhitelistResponse(whitelistResponses).getResponseObject();
+        return new GetAllWhitelistResponse(whitelistResponses).toResponseObject();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetWhitelistResponseObject getWhitelist(@PathVariable("id") String id) {
-        return new GetWhitelistResponse(this.whitelistService.getWhitelist(id)).getResponseObject();
+        return new GetWhitelistResponse(this.whitelistService.getWhitelist(id)).toResponseObject();
     }
 
     /**
@@ -133,7 +133,7 @@ public final class UsersWhitelistAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        return new WhitelistIsValidResponse(this.whitelistService.isCIDWhiteListed(cid.getCid())).getResponseObject();
+        return new WhitelistIsValidResponse(this.whitelistService.isCIDWhiteListed(cid.getCid())).toResponseObject();
     }
 
 

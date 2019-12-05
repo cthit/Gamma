@@ -15,7 +15,7 @@ public class GetActiveFKITGroupsResponse {
         return getFKITGroupResponse;
     }
 
-    public GetActiveFKITGroupResponseObject getResponseObject() {
+    public GetActiveFKITGroupResponseObject toResponseObject() {
         return new GetActiveFKITGroupResponseObject(this);
     }
 

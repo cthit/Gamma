@@ -12,6 +12,7 @@ import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,17 +32,19 @@ public class AuthorityService {
     private final FKITSuperGroupService fkitSuperGroupService;
     private final PostService postService;
     private final AuthorityLevelService authorityLevelService;
+    private final MembershipService membershipService;
 
     public AuthorityService(AuthorityRepository authorityRepository,
                             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
                             FKITSuperGroupService fkitSuperGroupService,
                             PostService postService,
-                            AuthorityLevelService authorityLevelService) {
+                            AuthorityLevelService authorityLevelService, MembershipService membershipService) {
         this.authorityRepository = authorityRepository;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.postService = postService;
         this.authorityLevelService = authorityLevelService;
+        this.membershipService = membershipService;
     }
 
     public void setAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO, AuthorityLevelDTO authorityLevelDTO) {
@@ -61,6 +65,23 @@ public class AuthorityService {
         authority.setAuthorityLevel(authorityLevel);
         this.authorityRepository.save(authority);
     }
+
+    protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
+        List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
+        List<GrantedAuthority> authorities = new ArrayList<>();
+      //  for (MembershipDTO membership : memberships) {
+      //      AuthorityLevel authorityLevel = this.authorityLevelService
+      //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
+      //                      membership.getFkitGroupDTO().getId().toString()));
+      //      if (authorityLevel != null) {
+      //          authorities.add(authorityLevel);
+      //      }
+      //  }
+        authorities.addAll(this.getAuthorities(memberships));
+        return authorities;
+    }
+
+
     // TODO Check for name?
     public boolean authorityExists(String id) {
         return this.authorityRepository.existsById(UUID.fromString(id));

@@ -17,7 +17,7 @@ public class GetAllAuthorityLevelsResponse {
         return authorityLevels;
     }
 
-    public GetAllAuthorityLevelsResponseObject getResponseObject() {
+    public GetAllAuthorityLevelsResponseObject toResponseObject() {
         return new GetAllAuthorityLevelsResponseObject(this);
     }
 

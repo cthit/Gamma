@@ -15,7 +15,7 @@ public class GetAllSuperGroupsResponse {
         return responses;
     }
 
-    public GetAllSuperGroupsResponseObject getResponseObject() {
+    public GetAllSuperGroupsResponseObject toResponseObject() {
         return new GetAllSuperGroupsResponseObject(this);
     }
 

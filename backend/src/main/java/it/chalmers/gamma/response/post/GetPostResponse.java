@@ -15,7 +15,7 @@ public class GetPostResponse {
         return post;
     }
 
-    public GetPostResponseObject getResponseObject() {
+    public GetPostResponseObject toResponseObject() {
         return new GetPostResponseObject(this);
     }
 

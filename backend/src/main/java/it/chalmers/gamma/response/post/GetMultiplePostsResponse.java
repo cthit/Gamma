@@ -16,7 +16,7 @@ public class GetMultiplePostsResponse {
         return getPostResponse;
     }
 
-    public GetMultiplePostsResponseObject getResponseObject() {
+    public GetMultiplePostsResponseObject toResponseObject() {
         return new GetMultiplePostsResponseObject(this);
     }
 

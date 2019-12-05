@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import it.chalmers.gamma.requests.AddITClientRequest;
 import it.chalmers.gamma.util.TokenUtils;
 
+import it.chalmers.gamma.util.UUIDUtil;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -86,13 +87,13 @@ public class ITClientService implements ClientDetailsService {
     }
 
     public boolean clientExists(String id) {
-        return this.itClientRepository.existsById(UUID.fromString(id))
+        return (UUIDUtil.validUUID(id) && this.itClientRepository.existsById(UUID.fromString(id)))
                 || this.itClientRepository.existsITClientByClientId(id);
     }
 
 
-    public void addITClient(ITClientDTO itClientDTO) {
-        this.itClientRepository.save(getITClient(itClientDTO));
+    public void addITClient(ITClient itClient) {
+        this.itClientRepository.save(itClient);
     }
 
     protected ITClient getITClient(ITClientDTO clientDTO) {

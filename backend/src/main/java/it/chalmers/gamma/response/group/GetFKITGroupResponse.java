@@ -48,7 +48,7 @@ public class GetFKITGroupResponse {
         return websites;
     }
 
-    public GetFKITGroupResponseObject getResponseObject() {
+    public GetFKITGroupResponseObject toResponseObject() {
         return new GetFKITGroupResponseObject(this);
     }
 

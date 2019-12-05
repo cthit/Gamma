@@ -31,7 +31,7 @@ public final class UserActivationCodeAdminController {
     @RequestMapping(method = RequestMethod.GET)
     public GetAllActivationCodesResponseObject getAllActivationCodes() {
         return new GetAllActivationCodesResponse(
-                this.activationCodeService.getAllActivationCodes()).getResponseObject();
+                this.activationCodeService.getAllActivationCodes()).toResponseObject();
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.GET)
@@ -41,7 +41,7 @@ public final class UserActivationCodeAdminController {
             throw new ActivationCodeDoesNotExistResponse();
         }
         return new GetActivationCodeResponse(
-                this.activationCodeService.getActivationCode(UUID.fromString(activationCode))).getResponseObject();
+                this.activationCodeService.getActivationCode(UUID.fromString(activationCode))).toResponseObject();
     }
 
     @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)

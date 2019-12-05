@@ -16,7 +16,7 @@ public class GetMembershipResponse{
         return members;
     }
 
-    public GetMembershipResponseObject getResponseObject() {
+    public GetMembershipResponseObject toResponseObject() {
         return new GetMembershipResponseObject(this);
     }
 

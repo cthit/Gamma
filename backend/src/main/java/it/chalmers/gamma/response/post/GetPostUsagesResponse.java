@@ -16,7 +16,7 @@ public class GetPostUsagesResponse {
         return fkitGroupResponses;
     }
 
-    public GetPostUsagesResponseObject getResponseObject() {
+    public GetPostUsagesResponseObject toResponseObject() {
         return new GetPostUsagesResponseObject(this);
     }
 

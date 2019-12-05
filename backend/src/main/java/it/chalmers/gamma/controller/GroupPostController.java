@@ -28,7 +28,7 @@ public class GroupPostController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetPostResponseObject getPost(@PathVariable("id") String id) {
         PostDTO post = this.postService.getPostDTO(id);
-        return new GetPostResponse(post).getResponseObject();
+        return new GetPostResponse(post).toResponseObject();
     }
 
 
@@ -40,6 +40,6 @@ public class GroupPostController {
     @RequestMapping(method = RequestMethod.GET)
     public GetMultiplePostsResponseObject getPosts() {
         return new GetMultiplePostsResponse(this.postService.getAllPosts().stream()
-                .map(GetPostResponse::new).collect(Collectors.toList())).getResponseObject();
+                .map(GetPostResponse::new).collect(Collectors.toList())).toResponseObject();
     }
 }

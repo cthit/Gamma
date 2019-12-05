@@ -51,6 +51,6 @@ public class GDPRAdminController {
     public GetAllITUsersResponseObject getAllUserMini() {
         List<GetITUserResponse> userResponses = this.itUserService.loadAllUsers()
                 .stream().map(GetITUserResponse::new).collect(Collectors.toList());
-        return new GetAllITUsersResponse(userResponses).getResponseObject();
+        return new GetAllITUsersResponse(userResponses).toResponseObject();
     }
 }

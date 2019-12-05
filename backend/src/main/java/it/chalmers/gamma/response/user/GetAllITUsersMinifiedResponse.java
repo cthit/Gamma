@@ -15,7 +15,7 @@ public class GetAllITUsersMinifiedResponse {
         return responses;
     }
 
-    public GetAllITUsersMinifiedResponseObject getResponseObject() {
+    public GetAllITUsersMinifiedResponseObject toResponseObject() {
         return new GetAllITUsersMinifiedResponseObject(this);
     }
 

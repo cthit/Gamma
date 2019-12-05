@@ -31,18 +31,18 @@ public class ITClientAdminController {
 
     @RequestMapping(method = RequestMethod.POST)
     public GetITClientResponseObject addITClient(@RequestBody AddITClientRequest request) {
-        return new GetITClientResponse(this.itClientService.createITClient(responseToDTO(request))).getResponseObject();
+        return new GetITClientResponse(this.itClientService.createITClient(responseToDTO(request))).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public GetAllClientResponseObject getAllOauthClients() {
-        return new GetAllClientsResponse(this.itClientService.getAllClients()).getResponseObject();
+        return new GetAllClientsResponse(this.itClientService.getAllClients()).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public GetITClientResponseObject getClient(@PathVariable("id") String id) {
         ITClientDTO client = this.itClientService.getITClient(UUID.fromString(id));
-        return new GetITClientResponse(client).getResponseObject();
+        return new GetITClientResponse(client).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")

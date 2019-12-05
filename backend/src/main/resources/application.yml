@@ -40,7 +40,7 @@ logging:
     root: ${ROOT_DEBUG_LEVEL:INFO}
     org:
       springframework:
-        web: ${WEB_DEBUG_LEVEL:INFO}
+        web: ${WEB_DEBUG_LEVEL:DEBUG}
       hibernate: ${HIBERNATE_DEBUG_LEVEL:INFO}
 
 security:

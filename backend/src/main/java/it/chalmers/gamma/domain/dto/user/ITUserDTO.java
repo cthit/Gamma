@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.Language;
 import java.time.Year;
@@ -26,6 +27,7 @@ public class ITUserDTO implements UserDetails {
     private final boolean accountLocked;
     private final Year acceptanceYear;
     private final List<GrantedAuthority> authorities;
+    @JsonIgnore
     private final String password;
 
 
@@ -145,9 +147,6 @@ public class ITUserDTO implements UserDetails {
 
     @Override
     public List<GrantedAuthority> getAuthorities() {
-        if(authorities == null) {
-            throw new AuthorizationServiceException("Internal error could not fetch authorities");
-        }
         return this.authorities;
     }
 

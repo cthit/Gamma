@@ -16,7 +16,7 @@ public class GetAllActivationCodesResponse {
         return activationCode;
     }
 
-    public GetAllActivationCodesResponseObject getResponseObject() {
+    public GetAllActivationCodesResponseObject toResponseObject() {
         return new GetAllActivationCodesResponseObject(this);
     }
 

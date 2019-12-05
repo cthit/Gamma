@@ -15,7 +15,7 @@ public class GetAllWebsitesResponse {
         return responses;
     }
 
-    public GetAllWebsitesResponseObject getResponseObject() {
+    public GetAllWebsitesResponseObject toResponseObject() {
         return new GetAllWebsitesResponseObject(this);
     }
 

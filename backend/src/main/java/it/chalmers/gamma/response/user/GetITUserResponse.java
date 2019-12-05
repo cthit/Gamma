@@ -1,7 +1,7 @@
 package it.chalmers.gamma.response.user;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 public class GetITUserResponse {
 
+    @JsonUnwrapped
     private final ITUserDTO user;
     private final List<FKITGroupDTO> groups;
     private final List<WebsiteURLDTO> websiteURLs;
@@ -26,7 +27,8 @@ public class GetITUserResponse {
         this(user, null, null);
     }
 
-    public ITUserDTO getUsers() {
+    @JsonUnwrapped
+    public ITUserDTO getUser() {
         return user;
     }
 
@@ -38,7 +40,8 @@ public class GetITUserResponse {
         return websiteURLs;
     }
 
-    public GetITUserResponseObject getResponseObject() {
+    @JsonIgnore
+    public GetITUserResponseObject toResponseObject() {
         return new GetITUserResponseObject(this);
     }
 

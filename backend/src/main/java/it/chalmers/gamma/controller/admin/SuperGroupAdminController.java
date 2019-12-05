@@ -43,7 +43,7 @@ public class SuperGroupAdminController {
             throw new GroupAlreadyExistsResponse();
         }
         FKITSuperGroupDTO group = this.fkitSuperGroupService.createSuperGroup(requestToDTO(request));
-        return new GetSuperGroupResponse(group).getResponseObject();
+        return new GetSuperGroupResponse(group).toResponseObject();
     }
 
 

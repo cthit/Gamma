@@ -15,7 +15,7 @@ public class GetITUserMinifiedResponse {
         return user;
     }
 
-    public GetITUserMinifiedResponseObject getResponseObject() {
+    public GetITUserMinifiedResponseObject toResponseObject() {
         return new GetITUserMinifiedResponseObject(this);
     }
 

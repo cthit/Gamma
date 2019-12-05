@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
 
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.response.authority.AuthorityLevelDoesNotExistException;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,9 +37,13 @@ public class AuthorityLevelService {
     }
 
     public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {
-        return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
-                .orElse(this.authorityLevelRepository.findByAuthorityLevel(authorityLevel)
-                .orElseThrow(AuthorityLevelDoesNotExistException::new)).toDTO();
+        System.out.println(authorityLevel);
+      //  if (UUIDUtil.validUUID(authorityLevel)) {
+     //       return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
+     //               .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
+     //   }
+        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel)
+                .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
     }
 
 

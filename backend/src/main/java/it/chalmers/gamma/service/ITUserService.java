@@ -1,21 +1,17 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import java.time.Instant;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,11 +27,7 @@ public class ITUserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final MembershipService membershipService;
-
     private final AuthorityService authorityService;
-
-    private final AuthorityLevelService authorityLevelService;
 
     private final String userErrorMsg = "User could not be found";
 
@@ -44,13 +36,10 @@ public class ITUserService implements UserDetailsService {
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
-    public ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
-                         AuthorityService authorityService, AuthorityLevelService authorityLevelService) {
+    public ITUserService(ITUserRepository itUserRepository, AuthorityService authorityService) {
         this.itUserRepository = itUserRepository;
-        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        this.membershipService = membershipService;
         this.authorityService = authorityService;
-        this.authorityLevelService = authorityLevelService;
+        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override
@@ -58,29 +47,16 @@ public class ITUserService implements UserDetailsService {
         ITUser user = this.itUserRepository.findByEmail(cidOrEmail)
                 .orElse(this.itUserRepository.findByCid(cidOrEmail)
                         .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg)));
-        return user.toUserDetailsDTO(this.getAuthorities(user.toDTO()));
+        return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
 
     }
 
     public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
-        return this.itUserRepository.findByCid(cid).map(ITUser::toDTO)
+        return this.itUserRepository.findByCid(cid)
+                .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
                 .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }
 
-    private List<GrantedAuthority> getAuthorities(ITUserDTO details) {
-        List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (MembershipDTO membership : memberships) {
-            AuthorityLevel authorityLevel = this.authorityLevelService
-                    .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
-                            membership.getFkitGroupDTO().getId().toString()));
-            if (authorityLevel != null) {
-                authorities.add(authorityLevel);
-            }
-        }
-        authorities.addAll(this.authorityService.getAuthorities(memberships));
-        return authorities;
-    }
 
     public List<ITUserDTO> loadAllUsers() {
         return this.itUserRepository.findAll().stream().map(ITUser::toDTO).collect(Collectors.toList());
@@ -140,15 +116,16 @@ public class ITUserService implements UserDetailsService {
     }
 
     public ITUserDTO getITUserDTO(String id) throws UsernameNotFoundException {
-        return this.itUserRepository.findByCid(id)
+        ITUser user = this.itUserRepository.findByCid(id)
                 .orElse(this.itUserRepository.findById(UUID.fromString(id))
                         .orElse(this.itUserRepository.findByEmail(id)
-                        .orElseThrow(UserNotFoundResponse::new))).toDTO();
+                        .orElseThrow(UserNotFoundResponse::new)));
+        return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
     }
 
     public ITUserDTO getUserByEmail(String email) throws UsernameNotFoundException {
         return this.itUserRepository.findByCid(email)
-                .map(u -> u.toUserDetailsDTO(this.getAuthorities(u.toDTO())))
+                .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
                 .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }
 
@@ -175,7 +152,7 @@ public class ITUserService implements UserDetailsService {
         return this.passwordEncoder.matches(password, user.getPassword());
     }
 
-    protected ITUser getITUser(ITUserDTO userDTO) {
+    private ITUser getITUser(ITUserDTO userDTO) {
         return this.itUserRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
     }

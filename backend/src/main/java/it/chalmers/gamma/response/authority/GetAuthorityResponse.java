@@ -16,7 +16,7 @@ public class GetAuthorityResponse {
         return authority;
     }
 
-    public GetAuthorityResponseObject getResponseObject() {
+    public GetAuthorityResponseObject toResponseObject() {
         return new GetAuthorityResponseObject(this);
     }
 

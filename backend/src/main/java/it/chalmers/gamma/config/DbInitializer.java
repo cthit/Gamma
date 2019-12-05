@@ -121,20 +121,18 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             Text description = new Text();
             description.setEn("The client details for the frontend of Gamma");
             description.setSv("Klient detaljerna för Gammas frontend");
-
-            ITClientDTO itClient = new ITClientDTO(
-                UUID.randomUUID(),
-                    this.clientId,
-                    "{noop}secret",
-                    this.redirectUri.trim(),
-                    60*60*24*30,
-                    0,
-                    true,
-                    "Gamma Frontend",
-                    description,
-                    Instant.now(),
-                    Instant.now()
-            );
+            ITClient itClient = new ITClient();
+            itClient.setClientId(this.clientId);
+            itClient.setClientSecret("{noop}secret");
+            itClient.setAutoApprove(true);
+            itClient.setName("Gamma Frontend");
+            itClient.setCreatedAt(Instant.now());
+            itClient.setLastModifiedAt(Instant.now());
+            itClient.setRefreshTokenValidity(0);
+            this.redirectUri = this.redirectUri.trim();
+            itClient.setWebServerRedirectUri(this.redirectUri);
+            itClient.setDescription(description);
+            itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
             this.itClientService.addITClient(itClient);
         }
     }
@@ -188,22 +186,20 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     }
     private void ensureOauthClient() {
         if (!this.itClientService.clientExists(this.oauth2ClientId)) {
+            ITClient client = new ITClient();
+            client.setName(this.oauth2ClientName);
             Text description = new Text();
             description.setEn("Client for mocking " + this.oauth2ClientName);
             description.setSv("Klient för att mocka " + this.oauth2ClientName);
-            ITClientDTO client = new ITClientDTO(
-                UUID.randomUUID(),
-                    this.oauth2ClientId,
-                    "{noop}" + this.oauth2ClientSecret,
-                    this.oauth2ClientRedirectUri,
-                    this.accessTokenValidityTime,
-                    this.refreshTokenValidityTime,
-                    this.autoApprove,
-                    this.oauth2ClientName,
-                    description,
-                    Instant.now(),
-                    Instant.now()
-            );
+            client.setDescription(description);
+            client.setWebServerRedirectUri(this.oauth2ClientRedirectUri);
+            client.setCreatedAt(Instant.now());
+            client.setLastModifiedAt(Instant.now());
+            client.setAccessTokenValidity(this.accessTokenValidityTime);
+            client.setAutoApprove(this.autoApprove);
+            client.setRefreshTokenValidity(this.refreshTokenValidityTime);
+            client.setClientId(this.oauth2ClientId);
+            client.setClientSecret("{noop}" + this.oauth2ClientSecret);
             this.itClientService.addITClient(client);
             Text apiDescription = new Text();
             apiDescription.setSv("API key");

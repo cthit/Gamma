@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 public class UserWebsiteService extends EntityWebsiteService {
 
     private final UserWebsiteRepository repository;
-    private final ITUserService itUserService;
+    private final DTOToEntityService dtoToEntityService;
     private final WebsiteURLService websiteURLService;
     private final WebsiteService websiteService;
 
-    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService, ITUserService itUserService, WebsiteURLService websiteURLService, WebsiteService websiteService1) {
+    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService, DTOToEntityService dtoToEntityService, WebsiteURLService websiteURLService, WebsiteService websiteService1) {
         super(websiteService);
         this.repository = repository;
-        this.itUserService = itUserService;
+        this.dtoToEntityService = dtoToEntityService;
         this.websiteURLService = websiteURLService;
         this.websiteService = websiteService1;
     }
@@ -41,7 +41,7 @@ public class UserWebsiteService extends EntityWebsiteService {
     public void addWebsiteToUser(ITUserDTO user, List<WebsiteURLDTO> websites) {
         for (WebsiteURLDTO website : websites) {
             UserWebsite userWebsite = new UserWebsite();
-            userWebsite.setItUser(this.itUserService.getITUser(user));
+            userWebsite.setItUser(this.dtoToEntityService.fromDTO(user));
             userWebsite.setWebsite(this.websiteURLService.getWebsiteURL(website));
             this.repository.save(userWebsite);
         }
@@ -67,7 +67,7 @@ public class UserWebsiteService extends EntityWebsiteService {
      * @return all websites connected to a user
      */
     public List<WebsiteInterfaceDTO> getWebsites(ITUserDTO user) {
-        return this.repository.findAllByItUser(this.itUserService.getITUser(user))
+        return this.repository.findAllByItUser(this.dtoToEntityService.fromDTO(user))
                 .stream().map(UserWebsite::toDTO).collect(Collectors.toList());
     }
 
@@ -84,7 +84,7 @@ public class UserWebsiteService extends EntityWebsiteService {
      */
     @Transactional
     public void deleteWebsitesConnectedToUser(ITUserDTO user) {
-        this.repository.deleteAllByItUser(this.itUserService.getITUser(user));
+        this.repository.deleteAllByItUser(this.dtoToEntityService.fromDTO(user));
     }
 
     /**

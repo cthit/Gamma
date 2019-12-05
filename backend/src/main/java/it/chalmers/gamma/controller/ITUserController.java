@@ -12,6 +12,7 @@ import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
+import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
 import it.chalmers.gamma.response.user.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.PasswordChangedResponse;
@@ -121,29 +122,29 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public GetITUserResponse getMe(Principal principal) {
+    public GetITUserResponseObject getMe(Principal principal) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        List<WebsiteDTO> websites =
-                this.userWebsiteService.getWebsitesOrdered(
-                        this.userWebsiteService.getWebsites(user)
-                );
+      //  List<WebsiteDTO> websites =
+      //          this.userWebsiteService.getWebsitesOrdered(
+      //                  this.userWebsiteService.getWebsites(user)
+      //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        return new GetITUserResponse(user, groups, null);
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
     public GetAllITUsersMinifiedResponseObject getAllUserMini() {
         List<GetITUserMinifiedResponse> itUsers = this.itUserService.loadAllUsers()
                 .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
-        return new GetAllITUsersMinifiedResponse(itUsers).getResponseObject();
+        return new GetAllITUsersMinifiedResponse(itUsers).toResponseObject();
     }
     /**
     * First tries to get user using id, if not found gets it using the cid.
     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public GetITUserResponse getUser(@PathVariable("id") String id) {
+    public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUserDTO(id);
 //        List<WebsiteDTO> websites =
 //                this.userWebsiteService.getWebsitesOrdered(
@@ -151,7 +152,7 @@ public final class ITUserController {
 //                );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        return new GetITUserResponse(user, groups, null);
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
