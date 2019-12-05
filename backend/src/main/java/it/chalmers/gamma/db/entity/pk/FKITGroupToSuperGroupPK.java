@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 
+import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,11 +18,11 @@ import javax.persistence.ManyToOne;
 public class FKITGroupToSuperGroupPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_super_group_id")
-    FKITSuperGroup superGroup;
+    private FKITSuperGroup superGroup;
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    FKITGroup group;
+    private FKITGroup group;
 
     public FKITGroupToSuperGroupPK(FKITSuperGroup superGroup, FKITGroup group) {
         this.superGroup = superGroup;

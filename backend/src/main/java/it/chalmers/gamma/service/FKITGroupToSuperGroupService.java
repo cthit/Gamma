@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 
 import java.util.ArrayList;
@@ -34,8 +35,9 @@ public class FKITGroupToSuperGroupService {
         this.repository.save(relationship);
     }
 
-    public List<FKITGroupToSuperGroup> getRelationships(FKITSuperGroupDTO superGroup) {
-        return this.repository.findFKITGroupToSuperGroupsById_SuperGroup_Id(superGroup.getId());
+    public List<FKITGroupToSuperGroupDTO> getRelationships(FKITSuperGroupDTO superGroup) {
+        return this.repository.findFKITGroupToSuperGroupsById_SuperGroup_Id(superGroup.getId())
+                .stream().map(FKITGroupToSuperGroup::toDTO).collect(Collectors.toList());
     }
 
     public List<FKITSuperGroupDTO> getSuperGroups(FKITGroupDTO groupDTO) {

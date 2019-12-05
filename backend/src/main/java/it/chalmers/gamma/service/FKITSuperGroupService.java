@@ -30,7 +30,7 @@ public class FKITSuperGroupService {
         return this.repository.save(group).toDTO();
     }
 
-    public FKITSuperGroupDTO getGroupDTO(String id) {
+    public FKITSuperGroupDTO getGroupDTO(String id) throws SuperGroupDoesNotExistResponse{
         return this.repository.findById(UUID.fromString(id))
                 .orElse(this.repository.findByName(id)
                 .orElseThrow(SuperGroupDoesNotExistResponse::new))
