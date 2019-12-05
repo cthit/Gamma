@@ -4,8 +4,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;

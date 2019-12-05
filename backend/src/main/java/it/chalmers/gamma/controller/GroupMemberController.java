@@ -3,7 +3,7 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.response.group.GetMembershipResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GetMembershipResponse.GetMembershipResponseObject;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.MembershipService;
@@ -31,7 +31,7 @@ public class GroupMemberController {
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
     public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
         FKITGroupDTO group = getGroupByIdOrName(id);
-        List<MembershipDTO> members = this.membershipService.getUsersInGroupDTO(group).stream()
+        List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group).stream()
                 .map(m -> this.membershipService.getMembershipByUserAndGroup(m, group)).collect(Collectors.toList());
         return new GetMembershipResponse(members).getResponseObject();
     }

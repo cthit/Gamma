@@ -1,13 +1,11 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.response.super_group.FKITSuperGroupCreatedResponse;
-import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
-import it.chalmers.gamma.response.GroupDeletedResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupEditedResponse;
+import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
+import it.chalmers.gamma.response.group.GroupDeletedResponse;
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.group.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.super_group.GetSuperGroupResponse;
 import it.chalmers.gamma.response.super_group.GetSuperGroupResponse.GetSuperGroupResponseObject;
@@ -18,7 +16,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,22 +1,16 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
-
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotSavedException;
-import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
-import it.chalmers.gamma.response.GroupCreatedResponse;
-import it.chalmers.gamma.response.GroupDeletedResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupEditedResponse;
+import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
+import it.chalmers.gamma.response.group.GroupCreatedResponse;
+import it.chalmers.gamma.response.group.GroupDeletedResponse;
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.group.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.FKITGroupService;
@@ -41,7 +35,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

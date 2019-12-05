@@ -8,8 +8,7 @@ import it.chalmers.gamma.db.serializers.ITUserSerializer;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.response.GetGroupsResponse;
 import it.chalmers.gamma.response.super_group.GetSuperGroupResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupsResponse;
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
@@ -83,7 +82,7 @@ public class SuperGroupController {
         ITUserSerializer userSerializer = new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
         List<JSONObject> serializedGroups = new ArrayList<>();
         for (FKITGroup group : groups) {
-            List<ITUserDTO> users = this.membershipService.getUsersInGroupDTO(group);
+            List<ITUserDTO> users = this.membershipService.getMembershipsInGroup(group);
 //            serializedGroups.add(serializer.serialize(group, serializedUsers, this.groupWebsiteService
 //                    .getWebsitesOrdered(this.groupWebsiteService.getWebsites(group)), null));
         }

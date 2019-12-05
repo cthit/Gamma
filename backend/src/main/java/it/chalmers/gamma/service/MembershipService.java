@@ -1,9 +1,7 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
@@ -13,7 +11,6 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,10 +40,10 @@ public class MembershipService {
     /**
      * adds a userDTO to the groupDTO.
      *
-     * @param groupDTO    groupDTO the userDTO should be added to
-     * @param userDTO     which userDTO is added
-     * @param postDTO     what post the userDTO has in groupDTO
-     * @param postname    what the unoficial-post name is
+     * @param groupDTO groupDTO the userDTO should be added to
+     * @param userDTO  which userDTO is added
+     * @param postDTO  what post the userDTO has in groupDTO
+     * @param postname what the unoficial-post name is
      */
     public void addUserToGroup(FKITGroupDTO groupDTO, ITUserDTO userDTO, PostDTO postDTO, String postname) {
         MembershipPK pk = new MembershipPK();
@@ -74,17 +71,12 @@ public class MembershipService {
         return usersId;
     }
 
-    public List<ITUserDTO> getUsersInGroupDTO(FKITGroupDTO group) {
-        List<MembershipDTO> memberships = this.membershipRepository
+    public List<MembershipDTO> getMembershipsInGroup(FKITGroupDTO group) {
+        return this.membershipRepository
                 .findAllById_FkitGroup(this.fkitGroupService.getGroup(group))
-            .stream()
-            .map(Membership::toDTO)
-            .collect(Collectors.toList());
-        List<ITUserDTO> groupIds = new ArrayList<>();
-        for (MembershipDTO membership : memberships) {
-            groupIds.add(membership.getUser());
-        }
-        return groupIds;
+                .stream()
+                .map(Membership::toDTO)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -115,8 +107,8 @@ public class MembershipService {
 
     public List<MembershipDTO> getUserDTOByGroupAndPost(FKITGroupDTO group, PostDTO post) {
         return this.membershipRepository.findAllById_FkitGroupAndId_Post(
-                        this.fkitGroupService.getGroup(group),
-                        this.postService.getPost(post)).stream().map(Membership::toDTO).collect(Collectors.toList());
+                this.fkitGroupService.getGroup(group),
+                this.postService.getPost(post)).stream().map(Membership::toDTO).collect(Collectors.toList());
     }
 
     public List<FKITGroupDTO> getGroupsWithPost(PostDTO postDTO) {
@@ -156,7 +148,7 @@ public class MembershipService {
     }
 
     public void removeAllUsersFromGroup(FKITGroupDTO group) {
-        List<ITUser> users = this.getUsersInGroupDTO(group).stream()
+        List<ITUser> users = this.getMembershipsInGroup(group).stream()
                 .map(this.itUserService::getITUser).collect(Collectors.toList());
         for (ITUser user : users) {
             this.membershipRepository.delete(
