@@ -30,21 +30,8 @@ public class GroupMemberController {
 
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
     public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
-        FKITGroupDTO group = getGroupByIdOrName(id);
-        List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group).stream()
-                .map(m -> this.membershipService.getMembershipByUserAndGroup(m, group)).collect(Collectors.toList());
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group);
         return new GetMembershipResponse(members).getResponseObject();
     }
-
-    private FKITGroupDTO getGroupByIdOrName(String idOrName) throws GroupDoesNotExistResponse {
-        try {
-            return Optional.ofNullable(this.fkitGroupService.getDTOGroup(idOrName))
-                    .or(() -> Optional.ofNullable(this.fkitGroupService.getDTOGroup(UUID.fromString(idOrName))))
-                    .orElseThrow(GroupDoesNotExistResponse::new);
-        }
-        catch (IllegalArgumentException e) {
-            throw new GroupDoesNotExistResponse();
-        }
-    }
-
 }
