@@ -2,9 +2,12 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.activation_code.ActivationCodeAddedResonse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.activation_code.ActivationCodeDeletedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
@@ -43,23 +46,23 @@ public final class WhitelistController {
     }
 
     @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
-    public ResponseEntity<String> createActivationCode(@Valid @RequestBody WhitelistCodeRequest cid,
+    public ActivationCodeAddedResonse createActivationCode(@Valid @RequestBody WhitelistCodeRequest cid,
                                                        BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
-            Whitelist whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
+            WhitelistDTO whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
             String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
-            ActivationCode activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
+            ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
         }
         return new ActivationCodeAddedResonse(); // For security reasons
     }
 
-    private void sendEmail(ActivationCode activationCode) {
+    private void sendEmail(ActivationCodeDTO activationCode) {
         String code = activationCode.getCode();
-        String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
+        String to = activationCode.getWhitelistDTO().getCid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
         this.mailSenderService.trySendingMail(to, "Chalmers activation code", message);
     }
