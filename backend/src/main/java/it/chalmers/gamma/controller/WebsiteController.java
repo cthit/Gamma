@@ -1,13 +1,16 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.db.entity.Website;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.response.website.GetAllWebsitesResponse;
+import it.chalmers.gamma.response.website.GetAllWebsitesResponse.GetAllWebsitesResponseObject;
 import it.chalmers.gamma.response.website.GetWebsiteResponse;
 import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.WebsiteService;
 
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,16 +30,14 @@ public class WebsiteController {
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Website> getWebsite(@PathVariable("id") String id) {
-        Website website = this.websiteService.getWebsiteById(id);
-        if (website == null) {
-            throw new WebsiteNotFoundResponse();
-        }
+    public GetWebsiteResponse getWebsite(@PathVariable("id") String id) {
+        WebsiteDTO website = this.websiteService.getWebsite(id);
         return new GetWebsiteResponse(website);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Website>> getAllWebsites() {
-        return new GetAllWebsitesResponse(this.websiteService.getAllWebsites());
+    public GetAllWebsitesResponseObject getAllWebsites() {
+        return new GetAllWebsitesResponse(this.websiteService.getAllWebsites().stream().map(GetWebsiteResponse::new)
+        .collect(Collectors.toList())).getResponseObject();
     }
 }
