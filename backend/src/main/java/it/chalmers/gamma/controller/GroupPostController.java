@@ -27,8 +27,7 @@ public class GroupPostController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetPostResponseObject getPost(@PathVariable("id") String id) {
-        PostDTO post = Optional.of(this.postService.getPostDTO(UUID.fromString(id)))
-                .orElseThrow(PostDoesNotExistResponse::new);
+        PostDTO post = this.postService.getPostDTO(id);
         return new GetPostResponse(post).getResponseObject();
     }
 
