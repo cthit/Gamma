@@ -45,7 +45,7 @@ public class ITUserService implements UserDetailsService {
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
     public ITUserService(ITUserRepository itUserRepository, MembershipService membershipService,
-                          AuthorityService authorityService, AuthorityLevelService authorityLevelService) {
+                         AuthorityService authorityService, AuthorityLevelService authorityLevelService) {
         this.itUserRepository = itUserRepository;
         this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         this.membershipService = membershipService;
@@ -56,8 +56,8 @@ public class ITUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
         ITUser user = this.itUserRepository.findByEmail(cidOrEmail)
-                    .orElse(this.itUserRepository.findByCid(cidOrEmail)
-                            .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg)));
+                .orElse(this.itUserRepository.findByCid(cidOrEmail)
+                        .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg)));
         return user.toUserDetailsDTO(this.getAuthorities(user.toDTO()));
 
     }
@@ -95,13 +95,13 @@ public class ITUserService implements UserDetailsService {
     }
 
     public ITUserDTO createUser(String nick,
-                             String firstName,
-                             String lastname,
-                             String cid,
-                             Year year,
-                             boolean userAgreement,
-                             String email,
-                             String password) {
+                                String firstName,
+                                String lastname,
+                                String cid,
+                                Year year,
+                                boolean userAgreement,
+                                String email,
+                                String password) {
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
         itUser.setFirstName(firstName);
@@ -125,7 +125,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                            String email, String phone, Language language) throws UsernameNotFoundException {
+                         String email, String phone, Language language) throws UsernameNotFoundException {
         ITUser itUser = this.itUserRepository.findById(user)
                 .orElseThrow(() -> new UsernameNotFoundException(userErrorMsg));
 
@@ -142,7 +142,8 @@ public class ITUserService implements UserDetailsService {
     public ITUserDTO getITUserDTO(String id) throws UsernameNotFoundException {
         return this.itUserRepository.findByCid(id)
                 .orElse(this.itUserRepository.findById(UUID.fromString(id))
-                .orElseThrow(UserNotFoundResponse::new)).toDTO();
+                        .orElse(this.itUserRepository.findByEmail(id)
+                        .orElseThrow(UserNotFoundResponse::new))).toDTO();
     }
 
     public ITUserDTO getUserByEmail(String email) throws UsernameNotFoundException {

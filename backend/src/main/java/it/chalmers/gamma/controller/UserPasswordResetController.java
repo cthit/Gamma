@@ -44,41 +44,32 @@ public class UserPasswordResetController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> resetPasswordRequest(
+    public PasswordResetResponse resetPasswordRequest(
             @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         String userCredentials = request.getCid(); // CID can either be CID or email.
-        ITUser user = this.findByCidOrEmail(userCredentials);
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
-
-        String token = TokenUtils.generateToken(10,
+        ITUserDTO user = this.itUserService.getITUserDTO(userCredentials);
+        String token = TokenUtils.generateToken(10,     // TODO Move to service
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
-
         if (this.passwordResetService.userHasActiveReset(user)) {
             this.passwordResetService.editToken(user, token);
         } else {
             this.passwordResetService.addToken(user, token);
         }
-        sendMail(user, token);
+        this.sendMail(user, token);
         return new PasswordResetResponse();
     }
 
     @RequestMapping (value = "/finish", method = RequestMethod.PUT)
-    public ResponseEntity<String> resetPassword(
+    public PasswordChangedResponse resetPassword(
             @Valid @RequestBody ResetPasswordFinishRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        String userCredentials = request.getCid();
-        ITUser user = this.findByCidOrEmail(userCredentials);
-        if (user == null) {
-            throw new CodeOrCidIsWrongResponse();
-        }
+        ITUserDTO user = this.itUserService.getITUserDTO(request.getCid());
         if (!this.passwordResetService.userHasActiveReset(user)
                 || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
             throw new CodeOrCidIsWrongResponse();
@@ -89,18 +80,10 @@ public class UserPasswordResetController {
     }
 
     // TODO Make sure that an URL is added to the email
-    private void sendMail(ITUser user, String token) {
+    private void sendMail(ITUserDTO user, String token) {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
         this.mailSenderService.trySendingMail(user.getEmail(), subject, message);
-    }
-
-    private ITUserDTO findByCidOrEmail(String userCredentials) {
-        ITUserDTO user = this.itUserService.loadUser(userCredentials);
-        if (user == null) {
-            return this.itUserService.getUserByEmail(userCredentials);
-        }
-        return user;
     }
 }
