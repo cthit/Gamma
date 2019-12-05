@@ -7,7 +7,7 @@ import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
-import it.chalmers.gamma.response.UserNotFoundResponse;
+import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import java.time.Instant;
 import java.time.Year;
 import java.util.ArrayList;
@@ -139,7 +139,7 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUserDTO getUser(String id) throws UsernameNotFoundException {
+    public ITUserDTO getITUserDTO(String id) throws UsernameNotFoundException {
         return this.itUserRepository.findByCid(id)
                 .orElse(this.itUserRepository.findById(UUID.fromString(id))
                 .orElseThrow(UserNotFoundResponse::new)).toDTO();
@@ -164,7 +164,8 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    public void editProfilePicture(ITUser user, String fileUrl) {
+    public void editProfilePicture(ITUserDTO userDTO, String fileUrl) {
+        ITUser user = this.getITUser(userDTO);
         user.setAvatarUrl(fileUrl);
         this.itUserRepository.save(user);
     }

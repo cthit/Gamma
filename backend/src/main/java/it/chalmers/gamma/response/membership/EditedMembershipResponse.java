@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response;
+package it.chalmers.gamma.response.membership;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

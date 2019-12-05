@@ -15,6 +15,10 @@ public class GetAllFKITGroupsResponse {
         return responses;
     }
 
+    public GetAllFKITGroupsResponseObject getResponseObject() {
+        return new GetAllFKITGroupsResponseObject(this);
+    }
+
     public static class GetAllFKITGroupsResponseObject extends ResponseEntity<GetAllFKITGroupsResponse> {
         GetAllFKITGroupsResponseObject(GetAllFKITGroupsResponse body) {
             super(body, HttpStatus.OK);

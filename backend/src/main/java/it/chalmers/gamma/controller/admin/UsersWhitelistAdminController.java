@@ -9,9 +9,9 @@ import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse.GetAllWhitel
 import it.chalmers.gamma.response.whitelist.GetWhitelistResponse;
 import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.UserAlreadyExistsResponse;
-import it.chalmers.gamma.response.UserDeletedResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
+import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.user.UserDeletedResponse;
+import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.response.whitelist.GetWhitelistResponse.GetWhitelistResponseObject;
 import it.chalmers.gamma.response.whitelist.WhitelistAddedResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistIsValidResponse;

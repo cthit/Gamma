@@ -48,7 +48,8 @@ public class WhitelistService {
      * @return if found the whitelist object searched for, otherwise null
      */
     public WhitelistDTO getWhitelistDTO(String cid) {
-        return this.whitelistRepository.findByCid(cid).map(Whitelist::toDTO).orElse(null);
+        return this.whitelistRepository.findByCid(cid).map(Whitelist::toDTO)
+                .orElseThrow(WhitelistDoesNotExistsException::new);
     }
 
     /**

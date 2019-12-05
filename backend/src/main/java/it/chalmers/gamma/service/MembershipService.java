@@ -1,6 +1,5 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
@@ -22,12 +21,16 @@ public class MembershipService {
     private final FKITGroupService fkitGroupService;
     private final ITUserService itUserService;
     private final PostService postService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final FKITSuperGroupService fkitSuperGroupService;
 
-    public MembershipService(MembershipRepository membershipRepository, FKITGroupService fkitGroupService, ITUserService itUserService, PostService postService) {
+    public MembershipService(MembershipRepository membershipRepository, FKITGroupService fkitGroupService, ITUserService itUserService, PostService postService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, FKITSuperGroupService fkitSuperGroupService) {
         this.membershipRepository = membershipRepository;
         this.fkitGroupService = fkitGroupService;
         this.itUserService = itUserService;
         this.postService = postService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
 
@@ -89,6 +92,9 @@ public class MembershipService {
         List<Membership> memberships = this.membershipRepository.findAllById_ItUser(this.itUserService.getITUser(user));
         List<FKITGroupDTO> groups = new ArrayList<>();
         for (Membership membership : memberships) {
+            FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
+            membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.getSuperGroups(group)
+                    .stream().map(this.fkitSuperGroupService::getGroup).collect(Collectors.toList()));
             groups.add(membership.getId().getFKITGroup().toDTO());
         }
         return groups;
@@ -124,8 +130,14 @@ public class MembershipService {
     }
 
     public List<MembershipDTO> getMembershipsByUser(ITUserDTO userDTO) {
-        return this.membershipRepository.findAllById_ItUser(this.itUserService.getITUser(userDTO))
-                .stream().map(Membership::toDTO).collect(Collectors.toList());
+        List<Membership> memberships = this.membershipRepository
+                .findAllById_ItUser(this.itUserService.getITUser(userDTO));
+        for (Membership membership : memberships) {
+            FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
+            membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.getSuperGroups(group)
+                    .stream().map(this.fkitSuperGroupService::getGroup).collect(Collectors.toList()));
+        }
+        return memberships.stream().map(Membership::toDTO).collect(Collectors.toList());
     }
 
     public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO) {
@@ -148,11 +160,11 @@ public class MembershipService {
     }
 
     public void removeAllUsersFromGroup(FKITGroupDTO group) {
-        List<ITUser> users = this.getMembershipsInGroup(group).stream()
-                .map(this.itUserService::getITUser).collect(Collectors.toList());
-        for (ITUser user : users) {
+        List<ITUserDTO> users = this.getMembershipsInGroup(group).stream()
+                .map(MembershipDTO::getUser).collect(Collectors.toList());
+        for (ITUserDTO user : users) {
             this.membershipRepository.delete(
-                    this.getMembership(this.getMembershipByUserAndGroup(user.toDTO(), group)));
+                    this.getMembership(this.getMembershipByUserAndGroup(user, group)));
         }
     }
 

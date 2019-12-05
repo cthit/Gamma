@@ -1,37 +1,29 @@
 package it.chalmers.gamma.controller;
 
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ACCEPTANCE_YEAR;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.CID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.FIRST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.ID;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.LAST_NAME;
-import static it.chalmers.gamma.db.serializers.ITUserSerializer.Properties.NICK;
-
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
-import it.chalmers.gamma.db.entity.WebsiteURL;
-import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.db.serializers.ITUserSerializer;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.requests.ChangeUserPassword;
-import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
-import it.chalmers.gamma.response.CodeExpiredResponse;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.EditedProfilePicture;
+import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
-import it.chalmers.gamma.response.IncorrectCidOrPasswordResponse;
+import it.chalmers.gamma.response.user.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PasswordChangedResponse;
-import it.chalmers.gamma.response.PasswordTooShortResponse;
-import it.chalmers.gamma.response.UserAlreadyExistsResponse;
-import it.chalmers.gamma.response.UserCreatedResponse;
-import it.chalmers.gamma.response.UserDeletedResponse;
-import it.chalmers.gamma.response.UserEditedResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
+import it.chalmers.gamma.response.user.PasswordChangedResponse;
+import it.chalmers.gamma.response.user.PasswordTooShortResponse;
+import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.user.UserCreatedResponse;
+import it.chalmers.gamma.response.user.UserDeletedResponse;
+import it.chalmers.gamma.response.user.UserEditedResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
+import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
+import it.chalmers.gamma.response.user.GetITUserResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
@@ -40,21 +32,16 @@ import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.views.WebsiteDTO;
 
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 
-import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -94,34 +81,19 @@ public final class ITUserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    public ResponseEntity<String> createUser(       // TODO, move checks to service, and return only if checks failed or passed
+    public UserCreatedResponse createUser(       // TODO, move checks to service, and return only if checks failed or passed
             @Valid @RequestBody CreateITUserRequest createITUserRequest, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        Whitelist user = this.whitelistService.getWhitelistDTO(
-                createITUserRequest.getWhitelist().getCid()
-        );
+        WhitelistDTO user = this.whitelistService.getWhitelistDTO(createITUserRequest.getWhitelist().getCid());
 
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
-
-        createITUserRequest.setWhitelist(user);
-
-        if (this.itUserService.userExists(createITUserRequest.getWhitelist().getCid())) {
+        if (this.itUserService.userExists(user.getCid())) {
             throw new UserAlreadyExistsResponse();
         }
-
         if (!this.activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
             throw new CodeOrCidIsWrongResponse();
         }
-
-        if (this.activationCodeService.hasCodeExpired(user.getCid(), 2)) {
-            this.activationCodeService.deleteCode(user.getCid());
-            throw new CodeExpiredResponse();
-        }
-
         int minPassLength = 8;
 
         if (createITUserRequest.getPassword().length() < minPassLength) {
@@ -136,7 +108,7 @@ public final class ITUserController {
                     createITUserRequest.isUserAgreement(),
                     null,
                     createITUserRequest.getPassword());
-            removeCidFromWhitelist(createITUserRequest);
+            this.removeCidFromWhitelist(createITUserRequest);
             return new UserCreatedResponse();
         }
     }
@@ -149,90 +121,57 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public JSONObject getMe(Principal principal) {
+    public GetITUserResponse getMe(Principal principal) {
         String cid = principal.getName();
-        ITUser user = this.itUserService.loadUser(cid);
-        ITUserSerializer serializer =
-                new ITUserSerializer(ITUserSerializer.Properties.getAllProperties());
+        ITUserDTO user = this.itUserService.loadUser(cid);
         List<WebsiteDTO> websites =
                 this.userWebsiteService.getWebsitesOrdered(
                         this.userWebsiteService.getWebsites(user)
                 );
-        List<Membership> memberships = this.addSuperGroupInfo(this.membershipService.getMembershipsByUser(user));
-        return serializer.serialize(user, websites, ITUserSerializer.getGroupsAsJson(memberships));
+        List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
+                .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
+        return new GetITUserResponse(user, groups, null);
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
-    public List<JSONObject> getAllUserMini() {
-        List<ITUser> itUsers = this.itUserService.loadAllUsers();
-        List<ITUserSerializer.Properties> props =
-                new ArrayList<>(Arrays.asList(
-                        CID,
-                        FIRST_NAME,
-                        LAST_NAME,
-                        NICK,
-                        ACCEPTANCE_YEAR,
-                        ID
-                ));
-        List<JSONObject> minifiedITUsers = new ArrayList<>();
-        ITUserSerializer serializer = new ITUserSerializer(props);
-        for (ITUser user : itUsers) {
-            minifiedITUsers.add(serializer.serialize(user, null, null));
-        }
-        return minifiedITUsers;
+    public GetAllITUsersMinifiedResponseObject getAllUserMini() {
+        List<GetITUserMinifiedResponse> itUsers = this.itUserService.loadAllUsers()
+                .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
+        return new GetAllITUsersMinifiedResponse(itUsers).getResponseObject();
     }
     /**
     * First tries to get user using id, if not found gets it using the cid.
     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public JSONObject getUser(@PathVariable("id") String id) {
-        ITUser user;
-        try {
-            user = this.itUserService.getUserById(UUID.fromString(id));
-        } catch (IllegalArgumentException e) {
-            user = this.itUserService.loadUser(id);
-            if (user == null) {
-                throw new UserNotFoundResponse();
-            }
-        }
-
-        ITUserSerializer serializer = new ITUserSerializer(
-                ITUserSerializer.Properties.getAllProperties()
-        );
-        List<WebsiteDTO> websites =
-                this.userWebsiteService.getWebsitesOrdered(
-                        this.userWebsiteService.getWebsites(user)
-                );
-        List<Membership> memberships = this.addSuperGroupInfo(this.membershipService.getMembershipsByUser(user));
-        return serializer.serialize(user, websites, ITUserSerializer.getGroupsAsJson(memberships));
+    public GetITUserResponse getUser(@PathVariable("id") String id) {
+        ITUserDTO user = this.itUserService.getITUserDTO(id);
+//        List<WebsiteDTO> websites =
+//                this.userWebsiteService.getWebsitesOrdered(
+//                        this.userWebsiteService.getWebsites(user)
+//                );
+        List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
+                .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
+        return new GetITUserResponse(user, groups, null);
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)
-    public ResponseEntity<String> editMe(Principal principal, @RequestBody EditITUserRequest request) {
+    public UserEditedResponse editMe(Principal principal, @RequestBody EditITUserRequest request) {
         String cid = principal.getName();
-        ITUser user = this.itUserService.loadUser(cid);
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
+        ITUserDTO user = this.itUserService.loadUser(cid);
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
                 request.getEmail(), request.getPhone(), request.getLanguage());
-        List<CreateGroupRequest.WebsiteInfo> websiteInfos = request.getWebsites();
-        List<WebsiteURL> websiteURLs = new ArrayList<>();
-        List<WebsiteInterface> userWebsite = new ArrayList<>(
-                this.userWebsiteService.getWebsites(user)
-        );
-        this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
+      //  List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
+      //  List<WebsiteInterfaceDTO> userWebsite = new ArrayList<>(
+      //          this.userWebsiteService.getWebsites(user)
+      //  );
+      //  this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
     @RequestMapping(value = "/me/avatar", method = RequestMethod.PUT)
-    public ResponseEntity<String> editProfileImage(Principal principal, @RequestParam MultipartFile file,
-                                                   BindingResult result) {
+    public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
-        ITUser user = this.itUserService.loadUser(cid);
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
+        ITUserDTO user = this.itUserService.loadUser(cid);
         try {
             String fileUrl = ImageITUtils.saveImage(file);
             this.itUserService.editProfilePicture(user, fileUrl);
@@ -240,16 +179,16 @@ public final class ITUserController {
             throw new FileNotSavedException();
         }
 
-        return new EditedProfilePicture();
+        return new EditedProfilePictureResponse();
     }
 
     @RequestMapping(value = "/me/change_password", method = RequestMethod.PUT)
-    public ResponseEntity<String> changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
+    public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
                                                  BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUser user = this.extractUser(principal);
+        ITUserDTO user = this.extractUser(principal);
         if (!this.itUserService.passwordMatches(user, request.getOldPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
@@ -258,7 +197,7 @@ public final class ITUserController {
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
+    public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
                                            BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -268,7 +207,7 @@ public final class ITUserController {
             throw new IncorrectCidOrPasswordResponse();
         }
         this.userWebsiteService.deleteWebsitesConnectedToUser(
-                this.itUserService.getUserById(user.getId())
+                this.itUserService.getITUserDTO(user.getId().toString())
         );
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
@@ -276,19 +215,7 @@ public final class ITUserController {
     }
 
     private ITUserDTO extractUser(Principal principal) {
-        String cid = principal.getName();
-        ITUserDTO user = this.itUserService.loadUser(cid);
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
-        return user;
-    }
-    // This should probably do a deep copy instead. But that is not in MVP...
-    private List<Membership> addSuperGroupInfo(List<Membership> memberships) {
-        List<Membership> membershipsCopy = new ArrayList<>(memberships);
-        membershipsCopy.forEach(membership -> membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService
-                .getSuperGroups(membership.getId().getFKITGroup())));
-        return membershipsCopy;
+        return this.itUserService.loadUser(principal.getName());
     }
 
 }

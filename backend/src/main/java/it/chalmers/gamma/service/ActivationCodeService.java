@@ -34,10 +34,8 @@ public class ActivationCodeService {
      * @return a copy of the ActivationCode object added to the database
      */
     public ActivationCodeDTO saveActivationCode(WhitelistDTO whitelistDTO, String code) {
-        String user = whitelistDTO.getCid();
-        if (userHasCode(user)) {
-            this.activationCodeRepository.delete(
-                    this.activationCodeRepository.findByCid_Cid(user));
+        if(this.activationCodeRepository.existsActivationCodeByCid_Cid(whitelistDTO.getCid())) {
+            this.activationCodeRepository.deleteActivationCodeByCid_Cid(whitelistDTO.getCid());
         }
         Whitelist whitelist = this.whitelistService.getWhitelist(whitelistDTO);
         ActivationCode activationCode = new ActivationCode(whitelist);
@@ -47,20 +45,25 @@ public class ActivationCodeService {
     }
 
     public boolean codeMatches(String code, String user) {
-        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user);
+        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user)
+                .orElse(null);
         if (activationCode == null) {
+            return false;
+        }
+        if(!activationCode.isValid()) {
+            deleteCode(activationCode.getId());
             return false;
         }
         return activationCode.getCode().equals(code);
     }
 
     private boolean userHasCode(String cid) {
-        return this.activationCodeRepository.findByCid_Cid(cid) != null;
+        return this.activationCodeRepository.existsActivationCodeByCid_Cid(cid);
     }
 
     // TODO Delete entry after 1 hour or once code has been used. This does not work.
     public void deleteCode(String cid) {
-        this.activationCodeRepository.delete(this.activationCodeRepository.findByCid_Cid(cid));
+        this.activationCodeRepository.deleteActivationCodeByCid_Cid(cid);
     }
 
     public void deleteCode(UUID id) {

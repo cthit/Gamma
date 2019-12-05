@@ -7,12 +7,12 @@ import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PasswordChangedResponse;
-import it.chalmers.gamma.response.UserAlreadyExistsResponse;
-import it.chalmers.gamma.response.UserCreatedResponse;
-import it.chalmers.gamma.response.UserDeletedResponse;
-import it.chalmers.gamma.response.UserEditedResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
+import it.chalmers.gamma.response.user.PasswordChangedResponse;
+import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
+import it.chalmers.gamma.response.user.UserCreatedResponse;
+import it.chalmers.gamma.response.user.UserDeletedResponse;
+import it.chalmers.gamma.response.user.UserEditedResponse;
+import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
 import it.chalmers.gamma.response.user.GetITUserResponse;
@@ -65,7 +65,7 @@ public final class UsersAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUserDTO user = this.itUserService.getUser(id);
+        ITUserDTO user = this.itUserService.getITUserDTO(id);
         this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
@@ -86,7 +86,7 @@ public final class UsersAdminController {
                 request.getPhone(),
                 request.getLanguage());
         // Below handles adding websites.
-        ITUserDTO user = this.itUserService.getUser(id);
+        ITUserDTO user = this.itUserService.getITUserDTO(id);
         List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
@@ -94,7 +94,7 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getUser(id);
+        ITUserDTO user = this.itUserService.getITUserDTO(id);
         this.userWebsiteService.deleteWebsitesConnectedToUser(user);
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
@@ -103,7 +103,7 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getUser(id);
+        ITUserDTO user = this.itUserService.getITUserDTO(id);
        // List<WebsiteURLDTO> websites = this.userWebsiteService.getWebsitesOrdered(
        //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
