@@ -7,7 +7,11 @@ import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.dto.access.ITClientDTO;
+import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
@@ -27,6 +31,7 @@ import java.time.Year;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -112,23 +117,24 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     }
 
     private void ensureFrontendClientDetails() {
-        if (!this.itClientService.clientExistsByClientId(this.clientId)) {
+        if (!this.itClientService.clientExists(this.clientId)) {
             Text description = new Text();
             description.setEn("The client details for the frontend of Gamma");
             description.setSv("Klient detaljerna för Gammas frontend");
 
-            ITClient itClient = new ITClient();
-            itClient.setClientId(this.clientId);
-            itClient.setClientSecret("{noop}secret");
-            itClient.setAutoApprove(true);
-            itClient.setName("Gamma Frontend");
-            itClient.setCreatedAt(Instant.now());
-            itClient.setLastModifiedAt(Instant.now());
-            itClient.setRefreshTokenValidity(0);
-            this.redirectUri = this.redirectUri.trim();
-            itClient.setWebServerRedirectUri(this.redirectUri);
-            itClient.setDescription(description);
-            itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
+            ITClientDTO itClient = new ITClientDTO(
+                UUID.randomUUID(),
+                    this.clientId,
+                    "{noop}secret",
+                    this.redirectUri.trim(),
+                    60*60*24*30,
+                    0,
+                    true,
+                    "Gamma Frontend",
+                    description,
+                    Instant.now(),
+                    Instant.now()
+            );
             this.itClientService.addITClient(itClient);
         }
     }
@@ -144,32 +150,23 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             Text function = new Text();
             function.setEn(descriptionText);
             function.setSv(descriptionText);
-
-            CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
-            superGroupRequest.setName("superadmin");
-            superGroupRequest.setPrettyName("super admin");
-            superGroupRequest.setType(GroupType.COMMITTEE);
             String adminMail = "admin@chalmers.it";
-            superGroupRequest.setEmail(adminMail);
-            CreateGroupRequest request = new CreateGroupRequest();
-            request.setName("superadmin");
-            request.setPrettyName("superAdmin");
-            request.setDescription(description);
-            request.setFunction(function);
-            request.setEmail(adminMail);
+            FKITSuperGroupDTO superGroupCreation =
+                    new FKITSuperGroupDTO("superadmin", "super admin", GroupType.COMMITTEE, adminMail);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();
             start.setTimeInMillis(System.currentTimeMillis());
-            request.setBecomesActive(start);
-            request.setBecomesInactive(end);
-            FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
-            FKITGroupDTO group = null;//this.groupService.createGroup(request);
+            FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupCreation);
+            FKITGroupDTO group = new FKITGroupDTO(
+                    start, end, description, adminMail, function, "superadmin", "superAdmin", null
+            );
+            group = this.groupService.createGroup(group);
             this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
-            Post post = this.postService.addPost(p);
+            PostDTO post = this.postService.addPost(p);
             ITUserDTO user = this.userservice.createUser(admin,
                     admin,
                     admin,
@@ -185,37 +182,32 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     post,
                     admin
             ); // This might break on a new year
-            AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
+            AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }
     }
     private void ensureOauthClient() {
-        if (!this.itClientService.clientExistsByClientId(this.oauth2ClientId)) {
-            ITClient client = new ITClient();
-            client.setName(this.oauth2ClientName);
+        if (!this.itClientService.clientExists(this.oauth2ClientId)) {
             Text description = new Text();
             description.setEn("Client for mocking " + this.oauth2ClientName);
             description.setSv("Klient för att mocka " + this.oauth2ClientName);
-            client.setDescription(description);
-            client.setWebServerRedirectUri(this.oauth2ClientRedirectUri);
-            client.setCreatedAt(Instant.now());
-            client.setLastModifiedAt(Instant.now());
-            client.setAccessTokenValidity(this.accessTokenValidityTime);
-            client.setAutoApprove(this.autoApprove);
-            client.setRefreshTokenValidity(this.refreshTokenValidityTime);
-            client.setClientId(this.oauth2ClientId);
-            client.setClientSecret("{noop}" + this.oauth2ClientSecret);
+            ITClientDTO client = new ITClientDTO(
+                UUID.randomUUID(),
+                    this.oauth2ClientId,
+                    "{noop}" + this.oauth2ClientSecret,
+                    this.oauth2ClientRedirectUri,
+                    this.accessTokenValidityTime,
+                    this.refreshTokenValidityTime,
+                    this.autoApprove,
+                    this.oauth2ClientName,
+                    description,
+                    Instant.now(),
+                    Instant.now()
+            );
             this.itClientService.addITClient(client);
-            ApiKey apiKey = new ApiKey();
-            apiKey.setName(this.oauth2ClientName);
-            apiKey.setKey(this.oauth2ClientApiKey);
-
             Text apiDescription = new Text();
             apiDescription.setSv("API key");
             apiDescription.setEn("API key");
-
-            apiKey.setDescription(apiDescription);
-
             this.apiKeyService.addApiKey(this.oauth2ClientName, this.oauth2ClientApiKey, apiDescription);
         }
     }
