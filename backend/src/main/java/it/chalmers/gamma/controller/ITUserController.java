@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
@@ -145,7 +144,7 @@ public final class ITUserController {
     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getITUserDTO(id);
+        ITUserDTO user = this.itUserService.getITUser(id);
 //        List<WebsiteDTO> websites =
 //                this.userWebsiteService.getWebsitesOrdered(
 //                        this.userWebsiteService.getWebsites(user)
@@ -208,7 +207,7 @@ public final class ITUserController {
             throw new IncorrectCidOrPasswordResponse();
         }
         this.userWebsiteService.deleteWebsitesConnectedToUser(
-                this.itUserService.getITUserDTO(user.getId().toString())
+                this.itUserService.getITUser(user.getId().toString())
         );
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());

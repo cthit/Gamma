@@ -6,6 +6,8 @@ import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
+import it.chalmers.gamma.util.UUIDUtil;
+
 import java.time.Instant;
 import java.time.Year;
 import java.util.List;
@@ -115,11 +117,18 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUserDTO getITUserDTO(String id) throws UsernameNotFoundException {
-        ITUser user = this.itUserRepository.findByCid(id)
-                .orElse(this.itUserRepository.findById(UUID.fromString(id))
-                        .orElse(this.itUserRepository.findByEmail(id)
-                        .orElseThrow(UserNotFoundResponse::new)));
+    public ITUserDTO getITUser(String idCidOrEmail) throws UsernameNotFoundException {
+        ITUser user;
+        if (UUIDUtil.validUUID(idCidOrEmail)) {
+            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
+                .orElseThrow(UserNotFoundResponse::new);
+
+        }
+        else {
+            user = this.itUserRepository.findByCid(idCidOrEmail)
+                .orElse(this.itUserRepository.findByEmail(idCidOrEmail)
+                    .orElseThrow(UserNotFoundResponse::new));
+        }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
     }
 

@@ -65,7 +65,7 @@ public final class UsersAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUserDTO user = this.itUserService.getITUserDTO(id);
+        ITUserDTO user = this.itUserService.getITUser(id);
         this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
@@ -86,7 +86,7 @@ public final class UsersAdminController {
                 request.getPhone(),
                 request.getLanguage());
         // Below handles adding websites.
-        ITUserDTO user = this.itUserService.getITUserDTO(id);
+        ITUserDTO user = this.itUserService.getITUser(id);
         List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
@@ -94,7 +94,7 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getITUserDTO(id);
+        ITUserDTO user = this.itUserService.getITUser(id);
         this.userWebsiteService.deleteWebsitesConnectedToUser(user);
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
@@ -103,7 +103,7 @@ public final class UsersAdminController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getITUserDTO(id);
+        ITUserDTO user = this.itUserService.getITUser(id);
        // List<WebsiteURLDTO> websites = this.userWebsiteService.getWebsitesOrdered(
        //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);

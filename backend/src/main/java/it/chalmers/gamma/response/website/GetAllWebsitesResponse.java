@@ -5,14 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllWebsitesResponse {
-    private final List<GetWebsiteResponse> responses;
+    private final List<GetWebsiteResponse> websites;
 
-    public GetAllWebsitesResponse(List<GetWebsiteResponse> responses) {
-        this.responses = responses;
+    public GetAllWebsitesResponse(List<GetWebsiteResponse> websites) {
+        this.websites = websites;
     }
 
-    public List<GetWebsiteResponse> getResponses() {
-        return responses;
+    public List<GetWebsiteResponse> getWebsites() {
+        return websites;
     }
 
     public GetAllWebsitesResponseObject toResponseObject() {

@@ -5,14 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllITUsersMinifiedResponse {
-    private final List<GetITUserMinifiedResponse> responses;
 
-    public GetAllITUsersMinifiedResponse(List<GetITUserMinifiedResponse> responses) {
-        this.responses = responses;
+    private final List<GetITUserMinifiedResponse> users;
+
+    public GetAllITUsersMinifiedResponse(List<GetITUserMinifiedResponse> users) {
+        this.users = users;
     }
 
-    public List<GetITUserMinifiedResponse> getResponses() {
-        return responses;
+    public List<GetITUserMinifiedResponse> getUsers() {
+        return users;
     }
 
     public GetAllITUsersMinifiedResponseObject toResponseObject() {
