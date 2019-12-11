@@ -20,10 +20,12 @@ public class PostDTO {
     private final UUID id;
     @JsonUnwrapped
     private final Text postName;
+    private final String emailPrefix;
 
-    public PostDTO(UUID id, Text postName) {
+    public PostDTO(UUID id, Text postName, String emailPrefix) {
         this.id = id;
         this.postName = postName;
+        this.emailPrefix = emailPrefix;
     }
 
     public UUID getId() {
@@ -32,6 +34,11 @@ public class PostDTO {
 
     public Text getPostName() {
         return postName;
+    }
+
+
+    public String getEmailPrefix() {
+        return emailPrefix;
     }
 
     @Override
@@ -44,12 +51,13 @@ public class PostDTO {
         }
         PostDTO postDTO = (PostDTO) o;
         return Objects.equals(this.id, postDTO.id)
-                && Objects.equals(this.postName, postDTO.postName);
+                && Objects.equals(this.postName, postDTO.postName)
+                && Objects.equals(this.emailPrefix, postDTO.emailPrefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.postName);
+        return Objects.hash(this.id, this.postName, this.emailPrefix);
     }
 
     @Override
@@ -57,6 +65,8 @@ public class PostDTO {
         return "PostDTO{"
                 + "id=" + id
                 + ", postName=" + postName
+                + ", emailPrefix=" + emailPrefix
                 + '}';
     }
+
 }

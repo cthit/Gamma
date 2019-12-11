@@ -9,7 +9,6 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 
-import it.chalmers.gamma.views.FKITGroupView;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +73,6 @@ public class FKITGroupToSuperGroupService {
     }
 
     public List<FKITGroupDTO> getAllActiveGroups() {
-        return this.fkitSuperGroupService.getAllGroups().stream()
-                .map(g -> new FKITGroupView(g, this.getActiveGroups(g)))
-                .filter(g -> !g.getGroups().isEmpty()).collect(Collectors.toList());
+        return this.fkitGroupService.getGroups().stream().filter(FKITGroupDTO::isActive).collect(Collectors.toList());
     }
 }

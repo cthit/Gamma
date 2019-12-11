@@ -4,10 +4,12 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Membership;
+import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
@@ -87,8 +89,8 @@ public class MembershipService {
                 .map(Membership::toDTO)
                 .collect(Collectors.toList());
     }
-    public List<Membership> getMembershipsByPost(Post post) {
-        return addSuperGroupInfo(this.membershipRepository.findAllById_Post(post));
+    public List<Membership> getMembershipsByPost(PostDTO post) {
+        return this.membershipRepository.findAllById_Post(this.postService.getPost(post));
     }
 
 
@@ -148,12 +150,10 @@ public class MembershipService {
                     .stream().map(this.fkitSuperGroupService::getGroup).collect(Collectors.toList()));
         }
         return memberships.stream().map(Membership::toDTO).collect(Collectors.toList());
-    public List<GroupType> getGroupType(FKITGroup group) {
-        List<Membership> memberships = this.addSuperGroupInfo(this.membershipRepository.findAllById_FkitGroup(group));
-        List<FKITSuperGroup> superGroups = memberships.stream()
-                .map(Membership::getFkitSuperGroups).flatMap(Collection::stream)
+    }
+    public List<GroupType> getGroupType(FKITGroupDTO groupDTO) {
+        return this.fkitGroupToSuperGroupService.getSuperGroups(groupDTO).stream().map(FKITSuperGroupDTO::getType)
                 .collect(Collectors.toList());
-        return superGroups.stream().map(FKITSuperGroup::getType).collect(Collectors.toList());
     }
 
     public List<Membership> getMembershipsByUser(ITUser user) {
@@ -194,19 +194,21 @@ public class MembershipService {
         memberships.forEach(this.membershipRepository::delete);
     }
 
-    public boolean groupIsActiveCommittee(FKITGroup group) {
+    public boolean groupIsActiveCommittee(FKITGroupDTO group) {
         return this.getGroupType(group).stream()
                 .anyMatch(type -> type.equals(GroupType.COMMITTEE)) && group.isActive();
     }
 
-    public List<Membership> getMembershipsFilterByPostAndGroupType(Post post, GroupType committee) {
-        List<FKITSuperGroup> superGroups = this.fkitSuperGroupService.getAllGroups()
-                .stream().filter(g -> g.getType().equals(committee)).collect(Collectors.toList());
-        List<FKITGroup> groups = superGroups.stream()
+    public List<Membership> getMembershipsFilterByPostAndGroupType(PostDTO postDTO, GroupType groupType) {
+        Post post = this.postService.getPost(postDTO);
+        List<FKITGroupDTO> groups = this.fkitSuperGroupService.getAllGroups()
+                .stream().filter(g -> g.getType().equals(groupType))
                 .map(this.fkitGroupToSuperGroupService::getActiveGroups)
-                .flatMap(Collection::stream).collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         return groups.stream().map(g -> this.membershipRepository
-                .findAllById_FkitGroupAndId_Post(g, post)).flatMap(Collection::stream).collect(Collectors.toList());
+                .findAllById_FkitGroupAndId_Post(this.fkitGroupService.getGroup(g), post))
+                .flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     private Membership getMembership(MembershipDTO membershipDTO) {

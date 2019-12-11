@@ -50,10 +50,12 @@ public class FKITSuperGroupService {
     public void removeGroup(UUID id) {
         this.repository.deleteById(id);
     }
+
     public List<FKITSuperGroupDTO> getAllGroups() {
         return Optional.of(this.repository.findAll().stream()
-                .filter(g -> !g.getType().equals(GroupType.ADMIN)).collect(Collectors.toList())).orElseThrow()
-                .toDTO;
+                .filter(g -> !g.getType().equals(GroupType.ADMIN)).
+                        map(FKITSuperGroup::toDTO).
+                        collect(Collectors.toList())).orElseThrow();
     }
 
     public void updateSuperGroup(UUID id, FKITSuperGroupDTO superGroupDTO) {

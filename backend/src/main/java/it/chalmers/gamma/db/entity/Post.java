@@ -71,9 +71,9 @@ public class Post {
     }
 
     public PostDTO toDTO() {
+        return new PostDTO(id, postName, emailPrefix);
     }
 
-        return new PostDTO(id, postName, emailPrefix);
     @Override
     public boolean equals(Object o) {
         if (this == o) {
