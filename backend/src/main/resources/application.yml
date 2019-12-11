@@ -37,7 +37,7 @@ server:
 
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:INFO}
+    root: ${ROOT_DEBUG_LEVEL:DEBUG}
     org:
       springframework:
         web: ${WEB_DEBUG_LEVEL:DEBUG}
