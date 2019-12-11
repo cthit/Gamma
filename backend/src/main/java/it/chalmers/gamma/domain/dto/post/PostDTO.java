@@ -2,6 +2,8 @@ package it.chalmers.gamma.domain.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import java.util.Objects;
@@ -16,6 +18,7 @@ import javax.persistence.OneToOne;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDTO {
     private final UUID id;
+    @JsonUnwrapped
     private final Text postName;
 
     public PostDTO(UUID id, Text postName) {

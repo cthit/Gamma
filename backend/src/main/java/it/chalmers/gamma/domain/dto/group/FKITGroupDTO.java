@@ -8,7 +8,6 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 @SuppressWarnings("PMD.ExcessiveParameterList")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FKITGroupDTO {
 
     private final UUID id;

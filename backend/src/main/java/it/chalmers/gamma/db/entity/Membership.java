@@ -58,8 +58,7 @@ public class Membership {
                 this.id.getPost().toDTO(),
                 id.getFKITGroup().toDTO(),
                 this.unofficialPostName,
-                this.id.getITUser().toDTO(),
-                this.fkitSuperGroups.stream().map(FKITSuperGroup::toDTO).collect(Collectors.toList()));
+                this.id.getITUser().toDTO());
     }
 
     @Override

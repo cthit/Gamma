@@ -1,18 +1,20 @@
 package it.chalmers.gamma.response.group;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllFKITGroupsResponse {
-    private final List<GetFKITGroupResponse> responses;
+    @JsonUnwrapped
+    private final List<GetFKITGroupResponse> groups;
 
-    public GetAllFKITGroupsResponse(List<GetFKITGroupResponse> responses) {
-        this.responses = responses;
+    public GetAllFKITGroupsResponse(List<GetFKITGroupResponse> groups) {
+        this.groups = groups;
     }
 
-    public List<GetFKITGroupResponse> getResponses() {
-        return responses;
+    public List<GetFKITGroupResponse> getGroups() {
+        return groups;
     }
 
     public GetAllFKITGroupsResponseObject toResponseObject() {

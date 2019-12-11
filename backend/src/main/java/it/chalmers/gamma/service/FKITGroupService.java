@@ -27,7 +27,7 @@ public class FKITGroupService {
         FKITGroup fkitGroup = new FKITGroup();
         fkitGroup.setName(fkitGroupDTO.getName());
         fkitGroup.setFunction(fkitGroupDTO.getFunction());
-        fkitGroup.setDescription(fkitGroup.getDescription());
+        fkitGroup.setDescription(fkitGroupDTO.getDescription());
         return saveGroup(fkitGroup, fkitGroup.getPrettyName() == null ? fkitGroupDTO.getName() : fkitGroupDTO.getPrettyName(),
                 fkitGroupDTO.getBecomesActive(), fkitGroupDTO.getBecomesInactive(),
                 fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());

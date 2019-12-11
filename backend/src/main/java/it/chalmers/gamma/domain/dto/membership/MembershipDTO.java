@@ -15,17 +15,15 @@ public class MembershipDTO {
     private final String unofficialPostName;
     @JsonUnwrapped
     private final ITUserDTO user;
-    private final List<FKITSuperGroupDTO> fkitSuperGroupDTOS;
 
 
     public MembershipDTO(PostDTO post,
                          FKITGroupDTO fkitGroupDTO, String unofficialPostName,
-                         ITUserDTO user, List<FKITSuperGroupDTO> fkitSuperGroupDTOS) {
+                         ITUserDTO user) {
         this.post = post;
         this.fkitGroupDTO = fkitGroupDTO;
         this.unofficialPostName = unofficialPostName;
         this.user = user;
-        this.fkitSuperGroupDTOS = fkitSuperGroupDTOS;
     }
 
     public PostDTO getPost() {
@@ -38,10 +36,6 @@ public class MembershipDTO {
 
     public ITUserDTO getUser() {
         return user;
-    }
-
-    public List<FKITSuperGroupDTO> getFkitSuperGroupDTOS() {
-        return fkitSuperGroupDTOS;
     }
 
     public FKITGroupDTO getFkitGroupDTO() {
@@ -60,8 +54,7 @@ public class MembershipDTO {
         return Objects.equals(this.post, that.post)
                 && Objects.equals(this.unofficialPostName, that.unofficialPostName)
                 && Objects.equals(this.user, that.user)
-                && Objects.equals(this.fkitSuperGroupDTOS, that.fkitSuperGroupDTOS)
-                && Objects.equals(this.fkitGroupDTO, that.fkitSuperGroupDTOS);
+                && Objects.equals(this.fkitGroupDTO, that.fkitGroupDTO);
     }
 
     @Override
@@ -69,7 +62,6 @@ public class MembershipDTO {
         return Objects.hash(this.post,
                 this.unofficialPostName,
                 this.user,
-                this.fkitSuperGroupDTOS,
                 this.fkitGroupDTO);
     }
 
@@ -80,7 +72,6 @@ public class MembershipDTO {
                 + ", fkitGroupDTO='" + this.fkitGroupDTO + '\''
                 + ", unofficialPostName='" + this.unofficialPostName + '\''
                 + ", user='" + this.user + '\''
-                + ", fkitSuperGroupDTOS='" + this.fkitSuperGroupDTOS + '\''
                 + '}';
     }
 }

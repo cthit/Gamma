@@ -1,10 +1,12 @@
 package it.chalmers.gamma.response.api_key;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetApiKeyResponse {
+    @JsonUnwrapped
     private final ApiKeyDTO apiKey;
 
 

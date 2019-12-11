@@ -104,13 +104,8 @@ public final class GroupPostAdminController {
      */
     @RequestMapping("/{id}/usage")
     public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") String id) {
-        if (this.postService.postExists(id)) {
-            throw new PostDoesNotExistResponse();
-        }
         PostDTO post = this.postService.getPostDTO(id);
         List<FKITGroupDTO> groups = this.membershipService.getGroupsWithPost(post);
-        // Everything above this is just initialization things.
-
         List<GetFKITGroupResponse> groupResponses = groups.stream()
                 .map(g -> new GetFKITGroupResponse(g, this.membershipService.getUserDTOByGroupAndPost(g, post)))
                 .collect(Collectors.toList());

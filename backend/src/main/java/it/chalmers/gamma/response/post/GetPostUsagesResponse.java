@@ -1,11 +1,13 @@
 package it.chalmers.gamma.response.post;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.response.group.GetFKITGroupResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetPostUsagesResponse {
+    @JsonValue
     private final List<GetFKITGroupResponse> fkitGroupResponses;
 
     public GetPostUsagesResponse(List<GetFKITGroupResponse> fkitGroupResponses) {

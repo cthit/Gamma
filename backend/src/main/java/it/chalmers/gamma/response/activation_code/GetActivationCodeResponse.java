@@ -1,10 +1,12 @@
 package it.chalmers.gamma.response.activation_code;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetActivationCodeResponse {
+    @JsonUnwrapped
    private final ActivationCodeDTO activationCode;
 
     public GetActivationCodeResponse(ActivationCodeDTO activationCode) {

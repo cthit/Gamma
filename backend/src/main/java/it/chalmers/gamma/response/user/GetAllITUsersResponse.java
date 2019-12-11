@@ -1,11 +1,12 @@
 package it.chalmers.gamma.response.user;
 
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllITUsersResponse {
+    @JsonValue
     private final List<GetITUserResponse> users;
 
     public GetAllITUsersResponse(List<GetITUserResponse> users) {

@@ -8,14 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 @Component
@@ -28,7 +24,7 @@ public class JSONSentObjectFilter implements Filter {
         ContentCachingResponseWrapper resWrapper = new ContentCachingResponseWrapper(((HttpServletResponse) response));
         chain.doFilter(request, resWrapper);
         String payload = new String (resWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
-        LOGGER.debug("Response from server was: {} {}", payload, resWrapper.getContentType());
+        LOGGER.info("Response from server was: {} {}", payload, resWrapper.getContentType());
         resWrapper.copyBodyToResponse();
     }
 

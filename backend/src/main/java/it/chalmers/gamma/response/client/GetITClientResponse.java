@@ -1,10 +1,12 @@
 package it.chalmers.gamma.response.client;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetITClientResponse {
+    @JsonUnwrapped
     private final ITClientDTO itClient;
 
     public GetITClientResponse(ITClientDTO itClient) {
