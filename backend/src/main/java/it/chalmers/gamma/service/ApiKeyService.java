@@ -8,6 +8,7 @@ import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.response.api_key.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;
 
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,9 +48,12 @@ public class ApiKeyService {
     }
 
     public ApiKeyDTO getApiKeyDetails(String name) {
-        return this.apiKeyRepository.findById(UUID.fromString(name))
-                .orElse(this.apiKeyRepository.findByName(name)
-                        .orElseThrow(ApiKeyDoesNotExistResponse::new)).toDTO();
+        if(UUIDUtil.validUUID(name)) {
+            return this.apiKeyRepository.findById(UUID.fromString(name))
+                    .orElseThrow(ApiKeyDoesNotExistResponse::new).toDTO();
+        }
+        return this.apiKeyRepository.findByName(name)
+                        .orElseThrow(ApiKeyDoesNotExistResponse::new).toDTO();
     }
 
     public void deleteApiKey(UUID id) {

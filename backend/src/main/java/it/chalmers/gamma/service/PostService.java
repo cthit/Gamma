@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.repository.PostRepository;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,10 +51,12 @@ public class PostService {
     }
 
     public PostDTO getPostDTO(String post) {
+        if (UUIDUtil.validUUID(post)) {
+            return this.repository.findById(UUID.fromString(post))
+                    .orElseThrow(PostDoesNotExistResponse::new).toDTO();
+        }
         return this.repository.findByPostName_Sv(post)
-                .orElse(this.repository.findById(UUID.fromString(post))
-                .orElseThrow(PostDoesNotExistResponse::new))
-                .toDTO();
+                .orElseThrow(PostDoesNotExistResponse::new).toDTO();
     }
 
     public void deletePost(UUID id) {

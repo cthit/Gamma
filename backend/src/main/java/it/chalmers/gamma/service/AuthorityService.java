@@ -68,8 +68,7 @@ public class AuthorityService {
 
     protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
-        List<GrantedAuthority> authorities = new ArrayList<>();
-      //  for (MembershipDTO membership : memberships) {
+        //  for (MembershipDTO membership : memberships) {
       //      AuthorityLevel authorityLevel = this.authorityLevelService
       //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
       //                      membership.getFkitGroupDTO().getId().toString()));
@@ -77,8 +76,7 @@ public class AuthorityService {
       //          authorities.add(authorityLevel);
       //      }
       //  }
-        authorities.addAll(this.getAuthorities(memberships));
-        return authorities;
+        return new ArrayList<>(this.getAuthorities(memberships));
     }
 
 

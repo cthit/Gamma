@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 
 import it.chalmers.gamma.response.super_group.SuperGroupDoesNotExistResponse;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,11 +31,13 @@ public class FKITSuperGroupService {
         return this.repository.save(group).toDTO();
     }
 
-    public FKITSuperGroupDTO getGroupDTO(String id) throws SuperGroupDoesNotExistResponse{
-        return this.repository.findById(UUID.fromString(id))
-                .orElse(this.repository.findByName(id)
-                .orElseThrow(SuperGroupDoesNotExistResponse::new))
-                .toDTO();
+    public FKITSuperGroupDTO getGroupDTO(String id) throws SuperGroupDoesNotExistResponse {
+        if (UUIDUtil.validUUID(id)) {
+            return this.repository.findById(UUID.fromString(id))
+                    .orElseThrow(SuperGroupDoesNotExistResponse::new).toDTO();
+        }
+        return this.repository.findByName(id)
+                .orElseThrow(SuperGroupDoesNotExistResponse::new).toDTO();
     }
 
     public boolean groupExists(String name) {
@@ -44,6 +47,7 @@ public class FKITSuperGroupService {
     public void removeGroup(UUID id) {
         this.repository.deleteById(id);
     }
+
     public List<FKITSuperGroupDTO> getAllGroups() {
         return this.repository.findAll().stream().map(FKITSuperGroup::toDTO).collect(Collectors.toList());
     }

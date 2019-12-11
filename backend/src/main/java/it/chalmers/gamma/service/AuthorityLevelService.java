@@ -37,11 +37,10 @@ public class AuthorityLevelService {
     }
 
     public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {
-        System.out.println(authorityLevel);
-      //  if (UUIDUtil.validUUID(authorityLevel)) {
-     //       return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
-     //               .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
-     //   }
+        if (UUIDUtil.validUUID(authorityLevel)) {
+            return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
+                    .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
+        }
         return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel)
                 .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
     }

@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.repository.WebsiteRepository;
 
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,10 +35,12 @@ public class WebsiteService {
     }
 
     public WebsiteDTO getWebsite(String websiteName) {
+        if (UUIDUtil.validUUID(websiteName)) {
+            return this.repository.findById(UUID.fromString(websiteName))
+                    .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
+        }
         return this.repository.findByName(websiteName)
-                .orElse(this.repository.findById(UUID.fromString(websiteName))
-                .orElseThrow(WebsiteNotFoundResponse::new))
-                .toDTO();
+                .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
     }
 
     public void editWebsite(WebsiteDTO websiteDTO, String name, String prettyName) {

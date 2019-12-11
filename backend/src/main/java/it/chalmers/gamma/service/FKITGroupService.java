@@ -5,6 +5,7 @@ import it.chalmers.gamma.db.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
 import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -48,8 +49,8 @@ public class FKITGroupService {
     }
 
     private FKITGroupDTO saveGroup(FKITGroup group, String prettyName,
-                                Calendar becomesActive, Calendar becomesInactive,
-                                String email, String avatarURL) {
+                                   Calendar becomesActive, Calendar becomesInactive,
+                                   String email, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
         group.setEmail(email == null ? group.getEmail() : email);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
@@ -75,13 +76,16 @@ public class FKITGroupService {
     }
 
     public FKITGroupDTO getDTOGroup(String name) {
-        return this.repo.findById(UUID.fromString(name))
-                .orElse(this.repo.findByName(name)
-                .orElseThrow(GroupDoesNotExistResponse::new))
+        if (UUIDUtil.validUUID(name)) {
+            return this.repo.findById(UUID.fromString(name))
+                    .orElseThrow(GroupDoesNotExistResponse::new).toDTO();
+        }
+        return this.repo.findByName(name)
+                .orElseThrow(GroupDoesNotExistResponse::new)
                 .toDTO();
     }
 
-    public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse{
+    public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse {
         FKITGroup group = this.getGroup(groupDTO);
         group.setAvatarURL(url);
         this.repo.save(group);
