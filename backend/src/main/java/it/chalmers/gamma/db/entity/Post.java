@@ -27,9 +27,13 @@ public class Post {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Text postName;
 
+    @Column(name = "email_prefix")
+    private String emailPrefix;
+
     public Post() {
         this.postName = new Text();
         this.id = UUID.randomUUID();
+        this.emailPrefix = "";
     }
 
     public UUID getId() {
@@ -58,10 +62,18 @@ public class Post {
         return this.postName.getEn();
     }
 
-    public PostDTO toDTO() {
-        return new PostDTO(id, postName);
+    public String getEmailPrefix() {
+        return this.emailPrefix;
     }
 
+    public void setEmailPrefix(String emailPrefix) {
+        this.emailPrefix = emailPrefix;
+    }
+
+    public PostDTO toDTO() {
+    }
+
+        return new PostDTO(id, postName, emailPrefix);
     @Override
     public boolean equals(Object o) {
         if (this == o) {

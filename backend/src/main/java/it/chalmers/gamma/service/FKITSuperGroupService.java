@@ -2,6 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.repository.FKITSuperGroupRepository;
+import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
@@ -9,9 +10,11 @@ import it.chalmers.gamma.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.super_group.SuperGroupDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,9 +50,10 @@ public class FKITSuperGroupService {
     public void removeGroup(UUID id) {
         this.repository.deleteById(id);
     }
-
     public List<FKITSuperGroupDTO> getAllGroups() {
-        return this.repository.findAll().stream().map(FKITSuperGroup::toDTO).collect(Collectors.toList());
+        return Optional.of(this.repository.findAll().stream()
+                .filter(g -> !g.getType().equals(GroupType.ADMIN)).collect(Collectors.toList())).orElseThrow()
+                .toDTO;
     }
 
     public void updateSuperGroup(UUID id, FKITSuperGroupDTO superGroupDTO) {

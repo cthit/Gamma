@@ -1,11 +1,12 @@
-FROM node:10.15 as build
+FROM node:13.2.0 as build
 
 COPY /package.json /
+RUN yarn install --production
+RUN yarn global add react-scripts
 
-RUN yarn install --production --network-timeout 1000000000
-RUN yarn global add react-scripts 
-
-COPY . .
+COPY /src /src
+COPY /public /public
+COPY nginx.conf .
 RUN yarn build
 
 from nginx:alpine
