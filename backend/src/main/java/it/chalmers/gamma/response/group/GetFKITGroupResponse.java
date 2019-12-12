@@ -2,11 +2,9 @@ package it.chalmers.gamma.response.group;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 
 import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
 import java.util.List;

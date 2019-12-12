@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.response.api_key.ApiKeyDeletedResponse;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

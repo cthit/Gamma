@@ -1,7 +1,6 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @SuppressWarnings({"TooManyMethods"})
-
 public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
@@ -55,10 +53,6 @@ public class ActivationCodeService {
             return false;
         }
         return activationCode.getCode().equals(code);
-    }
-
-    private boolean userHasCode(String cid) {
-        return this.activationCodeRepository.existsActivationCodeByCid_Cid(cid);
     }
 
     // TODO Delete entry after 1 hour or once code has been used. This does not work.

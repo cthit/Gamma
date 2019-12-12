@@ -1,13 +1,10 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.ActivationCode;
-import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.activation_code.ActivationCodeAddedResonse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.activation_code.ActivationCodeDeletedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
@@ -17,8 +14,8 @@ import it.chalmers.gamma.util.TokenUtils;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +30,7 @@ public final class WhitelistController {
     private final ActivationCodeService activationCodeService;
     private final MailSenderService mailSenderService;
 
-    // @Value("${mail.receiver.standard-postfix}")
+    @Value("${mail.receiver.standard-postfix}")
     private static final String MAIL_POSTFIX = "@student.chalmers.se";
 
     public WhitelistController(

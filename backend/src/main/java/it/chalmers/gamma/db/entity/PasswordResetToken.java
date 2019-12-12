@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset_token")
+@SuppressWarnings("PMD.ExcessiveParameterList")
 public class PasswordResetToken {
     @Id
     private UUID id;

@@ -14,10 +14,8 @@ import it.chalmers.gamma.response.super_group.GetSuperGroupResponse;
 import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -32,16 +30,13 @@ public class SuperGroupController {
 
     private final FKITSuperGroupService fkitSuperGroupService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
-    private final GroupWebsiteService groupWebsiteService;
     private final MembershipService membershipService;
 
     public SuperGroupController(FKITSuperGroupService fkitSuperGroupService,
                                 FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
-                                GroupWebsiteService groupWebsiteService,
                                 MembershipService membershipService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
-        this.groupWebsiteService = groupWebsiteService;
         this.membershipService = membershipService;
     }
 

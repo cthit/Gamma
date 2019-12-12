@@ -4,7 +4,6 @@ import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ITClientRepository;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
-import it.chalmers.gamma.requests.AddITClientRequest;
 import it.chalmers.gamma.util.TokenUtils;
 
 import it.chalmers.gamma.util.UUIDUtil;
@@ -87,7 +86,7 @@ public class ITClientService implements ClientDetailsService {
     }
 
     public boolean clientExists(String id) {
-        return (UUIDUtil.validUUID(id) && this.itClientRepository.existsById(UUID.fromString(id)))
+        return UUIDUtil.validUUID(id) && this.itClientRepository.existsById(UUID.fromString(id))
                 || this.itClientRepository.existsITClientByClientId(id);
     }
 

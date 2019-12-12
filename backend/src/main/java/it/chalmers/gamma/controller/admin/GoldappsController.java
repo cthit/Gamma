@@ -1,9 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.serializers.GoldappsGroupSerializer;
 import it.chalmers.gamma.db.serializers.GoldappsUserSerializer;
 import it.chalmers.gamma.domain.GroupType;
@@ -67,7 +63,7 @@ public class GoldappsController {
         groups.stream().filter(FKITGroupDTO::isActive).forEach(g -> {
             usersJSON.addAll(
                     this.membershipService.getMembershipsInGroup(g).stream()
-                            .map(m -> goldappsUserSerializer.serialize(m.getUser(), null, null))
+                            .map(m -> goldappsUserSerializer.serialize(m.getUser()))
                             .collect(Collectors.toList()));
         });
         groups = this.fkitSuperGroupService.getAllGroups()          // Really ugly solution, should be refactored

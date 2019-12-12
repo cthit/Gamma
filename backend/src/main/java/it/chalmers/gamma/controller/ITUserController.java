@@ -25,7 +25,6 @@ import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUse
 import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
 import it.chalmers.gamma.response.user.GetITUserResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -62,20 +61,17 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService,
-                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+                            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)

@@ -1,7 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.Authority;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -31,7 +29,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

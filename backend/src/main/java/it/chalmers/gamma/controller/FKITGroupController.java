@@ -15,7 +15,6 @@ import it.chalmers.gamma.response.group.GetFKITGroupResponse;
 import it.chalmers.gamma.response.group.GetFKITGroupResponse.GetFKITGroupResponseObject;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
-import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 
 import java.util.List;
@@ -36,16 +35,14 @@ public final class FKITGroupController {
     //TODO add groupmembers to serialize method call once that has been solved.
 
     private final FKITGroupService fkitGroupService;
-    private final GroupWebsiteService groupWebsiteService;
     private final MembershipService membershipService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public FKITGroupController(
             FKITGroupService fkitGroupService,
-            GroupWebsiteService groupWebsiteService,
-            MembershipService membershipService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+            MembershipService membershipService,
+            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.fkitGroupService = fkitGroupService;
-        this.groupWebsiteService = groupWebsiteService;
         this.membershipService = membershipService;
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }

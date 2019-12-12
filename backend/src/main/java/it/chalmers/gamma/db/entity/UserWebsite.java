@@ -64,25 +64,29 @@ public class UserWebsite implements WebsiteInterface {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         UserWebsite that = (UserWebsite) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(itUser, that.itUser) &&
-                Objects.equals(website, that.website);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.itUser, that.itUser)
+                && Objects.equals(this.website, that.website);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itUser, website);
+        return Objects.hash(this.id, this.itUser, this.website);
     }
 
     @Override
     public String toString() {
-        return "UserWebsite{" +
-                "id=" + id +
-                ", itUser=" + itUser +
-                ", website=" + website +
-                '}';
+        return "UserWebsite{"
+                + "id=" + this.id
+                + ", itUser=" + this.itUser
+                + ", website=" + this.website
+                + '}';
     }
 }

@@ -4,7 +4,6 @@ import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ApiKeyRepository;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
-import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.response.api_key.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;
 

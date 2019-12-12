@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.response.activation_code.ActivationCodeDeletedResponse;
 import it.chalmers.gamma.response.activation_code.ActivationCodeDoesNotExistResponse;
 import it.chalmers.gamma.response.activation_code.GetActivationCodeResponse;
@@ -9,10 +8,8 @@ import it.chalmers.gamma.response.activation_code.GetAllActivationCodesResponse;
 import it.chalmers.gamma.response.activation_code.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
 import it.chalmers.gamma.service.ActivationCodeService;
 
-import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

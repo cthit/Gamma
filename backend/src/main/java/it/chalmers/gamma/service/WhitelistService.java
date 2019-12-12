@@ -7,7 +7,6 @@ import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,7 +60,7 @@ public class WhitelistService {
      */
     public boolean isCIDWhiteListed(String cid) {
         return this.whitelistRepository.existsByCid(cid) ||
-                (UUIDUtil.validUUID(cid) && this.whitelistRepository.existsById(UUID.fromString(cid)));
+                UUIDUtil.validUUID(cid) && this.whitelistRepository.existsById(UUID.fromString(cid));
     }               // Above works because java only checks right if left is correct.
 
     public List<WhitelistDTO> getAllWhitelist() {

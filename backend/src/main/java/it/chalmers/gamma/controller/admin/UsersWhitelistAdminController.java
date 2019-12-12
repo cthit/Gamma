@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals","PMD.CyclomaticComplexity"})
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals","PMD.CyclomaticComplexity", "PMD.ExcessiveImports"})
 @RestController
 @RequestMapping("/admin/users/whitelist")
 public final class UsersWhitelistAdminController {
@@ -129,7 +129,7 @@ public final class UsersWhitelistAdminController {
      * @return true if the user is whitelisted false otherwise
      */
     @RequestMapping(value = "/valid", method = RequestMethod.POST)      // Should this be changed to a Pathvar?
-    public WhitelistIsValidResponseObject isValid(@Valid @RequestBody WhitelistCodeRequest cid, BindingResult result) {
+    public WhitelistIsValidResponseObject validCid(@Valid @RequestBody WhitelistCodeRequest cid, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }

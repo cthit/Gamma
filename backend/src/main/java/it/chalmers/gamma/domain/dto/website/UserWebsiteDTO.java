@@ -19,35 +19,40 @@ public class UserWebsiteDTO implements WebsiteInterfaceDTO {
         return id;
     }
 
-    public ITUserDTO getItUserDTO() {
+    public ITUserDTO getItUserDTO()
+    {
         return itUserDTO;
     }
-
+    @Override
     public WebsiteURLDTO getWebsiteURL() {
         return websiteURLDTO;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         UserWebsiteDTO that = (UserWebsiteDTO) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(itUserDTO, that.itUserDTO) &&
-                Objects.equals(websiteURLDTO, that.websiteURLDTO);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.itUserDTO, that.itUserDTO)
+                && Objects.equals(this.websiteURLDTO, that.websiteURLDTO);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itUserDTO, websiteURLDTO);
+        return Objects.hash(this.id, this.itUserDTO, this.websiteURLDTO);
     }
 
     @Override
     public String toString() {
-        return "UserWebsiteDTO{" +
-                "id=" + id +
-                ", itUserDTO=" + itUserDTO +
-                ", websiteURLDTO=" + websiteURLDTO +
-                '}';
+        return "UserWebsiteDTO{"
+                + "id=" + this.id
+                + ", itUserDTO=" + this.itUserDTO
+                + ", websiteURLDTO=" + this.websiteURLDTO
+                + '}';
     }
 }

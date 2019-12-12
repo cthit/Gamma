@@ -1,22 +1,18 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.requests.CreateWebsiteRequest;
 import it.chalmers.gamma.response.website.EditedWebsiteResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.website.WebsiteAddedResponse;
 import it.chalmers.gamma.response.website.WebsiteDeletedResponse;
-import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WebsiteService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.UUID;
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

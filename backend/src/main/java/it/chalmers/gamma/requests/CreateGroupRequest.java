@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@SuppressWarnings("PMD.ExcessiveParameterList")
 public class CreateGroupRequest {
 
     @NotNull(message = "NAME_MUST_BE_PROVIDED")
@@ -50,8 +51,6 @@ public class CreateGroupRequest {
         this.superGroup = superGroup;
         this.email = email;
     }
-
-    public CreateGroupRequest() {}
 
     public List<WebsiteInfo> getWebsites() {
         return this.websites;

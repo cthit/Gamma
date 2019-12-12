@@ -28,25 +28,29 @@ public class PasswordResetTokenDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         PasswordResetTokenDTO that = (PasswordResetTokenDTO) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(token, that.token) &&
-                Objects.equals(itUserDTO, that.itUserDTO);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.token, that.token)
+                && Objects.equals(this.itUserDTO, that.itUserDTO);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, token, itUserDTO);
+        return Objects.hash(this.id, this.token, this.itUserDTO);
     }
 
     @Override
     public String toString() {
-        return "PasswordResetTokenDTO{" +
-                "id=" + id +
-                ", token='" + token + '\'' +
-                ", itUserDTO=" + itUserDTO +
-                '}';
+        return "PasswordResetTokenDTO{"
+                + "id=" + this.id
+                + ", token='" + this.token + '\''
+                + ", itUserDTO=" + this.itUserDTO
+                + '}';
     }
 }

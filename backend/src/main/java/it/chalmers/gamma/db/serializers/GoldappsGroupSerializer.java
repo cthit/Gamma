@@ -42,8 +42,6 @@ public class GoldappsGroupSerializer {
 
 private static class SerializerUtils {
 
-    private SerializerUtils() {
-    }
 
     private static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields) {
         JSONObject json = new JSONObject();

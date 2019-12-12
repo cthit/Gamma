@@ -1,7 +1,5 @@
 package it.chalmers.gamma.domain.dto.authority;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import java.util.Objects;

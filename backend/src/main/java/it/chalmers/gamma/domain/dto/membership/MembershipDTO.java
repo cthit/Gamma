@@ -3,10 +3,8 @@ package it.chalmers.gamma.domain.dto.membership;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import java.util.List;
 import java.util.Objects;
 
 public class MembershipDTO {

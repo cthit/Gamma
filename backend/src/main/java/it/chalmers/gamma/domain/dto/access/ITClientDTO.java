@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
+@SuppressWarnings("PMD.ExcessiveParameterList")
 public class ITClientDTO implements ClientDetails {
     private final UUID id;
     private final String clientId;

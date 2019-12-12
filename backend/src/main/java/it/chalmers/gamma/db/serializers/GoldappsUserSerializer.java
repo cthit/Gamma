@@ -1,18 +1,13 @@
 package it.chalmers.gamma.db.serializers;
 
-import it.chalmers.gamma.db.entity.ITUser;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import org.json.simple.JSONObject;
 
 public class GoldappsUserSerializer {
 
-    public JSONObject serialize(ITUserDTO value,
-                                @Nullable List<WebsiteDTO> websites,
-                                @Nullable List<JSONObject> groups) {
+    public JSONObject serialize(ITUserDTO value) {
         List<SerializerValue> values = new ArrayList<>();
         values.add(new SerializerValue(true, value.getCid(), "cid"));
         values.add(new SerializerValue(true, value.getFirstName(), "first_name"));
@@ -48,9 +43,6 @@ public class GoldappsUserSerializer {
     }
 
     private static class SerializerUtils {
-
-        private SerializerUtils() {
-        }
 
         private static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields) {
             JSONObject json = new JSONObject();

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
     boolean existsByKey(String apiKey);
-    Optional<ApiKey> findById(UUID id);
 
     Optional<ApiKey> findByName(String apiKey);
 }

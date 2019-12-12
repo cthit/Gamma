@@ -1,6 +1,5 @@
 package it.chalmers.gamma.response.user;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 import org.springframework.http.HttpStatus;

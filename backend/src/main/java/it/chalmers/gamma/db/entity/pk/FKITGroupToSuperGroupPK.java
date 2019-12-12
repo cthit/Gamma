@@ -5,7 +5,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 
-import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import java.io.Serializable;
 import java.util.Objects;
 

@@ -1,6 +1,5 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.WebsiteURLRepository;
 

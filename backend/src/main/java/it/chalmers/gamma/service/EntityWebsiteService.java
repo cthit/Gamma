@@ -1,15 +1,10 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
+
+@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField", "PMD.CommentSize"})
 public class EntityWebsiteService {
 
     private final WebsiteService websiteService;

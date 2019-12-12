@@ -1,17 +1,12 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.response.website.GetAllWebsitesResponse;
 import it.chalmers.gamma.response.website.GetAllWebsitesResponse.GetAllWebsitesResponseObject;
 import it.chalmers.gamma.response.website.GetWebsiteResponse;
-import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
 import it.chalmers.gamma.service.WebsiteService;
 
-import java.util.List;
-
 import java.util.stream.Collectors;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

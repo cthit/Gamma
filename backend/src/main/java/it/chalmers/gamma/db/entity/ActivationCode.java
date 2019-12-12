@@ -36,7 +36,7 @@ public class ActivationCode {
 
     @Transient
     @Value("${password-expiration-time}")
-    private final int passwordExpirationTime = 3600;
+    private final static int PASSWORD_EXPIRATION_TIME = 3600;
 
     public Instant getCreatedAt() {
         return this.createdAt;
@@ -89,7 +89,7 @@ public class ActivationCode {
     }
 
     public boolean isValid() {
-        return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(this.passwordExpirationTime)));
+        return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(this.PASSWORD_EXPIRATION_TIME)));
     }
 
     public ActivationCodeDTO toDTO() {
@@ -97,7 +97,7 @@ public class ActivationCode {
                 this.cid.toDTO(),
                 this.code,
                 this.createdAt,
-                this.passwordExpirationTime);
+                this.PASSWORD_EXPIRATION_TIME);
     }
 
     @Override

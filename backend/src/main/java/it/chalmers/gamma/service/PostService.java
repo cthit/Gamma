@@ -8,7 +8,6 @@ import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
