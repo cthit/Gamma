@@ -30,7 +30,7 @@ public class FKITGroupServiceTests {
         becomesInactive.set(Calendar.MONTH, Calendar.MARCH);
         becomesInactive.set(Calendar.DAY_OF_MONTH, 1);
 
-      /*  CreateGroupRequest createGroupRequest = new CreateGroupRequest("digit", "digIT",
+        /*  CreateGroupRequest createGroupRequest = new CreateGroupRequest("digit", "digIT",
                 new Text("digIT beskrivning", "digIT description"),
                 new Text("digIT funktion", "digIT function"),
                 "url", new ArrayList<>(), becomesActive, becomesInactive,
