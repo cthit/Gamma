@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.serializers;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.simple.JSONObject;
 
 public class GoldappsGroupSerializer {
@@ -14,6 +15,7 @@ public class GoldappsGroupSerializer {
         values.add(new SerializerValue(true, null, "aliases"));
         return SerializerUtils.serialize(values, true);
     }
+
     private static class SerializerValue {
 
         private final boolean enabled;
@@ -40,17 +42,17 @@ public class GoldappsGroupSerializer {
     }
 
 
-private static class SerializerUtils {
+    private static class SerializerUtils {
 
 
-    private static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields) {
-        JSONObject json = new JSONObject();
-        for (SerializerValue value : values) {
-            if (value.isEnabled() && !(!includeNullFields && value.getValue() == null)) {
-                json.put(value.getName(), value.getValue());
+        private static JSONObject serialize(List<SerializerValue> values, boolean includeNullFields) {
+            JSONObject json = new JSONObject();
+            for (SerializerValue value : values) {
+                if (value.isEnabled() && !(!includeNullFields && value.getValue() == null)) {
+                    json.put(value.getName(), value.getValue());
+                }
             }
+            return json;
         }
-        return json;
-    }
     }
 }

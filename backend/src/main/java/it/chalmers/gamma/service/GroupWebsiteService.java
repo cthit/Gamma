@@ -10,7 +10,7 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.website.GroupWebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,19 +44,19 @@ public class GroupWebsiteService extends EntityWebsiteService {
         this.websiteService = websiteService1;
     }
 
-    public void addGroupWebsites(FKITGroupDTO groupDTO, List<WebsiteURLDTO> websiteURLDTOS)
+    public void addGroupWebsites(FKITGroupDTO groupDTO, List<WebsiteUrlDTO> websiteUrlDTOS)
             throws DataIntegrityViolationException {
-        if (websiteURLDTOS == null || groupDTO == null) {
+        if (websiteUrlDTOS == null || groupDTO == null) {
             return;
         }
         boolean error = false;
-        for (WebsiteURLDTO websiteURLDTO : websiteURLDTOS) {
-            if (websiteURLDTO.getWebsiteDTO() == null || websiteURLDTO.getUrl() == null) {
+        for (WebsiteUrlDTO websiteUrlDTO : websiteUrlDTOS) {
+            if (websiteUrlDTO.getWebsiteDTO() == null || websiteUrlDTO.getUrl() == null) {
                 error = true;
                 continue;
             }
             FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
-            WebsiteURL websiteURL = this.websiteURLService.getWebsiteURL(websiteURLDTO);
+            WebsiteURL websiteURL = this.websiteURLService.getWebsiteURL(websiteUrlDTO);
             GroupWebsite groupWebsite = new GroupWebsite();
             groupWebsite.setGroup(group);
             groupWebsite.setWebsite(websiteURL);

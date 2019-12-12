@@ -3,15 +3,15 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotSavedException;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.group.GroupCreatedResponse;
 import it.chalmers.gamma.response.group.GroupDeletedResponse;
 import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GroupEditedResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
@@ -90,10 +90,10 @@ public final class GroupAdminController {
 
         List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();   // TODO move to service?
         if (websites != null && !websites.isEmpty()) {
-            List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
+            List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
             for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
                 WebsiteDTO website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-                WebsiteURLDTO websiteURL = new WebsiteURLDTO(websiteInfo.getUrl(), website);
+                WebsiteUrlDTO websiteURL = new WebsiteUrlDTO(websiteInfo.getUrl(), website);
                 websiteURLs.add(websiteURL);
             }
 
@@ -126,11 +126,11 @@ public final class GroupAdminController {
         }
         this.fkitGroupService.editGroup(id, requestToDTO(request));
         FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
-        List<WebsiteURLDTO> websiteURLDTOS = request.getWebsites()
-                .stream().map(w -> new WebsiteURLDTO(
+        List<WebsiteUrlDTO> websiteUrlDTOS = request.getWebsites()
+                .stream().map(w -> new WebsiteUrlDTO(
                         w.getUrl(),
                         this.websiteService.getWebsite(w.getWebsite()))).collect(Collectors.toList());
-        this.groupWebsiteService.addGroupWebsites(group, websiteURLDTOS);
+        this.groupWebsiteService.addGroupWebsites(group, websiteUrlDTOS);
         return new GroupEditedResponse();
     }
 

@@ -12,7 +12,11 @@ public class ActivationCodeDTO {
     private final Instant createdAt;
     private final int passwordExpirationTime;
 
-    public ActivationCodeDTO(UUID id, WhitelistDTO whitelistDTO, String code, Instant createdAt, int passwordExpirationTime) {
+    public ActivationCodeDTO(UUID id,
+                             WhitelistDTO whitelistDTO,
+                             String code,
+                             Instant createdAt,
+                             int passwordExpirationTime) {
         this.id = id;
         this.whitelistDTO = whitelistDTO;
         this.code = code;
@@ -21,19 +25,19 @@ public class ActivationCodeDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public WhitelistDTO getWhitelistDTO() {
-        return whitelistDTO;
+        return this.whitelistDTO;
     }
 
     public String getCode() {
-        return code;
+        return this.code;
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public boolean isValid() {

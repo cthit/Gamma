@@ -15,15 +15,15 @@ public class PasswordResetTokenDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getToken() {
-        return token;
+        return this.token;
     }
 
     public ITUserDTO getItUserDTO() {
-        return itUserDTO;
+        return this.itUserDTO;
     }
 
     @Override

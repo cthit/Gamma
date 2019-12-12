@@ -14,14 +14,14 @@ public class GetPostResponse {
     }
 
     public PostDTO getPost() {
-        return post;
+        return this.post;
     }
 
     public GetPostResponseObject toResponseObject() {
         return new GetPostResponseObject(this);
     }
 
-    public static class GetPostResponseObject extends ResponseEntity<GetPostResponse>{
+    public static class GetPostResponseObject extends ResponseEntity<GetPostResponse> {
         GetPostResponseObject(GetPostResponse body) {
             super(body, HttpStatus.OK);
         }

@@ -14,7 +14,7 @@ public class GetFKITGroupMinifiedResponse {
     }
 
     public FKITMinifiedGroupDTO getGroup() {
-        return group;
+        return this.group;
     }
 
     public GetFKITGroupMinifiedResponseObject toResponseObject() {

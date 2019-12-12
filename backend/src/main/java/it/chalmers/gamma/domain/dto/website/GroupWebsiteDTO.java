@@ -6,11 +6,11 @@ import java.util.UUID;
 
 public class GroupWebsiteDTO implements WebsiteInterfaceDTO {
     private final UUID id;
-    private final WebsiteURLDTO website;
+    private final WebsiteUrlDTO website;
     private final FKITGroupDTO groupDTO;
 
 
-    public GroupWebsiteDTO(UUID id, WebsiteURLDTO website, FKITGroupDTO groupDTO) {
+    public GroupWebsiteDTO(UUID id, WebsiteUrlDTO website, FKITGroupDTO groupDTO) {
         this.id = id;
         this.website = website;
         this.groupDTO = groupDTO;
@@ -21,7 +21,7 @@ public class GroupWebsiteDTO implements WebsiteInterfaceDTO {
     }
 
     @Override
-    public WebsiteURLDTO getWebsiteURL() {
+    public WebsiteUrlDTO getWebsiteURL() {
         return this.website;
     }
 

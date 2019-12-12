@@ -1,11 +1,11 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.response.activation_code.ActivationCodeDeletedResponse;
-import it.chalmers.gamma.response.activation_code.ActivationCodeDoesNotExistResponse;
-import it.chalmers.gamma.response.activation_code.GetActivationCodeResponse;
-import it.chalmers.gamma.response.activation_code.GetActivationCodeResponse.GetActivationCodeResponseObject;
-import it.chalmers.gamma.response.activation_code.GetAllActivationCodesResponse;
-import it.chalmers.gamma.response.activation_code.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
+import it.chalmers.gamma.response.activationcode.ActivationCodeDeletedResponse;
+import it.chalmers.gamma.response.activationcode.ActivationCodeDoesNotExistResponse;
+import it.chalmers.gamma.response.activationcode.GetActivationCodeResponse;
+import it.chalmers.gamma.response.activationcode.GetActivationCodeResponse.GetActivationCodeResponseObject;
+import it.chalmers.gamma.response.activationcode.GetAllActivationCodesResponse;
+import it.chalmers.gamma.response.activationcode.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
 import it.chalmers.gamma.service.ActivationCodeService;
 
 import java.util.UUID;

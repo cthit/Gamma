@@ -14,7 +14,7 @@ public class GetWhitelistResponse {
     }
 
     public WhitelistDTO getWhitelist() {
-        return whitelist;
+        return this.whitelist;
     }
 
     public GetWhitelistResponseObject toResponseObject() {

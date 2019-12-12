@@ -15,7 +15,7 @@ public class GetAllITUsersMinifiedResponse {
 
     @JsonValue
     public List<GetITUserMinifiedResponse> getUsers() {
-        return users;
+        return this.users;
     }
 
     public GetAllITUsersMinifiedResponseObject toResponseObject() {

@@ -7,8 +7,8 @@ import it.chalmers.gamma.response.client.GetAllClientsResponse;
 import it.chalmers.gamma.response.client.GetAllClientsResponse.GetAllClientResponseObject;
 import it.chalmers.gamma.response.client.GetITClientResponse;
 import it.chalmers.gamma.response.client.GetITClientResponse.GetITClientResponseObject;
-import it.chalmers.gamma.response.client.ITClientRemovedResponse;
 import it.chalmers.gamma.response.client.ITClientDoesNotExistException;
+import it.chalmers.gamma.response.client.ITClientRemovedResponse;
 import it.chalmers.gamma.service.ITClientService;
 
 import java.util.UUID;

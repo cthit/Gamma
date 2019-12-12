@@ -58,7 +58,7 @@ public class Authority {
         this.internalId = UUID.randomUUID();
     }
 
-    public AuthorityDTO toDTO(){
+    public AuthorityDTO toDTO() {
         return new AuthorityDTO(
                 this.id.getFkitSuperGroup().toDTO(),
                 this.id.getPost().toDTO(),

@@ -43,6 +43,10 @@ public class WebsiteService {
                 .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
     }
 
+    protected Website getWebsite(WebsiteDTO websiteDTO) {
+        return this.repository.findById(websiteDTO.getId()).orElse(null);
+    }
+
     public void editWebsite(WebsiteDTO websiteDTO, String name, String prettyName) {
         Website website = this.getWebsite(websiteDTO);
         website.setName(name.toLowerCase());
@@ -62,9 +66,4 @@ public class WebsiteService {
     public List<WebsiteDTO> getAllWebsites() {
         return this.repository.findAll().stream().map(Website::toDTO).collect(Collectors.toList());
     }
-
-    protected Website getWebsite(WebsiteDTO websiteDTO) {
-        return this.repository.findById(websiteDTO.getId()).orElse(null);
-    }
-
 }

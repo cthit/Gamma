@@ -52,10 +52,10 @@ public class Membership {
         this.fkitSuperGroups = fkitSuperGroups;
     }
 
-    public MembershipDTO toDTO(){
+    public MembershipDTO toDTO() {
         return new MembershipDTO(
                 this.id.getPost().toDTO(),
-                id.getFKITGroup().toDTO(),
+                this.id.getFKITGroup().toDTO(),
                 this.unofficialPostName,
                 this.id.getITUser().toDTO());
     }

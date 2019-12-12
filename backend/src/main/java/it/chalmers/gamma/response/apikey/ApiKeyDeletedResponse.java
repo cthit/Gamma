@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.api_key;
+package it.chalmers.gamma.response.apikey;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -13,7 +13,7 @@ public class GetAuthorityResponse {
     }
 
     public AuthorityDTO getAuthority() {
-        return authority;
+        return this.authority;
     }
 
     public GetAuthorityResponseObject toResponseObject() {

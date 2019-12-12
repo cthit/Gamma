@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.activation_code;
+package it.chalmers.gamma.response.activationcode;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

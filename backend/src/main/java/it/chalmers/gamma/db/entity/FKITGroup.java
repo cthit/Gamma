@@ -52,17 +52,17 @@ public class FKITGroup {
         this.id = UUID.randomUUID();
     }
 
-    public FKITGroupDTO toDTO(){
+    public FKITGroupDTO toDTO() {
         return new FKITGroupDTO(
-            this.id,
-            this.becomesActive,
-            this.becomesInactive,
-            this.description,
-            this.email,
-            this.function,
-            this.name,
-            this.prettyName,
-                avatarURL);
+                this.id,
+                this.becomesActive,
+                this.becomesInactive,
+                this.description,
+                this.email,
+                this.function,
+                this.name,
+                this.prettyName,
+                this.avatarURL);
     }
 
     public UUID getId() {

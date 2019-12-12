@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.activation_code;
+package it.chalmers.gamma.response.activationcode;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
@@ -15,7 +15,7 @@ public class GetAllActivationCodesResponse {
     }
 
     public List<ActivationCodeDTO> getActivationCodes() {
-        return activationCodes;
+        return this.activationCodes;
     }
 
     public GetAllActivationCodesResponseObject toResponseObject() {

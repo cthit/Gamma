@@ -4,7 +4,7 @@ import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.WebsiteURLRepository;
 
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,11 +33,11 @@ public class WebsiteURLService {
         this.repository.save(websiteURL);
     }
 
-    public List<WebsiteURLDTO> getAllWebsites() {
+    public List<WebsiteUrlDTO> getAllWebsites() {
         return this.repository.findAll().stream().map(WebsiteURL::toDTO).collect(Collectors.toList());
     }
 
-    public WebsiteURLDTO getWebsiteURLById(String id) {
+    public WebsiteUrlDTO getWebsiteURLById(String id) {
         return this.repository.findById(UUID.fromString(id)).map(WebsiteURL::toDTO).orElse(null);
     }
 
@@ -45,8 +45,8 @@ public class WebsiteURLService {
         this.repository.deleteById(UUID.fromString(id));
     }
 
-    public void editWebsite(WebsiteURLDTO websiteURLDTO, WebsiteDTO websiteDTO, String url) {
-        WebsiteURL websiteURL = this.getWebsiteURL(websiteURLDTO);
+    public void editWebsite(WebsiteUrlDTO websiteUrlDTO, WebsiteDTO websiteDTO, String url) {
+        WebsiteURL websiteURL = this.getWebsiteURL(websiteUrlDTO);
         websiteURL.setWebsite(this.websiteService.getWebsite(websiteDTO));
         websiteURL.setUrl(url);
         this.repository.save(websiteURL);
@@ -57,8 +57,8 @@ public class WebsiteURLService {
         this.repository.deleteAllByWebsite(this.websiteService.getWebsite(website));
     }
 
-    protected WebsiteURL getWebsiteURL(WebsiteURLDTO websiteURLDTO) {
-        return this.repository.findById(websiteURLDTO.getId()).orElse(null);
+    protected WebsiteURL getWebsiteURL(WebsiteUrlDTO websiteUrlDTO) {
+        return this.repository.findById(websiteUrlDTO.getId()).orElse(null);
     }
 
 }

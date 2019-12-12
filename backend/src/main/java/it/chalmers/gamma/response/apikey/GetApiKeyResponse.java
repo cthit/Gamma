@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.api_key;
+package it.chalmers.gamma.response.apikey;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
@@ -15,7 +15,7 @@ public class GetApiKeyResponse {
     }
 
     public ApiKeyDTO getApiKey() {
-        return apiKey;
+        return this.apiKey;
     }
 
     public GetApiKeyResponseObject toResponseObject() {

@@ -40,6 +40,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
+
     //TODO This function might cause some problems if sent wrong info.
     @Override
     protected void doFilterInternal(
@@ -64,13 +65,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private Authentication getAuthentication(String cid) {
         UserDetails userDetails;
         try {
-           userDetails = this.itUserService.loadUserByUsername(cid);
-        }
-        catch (UsernameNotFoundException e) {
+            userDetails = this.itUserService.loadUserByUsername(cid);
+        } catch (UsernameNotFoundException e) {
             throw new InvalidJWTTokenResponse();
         }
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
-            null, userDetails.getAuthorities());
+                null, userDetails.getAuthorities());
     }
 
     /*
@@ -79,11 +79,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private Jws<Claims> decodeToken(String token) {
         try {
             return Jwts.parser()
-                .requireIssuer(this.issuer)
-                .setSigningKey(Base64.getEncoder().encodeToString(
-                        this.secretKey.getBytes(StandardCharsets.UTF_8))
-                )
-                .parseClaimsJws(token);
+                    .requireIssuer(this.issuer)
+                    .setSigningKey(Base64.getEncoder().encodeToString(
+                            this.secretKey.getBytes(StandardCharsets.UTF_8))
+                    )
+                    .parseClaimsJws(token);
         } catch (MalformedJwtException | SignatureException e) {
             LOGGER.warn(e.getMessage());
             return null;

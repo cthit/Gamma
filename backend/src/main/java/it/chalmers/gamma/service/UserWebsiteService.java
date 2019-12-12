@@ -7,7 +7,7 @@ import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.website.UserWebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,12 +24,15 @@ public class UserWebsiteService extends EntityWebsiteService {
     private final WebsiteURLService websiteURLService;
     private final WebsiteService websiteService;
 
-    public UserWebsiteService(UserWebsiteRepository repository, WebsiteService websiteService, DTOToEntityService dtoToEntityService, WebsiteURLService websiteURLService, WebsiteService websiteService1) {
+    public UserWebsiteService(UserWebsiteRepository repository,
+                              WebsiteService websiteService,
+                              DTOToEntityService dtoToEntityService,
+                              WebsiteURLService websiteURLService) {
         super(websiteService);
         this.repository = repository;
         this.dtoToEntityService = dtoToEntityService;
         this.websiteURLService = websiteURLService;
-        this.websiteService = websiteService1;
+        this.websiteService = websiteService;
     }
 
     /**
@@ -38,8 +41,8 @@ public class UserWebsiteService extends EntityWebsiteService {
      * @param user     the ITUser to handle
      * @param websites all websites that should be added to the user
      */
-    public void addWebsiteToUser(ITUserDTO user, List<WebsiteURLDTO> websites) {
-        for (WebsiteURLDTO website : websites) {
+    public void addWebsiteToUser(ITUserDTO user, List<WebsiteUrlDTO> websites) {
+        for (WebsiteUrlDTO website : websites) {
             UserWebsite userWebsite = new UserWebsite();
             userWebsite.setItUser(this.dtoToEntityService.fromDTO(user));
             userWebsite.setWebsite(this.websiteURLService.getWebsiteURL(website));

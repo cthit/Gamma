@@ -2,13 +2,13 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.group.GroupDeletedResponse;
 import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GroupEditedResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.super_group.GetSuperGroupResponse;
-import it.chalmers.gamma.response.super_group.GetSuperGroupResponse.GetSuperGroupResponseObject;
+import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse;
+import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse.GetSuperGroupResponseObject;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 

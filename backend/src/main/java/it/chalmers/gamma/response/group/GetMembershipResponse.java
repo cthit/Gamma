@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class GetMembershipResponse{
+public class GetMembershipResponse {
     public final List<MembershipDTO> members;
 
     public GetMembershipResponse(List<MembershipDTO> members) {
@@ -13,7 +13,7 @@ public class GetMembershipResponse{
     }
 
     public List<MembershipDTO> getMembers() {
-        return members;
+        return this.members;
     }
 
     public GetMembershipResponseObject toResponseObject() {

@@ -22,22 +22,22 @@ public class FKITMinifiedGroupDTO {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Text getFunction() {
-        return function;
+        return this.function;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 }

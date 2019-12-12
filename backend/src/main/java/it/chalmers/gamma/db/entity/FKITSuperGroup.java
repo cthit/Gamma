@@ -79,7 +79,7 @@ public class FKITSuperGroup {
         this.email = email;
     }
 
-    public FKITSuperGroupDTO toDTO(){
+    public FKITSuperGroupDTO toDTO() {
         return new FKITSuperGroupDTO(
             this.id, this.name, this.prettyName, this.type, this.email
         );

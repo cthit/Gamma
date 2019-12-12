@@ -17,13 +17,14 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Component
 @Order()
 public class JSONSentObjectFilter implements Filter {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JSONSentObjectFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSONSentObjectFilter.class);
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         ContentCachingResponseWrapper resWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
         chain.doFilter(request, resWrapper);
-        String payload = new String (resWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+        String payload = new String(resWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
         LOGGER.info("Response from server was: {} {}", payload, resWrapper.getContentType());
         resWrapper.copyBodyToResponse();
     }

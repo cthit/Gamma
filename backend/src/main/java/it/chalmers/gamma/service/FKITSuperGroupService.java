@@ -5,7 +5,7 @@ import it.chalmers.gamma.db.repository.FKITSuperGroupRepository;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 
-import it.chalmers.gamma.response.super_group.SuperGroupDoesNotExistResponse;
+import it.chalmers.gamma.response.supergroup.SuperGroupDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +25,8 @@ public class FKITSuperGroupService {
     public FKITSuperGroupDTO createSuperGroup(FKITSuperGroupDTO superGroupDTO) {
         FKITSuperGroup group = new FKITSuperGroup();
         group.setName(superGroupDTO.getName());
-        group.setPrettyName(superGroupDTO.getPrettyName() == null ? superGroupDTO.getName() : superGroupDTO.getPrettyName());
+        group.setPrettyName(superGroupDTO.getPrettyName() == null
+                ? superGroupDTO.getName() : superGroupDTO.getPrettyName());
         group.setType(superGroupDTO.getType());
         group.setEmail(superGroupDTO.getEmail());
         return this.repository.save(group).toDTO();
@@ -50,16 +51,17 @@ public class FKITSuperGroupService {
 
     public List<FKITSuperGroupDTO> getAllGroups() {
         return Optional.of(this.repository.findAll().stream()
-                .filter(g -> !g.getType().equals(GroupType.ADMIN)).
-                        map(FKITSuperGroup::toDTO).
-                        collect(Collectors.toList())).orElseThrow();
+                .filter(g -> !g.getType().equals(GroupType.ADMIN))
+                .map(FKITSuperGroup::toDTO)
+                .collect(Collectors.toList())).orElseThrow();
     }
 
     public void updateSuperGroup(UUID id, FKITSuperGroupDTO superGroupDTO) {
         FKITSuperGroup group = this.getGroup(this.getGroupDTO(id.toString()));
         group.setType(superGroupDTO.getType() == null ? group.getType() : superGroupDTO.getType());
         group.setName(superGroupDTO.getName() == null ? group.getName() : superGroupDTO.getName());
-        group.setPrettyName(superGroupDTO.getPrettyName() == null ? group.getPrettyName() : superGroupDTO.getPrettyName());
+        group.setPrettyName(superGroupDTO.getPrettyName() == null
+                ? group.getPrettyName() : superGroupDTO.getPrettyName());
         group.setEmail(superGroupDTO.getEmail() == null ? group.getEmail() : superGroupDTO.getEmail());
         this.repository.save(group);
     }

@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.super_group;
+package it.chalmers.gamma.response.supergroup;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
@@ -14,7 +14,7 @@ public class GetAllSuperGroupsResponse {
     }
 
     public List<GetSuperGroupResponse> getSuperGroups() {
-        return superGroups;
+        return this.superGroups;
     }
 
     public GetAllSuperGroupsResponseObject toResponseObject() {

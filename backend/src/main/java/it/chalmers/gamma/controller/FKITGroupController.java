@@ -4,11 +4,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
-import it.chalmers.gamma.response.group.GetAllFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
 import it.chalmers.gamma.response.group.GetAllFKITGroupsMinifiedResponse;
 import it.chalmers.gamma.response.group.GetAllFKITGroupsMinifiedResponse.GetAllFKITGroupsMinifiedResponseObject;
+import it.chalmers.gamma.response.group.GetAllFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetFKITGroupMinifiedResponse;
 import it.chalmers.gamma.response.group.GetFKITGroupMinifiedResponse.GetFKITGroupMinifiedResponseObject;
 import it.chalmers.gamma.response.group.GetFKITGroupResponse;
@@ -65,7 +65,8 @@ public final class FKITGroupController {
 
     @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
     public GetFKITGroupMinifiedResponseObject getGroupMinified(@PathVariable("id") String id) {
-        return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getDTOGroup(id).toMinifiedDTO()).toResponseObject();
+        return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getDTOGroup(id)
+                .toMinifiedDTO()).toResponseObject();
     }
 
     @RequestMapping(method = RequestMethod.GET)

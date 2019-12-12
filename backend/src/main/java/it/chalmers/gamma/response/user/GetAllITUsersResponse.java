@@ -14,7 +14,7 @@ public class GetAllITUsersResponse {
     }
 
     public List<GetITUserResponse> getUsers() {
-        return users;
+        return this.users;
     }
 
     public GetAllITUsersResponseObject toResponseObject() {

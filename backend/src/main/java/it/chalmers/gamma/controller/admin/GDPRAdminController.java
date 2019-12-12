@@ -1,12 +1,12 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
-import it.chalmers.gamma.response.user.GDPRStatusEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.user.UserNotFoundResponse;
+import it.chalmers.gamma.response.user.GDPRStatusEditedResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
 import it.chalmers.gamma.response.user.GetITUserResponse;
+import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 

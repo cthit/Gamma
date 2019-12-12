@@ -2,21 +2,21 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
+import it.chalmers.gamma.response.user.GetITUserResponse;
+import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
 import it.chalmers.gamma.response.user.PasswordChangedResponse;
 import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
-import it.chalmers.gamma.response.user.GetITUserResponse;
-import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -87,7 +87,7 @@ public final class UsersAdminController {
                 request.getLanguage());
         // Below handles adding websites.
         ITUserDTO user = this.itUserService.getITUser(id);
-        List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
+        List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
         this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
@@ -104,8 +104,8 @@ public final class UsersAdminController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
-       // List<WebsiteURLDTO> websites = this.userWebsiteService.getWebsitesOrdered(
-       //                 this.userWebsiteService.getWebsites(user));
+        // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
+        //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
         return new GetITUserResponse(user, groups, null).toResponseObject();
     }

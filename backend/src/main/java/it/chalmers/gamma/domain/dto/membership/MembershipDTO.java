@@ -33,11 +33,11 @@ public class MembershipDTO {
     }
 
     public ITUserDTO getUser() {
-        return user;
+        return this.user;
     }
 
     public FKITGroupDTO getFkitGroupDTO() {
-        return fkitGroupDTO;
+        return this.fkitGroupDTO;
     }
 
     @Override

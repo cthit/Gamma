@@ -122,14 +122,17 @@ public class ITUserService implements UserDetailsService {
         if (UUIDUtil.validUUID(idCidOrEmail)) {
             user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
                 .orElseThrow(UserNotFoundResponse::new);
-
-        }
-        else {
+        } else {
             user = this.itUserRepository.findByCid(idCidOrEmail)
                 .orElse(this.itUserRepository.findByEmail(idCidOrEmail)
                     .orElseThrow(UserNotFoundResponse::new));
         }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
+    }
+
+    private ITUser getITUser(ITUserDTO userDTO) {
+        return this.itUserRepository.findById(userDTO.getId())
+                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
     }
 
     public ITUserDTO getUserByEmail(String email) throws UsernameNotFoundException {
@@ -161,9 +164,6 @@ public class ITUserService implements UserDetailsService {
         return this.passwordEncoder.matches(password, user.getPassword());
     }
 
-    private ITUser getITUser(ITUserDTO userDTO) {
-        return this.itUserRepository.findById(userDTO.getId())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
-    }
+
 
 }

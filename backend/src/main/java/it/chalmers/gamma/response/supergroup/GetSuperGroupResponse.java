@@ -1,4 +1,4 @@
-package it.chalmers.gamma.response.super_group;
+package it.chalmers.gamma.response.supergroup;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -14,7 +14,7 @@ public class GetSuperGroupResponse {
     }
 
     public FKITSuperGroupDTO getFkitSuperGroup() {
-        return fkitSuperGroup;
+        return this.fkitSuperGroup;
     }
 
     public GetSuperGroupResponseObject toResponseObject() {

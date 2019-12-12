@@ -49,7 +49,8 @@ public class PasswordResetService {
     }
 
     public boolean tokenMatchesUser(ITUserDTO user, String token) {
-        PasswordResetToken storedToken = this.repository.findByItUser(this.dtoToEntityService.fromDTO(user)).orElse(null);
+        PasswordResetToken storedToken = this.repository.findByItUser(this.dtoToEntityService.fromDTO(user))
+                .orElse(null);
         return storedToken != null && storedToken.getToken().equals(token);
     }
 

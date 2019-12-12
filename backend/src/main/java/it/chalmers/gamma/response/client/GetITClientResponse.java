@@ -14,7 +14,7 @@ public class GetITClientResponse {
     }
 
     public ITClientDTO getItClient() {
-        return itClient;
+        return this.itClient;
     }
 
     public GetITClientResponseObject toResponseObject() {

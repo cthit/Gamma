@@ -12,7 +12,7 @@ public class GetActiveFKITGroupsResponse {
     }
 
     public List<GetFKITGroupResponse> getGetFKITGroupResponse() {
-        return getFKITGroupResponse;
+        return this.getFKITGroupResponse;
     }
 
     public GetActiveFKITGroupResponseObject toResponseObject() {

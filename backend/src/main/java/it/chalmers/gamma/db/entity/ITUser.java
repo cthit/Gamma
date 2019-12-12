@@ -91,7 +91,7 @@ public class ITUser {
         this.lastModifiedAt = Instant.now();
     }
 
-    public ITUserDTO toDTO(){
+    public ITUserDTO toDTO() {
         return new ITUserDTO(
             this.id,
             this.cid,
@@ -109,7 +109,7 @@ public class ITUser {
         );
     }
 
-    public ITUserDTO toUserDetailsDTO(List<GrantedAuthority> authorities){
+    public ITUserDTO toUserDetailsDTO(List<GrantedAuthority> authorities) {
         return new ITUserDTO(
                 this.id,
                 this.cid,
@@ -125,7 +125,7 @@ public class ITUser {
                 this.accountLocked,
                 Year.of(this.acceptanceYear),
                 authorities,
-                password
+                this.password
         );
     }
 

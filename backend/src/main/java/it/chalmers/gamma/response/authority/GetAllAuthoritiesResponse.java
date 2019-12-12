@@ -15,7 +15,7 @@ public class GetAllAuthoritiesResponse {
     }
 
     public List<AuthorityDTO> getAuthorities() {
-        return authorities;
+        return this.authorities;
     }
 
     public GetAllAuthoritiesResponseObject toResponseObject() {

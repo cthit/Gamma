@@ -57,39 +57,35 @@ public class ITClientDTO implements ClientDetails {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getWebServerRedirectUri() {
-        return webServerRedirectUri;
+        return this.webServerRedirectUri;
     }
 
     public int getAccessTokenValidity() {
-        return accessTokenValidity;
+        return this.accessTokenValidity;
     }
 
     public int getRefreshTokenValidity() {
-        return refreshTokenValidity;
-    }
-
-    public boolean isAutoApprove() {
-        return autoApprove;
+        return this.refreshTokenValidity;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public Instant getLastModifiedAt() {
-        return lastModifiedAt;
+        return this.lastModifiedAt;
     }
 
     @Override

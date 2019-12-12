@@ -2,13 +2,13 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.requests.CreateApiKeyRequest;
-import it.chalmers.gamma.response.api_key.ApiKeyDeletedResponse;
-import it.chalmers.gamma.response.api_key.ApiKeyDoesNotExistResponse;
-import it.chalmers.gamma.response.api_key.GetAllAPIKeysResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.api_key.GetAllAPIKeysResponse.GetAllAPIKeysResponseObject;
-import it.chalmers.gamma.response.api_key.GetApiKeyResponse;
-import it.chalmers.gamma.response.api_key.GetApiKeyResponse.GetApiKeyResponseObject;
+import it.chalmers.gamma.response.apikey.ApiKeyDeletedResponse;
+import it.chalmers.gamma.response.apikey.ApiKeyDoesNotExistResponse;
+import it.chalmers.gamma.response.apikey.GetAllAPIKeysResponse;
+import it.chalmers.gamma.response.apikey.GetAllAPIKeysResponse.GetAllAPIKeysResponseObject;
+import it.chalmers.gamma.response.apikey.GetApiKeyResponse;
+import it.chalmers.gamma.response.apikey.GetApiKeyResponse.GetApiKeyResponseObject;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.util.InputValidationUtils;
 

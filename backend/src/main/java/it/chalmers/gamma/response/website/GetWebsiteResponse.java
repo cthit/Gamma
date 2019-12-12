@@ -16,7 +16,7 @@ public class GetWebsiteResponse {
     }
 
     public WebsiteDTO getWebsite() {
-        return website;
+        return this.website;
     }
 
     public GetWebsiteResponseObject toResponseObject() {

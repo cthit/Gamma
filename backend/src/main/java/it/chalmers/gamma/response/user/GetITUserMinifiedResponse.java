@@ -17,7 +17,7 @@ public class GetITUserMinifiedResponse {
 
     @JsonUnwrapped
     public ITUserDTO getUser() {
-        return user;
+        return this.user;
     }
 
     public GetITUserMinifiedResponseObject toResponseObject() {

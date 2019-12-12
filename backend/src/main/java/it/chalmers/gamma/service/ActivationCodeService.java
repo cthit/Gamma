@@ -3,12 +3,12 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
+import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 
 import java.util.List;
 import java.util.UUID;
 
-import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class ActivationCodeService {
      * @return a copy of the ActivationCode object added to the database
      */
     public ActivationCodeDTO saveActivationCode(WhitelistDTO whitelistDTO, String code) {
-        if(this.activationCodeRepository.existsActivationCodeByCid_Cid(whitelistDTO.getCid())) {
+        if (this.activationCodeRepository.existsActivationCodeByCid_Cid(whitelistDTO.getCid())) {
             this.activationCodeRepository.deleteActivationCodeByCid_Cid(whitelistDTO.getCid());
         }
         Whitelist whitelist = this.whitelistService.getWhitelist(whitelistDTO);
@@ -48,7 +48,7 @@ public class ActivationCodeService {
         if (activationCode == null) {
             return false;
         }
-        if(!activationCode.isValid()) {
+        if (!activationCode.isValid()) {
             deleteCode(activationCode.getId());
             return false;
         }

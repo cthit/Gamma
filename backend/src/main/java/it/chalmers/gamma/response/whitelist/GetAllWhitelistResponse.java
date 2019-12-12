@@ -14,7 +14,7 @@ public class GetAllWhitelistResponse {
     }
 
     public List<GetWhitelistResponse> getWhitelistResponses() {
-        return whitelistResponses;
+        return this.whitelistResponses;
     }
 
     public GetAllWhitelistResponseObject toResponseObject() {

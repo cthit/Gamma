@@ -28,7 +28,8 @@ public class FKITGroupService {
         fkitGroup.setName(fkitGroupDTO.getName());
         fkitGroup.setFunction(fkitGroupDTO.getFunction());
         fkitGroup.setDescription(fkitGroupDTO.getDescription());
-        return saveGroup(fkitGroup, fkitGroup.getPrettyName() == null ? fkitGroupDTO.getName() : fkitGroupDTO.getPrettyName(),
+        return saveGroup(fkitGroup,
+                fkitGroup.getPrettyName() == null ? fkitGroupDTO.getName() : fkitGroupDTO.getPrettyName(),
                 fkitGroupDTO.getBecomesActive(), fkitGroupDTO.getBecomesInactive(),
                 fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());
     }
@@ -38,13 +39,18 @@ public class FKITGroupService {
         if (group == null) {
             return null;
         }
-        group.getFunction().setSv(fkitGroupDTO.getFunction() == null ? group.getFunction().getSv() : fkitGroupDTO.getFunction().getSv());
-        group.getFunction().setEn(fkitGroupDTO.getFunction() == null ? group.getFunction().getEn() : fkitGroupDTO.getFunction().getEn());
+        group.getFunction().setSv(fkitGroupDTO.getFunction() == null
+                ? group.getFunction().getSv() : fkitGroupDTO.getFunction().getSv());
+
+        group.getFunction().setEn(fkitGroupDTO.getFunction() == null
+                ? group.getFunction().getEn() : fkitGroupDTO.getFunction().getEn());
+
         if (fkitGroupDTO.getDescription() != null && group.getDescription() != null) {
             group.getDescription().setSv(fkitGroupDTO.getDescription().getSv());
             group.getDescription().setEn(fkitGroupDTO.getDescription().getEn());
         }
-        return saveGroup(group, fkitGroupDTO.getPrettyName(), fkitGroupDTO.getBecomesActive(), fkitGroupDTO.getBecomesInactive(),
+        return saveGroup(group, fkitGroupDTO.getPrettyName(), fkitGroupDTO.getBecomesActive(),
+                fkitGroupDTO.getBecomesInactive(),
                 fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());
     }
 

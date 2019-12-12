@@ -10,10 +10,10 @@ public class FKITGroupToSuperGroupDTO {
     }
 
     public FKITSuperGroupDTO getSuperGroup() {
-        return superGroup;
+        return this.superGroup;
     }
 
     public FKITGroupDTO getGroup() {
-        return group;
+        return this.group;
     }
 }

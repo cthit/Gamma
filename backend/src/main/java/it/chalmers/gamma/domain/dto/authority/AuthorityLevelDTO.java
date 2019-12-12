@@ -14,12 +14,12 @@ public class AuthorityLevelDTO implements GrantedAuthority {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     @Override
     public String getAuthority() {
-        return authorityLevel;
+        return this.authorityLevel;
     }
 
     @Override

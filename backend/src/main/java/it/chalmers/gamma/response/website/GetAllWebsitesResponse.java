@@ -12,7 +12,7 @@ public class GetAllWebsitesResponse {
     }
 
     public List<GetWebsiteResponse> getWebsites() {
-        return websites;
+        return this.websites;
     }
 
     public GetAllWebsitesResponseObject toResponseObject() {

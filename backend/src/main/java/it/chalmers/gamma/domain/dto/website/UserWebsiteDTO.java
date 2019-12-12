@@ -7,25 +7,24 @@ import java.util.UUID;
 public class UserWebsiteDTO implements WebsiteInterfaceDTO {
     private final UUID id;
     private final ITUserDTO itUserDTO;
-    private final WebsiteURLDTO websiteURLDTO;
+    private final WebsiteUrlDTO websiteUrlDTO;
 
-    public UserWebsiteDTO(UUID id, ITUserDTO itUserDTO, WebsiteURLDTO websiteURLDTO) {
+    public UserWebsiteDTO(UUID id, ITUserDTO itUserDTO, WebsiteUrlDTO websiteUrlDTO) {
         this.id = id;
         this.itUserDTO = itUserDTO;
-        this.websiteURLDTO = websiteURLDTO;
+        this.websiteUrlDTO = websiteUrlDTO;
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
-    public ITUserDTO getItUserDTO()
-    {
-        return itUserDTO;
+    public ITUserDTO getItUserDTO() {
+        return this.itUserDTO;
     }
     @Override
-    public WebsiteURLDTO getWebsiteURL() {
-        return websiteURLDTO;
+    public WebsiteUrlDTO getWebsiteURL() {
+        return this.websiteUrlDTO;
     }
 
     @Override
@@ -39,12 +38,12 @@ public class UserWebsiteDTO implements WebsiteInterfaceDTO {
         UserWebsiteDTO that = (UserWebsiteDTO) o;
         return Objects.equals(this.id, that.id)
                 && Objects.equals(this.itUserDTO, that.itUserDTO)
-                && Objects.equals(this.websiteURLDTO, that.websiteURLDTO);
+                && Objects.equals(this.websiteUrlDTO, that.websiteUrlDTO);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.itUserDTO, this.websiteURLDTO);
+        return Objects.hash(this.id, this.itUserDTO, this.websiteUrlDTO);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class UserWebsiteDTO implements WebsiteInterfaceDTO {
         return "UserWebsiteDTO{"
                 + "id=" + this.id
                 + ", itUserDTO=" + this.itUserDTO
-                + ", websiteURLDTO=" + this.websiteURLDTO
+                + ", websiteUrlDTO=" + this.websiteUrlDTO
                 + '}';
     }
 }

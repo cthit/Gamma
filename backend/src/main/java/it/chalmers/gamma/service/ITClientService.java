@@ -72,6 +72,10 @@ public class ITClientService implements ClientDetailsService {
         return this.itClientRepository.findById(id).map(ITClient::toDTO).orElseThrow();
     }
 
+    protected ITClient getITClient(ITClientDTO clientDTO) {
+        return this.itClientRepository.findById(clientDTO.getId()).orElse(null);
+    }
+
     public void removeITClient(UUID id) {
         this.itClientRepository.deleteById(id);
     }
@@ -80,7 +84,8 @@ public class ITClientService implements ClientDetailsService {
         ITClient client = this.itClientRepository.findById(id).orElseThrow();
         client.setLastModifiedAt(Instant.now());
         client.setName(clientDTO.getName() == null ? client.getName() : clientDTO.getName());
-        client.setDescription(clientDTO.getDescription() == null ? client.getDescription() : clientDTO.getDescription());
+        client.setDescription(clientDTO.getDescription() == null
+                ? client.getDescription() : clientDTO.getDescription());
         client.setWebServerRedirectUri(clientDTO.getWebServerRedirectUri() == null
                 ? client.getWebServerRedirectUri() : clientDTO.getWebServerRedirectUri());
     }
@@ -95,7 +100,4 @@ public class ITClientService implements ClientDetailsService {
         this.itClientRepository.save(itClient);
     }
 
-    protected ITClient getITClient(ITClientDTO clientDTO) {
-        return this.itClientRepository.findById(clientDTO.getId()).orElse(null);
-    }
 }

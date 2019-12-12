@@ -14,11 +14,11 @@ public class WhitelistDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     @Override
@@ -30,8 +30,8 @@ public class WhitelistDTO {
             return false;
         }
         WhitelistDTO that = (WhitelistDTO) o;
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.cid, that.cid);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.cid, that.cid);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class WhitelistDTO {
     @Override
     public String toString() {
         return "WhitelistDTO{"
-                + "id=" + id
-                + ", cid='" + cid + '\''
+                + "id=" + this.id
+                + ", cid='" + this.cid + '\''
                 + '}';
     }
 }

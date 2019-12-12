@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuthorityLevelRepository extends JpaRepository<AuthorityLevel, UUID> {
     Optional<AuthorityLevel> findByAuthorityLevel(String authorityLevel);
-    Boolean existsByAuthorityLevel (String authorityLevel);
+    Boolean existsByAuthorityLevel(String authorityLevel);
 }

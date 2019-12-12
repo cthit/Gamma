@@ -9,21 +9,21 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
+import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
+import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
+import it.chalmers.gamma.response.user.GetITUserResponse;
 import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
 import it.chalmers.gamma.response.user.IncorrectCidOrPasswordResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.PasswordChangedResponse;
 import it.chalmers.gamma.response.user.PasswordTooShortResponse;
 import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
-import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
-import it.chalmers.gamma.response.user.GetITUserResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.List;
-
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
@@ -77,8 +76,9 @@ public final class ITUserController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    public UserCreatedResponse createUser(       // TODO, move checks to service, and return only if checks failed or passed
-            @Valid @RequestBody CreateITUserRequest createITUserRequest, BindingResult result) {
+    // TODO, move checks to service, and return only if checks failed or passed
+    public UserCreatedResponse createUser(@Valid @RequestBody CreateITUserRequest createITUserRequest,
+                                          BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -120,10 +120,10 @@ public final class ITUserController {
     public GetITUserResponseObject getMe(Principal principal) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-      //  List<WebsiteDTO> websites =
-      //          this.userWebsiteService.getWebsitesOrdered(
-      //                  this.userWebsiteService.getWebsites(user)
-      //          );
+        //  List<WebsiteDTO> websites =
+        //          this.userWebsiteService.getWebsitesOrdered(
+        //                  this.userWebsiteService.getWebsites(user)
+        //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
         return new GetITUserResponse(user, groups, null).toResponseObject();
@@ -135,16 +135,17 @@ public final class ITUserController {
                 .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
         return new GetAllITUsersMinifiedResponse(itUsers).toResponseObject();
     }
+
     /**
-    * First tries to get user using id, if not found gets it using the cid.
-    */
+     * First tries to get user using id, if not found gets it using the cid.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
-//        List<WebsiteDTO> websites =
-//                this.userWebsiteService.getWebsitesOrdered(
-//                        this.userWebsiteService.getWebsites(user)
-//                );
+        //      List<WebsiteDTO> websites =
+        //                this.userWebsiteService.getWebsitesOrdered(
+        //                        this.userWebsiteService.getWebsites(user)
+        //      );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
         return new GetITUserResponse(user, groups, null).toResponseObject();
@@ -156,11 +157,11 @@ public final class ITUserController {
         ITUserDTO user = this.itUserService.loadUser(cid);
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
                 request.getEmail(), request.getPhone(), request.getLanguage());
-      //  List<WebsiteURLDTO> websiteURLs = new ArrayList<>();
-      //  List<WebsiteInterfaceDTO> userWebsite = new ArrayList<>(
-      //          this.userWebsiteService.getWebsites(user)
-      //  );
-      //  this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
+        //  List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
+        //  List<WebsiteInterfaceDTO> userWebsite = new ArrayList<>(
+        //          this.userWebsiteService.getWebsites(user)
+        //  );
+        //  this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
@@ -180,7 +181,7 @@ public final class ITUserController {
 
     @RequestMapping(value = "/me/change_password", method = RequestMethod.PUT)
     public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
-                                                 BindingResult result) {
+                                                  BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -194,7 +195,7 @@ public final class ITUserController {
 
     @RequestMapping(value = "/me", method = RequestMethod.DELETE)
     public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
-                                           BindingResult result) {
+                                        BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }

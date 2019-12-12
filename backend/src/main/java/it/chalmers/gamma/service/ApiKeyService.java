@@ -4,7 +4,7 @@ import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ApiKeyRepository;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
-import it.chalmers.gamma.response.api_key.ApiKeyDoesNotExistResponse;
+import it.chalmers.gamma.response.apikey.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;
 
 import it.chalmers.gamma.util.UUIDUtil;
@@ -47,7 +47,7 @@ public class ApiKeyService {
     }
 
     public ApiKeyDTO getApiKeyDetails(String name) {
-        if(UUIDUtil.validUUID(name)) {
+        if (UUIDUtil.validUUID(name)) {
             return this.apiKeyRepository.findById(UUID.fromString(name))
                     .orElseThrow(ApiKeyDoesNotExistResponse::new).toDTO();
         }

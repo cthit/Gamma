@@ -14,14 +14,15 @@ public class GetAllFKITGroupsMinifiedResponse {
     }
     @JsonValue
     public List<GetFKITGroupMinifiedResponse> getGroups() {
-        return groups;
+        return this.groups;
     }
 
     public GetAllFKITGroupsMinifiedResponseObject toResponseObject() {
         return new GetAllFKITGroupsMinifiedResponseObject(this);
     }
 
-    public static class GetAllFKITGroupsMinifiedResponseObject extends ResponseEntity<GetAllFKITGroupsMinifiedResponse> {
+    public static class GetAllFKITGroupsMinifiedResponseObject
+            extends ResponseEntity<GetAllFKITGroupsMinifiedResponse> {
         GetAllFKITGroupsMinifiedResponseObject(GetAllFKITGroupsMinifiedResponse body) {
             super(body, HttpStatus.OK);
         }

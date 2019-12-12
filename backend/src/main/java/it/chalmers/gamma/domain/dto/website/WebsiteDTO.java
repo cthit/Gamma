@@ -15,15 +15,15 @@ public class WebsiteDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     @Override
@@ -35,9 +35,9 @@ public class WebsiteDTO {
             return false;
         }
         WebsiteDTO that = (WebsiteDTO) o;
-        return Objects.equals(this.id, that.id) &&
-                Objects.equals(this.name, that.name) &&
-                Objects.equals(this.prettyName, that.prettyName);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.prettyName, that.prettyName);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class WebsiteDTO {
         return "WebsiteDTO{"
                 + "id=" + this.id
                 + ", name='" + this.name + '\''
-                + ", prettyName='" + this.prettyName + '\'' +
-                '}';
+                + ", prettyName='" + this.prettyName + '\''
+                + '}';
     }
 }

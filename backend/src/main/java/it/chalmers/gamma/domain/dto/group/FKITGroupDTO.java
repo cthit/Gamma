@@ -87,10 +87,10 @@ public class FKITGroupDTO {
     }
 
     public String getAvatarURL() {
-        return avatarURL;
+        return this.avatarURL;
     }
 
-    public FKITMinifiedGroupDTO toMinifiedDTO(){
+    public FKITMinifiedGroupDTO toMinifiedDTO() {
         return new FKITMinifiedGroupDTO(
             this.name, this.function, this.email, this.description, this.id
         );

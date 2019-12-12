@@ -3,17 +3,19 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
-import it.chalmers.gamma.response.whitelist.WhitelistAlreadyAddedException;
-import it.chalmers.gamma.response.whitelist.EditedWhitelistResponse;
-import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse.GetAllWhitelistResponseObject;
-import it.chalmers.gamma.response.whitelist.GetWhitelistResponse;
-import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse;
+
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
+import it.chalmers.gamma.response.whitelist.EditedWhitelistResponse;
+import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse;
+import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse.GetAllWhitelistResponseObject;
+import it.chalmers.gamma.response.whitelist.GetWhitelistResponse;
 import it.chalmers.gamma.response.whitelist.GetWhitelistResponse.GetWhitelistResponseObject;
+
 import it.chalmers.gamma.response.whitelist.WhitelistAddedResponse;
+import it.chalmers.gamma.response.whitelist.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.response.whitelist.WhitelistIsValidResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistIsValidResponse.WhitelistIsValidResponseObject;
 import it.chalmers.gamma.service.ITUserService;
@@ -86,7 +88,7 @@ public final class UsersWhitelistAdminController {
             @Valid @RequestBody WhitelistCodeRequest request,
             @PathVariable("id") String id,
             BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         WhitelistDTO oldWhitelist = this.whitelistService.getWhitelist(id);

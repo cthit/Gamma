@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 import org.springframework.beans.factory.annotation.Value;
 
 @Entity
-@Table(name = "activation_code")
+@Table(name = "activationcode")
 public class ActivationCode {
 
     @Id
@@ -36,7 +36,7 @@ public class ActivationCode {
 
     @Transient
     @Value("${password-expiration-time}")
-    private final static int PASSWORD_EXPIRATION_TIME = 3600;
+    private static final int PASSWORD_EXPIRATION_TIME = 3600;
 
     public Instant getCreatedAt() {
         return this.createdAt;

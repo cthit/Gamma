@@ -6,7 +6,7 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
-import it.chalmers.gamma.domain.dto.website.WebsiteURLDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ public class GetFKITGroupResponse {
     private final FKITGroupDTO group;
     private final List<MembershipDTO> groupMembers;
     private final List<FKITSuperGroupDTO> superGroup;
-    private final List<WebsiteURLDTO> websites;
+    private final List<WebsiteUrlDTO> websites;
 
     public GetFKITGroupResponse(FKITGroupDTO group, List<MembershipDTO> groupMembers,
-                                List<FKITSuperGroupDTO> superGroup, List<WebsiteURLDTO> websites) {
+                                List<FKITSuperGroupDTO> superGroup, List<WebsiteUrlDTO> websites) {
         this.group = group;
         this.groupMembers = groupMembers;
         this.superGroup = superGroup;
@@ -32,19 +32,19 @@ public class GetFKITGroupResponse {
     }
 
     public FKITGroupDTO getGroup() {
-        return group;
+        return this.group;
     }
 
     public List<MembershipDTO> getGroupMembers() {
-        return groupMembers;
+        return this.groupMembers;
     }
 
     public List<FKITSuperGroupDTO> getSuperGroup() {
-        return superGroup;
+        return this.superGroup;
     }
 
-    public List<WebsiteURLDTO> getWebsites() {
-        return websites;
+    public List<WebsiteUrlDTO> getWebsites() {
+        return this.websites;
     }
 
     public GetFKITGroupResponseObject toResponseObject() {

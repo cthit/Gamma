@@ -25,23 +25,23 @@ public class ApiKeyDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Text getDescription() {
-        return description;
+        return this.description;
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return this.createdAt;
     }
 
     public Instant getLastModifiedAt() {
-        return lastModifiedAt;
+        return this.lastModifiedAt;
     }
 
     @Override
@@ -73,11 +73,11 @@ public class ApiKeyDTO {
     @Override
     public String toString() {
         return "ApiKeyDTO{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + ", description=" + description
-                + ", createdAt=" + createdAt
-                + ", lastModifiedAt=" + lastModifiedAt
+                + "id=" + this.id
+                + ", name='" + this.name + '\''
+                + ", description=" + this.description
+                + ", createdAt=" + this.createdAt
+                + ", lastModifiedAt=" + this.lastModifiedAt
                 + '}';
     }
 }

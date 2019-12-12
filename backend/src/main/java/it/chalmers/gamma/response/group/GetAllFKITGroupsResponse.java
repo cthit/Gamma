@@ -14,7 +14,7 @@ public class GetAllFKITGroupsResponse {
     }
 
     public List<GetFKITGroupResponse> getGroups() {
-        return groups;
+        return this.groups;
     }
 
     public GetAllFKITGroupsResponseObject toResponseObject() {

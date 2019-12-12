@@ -71,7 +71,7 @@ public class Post {
     }
 
     public PostDTO toDTO() {
-        return new PostDTO(id, postName, emailPrefix);
+        return new PostDTO(this.id, this.postName, this.emailPrefix);
     }
 
     @Override

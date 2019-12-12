@@ -20,16 +20,16 @@ public class PostDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public Text getPostName() {
-        return postName;
+        return this.postName;
     }
 
 
     public String getEmailPrefix() {
-        return emailPrefix;
+        return this.emailPrefix;
     }
 
     @Override
@@ -54,9 +54,9 @@ public class PostDTO {
     @Override
     public String toString() {
         return "PostDTO{"
-                + "id=" + id
-                + ", postName=" + postName
-                + ", emailPrefix=" + emailPrefix
+                + "id=" + this.id
+                + ", postName=" + this.postName
+                + ", emailPrefix=" + this.emailPrefix
                 + '}';
     }
 

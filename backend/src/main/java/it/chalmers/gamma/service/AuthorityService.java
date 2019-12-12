@@ -69,13 +69,13 @@ public class AuthorityService {
     protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
         //  for (MembershipDTO membership : memberships) {
-      //      AuthorityLevel authorityLevel = this.authorityLevelService
-      //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
-      //                      membership.getFkitGroupDTO().getId().toString()));
-      //      if (authorityLevel != null) {
-      //          authorities.add(authorityLevel);
-      //      }
-      //  }
+        //      AuthorityLevel authorityLevel = this.authorityLevelService
+        //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
+        //                      membership.getFkitGroupDTO().getId().toString()));
+        //      if (authorityLevel != null) {
+        //          authorities.add(authorityLevel);
+        //      }
+        //  }
         return new ArrayList<>(this.getAuthorities(memberships));
     }
 

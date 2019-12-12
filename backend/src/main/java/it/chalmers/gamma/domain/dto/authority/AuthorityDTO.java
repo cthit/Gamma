@@ -11,7 +11,8 @@ public class AuthorityDTO {
     private final UUID internalID;
     private final AuthorityLevelDTO authorityLevelDTO;
 
-    public AuthorityDTO(FKITSuperGroupDTO fkitSuperGroup, PostDTO post, UUID internalID, AuthorityLevelDTO authorityLevelDTO) {
+    public AuthorityDTO(FKITSuperGroupDTO fkitSuperGroup, PostDTO post,
+                        UUID internalID, AuthorityLevelDTO authorityLevelDTO) {
         this.fkitSuperGroup = fkitSuperGroup;
         this.post = post;
         this.internalID = internalID;
@@ -19,19 +20,19 @@ public class AuthorityDTO {
     }
 
     public FKITSuperGroupDTO getFkitSuperGroup() {
-        return fkitSuperGroup;
+        return this.fkitSuperGroup;
     }
 
     public PostDTO getPost() {
-        return post;
+        return this.post;
     }
 
     public UUID getInternalID() {
-        return internalID;
+        return this.internalID;
     }
 
     public AuthorityLevelDTO getAuthorityLevelDTO() {
-        return authorityLevelDTO;
+        return this.authorityLevelDTO;
     }
 
     @Override
@@ -57,10 +58,10 @@ public class AuthorityDTO {
     @Override
     public String toString() {
         return "AuthorityDTO{"
-                + "fkitSuperGroup=" + fkitSuperGroup
-                + ", post=" + post
-                + ", internalID=" + internalID
-                + ", authorityLevelDTO=" + authorityLevelDTO
+                + "fkitSuperGroup=" + this.fkitSuperGroup
+                + ", post=" + this.post
+                + ", internalID=" + this.internalID
+                + ", authorityLevelDTO=" + this.authorityLevelDTO
                 + '}';
     }
 }

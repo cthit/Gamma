@@ -8,9 +8,9 @@ import it.chalmers.gamma.db.repository.MembershipRepository;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +30,12 @@ public class MembershipService {
     private final FKITSuperGroupService fkitSuperGroupService;
 
 
-    public MembershipService(MembershipRepository membershipRepository, FKITGroupService fkitGroupService, DTOToEntityService dtoToEntityService, PostService postService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService, FKITSuperGroupService fkitSuperGroupService) {
+    public MembershipService(MembershipRepository membershipRepository,
+                             FKITGroupService fkitGroupService,
+                             DTOToEntityService dtoToEntityService,
+                             PostService postService,
+                             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+                             FKITSuperGroupService fkitSuperGroupService) {
         this.membershipRepository = membershipRepository;
         this.fkitGroupService = fkitGroupService;
         this.dtoToEntityService = dtoToEntityService;
@@ -99,7 +104,8 @@ public class MembershipService {
      * @return The UUIDs of the groups the user is a part of
      */
     public List<FKITGroupDTO> getUsersGroupDTO(ITUserDTO user) {
-        List<Membership> memberships = this.membershipRepository.findAllById_ItUser(this.dtoToEntityService.fromDTO(user));
+        List<Membership> memberships = this.membershipRepository.findAllById_ItUser(this.dtoToEntityService
+                .fromDTO(user));
         List<FKITGroupDTO> groups = new ArrayList<>();
         for (Membership membership : memberships) {
             FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
@@ -152,10 +158,6 @@ public class MembershipService {
     public List<GroupType> getGroupType(FKITGroupDTO groupDTO) {
         return this.fkitGroupToSuperGroupService.getSuperGroups(groupDTO).stream().map(FKITSuperGroupDTO::getType)
                 .collect(Collectors.toList());
-    }
-
-    public List<Membership> getMembershipsByUser(ITUser user) {
-        return this.membershipRepository.findAllById_ItUser(user);
     }
 
     public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO) {

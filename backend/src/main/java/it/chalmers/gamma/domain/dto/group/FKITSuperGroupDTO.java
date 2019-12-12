@@ -26,23 +26,23 @@ public class FKITSuperGroupDTO {
     }
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     public GroupType getType() {
-        return type;
+        return this.type;
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     @Override
@@ -54,26 +54,26 @@ public class FKITSuperGroupDTO {
             return false;
         }
         FKITSuperGroupDTO that = (FKITSuperGroupDTO) o;
-        return Objects.equals(id, that.id) &&
-            Objects.equals(name, that.name) &&
-            Objects.equals(prettyName, that.prettyName) &&
-            type == that.type &&
-            Objects.equals(email, that.email);
+        return Objects.equals(this.id, that.id)
+                && Objects.equals(this.name, that.name)
+                && Objects.equals(this.prettyName, that.prettyName)
+                && this.type == that.type
+                && Objects.equals(this.email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, prettyName, type, email);
+        return Objects.hash(this.id, this.name, this.prettyName, this.type, this.email);
     }
 
     @Override
     public String toString() {
-        return "FKITSuperGroupDTO{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", prettyName='" + prettyName + '\'' +
-            ", type=" + type +
-            ", email='" + email + '\'' +
-            '}';
+        return "FKITSuperGroupDTO{"
+                + "id=" + this.id
+                + ", name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", type=" + this.type
+                + ", email='" + this.email + '\''
+                + '}';
     }
 }

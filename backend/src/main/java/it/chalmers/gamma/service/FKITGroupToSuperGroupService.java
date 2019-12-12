@@ -21,7 +21,9 @@ public class FKITGroupToSuperGroupService {
     private final FKITSuperGroupService fkitSuperGroupService;
     private final FKITGroupService fkitGroupService;
 
-    public FKITGroupToSuperGroupService(FKITGroupToSuperGroupRepository repository, FKITSuperGroupService fkitSuperGroupService, FKITGroupService fkitGroupService) {
+    public FKITGroupToSuperGroupService(FKITGroupToSuperGroupRepository repository,
+                                        FKITSuperGroupService fkitSuperGroupService,
+                                        FKITGroupService fkitGroupService) {
         this.repository = repository;
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.fkitGroupService = fkitGroupService;

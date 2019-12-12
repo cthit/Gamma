@@ -3,19 +3,19 @@ package it.chalmers.gamma.domain.dto.website;
 import java.util.Objects;
 import java.util.UUID;
 
-public class WebsiteURLDTO {
+public class WebsiteUrlDTO {
     private final UUID id;
     private final String url;
     private final WebsiteDTO websiteDTO;
 
-    public WebsiteURLDTO(UUID id, String url, WebsiteDTO websiteDTO) {
+    public WebsiteUrlDTO(UUID id, String url, WebsiteDTO websiteDTO) {
         this.id = id;
         this.url = url;
         this.websiteDTO = websiteDTO;
     }
 
-    public WebsiteURLDTO(String url, WebsiteDTO websiteURLDTO) {
-        this(null, url, websiteURLDTO);
+    public WebsiteUrlDTO(String url, WebsiteDTO websiteDTO) {
+        this(null, url, websiteDTO);
     }
 
     public UUID getId() {
@@ -38,7 +38,7 @@ public class WebsiteURLDTO {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        WebsiteURLDTO that = (WebsiteURLDTO) o;
+        WebsiteUrlDTO that = (WebsiteUrlDTO) o;
         return Objects.equals(this.id, that.id)
                 && Objects.equals(this.url, that.url)
                 && Objects.equals(this.websiteDTO, that.websiteDTO);
@@ -51,7 +51,7 @@ public class WebsiteURLDTO {
 
     @Override
     public String toString() {
-        return "WebsiteURLDTO{"
+        return "WebsiteUrlDTO{"
                 + "id=" + this.id
                 + ", url='" + this.url + '\''
                 + ", websiteDTO=" + this.websiteDTO

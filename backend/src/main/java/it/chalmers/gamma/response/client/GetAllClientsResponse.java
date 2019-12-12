@@ -15,7 +15,7 @@ public class GetAllClientsResponse {
     }
 
     public List<ITClientDTO> getClients() {
-        return clients;
+        return this.clients;
     }
 
     public GetAllClientResponseObject toResponseObject() {
