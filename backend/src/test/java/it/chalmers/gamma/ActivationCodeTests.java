@@ -5,6 +5,8 @@ import it.chalmers.gamma.db.repository.WhitelistRepository;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.WhitelistService;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,12 @@ public class ActivationCodeTests {
     @Autowired
     WhitelistService whitelistService;
 
-  /*  @Test
+
+    @Test
+    public void pass() {
+        Assert.assertTrue(true);
+    }
+    /*  @Test
     public void testAddActivationCode() {
         String cid = "cid3";
         Whitelist whitelist = this.whitelistRepository.save(new Whitelist(cid));
