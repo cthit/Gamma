@@ -26,7 +26,7 @@ public class FKITGroupServiceTests {
     FKITGroupService fkitGroupService;
 
     @Test
-    public void createAndValidateGroup(){
+    public void createAndValidateGroup() {
         Calendar becomesActive = Calendar.getInstance();
         becomesActive.set(Calendar.MONTH, Calendar.JANUARY);
         becomesActive.set(Calendar.DAY_OF_MONTH, 1);
@@ -36,19 +36,19 @@ public class FKITGroupServiceTests {
         becomesInactive.set(Calendar.DAY_OF_MONTH, 1);
 
         CreateGroupRequest createGroupRequest = new CreateGroupRequest("digit", "digIT",
-            new Text("digIT beskrivning", "digIT description"),
-            new Text("digIT funktion", "digIT function"),
-            "url", new ArrayList<>(), becomesActive, becomesInactive,
-            "admin", "mail@mail.com"
+                new Text("digIT beskrivning", "digIT description"),
+                new Text("digIT funktion", "digIT function"),
+                "url", new ArrayList<>(), becomesActive, becomesInactive,
+                "admin", "mail@mail.com"
         );
 
-//        fkitGroupService.createGroup(createGroupRequest);
-//        FKITGroup group = fkitGroupService.getDTOGroup(createGroupRequest.getName());
+        //        fkitGroupService.createGroup(createGroupRequest);
+        //        FKITGroup group = fkitGroupService.getDTOGroup(createGroupRequest.getName());
 
-//        assertRequestEntityEquals(createGroupRequest, group);
+        //        assertRequestEntityEquals(createGroupRequest, group);
     }
 
-    private void assertRequestEntityEquals(CreateGroupRequest c, FKITGroup g){
+    private void assertRequestEntityEquals(CreateGroupRequest c, FKITGroup g) {
         Assert.assertEquals(c.getName(), g.getName());
         Assert.assertEquals(c.getFunction(), g.getFunction());
         Assert.assertEquals(c.getDescription(), g.getDescription());
