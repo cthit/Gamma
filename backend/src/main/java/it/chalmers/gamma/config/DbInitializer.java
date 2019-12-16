@@ -1,16 +1,13 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.ApiKey;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.ITClient;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.requests.CreateGroupRequest;
-import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.post.PostDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
@@ -112,11 +109,10 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     }
 
     private void ensureFrontendClientDetails() {
-        if (!this.itClientService.clientExistsByClientId(this.clientId)) {
+        if (!this.itClientService.clientExists(this.clientId)) {
             Text description = new Text();
             description.setEn("The client details for the frontend of Gamma");
             description.setSv("Klient detaljerna för Gammas frontend");
-
             ITClient itClient = new ITClient();
             itClient.setClientId(this.clientId);
             itClient.setClientSecret("{noop}secret");
@@ -144,33 +140,24 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             Text function = new Text();
             function.setEn(descriptionText);
             function.setSv(descriptionText);
-
-            CreateSuperGroupRequest superGroupRequest = new CreateSuperGroupRequest();
-            superGroupRequest.setName("superadmin");
-            superGroupRequest.setPrettyName("super admin");
-            superGroupRequest.setType(GroupType.ADMIN);
             String adminMail = "admin@chalmers.it";
-            superGroupRequest.setEmail(adminMail);
-            CreateGroupRequest request = new CreateGroupRequest();
-            request.setName("superadmin");
-            request.setPrettyName("superAdmin");
-            request.setDescription(description);
-            request.setFunction(function);
-            request.setEmail(adminMail);
+            FKITSuperGroupDTO superGroupCreation =
+                    new FKITSuperGroupDTO("superadmin", "super admin", GroupType.COMMITTEE, adminMail);
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();
             start.setTimeInMillis(System.currentTimeMillis());
-            request.setBecomesActive(start);
-            request.setBecomesInactive(end);
-            FKITSuperGroup superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupRequest);
-            FKITGroup group = this.groupService.createGroup(request);
+            FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupCreation);
+            FKITGroupDTO group = new FKITGroupDTO(
+                    start, end, description, adminMail, function, "superadmin", "superAdmin", null
+            );
+            group = this.groupService.createGroup(group);
             this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
-            Post post = this.postService.addPost(p);
-            ITUser user = this.userservice.createUser(admin,
+            PostDTO post = this.postService.addPost(p);
+            ITUserDTO user = this.userservice.createUser(admin,
                     admin,
                     admin,
                     admin,
@@ -185,12 +172,12 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     post,
                     admin
             ); // This might break on a new year
-            AuthorityLevel authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
+            AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }
     }
     private void ensureOauthClient() {
-        if (!this.itClientService.clientExistsByClientId(this.oauth2ClientId)) {
+        if (!this.itClientService.clientExists(this.oauth2ClientId)) {
             ITClient client = new ITClient();
             client.setName(this.oauth2ClientName);
             Text description = new Text();
@@ -206,17 +193,10 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             client.setClientId(this.oauth2ClientId);
             client.setClientSecret("{noop}" + this.oauth2ClientSecret);
             this.itClientService.addITClient(client);
-            ApiKey apiKey = new ApiKey();
-            apiKey.setName(this.oauth2ClientName);
-            apiKey.setKey(this.oauth2ClientApiKey);
-
             Text apiDescription = new Text();
             apiDescription.setSv("API key");
             apiDescription.setEn("API key");
-
-            apiKey.setDescription(apiDescription);
-
-            this.apiKeyService.addApiKey(apiKey);
+            this.apiKeyService.addApiKey(this.oauth2ClientName, this.oauth2ClientApiKey, apiDescription);
         }
     }
 }

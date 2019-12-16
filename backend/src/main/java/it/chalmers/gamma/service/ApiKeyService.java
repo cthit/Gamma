@@ -3,12 +3,15 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ApiKeyRepository;
-import it.chalmers.gamma.requests.CreateApiKeyRequest;
+import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
+import it.chalmers.gamma.response.apikey.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;
 
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +26,7 @@ public class ApiKeyService {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
-    public String createApiKey(CreateApiKeyRequest request) {
+    public ApiKeyDTO createApiKey(ApiKeyDTO request) {
         ApiKey apiKey = new ApiKey();
         Text description = new Text();
         description.setEn(request.getDescription().getEn());
@@ -34,28 +37,30 @@ public class ApiKeyService {
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
         apiKey.setKey(key);
+        return this.apiKeyRepository.save(apiKey).toDTO();
+
+    }
+
+    public void addApiKey(String clientName, String clientApiKey, Text description) {
+        ApiKey apiKey = new ApiKey(clientName, clientApiKey, description);
         this.apiKeyRepository.save(apiKey);
-        return key;
     }
 
-    public void addApiKey(ApiKey apiKey) {
-        this.apiKeyRepository.save(apiKey);
-    }
-
-    public ApiKey getApiKeyDetails(UUID id) {
-        return this.apiKeyRepository.getById(id);
-    }
-
-    public ApiKey getApiKeyDetails(String name) {
-        return this.apiKeyRepository.getByName(name);
+    public ApiKeyDTO getApiKeyDetails(String name) {
+        if (UUIDUtil.validUUID(name)) {
+            return this.apiKeyRepository.findById(UUID.fromString(name))
+                    .orElseThrow(ApiKeyDoesNotExistResponse::new).toDTO();
+        }
+        return this.apiKeyRepository.findByName(name)
+                        .orElseThrow(ApiKeyDoesNotExistResponse::new).toDTO();
     }
 
     public void deleteApiKey(UUID id) {
         this.apiKeyRepository.deleteById(id);
     }
 
-    public List<ApiKey> getAllApiKeys() {
-        return this.apiKeyRepository.findAll();
+    public List<ApiKeyDTO> getAllApiKeys() {
+        return this.apiKeyRepository.findAll().stream().map(ApiKey::toDTO).collect(Collectors.toList());
     }
 
     public boolean apiKeyExists(UUID id) {

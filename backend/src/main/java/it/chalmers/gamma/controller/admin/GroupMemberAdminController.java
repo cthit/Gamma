@@ -1,20 +1,16 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
-
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
+import it.chalmers.gamma.domain.dto.post.PostDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
 
-import it.chalmers.gamma.response.EditedMembershipResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.PostDoesNotExistResponse;
-import it.chalmers.gamma.response.UserAddedToGroupResponse;
-import it.chalmers.gamma.response.UserNotFoundResponse;
-import it.chalmers.gamma.response.UserRemovedFromGroupResponse;
+import it.chalmers.gamma.response.membership.EditedMembershipResponse;
+import it.chalmers.gamma.response.membership.MemberAddedToGroupResponse;
+import it.chalmers.gamma.response.membership.MemberRemovedFromGroupResponse;
 
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.ITUserService;
@@ -22,11 +18,8 @@ import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,58 +48,40 @@ public final class GroupMemberAdminController {
     }
 
     @RequestMapping(value = "/{id}/members", method = RequestMethod.POST)
-    public ResponseEntity<String> addUserToGroup(
+    public MemberAddedToGroupResponse addUserToGroup(
             @Valid @RequestBody AddUserGroupRequest request, BindingResult result,
             @PathVariable("id") String id) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(UUID.fromString(request.getUserId()))) {
-            throw new UserNotFoundResponse();
-        }
-        if (!this.postService.postExists(UUID.fromString(request.getPost()))) {
-            throw new PostDoesNotExistResponse();
-        }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(request.getUserId()));
-        FKITGroup fkitGroup = this.fkitGroupService.getGroup(UUID.fromString(id));
-        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
+        ITUserDTO user = this.itUserService.getITUser(request.getUserId());
+        FKITGroupDTO fkitGroup = this.fkitGroupService.getDTOGroup(id);
+        PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
-        return new UserAddedToGroupResponse();
+        return new MemberAddedToGroupResponse();
     }
 
     @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUserFromGroup(@PathVariable("id") String id,
-                                                      @PathVariable("user") String userId) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
-        if (group == null) {
-            throw new GroupDoesNotExistResponse();
-        }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
+    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") String id,
+                                                              @PathVariable("user") String userId) {
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        ITUserDTO user = this.itUserService.getITUser(userId);
         this.membershipService.removeUserFromGroup(group, user);
-        return new UserRemovedFromGroupResponse();
+        return new MemberRemovedFromGroupResponse();
     }
 
     @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.PUT)
-    public ResponseEntity<String> editUserInGroup(@PathVariable("id") String groupId,
+    public EditedMembershipResponse editUserInGroup(@PathVariable("id") String groupId,
                                                   @PathVariable("user") String userId,
                                                   @Valid @RequestBody EditMembershipRequest request,
                                                   BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(groupId));
-        if (group == null) {
-            throw new GroupDoesNotExistResponse();
-        }
-        ITUser user = this.itUserService.getUserById(UUID.fromString(userId));
-        if (user == null) {
-            throw new UserNotFoundResponse();
-        }
-        Membership membership = this.membershipService.getMembershipByUserAndGroup(user, group);
-        Post post = this.postService.getPost(UUID.fromString(request.getPost()));
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(groupId);
+        ITUserDTO user = this.itUserService.getITUser(userId);
+        MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, group);
+        PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.editMembership(membership, request.getUnofficialName(), post);
         return new EditedMembershipResponse();
     }

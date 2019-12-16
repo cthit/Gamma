@@ -3,9 +3,13 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.repository.WebsiteRepository;
 
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.response.website.WebsiteNotFoundResponse;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,11 +34,21 @@ public class WebsiteService {
         this.repository.save(website);
     }
 
-    public Website getWebsite(String websiteName) {
-        return this.repository.findByName(websiteName);
+    public WebsiteDTO getWebsite(String websiteName) {
+        if (UUIDUtil.validUUID(websiteName)) {
+            return this.repository.findById(UUID.fromString(websiteName))
+                    .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
+        }
+        return this.repository.findByName(websiteName)
+                .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
     }
 
-    public void editWebsite(Website website, String name, String prettyName) {
+    protected Website getWebsite(WebsiteDTO websiteDTO) {
+        return this.repository.findById(websiteDTO.getId()).orElse(null);
+    }
+
+    public void editWebsite(WebsiteDTO websiteDTO, String name, String prettyName) {
+        Website website = this.getWebsite(websiteDTO);
         website.setName(name.toLowerCase());
         website.setPrettyName(prettyName == null ? name.toLowerCase() : prettyName);
         this.repository.save(website);
@@ -44,16 +58,12 @@ public class WebsiteService {
         this.repository.deleteById(UUID.fromString(id));
     }
 
-    public Website getWebsiteById(String id) {
-        return this.repository.findById(UUID.fromString(id)).orElse(null);
-    }
 
     public boolean websiteExists(UUID id) {
         return this.repository.existsById(id);
     }
 
-    public List<Website> getAllWebsites() {
-        return this.repository.findAll();
+    public List<WebsiteDTO> getAllWebsites() {
+        return this.repository.findAll().stream().map(Website::toDTO).collect(Collectors.toList());
     }
-
 }

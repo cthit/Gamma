@@ -3,58 +3,61 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;
+import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
 @SuppressWarnings({"TooManyMethods"})
-
 public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
+    private final WhitelistService whitelistService;
 
-    public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
+    public ActivationCodeService(ActivationCodeRepository activationCodeRepository, WhitelistService whitelistService) {
         this.activationCodeRepository = activationCodeRepository;
+        this.whitelistService = whitelistService;
     }
 
     /**
      * connects and places a whitelisted user and a code in the database.
      *
-     * @param cid  the already whiteslisted user
+     * @param whitelistDTO the information regarding the whitelistDTO
      * @param code the code that is associated with a user
      * @return a copy of the ActivationCode object added to the database
      */
-    public ActivationCode saveActivationCode(Whitelist cid, String code) {
-        if (userHasCode(cid.getCid())) {
-            this.activationCodeRepository.delete(
-                    this.activationCodeRepository.findByCid_Cid(cid.getCid())
-            );
+    public ActivationCodeDTO saveActivationCode(WhitelistDTO whitelistDTO, String code) {
+        if (this.activationCodeRepository.existsActivationCodeByCid_Cid(whitelistDTO.getCid())) {
+            this.activationCodeRepository.deleteActivationCodeByCid_Cid(whitelistDTO.getCid());
         }
-        ActivationCode activationCode = new ActivationCode(cid);
+        Whitelist whitelist = this.whitelistService.getWhitelist(whitelistDTO);
+        ActivationCode activationCode = new ActivationCode(whitelist);
         activationCode.setCode(code);
         this.activationCodeRepository.save(activationCode);
-        return activationCode;
+        return activationCode.toDTO();
     }
 
     public boolean codeMatches(String code, String user) {
-        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user);
+        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user)
+                .orElse(null);
         if (activationCode == null) {
+            return false;
+        }
+        if (!activationCode.isValid()) {
+            deleteCode(activationCode.getId());
             return false;
         }
         return activationCode.getCode().equals(code);
     }
 
-    public boolean userHasCode(String cid) {
-        return this.activationCodeRepository.findByCid_Cid(cid) != null;
-    }
-
     // TODO Delete entry after 1 hour or once code has been used. This does not work.
     public void deleteCode(String cid) {
-        this.activationCodeRepository.delete(this.activationCodeRepository.findByCid_Cid(cid));
+        this.activationCodeRepository.deleteActivationCodeByCid_Cid(cid);
     }
 
     public void deleteCode(UUID id) {
@@ -65,24 +68,12 @@ public class ActivationCodeService {
         return this.activationCodeRepository.existsById(id);
     }
 
-    /**
-     * checks if a user has an expired code connected to their account.
-     *
-     * @param user  the name of the user to check
-     * @param hours the expiration time currently set by the system
-     * @return true of the code has expired, false if not
-     */
-    public boolean hasCodeExpired(String user, double hours) {
-        ActivationCode activationCode = this.activationCodeRepository.findByCid_Cid(user);
-        return activationCode.getCreatedAt().getEpochSecond()
-            + (hours * 3600) < Instant.now().getEpochSecond();
+    public List<ActivationCodeDTO> getAllActivationCodes() {
+        return this.activationCodeRepository.findAll().stream()
+                .map(ActivationCode::toDTO).collect(Collectors.toList());
     }
 
-    public List<ActivationCode> getAllActivationCodes() {
-        return this.activationCodeRepository.findAll();
-    }
-
-    public ActivationCode getActivationCode(UUID id) {
-        return this.activationCodeRepository.findById(id).orElse(null);
+    public ActivationCodeDTO getActivationCode(UUID id) {
+        return this.activationCodeRepository.findById(id).map(ActivationCode::toDTO).orElse(null);
     }
 }

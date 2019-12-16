@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 
+import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import java.util.Objects;
 
 import javax.persistence.EmbeddedId;
@@ -28,6 +29,10 @@ public class FKITGroupToSuperGroup {
 
     public void setId(FKITGroupToSuperGroupPK id) {
         this.id = id;
+    }
+
+    public FKITGroupToSuperGroupDTO toDTO() {
+        return new FKITGroupToSuperGroupDTO(this.id.getSuperGroup().toDTO(), this.id.getGroup().toDTO());
     }
 
     @Override

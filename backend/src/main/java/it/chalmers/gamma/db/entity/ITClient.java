@@ -5,13 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -23,14 +19,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.provider.ClientDetails;
-
 @Entity
 @Table(name = "itclient")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ITClient implements ClientDetails {
+public class ITClient {
 
     @Id
     @Column(updatable = false)
@@ -145,82 +137,20 @@ public class ITClient implements ClientDetails {
         this.lastModifiedAt = lastModifiedAt;
     }
 
-    @Override
-    public String getClientId() {
-        return this.clientId;
-    }
-
-    @Override
-    public Set<String> getResourceIds() {
-        return null;
-    }
-
-    @Override
-    public boolean isSecretRequired() {
-        return true;
-    }
-
-    @Override
-    public String getClientSecret() {
-        return this.clientSecret;
-    }
-
-    @Override
-    public boolean isScoped() {
-        return false;
-    }
-
-    @Override
-    public Set<String> getScope() {
-        Set<String> scopes = new HashSet<>();
-        scopes.add("read");
-        scopes.add("write");
-        return scopes;
-    }
-
-    @Override
-    public Set<String> getAuthorizedGrantTypes() {
-        Set<String> authorized = new HashSet<>();
-        authorized.add("authorization_code");
-        return authorized;
-    }
-
-    @Override
-    public Set<String> getRegisteredRedirectUri() {
-        Set<String> authorized = new HashSet<>();
-        authorized.add(this.webServerRedirectUri);
-        return authorized;
-    }
-
-    @Override
-    public Collection<GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
-        return authorities;
-    }
-
-    @Override
-    public Integer getAccessTokenValiditySeconds() {
-        return this.accessTokenValidity;
-    }
-
-    @Override
-    public Integer getRefreshTokenValiditySeconds() {
-        return this.refreshTokenValidity;
-    }
-
-    @Override
-    public boolean isAutoApprove(String scope) {
-        return this.autoApprove;
-    }
-
-    @Override
-    public Map<String, Object> getAdditionalInformation() {
-        Map<String, Object> additionalInformation = new HashMap<>();
-        additionalInformation.put("name", this.name);
-        additionalInformation.put("description", this.description);
-
-        return additionalInformation;
+    public ITClientDTO toDTO() {
+        return new ITClientDTO(
+                this.id,
+                this.clientId,
+                this.clientSecret,
+                this.webServerRedirectUri,
+                this.accessTokenValidity,
+                this.refreshTokenValidity,
+                this.autoApprove,
+                this.name,
+                this.description,
+                this.createdAt,
+                this.lastModifiedAt
+        );
     }
 
     @Override

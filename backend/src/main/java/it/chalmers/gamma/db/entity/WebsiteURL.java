@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -61,6 +62,10 @@ public class WebsiteURL {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public WebsiteUrlDTO toDTO() {
+        return new WebsiteUrlDTO(this.id, this.url, this.website.toDTO());
     }
 
     @Override

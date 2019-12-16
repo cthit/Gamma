@@ -1,16 +1,12 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.ITUser;
-import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.response.GetMembershipsResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
+import it.chalmers.gamma.response.group.GetMembershipResponse;
+import it.chalmers.gamma.response.group.GetMembershipResponse.GetMembershipResponseObject;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.MembershipService;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,16 +25,9 @@ public class GroupMemberController {
     }
 
     @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
-    public ResponseEntity<List<Membership>> getUsersInGroup(@PathVariable("id") String id) {
-        FKITGroup group = this.fkitGroupService.getGroup(UUID.fromString(id));
-        if (group == null) {
-            throw new GroupDoesNotExistResponse();
-        }
-        List<ITUser> members = this.membershipService.getUsersInGroup(group);
-        List<Membership> groupMembers = new ArrayList<>();
-        for (ITUser member : members) {
-            groupMembers.add(this.membershipService.getMembershipByUserAndGroup(member, group));
-        }
-        return new GetMembershipsResponse(groupMembers);
+    public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
+        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group);
+        return new GetMembershipResponse(members).toResponseObject();
     }
 }

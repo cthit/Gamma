@@ -1,5 +1,6 @@
 package it.chalmers.gamma.db.entity;
 
+import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -43,6 +44,13 @@ public class ApiKey {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.lastModifiedAt = Instant.now();
+    }
+
+    public ApiKey(String name, String key, Text description) {
+        this();
+        this.name = name;
+        this.key = key;
+        this.description = description;
     }
 
     public UUID getId() {
@@ -91,6 +99,10 @@ public class ApiKey {
 
     public void setLastModifiedAt(Instant lastModifiedAt) {
         this.lastModifiedAt = lastModifiedAt;
+    }
+
+    public ApiKeyDTO toDTO() {
+        return new ApiKeyDTO(this.id, this.name, this.description, this.createdAt, this.lastModifiedAt);
     }
 
     @Override

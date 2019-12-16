@@ -1,13 +1,14 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
-import it.chalmers.gamma.response.FKITSuperGroupCreatedResponse;
-import it.chalmers.gamma.response.GroupAlreadyExistsResponse;
-import it.chalmers.gamma.response.GroupDeletedResponse;
-import it.chalmers.gamma.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.response.GroupEditedResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
+import it.chalmers.gamma.response.group.GroupDeletedResponse;
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
+import it.chalmers.gamma.response.group.GroupEditedResponse;
+import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse;
+import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse.GetSuperGroupResponseObject;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -15,7 +16,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,23 +34,23 @@ public class SuperGroupAdminController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<FKITSuperGroup> createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
-                                                           BindingResult result) {
+    public GetSuperGroupResponseObject createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
+                                                                              BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         if (this.fkitSuperGroupService.groupExists(request.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
-        FKITSuperGroup group = this.fkitSuperGroupService.createSuperGroup(request);
-        return new FKITSuperGroupCreatedResponse(group);
+        FKITSuperGroupDTO group = this.fkitSuperGroupService.createSuperGroup(requestToDTO(request));
+        return new GetSuperGroupResponse(group).toResponseObject();
     }
 
 
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> removeSuperGroup(@PathVariable("id") String id) {
-        if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
+    public GroupDeletedResponse removeSuperGroup(@PathVariable("id") String id) {
+        if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
         this.fkitSuperGroupService.removeGroup(UUID.fromString(id));
@@ -58,13 +58,21 @@ public class SuperGroupAdminController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateSuperGroup(@PathVariable("id") String id,
+    public GroupEditedResponse updateSuperGroup(@PathVariable("id") String id,
                                                    @RequestBody CreateSuperGroupRequest request) {
-        if (!this.fkitSuperGroupService.groupExists(UUID.fromString(id))) {
+        if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
-        this.fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), request);
+        this.fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), requestToDTO(request));
         return new GroupEditedResponse();
+    }
+
+    private FKITSuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {
+        return new FKITSuperGroupDTO(
+                request.getName(),
+                request.getPrettyName(),
+                request.getType(),
+                request.getEmail());
     }
 
 }

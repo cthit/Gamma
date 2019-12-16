@@ -17,11 +17,11 @@ import javax.persistence.ManyToOne;
 public class FKITGroupToSuperGroupPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "fkit_super_group_id")
-    FKITSuperGroup superGroup;
+    private FKITSuperGroup superGroup;
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    FKITGroup group;
+    private FKITGroup group;
 
     public FKITGroupToSuperGroupPK(FKITSuperGroup superGroup, FKITGroup group) {
         this.superGroup = superGroup;

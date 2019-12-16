@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import it.chalmers.gamma.domain.dto.website.GroupWebsiteDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -66,6 +67,10 @@ public class GroupWebsite implements WebsiteInterface {
         return Objects.equals(this.id, that.id)
             && Objects.equals(this.website, that.website)
             && Objects.equals(this.group, that.group);
+    }
+
+    public GroupWebsiteDTO toDTO() {
+        return new GroupWebsiteDTO(this.id, this.website.toDTO(), this.group.toDTO());
     }
 
     @Override

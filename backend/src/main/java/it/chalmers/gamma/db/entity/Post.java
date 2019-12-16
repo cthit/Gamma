@@ -2,6 +2,7 @@ package it.chalmers.gamma.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import it.chalmers.gamma.domain.dto.post.PostDTO;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -67,6 +68,10 @@ public class Post {
 
     public void setEmailPrefix(String emailPrefix) {
         this.emailPrefix = emailPrefix;
+    }
+
+    public PostDTO toDTO() {
+        return new PostDTO(this.id, this.postName, this.emailPrefix);
     }
 
     @Override

@@ -81,6 +81,7 @@ create table fkit_group_to_super_group (
 create table post (
   id        uuid constraint post_pk primary key,
   post_name uuid not null references internal_text
+
 );
 
 create table authority (

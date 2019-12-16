@@ -27,7 +27,6 @@ import {
     generateUserCustomDetailsRenders,
     generateUserEditComponentData,
     generateUserInitialValues,
-    generateUserKeyOrder,
     generateUserKeysTexts,
     generateUserValidationSchema
 } from "../../common/utils/generators/user-form.generator";
@@ -41,7 +40,7 @@ const Users = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         getWebsites().then(response => {
-            setWebsites(response.data);
+            setWebsites(response.data.websites);
             dispatch(gammaLoadingFinished());
         });
     }, []);
@@ -87,7 +86,7 @@ const Users = () => {
                                 GROUPS
                             ]}
                             tableProps={{
-                                titleText: text.Groups,
+                                titleText: text.Users,
                                 startOrderBy: NICK,
                                 search: true,
                                 columnsOrder: [

@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@SuppressWarnings("PMD.ExcessiveParameterList")
 public class CreateGroupRequest {
 
     @NotNull(message = "NAME_MUST_BE_PROVIDED")
@@ -35,6 +36,21 @@ public class CreateGroupRequest {
 
     private String email;
 
+    public CreateGroupRequest(String name, String prettyName, Text description, Text function,
+                              String avatarURL, List<WebsiteInfo> websites,
+                              Calendar becomesActive, Calendar becomesInactive,
+                              String superGroup, String email) {
+        this.name = name;
+        this.prettyName = prettyName;
+        this.description = description;
+        this.function = function;
+        this.avatarURL = avatarURL;
+        this.websites = websites;
+        this.becomesActive = becomesActive;
+        this.becomesInactive = becomesInactive;
+        this.superGroup = superGroup;
+        this.email = email;
+    }
 
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
@@ -116,7 +132,6 @@ public class CreateGroupRequest {
         this.email = email;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -140,8 +155,7 @@ public class CreateGroupRequest {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                this.name,
+        return Objects.hash(this.name,
                 this.prettyName,
                 this.description,
                 this.function,
@@ -151,21 +165,22 @@ public class CreateGroupRequest {
                 this.becomesInactive,
                 this.superGroup,
                 this.email);
+
     }
 
     @Override
     public String toString() {
         return "CreateGroupRequest{"
-                + "name='" + name + '\''
-                + ", prettyName='" + prettyName + '\''
-                + ", description=" + description
-                + ", function=" + function
-                + ", avatarURL='" + avatarURL + '\''
-                + ", websites=" + websites
-                + ", becomesActive=" + becomesActive
-                + ", becomesInactive=" + becomesInactive
-                + ", superGroup='" + superGroup + '\''
-                + ", email='" + email + '\''
+                + "name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", description=" + this.description
+                + ", function=" + this.function
+                + ", avatarURL='" + this.avatarURL + '\''
+                + ", websites=" + this.websites
+                + ", becomesActive=" + this.becomesActive
+                + ", becomesInactive=" + this.becomesInactive
+                + ", superGroup='" + this.superGroup + '\''
+                + ", email='" + this.email + '\''
                 + '}';
     }
 

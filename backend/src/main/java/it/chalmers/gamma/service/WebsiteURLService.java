@@ -1,12 +1,14 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.Website;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.WebsiteURLRepository;
 
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -17,39 +19,46 @@ import org.springframework.stereotype.Service;
 public class WebsiteURLService {
 
     private final WebsiteURLRepository repository;
+    private final WebsiteService websiteService;
 
-    public WebsiteURLService(WebsiteURLRepository repository) {
+    public WebsiteURLService(WebsiteURLRepository repository, WebsiteService websiteService) {
         this.repository = repository;
+        this.websiteService = websiteService;
     }
 
-    private void addWebsite(Website website, String url) {
+    private void addWebsite(WebsiteDTO websiteDTO, String url) {
         WebsiteURL websiteURL = new WebsiteURL();
-        websiteURL.setWebsite(website);
+        websiteURL.setWebsite(this.websiteService.getWebsite(websiteDTO));
         websiteURL.setUrl(url);
         this.repository.save(websiteURL);
     }
 
-    public List<WebsiteURL> getAllWebsites() {
-        return this.repository.findAll();
+    public List<WebsiteUrlDTO> getAllWebsites() {
+        return this.repository.findAll().stream().map(WebsiteURL::toDTO).collect(Collectors.toList());
     }
 
-    public WebsiteURL getWebsiteURLById(String id) {
-        return this.repository.findById(UUID.fromString(id)).orElse(null);
+    public WebsiteUrlDTO getWebsiteURLById(String id) {
+        return this.repository.findById(UUID.fromString(id)).map(WebsiteURL::toDTO).orElse(null);
     }
 
     public void deleteWebsite(String id) {
         this.repository.deleteById(UUID.fromString(id));
     }
 
-    public void editWebsite(WebsiteURL websiteURL, Website website, String url) {
-        websiteURL.setWebsite(website);
+    public void editWebsite(WebsiteUrlDTO websiteUrlDTO, WebsiteDTO websiteDTO, String url) {
+        WebsiteURL websiteURL = this.getWebsiteURL(websiteUrlDTO);
+        websiteURL.setWebsite(this.websiteService.getWebsite(websiteDTO));
         websiteURL.setUrl(url);
         this.repository.save(websiteURL);
     }
 
     @Transactional
-    public void deleteAllWebsites(Website website) {
-        this.repository.deleteAllByWebsite(website);
+    public void deleteAllWebsites(WebsiteDTO website) {
+        this.repository.deleteAllByWebsite(this.websiteService.getWebsite(website));
+    }
+
+    protected WebsiteURL getWebsiteURL(WebsiteUrlDTO websiteUrlDTO) {
+        return this.repository.findById(websiteUrlDTO.getId()).orElse(null);
     }
 
 }

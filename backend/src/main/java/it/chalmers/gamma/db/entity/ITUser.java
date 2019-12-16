@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
 import java.time.Instant;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -18,17 +18,15 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "ituser")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @SuppressWarnings({"PMD.TooManyFields"})
-public class ITUser implements UserDetails {
+public class ITUser {
 
     @Id
     @Column(updatable = false)
@@ -87,14 +85,48 @@ public class ITUser implements UserDetails {
     @ColumnDefault("current_timestamp")
     private Instant lastModifiedAt;
 
-    @Transient
-    private List<GrantedAuthority> authorities;
-
-
     public ITUser() {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.lastModifiedAt = Instant.now();
+    }
+
+    public ITUserDTO toDTO() {
+        return new ITUserDTO(
+            this.id,
+            this.cid,
+            this.nick,
+            this.firstName,
+            this.lastName,
+            this.email,
+            this.phone,
+            this.language,
+            this.avatarUrl,
+            this.gdpr,
+            this.userAgreement,
+            this.accountLocked,
+            Year.of(this.acceptanceYear)
+        );
+    }
+
+    public ITUserDTO toUserDetailsDTO(List<GrantedAuthority> authorities) {
+        return new ITUserDTO(
+                this.id,
+                this.cid,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.phone,
+                this.language,
+                this.avatarUrl,
+                this.gdpr,
+                this.userAgreement,
+                this.accountLocked,
+                Year.of(this.acceptanceYear),
+                authorities,
+                this.password
+        );
     }
 
     public UUID getId() {
@@ -111,41 +143,6 @@ public class ITUser implements UserDetails {
 
     public void setCid(String cid) {
         this.cid = cid;
-    }
-
-    @Override
-    public List<GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.cid;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !this.accountLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
     public void setPassword(String password) {
@@ -256,10 +253,6 @@ public class ITUser implements UserDetails {
         this.accountLocked = accountLocked;
     }
 
-    public void setAuthority(List<GrantedAuthority> authority) {
-        this.authorities = new ArrayList<>(authority);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -325,7 +318,6 @@ public class ITUser implements UserDetails {
             + ", acceptanceYear=" + acceptanceYear
             + ", createdAt=" + createdAt
             + ", lastModifiedAt=" + lastModifiedAt
-            + ", authorities=" + authorities
             + '}';
     }
 }

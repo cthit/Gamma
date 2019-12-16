@@ -2,11 +2,14 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.repository.FKITGroupRepository;
-import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
+import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -19,78 +22,83 @@ public class FKITGroupService {
         this.repo = repo;
     }
 
-    public FKITGroup createGroup(CreateGroupRequest request) {
+
+    public FKITGroupDTO createGroup(FKITGroupDTO fkitGroupDTO) {
         FKITGroup fkitGroup = new FKITGroup();
-        fkitGroup.setName(request.getName().toLowerCase());
-        fkitGroup.setFunction(request.getFunction());
-        fkitGroup.setDescription(request.getDescription());
-        return saveGroup(fkitGroup, request.getPrettyName() == null ? request.getName() : request.getPrettyName(),
-                request.getBecomesActive(), request.getBecomesInactive(),
-                request.getEmail(), request.getAvatarURL());
+        fkitGroup.setName(fkitGroupDTO.getName());
+        fkitGroup.setFunction(fkitGroupDTO.getFunction());
+        fkitGroup.setDescription(fkitGroupDTO.getDescription());
+        return saveGroup(fkitGroup,
+                fkitGroup.getPrettyName() == null ? fkitGroupDTO.getName() : fkitGroupDTO.getPrettyName(),
+                fkitGroupDTO.getBecomesActive(), fkitGroupDTO.getBecomesInactive(),
+                fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());
     }
 
-    //TODO if no info, don't change value.
-    public FKITGroup editGroup(UUID id, CreateGroupRequest request) {
-        FKITGroup group = this.repo.findById(id).orElse(null);
+    public FKITGroupDTO editGroup(String id, FKITGroupDTO fkitGroupDTO) {
+        FKITGroup group = this.getGroup(this.getDTOGroup(id));
         if (group == null) {
             return null;
         }
-        group.setSVFunction(request.getFunction() == null ? group.getSVFunction() : request.getFunction().getSv());
-        group.setENFunction(request.getFunction() == null ? group.getENFunction() : request.getFunction().getEn());
-        if (request.getDescription() != null && group.getDescription() != null) {
-            group.setSVDescription(request.getDescription().getSv());
-            group.setENDescription(request.getDescription().getEn());
+        group.getFunction().setSv(fkitGroupDTO.getFunction() == null
+                ? group.getFunction().getSv() : fkitGroupDTO.getFunction().getSv());
+
+        group.getFunction().setEn(fkitGroupDTO.getFunction() == null
+                ? group.getFunction().getEn() : fkitGroupDTO.getFunction().getEn());
+
+        if (fkitGroupDTO.getDescription() != null && group.getDescription() != null) {
+            group.getDescription().setSv(fkitGroupDTO.getDescription().getSv());
+            group.getDescription().setEn(fkitGroupDTO.getDescription().getEn());
         }
-        return saveGroup(group, request.getPrettyName(), request.getBecomesActive(), request.getBecomesInactive(),
-                 request.getEmail(), request.getAvatarURL());
+        return saveGroup(group, fkitGroupDTO.getPrettyName(), fkitGroupDTO.getBecomesActive(),
+                fkitGroupDTO.getBecomesInactive(),
+                fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL());
     }
 
-    private FKITGroup saveGroup(FKITGroup group, String prettyName,
-                                Calendar becomesActive, Calendar becomesInactive,
-                                String email, String avatarURL) {
+    private FKITGroupDTO saveGroup(FKITGroup group, String prettyName,
+                                   Calendar becomesActive, Calendar becomesInactive,
+                                   String email, String avatarURL) {
         group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
         group.setEmail(email == null ? group.getEmail() : email);
         group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
         group.setBecomesActive(becomesActive == null ? group.getBecomesActive() : becomesActive);
         group.setBecomesInactive(becomesInactive == null ? group.getBecomesInactive() : becomesInactive);
-        return this.repo.save(group);
+        return this.repo.save(group).toDTO();
     }
 
     public boolean groupExists(String name) {
-        return this.repo.existsFKITGroupByName(name);
+        return this.repo.existsFKITGroupByName(name) || this.repo.existsById(UUID.fromString(name));
     }
 
-    public boolean groupExists(UUID id) {
-        return this.repo.existsById(id);
-    }
-
-    public void removeGroup(String group) {
-        this.repo.delete(this.repo.findByName(group));
+    public void removeGroup(String name) {
+        this.repo.deleteByName(name);
     }
 
     public void removeGroup(UUID groupId) {
         this.repo.deleteById(groupId);
     }
 
-    public List<FKITGroup> getGroups() {
-        return this.repo.findAll();
+    public List<FKITGroupDTO> getGroups() {
+        return this.repo.findAll().stream().map(FKITGroup::toDTO).collect(Collectors.toList());
     }
 
-    public FKITGroup getGroup(String group) {
-        return this.repo.findByName(group);
+    public FKITGroupDTO getDTOGroup(String name) {
+        if (UUIDUtil.validUUID(name)) {
+            return this.repo.findById(UUID.fromString(name))
+                    .orElseThrow(GroupDoesNotExistResponse::new).toDTO();
+        }
+        return this.repo.findByName(name)
+                .orElseThrow(GroupDoesNotExistResponse::new)
+                .toDTO();
     }
 
-    public FKITGroup getGroup(UUID id) {
-        return this.repo.findById(id).orElse(null);
-    }
-
-    public void editGroupAvatar(FKITGroup group, String url) {
+    public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse {
+        FKITGroup group = this.getGroup(groupDTO);
         group.setAvatarURL(url);
         this.repo.save(group);
     }
 
-    public void save(FKITGroup group) {
-        this.repo.save(group);
+    protected FKITGroup getGroup(FKITGroupDTO group) {
+        return this.repo.findById(group.getId()).orElse(null);
     }
 
 }

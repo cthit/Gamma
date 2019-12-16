@@ -3,14 +3,18 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.GroupWebsite;
 import it.chalmers.gamma.db.entity.Website;
-import it.chalmers.gamma.db.entity.WebsiteInterface;
 import it.chalmers.gamma.db.entity.WebsiteURL;
 import it.chalmers.gamma.db.repository.GroupWebsiteRepository;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
-import java.util.ArrayList;
+import it.chalmers.gamma.domain.dto.website.GroupWebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteInterfaceDTO;
+import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,22 +30,33 @@ import org.springframework.stereotype.Service;
 public class GroupWebsiteService extends EntityWebsiteService {
 
     private final GroupWebsiteRepository repository;
+    private final FKITGroupService fkitGroupService;
+    private final WebsiteURLService websiteURLService;
+    private final WebsiteService websiteService;
 
-    public GroupWebsiteService(GroupWebsiteRepository repository, WebsiteService websiteService) {
+    public GroupWebsiteService(GroupWebsiteRepository repository,
+                               WebsiteService websiteService, FKITGroupService fkitGroupService,
+                               WebsiteURLService websiteURLService, WebsiteService websiteService1) {
         super(websiteService);
         this.repository = repository;
+        this.fkitGroupService = fkitGroupService;
+        this.websiteURLService = websiteURLService;
+        this.websiteService = websiteService1;
     }
 
-    public void addGroupWebsites(FKITGroup group, List<WebsiteURL> websiteURLs) throws DataIntegrityViolationException {
-        if (websiteURLs == null || group == null) {
+    public void addGroupWebsites(FKITGroupDTO groupDTO, List<WebsiteUrlDTO> websiteUrlDTOS)
+            throws DataIntegrityViolationException {
+        if (websiteUrlDTOS == null || groupDTO == null) {
             return;
         }
         boolean error = false;
-        for (WebsiteURL websiteURL : websiteURLs) {
-            if (websiteURL.getWebsite() == null || websiteURL.getUrl() == null) {
+        for (WebsiteUrlDTO websiteUrlDTO : websiteUrlDTOS) {
+            if (websiteUrlDTO.getWebsiteDTO() == null || websiteUrlDTO.getUrl() == null) {
                 error = true;
                 continue;
             }
+            FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
+            WebsiteURL websiteURL = this.websiteURLService.getWebsiteURL(websiteUrlDTO);
             GroupWebsite groupWebsite = new GroupWebsite();
             groupWebsite.setGroup(group);
             groupWebsite.setWebsite(websiteURL);
@@ -53,34 +68,39 @@ public class GroupWebsiteService extends EntityWebsiteService {
     }
 
     @Transactional
-    public void deleteGroupWebsiteByWebsite(Website website) {
+    public void deleteGroupWebsiteByWebsite(WebsiteDTO websiteDTO) {
+        Website website = this.websiteService.getWebsite(websiteDTO);
         this.repository.deleteAllByWebsite_Website(website);
     }
 
-    public List<GroupWebsite> getAllGroupWebsites() {
-        return this.repository.findAll();
+    public List<GroupWebsiteDTO> getAllGroupWebsites() {
+        return this.repository.findAll().stream().map(GroupWebsite::toDTO).collect(Collectors.toList());
     }
 
-    public GroupWebsite getGroupWebsiteById(String id) {
-        return this.repository.findById(UUID.fromString(id)).orElse(null);
+    public GroupWebsiteDTO getGroupWebsiteById(String id) {
+        return this.repository.findById(UUID.fromString(id)).map(GroupWebsite::toDTO).orElse(null);
     }
 
     public void deleteGroupWebsite(String id) {
 
     }
 
-    public List<WebsiteInterface> getWebsites(FKITGroup group) {
-        List<GroupWebsite> groupWebsites = this.repository.findAllByGroup(group);
-        return new ArrayList<>(groupWebsites);
+    public List<WebsiteInterfaceDTO> getWebsites(FKITGroupDTO group) {
+        return this.repository.findAllByGroup(group).stream()
+                .map(GroupWebsite::toDTO).collect(Collectors.toList());
     }
 
-    public GroupWebsite getGroupWebsiteByWebsite(Website website) {
-        return this.repository.findByWebsite_Website(website);
+    public GroupWebsiteDTO getGroupWebsiteByWebsite(WebsiteDTO websiteDTO) {
+        return this.repository.findByWebsite_Website(this.websiteService.getWebsite(websiteDTO)).toDTO();
     }
 
     @Transactional
-    public void deleteWebsitesConnectedToGroup(FKITGroup group) {
+    public void deleteWebsitesConnectedToGroup(FKITGroupDTO group) {
         this.repository.deleteAllByGroup(group);
+    }
+
+    protected GroupWebsiteDTO getGroupWebsite(GroupWebsiteDTO websiteDTO) {
+        return this.repository.findById(websiteDTO.getId()).map(GroupWebsite::toDTO).orElse(null);
     }
 
 }

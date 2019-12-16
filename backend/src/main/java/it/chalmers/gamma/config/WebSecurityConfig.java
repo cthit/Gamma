@@ -190,11 +190,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
         this.authorityService.getAllAuthorities().forEach(a -> {
-            if (a.getId().getFkitSuperGroup().equals(relationship.getId().getSuperGroup())) {
+            if (a.getFkitSuperGroup().getId().equals(relationship.getId().getSuperGroup().getId())) {
                 try {
                     http.authorizeRequests().antMatchers("/admin/groups/"
                             + relationship.getId().getGroup().getId() + "/**")
-                            .hasAuthority(a.getAuthorityLevel().getAuthority());
+                            .hasAuthority(a.getAuthorityLevelDTO().getAuthority());
                 } catch (Exception e) {
                     LOGGER.error("Something went wrong when setting authorized paths");
                     LOGGER.error(e.getMessage());
