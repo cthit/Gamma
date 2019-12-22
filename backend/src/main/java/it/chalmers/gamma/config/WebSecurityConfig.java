@@ -161,6 +161,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/users/reset_password/finish",
                     "/css/**",
                     "/js/**",
+                    "/auth/valid_token",
                     "/img/**"
             };
 
