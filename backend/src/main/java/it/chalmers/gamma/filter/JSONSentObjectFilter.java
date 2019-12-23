@@ -27,7 +27,7 @@ public class JSONSentObjectFilter implements Filter {
         chain.doFilter(request, resWrapper);
         String payload = new String(resWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
         String url = ((HttpServletRequest)request).getRequestURL().toString();
-     //   LOGGER.info("Response from server was: {} {}", payload, url);
+        LOGGER.info("Response from server was: {} {}", payload, url);
         resWrapper.copyBodyToResponse();
     }
 

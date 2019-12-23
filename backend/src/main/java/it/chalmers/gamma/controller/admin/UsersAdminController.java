@@ -126,8 +126,7 @@ public final class UsersAdminController {
                 .map(u -> new GetITUserResponse(u,
                         this.membershipService.getUsersGroupDTO(u).stream().map(
                                 this.fkitGroupToSuperGroupService::getRelationships)
-                                .flatMap(Collection::stream).collect(Collectors.toList())
-                        ,
+                                .flatMap(Collection::stream).collect(Collectors.toList()),
                         null))
                 .collect(Collectors.toList());
         return new GetAllITUsersResponse(userResponses).toResponseObject();
