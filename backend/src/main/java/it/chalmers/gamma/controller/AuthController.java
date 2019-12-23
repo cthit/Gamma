@@ -7,6 +7,11 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import it.chalmers.gamma.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.response.ValidJwtResponse;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/auth")
@@ -31,15 +33,14 @@ public class AuthController {
 
 
     @RequestMapping(value = "/valid_token", method = RequestMethod.GET)
-    public ValidJwtResponse isValidJWT(@RequestParam("token") String token) {
+    public ValidJwtResponse validJWT(@RequestParam("token") String token) {
         try {
             Jws<Claims> claim = decodeToken(token);
             if (claim.getBody().getExpiration().before(new Date())) {
                 throw new InvalidJWTTokenResponse();
             }
             return new ValidJwtResponse(true);
-        }
-        catch (InvalidJWTTokenResponse e) {
+        } catch (InvalidJWTTokenResponse e) {
             return new ValidJwtResponse(false);
         }
 
