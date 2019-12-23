@@ -7,6 +7,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,8 @@ public class JSONSentObjectFilter implements Filter {
         ContentCachingResponseWrapper resWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
         chain.doFilter(request, resWrapper);
         String payload = new String(resWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
-        LOGGER.info("Response from server was: {} {}", payload, resWrapper.getContentType());
+        String url = ((HttpServletRequest)request).getRequestURL().toString();
+     //   LOGGER.info("Response from server was: {} {}", payload, url);
         resWrapper.copyBodyToResponse();
     }
 

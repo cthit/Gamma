@@ -89,6 +89,7 @@ public class ITUserService implements UserDetailsService {
         itUser.setUserAgreement(userAgreement);
         itUser.setGdpr(false);
         itUser.setAccountLocked(false);
+        itUser.setLanguage(Language.sv);
         if (itUser.getCid() != null) {
             itUser.setEmail(email);
         }
@@ -123,9 +124,9 @@ public class ITUserService implements UserDetailsService {
             user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
                 .orElseThrow(UserNotFoundResponse::new);
         } else {
-            user = this.itUserRepository.findByCid(idCidOrEmail)
-                .orElse(this.itUserRepository.findByEmail(idCidOrEmail)
-                    .orElseThrow(UserNotFoundResponse::new));
+            user = this.itUserRepository.findByEmail(idCidOrEmail)
+                .orElse(this.itUserRepository.findByCid(idCidOrEmail)
+                .orElseThrow(UserNotFoundResponse::new));
         }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
     }
