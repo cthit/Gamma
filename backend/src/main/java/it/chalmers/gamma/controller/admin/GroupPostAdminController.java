@@ -23,7 +23,11 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +54,7 @@ public final class GroupPostAdminController {
      * @param request the name of the new post
      * @return what the result of trying to create the post was.
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public PostCreatedResponse addOfficialPost(@Valid @RequestBody AddPostRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -69,7 +73,7 @@ public final class GroupPostAdminController {
      * @param id      the id of the post
      * @return the result of creating the post
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public PostEditedResponse editPost(
             @RequestBody AddPostRequest request,
             @PathVariable("id") String id) {
@@ -79,7 +83,7 @@ public final class GroupPostAdminController {
     }
 
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public PostDeletedResponse deletePost(@PathVariable("id") String id) {
         if (!this.postService.postExists(id)) {     // TODO Move to service?
             throw new PostDoesNotExistResponse();
@@ -95,7 +99,7 @@ public final class GroupPostAdminController {
      * @param id the GROUP_ID of the post
      * @return a list of groups that has the post and who in the group currently is assigned that post
      */
-    @RequestMapping("/{id}/usage")
+    @GetMapping("/{id}/usage")
     public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") String id) {
         PostDTO post = this.postService.getPostDTO(id);
         List<FKITGroupDTO> groups = this.membershipService.getGroupsWithPost(post);

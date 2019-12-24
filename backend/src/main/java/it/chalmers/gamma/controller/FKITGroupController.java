@@ -56,20 +56,20 @@ public final class FKITGroupController {
         return new GetFKITGroupResponse(group, minifiedMembers, superGroups, null).toResponseObject();
     }
 
-    @RequestMapping(value = "/minified", method = RequestMethod.GET)
+    @GetMapping("/minified")
     public GetAllFKITGroupsMinifiedResponseObject getGroupsMinified() {
         List<GetFKITGroupMinifiedResponse> responses = this.fkitGroupService.getGroups()
                 .stream().map(g -> new GetFKITGroupMinifiedResponse(g.toMinifiedDTO())).collect(Collectors.toList());
         return new GetAllFKITGroupsMinifiedResponse(responses).toResponseObject();
     }
 
-    @RequestMapping(value = "/{id}/minified", method = RequestMethod.GET)
+    @GetMapping("/{id}/minified")
     public GetFKITGroupMinifiedResponseObject getGroupMinified(@PathVariable("id") String id) {
         return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getDTOGroup(id)
                 .toMinifiedDTO()).toResponseObject();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllFKITGroupsResponse getGroups() {
         List<GetFKITGroupResponse> responses = this.fkitGroupService.getGroups()
                 .stream().map(g -> new GetFKITGroupResponse(
@@ -82,7 +82,7 @@ public final class FKITGroupController {
         return new GetAllFKITGroupsResponse(responses);
     }
 
-    @RequestMapping(value = "/active", method = RequestMethod.GET)
+    @GetMapping("/active")
     public GetActiveFKITGroupResponseObject getActiveGroups() {
         List<FKITGroupDTO> groups = this.fkitGroupService.getGroups().stream()
                 .filter(FKITGroupDTO::isActive).collect(Collectors.toList());

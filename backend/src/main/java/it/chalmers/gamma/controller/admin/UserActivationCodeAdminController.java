@@ -10,6 +10,8 @@ import it.chalmers.gamma.service.ActivationCodeService;
 
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,13 +27,13 @@ public final class UserActivationCodeAdminController {
         this.activationCodeService = activationCodeService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllActivationCodesResponseObject getAllActivationCodes() {
         return new GetAllActivationCodesResponse(
                 this.activationCodeService.getAllActivationCodes()).toResponseObject();
     }
 
-    @RequestMapping(value = "/{activationCode}", method = RequestMethod.GET)
+    @GetMapping("/{activationCode}")
     public GetActivationCodeResponseObject getActivationCode(
             @PathVariable("activationCode") String activationCode) {
         if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
@@ -41,7 +43,7 @@ public final class UserActivationCodeAdminController {
                 this.activationCodeService.getActivationCode(UUID.fromString(activationCode))).toResponseObject();
     }
 
-    @RequestMapping(value = "/{activationCode}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{activationCode}")
     public ActivationCodeDeletedResponse removeActivationCode(@PathVariable("activationCode") String activationCode) {
         if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
             throw new ActivationCodeDoesNotExistResponse();

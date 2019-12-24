@@ -30,7 +30,10 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,7 +59,7 @@ public final class AuthorityAdminController {
         this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public AuthorityAddedResponse addAuthority(@Valid @RequestBody AuthorizationRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -68,7 +71,7 @@ public final class AuthorityAdminController {
         return new AuthorityAddedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public AuthorityRemovedResponse removeAuthority(@PathVariable("id") String id) {
         if (!this.authorityService.authorityExists(id)) {
             throw new AuthorityNotFoundResponse();
@@ -77,14 +80,14 @@ public final class AuthorityAdminController {
         return new AuthorityRemovedResponse();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllAuthoritiesResponse getAllAuthorities() {
         List<AuthorityDTO> authorities = this.authorityService.getAllAuthorities();
         return new GetAllAuthoritiesResponse(authorities);
     }
 
     // BELOW THIS SHOULD MAYBE BE MOVED TO A DIFFERENT FILE
-    @RequestMapping(value = "/level", method = RequestMethod.POST)
+    @PostMapping("/level")
     public AuthorityLevelAddedResponse addAuthorityLevel(@Valid @RequestBody AuthorizationLevelRequest request,
                                                     BindingResult result) {
         if (result.hasErrors()) {
@@ -97,13 +100,13 @@ public final class AuthorityAdminController {
         return new AuthorityLevelAddedResponse();
     }
 
-    @RequestMapping(value = "/level", method = RequestMethod.GET)
+    @GetMapping("/level")
     public GetAllAuthorityLevelsResponseObject getAllAuthorityLevels() {
         List<AuthorityLevelDTO> authorityLevels = this.authorityLevelService.getAllAuthorityLevels();
         return new GetAllAuthorityLevelsResponse(authorityLevels).toResponseObject();
     }
 
-    @RequestMapping(value = "/level/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/level/{id}")
     public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
         if (this.authorityLevelService.authorityLevelExists(UUID.fromString(id))) {
             throw new AuthorityNotFoundResponse();
@@ -112,7 +115,7 @@ public final class AuthorityAdminController {
         return new AuthorityLevelRemovedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetAuthorityResponseObject getAuthority(@PathVariable("id") String id) {
         AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
         if (authority == null) {

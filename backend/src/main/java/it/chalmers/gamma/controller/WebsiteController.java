@@ -7,6 +7,8 @@ import it.chalmers.gamma.response.website.GetWebsiteResponse;
 import it.chalmers.gamma.service.WebsiteService;
 
 import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,13 +26,13 @@ public class WebsiteController {
     }
 
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetWebsiteResponse getWebsite(@PathVariable("id") String id) {
         WebsiteDTO website = this.websiteService.getWebsite(id);
         return new GetWebsiteResponse(website);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllWebsitesResponseObject getAllWebsites() {
         return new GetAllWebsitesResponse(this.websiteService.getAllWebsites().stream().map(GetWebsiteResponse::new)
         .collect(Collectors.toList())).toResponseObject();

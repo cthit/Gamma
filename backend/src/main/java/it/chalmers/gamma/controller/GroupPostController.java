@@ -7,6 +7,8 @@ import it.chalmers.gamma.response.post.GetPostResponse;
 import it.chalmers.gamma.response.post.GetPostResponse.GetPostResponseObject;
 import it.chalmers.gamma.service.PostService;
 import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +24,7 @@ public class GroupPostController {
         this.postService = postService;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetPostResponseObject getPost(@PathVariable("id") String id) {
         PostDTO post = this.postService.getPostDTO(id);
         return new GetPostResponse(post).toResponseObject();
@@ -34,7 +36,7 @@ public class GroupPostController {
      *
      * @return all posts currently in the system
      */
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetMultiplePostsResponseObject getPosts() {
         return new GetMultiplePostsResponse(this.postService.getAllPosts().stream()
                 .map(GetPostResponse::new).collect(Collectors.toList())).toResponseObject();

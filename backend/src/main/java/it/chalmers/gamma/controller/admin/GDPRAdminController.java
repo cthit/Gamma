@@ -17,7 +17,9 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +35,7 @@ public class GDPRAdminController {
         this.itUserService = itUserService;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public GDPRStatusEditedResponse editGDPRStatus(@PathVariable("id") String id,
                                                    @Valid @RequestBody ChangeGDPRStatusRequest request,
                                                    BindingResult result) {
@@ -47,7 +49,7 @@ public class GDPRAdminController {
         return new GDPRStatusEditedResponse();
     }
 
-    @RequestMapping(value = "/minified", method = RequestMethod.GET)
+    @GetMapping("/minified")
     public GetAllITUsersResponseObject getAllUserMini() {
         List<GetITUserResponse> userResponses = this.itUserService.loadAllUsers()
                 .stream().map(GetITUserResponse::new).collect(Collectors.toList());

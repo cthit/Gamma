@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,7 +43,7 @@ public final class WhitelistController {
         this.mailSenderService = mailSenderService;
     }
 
-    @RequestMapping(value = "/activate_cid", method = RequestMethod.POST)
+    @PostMapping("/activate_cid")
     public ActivationCodeAddedResonse createActivationCode(@Valid @RequestBody WhitelistCodeRequest cid,
                                                        BindingResult result) {
         if (result.hasErrors()) {

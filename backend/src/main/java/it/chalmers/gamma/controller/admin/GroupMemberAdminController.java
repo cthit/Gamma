@@ -21,7 +21,10 @@ import it.chalmers.gamma.util.InputValidationUtils;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,7 +50,7 @@ public final class GroupMemberAdminController {
         this.membershipService = membershipService;
     }
 
-    @RequestMapping(value = "/{id}/members", method = RequestMethod.POST)
+    @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
             @Valid @RequestBody AddUserGroupRequest request, BindingResult result,
             @PathVariable("id") String id) {
@@ -61,7 +64,7 @@ public final class GroupMemberAdminController {
         return new MemberAddedToGroupResponse();
     }
 
-    @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}/members/{user}")
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") String id,
                                                               @PathVariable("user") String userId) {
         FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
@@ -70,7 +73,7 @@ public final class GroupMemberAdminController {
         return new MemberRemovedFromGroupResponse();
     }
 
-    @RequestMapping(value = "/{id}/members/{user}", method = RequestMethod.PUT)
+    @PutMapping("/{id}/members/{user}")
     public EditedMembershipResponse editUserInGroup(@PathVariable("id") String groupId,
                                                   @PathVariable("user") String userId,
                                                   @Valid @RequestBody EditMembershipRequest request,

@@ -7,6 +7,8 @@ import it.chalmers.gamma.response.group.GetMembershipResponse.GetMembershipRespo
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.MembershipService;
 import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +26,7 @@ public class GroupMemberController {
         this.membershipService = membershipService;
     }
 
-    @RequestMapping(value = "/{id}/members", method = RequestMethod.GET)
+    @GetMapping("/{id}/members")
     public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
         FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
         List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group);

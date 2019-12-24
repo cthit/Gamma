@@ -34,7 +34,11 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,7 +67,7 @@ public final class UsersAdminController {
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
-    @RequestMapping(value = "/{id}/change_password", method = RequestMethod.PUT)
+    @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
             @PathVariable("id") String id,
             @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
@@ -76,7 +80,7 @@ public final class UsersAdminController {
     }
 
     //TODO Make sure that the code to add websites to users actually works
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public UserEditedResponse editUser(@PathVariable("id") String id,
                                            @RequestBody EditITUserRequest request) {
         if (!this.itUserService.userExists(UUID.fromString(id))) {
@@ -97,7 +101,7 @@ public final class UsersAdminController {
         return new UserEditedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
         this.userWebsiteService.deleteWebsitesConnectedToUser(user);
@@ -106,7 +110,7 @@ public final class UsersAdminController {
         return new UserDeletedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
         // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
@@ -118,7 +122,7 @@ public final class UsersAdminController {
         return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllITUsersResponseObject getAllUsers() {
 
         List<ITUserDTO> users = this.itUserService.loadAllUsers();
@@ -135,7 +139,7 @@ public final class UsersAdminController {
     /**
      * Administrative function that can add user without need for user to add it personally.
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public UserCreatedResponse addUser(
             @Valid @RequestBody AdminViewCreateITUserRequest createITUserRequest, BindingResult result) {
         if (result.hasErrors()) {

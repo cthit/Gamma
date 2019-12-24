@@ -30,7 +30,11 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,7 +56,7 @@ public final class UsersWhitelistAdminController {
         this.itUserService = itUserService;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public WhitelistAddedResponse addWhitelistedUsers(
             @Valid @RequestBody AddListOfWhitelistedRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -83,7 +87,7 @@ public final class UsersWhitelistAdminController {
         return new WhitelistAddedResponse(numAdded, numNotAdded);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public EditedWhitelistResponse editWhitelist(
             @Valid @RequestBody WhitelistCodeRequest request,
             @PathVariable("id") String id,
@@ -102,7 +106,7 @@ public final class UsersWhitelistAdminController {
         return new EditedWhitelistResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public UserDeletedResponse removeWhitelist(@PathVariable("id") String id) {
         if (!this.whitelistService.isCIDWhiteListed(id)) {
             throw new UserNotFoundResponse();
@@ -111,14 +115,14 @@ public final class UsersWhitelistAdminController {
         return new UserDeletedResponse();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllWhitelistResponseObject getAllWhiteList() {
         List<GetWhitelistResponse> whitelistResponses = this.whitelistService.getAllWhitelist()
                 .stream().map(GetWhitelistResponse::new).collect(Collectors.toList());
         return new GetAllWhitelistResponse(whitelistResponses).toResponseObject();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetWhitelistResponseObject getWhitelist(@PathVariable("id") String id) {
         return new GetWhitelistResponse(this.whitelistService.getWhitelist(id)).toResponseObject();
     }
@@ -130,7 +134,7 @@ public final class UsersWhitelistAdminController {
      * @param cid CID of a user.
      * @return true if the user is whitelisted false otherwise
      */
-    @RequestMapping(value = "/valid", method = RequestMethod.POST)      // Should this be changed to a Pathvar?
+    @PostMapping("/valid")      // Should this be changed to a Pathvar?
     public WhitelistIsValidResponseObject validCid(@Valid @RequestBody WhitelistCodeRequest cid, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));

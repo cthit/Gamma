@@ -36,7 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,7 +79,7 @@ public final class GroupAdminController {
     }
 
     @SuppressWarnings("PMD.CyclomaticComplexity")
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
                                               BindingResult result) {
         if (result.hasErrors()) {
@@ -117,7 +120,7 @@ public final class GroupAdminController {
         return new GroupCreatedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public GroupEditedResponse editGroup(
             @RequestBody CreateGroupRequest request,
             @PathVariable("id") String id) {
@@ -134,7 +137,7 @@ public final class GroupAdminController {
         return new GroupEditedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public GroupDeletedResponse deleteGroup(@PathVariable("id") String id) {
         if (!this.fkitGroupService.groupExists(id)) {  // TODO Move to service?
             throw new GroupDoesNotExistResponse();
@@ -147,7 +150,7 @@ public final class GroupAdminController {
         return new GroupDeletedResponse();
     }
 
-    @RequestMapping(value = "/{id}/avatar", method = RequestMethod.PUT)
+    @PutMapping("/{id}/avatar")
     public GroupEditedResponse editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
         FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
         if (group == null) {

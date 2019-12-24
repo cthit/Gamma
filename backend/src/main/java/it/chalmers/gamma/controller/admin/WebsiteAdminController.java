@@ -14,7 +14,10 @@ import it.chalmers.gamma.util.InputValidationUtils;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +42,7 @@ public final class WebsiteAdminController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public WebsiteAddedResponse addWebsite(@Valid @RequestBody CreateWebsiteRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -48,7 +51,7 @@ public final class WebsiteAdminController {
         return new WebsiteAddedResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping("/{id}")
     public EditedWebsiteResponse editWebsite(
             @PathVariable("id") String id,
             @RequestBody CreateWebsiteRequest request) {
@@ -57,7 +60,7 @@ public final class WebsiteAdminController {
         return new EditedWebsiteResponse();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public WebsiteDeletedResponse deleteWebsite(@PathVariable("id") String id) {
         WebsiteDTO website = this.websiteService.getWebsite(id);
         this.groupWebsiteService.deleteGroupWebsiteByWebsite(website);

@@ -15,6 +15,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,7 +33,7 @@ public class AuthController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
 
-    @RequestMapping(value = "/valid_token", method = RequestMethod.GET)
+    @GetMapping("/valid_token")
     public ValidJwtResponse validJWT(@RequestParam("token") String token) {
         try {
             Jws<Claims> claim = decodeToken(token);

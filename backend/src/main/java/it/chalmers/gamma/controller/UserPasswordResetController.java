@@ -16,6 +16,8 @@ import it.chalmers.gamma.util.TokenUtils;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +42,7 @@ public class UserPasswordResetController {
         this.mailSenderService = mailSenderService;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public PasswordResetResponse resetPasswordRequest(
             @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -60,7 +62,7 @@ public class UserPasswordResetController {
         return new PasswordResetResponse();
     }
 
-    @RequestMapping (value = "/finish", method = RequestMethod.PUT)
+    @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(
             @Valid @RequestBody ResetPasswordFinishRequest request, BindingResult result) {
         if (result.hasErrors()) {

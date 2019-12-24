@@ -17,7 +17,11 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +35,7 @@ public class ApiKeyAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public GetApiKeyResponseObject createApiKey(@Valid @RequestBody CreateApiKeyRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -40,19 +44,19 @@ public class ApiKeyAdminController {
         return new GetApiKeyResponse(apiKey).toResponseObject();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllAPIKeysResponseObject getAllApiKeys() {
         List<ApiKeyDTO> apiKeys = this.apiKeyService.getAllApiKeys();
         return new GetAllAPIKeysResponse(apiKeys).toResponseObject();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetApiKeyResponseObject getApiKey(@PathVariable("id") String id) {
         ApiKeyDTO apiKey = this.apiKeyService.getApiKeyDetails(id);
         return new GetApiKeyResponse(apiKey).toResponseObject();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") String idString) {
         UUID id = UUID.fromString(idString);
         if (!this.apiKeyService.apiKeyExists(id)) {

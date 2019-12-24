@@ -44,7 +44,11 @@ import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,7 +83,7 @@ public final class ITUserController {
         this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
     @ResponseBody
     @SuppressWarnings("PMD.CyclomaticComplexity")
     // TODO, move checks to service, and return only if checks failed or passed
@@ -122,7 +126,7 @@ public final class ITUserController {
         this.whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }
 
-    @RequestMapping(value = "/me", method = RequestMethod.GET)
+    @GetMapping("/me")
     public GetITUserResponseObject getMe(Principal principal) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
@@ -138,7 +142,7 @@ public final class ITUserController {
         return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
-    @RequestMapping(value = "/minified", method = RequestMethod.GET)
+    @GetMapping("/minified")
     public GetAllITUsersMinifiedResponseObject getAllUserMini() {
         List<GetITUserMinifiedResponse> itUsers = this.itUserService.loadAllUsers()
                 .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
@@ -148,7 +152,7 @@ public final class ITUserController {
     /**
      * First tries to get user using id, if not found gets it using the cid.
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
         //      List<WebsiteDTO> websites =
@@ -163,7 +167,7 @@ public final class ITUserController {
         return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
-    @RequestMapping(value = "/me", method = RequestMethod.PUT)
+    @PutMapping("/me")
     public UserEditedResponse editMe(Principal principal, @RequestBody EditITUserRequest request) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
@@ -177,7 +181,7 @@ public final class ITUserController {
         return new UserEditedResponse();
     }
 
-    @RequestMapping(value = "/me/avatar", method = RequestMethod.PUT)
+    @PutMapping("/me/avatar")
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
@@ -191,7 +195,7 @@ public final class ITUserController {
         return new EditedProfilePictureResponse();
     }
 
-    @RequestMapping(value = "/me/change_password", method = RequestMethod.PUT)
+    @PutMapping("/me/change_password")
     public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
                                                   BindingResult result) {
         if (result.hasErrors()) {
@@ -205,7 +209,7 @@ public final class ITUserController {
         return new PasswordChangedResponse();
     }
 
-    @RequestMapping(value = "/me", method = RequestMethod.DELETE)
+    @DeleteMapping("/me")
     public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
                                         BindingResult result) {
         if (result.hasErrors()) {

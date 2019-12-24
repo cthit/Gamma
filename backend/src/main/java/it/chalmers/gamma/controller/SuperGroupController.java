@@ -19,6 +19,8 @@ import it.chalmers.gamma.service.MembershipService;
 import java.util.List;
 
 import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +42,7 @@ public class SuperGroupController {
         this.membershipService = membershipService;
     }
 
-    @RequestMapping(value = "/{id}/subgroups", method = RequestMethod.GET)
+    @GetMapping("/{id}/subgroups")
     public GetAllFKITGroupsMinifiedResponseObject getAllSubGroups(@PathVariable("id") String id) {
         FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
         List<FKITGroupToSuperGroupDTO> groupRelationships =
@@ -50,13 +52,13 @@ public class SuperGroupController {
         return new GetAllFKITGroupsMinifiedResponse(responses).toResponseObject();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public GetAllSuperGroupsResponseObject getAllSuperGroups() {
         return new GetAllSuperGroupsResponse(this.fkitSuperGroupService.getAllGroups()
                 .stream().map(GetSuperGroupResponse::new).collect(Collectors.toList())).toResponseObject();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
     public GetSuperGroupResponse getSuperGroup(@PathVariable("id") String id) {
         if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
@@ -64,7 +66,7 @@ public class SuperGroupController {
         return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroupDTO(id));
     }
 
-    @RequestMapping(value = "/{id}/active", method = RequestMethod.GET)
+    @GetMapping("/{id}/active")
     public GetActiveFKITGroupResponseObject getActiveGroup(@PathVariable("id") String id) {
         FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
         List<GetFKITGroupResponse> groups = this.fkitGroupToSuperGroupService.getActiveGroups(superGroup)
