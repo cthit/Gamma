@@ -17,7 +17,7 @@ import javax.persistence.Transient;
 import org.springframework.beans.factory.annotation.Value;
 
 @Entity
-@Table(name = "activationcode")
+@Table(name = "activation_code")
 public class ActivationCode {
 
     @Id
