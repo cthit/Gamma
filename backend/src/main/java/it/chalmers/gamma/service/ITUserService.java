@@ -104,7 +104,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                         String email, String phone, Language language) throws UsernameNotFoundException {
+                         String email, String phone, Language language, int acceptanceYear) throws UsernameNotFoundException {
         ITUser itUser = this.itUserRepository.findById(user)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
 
@@ -114,6 +114,8 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(email == null ? itUser.getEmail() : email);
         itUser.setPhone(phone == null ? itUser.getPhone() : phone);
         itUser.setLanguage(language == null ? itUser.getLanguage() : language);
+        System.out.println(acceptanceYear);
+        itUser.setAcceptanceYear(Year.of(acceptanceYear));
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
     }

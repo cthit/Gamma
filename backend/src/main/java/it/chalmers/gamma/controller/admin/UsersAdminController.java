@@ -93,7 +93,9 @@ public final class UsersAdminController {
                 request.getLastName(),
                 request.getEmail(),
                 request.getPhone(),
-                request.getLanguage());
+                request.getLanguage(),
+                request.getAcceptanceYear()
+        );
         // Below handles adding websites.
         ITUserDTO user = this.itUserService.getITUser(id);
         List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();

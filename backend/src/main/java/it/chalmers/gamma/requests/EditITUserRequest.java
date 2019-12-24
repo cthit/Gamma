@@ -11,6 +11,7 @@ public class EditITUserRequest {
     private String email;
     private String phone;
     private Language language;
+    private int acceptanceYear;
     private List<CreateGroupRequest.WebsiteInfo> websites;
 
     public void setNick(String nick) {
@@ -43,6 +44,14 @@ public class EditITUserRequest {
 
     public void setWebsites(List<CreateGroupRequest.WebsiteInfo> websites) {
         this.websites = websites;
+    }
+
+    public void setAcceptanceYear(int acceptanceYear) {
+        this.acceptanceYear = acceptanceYear;
+    }
+
+    public int getAcceptanceYear() {
+        return acceptanceYear;
     }
 
     public String getNick() {
