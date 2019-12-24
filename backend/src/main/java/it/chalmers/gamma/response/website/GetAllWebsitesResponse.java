@@ -1,5 +1,7 @@
 package it.chalmers.gamma.response.website;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ public class GetAllWebsitesResponse {
         this.websites = websites;
     }
 
+    @JsonValue
     public List<GetWebsiteResponse> getWebsites() {
         return this.websites;
     }
