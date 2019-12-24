@@ -55,7 +55,7 @@ public class ITUser {
     @Column(name = "phone", length = 15)
     private String phone;
 
-    @Column(name = "language", length = 15)
+    @Column(name = "language", length = 15, nullable = false)
     @Enumerated(EnumType.STRING)
     private Language language;
 

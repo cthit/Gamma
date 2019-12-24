@@ -42,6 +42,12 @@ public class FKITGroupToSuperGroupService {
                 .stream().map(FKITGroupToSuperGroup::toDTO).collect(Collectors.toList());
     }
 
+    public List<FKITGroupToSuperGroupDTO> getRelationships(FKITGroupDTO groupDTO) {
+        FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
+        return this.repository.findAllFKITGroupToSuperGroupsById_Group(group)
+                .stream().map(FKITGroupToSuperGroup::toDTO).collect(Collectors.toList());
+    }
+
     public List<FKITSuperGroupDTO> getSuperGroups(FKITGroupDTO groupDTO) {
         FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
         List<FKITGroupToSuperGroup> fkitGroupToSuperGroups =

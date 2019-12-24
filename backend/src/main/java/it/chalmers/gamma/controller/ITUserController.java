@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
@@ -25,6 +26,7 @@ import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
 import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -35,6 +37,7 @@ import it.chalmers.gamma.util.InputValidationUtils;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -60,17 +63,20 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
+    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService) {
+                            MembershipService membershipService,
+                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
+        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -126,7 +132,10 @@ public final class ITUserController {
         //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        return new GetITUserResponse(user, groups, null).toResponseObject();
+        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
+                this.fkitGroupToSuperGroupService::getRelationships)
+                .flatMap(Collection::stream).collect(Collectors.toList());
+        return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
     @RequestMapping(value = "/minified", method = RequestMethod.GET)
@@ -148,7 +157,10 @@ public final class ITUserController {
         //      );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        return new GetITUserResponse(user, groups, null).toResponseObject();
+        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
+                this.fkitGroupToSuperGroupService::getRelationships)
+                .flatMap(Collection::stream).collect(Collectors.toList());
+        return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
     @RequestMapping(value = "/me", method = RequestMethod.PUT)

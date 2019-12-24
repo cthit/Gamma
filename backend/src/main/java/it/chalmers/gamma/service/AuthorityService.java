@@ -88,7 +88,11 @@ public class AuthorityService {
     public AuthorityDTO getAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         Post post = this.postService.getPost(postDTO);
-        return this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post).toDTO();
+        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post);
+        if (authority != null) {
+            return authority.toDTO();
+        }
+        return null;
     }
 
     public void removeAuthority(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
