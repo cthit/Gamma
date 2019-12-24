@@ -6,7 +6,6 @@ import {
     DigitHeader,
     DigitIfElseRendering,
     DigitLayout,
-    DigitNavLink,
     DigitRedirect,
     DigitText,
     DigitToast,

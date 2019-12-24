@@ -30,7 +30,7 @@ const Members = ({ history }) => {
 
     useEffect(() => {
         dispatch(gammaLoadingFinished());
-    }, []);
+    }, [dispatch]);
 
     const admin = useIsAdmin();
 
@@ -48,7 +48,7 @@ const Members = ({ history }) => {
                 });
             });
         }
-    }, [admin]);
+    }, [admin, groupId]);
 
     if (!admin) {
         return <InsufficientAccess />;

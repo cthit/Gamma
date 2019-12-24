@@ -14,7 +14,6 @@ import translations from "./Websites.translations";
 import * as yup from "yup";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
-import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const Websites = () => {
     const [text] = useDigitTranslations(translations);
@@ -22,7 +21,7 @@ const Websites = () => {
 
     useEffect(() => {
         dispatch(gammaLoadingFinished());
-    }, []);
+    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {

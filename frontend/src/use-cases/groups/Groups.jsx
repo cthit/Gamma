@@ -37,9 +37,6 @@ const DESCRIPTION_EN = "descriptionEn";
 const FUNCTION_SV = "functionSv";
 const FUNCTION_EN = "functionEn";
 
-{
-}
-
 function generateInitialValues() {
     const output = {};
 
@@ -204,7 +201,7 @@ const Groups = ({ history }) => {
 
     useEffect(() => {
         dispatch(gammaLoadingFinished());
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         getSuperGroups().then(response => {

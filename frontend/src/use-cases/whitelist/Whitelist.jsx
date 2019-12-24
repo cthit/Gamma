@@ -17,7 +17,6 @@ import { useDispatch } from "react-redux";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
-import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
@@ -25,7 +24,7 @@ const Whitelist = () => {
 
     useEffect(() => {
         dispatch(gammaLoadingFinished());
-    }, []);
+    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {

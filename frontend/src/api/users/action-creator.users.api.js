@@ -2,28 +2,13 @@ import {
     USER_GET_FAILED,
     USER_GET_LOADING,
     USER_GET_SUCCESSFULLY,
-    USERS_ADD_FAILED,
-    USERS_ADD_LOADING,
-    USERS_ADD_SUCCESSFULLY,
-    USERS_CHANGE_FAILED,
-    USERS_CHANGE_SUCCESSFULLY,
-    USERS_DELETE_FAILED,
-    USERS_DELETE_SUCCESSFULLY,
-    USERS_LOAD_FAILED,
-    USERS_LOAD_MINIFIED_FAILED,
-    USERS_LOAD_MINIFIED_LOADING,
-    USERS_LOAD_MINIFIED_SUCCESSFULLY,
-    USERS_LOAD_SUCCESSFULLY,
     USER_CHANGE_PASSWORD_SUCCESSFULLY,
     USER_CHANGE_PASSWORD_FAILED
 } from "./actions.users.api";
 
-import { deleteUser } from "./delete.users.api";
-import { editUser, editPassword } from "./put.users.api";
-import { getUser, getUsers, getUsersMinified } from "./get.users.api";
+import { editPassword } from "./put.users.api";
+import { getUser } from "./get.users.api";
 import { requestPromise } from "../utils/requestPromise";
-import { failed, loading, successfully } from "../utils/simpleActionCreators";
-import { addUser } from "./post.users.api";
 
 export function createGetUserAction(id) {
     return requestPromise(

@@ -19,7 +19,7 @@ const InsufficientAccess = () => {
         if (userLoaded) {
             dispatch(gammaLoadingFinished());
         }
-    }, [userLoaded]);
+    }, [userLoaded, dispatch]);
 
     if (!userLoaded) {
         return null;

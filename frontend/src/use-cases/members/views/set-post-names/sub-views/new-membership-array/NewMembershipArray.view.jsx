@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CreateMembership from "../create-membership";
 
 const NewPostsArray = ({ groupId, posts, form, replace }) => {

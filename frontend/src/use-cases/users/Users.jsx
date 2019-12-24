@@ -18,7 +18,7 @@ import {
     USER_AGREEMENT,
     WEBSITES
 } from "../../api/users/props.users.api";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import { editUser } from "../../api/users/put.users.api";
@@ -40,10 +40,10 @@ const Users = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         getWebsites().then(response => {
-            setWebsites(response.data.websites);
+            setWebsites(response.data);
             dispatch(gammaLoadingFinished());
         });
-    }, []);
+    }, [dispatch]);
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];

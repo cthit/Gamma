@@ -5,7 +5,6 @@ import {
 import axios from "axios";
 import token from "../../../common/utils/retrievers/token.retrieve";
 import {
-    USER_LOGOUT_SUCCESSFULLY,
     USER_NOT_LOGGED_IN,
     USER_UPDATED_FAILED,
     USER_UPDATED_SUCCESSFULLY

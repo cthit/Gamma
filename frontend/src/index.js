@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 
 import App from "./app";
 
-import registerServiceWorker from "./registerServiceWorker";
 import ProvidersForApp from "./app/ProvidersForApp";
 
 const Index = () => (

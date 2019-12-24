@@ -17,7 +17,7 @@ const ActivationCodes = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(gammaLoadingFinished());
-    }, []);
+    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {

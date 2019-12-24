@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    EMAIL,
     FIRST_NAME,
-    LANGUAGE,
     LAST_NAME,
     NICK,
-    PASSWORD,
-    WEBSITES
+    PASSWORD
 } from "../../api/users/props.users.api";
 import {
     useDigitTranslations,
     DigitCRUD,
-    DigitTextField,
-    DigitSelect
+    DigitTextField
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
@@ -47,7 +41,7 @@ const Me = () => {
             setWebsites(response.data);
             dispatch(gammaLoadingFinished());
         });
-    }, []);
+    }, [dispatch]);
 
     if (!me.loaded || websites == null) {
         return null;

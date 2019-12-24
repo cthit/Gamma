@@ -61,9 +61,10 @@ function generateEditComponentData(text) {
 const Posts = () => {
     const [text] = useDigitTranslations(translations);
     const dispatch = useDispatch();
+
     useEffect(() => {
         dispatch(gammaLoadingFinished());
-    }, []);
+    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {

@@ -4,7 +4,7 @@ import {
     DigitLayout,
     DigitToastActions
 } from "@cthit/react-digit-components";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
 import {
     CID,
@@ -40,18 +40,19 @@ const Gdpr = ({
     const dispatch = useDispatch();
     const [lastSelected, setLastSelected] = useState([]);
     const admin = useIsAdmin();
+    const gammaLoadingFinishedCallback = useCallback(gammaLoadingFinished, []);
+    const getUsersWithGDPRCallback = useCallback(getUsersWithGDPR, []);
 
     useEffect(() => {
         if (admin) {
-            getUsersWithGDPR().then(response => {
-                console.log(response);
+            getUsersWithGDPRCallback().then(response => {
                 setLastSelected(
                     response.data.filter(user => user.gdpr).map(user => user.id)
                 );
-                gammaLoadingFinished();
+                gammaLoadingFinishedCallback();
             });
         }
-    }, [admin]);
+    }, [admin, gammaLoadingFinishedCallback, getUsersWithGDPRCallback]);
 
     if (!admin) {
         return <InsufficientAccess />;
