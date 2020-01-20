@@ -115,7 +115,6 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(email == null ? itUser.getEmail() : email);
         itUser.setPhone(phone == null ? itUser.getPhone() : phone);
         itUser.setLanguage(language == null ? itUser.getLanguage() : language);
-        System.out.println(acceptanceYear);
         itUser.setAcceptanceYear(Year.of(acceptanceYear));
         itUser.setLastModifiedAt(Instant.now());
         this.itUserRepository.save(itUser);
