@@ -104,7 +104,8 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                         String email, String phone, Language language, int acceptanceYear) throws UsernameNotFoundException {
+                         String email, String phone, Language language, int acceptanceYear)
+            throws UsernameNotFoundException {
         ITUser itUser = this.itUserRepository.findById(user)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
 

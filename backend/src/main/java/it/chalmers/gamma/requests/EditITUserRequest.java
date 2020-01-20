@@ -51,7 +51,7 @@ public class EditITUserRequest {
     }
 
     public int getAcceptanceYear() {
-        return acceptanceYear;
+        return this.acceptanceYear;
     }
 
     public String getNick() {
