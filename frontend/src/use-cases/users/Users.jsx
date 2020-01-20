@@ -107,6 +107,14 @@ const Users = () => {
                                 true,
                                 true
                             )}
+                            updateFormValidationSchema={() =>
+                                generateUserValidationSchema(
+                                    text,
+                                    true,
+                                    true,
+                                    false
+                                )
+                            }
                             formComponentData={generateUserEditComponentData(
                                 text,
                                 websites

@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"})
@@ -93,7 +92,9 @@ public final class UsersAdminController {
                 request.getLastName(),
                 request.getEmail(),
                 request.getPhone(),
-                request.getLanguage());
+                request.getLanguage(),
+                request.getAcceptanceYear()
+        );
         // Below handles adding websites.
         ITUserDTO user = this.itUserService.getITUser(id);
         List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
