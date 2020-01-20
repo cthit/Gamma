@@ -171,7 +171,7 @@ public final class ITUserController {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
-                request.getEmail(), request.getPhone(), request.getLanguage());
+                request.getEmail(), request.getPhone(), request.getLanguage(), request.getAcceptanceYear());
         //  List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
         //  List<WebsiteInterfaceDTO> userWebsite = new ArrayList<>(
         //          this.userWebsiteService.getWebsites(user)
