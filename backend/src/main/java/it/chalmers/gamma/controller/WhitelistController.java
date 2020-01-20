@@ -14,6 +14,8 @@ import it.chalmers.gamma.util.TokenUtils;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
@@ -29,9 +31,9 @@ public final class WhitelistController {
     private final WhitelistService whitelistService;
     private final ActivationCodeService activationCodeService;
     private final MailSenderService mailSenderService;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
     @Value("${mail.receiver.standard-postfix}")
-    private static final String MAIL_POSTFIX = "@student.chalmers.se";
+    private static final String MAIL_POSTFIX = "student.chalmers.se";
 
     public WhitelistController(
             WhitelistService whitelistService,
@@ -53,6 +55,9 @@ public final class WhitelistController {
             String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
             ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
+        } else {
+            String nonWhitelistWarning = "Non Whitelisted User: %s Tried to Create Account";
+            LOGGER.warn(String.format(nonWhitelistWarning, cid.getCid()));
         }
         return new ActivationCodeAddedResonse(); // For security reasons
     }
