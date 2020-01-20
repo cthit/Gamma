@@ -59,8 +59,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     Authentication auth = getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-            }
-            catch (SignatureException e) {
+            } catch (SignatureException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
