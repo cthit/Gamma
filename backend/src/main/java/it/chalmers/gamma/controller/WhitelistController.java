@@ -33,7 +33,7 @@ public final class WhitelistController {
     private final MailSenderService mailSenderService;
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
     @Value("${mail.receiver.standard-postfix}")
-    private static final String MAIL_POSTFIX = "@student.chalmers.se";
+    private static final String MAIL_POSTFIX = "student.chalmers.se";
 
     public WhitelistController(
             WhitelistService whitelistService,
