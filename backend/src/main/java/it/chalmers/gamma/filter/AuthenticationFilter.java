@@ -49,14 +49,19 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             FilterChain chain) throws ServletException, IOException {
         String encodedToken = resolveToken(request);
         if (encodedToken != null) {
-            Jws<Claims> claim = decodeToken(encodedToken);
-            String token = null;
-            if (claim != null) {
-                token = (String) claim.getBody().get("user_name");
-            }
-            if (token != null) {
-                Authentication auth = getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                Jws<Claims> claim = decodeToken(encodedToken);
+                String token = null;
+                if (claim != null) {
+                    token = (String) claim.getBody().get("user_name");
+                }
+                if (token != null) {
+                    Authentication auth = getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (SignatureException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
         chain.doFilter(request, response);
@@ -86,7 +91,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token);
         } catch (MalformedJwtException | SignatureException e) {
             LOGGER.warn(e.getMessage());
-            return null;
+            throw new SignatureException(e.getMessage());
         }
     }
 
