@@ -55,8 +55,7 @@ public final class WhitelistController {
             String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
             ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
             sendEmail(activationCode);
-        }
-        else {
+        } else {
             String nonWhitelistWarning = "Non Whitelisted User: %s Tried to Create Account";
             LOGGER.warn(String.format(nonWhitelistWarning, cid.getCid()));
         }
