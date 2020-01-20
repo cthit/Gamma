@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -56,6 +57,7 @@ public class ActivationCodeService {
     }
 
     // TODO Delete entry after 1 hour or once code has been used. This does not work.
+    @Transactional
     public void deleteCode(String cid) {
         this.activationCodeRepository.deleteActivationCodeByCid_Cid(cid);
     }
