@@ -124,7 +124,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     )
             );
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when adding AuthenticationFilter");
+            LOGGER.error("Something went wrong when adding JwtAuthenticationFilter");
             LOGGER.error(e.getMessage());
         }
     }
