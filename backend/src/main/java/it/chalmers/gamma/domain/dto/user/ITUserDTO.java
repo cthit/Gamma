@@ -1,7 +1,6 @@
 package it.chalmers.gamma.domain.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import it.chalmers.gamma.domain.Language;
 import java.time.Year;
 import java.util.List;
