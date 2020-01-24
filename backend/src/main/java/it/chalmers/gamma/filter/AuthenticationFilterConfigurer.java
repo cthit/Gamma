@@ -30,7 +30,7 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
 
     @Override
     public void configure(HttpSecurity builder) {
-        AuthenticationFilter customFilter = new AuthenticationFilter(
+        JwtAuthenticationFilter customFilter = new JwtAuthenticationFilter(
                 this.itUserService,
                 this.secretKey,
                 this.issuer

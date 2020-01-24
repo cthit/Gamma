@@ -50,6 +50,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
+    @Value("${security.jwt.token.audience}")
+    private String audience;
+
     public OAuth2Config(ITUserService userDetailsService, AuthenticationManager authenticationManager,
                         ITClientService clientDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -78,6 +81,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         return (accessToken, authentication) -> {
             Map<String, Object> additionalInfo = new HashMap<>();
             additionalInfo.put("iss", this.issuer);
+            additionalInfo.put("aud", this.audience);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             return accessToken;
         };
