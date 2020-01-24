@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @SuppressWarnings("PMD.ExcessiveParameterList")
 public class ITUserDTO implements UserDetails {
     private final UUID id;
