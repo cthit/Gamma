@@ -9,7 +9,10 @@ import {
 import {
     useDigitTranslations,
     DigitCRUD,
-    DigitTextField
+    DigitTextField,
+    DigitButton,
+    DigitLayout,
+    DigitDesign
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
@@ -29,6 +32,8 @@ import {
 } from "../../common/utils/generators/user-form.generator";
 import { deleteMe } from "../../api/me/delete.me.api";
 import * as yup from "yup";
+import { Switch, Route } from "react-router-dom";
+import MeChangePassword from "./screens/me-change-password";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
@@ -51,51 +56,81 @@ const Me = () => {
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
 
     return (
-        <DigitCRUD
-            backFromReadOneLink={"/"}
-            name={"me"}
-            path={"/me"}
-            staticId={null}
-            readOnePath={""}
-            updatePath={"/edit"}
-            readOneRequest={() => dispatch(userUpdateMe())}
-            keysOrder={generateUserKeyOrder()}
-            updateRequest={(id, newData) => editMe(newData)}
-            customDetailsRenders={generateUserCustomDetailsRenders(text)}
-            keysText={generateUserKeysTexts(text)}
-            formValidationSchema={generateUserValidationSchema(text)}
-            formComponentData={generateUserEditComponentData(text, websites)}
-            formInitialValues={generateUserInitialValues()}
-            detailsTitle={data => fullName(data)}
-            updateTitle={data => fullName(data)}
-            deleteRequest={(_, form) =>
-                deleteMe(form).then(() => dispatch(userLogout()))
-            }
-            dialogDeleteTitle={() => text.AreYouSure}
-            dialogDeleteDescription={() => text.AreYouReallySure}
-            dialogDeleteConfirm={() => text.Delete}
-            dialogDeleteCancel={() => text.Cancel}
-            deleteDialogFormKeysOrder={[PASSWORD]}
-            deleteDialogFormValidationSchema={() =>
-                yup.object().shape({
-                    password: yup
-                        .string()
-                        .min(8)
-                        .required(text.YouMustEnterPassword)
-                })
-            }
-            deleteDialogFormInitialValues={{ password: "" }}
-            deleteDialogFormComponentData={{
-                password: {
-                    component: DigitTextField,
-                    componentProps: {
-                        upperLabel: text.Password,
-                        password: true,
-                        outlined: true
-                    }
-                }
-            }}
-        />
+        <Switch>
+            <Route path={"/me/change-password"} component={MeChangePassword} />
+            <Route
+                render={() => (
+                    <DigitCRUD
+                        backFromReadOneLink={"/"}
+                        name={"me"}
+                        path={"/me"}
+                        staticId={null}
+                        readOnePath={""}
+                        updatePath={"/edit"}
+                        readOneRequest={() => dispatch(userUpdateMe())}
+                        keysOrder={generateUserKeyOrder()}
+                        updateRequest={(id, newData) => editMe(newData)}
+                        detailsRenderCardEnd={() => (
+                            <DigitLayout.Center>
+                                <DigitLayout.Padding />
+                                <DigitLayout.Size absWidth={"220px"}>
+                                    <DigitDesign.Link
+                                        to={"/me/change-password"}
+                                    >
+                                        <DigitButton
+                                            raised
+                                            text={text.ChangePassword}
+                                            onClick={() => console.log("Hj")}
+                                        />
+                                    </DigitDesign.Link>
+                                </DigitLayout.Size>
+                            </DigitLayout.Center>
+                        )}
+                        customDetailsRenders={generateUserCustomDetailsRenders(
+                            text
+                        )}
+                        keysText={generateUserKeysTexts(text)}
+                        formValidationSchema={generateUserValidationSchema(
+                            text
+                        )}
+                        formComponentData={generateUserEditComponentData(
+                            text,
+                            websites
+                        )}
+                        formInitialValues={generateUserInitialValues()}
+                        detailsTitle={data => fullName(data)}
+                        updateTitle={data => fullName(data)}
+                        deleteRequest={(_, form) =>
+                            deleteMe(form).then(() => dispatch(userLogout()))
+                        }
+                        dialogDeleteTitle={() => text.AreYouSure}
+                        dialogDeleteDescription={() => text.AreYouReallySure}
+                        dialogDeleteConfirm={() => text.Delete}
+                        dialogDeleteCancel={() => text.Cancel}
+                        deleteDialogFormKeysOrder={[PASSWORD]}
+                        deleteDialogFormValidationSchema={() =>
+                            yup.object().shape({
+                                password: yup
+                                    .string()
+                                    .min(8)
+                                    .required(text.YouMustEnterPassword)
+                            })
+                        }
+                        deleteDialogFormInitialValues={{ password: "" }}
+                        deleteDialogFormComponentData={{
+                            password: {
+                                component: DigitTextField,
+                                componentProps: {
+                                    upperLabel: text.Password,
+                                    password: true,
+                                    outlined: true
+                                }
+                            }
+                        }}
+                    />
+                )}
+            />
+        </Switch>
     );
 };
 
