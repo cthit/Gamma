@@ -3,9 +3,9 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.GDPRStatusEditedResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersResponse.GetAllITUsersResponseObject;
-import it.chalmers.gamma.response.user.GetITUserResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
+import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
@@ -50,9 +49,9 @@ public class GDPRAdminController {
     }
 
     @GetMapping("/minified")
-    public GetAllITUsersResponseObject getAllUserMini() {
-        List<GetITUserResponse> userResponses = this.itUserService.loadAllUsers()
-                .stream().map(GetITUserResponse::new).collect(Collectors.toList());
-        return new GetAllITUsersResponse(userResponses).toResponseObject();
+    public GetAllITUsersMinifiedResponseObject getAllUserMini() {
+        List<GetITUserMinifiedResponse> userResponses = this.itUserService.loadAllUsers()
+                .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
+        return new GetAllITUsersMinifiedResponse(userResponses).toResponseObject();
     }
 }

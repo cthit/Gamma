@@ -27,15 +27,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class AuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final String secretKey;
     private final String issuer;
     private final ITUserService itUserService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public AuthenticationFilter(ITUserService itUserService, String secretKey, String issuer) {
+    public JwtAuthenticationFilter(ITUserService itUserService, String secretKey, String issuer) {
         this.itUserService = itUserService;
         this.secretKey = secretKey;
         this.issuer = issuer;
@@ -49,14 +49,19 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             FilterChain chain) throws ServletException, IOException {
         String encodedToken = resolveToken(request);
         if (encodedToken != null) {
-            Jws<Claims> claim = decodeToken(encodedToken);
-            String token = null;
-            if (claim != null) {
-                token = (String) claim.getBody().get("user_name");
-            }
-            if (token != null) {
-                Authentication auth = getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                Jws<Claims> claim = decodeToken(encodedToken);
+                String token = null;
+                if (claim != null) {
+                    token = (String) claim.getBody().get("user_name");
+                }
+                if (token != null) {
+                    Authentication auth = getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (SignatureException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
         chain.doFilter(request, response);
@@ -86,7 +91,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     .parseClaimsJws(token);
         } catch (MalformedJwtException | SignatureException e) {
             LOGGER.warn(e.getMessage());
-            return null;
+            throw new SignatureException(e.getMessage());
         }
     }
 

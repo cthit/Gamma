@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,6 +34,7 @@ public class WhitelistService {
         return this.whitelistRepository.save(whitelistedCID).toDTO();
     }
 
+    @Transactional
     public void removeWhiteListedCID(String cid) {
         this.whitelistRepository.delete(
                 Objects.requireNonNull(this.whitelistRepository.findByCid(cid).orElse(null)));
