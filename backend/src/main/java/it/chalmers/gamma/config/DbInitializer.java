@@ -1,8 +1,11 @@
 package it.chalmers.gamma.config;
 
+import it.chalmers.gamma.db.entity.Authority;
+import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -77,6 +80,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
+    private final String adminGroupName = "digit";
+    private final String gpdrGroupName = "DPO";
+
     public DbInitializer(ITUserService userservice,
                          FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService,
@@ -103,6 +109,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     public void run(String... args) {
         ensureAdminUser();
         ensureFrontendClientDetails();
+        ensureAdminGroup();
         if (this.isMocking) {
             ensureOauthClient();
         }
@@ -176,6 +183,21 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }
     }
+
+    // TODO This should be done dynamically, and should be removed once that feature is done in the frontend
+    private void ensureAdminGroup() {
+        if (this.fkitSuperGroupService.groupExists(adminGroupName)) {
+            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(adminGroupName);
+            PostDTO postDTO = this.postService.getPostDTO("ordförande");
+            AuthorityDTO authority = this.authorityService.getAuthorityLevel(groupDTO, postDTO);
+            AuthorityLevelDTO adminLevel = this.authorityLevelService.getAuthorityLevelDTO("admin");
+            if(authority == null) {
+                this.postService.getAllPosts().forEach(post ->
+                        this.authorityService.setAuthorityLevel(groupDTO, post, adminLevel));
+            }
+        }
+    }
+
     private void ensureOauthClient() {
         if (!this.itClientService.clientExists(this.oauth2ClientId)) {
             ITClient client = new ITClient();
