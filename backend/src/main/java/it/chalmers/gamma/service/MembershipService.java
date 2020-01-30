@@ -11,6 +11,7 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
+import it.chalmers.gamma.response.membership.MembershipDoesNotExistResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -118,11 +119,12 @@ public class MembershipService {
     /**
      * finds which group the userDTO has a specific postDTO in.
      */
-    public FKITGroupDTO getGroupDTOIdByUserAndPost(ITUserDTO userDTO, PostDTO postDTO) {
+    public FKITGroupDTO getGroupDTOIdByUserAndPost(ITUserDTO userDTO, PostDTO postDTO)
+            throws MembershipDoesNotExistResponse {
         Membership membership = this.membershipRepository
                 .findById_ItUserAndId_Post(
                         this.dtoToEntityService.fromDTO(userDTO),
-                        this.postService.getPost(postDTO));
+                        this.postService.getPost(postDTO)).orElseThrow(MembershipDoesNotExistResponse::new);
         return membership.getId().getFKITGroup().toDTO();
     }
 
@@ -159,11 +161,13 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO) {
+    public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO)
+            throws MembershipDoesNotExistResponse {
         return this.membershipRepository
                 .findById_ItUserAndId_FkitGroup(
                         this.dtoToEntityService.fromDTO(userDTO),
-                        this.fkitGroupService.getGroup(groupDTO)).toDTO();
+                        this.fkitGroupService.getGroup(groupDTO)).orElseThrow(MembershipDoesNotExistResponse::new)
+                .toDTO();
     }
 
     public void removeUserFromGroup(FKITGroupDTO group, ITUserDTO user) {
@@ -211,6 +215,8 @@ public class MembershipService {
     }
 
     private Membership getMembership(MembershipDTO membershipDTO) {
-        return this.membershipRepository.findById(membershipDTO.getFkitGroupDTO().getId()).orElse(null);
+        return this.membershipRepository.findById_ItUserAndId_FkitGroup(
+                this.dtoToEntityService.fromDTO(membershipDTO.getUser()),
+                this.fkitGroupService.getGroup(membershipDTO.getFkitGroupDTO())).orElse(null);
     }
 }

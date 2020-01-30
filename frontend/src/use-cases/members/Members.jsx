@@ -7,7 +7,7 @@ import {
 } from "@cthit/react-digit-components";
 import { Route, Switch } from "react-router";
 import { NAME } from "../../api/groups/props.groups.api";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import translations from "./Members.translations";
 import SetPostNames from "./views/set-post-names";

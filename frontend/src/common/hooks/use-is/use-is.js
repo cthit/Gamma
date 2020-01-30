@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { find } from "lodash";
 
-function useIsAdmin() {
+function useIs(authority) {
     const user = useSelector(state => state.user);
 
-    const adminAuthority = find(user.authorities, { authority: "admin" });
+    const adminAuthority = find(user.authorities, { authority: authority });
 
     return adminAuthority != null;
 }
 
-export default useIsAdmin;
+export default useIs;

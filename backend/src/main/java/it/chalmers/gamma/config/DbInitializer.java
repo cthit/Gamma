@@ -3,6 +3,7 @@ package it.chalmers.gamma.config;
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -77,6 +78,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
+    private static final String ADMIN_GROUP_NAME = "digit";
+    private static final String GPDR_GROUP_NAME = "dpo";
+
     public DbInitializer(ITUserService userservice,
                          FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService,
@@ -103,6 +107,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     public void run(String... args) {
         ensureAdminUser();
         ensureFrontendClientDetails();
+        ensureAdminGroup();
+        ensureGDPRGroup();
         if (this.isMocking) {
             ensureOauthClient();
         }
@@ -176,6 +182,30 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
         }
     }
+
+    // TODO This should be done dynamically, and should be removed once that feature is done in the frontend
+    private void ensureAdminGroup() {
+        if (this.fkitSuperGroupService.groupExists(this.ADMIN_GROUP_NAME)) {
+            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(this.ADMIN_GROUP_NAME);
+            PostDTO postDTO = this.postService.getPostDTO("ordförande");
+            AuthorityDTO authority = this.authorityService.getAuthorityLevel(groupDTO, postDTO);
+            AuthorityLevelDTO adminLevel = this.authorityLevelService.getAuthorityLevelDTO("admin");
+            if (authority == null) {
+                this.postService.getAllPosts().forEach(post ->
+                        this.authorityService.setAuthorityLevel(groupDTO, post, adminLevel));
+            }
+        }
+    }
+
+    private void ensureGDPRGroup() {
+        if (this.fkitSuperGroupService.groupExists(this.GPDR_GROUP_NAME)) {
+            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(this.GPDR_GROUP_NAME);
+            PostDTO postDTO = this.postService.getPostDTO("medlem");
+            AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel("gdpr");
+            this.authorityService.setAuthorityLevel(groupDTO, postDTO, authorityLevel);
+        }
+    }
+
     private void ensureOauthClient() {
         if (!this.itClientService.clientExists(this.oauth2ClientId)) {
             ITClient client = new ITClient();

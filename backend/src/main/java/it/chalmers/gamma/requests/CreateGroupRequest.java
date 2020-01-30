@@ -36,22 +36,6 @@ public class CreateGroupRequest {
 
     private String email;
 
-    public CreateGroupRequest(String name, String prettyName, Text description, Text function,
-                              String avatarURL, List<WebsiteInfo> websites,
-                              Calendar becomesActive, Calendar becomesInactive,
-                              String superGroup, String email) {
-        this.name = name;
-        this.prettyName = prettyName;
-        this.description = description;
-        this.function = function;
-        this.avatarURL = avatarURL;
-        this.websites = websites;
-        this.becomesActive = becomesActive;
-        this.becomesInactive = becomesInactive;
-        this.superGroup = superGroup;
-        this.email = email;
-    }
-
     public List<WebsiteInfo> getWebsites() {
         return this.websites;
     }

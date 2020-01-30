@@ -42,7 +42,8 @@ public class FKITSuperGroupService {
     }
 
     public boolean groupExists(String name) {
-        return this.repository.existsByName(name) || this.repository.existsById(UUID.fromString(name));
+        return this.repository.existsByName(name)
+                || UUIDUtil.validUUID(name) && this.repository.existsById(UUID.fromString(name));
     }
 
     public void removeGroup(UUID id) {
