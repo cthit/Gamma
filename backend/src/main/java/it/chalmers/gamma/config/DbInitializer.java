@@ -1,7 +1,5 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.Authority;
-import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
@@ -80,8 +78,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
-    private final String adminGroupName = "digit";
-    private final String gpdrGroupName = "dpo";
+    private static final String ADMIN_GROUP_NAME = "digit";
+    private static final String GPDR_GROUP_NAME = "dpo";
 
     public DbInitializer(ITUserService userservice,
                          FKITGroupService groupService,
@@ -187,12 +185,12 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     // TODO This should be done dynamically, and should be removed once that feature is done in the frontend
     private void ensureAdminGroup() {
-        if (this.fkitSuperGroupService.groupExists(adminGroupName)) {
-            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(adminGroupName);
+        if (this.fkitSuperGroupService.groupExists(this.ADMIN_GROUP_NAME)) {
+            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(this.ADMIN_GROUP_NAME);
             PostDTO postDTO = this.postService.getPostDTO("ordförande");
             AuthorityDTO authority = this.authorityService.getAuthorityLevel(groupDTO, postDTO);
             AuthorityLevelDTO adminLevel = this.authorityLevelService.getAuthorityLevelDTO("admin");
-            if(authority == null) {
+            if (authority == null) {
                 this.postService.getAllPosts().forEach(post ->
                         this.authorityService.setAuthorityLevel(groupDTO, post, adminLevel));
             }
@@ -200,8 +198,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     }
 
     private void ensureGDPRGroup() {
-        if (this.fkitSuperGroupService.groupExists(gpdrGroupName)) {
-            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(gpdrGroupName);
+        if (this.fkitSuperGroupService.groupExists(this.GPDR_GROUP_NAME)) {
+            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(this.GPDR_GROUP_NAME);
             PostDTO postDTO = this.postService.getPostDTO("medlem");
             AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel("gdpr");
             this.authorityService.setAuthorityLevel(groupDTO, postDTO, authorityLevel);

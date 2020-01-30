@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -127,8 +126,8 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         this.fkitGroupService.editGroup(id, requestToDTO(request));
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
-       /* List<WebsiteUrlDTO> websiteUrlDTOS = request.getWebsites()
+        //FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        /* List<WebsiteUrlDTO> websiteUrlDTOS = request.getWebsites()
                 .stream().map(w -> new WebsiteUrlDTO(
                         w.getUrl(),
                         this.websiteService.getWebsite(w.getWebsite()))).collect(Collectors.toList());

@@ -119,7 +119,8 @@ public class MembershipService {
     /**
      * finds which group the userDTO has a specific postDTO in.
      */
-    public FKITGroupDTO getGroupDTOIdByUserAndPost(ITUserDTO userDTO, PostDTO postDTO) {
+    public FKITGroupDTO getGroupDTOIdByUserAndPost(ITUserDTO userDTO, PostDTO postDTO)
+            throws MembershipDoesNotExistResponse {
         Membership membership = this.membershipRepository
                 .findById_ItUserAndId_Post(
                         this.dtoToEntityService.fromDTO(userDTO),
@@ -160,7 +161,8 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO){
+    public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO)
+            throws MembershipDoesNotExistResponse {
         return this.membershipRepository
                 .findById_ItUserAndId_FkitGroup(
                         this.dtoToEntityService.fromDTO(userDTO),
