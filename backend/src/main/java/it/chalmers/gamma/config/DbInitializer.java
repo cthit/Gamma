@@ -81,7 +81,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private int refreshTokenValidityTime;
 
     private final String adminGroupName = "digit";
-    private final String gpdrGroupName = "DPO";
+    private final String gpdrGroupName = "dpo";
 
     public DbInitializer(ITUserService userservice,
                          FKITGroupService groupService,
@@ -110,6 +110,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
         ensureAdminUser();
         ensureFrontendClientDetails();
         ensureAdminGroup();
+        ensureGDPRGroup();
         if (this.isMocking) {
             ensureOauthClient();
         }
@@ -195,6 +196,15 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                 this.postService.getAllPosts().forEach(post ->
                         this.authorityService.setAuthorityLevel(groupDTO, post, adminLevel));
             }
+        }
+    }
+
+    private void ensureGDPRGroup() {
+        if (this.fkitSuperGroupService.groupExists(gpdrGroupName)) {
+            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(gpdrGroupName);
+            PostDTO postDTO = this.postService.getPostDTO("medlem");
+            AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel("gdpr");
+            this.authorityService.setAuthorityLevel(groupDTO, postDTO, authorityLevel);
         }
     }
 

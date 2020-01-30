@@ -183,6 +183,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             }
             http.authorizeRequests().antMatchers("/admin/**")
                     .hasAuthority("admin");
+            http.authorizeRequests().antMatchers("/admin/gdpr/**")
+                    .hasAuthority("gdpr");
         } catch (Exception e) {
             LOGGER.error("something went wrong when setting admin paths");
             LOGGER.error(e.getMessage());
