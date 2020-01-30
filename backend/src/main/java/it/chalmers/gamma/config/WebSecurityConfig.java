@@ -181,10 +181,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             for (FKITGroupToSuperGroup relationship : relationships) {
                 addPathRole(http, relationship);
             }
-            http.authorizeRequests().antMatchers("/admin/**")
-                    .hasAuthority("admin");
             http.authorizeRequests().antMatchers("/admin/gdpr/**")
-                    .hasAuthority("gdpr");
+                    .hasAnyAuthority("gdpr", "admin").and().authorizeRequests().antMatchers("/admin/**")
+                    .hasAuthority("admin");
         } catch (Exception e) {
             LOGGER.error("something went wrong when setting admin paths");
             LOGGER.error(e.getMessage());
