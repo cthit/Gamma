@@ -128,11 +128,11 @@ public final class GroupAdminController {
         }
         this.fkitGroupService.editGroup(id, requestToDTO(request));
         FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
-        List<WebsiteUrlDTO> websiteUrlDTOS = request.getWebsites()
+       /* List<WebsiteUrlDTO> websiteUrlDTOS = request.getWebsites()
                 .stream().map(w -> new WebsiteUrlDTO(
                         w.getUrl(),
                         this.websiteService.getWebsite(w.getWebsite()))).collect(Collectors.toList());
-        this.groupWebsiteService.addGroupWebsites(group, websiteUrlDTOS);
+        this.groupWebsiteService.addGroupWebsites(group, websiteUrlDTOS);*/
         return new GroupEditedResponse();
     }
 
