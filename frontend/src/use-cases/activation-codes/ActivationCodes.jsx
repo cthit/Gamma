@@ -8,7 +8,7 @@ import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
 import translations from "./ActivationCodes.translations";
 import { useDispatch } from "react-redux";
 import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { NAME } from "../../api/super-groups/props.super-groups.api";
 

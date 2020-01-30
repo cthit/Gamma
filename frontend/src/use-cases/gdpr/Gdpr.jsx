@@ -14,7 +14,8 @@ import {
     NICK
 } from "../../api/users/props.users.api";
 import * as _ from "lodash";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
+import useIsGdpr from "../../common/hooks/use-is/use-is-gdpr";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { useDispatch } from "react-redux";
 
@@ -40,11 +41,13 @@ const Gdpr = ({
     const dispatch = useDispatch();
     const [lastSelected, setLastSelected] = useState([]);
     const admin = useIsAdmin();
+    const gdpr = useIsGdpr();
+    const access = admin || gdpr;
     const gammaLoadingFinishedCallback = useCallback(gammaLoadingFinished, []);
     const getUsersWithGDPRCallback = useCallback(getUsersWithGDPR, []);
 
     useEffect(() => {
-        if (admin) {
+        if (access) {
             getUsersWithGDPRCallback().then(response => {
                 setLastSelected(
                     response.data.filter(user => user.gdpr).map(user => user.id)
@@ -52,9 +55,9 @@ const Gdpr = ({
                 gammaLoadingFinishedCallback();
             });
         }
-    }, [admin, gammaLoadingFinishedCallback, getUsersWithGDPRCallback]);
+    }, [access, gammaLoadingFinishedCallback, getUsersWithGDPRCallback]);
 
-    if (!admin) {
+    if (!access) {
         return <InsufficientAccess />;
     }
 
