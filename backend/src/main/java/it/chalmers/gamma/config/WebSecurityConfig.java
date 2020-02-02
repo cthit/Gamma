@@ -56,7 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
                              FKITGroupToSuperGroupService groupToSuperGroupService,
-                             ApiKeyService apiKeyService, PasswordResetService passwordResetService, PasswordEncoder passwordEncoder) {
+                             ApiKeyService apiKeyService,
+                             PasswordResetService passwordResetService,
+                             PasswordEncoder passwordEncoder) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.groupToSuperGroupService = groupToSuperGroupService;
@@ -126,7 +128,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.issuer,
                             this.apiKeyService,
                             this.passwordResetService,
-                            baseFrontendUrl
+                            this.baseFrontendUrl
                     )
             );
         } catch (Exception e) {

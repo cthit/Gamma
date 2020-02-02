@@ -8,10 +8,8 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.PasswordChangedResponse;
 import it.chalmers.gamma.response.user.PasswordResetResponse;
 import it.chalmers.gamma.service.ITUserService;
-import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.util.TokenUtils;
 
 import javax.validation.Valid;
 

@@ -260,7 +260,7 @@ public class ITUser {
     }
 
     public boolean isActivated() {
-        return activated;
+        return this.activated;
     }
 
     public void setActivated(boolean activated) {

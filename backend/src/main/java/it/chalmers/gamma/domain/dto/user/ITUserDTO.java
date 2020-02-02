@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@SuppressWarnings("PMD.ExcessiveParameterList")
+@SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.TooManyFields"})
 public class ITUserDTO implements UserDetails {
     private final UUID id;
     private final String cid;
@@ -184,7 +184,7 @@ public class ITUserDTO implements UserDetails {
     }
 
     public boolean isActivated() {
-        return activated;
+        return this.activated;
     }
 
     @Override

@@ -4,32 +4,16 @@ import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.collections4.IteratorUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
 
     private final String baseFrontendUrl;
-    private final String usernameParameter = "username";
+    private static final String USERNAME_PARAMETER = "username";
     private final ITUserService itUserService;
     private final PasswordResetService passwordResetService;
 
@@ -44,12 +28,12 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String username = request.getParameter(usernameParameter);
-        if(username != null) {
-            ITUserDTO userDTO = itUserService.getITUser(username);
-            if(!userDTO.isActivated()) {
-                passwordResetService.handlePasswordReset(userDTO);
-                response.sendRedirect(String.format("%s/reset-password/finish", baseFrontendUrl));
+        String username = request.getParameter(USERNAME_PARAMETER);
+        if (username != null) {
+            ITUserDTO userDTO = this.itUserService.getITUser(username);
+            if (!userDTO.isActivated()) {
+                this.passwordResetService.handlePasswordReset(userDTO);
+                response.sendRedirect(String.format("%s/reset-password/finish", this.baseFrontendUrl));
                 return;
             }
         }
