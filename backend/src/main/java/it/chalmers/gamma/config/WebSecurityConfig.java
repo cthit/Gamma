@@ -7,6 +7,7 @@ import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
+import it.chalmers.gamma.service.PasswordResetService;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -46,17 +47,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthorityService authorityService;
     private final FKITGroupToSuperGroupService groupToSuperGroupService;
     private final ApiKeyService apiKeyService;
+    private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
+    @Value("${application.frontend-client-details.successful-login-uri}")
+    private String baseFrontendUrl;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
                              FKITGroupToSuperGroupService groupToSuperGroupService,
-                             ApiKeyService apiKeyService, PasswordEncoder passwordEncoder) {
+                             ApiKeyService apiKeyService, PasswordResetService passwordResetService, PasswordEncoder passwordEncoder) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
+        this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -119,8 +124,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.itUserService,
                             this.secretKey,
                             this.issuer,
-                            this.apiKeyService
-
+                            this.apiKeyService,
+                            this.passwordResetService,
+                            baseFrontendUrl
                     )
             );
         } catch (Exception e) {
