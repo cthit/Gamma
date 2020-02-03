@@ -74,6 +74,9 @@ public class ITUser {
     @ColumnDefault("false")
     private boolean accountLocked;
 
+    @Column(name = "activated", nullable = false)
+    private boolean activated;
+
     @Column(name = "acceptance_year", nullable = false)
     private int acceptanceYear;
 
@@ -89,23 +92,25 @@ public class ITUser {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.lastModifiedAt = Instant.now();
+        this.activated = true;
     }
 
     public ITUserDTO toDTO() {
         return new ITUserDTO(
-            this.id,
-            this.cid,
-            this.nick,
-            this.firstName,
-            this.lastName,
-            this.email,
-            this.phone,
-            this.language,
-            this.avatarUrl,
-            this.gdpr,
-            this.userAgreement,
-            this.accountLocked,
-            Year.of(this.acceptanceYear)
+                this.id,
+                this.cid,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.phone,
+                this.language,
+                this.avatarUrl,
+                this.gdpr,
+                this.userAgreement,
+                this.accountLocked,
+                Year.of(this.acceptanceYear),
+                this.activated
         );
     }
 
@@ -125,7 +130,8 @@ public class ITUser {
                 this.accountLocked,
                 Year.of(this.acceptanceYear),
                 authorities,
-                this.password
+                this.password,
+                this.activated
         );
     }
 
@@ -253,6 +259,14 @@ public class ITUser {
         this.accountLocked = accountLocked;
     }
 
+    public boolean isActivated() {
+        return this.activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -263,61 +277,62 @@ public class ITUser {
         }
         ITUser itUser = (ITUser) o;
         return this.gdpr == itUser.gdpr
-            && this.userAgreement == itUser.userAgreement
-            && Objects.equals(this.id, itUser.id)
-            && Objects.equals(this.cid, itUser.cid)
-            && Objects.equals(this.nick, itUser.nick)
-            && Objects.equals(this.password, itUser.password)
-            && Objects.equals(this.firstName, itUser.firstName)
-            && Objects.equals(this.lastName, itUser.lastName)
-            && Objects.equals(this.email, itUser.email)
-            && Objects.equals(this.phone, itUser.phone)
-            && Objects.equals(this.language, itUser.language)
-            && Objects.equals(this.avatarUrl, itUser.avatarUrl)
-            && Objects.equals(this.acceptanceYear, itUser.acceptanceYear)
-            && Objects.equals(this.createdAt, itUser.createdAt)
-            && Objects.equals(this.lastModifiedAt, itUser.lastModifiedAt);
+                && this.userAgreement == itUser.userAgreement
+                && Objects.equals(this.id, itUser.id)
+                && Objects.equals(this.cid, itUser.cid)
+                && Objects.equals(this.nick, itUser.nick)
+                && Objects.equals(this.password, itUser.password)
+                && Objects.equals(this.firstName, itUser.firstName)
+                && Objects.equals(this.lastName, itUser.lastName)
+                && Objects.equals(this.email, itUser.email)
+                && Objects.equals(this.phone, itUser.phone)
+                && Objects.equals(this.language, itUser.language)
+                && Objects.equals(this.avatarUrl, itUser.avatarUrl)
+                && Objects.equals(this.acceptanceYear, itUser.acceptanceYear)
+                && Objects.equals(this.createdAt, itUser.createdAt)
+                && Objects.equals(this.lastModifiedAt, itUser.lastModifiedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-            this.id,
-            this.cid,
-            this.password,
-            this.nick,
-            this.firstName,
-            this.lastName,
-            this.email,
-            this.phone,
-            this.language,
-            this.avatarUrl,
-            this.gdpr,
-            this.userAgreement,
-            this.acceptanceYear,
-            this.createdAt,
-            this.lastModifiedAt);
+                this.id,
+                this.cid,
+                this.password,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.phone,
+                this.language,
+                this.avatarUrl,
+                this.gdpr,
+                this.userAgreement,
+                this.acceptanceYear,
+                this.createdAt,
+                this.lastModifiedAt);
     }
 
     @Override
     public String toString() {
         return "ITUser{"
-            + "id=" + id
-            + ", cid='" + cid + '\''
-            + ", password='" + "<redacted>" + '\''
-            + ", nick='" + nick + '\''
-            + ", firstName='" + firstName + '\''
-            + ", lastName='" + lastName + '\''
-            + ", email='" + email + '\''
-            + ", phone='" + phone + '\''
-            + ", language=" + language
-            + ", avatarUrl='" + avatarUrl + '\''
-            + ", gdpr=" + gdpr
-            + ", userAgreement=" + userAgreement
-            + ", accountLocked=" + accountLocked
-            + ", acceptanceYear=" + acceptanceYear
-            + ", createdAt=" + createdAt
-            + ", lastModifiedAt=" + lastModifiedAt
-            + '}';
+                + "id=" + id
+                + ", cid='" + cid + '\''
+                + ", password='" + "<redacted>" + '\''
+                + ", nick='" + nick + '\''
+                + ", firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + ", email='" + email + '\''
+                + ", phone='" + phone + '\''
+                + ", language=" + language
+                + ", avatarUrl='" + avatarUrl + '\''
+                + ", gdpr=" + gdpr
+                + ", userAgreement=" + userAgreement
+                + ", accountLocked=" + accountLocked
+                + ", acceptanceYear=" + acceptanceYear
+                + ", createdAt=" + createdAt
+                + ", lastModifiedAt=" + lastModifiedAt
+                + '}';
     }
+
 }

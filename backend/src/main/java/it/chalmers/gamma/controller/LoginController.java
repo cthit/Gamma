@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
-    @Value("${application.frontend-client-details.successful-login-uri:}")
+    @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
 
     @GetMapping("/login")
