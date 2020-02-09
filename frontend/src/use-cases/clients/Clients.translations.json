@@ -13,7 +13,7 @@
     "DescriptionEn": ["Description English", "Beskrivning Engelska"],
     "CreateClient": ["Create new client", "Skapa ny klient"],
     "SubmitClient": ["Create client", "Skapa klient"],
-    "YourClientSecret": ["Your client secret", "Din klient secret"],
+    "YourClientSecret": ["Your client secret \n (Save this)", "Din klient secret \n (Spara detta)"],
     "CloseDialog": ["Close", "Stäng"],
     "ClientCreatingSuccessful": [
         "was successfully created",

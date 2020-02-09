@@ -79,6 +79,7 @@ const Clients = () => {
             keysOrder={[
                 "id",
                 "name",
+                "clientId",
                 "webServerRedirectUri",
                 "descriptionSv",
                 "descriptionEn"
@@ -86,6 +87,7 @@ const Clients = () => {
             keysText={{
                 id: text.Id,
                 name: text.Name,
+                clientId: text.ClientId,
                 webServerRedirectUri: text.RedirectURI,
                 descriptionSv: text.DescriptionSv,
                 descriptionEn: text.DescriptionEn
