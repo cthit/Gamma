@@ -35,6 +35,7 @@ import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
 import Drawer from "./elements/drawer";
 import Members from "../use-cases/members";
+import { getBackendUrl, getFrontendUrl } from "../common/utils/configs/envVariablesLoader";
 export class App extends Component {
     state = {
         lastPath: "/",
@@ -64,14 +65,14 @@ export class App extends Component {
 
     render() {
         const baseUrl =
-            (process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api") +
+            getBackendUrl() +
             "/oauth/authorize";
         const responseType = "response_type=code";
         const clientId =
             "client_id=7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc";
         const redirectUri =
             "redirect_uri=" +
-            (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") +
+            getFrontendUrl() +
             "/login";
 
         const loginRedirect =

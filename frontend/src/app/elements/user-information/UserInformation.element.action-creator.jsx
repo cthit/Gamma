@@ -10,6 +10,7 @@ import {
     USER_UPDATED_SUCCESSFULLY
 } from "./UserInformation.element.actions";
 import { ENGLISH_LANGUAGE } from "../../../api/utils/commonProps";
+import { getBackendUrl } from "../../../common/utils/configs/envVariablesLoader";
 
 export function userUpdateMe() {
     if (token() == null) {
@@ -22,8 +23,7 @@ export function userUpdateMe() {
             return new Promise((resolve, reject) => {
                 axios
                     .get(
-                        (process.env.REACT_APP_BACKEND_URL ||
-                            "http://localhost:8081/api") + "/users/me",
+                        getBackendUrl() + "/users/me",
                         {
                             headers: {
                                 Authorization: "Bearer " + token()
@@ -70,8 +70,7 @@ export function userLogout() {
         delete sessionStorage.token;
         dispatch(
             DigitRedirectActions.digitRedirectTo(
-                (process.env.REACT_APP_BACKEND_URL ||
-                    "http://localhost:8081/api") + "/logout",
+                getBackendUrl() + "/logout",
                 true
             )
         );
