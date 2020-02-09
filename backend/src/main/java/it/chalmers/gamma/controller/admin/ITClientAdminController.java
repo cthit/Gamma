@@ -2,6 +2,8 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import it.chalmers.gamma.requests.AddITClientRequest;
+import it.chalmers.gamma.response.client.ClientAddedResponse;
+import it.chalmers.gamma.response.client.ClientAddedResponse.ClientAddedResponseObject;
 import it.chalmers.gamma.response.client.ClientEditedResponse;
 import it.chalmers.gamma.response.client.GetAllClientsResponse;
 import it.chalmers.gamma.response.client.GetAllClientsResponse.GetAllClientResponseObject;
@@ -33,8 +35,13 @@ public class ITClientAdminController {
     }
 
     @PostMapping()
-    public GetITClientResponseObject addITClient(@RequestBody AddITClientRequest request) {
-        return new GetITClientResponse(this.itClientService.createITClient(responseToDTO(request))).toResponseObject();
+    public ClientAddedResponseObject addITClient(@RequestBody AddITClientRequest request) {
+        return new ClientAddedResponse(this.itClientService.createITClient(
+                request.getName(),
+                request.getDescription(),
+                request.getWebServerRedirectUri()
+        )
+                .getClientSecret()).toResponseObject();
     }
 
     @GetMapping()
