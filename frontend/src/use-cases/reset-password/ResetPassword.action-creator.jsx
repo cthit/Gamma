@@ -6,18 +6,15 @@ import {
     RESET_PASSWORD_INITALIZE_SUCCESSFULLY,
     RESET_PASSWORD_INITALIZE_FAILED
 } from "./ResetPassword.actions";
+import { getBackendUrl } from "../../common/utils/configs/envVariablesLoader";
 
 export function resetPasswordInitalize(cid) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             axios
-                .post(
-                    (process.env.REACT_APP_BACKEND_URL ||
-                        "http://localhost:8081/api") + "/users/reset_password",
-                    {
-                        cid: cid
-                    }
-                )
+                .post(getBackendUrl() + "/users/reset_password", {
+                    cid: cid
+                })
                 .then(response => {
                     dispatch(resetPasswordInitalizeSuccessfully());
                     resolve(response);
@@ -34,12 +31,7 @@ export function resetPasswordFinish(data) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             axios
-                .put(
-                    (process.env.REACT_APP_BACKEND_URL ||
-                        "http://localhost:8081/api") +
-                        "/users/reset_password/finish",
-                    data
-                )
+                .put(getBackendUrl() + "/users/reset_password/finish", data)
                 .then(response => {
                     dispatch(resetPasswordFinishSuccessfully());
                     resolve(response);

@@ -1,6 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import axios from "axios";
+import { getBackendUrl, getFrontendUrl } from "../../../common/utils/configs/envVariablesLoader";
 
 class GammaIntegration extends React.Component {
     constructor(props) {
@@ -16,15 +17,12 @@ class GammaIntegration extends React.Component {
             params.append("client_id", id);
             params.append(
                 "redirect_uri",
-                (process.env.REACT_APP_FRONTEND_URL ||
-                    "http://localhost:3000") + "/login"
+                getFrontendUrl() + "/login"
             );
             params.append("code", code);
             props.startedFetchingAccessToken();
 
-            const path =
-                process.env.REACT_APP_BACKEND_URL ||
-                "http://localhost:8081/api";
+            const path = getBackendUrl()
 
             const c = Buffer.from(id + ":" + secret).toString("base64");
 

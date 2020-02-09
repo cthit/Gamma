@@ -1,7 +1,8 @@
 import axios from "axios";
 import _ from "lodash";
+import { getBackendUrl } from "../../common/utils/configs/envVariablesLoader";
 
-const path = process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api";
+const path = getBackendUrl();
 
 export function getRequest(endpoint, includeAuthorization = true, convert) {
     var headers = {};
