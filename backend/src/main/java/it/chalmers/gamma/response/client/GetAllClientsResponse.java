@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public class GetAllClientsResponse {
     @JsonValue
-   private final List<ITClientDTO> clients;
+    private final List<ITClientDTO> clients;
 
     public GetAllClientsResponse(List<ITClientDTO> clients) {
         this.clients = clients;

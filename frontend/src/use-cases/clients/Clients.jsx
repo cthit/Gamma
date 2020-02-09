@@ -5,7 +5,9 @@ import {
     DigitTextArea,
     DigitDialogActions,
     DigitText,
-    DigitButton
+    DigitButton,
+    DigitToast,
+    DigitToastActions
 } from "@cthit/react-digit-components";
 import React, { useEffect } from "react";
 import { getClient, getClients } from "../../api/clients/get.clients.api";
@@ -59,10 +61,26 @@ const Clients = () => {
                                         />
                                     ),
                                     renderButtons: confirm => (
-                                        <DigitButton
-                                            text={text.CloseDialog}
-                                            onClick={confirm}
-                                        />
+                                        <div>
+                                            <DigitButton
+                                                text={text.CloseDialog}
+                                                onClick={confirm}
+                                            />
+                                            <DigitButton
+                                                text={text.CopyToClipboard}
+                                                onclick={navigator.clipboard
+                                                    .writeText(
+                                                        response.data
+                                                            .clientSecret
+                                                    )
+                                                    .then(
+                                                        function() {
+                                                            // Should this do something?
+                                                        },
+                                                        function() {}
+                                                    )}
+                                            />
+                                        </div>
                                     )
                                 })
                             );
@@ -79,6 +97,7 @@ const Clients = () => {
             keysOrder={[
                 "id",
                 "name",
+                "clientId",
                 "webServerRedirectUri",
                 "descriptionSv",
                 "descriptionEn"
@@ -86,6 +105,7 @@ const Clients = () => {
             keysText={{
                 id: text.Id,
                 name: text.Name,
+                clientId: text.ClientId,
                 webServerRedirectUri: text.RedirectURI,
                 descriptionSv: text.DescriptionSv,
                 descriptionEn: text.DescriptionEn

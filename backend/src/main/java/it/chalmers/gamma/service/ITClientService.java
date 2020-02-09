@@ -41,14 +41,11 @@ public class ITClientService implements ClientDetailsService {
         return this.itClientRepository.findByClientId(clientId).toDTO();
     }
 
-    public ITClientDTO createITClient(ITClientDTO clientDTO) {
+    public ITClientDTO createITClient(String name, Text description, String redirect) {
         ITClient client = new ITClient();
-        client.setName(clientDTO.getName());
-        Text description = new Text();
-        description.setEn(clientDTO.getDescription().getEn());
-        description.setSv(clientDTO.getDescription().getSv());
+        client.setName(name);
         client.setDescription(description);
-        client.setWebServerRedirectUri(clientDTO.getWebServerRedirectUri());
+        client.setWebServerRedirectUri(redirect);
         client.setCreatedAt(Instant.now());
         client.setLastModifiedAt(Instant.now());
         client.setAccessTokenValidity(this.accessTokenValidityTime);
