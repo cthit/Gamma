@@ -15,6 +15,7 @@
     "SubmitClient": ["Create client", "Skapa klient"],
     "YourClientSecret": ["Your client secret \n (Save this)", "Din klient secret \n (Spara detta)"],
     "CloseDialog": ["Close", "Stäng"],
+    "CopyToClipboard": ["Copy to clipboard", "kopiera till urklipp"],
     "ClientCreatingSuccessful": [
         "was successfully created",
         "skapades framgångsrikt"
