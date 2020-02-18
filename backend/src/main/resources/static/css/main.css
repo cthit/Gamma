@@ -72,7 +72,7 @@ footer {
     max-width: 280px;
     min-width: 250px;
 
-    height: 328px;
+    height: calc(328px+57px);
 
     padding: 16px;
 
