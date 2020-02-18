@@ -46,6 +46,7 @@ public class ITUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
+        cidOrEmail = cidOrEmail.toLowerCase();
         ITUser user = this.itUserRepository.findByEmail(cidOrEmail)
                 .orElse(this.itUserRepository.findByCid(cidOrEmail)
                         .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG)));
@@ -54,6 +55,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
+        cid = cid.toLowerCase();
         return this.itUserRepository.findByCid(cid)
                 .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
@@ -122,6 +124,7 @@ public class ITUserService implements UserDetailsService {
 
     public ITUserDTO getITUser(String idCidOrEmail) throws UsernameNotFoundException {
         ITUser user;
+        idCidOrEmail = idCidOrEmail.toLowerCase();
         if (UUIDUtil.validUUID(idCidOrEmail)) {
             user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
                 .orElseThrow(UserNotFoundResponse::new);
