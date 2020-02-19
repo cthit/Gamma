@@ -62,7 +62,12 @@ export const App = ({}) => {
     }, []);
 
     useEffect(() => {
-        if (!loading && !user && !pathname.startsWith("/create-account")) {
+        if (
+            !loading &&
+            !user &&
+            !pathname.startsWith("/create-account") &&
+            !pathname.startsWith("/reset-password")
+        ) {
             signIn();
         }
     }, [loading, pathname, user]);
