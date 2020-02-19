@@ -1,263 +1,203 @@
 import {
-    DigitDesign,
-    DigitForm,
-    DigitFormField,
     DigitLayout,
-    DigitTranslations
+    useDigitTranslations,
+    useDigitToast,
+    DigitEditDataCard,
+    DigitSelect
 } from "@cthit/react-digit-components";
-import PropTypes from "prop-types";
 import React from "react";
 import * as yup from "yup";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-import {
-    DigitButton,
-    DigitSwitch,
-    DigitTextField,
-    DigitSelect
-} from "@cthit/react-digit-components";
+import { DigitSwitch, DigitTextField } from "@cthit/react-digit-components";
 import translations from "./InputDataAndCode.view.translations.json";
+import { useHistory } from "react-router";
+import { createAccount } from "../../../../api/create-account/post.createAccount.api";
 
-class InputDataAndCode extends React.Component {
-    componentDidMount() {
-        this.props.gammaLoadingFinished();
-    }
+const InputDataAndCode = () => {
+    const [text] = useDigitTranslations(translations);
+    const [queueToast] = useDigitToast();
+    const history = useHistory();
 
-    render() {
-        const {
-            sendDataAndCode,
-            toastOpen,
-            redirectTo,
-            gammaLoadingStart
-        } = this.props;
-
-        return (
-            <DigitTranslations
-                translations={translations}
-                render={text => (
-                    <DigitLayout.Center>
-                        <DigitForm
-                            onSubmit={(values, actions) => {
-                                gammaLoadingStart();
-
-                                const cid = values.cid;
-                                const user = {
-                                    whitelist: {
-                                        cid: cid
-                                    },
-                                    ...values
-                                };
-                                sendDataAndCode(user)
-                                    .then(response => {
-                                        actions.resetForm();
-                                        redirectTo("/create-account/finished");
-                                    })
-                                    .catch(error => {
-                                        const code = statusCode(error);
-                                        const message = statusMessage(error);
-                                        var errorMessage =
-                                            text.SomethingWentWrong;
-                                        switch (code) {
-                                            case 422:
-                                                switch (message) {
-                                                    case "CODE_OR_CID_IS_WRONG":
-                                                        errorMessage =
-                                                            text.CODE_OR_CID_IS_WRONG;
-                                                        break;
-                                                    case "TOO_SHORT_PASSWORD":
-                                                        errorMessage =
-                                                            text.TOO_SHORT_PASSWORD;
-                                                        break;
-                                                    default:
-                                                        errorMessage =
-                                                            text.SomethingWentWrong;
-                                                }
-                                                break;
-                                            default:
-                                                errorMessage =
-                                                    text.SomethingWentWrong;
-                                        }
-                                        toastOpen({
-                                            text: errorMessage,
-                                            duration: 5000
-                                        });
-                                        this.props.gammaLoadingFinished();
-                                    });
-                            }}
-                            initialValues={{
-                                cid: "",
-                                code: "",
-                                nick: "",
-                                firstName: "",
-                                lastName: "",
-                                acceptanceYear: "",
-                                password: "",
-                                passwordConfirmation: "",
-                                userAgreement: false
-                            }}
-                            validationSchema={yup.object().shape({
-                                cid: yup.string().required(text.FieldRequired),
-                                code: yup.string().required(text.FieldRequired),
-                                nick: yup.string().required(text.FieldRequired),
-                                firstName: yup
-                                    .string()
-                                    .required(text.FieldRequired),
-                                lastName: yup
-                                    .string()
-                                    .required(text.FieldRequired),
-                                acceptanceYear: yup
-                                    .number()
-                                    .min(2001)
-                                    .max(_getCurrentYear())
-                                    .required(text.FieldRequired),
-                                password: yup
-                                    .string()
-                                    .min(8, text.MinimumLength)
-                                    .required(text.FieldRequired),
-                                passwordConfirmation: yup
-                                    .string()
-                                    .oneOf(
-                                        [yup.ref("password")],
-                                        text.PasswordsDoNotMatch
-                                    )
-                                    .required(text.FieldRequired),
-                                userAgreement: yup
-                                    .boolean()
-                                    .oneOf([true])
-                                    .required(text.FieldRequired)
-                            })}
-                            render={props => (
-                                <DigitDesign.Card
-                                    minWidth="320px"
-                                    maxWidth="600px"
-                                    hasSubTitle
-                                >
-                                    <DigitDesign.CardTitle
-                                        text={text.CompleteCreation}
-                                    />
-                                    <DigitDesign.CardSubTitle
-                                        text={text.CompleteCreationDescription}
-                                    />
-                                    <DigitDesign.CardBody>
-                                        <DigitLayout.Center>
-                                            <DigitFormField
-                                                name="cid"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel: text.YourCid,
-                                                    outlined: true,
-                                                    maxLength: 12
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="code"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel:
-                                                        text.CodeFromYourStudentEmail,
-                                                    outlined: true,
-                                                    maxLength: 15
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="nick"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel: text.Nick,
-                                                    outlined: true,
-                                                    maxLength: 20
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="password"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel: text.Password,
-                                                    password: true,
-                                                    outlined: true
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="passwordConfirmation"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel:
-                                                        text.ConfirmPassword,
-                                                    password: true,
-                                                    outlined: true
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="firstName"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel: text.FirstName,
-                                                    outlined: true,
-                                                    maxLength: 50
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="lastName"
-                                                component={DigitTextField}
-                                                componentProps={{
-                                                    upperLabel: text.LastName,
-                                                    outlined: true,
-                                                    maxLength: 50
-                                                }}
-                                            />
-                                            <DigitLayout.Spacing />
-                                            <DigitLayout.Size width="300px">
-                                                <DigitFormField
-                                                    name="acceptanceYear"
-                                                    component={DigitSelect}
-                                                    componentProps={{
-                                                        valueToTextMap: _generateAcceptanceYears(),
-                                                        upperLabel:
-                                                            text.WhichYearDidYouStart,
-                                                        reverse: true,
-                                                        outlined: true
-                                                    }}
-                                                />
-                                            </DigitLayout.Size>
-                                            <DigitLayout.Spacing />
-                                            <DigitFormField
-                                                name="userAgreement"
-                                                component={DigitSwitch}
-                                                componentProps={{
-                                                    label:
-                                                        text.AcceptUserAgreement,
-                                                    primary: true
-                                                }}
-                                            />
-                                        </DigitLayout.Center>
-                                    </DigitDesign.CardBody>
-                                    <DigitDesign.CardButtons
-                                        leftRight
-                                        reverseDirection
-                                    >
-                                        <DigitButton
-                                            submit
-                                            text={text.CreateAccount}
-                                            primary
-                                            raised
-                                        />
-                                        <DigitLayout.Spacing />
-                                    </DigitDesign.CardButtons>
-                                </DigitDesign.Card>
-                            )}
-                        />
-                    </DigitLayout.Center>
-                )}
+    return (
+        <DigitLayout.Center>
+            <DigitEditDataCard
+                titleText={text.CompleteCreation}
+                subtitleText={text.CompleteCreationDescription}
+                submitText={text.CreateAccount}
+                extraButton={{
+                    text: text.Back
+                }}
+                extraButtonTo={"/create-account/email-sent"}
+                onSubmit={(values, actions) => {
+                    const cid = values.cid;
+                    const user = {
+                        whitelist: {
+                            cid: cid
+                        },
+                        ...values
+                    };
+                    createAccount(user)
+                        .then(() => {
+                            actions.resetForm();
+                            history.push("/create-account/finished");
+                        })
+                        .catch(error => {
+                            const code = statusCode(error);
+                            const message = statusMessage(error);
+                            var errorMessage = text.SomethingWentWrong;
+                            switch (code) {
+                                case 422:
+                                    switch (message) {
+                                        case "CODE_OR_CID_IS_WRONG":
+                                            errorMessage =
+                                                text.CODE_OR_CID_IS_WRONG;
+                                            break;
+                                        case "TOO_SHORT_PASSWORD":
+                                            errorMessage =
+                                                text.TOO_SHORT_PASSWORD;
+                                            break;
+                                        default:
+                                            errorMessage =
+                                                text.SomethingWentWrong;
+                                    }
+                                    break;
+                                default:
+                                    errorMessage = text.SomethingWentWrong;
+                            }
+                            queueToast({
+                                text: errorMessage,
+                                duration: 5000
+                            });
+                        });
+                }}
+                initialValues={{
+                    cid: "",
+                    code: "",
+                    nick: "",
+                    firstName: "",
+                    lastName: "",
+                    acceptanceYear: "",
+                    password: "",
+                    passwordConfirmation: "",
+                    userAgreement: false
+                }}
+                validationSchema={yup.object().shape({
+                    cid: yup.string().required(text.FieldRequired),
+                    code: yup.string().required(text.FieldRequired),
+                    nick: yup.string().required(text.FieldRequired),
+                    firstName: yup.string().required(text.FieldRequired),
+                    lastName: yup.string().required(text.FieldRequired),
+                    acceptanceYear: yup
+                        .number()
+                        .min(2001)
+                        .max(_getCurrentYear())
+                        .required(text.FieldRequired),
+                    password: yup
+                        .string()
+                        .min(8, text.MinimumLength)
+                        .required(text.FieldRequired),
+                    passwordConfirmation: yup
+                        .string()
+                        .oneOf([yup.ref("password")], text.PasswordsDoNotMatch)
+                        .required(text.FieldRequired),
+                    userAgreement: yup
+                        .boolean()
+                        .oneOf([true])
+                        .required(text.FieldRequired)
+                })}
+                minWidth={"300px"}
+                maxWidth={"600px"}
+                keysOrder={[
+                    "cid",
+                    "code",
+                    "password",
+                    "passwordConfirmation",
+                    "nick",
+                    "firstName",
+                    "lastName",
+                    "acceptanceYear",
+                    "userAgreement"
+                ]}
+                keysComponentData={{
+                    cid: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.YourCid,
+                            outlined: true,
+                            maxLength: 12
+                        }
+                    },
+                    code: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.CodeFromYourStudentEmail,
+                            outlined: true,
+                            maxLength: 15
+                        }
+                    },
+                    nick: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.Nick,
+                            outlined: true,
+                            maxLength: 20
+                        }
+                    },
+                    password: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.Password,
+                            outlined: true,
+                            password: true
+                        }
+                    },
+                    passwordConfirmation: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.ConfirmPassword,
+                            outlined: true,
+                            password: true
+                        }
+                    },
+                    firstName: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.FirstName,
+                            outlined: true,
+                            maxLength: 15
+                        }
+                    },
+                    lastName: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.LastName,
+                            outlined: true,
+                            maxLength: 15
+                        }
+                    },
+                    acceptanceYear: {
+                        component: DigitSelect,
+                        componentProps: {
+                            valueToTextMap: _generateAcceptanceYears(),
+                            upperLabel: text.WhichYearDidYouStart,
+                            reverse: true,
+                            outlined: true
+                        }
+                    },
+                    userAgreement: {
+                        component: DigitSwitch,
+                        componentProps: {
+                            label: text.AcceptUserAgreement,
+                            primary: true
+                        }
+                    }
+                }}
             />
-        );
-    }
-}
+        </DigitLayout.Center>
+    );
+};
+
 function _getCurrentYear() {
     return new Date().getFullYear() + "";
 }
@@ -271,9 +211,5 @@ function _generateAcceptanceYears() {
     }
     return output;
 }
-
-InputDataAndCode.propTypes = {
-    sendDataAndCode: PropTypes.func.isRequired
-};
 
 export default InputDataAndCode;

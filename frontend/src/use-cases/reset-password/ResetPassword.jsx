@@ -7,10 +7,15 @@ const ResetPassword = () => {
     return (
         <Switch>
             <Route
+                exact
                 path="/reset-password/finish"
                 component={ResetPasswordFinish}
             />
-            <Route path="/reset-password" component={ResetPasswordInitialize} />
+            <Route
+                exact
+                path="/reset-password"
+                component={ResetPasswordInitialize}
+            />
         </Switch>
     );
 };

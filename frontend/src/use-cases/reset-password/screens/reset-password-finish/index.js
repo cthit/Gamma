@@ -1,2 +1,2 @@
-import ResetPasswordFinish from "./ResetPasswordFinish.screen.container";
+import ResetPasswordFinish from "./ResetPasswordFinish.screen";
 export default ResetPasswordFinish;

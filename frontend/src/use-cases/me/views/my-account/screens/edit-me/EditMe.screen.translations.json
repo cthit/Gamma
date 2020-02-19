@@ -1,8 +1,0 @@
-{
-    "EditMe": ["Edit User ", "Redigera Användare "],
-    "SaveMe": ["Save", "Spara"],
-    "UserUpdated": [
-        "Successfully updated user ",
-        "Lyckades redigerade användaren"
-    ]
-}

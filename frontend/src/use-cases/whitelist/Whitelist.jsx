@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import {
     DigitCRUD,
     DigitTextField,
-    useDigitTranslations
+    useDigitTranslations,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import {
     getWhitelist,
@@ -12,21 +13,13 @@ import { addUsersToWhitelist } from "../../api/whitelist/post.whitelist.api";
 import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
 import translations from "./Whitelist.translations";
 import * as yup from "yup";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
-import { useDispatch } from "react-redux";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
-
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }
@@ -42,6 +35,7 @@ const Whitelist = () => {
             deleteRequest={deleteWhitelistItem}
             keysText={{ id: text.Id, cid: text.Cid }}
             keysOrder={["id", "cid"]}
+            readAllKeysOrder={["cid"]}
             formComponentData={{
                 cid: {
                     component: DigitTextField,

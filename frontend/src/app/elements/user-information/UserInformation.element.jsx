@@ -2,40 +2,32 @@ import {
     DigitButton,
     DigitLayout,
     DigitText,
-    DigitTranslations,
-    DigitIfElseRendering
+    useDigitTranslations,
+    useGammaSignOut,
+    useGammaUser
 } from "@cthit/react-digit-components";
 import React from "react";
 import styled from "styled-components";
 
-const UserInformation = ({
-    loaded,
-    loggedIn,
-    user,
-    logout,
-    currentPath,
-    toastOpen
-}) => (
-    <DigitIfElseRendering
-        test={loaded == null ? false : loaded && loggedIn}
-        ifRender={() => (
-            <DigitTranslations
-                render={text => (
-                    <Container>
-                        <DigitLayout.Center>
-                            <DigitText.Title white text={user.nick} />
-                        </DigitLayout.Center>
-                        <DigitLayout.Spacing />
-                        <DigitButton
-                            text={text.Logout}
-                            onClick={() => logout(text.LoggedOut)}
-                        />
-                    </Container>
-                )}
-            />
-        )}
-    />
-);
+const UserInformation = () => {
+    const [text] = useDigitTranslations();
+    const signOut = useGammaSignOut();
+    const user = useGammaUser();
+
+    if (user == null) {
+        return user;
+    }
+
+    return (
+        <Container>
+            <DigitLayout.Center>
+                <DigitText.Title white text={user.nick} />
+            </DigitLayout.Center>
+            <DigitLayout.Spacing />
+            <DigitButton text={text.Logout} onClick={signOut} />
+        </Container>
+    );
+};
 
 const Container = styled.div`
     display: flex;

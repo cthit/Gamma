@@ -13,11 +13,10 @@ import {
     DigitSelect,
     DigitTextField,
     useDigitTranslations,
-    DigitCRUD
+    DigitCRUD,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import translations from "./SuperGroups.translations";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import {
     getSuperGroup,
     getSuperGroups,
@@ -27,7 +26,6 @@ import { addSuperGroup } from "../../api/super-groups/post.super-groups.api";
 import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api";
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
 import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 
 function generateValidationSchema(text) {
@@ -92,12 +90,8 @@ function generateEditComponentData(text) {
 
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }

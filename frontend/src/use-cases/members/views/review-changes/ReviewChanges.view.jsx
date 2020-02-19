@@ -6,7 +6,7 @@ import {
     DigitFAB,
     DigitLayout,
     DigitDesign,
-    DigitTranslations
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import NewMember from "./elements/new-member";
 
@@ -50,6 +50,7 @@ const ReviewChanges = ({
     posts,
     onFinished
 }) => {
+    const [text, activeLanguage] = useDigitTranslations(translations);
     var savedPostNames = sessionStorage.getItem(groupId + ".postNames");
     if (savedPostNames == null) {
         redirectTo("/groups/" + groupId + "/members");
@@ -59,92 +60,76 @@ const ReviewChanges = ({
     const members = JSON.parse(savedPostNames).members;
 
     return (
-        <DigitTranslations
-            translations={translations}
-            render={(text, activeLanguage) => (
-                <DigitLayout.Center>
-                    <>
-                        <DigitDesign.Card>
-                            <DigitDesign.CardTitle
-                                text={text.NewMembersForGroup + " " + groupName}
+        <DigitLayout.Center>
+            <>
+                <DigitDesign.Card>
+                    <DigitDesign.CardTitle
+                        text={text.NewMembersForGroup + " " + groupName}
+                    />
+                    <DigitDesign.CardBody minWidth={"280px"}>
+                        {members.map(member => (
+                            <NewMember
+                                key={member.id}
+                                firstName={member[FIRST_NAME]}
+                                lastName={member[LAST_NAME]}
+                                nick={member[NICK]}
+                                unofficialPostName={member.unofficialPostName}
+                                activeLanguage={activeLanguage}
+                                post={_.find(posts, {
+                                    id: member.postId
+                                })}
                             />
-                            <DigitDesign.CardBody minWidth={"280px"}>
-                                {members.map(member => (
-                                    <NewMember
-                                        key={member.id}
-                                        firstName={member[FIRST_NAME]}
-                                        lastName={member[LAST_NAME]}
-                                        nick={member[NICK]}
-                                        unofficialPostName={
-                                            member.unofficialPostName
-                                        }
-                                        activeLanguage={activeLanguage}
-                                        post={_.find(posts, {
-                                            id: member.postId
-                                        })}
-                                    />
-                                ))}
-                            </DigitDesign.CardBody>
-                        </DigitDesign.Card>
-                        <DigitLayout.DownRightPosition>
-                            <DigitFAB
-                                icon={Save}
-                                primary
-                                onClick={() => {
-                                    const additions = getAdditions(
-                                        previousMembers,
-                                        members
-                                    ).map(member =>
-                                        addUserToGroup(groupId, {
-                                            userId: member.id,
-                                            post: member.postId,
-                                            unofficialName:
-                                                member.unofficialPostName
-                                        })
-                                    );
+                        ))}
+                    </DigitDesign.CardBody>
+                </DigitDesign.Card>
+                <DigitLayout.DownRightPosition>
+                    <DigitFAB
+                        icon={Save}
+                        primary
+                        onClick={() => {
+                            const additions = getAdditions(
+                                previousMembers,
+                                members
+                            ).map(member =>
+                                addUserToGroup(groupId, {
+                                    userId: member.id,
+                                    post: member.postId,
+                                    unofficialName: member.unofficialPostName
+                                })
+                            );
 
-                                    const deletions = getDeletions(
-                                        previousMembers,
-                                        members
-                                    ).map(previousMember =>
-                                        removeUserFromGroup(
-                                            groupId,
-                                            previousMember.id
-                                        )
-                                    );
+                            const deletions = getDeletions(
+                                previousMembers,
+                                members
+                            ).map(previousMember =>
+                                removeUserFromGroup(groupId, previousMember.id)
+                            );
 
-                                    const edits = getEdits(
-                                        previousMembers,
-                                        members
-                                    ).map(member =>
-                                        editUserInGroup(groupId, member.id, {
-                                            userId: member.id,
-                                            post: member.post.id,
-                                            unofficialName:
-                                                member.unofficialPostName
-                                        })
-                                    );
+                            const edits = getEdits(
+                                previousMembers,
+                                members
+                            ).map(member =>
+                                editUserInGroup(groupId, member.id, {
+                                    userId: member.id,
+                                    post: member.post.id,
+                                    unofficialName: member.unofficialPostName
+                                })
+                            );
 
-                                    Promise.all([
-                                        ...additions,
-                                        ...deletions,
-                                        ...edits
-                                    ])
-                                        .then(() => {
-                                            sessionStorage.clear();
-                                            onFinished();
-                                        })
-                                        .catch(() => {
-                                            sessionStorage.clear();
-                                            onFinished();
-                                        });
-                                }}
-                            />
-                        </DigitLayout.DownRightPosition>
-                    </>
-                </DigitLayout.Center>
-            )}
-        />
+                            Promise.all([...additions, ...deletions, ...edits])
+                                .then(() => {
+                                    sessionStorage.clear();
+                                    onFinished();
+                                })
+                                .catch(() => {
+                                    sessionStorage.clear();
+                                    onFinished();
+                                });
+                        }}
+                    />
+                </DigitLayout.DownRightPosition>
+            </>
+        </DigitLayout.Center>
     );
 };
 

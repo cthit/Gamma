@@ -8,17 +8,16 @@ const production = {
     backend: "https://gamma.chalmers.it/api"
 };
 
-
 function getFrontendUrl() {
     return isDevelopment() ? development.frontend : production.frontend;
 }
 
 function getBackendUrl() {
-    return isDevelopment() ? development.backend : production.backend
+    return isDevelopment() ? development.backend : production.backend;
 }
 
 function isDevelopment() {
-    return process.env.NODE_ENV === "development"
+    return process.env.NODE_ENV === "development";
 }
 
 export { getBackendUrl, getFrontendUrl };

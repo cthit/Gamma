@@ -2,8 +2,8 @@ import React from "react";
 import translations from "./DisplayGroupsTable.element.translations";
 import {
     DigitTable,
-    DigitTranslations,
-    DigitLayout
+    DigitLayout,
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import {
     DESCRIPTION,
@@ -45,30 +45,24 @@ function modifyData(groups, text, activeLanguage, columns) {
     });
 }
 
-const DisplayGroupsTable = ({ title, groups, columnsOrder }) => (
-    <DigitTranslations
-        translations={translations}
-        render={(text, activeLanguage) => (
-            <DigitLayout.Fill>
-                <DigitTable
-                    titleText={title ? title : text.Groups}
-                    searchText={text.SearchForGroups}
-                    idProp="id"
-                    startOrderBy={NAME}
-                    columnsOrder={columnsOrder}
-                    headerTexts={generateHeaderTexts(text)}
-                    data={modifyData(
-                        groups,
-                        text,
-                        activeLanguage,
-                        columnsOrder
-                    )}
-                    emptyTableText={text.NoGroups}
-                />
-            </DigitLayout.Fill>
-        )}
-    />
-);
+const DisplayGroupsTable = ({ title, groups, columnsOrder }) => {
+    const [text, activeLanguage] = useDigitTranslations(translations);
+
+    return (
+        <DigitLayout.Fill>
+            <DigitTable
+                titleText={title ? title : text.Groups}
+                searchText={text.SearchForGroups}
+                idProp="id"
+                startOrderBy={NAME}
+                columnsOrder={columnsOrder}
+                headerTexts={generateHeaderTexts(text)}
+                data={modifyData(groups, text, activeLanguage, columnsOrder)}
+                emptyTableText={text.NoGroups}
+            />
+        </DigitLayout.Fill>
+    );
+};
 
 DisplayGroupsTable.defaultProps = {
     columnsOrder: [ID, NAME, DESCRIPTION, EMAIL, FUNCTION]

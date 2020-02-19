@@ -1,2 +1,2 @@
-import ReviewChanges from "./ReviewChanges.view.container";
+import ReviewChanges from "./ReviewChanges.view";
 export default ReviewChanges;

@@ -1,1 +1,1 @@
-export { default } from "./Gdpr.container.jsx";
+export { default } from "./Gdpr.jsx";

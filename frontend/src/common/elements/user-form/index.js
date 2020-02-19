@@ -1,1 +1,1 @@
-export { default } from "./UserForm.view.container";
+export { default } from "./UserForm.view";

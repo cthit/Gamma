@@ -1,5 +1,8 @@
 import React from "react";
-import { DigitTable, DigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitTable,
+    useDigitTranslations
+} from "@cthit/react-digit-components";
 
 import translations from "./DisplayUsersTable.element.translations";
 
@@ -24,34 +27,27 @@ function generateHeaderTexts(text) {
     return headerTexts;
 }
 
-const DisplayUsersTable = ({ users, noUsersText }) => (
-    <DigitTranslations
-        translations={translations}
-        render={text => (
-            <DigitTable
-                titleText={text.Users}
-                searchText={text.SearchForUsers}
-                idProp={CID}
-                startOrderBy={FIRST_NAME}
-                columnsOrder={[
-                    FIRST_NAME,
-                    NICK,
-                    LAST_NAME,
-                    CID,
-                    ACCEPTANCE_YEAR
-                ]}
-                headerTexts={generateHeaderTexts(text)}
-                data={users.map(user => {
-                    return {
-                        ...user,
-                        __link: "/users/" + user.id
-                    };
-                })}
-                emptyTableText={noUsersText || text.NoUsers}
-            />
-        )}
-    />
-);
+const DisplayUsersTable = ({ users, noUsersText }) => {
+    const [text] = useDigitTranslations(translations);
+
+    return (
+        <DigitTable
+            titleText={text.Users}
+            searchText={text.SearchForUsers}
+            idProp={CID}
+            startOrderBy={FIRST_NAME}
+            columnsOrder={[FIRST_NAME, NICK, LAST_NAME, CID, ACCEPTANCE_YEAR]}
+            headerTexts={generateHeaderTexts(text)}
+            data={users.map(user => {
+                return {
+                    ...user,
+                    __link: "/users/" + user.id
+                };
+            })}
+            emptyTableText={noUsersText || text.NoUsers}
+        />
+    );
+};
 
 DisplayUsersTable.defaultProps = {
     users: []

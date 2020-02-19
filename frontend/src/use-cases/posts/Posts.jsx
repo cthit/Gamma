@@ -4,13 +4,12 @@ import {
     DigitCRUD,
     DigitText,
     useDigitTranslations,
-    DigitTextField
+    DigitTextField,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 
 import translations from "./Posts.translations";
 import { getPost, getPosts, getPostUsage } from "../../api/posts/get.posts.api";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { addPost } from "../../api/posts/post.posts.api";
 import { deletePost } from "../../api/posts/delete.posts.api";
 import {
@@ -20,7 +19,6 @@ import {
 
 import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 import { ID, NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
@@ -60,13 +58,8 @@ function generateEditComponentData(text) {
 
 const Posts = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
-
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }
@@ -88,6 +81,10 @@ const Posts = () => {
                 id: "Id",
                 sv: text.Swedish,
                 en: text.English
+            }}
+            formInitialValues={{
+                sv: "",
+                en: ""
             }}
             keysOrder={["id", "sv", "en"]}
             tableProps={{

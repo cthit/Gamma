@@ -3,32 +3,25 @@ import {
     useDigitTranslations,
     DigitTextField,
     DigitTextArea,
-    DigitDialogActions,
     DigitText,
     DigitButton,
-    DigitToast,
-    DigitToastActions
+    useDigitCustomDialog,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import React, { useEffect } from "react";
 import { getClient, getClients } from "../../api/clients/get.clients.api";
 import { addClient } from "../../api/clients/post.clients.api";
 import translations from "./Clients.translations";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import * as yup from "yup";
 import { deleteClient } from "../../api/clients/delete.clients.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { CLIENT_NAME } from "../../api/clients/props.clients.api";
 
 const Clients = () => {
+    const [openDialog] = useDigitCustomDialog();
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }
@@ -51,39 +44,21 @@ const Clients = () => {
                         webServerRedirectUri: client.webServerRedirectUri
                     })
                         .then(response => {
-                            dispatch(
-                                DigitDialogActions.digitDialogCustomOpen({
-                                    title: text.YourClientSecret,
-                                    onConfirm: () => {},
-                                    renderMain: () => (
-                                        <DigitText.Text
-                                            text={response.data.clientSecret}
-                                        />
-                                    ),
-                                    renderButtons: confirm => (
-                                        <div>
-                                            <DigitButton
-                                                text={text.CloseDialog}
-                                                onClick={confirm}
-                                            />
-                                            <DigitButton
-                                                text={text.CopyToClipboard}
-                                                onclick={navigator.clipboard
-                                                    .writeText(
-                                                        response.data
-                                                            .clientSecret
-                                                    )
-                                                    .then(
-                                                        function() {
-                                                            // Should this do something?
-                                                        },
-                                                        function() {}
-                                                    )}
-                                            />
-                                        </div>
-                                    )
-                                })
-                            );
+                            openDialog({
+                                title: text.YourClientSecret,
+                                onConfirm: () => {},
+                                renderMain: () => (
+                                    <DigitText.Text
+                                        text={response.data.clientSecret}
+                                    />
+                                ),
+                                renderButtons: confirm => (
+                                    <DigitButton
+                                        text={text.CloseDialog}
+                                        onClick={confirm}
+                                    />
+                                )
+                            });
                             resolve(response);
                         })
                         .catch(error => reject(error))
@@ -97,7 +72,6 @@ const Clients = () => {
             keysOrder={[
                 "id",
                 "name",
-                "clientId",
                 "webServerRedirectUri",
                 "descriptionSv",
                 "descriptionEn"
@@ -105,7 +79,6 @@ const Clients = () => {
             keysText={{
                 id: text.Id,
                 name: text.Name,
-                clientId: text.ClientId,
                 webServerRedirectUri: text.RedirectURI,
                 descriptionSv: text.DescriptionSv,
                 descriptionEn: text.DescriptionEn

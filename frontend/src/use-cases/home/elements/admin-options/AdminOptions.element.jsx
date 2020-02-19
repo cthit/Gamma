@@ -3,47 +3,37 @@ import React from "react";
 import {
     DigitDesign,
     DigitLayout,
-    DigitTranslations
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 
-import AdminOptionsTranslations from "./AdminOptions.element.translations.json";
+import translations from "./AdminOptions.element.translations.json";
 import HomeLink from "../../elements/home-link";
 
-const AdminOptions = () => (
-    <DigitTranslations
-        translations={AdminOptionsTranslations}
-        render={text => (
-            <DigitDesign.Card>
-                <DigitDesign.CardTitle text={text.AdminOptions} />
-                <DigitDesign.CardBody>
-                    <DigitLayout.Grid
-                        columns={`repeat(${2}, 1fr)`}
-                        margin={"4px"}
-                    >
-                        <HomeLink text={text.AllUsers} link={"/users"} />
-                        <HomeLink text={text.AllGroups} link={"/groups"} />
-                        <HomeLink
-                            text={text.ActivationCodes}
-                            link={"/activation-codes"}
-                        />
-                        <HomeLink text={text.GDPR} link={"/gdpr"} />
-                        <HomeLink text={text.GroupPosts} link={"/posts"} />
-                        <HomeLink
-                            text={text.PossibleWebsites}
-                            link={"/websites"}
-                        />
-                        <HomeLink text={text.Whitelist} link={"/whitelist"} />
-                        <HomeLink text={text.Clients} link={"/clients"} />
-                        <HomeLink
-                            text={text.SuperGroups}
-                            link={"/super-groups"}
-                        />
-                        <HomeLink text={text.ApiKeys} link={"/access-keys"} />
-                    </DigitLayout.Grid>
-                </DigitDesign.CardBody>
-            </DigitDesign.Card>
-        )}
-    />
-);
+const AdminOptions = () => {
+    const [text] = useDigitTranslations(translations);
+
+    return (
+        <DigitDesign.Card>
+            <DigitDesign.CardTitle text={text.AdminOptions} />
+            <DigitDesign.CardBody>
+                <DigitLayout.Grid columns={`repeat(${2}, 1fr)`} margin={"4px"}>
+                    <HomeLink text={text.AllUsers} link={"/users"} />
+                    <HomeLink text={text.AllGroups} link={"/groups"} />
+                    <HomeLink
+                        text={text.ActivationCodes}
+                        link={"/activation-codes"}
+                    />
+                    <HomeLink text={text.GDPR} link={"/gdpr"} />
+                    <HomeLink text={text.GroupPosts} link={"/posts"} />
+                    <HomeLink text={text.PossibleWebsites} link={"/websites"} />
+                    <HomeLink text={text.Whitelist} link={"/whitelist"} />
+                    <HomeLink text={text.Clients} link={"/clients"} />
+                    <HomeLink text={text.SuperGroups} link={"/super-groups"} />
+                    <HomeLink text={text.ApiKeys} link={"/access-keys"} />
+                </DigitLayout.Grid>
+            </DigitDesign.CardBody>
+        </DigitDesign.Card>
+    );
+};
 
 export default AdminOptions;

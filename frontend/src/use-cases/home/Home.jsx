@@ -1,18 +1,22 @@
 import React, { useEffect } from "react";
 
-import { DigitLayout } from "@cthit/react-digit-components";
+import {
+    DigitLayout,
+    useGammaIsAdmin,
+    useGammaUser
+} from "@cthit/react-digit-components";
 
 import UserOptions from "./elements/user-options";
 import AdminOptions from "./elements/admin-options";
 import WelcomeUser from "./elements/welcome-user";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 
-const Home = ({ user, gammaLoadingFinished }) => {
-    useEffect(() => {
-        gammaLoadingFinished();
-    });
+const Home = () => {
+    const admin = useGammaIsAdmin();
+    const user = useGammaUser();
 
-    const admin = useIsAdmin();
+    if (user == null) {
+        return null;
+    }
 
     return (
         <DigitLayout.Center>

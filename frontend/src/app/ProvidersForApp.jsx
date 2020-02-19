@@ -1,8 +1,6 @@
 import React from "react";
 import { DigitProviders } from "@cthit/react-digit-components";
-import { rootReducer } from "./App.reducer";
-
-const preloadedState = {};
+import { GammaLoadingSingletonProvider } from "../common/context/GammaLoading.context";
 
 const theme = {
     breakpoints: {
@@ -15,13 +13,10 @@ const theme = {
 };
 
 const ProvidersForApp = ({ children }) => (
-    <DigitProviders
-        rootReducer={rootReducer}
-        preloadedState={preloadedState}
-        defaultLanguage="en"
-        theme={theme}
-    >
-        {children}
+    <DigitProviders defaultLanguage="en" theme={theme}>
+        <GammaLoadingSingletonProvider>
+            {children}
+        </GammaLoadingSingletonProvider>
     </DigitProviders>
 );
 
