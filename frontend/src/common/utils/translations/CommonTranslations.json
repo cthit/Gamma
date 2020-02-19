@@ -1,6 +1,7 @@
 {
     "Cancel": ["Cancel", "Avbryt"],
     "Back": ["Back", "Tillbaka"],
+    "Close": ["Close", "Stäng"],
     "Edit": ["Edit", "Redigera"],
     "Update": ["Edit", "Redigera"],
     "Delete": ["Delete", "Radera"],

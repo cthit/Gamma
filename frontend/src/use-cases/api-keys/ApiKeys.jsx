@@ -1,8 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
+    DigitButton,
     DigitCRUD,
     DigitTextArea,
     DigitTextField,
+    DigitLayout,
+    DigitText,
+    useDigitCustomDialog,
     useDigitTranslations,
     useGammaIsAdmin
 } from "@cthit/react-digit-components";
@@ -15,6 +19,12 @@ import InsufficientAccess from "../../common/views/insufficient-access";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);
+    const [showDialog] = useDigitCustomDialog({
+        title: text.YourApiKeySecret,
+        renderButtons: confirm => (
+            <DigitButton text={text.Close} onClick={confirm} />
+        )
+    });
 
     const admin = useGammaIsAdmin();
     if (!admin) {
@@ -35,6 +45,21 @@ const ApiKeys = () => {
                     }
                 })
             }
+            onCreate={response => {
+                console.log(response);
+                const secret = response.data.secret;
+                showDialog({
+                    renderMain: () => (
+                        <>
+                            <DigitText.Text bold alignCenter text={secret} />
+                            <DigitLayout.Padding />
+                            <DigitText.Text
+                                text={text.YourApiKeySecretDescription}
+                            />
+                        </>
+                    )
+                });
+            }}
             idProp={"id"}
             name={"api"}
             path={"/access-keys"}
