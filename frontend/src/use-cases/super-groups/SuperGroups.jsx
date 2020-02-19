@@ -92,9 +92,6 @@ const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
 
     const admin = useGammaIsAdmin();
-    if (!admin) {
-        return <InsufficientAccess />;
-    }
 
     return (
         <DigitCRUD
@@ -104,9 +101,9 @@ const SuperGroups = () => {
             readOneRequest={id =>
                 Promise.all([getSuperGroup(id), getSuperGroupSubGroups(id)])
             }
-            createRequest={addSuperGroup}
-            deleteRequest={deleteSuperGroup}
-            updateRequest={editSuperGroup}
+            createRequest={admin ? addSuperGroup : null}
+            deleteRequest={admin ? deleteSuperGroup : null}
+            updateRequest={admin ? editSuperGroup : null}
             keysOrder={[NAME, PRETTY_NAME, TYPE, EMAIL]}
             keysText={{
                 name: text.Name,

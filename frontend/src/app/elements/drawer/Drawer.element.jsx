@@ -85,6 +85,11 @@ const Drawer = ({ closeDrawer }) => {
                     text="Groups"
                     link="/groups"
                 />
+                <DigitNavLink
+                    onClose={closeDrawer}
+                    text={text.SuperGroups}
+                    link="/super-groups"
+                />
                 {dpo && (
                     <DigitNavLink
                         onClick={closeDrawer}
