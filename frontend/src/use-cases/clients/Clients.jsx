@@ -70,7 +70,6 @@ const Clients = () => {
                 search: true
             }}
             keysOrder={[
-                "id",
                 "name",
                 "webServerRedirectUri",
                 "descriptionSv",

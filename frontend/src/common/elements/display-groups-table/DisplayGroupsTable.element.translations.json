@@ -4,6 +4,7 @@
     "Description": ["Description", "Beskrivning"],
     "Email": ["Email", "Email"],
     "Function": ["Function", "Uppdrag"],
+    "PrettyName": ["Name", "Namn"],
     "Type": ["Group type", "Grupp typ"],
     "Society": ["Society", "Förening"],
     "Committee": ["Committee", "Kommitté"],

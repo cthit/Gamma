@@ -172,7 +172,7 @@ class SelectMembers1 extends React.Component {
                                 showSearchableProps
                                 idProp="id"
                                 startOrderBy={NICK}
-                                columnsOrder={[ID, FIRST_NAME, NICK, LAST_NAME]}
+                                columnsOrder={[FIRST_NAME, NICK, LAST_NAME]}
                                 headerTexts={this.generateHeaderTexts(text)}
                                 data={users.map(user => ({
                                     ...user,

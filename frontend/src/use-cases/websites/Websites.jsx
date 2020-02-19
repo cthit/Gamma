@@ -35,7 +35,7 @@ const Websites = () => {
                 startOrderBy: "name",
                 search: true
             }}
-            keysOrder={["id", "name", "prettyName"]}
+            keysOrder={["name", "prettyName"]}
             readAllKeysOrder={["name", "prettyName"]}
             keysText={{
                 id: text.Id,

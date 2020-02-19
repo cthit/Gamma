@@ -33,7 +33,7 @@ const ActivationCodes = () => {
                 startOrderBy: "cid",
                 search: true
             }}
-            keysOrder={["id", "cid", "code", "createdAt"]}
+            keysOrder={["cid", "code", "createdAt"]}
             readAllKeysOrder={["cid", "code", "createdAt"]}
             keysText={{
                 id: text.Id,
@@ -41,7 +41,7 @@ const ActivationCodes = () => {
                 code: text.Code,
                 createdAt: text.CreatedAt
             }}
-            idProp={"id"}
+            idProp={"cid"}
             dialogDeleteTitle={() => text.AreYouSure}
             dialogDeleteDescription={data =>
                 text.WouldYouLikeToDelete + " " + data.cid

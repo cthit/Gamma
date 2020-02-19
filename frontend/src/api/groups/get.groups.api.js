@@ -23,9 +23,11 @@ export function getGroup(groupId) {
 export function getGroupsMinified() {
     return getRequest(GROUPS_ENDPOINT + MINIFIED, true, input =>
         input.data.map(one => ({
-            id: one.id,
-            name: one.name,
-            email: one.email
+            functionSv: one.function.sv,
+            functionEn: one.function.en,
+            descriptionEn: one.description.en,
+            descriptionSv: one.description.sv,
+            ...one
         }))
     );
 }

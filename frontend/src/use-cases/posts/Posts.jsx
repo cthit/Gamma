@@ -86,10 +86,10 @@ const Posts = () => {
                 sv: "",
                 en: ""
             }}
-            keysOrder={["id", "sv", "en"]}
+            keysOrder={["sv", "en"]}
             tableProps={{
                 titleText: text.Posts,
-                startOrderBy: "id",
+                startOrderBy: "sv",
                 search: true
             }}
             detailsButtonText={text.Details}
@@ -108,7 +108,7 @@ const Posts = () => {
                         <DisplayGroupsTable
                             groups={data.usages}
                             title={text.Usages}
-                            columnsOrder={[ID, NAME, PRETTY_NAME]}
+                            columnsOrder={[NAME, PRETTY_NAME]}
                         />
                     )}
                 </div>

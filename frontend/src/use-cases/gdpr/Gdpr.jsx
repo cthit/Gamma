@@ -116,7 +116,7 @@ const Gdpr = ({}) => {
                     }
                 }}
                 selected={users.filter(user => user.gdpr).map(user => user.id)}
-                columnsOrder={[ID, CID, FIRST_NAME, NICK, LAST_NAME]}
+                columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
                 headerTexts={_generateHeaderTexts(text)}
                 data={users.map(user => {
                     return {
