@@ -1,19 +1,15 @@
 import {
-    DigitButton,
-    DigitDesign,
     DigitDialog,
     DigitHeader,
     DigitLayout,
-    DigitText,
     DigitToast,
     useDigitTranslations,
     useGamma,
     useGammaSignIn,
     useGammaUser,
-    useGammaStatus,
-    useGammaInvalidateMe
+    useGammaStatus
 } from "@cthit/react-digit-components";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
@@ -35,12 +31,13 @@ import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
 import Drawer from "./elements/drawer";
 import Members from "../use-cases/members";
+import {
+    getBackendUrl,
+    getFrontendUrl
+} from "../common/utils/configs/envVariablesLoader";
 
-export const App = ({ userUpdateMe }) => {
-    const [tryAgainButtonDisabled, setTryAgainButtonDisabled] = useState(false);
-    const [text, , , setCommonTranslations] = useDigitTranslations(
-        translations
-    );
+export const App = ({}) => {
+    const [, , , setCommonTranslations] = useDigitTranslations(translations);
 
     const title = "Gamma";
 
@@ -48,11 +45,8 @@ export const App = ({ userUpdateMe }) => {
         name: "gamma",
         id: "7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc",
         secret: "secret",
-        redirect:
-            (process.env.REACT_APP_FRONTEND_URL || "http://localhost:3000") +
-            "/login",
-        gammaPath:
-            process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api",
+        redirect: getFrontendUrl() + "/login",
+        gammaPath: getBackendUrl(),
         forceSignedIn: false,
         signOutFromGamma: true,
         refreshOnFocus: true,

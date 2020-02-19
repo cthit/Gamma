@@ -2,7 +2,9 @@ import {
     DigitTable,
     DigitLayout,
     useDigitTranslations,
-    useDigitToast
+    useDigitToast,
+    useGammaIs,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import React, { useCallback, useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
@@ -14,9 +16,7 @@ import {
     NICK
 } from "../../api/users/props.users.api";
 import * as _ from "lodash";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
-import { getUsersMinified } from "../../api/users/get.users.api";
 import { getUsersWithGDPRMinified } from "../../api/gdpr/get.gdpr.api";
 import { setGDPRValue } from "../../api/gdpr/put.gdpr.api";
 
@@ -39,11 +39,13 @@ const Gdpr = ({}) => {
     const [users, setUsers] = useState(null);
 
     const [lastSelected, setLastSelected] = useState([]);
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
+    const gdpr = useGammaIs("gdpr");
+    const access = admin || gdpr;
     const getUsersWithGDPRCallback = useCallback(getUsersWithGDPRMinified, []);
 
     useEffect(() => {
-        if (admin) {
+        if (access) {
             getUsersWithGDPRCallback().then(response => {
                 setUsers(response.data);
                 setLastSelected(
@@ -51,9 +53,9 @@ const Gdpr = ({}) => {
                 );
             });
         }
-    }, [admin, getUsersWithGDPRCallback]);
+    }, [access, getUsersWithGDPRCallback]);
 
-    if (!admin) {
+    if (!access) {
         return <InsufficientAccess />;
     }
 

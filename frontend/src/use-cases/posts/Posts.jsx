@@ -4,7 +4,8 @@ import {
     DigitCRUD,
     DigitText,
     useDigitTranslations,
-    DigitTextField
+    DigitTextField,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 
 import translations from "./Posts.translations";
@@ -18,7 +19,6 @@ import {
 
 import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 import { ID, NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
@@ -59,7 +59,7 @@ function generateEditComponentData(text) {
 const Posts = () => {
     const [text] = useDigitTranslations(translations);
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }

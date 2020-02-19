@@ -13,7 +13,8 @@ import {
     DigitSelect,
     DigitTextField,
     useDigitTranslations,
-    DigitCRUD
+    DigitCRUD,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import translations from "./SuperGroups.translations";
 import {
@@ -25,7 +26,6 @@ import { addSuperGroup } from "../../api/super-groups/post.super-groups.api";
 import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api";
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
 import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 
 function generateValidationSchema(text) {
@@ -91,7 +91,7 @@ function generateEditComponentData(text) {
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }

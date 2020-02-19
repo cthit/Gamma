@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import {
     DigitCRUD,
     DigitTextField,
-    useDigitTranslations
+    useDigitTranslations,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import {
     getWhitelist,
@@ -13,13 +14,12 @@ import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
 import translations from "./Whitelist.translations";
 import * as yup from "yup";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { DigitCRUD, useDigitTranslations } from "@cthit/react-digit-components";
+import {
+    DigitCRUD,
+    useDigitTranslations,
+    useGammaIsAdmin
+} from "@cthit/react-digit-components";
 import { getUser, getUsersMinified } from "../../api/users/get.users.api";
 import translations from "./Users.translations";
 import {
@@ -16,7 +20,6 @@ import {
     USER_AGREEMENT,
     WEBSITES
 } from "../../api/users/props.users.api";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
 import {
@@ -30,7 +33,7 @@ import { getWebsites } from "../../api/websites/get.websites.api";
 import { addUser } from "../../api/users/post.users.api";
 
 const Users = () => {
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     const [text] = useDigitTranslations(translations);
     const [websites, setWebsites] = useState(null);
     useEffect(() => {

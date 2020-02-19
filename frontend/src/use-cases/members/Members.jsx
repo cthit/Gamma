@@ -3,11 +3,11 @@ import {
     DigitLayout,
     DigitLoading,
     DigitStepper,
-    useDigitTranslations
+    useDigitTranslations,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import { Route, Switch } from "react-router";
 import { NAME } from "../../api/groups/props.groups.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import translations from "./Members.translations";
 import SetPostNames from "./views/set-post-names";
@@ -16,7 +16,6 @@ import SelectMembers from "./views/select-members";
 import { getPosts } from "../../api/posts/get.posts.api";
 import { getUsersMinified } from "../../api/users/get.users.api";
 import { getGroup } from "../../api/groups/get.groups.api";
-import GammaLoadingContext from "../../common/context/GammaLoading.context";
 
 const Members = ({ history }) => {
     const [text] = useDigitTranslations(translations);
@@ -27,7 +26,7 @@ const Members = ({ history }) => {
         posts: null
     });
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
 
     useEffect(() => {
         if (admin) {

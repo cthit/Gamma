@@ -9,7 +9,8 @@ import {
     DigitButton,
     DigitSelect,
     DigitTextArea,
-    DigitDatePicker
+    DigitDatePicker,
+    useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
@@ -27,7 +28,6 @@ import { editGroup } from "../../api/groups/put.groups.api";
 import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
-import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import DisplayUsersTable from "../../common/elements/display-users-table";
 
 const DESCRIPTION_SV = "descriptionSv";
@@ -193,7 +193,7 @@ function generateEditComponentData(text, superGroups = []) {
 
 const Groups = ({ history }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     const [superGroups, setSuperGroups] = useState([]);
 
     useEffect(() => {

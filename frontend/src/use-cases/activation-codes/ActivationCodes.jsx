@@ -4,16 +4,19 @@ import {
     getActivationCodes
 } from "../../api/activation-codes/get.activationCodes.api";
 import { deleteActivationCode } from "../../api/activation-codes/delete.activationCodes.api";
-import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
+import {
+    useDigitTranslations,
+    DigitCRUD,
+    useGammaIsAdmin
+} from "@cthit/react-digit-components";
 import translations from "./ActivationCodes.translations";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);
 
-    const admin = useIsAdmin();
+    const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }
