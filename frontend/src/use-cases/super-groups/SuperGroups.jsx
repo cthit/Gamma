@@ -16,8 +16,6 @@ import {
     DigitCRUD
 } from "@cthit/react-digit-components";
 import translations from "./SuperGroups.translations";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import {
     getSuperGroup,
     getSuperGroups,
@@ -92,10 +90,6 @@ function generateEditComponentData(text) {
 
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {

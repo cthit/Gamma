@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     FIRST_NAME,
     LAST_NAME,
@@ -12,16 +11,14 @@ import {
     DigitTextField,
     DigitButton,
     DigitLayout,
-    DigitDesign
+    DigitDesign,
+    useGammaUser,
+    useGammaStatus,
+    useGammaInvalidateMe
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { editMe } from "../../api/me/put.me.api";
 import { getWebsites } from "../../api/websites/get.websites.api";
-import {
-    userLogout,
-    userUpdateMe
-} from "../../app/elements/user-information/UserInformation.element.action-creator";
 import {
     generateUserCustomDetailsRenders,
     generateUserEditComponentData,
@@ -37,18 +34,17 @@ import MeChangePassword from "./screens/me-change-password";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
-    const [websites, setWebsites] = useState(null);
-    const dispatch = useDispatch();
-    const me = useSelector(state => state.user);
+    const [websites, setWebsites] = useState([]);
+    const user = useGammaUser();
+    const invalidateMe = useGammaInvalidateMe();
 
     useEffect(() => {
         getWebsites().then(response => {
             setWebsites(response.data);
-            dispatch(gammaLoadingFinished());
         });
-    }, [dispatch]);
+    }, []);
 
-    if (!me.loaded || websites == null) {
+    if (websites == null) {
         return null;
     }
 
@@ -67,9 +63,22 @@ const Me = () => {
                         staticId={null}
                         readOnePath={""}
                         updatePath={"/edit"}
-                        readOneRequest={() => dispatch(userUpdateMe())}
+                        readOneRequest={() =>
+                            new Promise(resolve => {
+                                resolve({ data: user });
+                            })
+                        }
                         keysOrder={generateUserKeyOrder()}
-                        updateRequest={(id, newData) => editMe(newData)}
+                        updateRequest={(id, newData) =>
+                            new Promise((resolve, reject) =>
+                                editMe(newData)
+                                    .then(response => {
+                                        invalidateMe();
+                                        resolve(response);
+                                    })
+                                    .catch(error => reject(error))
+                            )
+                        }
                         detailsRenderCardEnd={() => (
                             <DigitLayout.Center>
                                 <DigitLayout.Padding />
@@ -101,7 +110,7 @@ const Me = () => {
                         detailsTitle={data => fullName(data)}
                         updateTitle={data => fullName(data)}
                         deleteRequest={(_, form) =>
-                            deleteMe(form).then(() => dispatch(userLogout()))
+                            deleteMe(form).then(() => null)
                         }
                         dialogDeleteTitle={() => text.AreYouSure}
                         dialogDeleteDescription={() => text.AreYouReallySure}

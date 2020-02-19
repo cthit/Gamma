@@ -1,12 +1,12 @@
 import React from "react";
 import {
     DigitButton,
-    DigitIfElseRendering,
     DigitTable,
     DigitTranslations,
     DigitText,
     DigitLayout,
-    DigitDesign
+    DigitDesign,
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import translations from "./SelectMembers.view.translations";
 import UsersInGroupChanges from "./elements/users-in-group-changes";
@@ -19,7 +19,11 @@ import {
     NICK
 } from "../../../../api/users/props.users.api";
 
-class SelectMembers extends React.Component {
+const SelectMembers = () => {
+    return null;
+};
+
+class SelectMembers1 extends React.Component {
     constructor(props) {
         super(props);
 
@@ -111,96 +115,77 @@ class SelectMembers extends React.Component {
     };
 
     render() {
+        const [text] = useDigitTranslations(translations);
+
         const { selectedMemberIds, currentMembers } = this.state;
         const { users, group, onMembersSelected } = this.props;
 
         const unsavedEdits = this._unsavedEdits();
 
-        return (
-            <DigitIfElseRendering
-                test={
-                    group != null &&
-                    users != null &&
-                    (currentMembers.length > 0 ? users.length > 0 : true)
-                }
-                ifRender={() => (
-                    <DigitTranslations
-                        translations={translations}
-                        render={text => (
-                            <DigitLayout.Column>
-                                <DigitDesign.Card>
-                                    <DigitDesign.CardBody>
-                                        <DigitLayout.Row
-                                            justifyContent={"space-between"}
-                                        >
-                                            <DigitText.Heading5
-                                                text={
-                                                    unsavedEdits
-                                                        ? text.UnsavedEdits
-                                                        : text.NoChanges
-                                                }
-                                            />
-                                            <div>
-                                                <DigitButton
-                                                    disabled={!unsavedEdits}
-                                                    raised
-                                                    primary
-                                                    text={"Nästa"}
-                                                    onClick={() => {
-                                                        onMembersSelected(
-                                                            selectedMemberIds
-                                                        );
-                                                    }}
-                                                />
-                                            </div>
-                                        </DigitLayout.Row>
-                                    </DigitDesign.CardBody>
-                                </DigitDesign.Card>
-                                <DigitLayout.Row>
-                                    <UsersInGroupChanges
-                                        currentMembers={currentMembers}
-                                        selectedMembers={selectedMemberIds.map(
-                                            memberId =>
-                                                _.find(users, { id: memberId })
-                                        )}
+        if (
+            group != null &&
+            users != null &&
+            (currentMembers.length > 0 ? users.length > 0 : true)
+        ) {
+            return (
+                <DigitLayout.Column>
+                    <DigitDesign.Card>
+                        <DigitDesign.CardBody>
+                            <DigitLayout.Row justifyContent={"space-between"}>
+                                <DigitText.Heading5
+                                    text={
+                                        unsavedEdits
+                                            ? text.UnsavedEdits
+                                            : text.NoChanges
+                                    }
+                                />
+                                <div>
+                                    <DigitButton
+                                        disabled={!unsavedEdits}
+                                        raised
+                                        primary
+                                        text={"Nästa"}
+                                        onClick={() => {
+                                            onMembersSelected(
+                                                selectedMemberIds
+                                            );
+                                        }}
                                     />
-                                    <DigitLayout.Column>
-                                        <DigitTable
-                                            selected={selectedMemberIds}
-                                            onSelectedUpdated={
-                                                this.onSelectedChange
-                                            }
-                                            search
-                                            titleText={
-                                                text.UsersFor +
-                                                group[PRETTY_NAME]
-                                            }
-                                            searchText="Search for users"
-                                            showSearchableProps
-                                            idProp="id"
-                                            startOrderBy={NICK}
-                                            columnsOrder={[
-                                                ID,
-                                                FIRST_NAME,
-                                                NICK,
-                                                LAST_NAME
-                                            ]}
-                                            headerTexts={this.generateHeaderTexts(
-                                                text
-                                            )}
-                                            data={users.map(user => ({
-                                                ...user,
-                                                __link: "/users/" + user.cid
-                                            }))}
-                                        />
-                                    </DigitLayout.Column>
-                                </DigitLayout.Row>
-                            </DigitLayout.Column>
-                        )}
-                    />
-                )}
-            />
-        );
+                                </div>
+                            </DigitLayout.Row>
+                        </DigitDesign.CardBody>
+                    </DigitDesign.Card>
+                    <DigitLayout.Row>
+                        <UsersInGroupChanges
+                            currentMembers={currentMembers}
+                            selectedMembers={selectedMemberIds.map(memberId =>
+                                _.find(users, { id: memberId })
+                            )}
+                        />
+                        <DigitLayout.Column>
+                            <DigitTable
+                                selected={selectedMemberIds}
+                                onSelectedUpdated={this.onSelectedChange}
+                                search
+                                titleText={text.UsersFor + group[PRETTY_NAME]}
+                                searchText="Search for users"
+                                showSearchableProps
+                                idProp="id"
+                                startOrderBy={NICK}
+                                columnsOrder={[ID, FIRST_NAME, NICK, LAST_NAME]}
+                                headerTexts={this.generateHeaderTexts(text)}
+                                data={users.map(user => ({
+                                    ...user,
+                                    __link: "/users/" + user.cid
+                                }))}
+                            />
+                        </DigitLayout.Column>
+                    </DigitLayout.Row>
+                </DigitLayout.Column>
+            );
+        } else {
+            return null;
+        }
     }
 }
 

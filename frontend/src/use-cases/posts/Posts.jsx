@@ -9,8 +9,6 @@ import {
 
 import translations from "./Posts.translations";
 import { getPost, getPosts, getPostUsage } from "../../api/posts/get.posts.api";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { addPost } from "../../api/posts/post.posts.api";
 import { deletePost } from "../../api/posts/delete.posts.api";
 import {
@@ -60,11 +58,6 @@ function generateEditComponentData(text) {
 
 const Posts = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {
@@ -88,6 +81,10 @@ const Posts = () => {
                 id: "Id",
                 sv: text.Swedish,
                 en: text.English
+            }}
+            formInitialValues={{
+                sv: "",
+                en: ""
             }}
             keysOrder={["id", "sv", "en"]}
             tableProps={{

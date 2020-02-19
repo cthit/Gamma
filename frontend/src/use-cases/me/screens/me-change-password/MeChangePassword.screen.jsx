@@ -5,11 +5,9 @@ import {
     DigitTextField,
     DigitLayout
 } from "@cthit/react-digit-components";
-import { useSelector } from "react-redux";
 import * as yup from "yup";
 import translations from "./MeChangePassword.screen.translations";
 const MeChangePassword = () => {
-    const me = useSelector(state => state.user);
     const [text] = useDigitTranslations(translations);
 
     return null;
@@ -64,7 +62,7 @@ const MeChangePassword = () => {
                 }}
                 keysOrder={["oldPassword", "password", "confirmNewPassword"]}
                 submitText={text.ChangePassword}
-                titleText={text.ChangePasswordOn + " " + me.nick}
+                titleText={text.ChangePasswordOn + " " /*me.nick*/}
             />
         </DigitLayout.Center>
     );

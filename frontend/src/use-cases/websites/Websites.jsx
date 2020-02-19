@@ -4,8 +4,6 @@ import {
     DigitTextField,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { getWebsite, getWebsites } from "../../api/websites/get.websites.api";
 import { editWebsite } from "../../api/websites/put.websites.api";
 import { deleteWebsite } from "../../api/websites/delete.websites.api";
@@ -17,11 +15,6 @@ import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Websites = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {
@@ -43,6 +36,7 @@ const Websites = () => {
                 search: true
             }}
             keysOrder={["id", "name", "prettyName"]}
+            readAllKeysOrder={["name", "prettyName"]}
             keysText={{
                 id: text.Id,
                 name: text.Swedish,

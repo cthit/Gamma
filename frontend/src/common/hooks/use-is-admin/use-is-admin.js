@@ -1,8 +1,12 @@
-import { useSelector } from "react-redux";
 import { find } from "lodash";
+import { useGammaUser } from "@cthit/react-digit-components";
 
 function useIsAdmin() {
-    const user = useSelector(state => state.user);
+    const user = useGammaUser();
+
+    if (user == null) {
+        return false;
+    }
 
     const adminAuthority = find(user.authorities, { authority: "admin" });
 

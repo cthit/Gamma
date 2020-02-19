@@ -18,3 +18,4 @@ export const LOGIN_ENDPOINT = "/users/login/";
 export const GROUPS_ENDPOINT = "/groups/";
 export const USERS_ENDPOINT = "/users/";
 export const SUPER_GROUPS_ENDPOINT = "/superGroups/";
+export const RESET_PASSWORD_ENDPOINT = "/users/reset_password/";

@@ -6,18 +6,12 @@ import {
 import { deleteActivationCode } from "../../api/activation-codes/delete.activationCodes.api";
 import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
 import translations from "./ActivationCodes.translations";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { NAME } from "../../api/super-groups/props.super-groups.api";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {
@@ -37,6 +31,7 @@ const ActivationCodes = () => {
                 search: true
             }}
             keysOrder={["id", "cid", "code", "createdAt"]}
+            readAllKeysOrder={["cid", "code", "createdAt"]}
             keysText={{
                 id: text.Id,
                 cid: text.Cid,

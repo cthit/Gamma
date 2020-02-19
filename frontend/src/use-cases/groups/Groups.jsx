@@ -12,8 +12,6 @@ import {
     DigitDatePicker
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
 import {
     BECOMES_ACTIVE,
@@ -194,14 +192,9 @@ function generateEditComponentData(text, superGroups = []) {
 }
 
 const Groups = ({ history }) => {
-    const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
+    const [text, activeLanguage] = useDigitTranslations(translations);
     const admin = useIsAdmin();
     const [superGroups, setSuperGroups] = useState([]);
-
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
     useEffect(() => {
         getSuperGroups().then(response => {
@@ -281,11 +274,16 @@ const Groups = ({ history }) => {
                 BECOMES_ACTIVE,
                 BECOMES_INACTIVE
             ]}
+            readAllKeysOrder={[
+                NAME,
+                EMAIL,
+                activeLanguage === "sv" ? FUNCTION_SV : FUNCTION_EN
+            ]}
             keysText={generateKeyTexts(text)}
             tableProps={{
-                columnsOrder: [ID, NAME, EMAIL],
                 orderBy: NAME,
-                startOrderBy: NAME
+                startOrderBy: NAME,
+                titleText: text.Groups
             }}
             formInitialValues={generateInitialValues()}
             formValidationSchema={generateValidationSchema(text)}
@@ -314,6 +312,7 @@ const Groups = ({ history }) => {
                 ) : null
             }
             dateProps={[BECOMES_ACTIVE, BECOMES_INACTIVE]}
+            createButtonText={text.Create + " " + text.Group}
         />
     );
 };

@@ -76,7 +76,5 @@ function removeLastSlash(path) {
 }
 
 function token() {
-    const sessionToken = sessionStorage.token;
-    const localToken = localStorage.token;
-    return sessionToken != null ? sessionToken : localToken;
+    return sessionStorage["auth-gamma"];
 }

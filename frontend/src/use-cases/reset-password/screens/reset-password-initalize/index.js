@@ -1,2 +1,2 @@
-import ResetPasswordInitialize from "./ResetPasswordInitalize.screen.container";
+import ResetPasswordInitialize from "./ResetPasswordInitialize.screen";
 export default ResetPasswordInitialize;

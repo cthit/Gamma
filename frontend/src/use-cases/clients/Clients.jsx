@@ -3,16 +3,14 @@ import {
     useDigitTranslations,
     DigitTextField,
     DigitTextArea,
-    DigitDialogActions,
     DigitText,
-    DigitButton
+    DigitButton,
+    useDigitCustomDialog
 } from "@cthit/react-digit-components";
 import React, { useEffect } from "react";
 import { getClient, getClients } from "../../api/clients/get.clients.api";
 import { addClient } from "../../api/clients/post.clients.api";
 import translations from "./Clients.translations";
-import { useDispatch } from "react-redux";
-import { gammaLoadingFinished } from "../../app/views/gamma-loading/GammaLoading.view.action-creator";
 import * as yup from "yup";
 import { deleteClient } from "../../api/clients/delete.clients.api";
 import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
@@ -20,11 +18,8 @@ import InsufficientAccess from "../../common/views/insufficient-access";
 import { CLIENT_NAME } from "../../api/clients/props.clients.api";
 
 const Clients = () => {
+    const [openDialog] = useDigitCustomDialog();
     const [text] = useDigitTranslations(translations);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(gammaLoadingFinished());
-    }, [dispatch]);
 
     const admin = useIsAdmin();
     if (!admin) {
@@ -49,23 +44,21 @@ const Clients = () => {
                         webServerRedirectUri: client.webServerRedirectUri
                     })
                         .then(response => {
-                            dispatch(
-                                DigitDialogActions.digitDialogCustomOpen({
-                                    title: text.YourClientSecret,
-                                    onConfirm: () => {},
-                                    renderMain: () => (
-                                        <DigitText.Text
-                                            text={response.data.clientSecret}
-                                        />
-                                    ),
-                                    renderButtons: confirm => (
-                                        <DigitButton
-                                            text={text.CloseDialog}
-                                            onClick={confirm}
-                                        />
-                                    )
-                                })
-                            );
+                            openDialog({
+                                title: text.YourClientSecret,
+                                onConfirm: () => {},
+                                renderMain: () => (
+                                    <DigitText.Text
+                                        text={response.data.clientSecret}
+                                    />
+                                ),
+                                renderButtons: confirm => (
+                                    <DigitButton
+                                        text={text.CloseDialog}
+                                        onClick={confirm}
+                                    />
+                                )
+                            });
                             resolve(response);
                         })
                         .catch(error => reject(error))

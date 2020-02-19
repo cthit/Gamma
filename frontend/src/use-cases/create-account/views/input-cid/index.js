@@ -1,2 +1,2 @@
-import { default as InputCid } from "./InputCid.view.container";
+import { default as InputCid } from "./InputCid.view";
 export default InputCid;
