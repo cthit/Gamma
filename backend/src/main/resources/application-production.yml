@@ -53,7 +53,7 @@ application:
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   default-oauth2-client:
-    mock-client: ${IS_MOCKING_CLIENT:true}
+    mock-client: ${IS_MOCKING_CLIENT:false}
     client-name: ${DEFAULT_CLIENT_NAME:name}
     client-id: ${DEFAULT_CLIENT_ID:id}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}

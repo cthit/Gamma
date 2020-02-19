@@ -27,7 +27,7 @@ import { editGroup } from "../../api/groups/put.groups.api";
 import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import DisplayUsersTable from "../../common/elements/display-users-table";
 
 const DESCRIPTION_SV = "descriptionSv";

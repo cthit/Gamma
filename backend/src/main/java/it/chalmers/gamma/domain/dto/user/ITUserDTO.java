@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@SuppressWarnings("PMD.ExcessiveParameterList")
+@SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.TooManyFields"})
 public class ITUserDTO implements UserDetails {
     private final UUID id;
     private final String cid;
@@ -27,6 +27,7 @@ public class ITUserDTO implements UserDetails {
     private final List<GrantedAuthority> authorities;
     @JsonIgnore
     private final String password;
+    private final boolean activated;
 
 
     public ITUserDTO(UUID id,
@@ -41,7 +42,8 @@ public class ITUserDTO implements UserDetails {
                      boolean gdpr,
                      boolean userAgreement,
                      boolean accountLocked,
-                     Year acceptanceYear) {
+                     Year acceptanceYear,
+                     boolean activated) {
         this.id = id;
         this.cid = cid;
         this.nick = nick;
@@ -57,6 +59,7 @@ public class ITUserDTO implements UserDetails {
         this.acceptanceYear = acceptanceYear;
         this.authorities = null;
         this.password = null;
+        this.activated = activated;
     }
 
     public ITUserDTO(UUID id,
@@ -73,7 +76,8 @@ public class ITUserDTO implements UserDetails {
                      boolean accountLocked,
                      Year acceptanceYear,
                      List<GrantedAuthority> authorities,
-                     String password) {
+                     String password,
+                     boolean activated) {
         this.id = id;
         this.cid = cid;
         this.nick = nick;
@@ -89,6 +93,7 @@ public class ITUserDTO implements UserDetails {
         this.acceptanceYear = acceptanceYear;
         this.authorities = authorities;
         this.password = password;
+        this.activated = activated;
     }
 
     public UUID getId() {
@@ -178,6 +183,9 @@ public class ITUserDTO implements UserDetails {
         return true;
     }
 
+    public boolean isActivated() {
+        return this.activated;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -238,4 +246,5 @@ public class ITUserDTO implements UserDetails {
                 + ", acceptanceYear=" + this.acceptanceYear
                 + '}';
     }
+
 }

@@ -18,7 +18,7 @@ import {
 
 import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 import { ID, NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";

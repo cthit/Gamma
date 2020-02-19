@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,23 +37,26 @@ public class ITUserService implements UserDetailsService {
      * since that does not go through the controller layer.
      * Can be fixed later, and probably should, to minimize dependencies between services.
      */
-    public ITUserService(ITUserRepository itUserRepository, AuthorityService authorityService) {
+    public ITUserService(ITUserRepository itUserRepository, AuthorityService authorityService,
+                         PasswordEncoder passwordEncoder) {
         this.itUserRepository = itUserRepository;
         this.authorityService = authorityService;
-        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
-        ITUser user = this.itUserRepository.findByEmail(cidOrEmail)
-                .orElse(this.itUserRepository.findByCid(cidOrEmail)
+        String cidOrEmailLowerCase = cidOrEmail.toLowerCase();
+        ITUser user = this.itUserRepository.findByEmail(cidOrEmailLowerCase)
+                .orElse(this.itUserRepository.findByCid(cidOrEmailLowerCase)
                         .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG)));
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
 
     }
 
     public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
-        return this.itUserRepository.findByCid(cid)
+        String cidLowerCase = cid.toLowerCase();
+        return this.itUserRepository.findByCid(cidLowerCase)
                 .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
     }
@@ -122,12 +124,13 @@ public class ITUserService implements UserDetailsService {
 
     public ITUserDTO getITUser(String idCidOrEmail) throws UsernameNotFoundException {
         ITUser user;
-        if (UUIDUtil.validUUID(idCidOrEmail)) {
-            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
+        String idCidOrEmailLowerCase = idCidOrEmail.toLowerCase();
+        if (UUIDUtil.validUUID(idCidOrEmailLowerCase)) {
+            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmailLowerCase))
                 .orElseThrow(UserNotFoundResponse::new);
         } else {
-            user = this.itUserRepository.findByEmail(idCidOrEmail)
-                .orElse(this.itUserRepository.findByCid(idCidOrEmail)
+            user = this.itUserRepository.findByEmail(idCidOrEmailLowerCase)
+                .orElse(this.itUserRepository.findByCid(idCidOrEmailLowerCase)
                 .orElseThrow(UserNotFoundResponse::new));
         }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
@@ -147,6 +150,7 @@ public class ITUserService implements UserDetailsService {
     public void setPassword(ITUserDTO userDTO, String password) {
         ITUser user = this.getITUser(userDTO);
         user.setPassword(this.passwordEncoder.encode(password));
+        user.setActivated(true);
         this.itUserRepository.save(user);
     }
 
@@ -166,7 +170,4 @@ public class ITUserService implements UserDetailsService {
     public boolean passwordMatches(ITUserDTO user, String password) {
         return this.passwordEncoder.matches(password, user.getPassword());
     }
-
-
-
 }

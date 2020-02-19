@@ -1,7 +1,7 @@
 FROM node:13.2.0 as build
 
 COPY /package.json /
-RUN yarn install --production
+RUN yarn install --production --network-timeout 10000000
 RUN yarn global add react-scripts
 
 COPY /src /src

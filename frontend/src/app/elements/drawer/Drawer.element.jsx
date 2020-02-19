@@ -1,4 +1,4 @@
-import useIsAdmin from "../../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../../common/hooks/use-is/use-is-admin";
 import {
     DigitLayout,
     DigitNavLink,
@@ -6,9 +6,11 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./Drawer.element.translations";
+import useIsGdpr from "../../../common/hooks/use-is/use-is-gdpr";
 
 const Drawer = ({ closeDrawer }) => {
     const admin = useIsAdmin();
+    const dpo = useIsGdpr();
     const [text] = useDigitTranslations(translations);
 
     if (admin) {
@@ -83,6 +85,14 @@ const Drawer = ({ closeDrawer }) => {
                     text="Groups"
                     link="/groups"
                 />
+                { dpo &&
+                        <DigitNavLink
+                            onClick={closeDrawer}
+                            text={text.GDPR}
+                            link="/gdpr"
+                        />
+
+                }
             </DigitLayout.Column>
         );
     }

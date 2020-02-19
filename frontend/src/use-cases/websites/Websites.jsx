@@ -10,7 +10,7 @@ import { deleteWebsite } from "../../api/websites/delete.websites.api";
 import { addWebsite } from "../../api/websites/post.websites.api";
 import translations from "./Websites.translations";
 import * as yup from "yup";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Websites = () => {

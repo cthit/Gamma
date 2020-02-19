@@ -13,7 +13,7 @@ import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
 import translations from "./Whitelist.translations";
 import * as yup from "yup";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
-import useIsAdmin from "../../common/hooks/use-is-admin/use-is-admin";
+import useIsAdmin from "../../common/hooks/use-is/use-is-admin";
 import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Whitelist = () => {
