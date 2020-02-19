@@ -13,7 +13,6 @@ import {
     DigitLayout,
     DigitDesign,
     useGammaUser,
-    useGammaStatus,
     useGammaInvalidateMe
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";

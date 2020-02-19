@@ -10,7 +10,8 @@ import {
     EMAIL,
     FUNCTION,
     ID,
-    NAME
+    NAME,
+    PRETTY_NAME
 } from "../../../api/groups/props.groups.api";
 
 function generateHeaderTexts(text) {
@@ -21,6 +22,7 @@ function generateHeaderTexts(text) {
     output[DESCRIPTION] = text.Description;
     output[EMAIL] = text.Email;
     output[FUNCTION] = text.Function;
+    output[PRETTY_NAME] = text.PrettyName;
     output["__link"] = text.Details;
 
     return output;
@@ -28,7 +30,7 @@ function generateHeaderTexts(text) {
 
 function modifyData(groups, text, activeLanguage, columns) {
     return groups.map(group => {
-        const newGroup = {};
+        const newGroup = { ...group };
 
         newGroup[ID] = group[ID];
         newGroup[NAME] = group[NAME];
@@ -36,7 +38,7 @@ function modifyData(groups, text, activeLanguage, columns) {
             ? group[DESCRIPTION][activeLanguage]
             : null;
         newGroup[EMAIL] = group[EMAIL];
-        newGroup[FUNCTION] = columns.includes(DESCRIPTION)
+        newGroup[FUNCTION] = columns.includes(FUNCTION)
             ? group[FUNCTION][activeLanguage]
             : null;
         newGroup["__link"] = "/groups/" + group[ID];
@@ -65,7 +67,7 @@ const DisplayGroupsTable = ({ title, groups, columnsOrder }) => {
 };
 
 DisplayGroupsTable.defaultProps = {
-    columnsOrder: [ID, NAME, DESCRIPTION, EMAIL, FUNCTION]
+    columnsOrder: [NAME, DESCRIPTION, EMAIL, FUNCTION]
 };
 
 export default DisplayGroupsTable;

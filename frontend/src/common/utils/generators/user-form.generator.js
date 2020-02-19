@@ -231,7 +231,7 @@ export function generateUserCustomDetailsRenders(text) {
             <DisplayGroupsTable
                 groups={data.groups}
                 title={text.Groups}
-                columnsOrder={[ID, NAME, PRETTY_NAME]}
+                columnsOrder={[PRETTY_NAME]}
             />
         ) : (
             <DigitText.Text text={text.NoGroups} />

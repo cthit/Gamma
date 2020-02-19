@@ -34,7 +34,7 @@ const Whitelist = () => {
             updateRequest={editWhitelistItem}
             deleteRequest={deleteWhitelistItem}
             keysText={{ id: text.Id, cid: text.Cid }}
-            keysOrder={["id", "cid"]}
+            keysOrder={["cid"]}
             readAllKeysOrder={["cid"]}
             formComponentData={{
                 cid: {
