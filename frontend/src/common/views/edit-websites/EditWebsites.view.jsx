@@ -22,9 +22,10 @@ const getValueToTextMap = availableWebsites => {
 };
 
 const EditWebsites = ({ push, replace, remove, form, availableWebsites }) => {
-    const [{ newWebsiteTypeSelected, newWebsiteUrl }, setNewWebsite] = useState(
-        { newWebsiteTypeSelected: "", newWebsiteUrl: "" }
-    );
+    const [
+        { newWebsiteTypeSelected, newWebsiteUrl },
+        setNewWebsite
+    ] = useState({ newWebsiteTypeSelected: "", newWebsiteUrl: "" });
     const [text] = useDigitTranslations(translations);
 
     if (availableWebsites == null || availableWebsites.length === 0) {
