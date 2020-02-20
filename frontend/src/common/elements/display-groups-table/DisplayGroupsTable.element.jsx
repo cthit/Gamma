@@ -31,16 +31,19 @@ function generateHeaderTexts(text) {
 function modifyData(groups, text, activeLanguage, columns) {
     return groups.map(group => {
         const newGroup = { ...group };
+        console.log(group[DESCRIPTION]);
 
         newGroup[ID] = group[ID];
         newGroup[NAME] = group[NAME];
-        newGroup[DESCRIPTION] = columns.includes(DESCRIPTION)
-            ? group[DESCRIPTION][activeLanguage]
-            : null;
+        newGroup[DESCRIPTION] =
+            columns.includes(DESCRIPTION) && group[DESCRIPTION] != null
+                ? group[DESCRIPTION][activeLanguage]
+                : null;
         newGroup[EMAIL] = group[EMAIL];
-        newGroup[FUNCTION] = columns.includes(FUNCTION)
-            ? group[FUNCTION][activeLanguage]
-            : null;
+        newGroup[FUNCTION] =
+            columns.includes(FUNCTION) && group[FUNCTION] != null
+                ? group[FUNCTION][activeLanguage]
+                : null;
         newGroup["__link"] = "/groups/" + group[ID];
 
         return newGroup;
@@ -51,18 +54,16 @@ const DisplayGroupsTable = ({ title, groups, columnsOrder }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
-        <DigitLayout.Fill>
-            <DigitTable
-                titleText={title ? title : text.Groups}
-                searchText={text.SearchForGroups}
-                idProp="id"
-                startOrderBy={NAME}
-                columnsOrder={columnsOrder}
-                headerTexts={generateHeaderTexts(text)}
-                data={modifyData(groups, text, activeLanguage, columnsOrder)}
-                emptyTableText={text.NoGroups}
-            />
-        </DigitLayout.Fill>
+        <DigitTable
+            titleText={title ? title : text.Groups}
+            searchText={text.SearchForGroups}
+            idProp="id"
+            startOrderBy={NAME}
+            columnsOrder={columnsOrder}
+            headerTexts={generateHeaderTexts(text)}
+            data={modifyData(groups, text, activeLanguage, columnsOrder)}
+            emptyTableText={text.NoGroups}
+        />
     );
 };
 
