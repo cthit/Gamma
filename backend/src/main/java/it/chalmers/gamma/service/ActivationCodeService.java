@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 
+import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,8 +67,11 @@ public class ActivationCodeService {
         this.activationCodeRepository.deleteById(id);
     }
 
-    public boolean codeExists(UUID id) {
-        return this.activationCodeRepository.existsById(id);
+    public boolean codeExists(String id) {
+        if (UUIDUtil.validUUID(id)) {
+            return this.activationCodeRepository.existsById(UUID.fromString(id));
+        }
+        return this.activationCodeRepository.existsActivationCodeByCid_Cid(id);
     }
 
     public List<ActivationCodeDTO> getAllActivationCodes() {
@@ -75,7 +79,14 @@ public class ActivationCodeService {
                 .map(ActivationCode::toDTO).collect(Collectors.toList());
     }
 
-    public ActivationCodeDTO getActivationCode(UUID id) {
-        return this.activationCodeRepository.findById(id).map(ActivationCode::toDTO).orElse(null);
+    public ActivationCodeDTO getActivationCode(String id) {
+        if (UUIDUtil.validUUID(id)) {
+            return this.activationCodeRepository.findById(UUID.fromString(id))
+                    .map(ActivationCode::toDTO).orElse(null);
+        }
+        else {
+            return this.activationCodeRepository.findByCid_Cid(id)
+                    .map(ActivationCode::toDTO).orElse(null);
+        }
     }
 }
