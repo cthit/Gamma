@@ -92,8 +92,7 @@ public class ITUserService implements UserDetailsService {
         itUser.setGdpr(false);
         itUser.setAccountLocked(false);
         itUser.setLanguage(Language.sv);
-        email = email != null ? email : itUser.getCid() + "@student.chalmers.se";
-        itUser.setEmail(email);
+        itUser.setEmail(email == null ? itUser.getCid() + "@student.chalmers.se" : email);
         itUser.setPassword(this.passwordEncoder.encode(password));
         this.itUserRepository.save(itUser);
         return itUser.toDTO();
