@@ -262,7 +262,6 @@ const Groups = ({ history }) => {
                 });
             }}
             keysOrder={[
-                ID,
                 PRETTY_NAME,
                 NAME,
                 EMAIL,

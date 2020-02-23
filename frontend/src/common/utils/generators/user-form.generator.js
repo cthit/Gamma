@@ -223,19 +223,24 @@ export function generateUserEditComponentData(text, availableWebsites) {
     return componentData;
 }
 
-export function generateUserCustomDetailsRenders(text) {
+export function generateUserCustomDetailsRenders(text, ignoreGroups) {
     const output = {};
     output[WEBSITES] = data => null;
-    output[GROUPS] = data =>
-        data.groups != null ? (
-            <DisplayGroupsTable
-                groups={data.groups}
-                title={text.Groups}
-                columnsOrder={[ID, NAME, PRETTY_NAME]}
-            />
-        ) : (
-            <DigitText.Text text={text.NoGroups} />
-        );
+
+    if (ignoreGroups) {
+        output[GROUPS] = data => null;
+    } else {
+        output[GROUPS] = data =>
+            data.groups != null ? (
+                <DisplayGroupsTable
+                    groups={data.groups}
+                    title={text.Groups}
+                    columnsOrder={[PRETTY_NAME]}
+                />
+            ) : (
+                <DigitText.Text text={text.NoGroups} />
+            );
+    }
 
     return output;
 }

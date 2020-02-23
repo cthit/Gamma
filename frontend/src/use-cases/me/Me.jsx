@@ -13,7 +13,6 @@ import {
     DigitLayout,
     DigitDesign,
     useGammaUser,
-    useGammaStatus,
     useGammaInvalidateMe
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
@@ -31,6 +30,7 @@ import { deleteMe } from "../../api/me/delete.me.api";
 import * as yup from "yup";
 import { Switch, Route } from "react-router-dom";
 import MeChangePassword from "./screens/me-change-password";
+import MeGroups from "./screens/me-groups";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
@@ -53,7 +53,12 @@ const Me = () => {
 
     return (
         <Switch>
-            <Route path={"/me/change-password"} component={MeChangePassword} />
+            <Route exact path={"/me/groups"} component={MeGroups} />
+            <Route
+                exact
+                path={"/me/change-password"}
+                component={MeChangePassword}
+            />
             <Route
                 render={() => (
                     <DigitCRUD
@@ -80,23 +85,28 @@ const Me = () => {
                             )
                         }
                         detailsRenderCardEnd={() => (
-                            <DigitLayout.Center>
-                                <DigitLayout.Padding />
-                                <DigitLayout.Size absWidth={"220px"}>
+                            <DigitLayout.Padding>
+                                <DigitLayout.Row justifyContent={"center"}>
                                     <DigitDesign.Link
                                         to={"/me/change-password"}
                                     >
                                         <DigitButton
-                                            raised
+                                            outlined
                                             text={text.ChangePassword}
-                                            onClick={() => console.log("Hj")}
                                         />
                                     </DigitDesign.Link>
-                                </DigitLayout.Size>
-                            </DigitLayout.Center>
+                                    <DigitDesign.Link to={"/me/groups"}>
+                                        <DigitButton
+                                            outlined
+                                            text={text.YourGroups}
+                                        />
+                                    </DigitDesign.Link>
+                                </DigitLayout.Row>
+                            </DigitLayout.Padding>
                         )}
                         customDetailsRenders={generateUserCustomDetailsRenders(
-                            text
+                            text,
+                            true
                         )}
                         keysText={generateUserKeysTexts(text)}
                         formValidationSchema={generateUserValidationSchema(
