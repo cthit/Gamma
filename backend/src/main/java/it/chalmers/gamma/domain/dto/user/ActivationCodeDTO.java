@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class ActivationCodeDTO {
     private final UUID id;
@@ -28,8 +29,13 @@ public class ActivationCodeDTO {
         return this.id;
     }
 
+    @JsonIgnore
     public WhitelistDTO getWhitelistDTO() {
         return this.whitelistDTO;
+    }
+
+    public String getCid() {
+        return this.whitelistDTO.getCid();
     }
 
     public String getCode() {
