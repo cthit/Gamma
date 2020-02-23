@@ -5,7 +5,9 @@ import it.chalmers.gamma.service.ITUserService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +55,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Value("${security.jwt.token.audience}")
     private String audience;
 
+    @Value("${security.jwt.token.expire-length}")
+    private int expiration;
+
     public OAuth2Config(ITUserService userDetailsService, AuthenticationManager authenticationManager,
                         ITClientService clientDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -83,6 +88,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
             additionalInfo.put("iss", this.issuer);
             additionalInfo.put("aud", this.audience);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+            ((DefaultOAuth2AccessToken) accessToken).setExpiration(
+                    new Date(System.currentTimeMillis() + expiration*1000));
             return accessToken;
         };
     }
