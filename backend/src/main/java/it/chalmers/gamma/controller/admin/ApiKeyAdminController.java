@@ -9,6 +9,8 @@ import it.chalmers.gamma.response.apikey.GetAllAPIKeysResponse;
 import it.chalmers.gamma.response.apikey.GetAllAPIKeysResponse.GetAllAPIKeysResponseObject;
 import it.chalmers.gamma.response.apikey.GetApiKeyResponse;
 import it.chalmers.gamma.response.apikey.GetApiKeyResponse.GetApiKeyResponseObject;
+import it.chalmers.gamma.response.apikey.GetApiKeySecretResponse;
+import it.chalmers.gamma.response.apikey.GetApiKeySecretResponse.GetApiKeySecretResponseObject;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -34,12 +36,14 @@ public class ApiKeyAdminController {
     }
 
     @PostMapping()
-    public GetApiKeyResponseObject createApiKey(@Valid @RequestBody CreateApiKeyRequest request, BindingResult result) {
+    public GetApiKeySecretResponseObject createApiKey(
+            @Valid @RequestBody CreateApiKeyRequest request,
+            BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ApiKeyDTO apiKey = this.apiKeyService.createApiKey(requestToDTO(request));
-        return new GetApiKeyResponse(apiKey).toResponseObject();
+        String apiKeySecret = this.apiKeyService.createApiKey(requestToDTO(request));
+        return new GetApiKeySecretResponse(apiKeySecret).toResponseObject();
     }
 
     @GetMapping()
