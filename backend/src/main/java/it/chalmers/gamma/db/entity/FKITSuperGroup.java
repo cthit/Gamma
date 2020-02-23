@@ -52,7 +52,7 @@ public class FKITSuperGroup {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     public String getPrettyName() {
@@ -76,7 +76,7 @@ public class FKITSuperGroup {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public FKITSuperGroupDTO toDTO() {

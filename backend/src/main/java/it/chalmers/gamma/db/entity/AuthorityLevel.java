@@ -41,7 +41,7 @@ public class AuthorityLevel implements GrantedAuthority {
     }
 
     public void setAuthorityLevel(String authorityLevel) {
-        this.authorityLevel = authorityLevel;
+        this.authorityLevel = authorityLevel.toLowerCase();
     }
 
     @Override
