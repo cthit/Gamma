@@ -88,7 +88,7 @@
 </head>
 <body onload="onload()">
     <canvas id="c"></canvas>
-    <div th:fragment="content">
+    <div id="loginForm" th:fragment="content">
         <form name="f" th:action="@{/login}" method="post">
             <div class="card mdc-elevation--z8">
 
@@ -190,12 +190,12 @@
                 </div>
             </div>
         </form>
-
-        <footer class="text text--roboto">
-            Made by digIT '18
-        </footer>
-
     </div>
+
+
+    <footer class="text text--roboto">
+        Made by digIT '18
+    </footer>
 
 </body>
 </html>

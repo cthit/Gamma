@@ -13,6 +13,11 @@ body {
     height: 100vh;
 }
 
+canvas {
+    position: absolute;
+    z-index: 1;
+}
+
 @font-face {
     font-family: 'Matrix';
     src: url('matrix_code_nfi.ttf') format('truetype');
@@ -59,11 +64,6 @@ footer {
 }
 
 .card{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
     margin: auto;
 
     display: flex;
@@ -71,8 +71,6 @@ footer {
 
     max-width: 280px;
     min-width: 250px;
-
-    height: calc(328px+57px);
 
     padding: 16px;
 
@@ -106,4 +104,26 @@ hr{
     margin: 0px;
     margin-top: 8px;
     padding: 0;
+}
+
+#loginForm{
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    justify-content: center;
+    align-content: center;
+}
+
+footer {
+    z-index: 2;
+    position: absolute;
+    bottom: 16px;
 }
