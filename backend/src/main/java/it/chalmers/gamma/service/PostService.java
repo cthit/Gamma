@@ -42,7 +42,10 @@ public class PostService {
     }
 
     public boolean postExists(String id) {
-        return this.repository.existsById(UUID.fromString(id)) || this.repository.existsByPostName_Sv(id);
+        if (UUIDUtil.validUUID(id)) {
+            return this.repository.existsById(UUID.fromString(id));
+        }
+        return this.repository.existsByPostName_Sv(id);
     }
 
     public List<PostDTO> getAllPosts() {
