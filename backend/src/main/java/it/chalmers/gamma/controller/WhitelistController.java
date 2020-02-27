@@ -63,7 +63,6 @@ public final class WhitelistController {
             }
             return new ActivationCodeAddedResonse(); // For security reasons
         } catch (WhitelistDoesNotExistsException e) {   // This should never happen.
-            e.printStackTrace();
             return new ActivationCodeAddedResonse();
         }
     }

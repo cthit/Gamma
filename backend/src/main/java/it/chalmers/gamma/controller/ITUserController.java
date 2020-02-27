@@ -123,6 +123,7 @@ public final class ITUserController {
                 return new UserCreatedResponse();
             }
         } catch (WhitelistDoesNotExistsException e) {
+            LOGGER.warn(String.format("user %s entered non-valid code", createITUserRequest.getNick()));
             return new UserCreatedResponse();
         }
     }
