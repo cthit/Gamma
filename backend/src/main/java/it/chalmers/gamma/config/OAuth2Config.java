@@ -5,7 +5,6 @@ import it.chalmers.gamma.service.ITUserService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,16 +70,16 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
         enhancerChain.setTokenEnhancers(Arrays.asList(issuerTokenEnhancer(), accessTokenConverter()));
         configurer.tokenEnhancer(enhancerChain)
-            .accessTokenConverter(accessTokenConverter())
-            .authenticationManager(this.authenticationManager)
-            .userDetailsService(this.userDetailsService);
+                .accessTokenConverter(accessTokenConverter())
+                .authenticationManager(this.authenticationManager)
+                .userDetailsService(this.userDetailsService);
     }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.withClientDetails(this.clientDetailsService);
     }
-    
+
     @Bean
     public TokenEnhancer issuerTokenEnhancer() {
         return (accessToken, authentication) -> {
@@ -89,7 +88,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
             additionalInfo.put("aud", this.audience);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             ((DefaultOAuth2AccessToken) accessToken).setExpiration(
-                    new Date(System.currentTimeMillis() + expiration*1000));
+                    new Date(System.currentTimeMillis() + this.expiration * 1000));
             return accessToken;
         };
     }
