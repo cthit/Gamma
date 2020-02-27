@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.activationcode.ActivationCodeAddedResonse;
+import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
@@ -47,19 +48,24 @@ public final class WhitelistController {
     @PostMapping("/activate_cid")
     public ActivationCodeAddedResonse createActivationCode(@Valid @RequestBody WhitelistCodeRequest cid,
                                                        BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+        try {
+            if (result.hasErrors()) {
+                throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+            }
+            if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
+                WhitelistDTO whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
+                String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
+                ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
+                sendEmail(activationCode);
+            } else {
+                String nonWhitelistWarning = "Non Whitelisted User: %s Tried to Create Account";
+                LOGGER.warn(String.format(nonWhitelistWarning, cid.getCid()));
+            }
+            return new ActivationCodeAddedResonse(); // For security reasons
+        } catch (WhitelistDoesNotExistsException e) {   // This should never happen.
+            e.printStackTrace();
+            return new ActivationCodeAddedResonse();
         }
-        if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
-            WhitelistDTO whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
-            String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
-            ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
-            sendEmail(activationCode);
-        } else {
-            String nonWhitelistWarning = "Non Whitelisted User: %s Tried to Create Account";
-            LOGGER.warn(String.format(nonWhitelistWarning, cid.getCid()));
-        }
-        return new ActivationCodeAddedResonse(); // For security reasons
     }
 
     private void sendEmail(ActivationCodeDTO activationCode) {
