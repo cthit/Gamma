@@ -78,7 +78,7 @@ public class FKITGroup {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 
     public Text getDescription() {
@@ -134,7 +134,7 @@ public class FKITGroup {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     @Override

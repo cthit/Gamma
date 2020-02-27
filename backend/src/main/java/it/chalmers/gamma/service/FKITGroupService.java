@@ -86,7 +86,7 @@ public class FKITGroupService {
             return this.repo.findById(UUID.fromString(name))
                     .orElseThrow(GroupDoesNotExistResponse::new).toDTO();
         }
-        return this.repo.findByName(name)
+        return this.repo.findByName(name.toLowerCase())
                 .orElseThrow(GroupDoesNotExistResponse::new)
                 .toDTO();
     }

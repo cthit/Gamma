@@ -41,7 +41,7 @@ public class AuthorityLevelService {
             return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
                     .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
         }
-        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel)
+        return this.authorityLevelRepository.findByAuthorityLevel(authorityLevel.toLowerCase())
                 .orElseThrow(AuthorityLevelDoesNotExistException::new).toDTO();
     }
 
