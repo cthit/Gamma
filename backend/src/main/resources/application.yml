@@ -47,7 +47,7 @@ security:
   jwt:
     token:
       secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs= # This is only for Development, should also be a secret one for Production
-      expire-length: 2592000000 #One Month. Subject to change.
+      expire-length: 2629746 #One Month. Subject to change.
       issuer: http://localhost:8081
       audience: http://localhost:3000
 
