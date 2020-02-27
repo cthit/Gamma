@@ -83,8 +83,7 @@ public class ActivationCodeService {
         if (UUIDUtil.validUUID(id)) {
             return this.activationCodeRepository.findById(UUID.fromString(id))
                     .map(ActivationCode::toDTO).orElse(null);
-        }
-        else {
+        } else {
             return this.activationCodeRepository.findByCid_Cid(id)
                     .map(ActivationCode::toDTO).orElse(null);
         }
