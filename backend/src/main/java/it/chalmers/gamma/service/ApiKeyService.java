@@ -26,7 +26,7 @@ public class ApiKeyService {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
-    public ApiKeyDTO createApiKey(ApiKeyDTO request) {
+    public String createApiKey(ApiKeyDTO request) {
         ApiKey apiKey = new ApiKey();
         Text description = new Text();
         description.setEn(request.getDescription().getEn());
@@ -37,8 +37,8 @@ public class ApiKeyService {
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
         apiKey.setKey(key);
-        return this.apiKeyRepository.save(apiKey).toDTO();
-
+        this.apiKeyRepository.save(apiKey).toDTO();
+        return key;
     }
 
     public void addApiKey(String clientName, String clientApiKey, Text description) {

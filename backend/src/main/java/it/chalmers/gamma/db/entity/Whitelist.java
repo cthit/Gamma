@@ -42,7 +42,7 @@ public class Whitelist {
     }
 
     public void setCid(String cid) {
-        this.cid = cid;
+        this.cid = cid.toLowerCase();
     }
 
     public WhitelistDTO toDTO() {

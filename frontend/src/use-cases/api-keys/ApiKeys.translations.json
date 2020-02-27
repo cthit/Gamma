@@ -13,5 +13,13 @@
     "ToastDelete1": ["Deletion of ", "Radering av "],
     "ToastDeleteFailed2": [" failed", " misslyckades"],
     "ToastDeleteSuccessful2": [" was successful", " lyckades"],
-    "CreateNewApiKey": ["Create a new API key", "Skapa en ny API nyckel"]
+    "CreateNewApiKey": ["Create a new API key", "Skapa en ny API nyckel"],
+    "YourApiKeySecret": [
+        "The secret for you API key",
+        "Hemliga lösenordet för din API nyckel"
+    ],
+    "YourApiKeySecretDescription": [
+        "Make sure this is kept safe. This key can be used to access everything in Gamma! This will be the last time it will be shown.",
+        "Se till att denna nyckel behålls hemlig. Denna nyckel kan användas för att få tillgång till allting! Detta är enda gången den kommer att synas."
+    ]
 }

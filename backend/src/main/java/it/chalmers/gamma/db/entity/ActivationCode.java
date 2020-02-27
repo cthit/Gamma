@@ -89,7 +89,7 @@ public class ActivationCode {
     }
 
     public boolean isValid() {
-        return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(this.PASSWORD_EXPIRATION_TIME)));
+        return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(PASSWORD_EXPIRATION_TIME)));
     }
 
     public ActivationCodeDTO toDTO() {
@@ -97,7 +97,7 @@ public class ActivationCode {
                 this.cid.toDTO(),
                 this.code,
                 this.createdAt,
-                this.PASSWORD_EXPIRATION_TIME);
+                PASSWORD_EXPIRATION_TIME);
     }
 
     @Override

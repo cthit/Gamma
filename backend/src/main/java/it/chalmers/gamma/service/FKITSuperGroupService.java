@@ -37,12 +37,12 @@ public class FKITSuperGroupService {
             return this.repository.findById(UUID.fromString(id))
                     .orElseThrow(SuperGroupDoesNotExistResponse::new).toDTO();
         }
-        return this.repository.findByName(id)
+        return this.repository.findByName(id.toLowerCase())
                 .orElseThrow(SuperGroupDoesNotExistResponse::new).toDTO();
     }
 
     public boolean groupExists(String name) {
-        return this.repository.existsByName(name)
+        return this.repository.existsByName(name.toLowerCase())
                 || UUIDUtil.validUUID(name) && this.repository.existsById(UUID.fromString(name));
     }
 

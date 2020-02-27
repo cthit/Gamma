@@ -35,16 +35,16 @@ public final class UserActivationCodeAdminController {
     @GetMapping("/{activationCode}")
     public GetActivationCodeResponseObject getActivationCode(
             @PathVariable("activationCode") String activationCode) {
-        if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
+        if (!this.activationCodeService.codeExists(activationCode)) {
             throw new ActivationCodeDoesNotExistResponse();
         }
         return new GetActivationCodeResponse(
-                this.activationCodeService.getActivationCode(UUID.fromString(activationCode))).toResponseObject();
+                this.activationCodeService.getActivationCode(activationCode)).toResponseObject();
     }
 
     @DeleteMapping("/{activationCode}")
     public ActivationCodeDeletedResponse removeActivationCode(@PathVariable("activationCode") String activationCode) {
-        if (!this.activationCodeService.codeExists(UUID.fromString(activationCode))) {
+        if (!this.activationCodeService.codeExists(activationCode)) {
             throw new ActivationCodeDoesNotExistResponse();
         }
         this.activationCodeService.deleteCode(UUID.fromString(activationCode));

@@ -148,7 +148,7 @@ public class ITUser {
     }
 
     public void setCid(String cid) {
-        this.cid = cid;
+        this.cid = cid.toLowerCase();
     }
 
     public void setPassword(String password) {
