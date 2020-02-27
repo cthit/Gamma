@@ -55,7 +55,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private String audience;
 
     @Value("${security.jwt.token.expire-length}")
-    private int expiration;
+    private long expiration;
 
     public OAuth2Config(ITUserService userDetailsService, AuthenticationManager authenticationManager,
                         ITClientService clientDetailsService) {
