@@ -51,7 +51,7 @@ public class WhitelistService {
      * @return if found the whitelist object searched for, otherwise null
      */
     public WhitelistDTO getWhitelistDTO(String cid) {
-        return this.whitelistRepository.findByCid(cid).map(Whitelist::toDTO)
+        return this.whitelistRepository.findByCid(cid.toLowerCase()).map(Whitelist::toDTO)
                 .orElseThrow(WhitelistDoesNotExistsException::new);
     }
     protected Whitelist getWhitelist(WhitelistDTO whitelistDTO) {
@@ -77,7 +77,7 @@ public class WhitelistService {
      * @return true if exists in the database, false otherwise
      */
     public boolean isCIDWhiteListed(String cid) {
-        return this.whitelistRepository.existsByCid(cid)
+        return this.whitelistRepository.existsByCid(cid.toLowerCase())
                 || UUIDUtil.validUUID(cid) && this.whitelistRepository.existsById(UUID.fromString(cid));
     }               // Above works because java only checks right if left is correct.
 

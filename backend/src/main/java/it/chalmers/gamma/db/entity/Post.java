@@ -67,7 +67,7 @@ public class Post {
     }
 
     public void setEmailPrefix(String emailPrefix) {
-        this.emailPrefix = emailPrefix;
+        this.emailPrefix = emailPrefix.toLowerCase();
     }
 
     public PostDTO toDTO() {

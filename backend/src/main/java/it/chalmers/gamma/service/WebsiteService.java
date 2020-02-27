@@ -39,7 +39,7 @@ public class WebsiteService {
             return this.repository.findById(UUID.fromString(websiteName))
                     .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
         }
-        return this.repository.findByName(websiteName)
+        return this.repository.findByName(websiteName.toLowerCase())
                 .orElseThrow(WebsiteNotFoundResponse::new).toDTO();
     }
 
