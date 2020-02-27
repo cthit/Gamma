@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.filter.JwtAuthenticationFilter;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
@@ -25,6 +26,7 @@ import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
+import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
@@ -42,6 +44,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,6 +70,7 @@ public final class ITUserController {
     private final WhitelistService whitelistService;
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
@@ -88,32 +93,37 @@ public final class ITUserController {
     // TODO, move checks to service, and return only if checks failed or passed
     public UserCreatedResponse createUser(@Valid @RequestBody CreateITUserRequest createITUserRequest,
                                           BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-        WhitelistDTO user = this.whitelistService.getWhitelistDTO(createITUserRequest.getWhitelist().getCid());
+        try {
+            if (result.hasErrors()) {
+                throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
+            }
+            WhitelistDTO user = this.whitelistService.getWhitelistDTO(createITUserRequest.getWhitelist().getCid());
 
-        if (this.itUserService.userExists(user.getCid())) {
-            throw new UserAlreadyExistsResponse();
-        }
-        if (!this.activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
-            throw new CodeOrCidIsWrongResponse();
-        }
-        int minPassLength = 8;
+            if (this.itUserService.userExists(user.getCid())) {
+                throw new UserAlreadyExistsResponse();
+            }
+            if (!this.activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
+                throw new CodeOrCidIsWrongResponse();
+            }
+            int minPassLength = 8;
 
-        if (createITUserRequest.getPassword().length() < minPassLength) {
-            throw new PasswordTooShortResponse();
-        } else {
-            this.itUserService.createUser(
-                    createITUserRequest.getNick(),
-                    createITUserRequest.getFirstName(),
-                    createITUserRequest.getLastName(),
-                    createITUserRequest.getWhitelist().getCid(),
-                    Year.of(createITUserRequest.getAcceptanceYear()),
-                    createITUserRequest.isUserAgreement(),
-                    null,
-                    createITUserRequest.getPassword());
-            this.removeCidFromWhitelist(createITUserRequest);
+            if (createITUserRequest.getPassword().length() < minPassLength) {
+                throw new PasswordTooShortResponse();
+            } else {
+                this.itUserService.createUser(
+                        createITUserRequest.getNick(),
+                        createITUserRequest.getFirstName(),
+                        createITUserRequest.getLastName(),
+                        createITUserRequest.getWhitelist().getCid(),
+                        Year.of(createITUserRequest.getAcceptanceYear()),
+                        createITUserRequest.isUserAgreement(),
+                        null,
+                        createITUserRequest.getPassword());
+                this.removeCidFromWhitelist(createITUserRequest);
+                return new UserCreatedResponse();
+            }
+        } catch (WhitelistDoesNotExistsException e) {
+            LOGGER.warn(String.format("user %s entered non-valid code", createITUserRequest.getNick()));
             return new UserCreatedResponse();
         }
     }
