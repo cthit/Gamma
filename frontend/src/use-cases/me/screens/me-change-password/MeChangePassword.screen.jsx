@@ -1,22 +1,41 @@
 import React from "react";
 import {
-    DigitEditData,
+    DigitEditDataCard,
     useDigitTranslations,
     DigitTextField,
-    DigitLayout
+    DigitLayout,
+    useGammaUser,
+    useDigitToast
 } from "@cthit/react-digit-components";
 import * as yup from "yup";
 import translations from "./MeChangePassword.screen.translations";
+import { editPassword } from "../../../../api/me/put.me.api";
+import { useHistory } from "react-router";
 const MeChangePassword = () => {
+    const me = useGammaUser();
     const [text] = useDigitTranslations(translations);
-
-    return null;
+    const [queueToast] = useDigitToast();
+    const history = useHistory();
 
     return (
         <DigitLayout.Center>
-            <DigitEditData
+            <DigitEditDataCard
                 onSubmit={v => {
-                    console.log(v);
+                    const { oldPassword, password } = v;
+                    editPassword({
+                        oldPassword,
+                        password
+                    })
+                        .then(() => {
+                            queueToast({ text: text.PasswordWasChanged });
+                            history.push("/me");
+                        })
+                        .catch(() =>
+                            queueToast({
+                                text:
+                                    text.SomethingWentWrongWhenChangingPassword
+                            })
+                        );
                 }}
                 validationSchema={yup.object().shape({
                     oldPassword: yup.string(),
@@ -62,7 +81,7 @@ const MeChangePassword = () => {
                 }}
                 keysOrder={["oldPassword", "password", "confirmNewPassword"]}
                 submitText={text.ChangePassword}
-                titleText={text.ChangePasswordOn + " " /*me.nick*/}
+                titleText={text.ChangePasswordOn + " " + me.nick}
             />
         </DigitLayout.Center>
     );
