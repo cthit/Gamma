@@ -1,6 +1,10 @@
 import React from "react";
 
-import { DigitEditDataCard, DigitLayout } from "@cthit/react-digit-components";
+import {
+    DigitEditDataCard,
+    DigitLayout,
+    useDigitTranslations
+} from "@cthit/react-digit-components";
 import NewMembershipArray from "./sub-views/new-membership-array";
 
 import _ from "lodash";
@@ -14,6 +18,7 @@ import {
     LAST_NAME,
     NICK
 } from "../../../../api/users/props.users.api";
+import { useHistory } from "react-router";
 
 function getInitialValues(selectedMemberIds, currentMembers, users, groupId) {
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
@@ -50,46 +55,55 @@ const SetPostNames = ({
     currentMembers,
     users,
     onNewMembers
-}) => (
-    <DigitLayout.Center>
-        <DigitEditDataCard
-            absWidth={"650px"}
-            onSubmit={onNewMembers}
-            keysOrder={["members"]}
-            initialValues={getInitialValues(
-                selectedMemberIds,
-                currentMembers,
-                users,
-                groupId
-            )}
-            validationSchema={yup.object().shape({
-                members: yup
-                    .array(
-                        yup
-                            .object()
-                            .shape({
-                                postId: yup.string().required(),
-                                unofficialPostName: yup.string().required()
-                            })
-                            .required()
-                    )
-                    .required()
-            })}
-            keysComponentData={{
-                members: {
-                    component: NewMembershipArray,
-                    componentProps: {
-                        posts,
-                        currentMembers,
-                        groupId
-                    },
-                    array: true
-                }
-            }}
-            titleText={""}
-            submitText={"Nästa"}
-        />
-    </DigitLayout.Center>
-);
+}) => {
+    const [text] = useDigitTranslations();
+    const history = useHistory();
+
+    return (
+        <DigitLayout.Center>
+            <DigitEditDataCard
+                absWidth={"650px"}
+                onSubmit={onNewMembers}
+                keysOrder={["members"]}
+                initialValues={getInitialValues(
+                    selectedMemberIds,
+                    currentMembers,
+                    users,
+                    groupId
+                )}
+                validationSchema={yup.object().shape({
+                    members: yup
+                        .array(
+                            yup
+                                .object()
+                                .shape({
+                                    postId: yup.string().required(),
+                                    unofficialPostName: yup.string().required()
+                                })
+                                .required()
+                        )
+                        .required()
+                })}
+                keysComponentData={{
+                    members: {
+                        component: NewMembershipArray,
+                        componentProps: {
+                            posts,
+                            currentMembers,
+                            groupId
+                        },
+                        array: true
+                    }
+                }}
+                titleText={""}
+                submitText={text.Next}
+                extraButton={{
+                    text: text.Back,
+                    onClick: () => history.goBack()
+                }}
+            />
+        </DigitLayout.Center>
+    );
+};
 
 export default SetPostNames;
