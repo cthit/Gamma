@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DigitEditData, DigitLayout } from "@cthit/react-digit-components";
+import { DigitEditDataCard, DigitLayout } from "@cthit/react-digit-components";
 import NewMembershipArray from "./sub-views/new-membership-array";
 
 import _ from "lodash";
@@ -15,19 +15,7 @@ import {
     NICK
 } from "../../../../api/users/props.users.api";
 
-function getSelectedMemberIds(groupId) {
-    const selectedMemberIds = sessionStorage.getItem(
-        groupId + ".selectedMembers"
-    );
-    if (selectedMemberIds != null) {
-        return JSON.parse(selectedMemberIds);
-    }
-    return [];
-}
-
-function getInitialValues(currentMembers, users, groupId) {
-    const selectedMemberIds = getSelectedMemberIds(groupId);
-
+function getInitialValues(selectedMemberIds, currentMembers, users, groupId) {
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
         const user = _.find(users, { id: selectedMember });
 
@@ -50,19 +38,13 @@ function getInitialValues(currentMembers, users, groupId) {
         return necessaryMemberData;
     });
 
-    sessionStorage.setItem(
-        groupId + ".postNames",
-        JSON.stringify({
-            members: necessaryMembersData
-        })
-    );
-
     return {
         members: necessaryMembersData
     };
 }
 
 const SetPostNames = ({
+    selectedMemberIds,
     groupId,
     posts,
     currentMembers,
@@ -70,11 +52,16 @@ const SetPostNames = ({
     onNewMembers
 }) => (
     <DigitLayout.Center>
-        <DigitEditData
+        <DigitEditDataCard
             absWidth={"650px"}
             onSubmit={onNewMembers}
             keysOrder={["members"]}
-            initialValues={getInitialValues(currentMembers, users, groupId)}
+            initialValues={getInitialValues(
+                selectedMemberIds,
+                currentMembers,
+                users,
+                groupId
+            )}
             validationSchema={yup.object().shape({
                 members: yup
                     .array(

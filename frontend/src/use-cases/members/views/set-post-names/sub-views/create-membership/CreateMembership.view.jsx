@@ -28,7 +28,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
-        <DigitLayout.Row centerVertical>
+        <DigitLayout.Row alignItems={"baseline"}>
             <DigitLayout.Size absWidth="200px">
                 <DigitText.Text
                     text={
@@ -42,6 +42,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
             </DigitLayout.Size>
             <DigitLayout.Size absWidth="200px">
                 <DigitSelect
+                    outlined
                     value={value.postId || ""}
                     onChange={e => {
                         onChange({
@@ -58,6 +59,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
             </DigitLayout.Size>
             <DigitLayout.Size absWidth="200px">
                 <DigitTextField
+                    outlined
                     upperLabel={text.UnofficialPostName}
                     value={value.unofficialPostName || ""}
                     onChange={e => {

@@ -17,6 +17,9 @@ import {
     LAST_NAME,
     NICK
 } from "../../../../api/users/props.users.api";
+import { editUserInGroup } from "../../../../api/groups/put.groups.api";
+import { removeUserFromGroup } from "../../../../api/groups/delete.groups.api";
+import { addUserToGroup } from "../../../../api/groups/post.groups.api";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -43,21 +46,11 @@ const ReviewChanges = ({
     groupName,
     previousMembers,
     groupId,
-    redirectTo,
-    addUserToGroup,
-    removeUserFromGroup,
-    editUserInGroup,
     posts,
-    onFinished
+    onFinished,
+    newMembersData
 }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
-    var savedPostNames = sessionStorage.getItem(groupId + ".postNames");
-    if (savedPostNames == null) {
-        redirectTo("/groups/" + groupId + "/members");
-        return null;
-    }
-
-    const members = JSON.parse(savedPostNames).members;
 
     return (
         <DigitLayout.Center>
@@ -67,7 +60,7 @@ const ReviewChanges = ({
                         text={text.NewMembersForGroup + " " + groupName}
                     />
                     <DigitDesign.CardBody minWidth={"280px"}>
-                        {members.map(member => (
+                        {newMembersData.map(member => (
                             <NewMember
                                 key={member.id}
                                 firstName={member[FIRST_NAME]}
@@ -89,7 +82,7 @@ const ReviewChanges = ({
                         onClick={() => {
                             const additions = getAdditions(
                                 previousMembers,
-                                members
+                                newMembersData
                             ).map(member =>
                                 addUserToGroup(groupId, {
                                     userId: member.id,
@@ -100,14 +93,14 @@ const ReviewChanges = ({
 
                             const deletions = getDeletions(
                                 previousMembers,
-                                members
+                                newMembersData
                             ).map(previousMember =>
                                 removeUserFromGroup(groupId, previousMember.id)
                             );
 
                             const edits = getEdits(
                                 previousMembers,
-                                members
+                                newMembersData
                             ).map(member =>
                                 editUserInGroup(groupId, member.id, {
                                     userId: member.id,
@@ -118,12 +111,11 @@ const ReviewChanges = ({
 
                             Promise.all([...additions, ...deletions, ...edits])
                                 .then(() => {
-                                    sessionStorage.clear();
                                     onFinished();
                                 })
-                                .catch(() => {
-                                    sessionStorage.clear();
-                                    onFinished();
+                                .catch(e => {
+                                    console.log(e);
+                                    // onFinished();
                                 });
                         }}
                     />

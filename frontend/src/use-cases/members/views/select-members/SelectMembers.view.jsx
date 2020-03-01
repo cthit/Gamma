@@ -37,9 +37,10 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
         group.groupMembers.map(member => member.id)
     );
 
-    const unsavedEdits = useMemo(() => true, [
-        JSON.stringify(selectedMemberIds)
-    ]);
+    const unsavedEdits = useMemo(
+        () => selectedMemberIds.length !== group.groupMembers.length,
+        [JSON.stringify(selectedMemberIds)]
+    );
 
     return (
         <DigitLayout.Column>
@@ -55,10 +56,9 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
                         />
                         <div>
                             <DigitButton
-                                disabled={!unsavedEdits}
                                 raised
                                 primary
-                                text={"Nästa"}
+                                text={text.Next}
                                 onClick={() => {
                                     onMembersSelected(selectedMemberIds);
                                 }}
@@ -74,7 +74,7 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
                         _.find(users, { id: memberId })
                     )}
                 />
-                <DigitLayout.Column>
+                <DigitLayout.Fill>
                     <DigitTable
                         selected={selectedMemberIds}
                         onSelectedUpdated={newSelected => {
@@ -92,7 +92,7 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
                             __link: "/users/" + user.cid
                         }))}
                     />
-                </DigitLayout.Column>
+                </DigitLayout.Fill>
             </DigitLayout.Row>
         </DigitLayout.Column>
     );
