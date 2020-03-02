@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import javax.imageio.ImageIO;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -42,7 +43,11 @@ public class ImageITUtils {
         try {
             f = convertToFile(file);
             if (f == null) {
-                throw new FileNotFoundException();        // TODO, should probably throw instead
+                throw new FileNotFoundException();
+            }
+            if (ImageIO.read(f) == null) {
+                LOGGER.warn("upload of non-image file was attempted");
+                throw new FileNotFoundException();
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage());

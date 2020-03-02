@@ -194,14 +194,17 @@ public final class ITUserController {
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        try {
-            String fileUrl = ImageITUtils.saveImage(file);
-            this.itUserService.editProfilePicture(user, fileUrl);
-        } catch (IOException e) {
-            throw new FileNotSavedException();
-        }
+        if (user != null) {
+            try {
+                String fileUrl = ImageITUtils.saveImage(file);
+                this.itUserService.editProfilePicture(user, fileUrl);
+            } catch (IOException e) {
+                throw new FileNotSavedException();
+            }
 
-        return new EditedProfilePictureResponse();
+            return new EditedProfilePictureResponse();
+        }
+        throw new FileNotSavedException();
     }
 
     @PutMapping("/me/change_password")
