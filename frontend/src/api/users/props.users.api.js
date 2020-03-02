@@ -3,7 +3,6 @@ export const LAST_NAME = "lastName";
 export const NICK = "nick";
 export const EMAIL = "email";
 export const ACCEPTANCE_YEAR = "acceptanceYear";
-export const WEBSITES = "websites";
 export const ID = "id";
 export const CID = "cid";
 export const USER_AGREEMENT = "userAgreement";
