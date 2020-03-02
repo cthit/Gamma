@@ -42,7 +42,6 @@ import java.time.Year;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -195,7 +194,7 @@ public final class ITUserController {
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        if(user != null) {
+        if (user != null) {
             try {
                 String fileUrl = ImageITUtils.saveImage(file);
                 this.itUserService.editProfilePicture(user, fileUrl);
