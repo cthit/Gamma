@@ -1,19 +1,53 @@
 import {
     DigitLayout,
     DigitStepper,
-    useDigitTranslations
+    DigitDesign,
+    DigitText,
+    useDigitTranslations,
+    useGammaUser,
+    DigitButton
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import translations from "./CreateAccount.translations.json";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
 import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
+import { useHistory, useLocation } from "react-router";
 
-const CreateAccount = ({ location }) => {
+const CreateAccount = () => {
     const [text] = useDigitTranslations(translations);
+    const user = useGammaUser();
+    const location = useLocation();
+    const history = useHistory();
+
+    if (user != null) {
+        return (
+            <DigitLayout.Center>
+                <DigitDesign.Card absWidth="300px">
+                    <DigitDesign.CardTitle
+                        text={text.YouAlreadyHaveAnAccount}
+                    />
+                    <DigitDesign.CardHeaderImage src="/jim.gif" />
+                    <DigitDesign.CardBody>
+                        <DigitText.Text
+                            text={text.YouAlreadyHaveAnAccountDescription}
+                        />
+                    </DigitDesign.CardBody>
+                    <DigitDesign.CardButtons reverseDirection>
+                        <DigitButton
+                            text={text.NahImGood}
+                            onClick={() => history.push("/")}
+                            raised
+                            primary
+                        />
+                    </DigitDesign.CardButtons>
+                </DigitDesign.Card>
+            </DigitLayout.Center>
+        );
+    }
 
     return (
         <DigitLayout.Fill>
