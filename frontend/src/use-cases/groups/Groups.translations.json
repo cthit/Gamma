@@ -1,5 +1,6 @@
 {
     "Group": ["Group", "Grupp"],
+    "CreateGroup": ["Create group", "Skapa grupp"],
     "SaveGroup": ["Save group", "Spara grupp"],
     "Name": ["Name", "Namn"],
     "PrettyName": ["Pretty name", "Pretty name"],
