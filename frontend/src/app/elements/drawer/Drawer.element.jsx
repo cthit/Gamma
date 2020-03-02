@@ -45,11 +45,6 @@ const Drawer = ({ closeDrawer }) => {
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text={text.Websites}
-                    link="/websites"
-                />
-                <DigitNavLink
-                    onClick={closeDrawer}
                     text={text.GDPR}
                     link="/gdpr"
                 />

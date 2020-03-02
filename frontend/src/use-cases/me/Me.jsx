@@ -17,7 +17,6 @@ import {
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
 import { editMe } from "../../api/me/put.me.api";
-import { getWebsites } from "../../api/websites/get.websites.api";
 import {
     generateUserCustomDetailsRenders,
     generateUserEditComponentData,
@@ -34,19 +33,8 @@ import MeGroups from "./screens/me-groups";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
-    const [websites, setWebsites] = useState([]);
     const user = useGammaUser();
     const invalidateMe = useGammaInvalidateMe();
-
-    useEffect(() => {
-        getWebsites().then(response => {
-            setWebsites(response.data);
-        });
-    }, []);
-
-    if (websites == null) {
-        return null;
-    }
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
@@ -112,10 +100,7 @@ const Me = () => {
                         formValidationSchema={generateUserValidationSchema(
                             text
                         )}
-                        formComponentData={generateUserEditComponentData(
-                            text,
-                            websites
-                        )}
+                        formComponentData={generateUserEditComponentData(text)}
                         formInitialValues={generateUserInitialValues()}
                         detailsTitle={data => fullName(data)}
                         updateTitle={data => fullName(data)}
