@@ -42,6 +42,7 @@ import java.time.Year;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -194,14 +195,18 @@ public final class ITUserController {
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        try {
-            String fileUrl = ImageITUtils.saveImage(file);
-            this.itUserService.editProfilePicture(user, fileUrl);
-        } catch (IOException e) {
-            throw new FileNotSavedException();
-        }
+        if(user != null) {
+            try {
+                if(ImageIO.read(file))
+                String fileUrl = ImageITUtils.saveImage(file);
+                this.itUserService.editProfilePicture(user, fileUrl);
+            } catch (IOException e) {
+                throw new FileNotSavedException();
+            }
 
-        return new EditedProfilePictureResponse();
+            return new EditedProfilePictureResponse();
+        }
+        throw new FileNotSavedException();
     }
 
     @PutMapping("/me/change_password")
