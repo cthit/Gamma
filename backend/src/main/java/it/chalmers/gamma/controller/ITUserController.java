@@ -197,7 +197,6 @@ public final class ITUserController {
         ITUserDTO user = this.itUserService.loadUser(cid);
         if(user != null) {
             try {
-                if(ImageIO.read(file))
                 String fileUrl = ImageITUtils.saveImage(file);
                 this.itUserService.editProfilePicture(user, fileUrl);
             } catch (IOException e) {
