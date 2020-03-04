@@ -10,8 +10,7 @@ import {
     LAST_NAME,
     NICK,
     PASSWORD,
-    USER_AGREEMENT,
-    WEBSITES
+    USER_AGREEMENT
 } from "../../../api/users/props.users.api";
 import * as yup from "yup";
 import {
@@ -24,7 +23,6 @@ import {
     ENGLISH_LANGUAGE,
     SWEDISH_LANGUAGE
 } from "../../../api/utils/commonProps";
-import EditWebsites from "../../views/edit-websites";
 import DisplayGroupsTable from "../../elements/display-groups-table/DisplayGroupsTable.element";
 import { NAME, PRETTY_NAME } from "../../../api/groups/props.groups.api";
 
@@ -68,7 +66,6 @@ export const generateUserKeyOrder = () => [
     EMAIL,
     ACCEPTANCE_YEAR,
     LANGUAGE,
-    WEBSITES,
     GROUPS
 ];
 
@@ -81,7 +78,6 @@ export function generateUserInitialValues() {
     output[EMAIL] = "";
     output[ACCEPTANCE_YEAR] = "";
     output[LANGUAGE] = "";
-    output[WEBSITES] = [];
     output[USER_AGREEMENT] = false;
     output[CID] = "";
     output[PASSWORD] = "";
@@ -101,7 +97,6 @@ export function generateUserValidationSchema(
     schema[NICK] = yup.string().required(text.FieldRequired);
     schema[EMAIL] = yup.string().required(text.FieldRequired);
     schema[ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
-    schema[WEBSITES] = yup.array().of(yup.object());
     schema[USER_AGREEMENT] = forceUserAgreement
         ? yup
               .boolean()
@@ -121,7 +116,7 @@ export function generateUserValidationSchema(
     return yup.object().shape(schema);
 }
 
-export function generateUserEditComponentData(text, availableWebsites) {
+export function generateUserEditComponentData(text) {
     const componentData = {};
 
     componentData[FIRST_NAME] = {
@@ -202,14 +197,6 @@ export function generateUserEditComponentData(text, availableWebsites) {
         }
     };
 
-    componentData[WEBSITES] = {
-        array: true,
-        component: EditWebsites,
-        componentProps: {
-            availableWebsites: availableWebsites
-        }
-    };
-
     componentData[PASSWORD] = {
         component: DigitTextField,
         componentProps: {
@@ -225,7 +212,6 @@ export function generateUserEditComponentData(text, availableWebsites) {
 
 export function generateUserCustomDetailsRenders(text, ignoreGroups) {
     const output = {};
-    output[WEBSITES] = data => null;
 
     if (ignoreGroups) {
         output[GROUPS] = data => null;

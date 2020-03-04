@@ -66,7 +66,10 @@ public class FKITGroupService {
     }
 
     public boolean groupExists(String name) {
-        return this.repo.existsFKITGroupByName(name) || this.repo.existsById(UUID.fromString(name));
+        if (UUIDUtil.validUUID(name)) {
+            return this.repo.existsById(UUID.fromString(name));
+        }
+        return this.repo.existsFKITGroupByName(name);
     }
 
     public void removeGroup(String name) {

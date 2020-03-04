@@ -317,6 +317,9 @@ const Groups = ({ history }) => {
             }
             dateProps={[BECOMES_ACTIVE, BECOMES_INACTIVE]}
             createButtonText={text.Create + " " + text.Group}
+            updateTitle={group => text.Update + " " + group.prettyName}
+            createTitle={text.CreateGroup}
+            detailsTitle={group => group.prettyName}
         />
     );
 };

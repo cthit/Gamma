@@ -21,7 +21,6 @@ import Posts from "../use-cases/posts";
 import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
 import ApiKeys from "../use-cases/api-keys";
-import Websites from "../use-cases/websites";
 import Whitelist from "../use-cases/whitelist";
 import translations from "./App.translations.json";
 import commonTranslations from "../common/utils/translations/CommonTranslations";
@@ -124,10 +123,6 @@ export const App = ({}) => {
                                         <Route
                                             path="/posts"
                                             component={Posts}
-                                        />
-                                        <Route
-                                            path="/websites"
-                                            component={Websites}
                                         />
                                         <Route
                                             path="/activation-codes"

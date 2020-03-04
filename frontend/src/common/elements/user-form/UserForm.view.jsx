@@ -14,10 +14,8 @@ import {
     LAST_NAME,
     NICK,
     PASSWORD,
-    WEBSITES,
     LANGUAGE
 } from "../../../api/users/props.users.api";
-import EditWebsites from "../../views/edit-websites";
 import translations from "./UserForm.view.translations.json";
 import {
     ENGLISH_LANGUAGE,
@@ -46,7 +44,6 @@ function generateValidationSchema(text, includeCidAndPassword) {
     schema[NICK] = yup.string().required(text.FieldRequired);
     schema[EMAIL] = yup.string().required(text.FieldRequired);
     schema[ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
-    schema[WEBSITES] = yup.array().of(yup.object());
 
     if (includeCidAndPassword) {
         schema[CID] = yup.string().required(text.FieldRequired);
@@ -56,11 +53,7 @@ function generateValidationSchema(text, includeCidAndPassword) {
     return yup.object().shape(schema);
 }
 
-function generateEditComponentData(
-    text,
-    availableWebsites,
-    includeCidAndPassword
-) {
+function generateEditComponentData(text, includeCidAndPassword) {
     const componentData = {};
 
     componentData[FIRST_NAME] = {
@@ -118,14 +111,6 @@ function generateEditComponentData(
         }
     };
 
-    componentData[WEBSITES] = {
-        array: true,
-        component: EditWebsites,
-        componentProps: {
-            availableWebsites: availableWebsites
-        }
-    };
-
     if (includeCidAndPassword) {
         componentData[CID] = {
             component: DigitTextField,
@@ -154,8 +139,7 @@ function getKeysOrder(includeCidAndPassword) {
         NICK,
         EMAIL,
         ACCEPTANCE_YEAR,
-        LANGUAGE,
-        WEBSITES
+        LANGUAGE
     ];
 
     if (includeCidAndPassword) {
@@ -171,8 +155,7 @@ const UserForm = ({
     includeCidAndPassword,
     onSubmit,
     titleText,
-    submitText,
-    availableWebsites
+    submitText
 }) => (
     <DigitTranslations
         translations={translations}
@@ -195,7 +178,6 @@ const UserForm = ({
                 keysOrder={getKeysOrder(includeCidAndPassword)}
                 keysComponentData={generateEditComponentData(
                     text,
-                    availableWebsites,
                     includeCidAndPassword
                 )}
             />

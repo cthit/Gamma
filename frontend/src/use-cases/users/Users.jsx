@@ -17,8 +17,7 @@ import {
     LAST_NAME,
     NICK,
     PASSWORD,
-    USER_AGREEMENT,
-    WEBSITES
+    USER_AGREEMENT
 } from "../../api/users/props.users.api";
 import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
@@ -29,25 +28,14 @@ import {
     generateUserKeysTexts,
     generateUserValidationSchema
 } from "../../common/utils/generators/user-form.generator";
-import { getWebsites } from "../../api/websites/get.websites.api";
 import { addUser } from "../../api/users/post.users.api";
 
 const Users = () => {
     const admin = useGammaIsAdmin();
     const [text] = useDigitTranslations(translations);
-    const [websites, setWebsites] = useState(null);
-    useEffect(() => {
-        getWebsites().then(response => {
-            setWebsites(response.data);
-        });
-    }, []);
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
-
-    if (websites == null) {
-        return null;
-    }
 
     return (
         <DigitCRUD
@@ -68,7 +56,6 @@ const Users = () => {
                 EMAIL,
                 ACCEPTANCE_YEAR,
                 LANGUAGE,
-                WEBSITES,
                 USER_AGREEMENT,
                 GROUPS
             ]}
@@ -92,7 +79,10 @@ const Users = () => {
                 true,
                 true
             )}
-            formComponentData={generateUserEditComponentData(text, websites)}
+            updateFormValidationSchema={() =>
+                generateUserValidationSchema(text, true, true, false)
+            }
+            formComponentData={generateUserEditComponentData(text)}
             backButtonText={text.Back}
             detailsButtonText={text.Details}
             createButtonText={text.Create}

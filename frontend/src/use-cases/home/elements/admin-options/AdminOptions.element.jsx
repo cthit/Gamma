@@ -25,7 +25,6 @@ const AdminOptions = () => {
                     />
                     <HomeLink text={text.GDPR} link={"/gdpr"} />
                     <HomeLink text={text.GroupPosts} link={"/posts"} />
-                    <HomeLink text={text.PossibleWebsites} link={"/websites"} />
                     <HomeLink text={text.Whitelist} link={"/whitelist"} />
                     <HomeLink text={text.Clients} link={"/clients"} />
                     <HomeLink text={text.SuperGroups} link={"/super-groups"} />
