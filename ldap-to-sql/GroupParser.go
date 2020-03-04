@@ -112,8 +112,8 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 			bi1 := int(becomes_inactiveq1[l-2] - 48)
 			bi2 := int(becomes_inactiveq1[l-1] - 48)
 			bi := bi1*10 + bi2
-			year := strconv.Itoa(2000 + bi)
-			lastYear := strconv.Itoa(2000 + bi - 1)
+			year := strconv.Itoa(2000 + bi + 1)
+			lastYear := strconv.Itoa(2000 + bi)
 			WriteGroup(Group{
 				id:               GenerateUUID(),
 				name:             name,
@@ -145,19 +145,16 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 
 					userName := mems1[0]
 					if(isSpecialMember[userName + nm]){
+						if userName == "wilalb" {
+							println(userName + nm)
+						}
 						loggedUsers = append(loggedUsers, userName+nm)
 					}
 					for i = 0; i < nPostNames; i++ {
 						postNameq2 := strings.Split(postNameq1[i], ";")
 						nameInPost := strings.Replace(postNameq2[1], " ", "", -1)
-						if name == "drawit18" {
-							println(userName)
-							println(nameInPost + " " + postNameq2[0])
-						}
 						if nameInPost == userName {
-							if name == "drawit18" {
-								println(userName + " matched")
-							}
+
 							postname = postNameq2[0]
 							break
 						}
@@ -167,9 +164,6 @@ func ParseSuperGroups(file *os.File, data [][]string) {
 					}
 					if contains(loggedUsers, userName + nm) {
 						continue
-					}
-					if name == "drawit18" {
-						println("writing " + userName)
 					}
 					loggedUsers = append(loggedUsers, userName)
 					if userMap[userName] != "" {
