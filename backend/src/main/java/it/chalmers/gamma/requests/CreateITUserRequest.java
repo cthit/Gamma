@@ -6,9 +6,11 @@ import it.chalmers.gamma.domain.Language;
 import java.util.Objects;
 
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
@@ -26,6 +28,11 @@ public class CreateITUserRequest {
 
     @NotEmpty(message = "FIRST_NAME_MUST_BE_PROVIDED")
     private String firstName;
+
+    @NotEmpty(message = "EMAIL_REQUIRED")
+    @Email(message = "NON_EMAIL_ENTERED")
+    @Pattern(regexp = "^((?!@student.chalmers.se).)*$", message = "STUDENT_MAIL_ENTERED")
+    private String email;
 
     @NotEmpty(message = "LAST_NAME_MUST_BE_PROVIDED")
     private String lastName;
@@ -113,6 +120,14 @@ public class CreateITUserRequest {
         this.language = language;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "CreateITUserRequest{"
@@ -160,4 +175,6 @@ public class CreateITUserRequest {
                 this.whitelist,
                 this.language);
     }
+
+
 }
