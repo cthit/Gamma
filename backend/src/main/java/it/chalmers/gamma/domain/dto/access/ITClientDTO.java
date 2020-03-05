@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.dto.access;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import it.chalmers.gamma.db.entity.Text;
 import java.time.Instant;
 import java.util.Collection;
@@ -9,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import org.codehaus.jackson.annotate.JsonIgnore;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -96,6 +98,7 @@ public class ITClientDTO implements ClientDetails {
     }
 
     @Override
+    @JsonIgnore
     public Set<String> getResourceIds() {
         return null;
     }
@@ -106,6 +109,7 @@ public class ITClientDTO implements ClientDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getClientSecret() {
         return this.clientSecret;
     }
@@ -138,6 +142,7 @@ public class ITClientDTO implements ClientDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
