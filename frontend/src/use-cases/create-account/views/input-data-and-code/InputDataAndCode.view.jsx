@@ -77,6 +77,7 @@ const InputDataAndCode = () => {
                     nick: "",
                     firstName: "",
                     lastName: "",
+                    email: "",
                     acceptanceYear: "",
                     password: "",
                     passwordConfirmation: "",
@@ -88,6 +89,10 @@ const InputDataAndCode = () => {
                     nick: yup.string().required(text.FieldRequired),
                     firstName: yup.string().required(text.FieldRequired),
                     lastName: yup.string().required(text.FieldRequired),
+                    email: yup.string()
+                        .required(text.FieldRequired)
+                        .email(text.NotEmail)
+                        .matches(/(^((?!@student.chalmers.se).)*$)/, text.NonStudentEmailError),
                     acceptanceYear: yup
                         .number()
                         .min(2001)
@@ -116,6 +121,7 @@ const InputDataAndCode = () => {
                     "nick",
                     "firstName",
                     "lastName",
+                    "email",
                     "acceptanceYear",
                     "userAgreement"
                 ]}
@@ -174,6 +180,14 @@ const InputDataAndCode = () => {
                             upperLabel: text.LastName,
                             outlined: true,
                             maxLength: 15
+                        }
+                    },
+                    email: {
+                        component: DigitTextField,
+                        componentProps: {
+                            upperLabel: text.NonStudentEmail,
+                            outlined: true,
+                            maxLength: 100
                         }
                     },
                     acceptanceYear: {
