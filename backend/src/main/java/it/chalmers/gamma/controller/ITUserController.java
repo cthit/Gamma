@@ -117,7 +117,8 @@ public final class ITUserController {
                         createITUserRequest.getWhitelist().getCid(),
                         Year.of(createITUserRequest.getAcceptanceYear()),
                         createITUserRequest.isUserAgreement(),
-                        null,
+                        createITUserRequest.getEmail(),
+
                         createITUserRequest.getPassword());
                 this.removeCidFromWhitelist(createITUserRequest);
                 return new UserCreatedResponse();
