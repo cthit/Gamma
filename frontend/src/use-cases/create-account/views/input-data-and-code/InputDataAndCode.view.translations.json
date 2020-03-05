@@ -17,8 +17,9 @@
     "ConfirmPassword": ["Confirm password", "Bekräfta lösenord"],
     "FirstName": ["First name", "Förnamn"],
     "LastName": ["Last name", "Efternamn"],
-    "NonStudentEmailError": ["Email needs to be non student email (*@student.chalmers.se)",
-                        "Email måste vara icke studentmail (*@student.chalmers.se)"],
+    "NotEmail": ["Not a valid email", "Inte en giltig email"],
+    "NonStudentEmailError": ["Email needs to be non-student email",
+                        "Email måste vara icke-studentmail"],
     "NonStudentEmail": ["Enter a non-student email", "Skriv in din icke-studentmail"],
     "WhichYearDidYouStart": [
         "Which year did you start at IT?",
