@@ -40,7 +40,7 @@ public class AuthController {
                 throw new InvalidJWTTokenResponse();
             }
             return new ValidJwtResponse(true);
-        } catch (InvalidJWTTokenResponse e) {
+        } catch (InvalidJWTTokenResponse | IllegalArgumentException e) {
             return new ValidJwtResponse(false);
         }
 

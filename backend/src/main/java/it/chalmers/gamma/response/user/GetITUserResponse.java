@@ -37,6 +37,7 @@ public class GetITUserResponse {
         return this.user;
     }
 
+    @JsonIgnore
     public List<FKITGroupDTO> getGroups() {
         return this.groupRelationships.stream().map(FKITGroupToSuperGroupDTO::getGroup)
                 .collect(Collectors.toList());
