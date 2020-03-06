@@ -26,9 +26,9 @@ const InputDataAndCode = () => {
                 subtitleText={text.CompleteCreationDescription}
                 submitText={text.CreateAccount}
                 extraButton={{
-                    text: text.Back
+                    text: text.Back,
+                    onClick: () => history.goBack()
                 }}
-                extraButtonTo={"/create-account/email-sent"}
                 onSubmit={(values, actions) => {
                     const cid = values.cid;
                     const user = {
