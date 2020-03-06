@@ -59,13 +59,15 @@ const save = (previousMembers, newMembersData, groupId, onFinished) => {
         newMembersData
     ).map(previousMember => removeUserFromGroup(groupId, previousMember.id));
 
-    const edits = getEdits(previousMembers, newMembersData).map(member =>
+    const edits = getEdits(previousMembers, newMembersData).map(member => {
+        const newMemberData = _.find(newMembersData, { id: member.id });
+
         editUserInGroup(groupId, member.id, {
-            userId: member.id,
-            post: member.post.id,
-            unofficialName: member.unofficialPostName
-        })
-    );
+            userId: newMemberData.id,
+            post: newMemberData.postId,
+            unofficialName: newMemberData.unofficialPostName
+        });
+    });
 
     Promise.all([...additions, ...deletions, ...edits])
         .then(() => {
