@@ -8,7 +8,7 @@ import {
 import translations from "./MeGroups.screen.translations";
 import DisplayGroupsTable from "../../../../common/elements/display-groups-table/DisplayGroupsTable.element";
 
-const MeGroups = ({}) => {
+const MeGroups = () => {
     const [text] = useDigitTranslations(translations);
     const user = useGammaUser();
 
@@ -20,7 +20,7 @@ const MeGroups = ({}) => {
                       user.groups.filter(group => group.active),
                       user.groups.filter(group => !group.active)
                   ],
-        [JSON.stringify(user)]
+        [user]
     );
 
     if (user == null) {

@@ -2,7 +2,6 @@ import React from "react";
 import translations from "./DisplayGroupsTable.element.translations";
 import {
     DigitTable,
-    DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import {

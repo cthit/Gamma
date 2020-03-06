@@ -8,7 +8,7 @@ import {
     DigitButton
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React from "react";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import translations from "./CreateAccount.translations.json";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";
@@ -50,33 +50,31 @@ const CreateAccount = () => {
     }
 
     return (
-        <DigitLayout.Fill>
-            <MapPathToStep
-                currentPath={location.pathname}
-                pathToStepMap={{
-                    "/create-account": 0,
-                    "/create-account/email-sent": 1,
-                    "/create-account/input": 2,
-                    "/create-account/finished": 3
-                }}
-                render={step => (
-                    <DigitLayout.Column>
-                        <DigitStepper
-                            activeStep={step}
-                            steps={[
-                                { text: text.SendCid },
-                                { text: text.GetActivationCode },
-                                { text: text.CreateAccount }
-                            ]}
-                        />
-                        {step === 0 && <InputCid />}
-                        {step === 1 && <EmailHasBeenSent />}
-                        {step === 2 && <InputDataAndCode />}
-                        {step === 3 && <CreationOfAccountFinished />}
-                    </DigitLayout.Column>
-                )}
-            />
-        </DigitLayout.Fill>
+        <MapPathToStep
+            currentPath={location.pathname}
+            pathToStepMap={{
+                "/create-account": 0,
+                "/create-account/email-sent": 1,
+                "/create-account/input": 2,
+                "/create-account/finished": 3
+            }}
+            render={step => (
+                <DigitLayout.Column>
+                    <DigitStepper
+                        activeStep={step}
+                        steps={[
+                            { text: text.SendCid },
+                            { text: text.GetActivationCode },
+                            { text: text.CreateAccount }
+                        ]}
+                    />
+                    {step === 0 && <InputCid />}
+                    {step === 1 && <EmailHasBeenSent />}
+                    {step === 2 && <InputDataAndCode />}
+                    {step === 3 && <CreationOfAccountFinished />}
+                </DigitLayout.Column>
+            )}
+        />
     );
 };
 

@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +30,6 @@ public class MembershipService {
     private final PostService postService;
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private final FKITSuperGroupService fkitSuperGroupService;
-
 
     public MembershipService(MembershipRepository membershipRepository,
                              FKITGroupService fkitGroupService,
@@ -175,11 +176,13 @@ public class MembershipService {
         this.membershipRepository.delete(this.getMembership(membershipDTO));
     }
 
+    @Transactional
     public void editMembership(MembershipDTO membershipDTO, String unofficialName, PostDTO post) {
-        Membership membership = this.getMembership(membershipDTO);
-        membership.setUnofficialPostName(unofficialName);
-        membership.getId().setPost(this.postService.getPost(post));
-        this.membershipRepository.save(membership);
+        this.removeUserFromGroup(membershipDTO.getFkitGroupDTO(), membershipDTO.getUser());
+        this.addUserToGroup(membershipDTO.getFkitGroupDTO(),
+                membershipDTO.getUser(), post,
+                unofficialName);
+        this.membershipRepository.save(this.getMembership(membershipDTO));
     }
 
     public void removeAllUsersFromGroup(FKITGroupDTO group) {

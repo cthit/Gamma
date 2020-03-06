@@ -33,7 +33,7 @@ function _generateHeaderTexts(text) {
     return output;
 }
 
-const Gdpr = ({}) => {
+const Gdpr = () => {
     const [text] = useDigitTranslations(translations);
     const [queueToast] = useDigitToast();
     const [users, setUsers] = useState(null);

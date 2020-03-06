@@ -26,9 +26,9 @@ const InputDataAndCode = () => {
                 subtitleText={text.CompleteCreationDescription}
                 submitText={text.CreateAccount}
                 extraButton={{
-                    text: text.Back
+                    text: text.Back,
+                    onClick: () => history.goBack()
                 }}
-                extraButtonTo={"/create-account/email-sent"}
                 onSubmit={(values, actions) => {
                     const cid = values.cid;
                     const user = {
@@ -89,10 +89,14 @@ const InputDataAndCode = () => {
                     nick: yup.string().required(text.FieldRequired),
                     firstName: yup.string().required(text.FieldRequired),
                     lastName: yup.string().required(text.FieldRequired),
-                    email: yup.string()
+                    email: yup
+                        .string()
                         .required(text.FieldRequired)
                         .email(text.NotEmail)
-                        .matches(/(^((?!@student.chalmers.se).)*$)/, text.NonStudentEmailError),
+                        .matches(
+                            /(^((?!@student.chalmers.se).)*$)/,
+                            text.NonStudentEmailError
+                        ),
                     acceptanceYear: yup
                         .number()
                         .min(2001)

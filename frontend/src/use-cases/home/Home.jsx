@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
     DigitLayout,
@@ -20,23 +20,19 @@ const Home = () => {
 
     return (
         <DigitLayout.Center>
-            <DigitLayout.Padding>
-                <DigitLayout.Column>
-                    <WelcomeUser user={user} />
-                    <DigitLayout.Spacing />
-                    <UserOptions
-                        hasGroups={
-                            user.groups != null && user.groups.length > 0
-                        }
-                    />
-                    {admin && (
-                        <>
-                            <DigitLayout.Spacing />
-                            <AdminOptions />
-                        </>
-                    )}
-                </DigitLayout.Column>
-            </DigitLayout.Padding>
+            <DigitLayout.Column>
+                <WelcomeUser user={user} />
+                <DigitLayout.Spacing />
+                <UserOptions
+                    hasGroups={user.groups != null && user.groups.length > 0}
+                />
+                {admin && (
+                    <>
+                        <DigitLayout.Spacing />
+                        <AdminOptions />
+                    </>
+                )}
+            </DigitLayout.Column>
         </DigitLayout.Center>
     );
 };
