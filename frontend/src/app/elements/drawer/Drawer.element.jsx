@@ -1,9 +1,11 @@
 import {
     DigitLayout,
+    DigitText,
     DigitNavLink,
     useDigitTranslations,
     useGammaIs,
-    useGammaIsAdmin
+    useGammaIsAdmin,
+    useGammaUser
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./Drawer.element.translations";
@@ -12,10 +14,27 @@ const Drawer = ({ closeDrawer }) => {
     const admin = useGammaIsAdmin();
     const dpo = useGammaIs("gdpr");
     const [text] = useDigitTranslations(translations);
+    const user = useGammaUser();
 
     if (admin) {
         return (
             <DigitLayout.Column padding="0">
+                {user != null && (
+                    <>
+                        <div style={{ height: "8px" }} />
+                        <DigitLayout.Center>
+                            <DigitText.Text bold text={user.nick} />
+                        </DigitLayout.Center>
+                        {user.avatarUrl != null && (
+                            <img
+                                style={{ objectFit: "contain" }}
+                                src={user.avatarUrl}
+                                alt={"Avatar image"}
+                            />
+                        )}
+                    </>
+                )}
+
                 <DigitNavLink onClick={closeDrawer} text={text.Home} link="/" />
                 <DigitNavLink onClick={closeDrawer} text={text.Me} link="/me" />
                 <DigitNavLink

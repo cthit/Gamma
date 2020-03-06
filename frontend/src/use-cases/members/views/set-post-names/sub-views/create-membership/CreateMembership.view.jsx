@@ -29,45 +29,36 @@ const CreateMembership = ({ posts, value, onChange }) => {
 
     return (
         <DigitLayout.Row centerVertical>
-            <DigitLayout.Size absWidth="200px">
-                <DigitText.Text
-                    text={
-                        value[FIRST_NAME] +
-                        ' "' +
-                        value[NICK] +
-                        '" ' +
-                        value[LAST_NAME]
-                    }
-                />
-            </DigitLayout.Size>
-            <DigitLayout.Size absWidth="200px">
-                <DigitSelect
-                    value={value.postId || ""}
-                    onChange={e => {
-                        onChange({
-                            ...value,
-                            postId: e.target.value
-                        });
-                    }}
-                    valueToTextMap={getDifferentPostNames(
-                        posts,
-                        activeLanguage
-                    )}
-                    upperLabel={text.Post}
-                />
-            </DigitLayout.Size>
-            <DigitLayout.Size absWidth="200px">
-                <DigitTextField
-                    upperLabel={text.UnofficialPostName}
-                    value={value.unofficialPostName || ""}
-                    onChange={e => {
-                        onChange({
-                            ...value,
-                            unofficialPostName: e.target.value
-                        });
-                    }}
-                />
-            </DigitLayout.Size>
+            <DigitText.Text
+                text={
+                    value[FIRST_NAME] +
+                    ' "' +
+                    value[NICK] +
+                    '" ' +
+                    value[LAST_NAME]
+                }
+            />
+            <DigitSelect
+                value={value.postId || ""}
+                onChange={e => {
+                    onChange({
+                        ...value,
+                        postId: e.target.value
+                    });
+                }}
+                valueToTextMap={getDifferentPostNames(posts, activeLanguage)}
+                upperLabel={text.Post}
+            />
+            <DigitTextField
+                upperLabel={text.UnofficialPostName}
+                value={value.unofficialPostName || ""}
+                onChange={e => {
+                    onChange({
+                        ...value,
+                        unofficialPostName: e.target.value
+                    });
+                }}
+            />
         </DigitLayout.Row>
     );
 };
