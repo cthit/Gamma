@@ -9,7 +9,7 @@ import {
 
 import translations from "./FourOFour.translations.json";
 
-const FourOFour = ({}) => {
+const FourOFour = () => {
     const [text] = useDigitTranslations(translations);
     return (
         <DigitLayout.Center>

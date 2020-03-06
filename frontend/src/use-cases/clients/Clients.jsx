@@ -8,7 +8,7 @@ import {
     useDigitCustomDialog,
     useGammaIsAdmin
 } from "@cthit/react-digit-components";
-import React, { useEffect } from "react";
+import React from "react";
 import { getClient, getClients } from "../../api/clients/get.clients.api";
 import { addClient } from "../../api/clients/post.clients.api";
 import translations from "./Clients.translations";

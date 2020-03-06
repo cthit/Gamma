@@ -1,7 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    DigitLayout,
-    DigitLoading,
     DigitStepper,
     useDigitTranslations,
     useGammaIsAdmin
@@ -17,7 +15,7 @@ import { getPosts } from "../../api/posts/get.posts.api";
 import { getUsersMinified } from "../../api/users/get.users.api";
 import { getGroup } from "../../api/groups/get.groups.api";
 
-const Members = ({}) => {
+const Members = () => {
     const history = useHistory();
     const location = useLocation();
     const [text] = useDigitTranslations(translations);

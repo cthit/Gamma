@@ -8,7 +8,7 @@ import {
     DigitButton
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React from "react";
 import MapPathToStep from "../../common/declaratives/map-path-to-step";
 import translations from "./CreateAccount.translations.json";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";

@@ -24,7 +24,7 @@ import {
     SWEDISH_LANGUAGE
 } from "../../../api/utils/commonProps";
 import DisplayGroupsTable from "../../elements/display-groups-table/DisplayGroupsTable.element";
-import { NAME, PRETTY_NAME } from "../../../api/groups/props.groups.api";
+import { PRETTY_NAME } from "../../../api/groups/props.groups.api";
 
 export function generateUserKeysTexts(text) {
     const output = {};

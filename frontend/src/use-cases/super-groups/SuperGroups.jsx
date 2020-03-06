@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
     EMAIL,
     NAME,
@@ -26,7 +26,6 @@ import { addSuperGroup } from "../../api/super-groups/post.super-groups.api";
 import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api";
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
 import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
-import InsufficientAccess from "../../common/views/insufficient-access";
 
 function generateValidationSchema(text) {
     const schema = {};

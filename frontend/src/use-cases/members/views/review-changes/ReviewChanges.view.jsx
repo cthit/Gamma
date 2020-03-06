@@ -3,7 +3,6 @@ import React from "react";
 import Save from "@material-ui/icons/Save";
 
 import {
-    DigitFAB,
     DigitLayout,
     DigitDesign,
     useDigitTranslations,
@@ -59,7 +58,7 @@ const save = (previousMembers, newMembersData, groupId, onFinished) => {
         newMembersData
     ).map(previousMember => removeUserFromGroup(groupId, previousMember.id));
 
-    const edits = getEdits(previousMembers, newMembersData).map(member => {
+    const edits = getEdits(previousMembers, newMembersData).forEach(member => {
         const newMemberData = _.find(newMembersData, { id: member.id });
 
         editUserInGroup(groupId, member.id, {

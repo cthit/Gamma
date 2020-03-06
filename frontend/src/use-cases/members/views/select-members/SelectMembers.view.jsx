@@ -39,7 +39,7 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
 
     const unsavedEdits = useMemo(
         () => selectedMemberIds.length !== group.groupMembers.length,
-        [JSON.stringify(selectedMemberIds)]
+        [selectedMemberIds, group.groupMembers]
     );
 
     return (

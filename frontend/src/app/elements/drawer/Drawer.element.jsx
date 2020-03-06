@@ -29,7 +29,7 @@ const Drawer = ({ closeDrawer }) => {
                             <img
                                 style={{ objectFit: "contain" }}
                                 src={user.avatarUrl}
-                                alt={"Avatar image"}
+                                alt={"Avatar"}
                             />
                         )}
                     </>

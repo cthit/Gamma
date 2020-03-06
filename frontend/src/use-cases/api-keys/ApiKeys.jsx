@@ -4,7 +4,6 @@ import {
     DigitCRUD,
     DigitTextArea,
     DigitTextField,
-    DigitLayout,
     DigitText,
     useDigitCustomDialog,
     useDigitTranslations,

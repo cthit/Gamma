@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
     DigitCRUD,
@@ -21,7 +21,7 @@ import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
-import { ID, NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
+import { NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
 
 function generateValidationSchema(text) {
     const schema = {};
