@@ -71,12 +71,14 @@ const Clients = () => {
             }}
             keysOrder={[
                 "name",
+                "clientId",
                 "webServerRedirectUri",
                 "descriptionSv",
                 "descriptionEn"
             ]}
             keysText={{
                 id: text.Id,
+                clientId: text.ClientId,
                 name: text.Name,
                 webServerRedirectUri: text.RedirectURI,
                 descriptionSv: text.DescriptionSv,
