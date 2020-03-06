@@ -85,83 +85,66 @@ export const App = () => {
             }
             renderHeader={() => <UserInformation />}
             renderMain={() => (
-                <DigitLayout.Fill>
+                <>
                     {!error && (
-                        <>
+                        <div
+                            style={{
+                                width: "100%",
+                                minHeight: "calc(100vh - 208px)"
+                            }}
+                        >
                             <DigitDialog />
                             <DigitToast />
-
-                            <div
-                                style={{
-                                    padding: "8px",
-                                    display: "flex",
-                                    flex: "1"
-                                }}
-                            >
-                                <DigitLayout.HideFill hidden={loading}>
-                                    <Switch>
-                                        <Route
-                                            path="/clients"
-                                            component={Clients}
-                                        />
-                                        <Route
-                                            path="/users"
-                                            component={Users}
-                                        />
-                                        <Route
-                                            path="/groups"
-                                            component={Groups}
-                                        />
-                                        <Route
-                                            path="/create-account"
-                                            component={CreateAccount}
-                                        />
-                                        <Route
-                                            path="/whitelist"
-                                            component={Whitelist}
-                                        />
-                                        <Route
-                                            path="/posts"
-                                            component={Posts}
-                                        />
-                                        <Route
-                                            path="/activation-codes"
-                                            component={ActivationCodes}
-                                        />
-                                        <Route path="/gdpr" component={Gdpr} />
-                                        <Route
-                                            path="/clients"
-                                            component={Clients}
-                                        />
-                                        <Route
-                                            path="/access-keys"
-                                            component={ApiKeys}
-                                        />
-                                        <Route
-                                            path="/super-groups"
-                                            component={SuperGroups}
-                                        />
-                                        <Route path={"/me"} component={Me} />
-                                        <Route
-                                            path="/members"
-                                            component={Members}
-                                        />
-                                        <Route
-                                            path="/reset-password"
-                                            component={ResetPassword}
-                                        />
-                                        <Route
-                                            path="/"
-                                            exact
-                                            component={Home}
-                                        />
-                                        <Route component={FourOFour} />
-                                    </Switch>
-                                </DigitLayout.HideFill>
-                            </div>
-                        </>
+                            <DigitLayout.Hide hidden={loading}>
+                                <Switch>
+                                    <Route
+                                        path="/clients"
+                                        component={Clients}
+                                    />
+                                    <Route path="/users" component={Users} />
+                                    <Route path="/groups" component={Groups} />
+                                    <Route
+                                        path="/create-account"
+                                        component={CreateAccount}
+                                    />
+                                    <Route
+                                        path="/whitelist"
+                                        component={Whitelist}
+                                    />
+                                    <Route path="/posts" component={Posts} />
+                                    <Route
+                                        path="/activation-codes"
+                                        component={ActivationCodes}
+                                    />
+                                    <Route path="/gdpr" component={Gdpr} />
+                                    <Route
+                                        path="/clients"
+                                        component={Clients}
+                                    />
+                                    <Route
+                                        path="/access-keys"
+                                        component={ApiKeys}
+                                    />
+                                    <Route
+                                        path="/super-groups"
+                                        component={SuperGroups}
+                                    />
+                                    <Route path={"/me"} component={Me} />
+                                    <Route
+                                        path="/members"
+                                        component={Members}
+                                    />
+                                    <Route
+                                        path="/reset-password"
+                                        component={ResetPassword}
+                                    />
+                                    <Route path="/" exact component={Home} />
+                                    <Route component={FourOFour} />
+                                </Switch>
+                            </DigitLayout.Hide>
+                        </div>
                     )}
-                </DigitLayout.Fill>
+                </>
             )}
         />
     );

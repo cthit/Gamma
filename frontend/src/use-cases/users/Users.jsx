@@ -1,5 +1,6 @@
 import React from "react";
 import {
+    DigitButton,
     DigitCRUD,
     useDigitTranslations,
     useGammaIsAdmin

@@ -21,5 +21,6 @@
         "You need to confirm your password to be able to delete your account",
         "Du måste bekräfta ditt lösenord för att kunna radera ditt konto"
     ],
-    "YourGroups": ["Your groups", "Dina grupper"]
+    "YourGroups": ["Your groups", "Dina grupper"],
+    "YourAvatar": ["Your avatar", "Din avatar"]
 }
