@@ -35,7 +35,7 @@ import {
     getFrontendUrl
 } from "../common/utils/configs/envVariablesLoader";
 
-export const App = ({}) => {
+export const App = () => {
     const [, , , setCommonTranslations] = useDigitTranslations(translations);
 
     const title = "Gamma";
@@ -58,7 +58,7 @@ export const App = ({}) => {
 
     useEffect(() => {
         setCommonTranslations(commonTranslations);
-    }, []);
+    });
 
     useEffect(() => {
         if (
@@ -69,7 +69,7 @@ export const App = ({}) => {
         ) {
             signIn();
         }
-    }, [loading, pathname, user]);
+    }, [loading, pathname, user, signIn]);
 
     if (loading) {
         return null;

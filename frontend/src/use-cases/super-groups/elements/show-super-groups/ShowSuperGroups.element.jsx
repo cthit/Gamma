@@ -1,8 +1,6 @@
 import React from "react";
 
 import {
-    DigitIfElseRendering,
-    DigitTranslations,
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
