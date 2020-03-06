@@ -58,7 +58,7 @@ export const App = () => {
 
     useEffect(() => {
         setCommonTranslations(commonTranslations);
-    });
+    }, [setCommonTranslations]);
 
     useEffect(() => {
         if (
