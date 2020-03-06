@@ -30,7 +30,6 @@ function generateHeaderTexts(text) {
 function modifyData(groups, text, activeLanguage, columns) {
     return groups.map(group => {
         const newGroup = { ...group };
-        console.log(group[DESCRIPTION]);
 
         newGroup[ID] = group[ID];
         newGroup[NAME] = group[NAME];

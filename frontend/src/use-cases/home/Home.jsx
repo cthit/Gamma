@@ -18,13 +18,18 @@ const Home = () => {
         return null;
     }
 
+    console.log(user);
+
     return (
         <DigitLayout.Center>
             <DigitLayout.Column>
                 <WelcomeUser user={user} />
                 <DigitLayout.Spacing />
                 <UserOptions
-                    hasGroups={user.groups != null && user.groups.length > 0}
+                    hasGroups={
+                        user.relationships != null &&
+                        user.relationships.length > 0
+                    }
                 />
                 {admin && (
                     <>

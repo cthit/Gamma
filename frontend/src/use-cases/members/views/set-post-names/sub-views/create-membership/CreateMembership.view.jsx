@@ -39,6 +39,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
                 }
             />
             <DigitSelect
+                outlined
                 value={value.postId || ""}
                 onChange={e => {
                     onChange({
@@ -50,6 +51,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
                 upperLabel={text.Post}
             />
             <DigitTextField
+                outlined
                 upperLabel={text.UnofficialPostName}
                 value={value.unofficialPostName || ""}
                 onChange={e => {

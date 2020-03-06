@@ -58,10 +58,10 @@ const save = (previousMembers, newMembersData, groupId, onFinished) => {
         newMembersData
     ).map(previousMember => removeUserFromGroup(groupId, previousMember.id));
 
-    const edits = getEdits(previousMembers, newMembersData).forEach(member => {
+    const edits = getEdits(previousMembers, newMembersData).map(member => {
         const newMemberData = _.find(newMembersData, { id: member.id });
 
-        editUserInGroup(groupId, member.id, {
+        return editUserInGroup(groupId, member.id, {
             userId: newMemberData.id,
             post: newMemberData.postId,
             unofficialName: newMemberData.unofficialPostName

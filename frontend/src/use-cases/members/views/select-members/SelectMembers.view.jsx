@@ -31,7 +31,7 @@ const generateHeaderTexts = text => {
     return headerTexts;
 };
 
-const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
+const SelectMembers = ({ users, group, onMembersSelected }) => {
     const [text] = useDigitTranslations(translations);
     const [selectedMemberIds, setSelectedMemberIds] = useState(
         group.groupMembers.map(member => member.id)
@@ -54,16 +54,14 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
                                     : text.NoChanges
                             }
                         />
-                        <div>
-                            <DigitButton
-                                raised
-                                primary
-                                text={text.Next}
-                                onClick={() => {
-                                    onMembersSelected(selectedMemberIds);
-                                }}
-                            />
-                        </div>
+                        <DigitButton
+                            raised
+                            primary
+                            text={text.Next}
+                            onClick={() => {
+                                onMembersSelected(selectedMemberIds);
+                            }}
+                        />
                     </DigitLayout.Row>
                 </DigitDesign.CardBody>
             </DigitDesign.Card>
@@ -74,25 +72,23 @@ const SelectMembers = ({ users, group, groupId, onMembersSelected }) => {
                         _.find(users, { id: memberId })
                     )}
                 />
-                <DigitLayout.Fill>
-                    <DigitTable
-                        selected={selectedMemberIds}
-                        onSelectedUpdated={newSelected => {
-                            setSelectedMemberIds(newSelected);
-                        }}
-                        search
-                        titleText={text.UsersFor + group[PRETTY_NAME]}
-                        searchText="Search for users"
-                        idProp="id"
-                        startOrderBy={NICK}
-                        columnsOrder={[FIRST_NAME, NICK, LAST_NAME]}
-                        headerTexts={generateHeaderTexts(text)}
-                        data={users.map(user => ({
-                            ...user,
-                            __link: "/users/" + user.cid
-                        }))}
-                    />
-                </DigitLayout.Fill>
+                <DigitTable
+                    selected={selectedMemberIds}
+                    onSelectedUpdated={newSelected => {
+                        setSelectedMemberIds(newSelected);
+                    }}
+                    search
+                    titleText={text.UsersFor + group[PRETTY_NAME]}
+                    searchText="Search for users"
+                    idProp="id"
+                    startOrderBy={NICK}
+                    columnsOrder={[FIRST_NAME, NICK, LAST_NAME]}
+                    headerTexts={generateHeaderTexts(text)}
+                    data={users.map(user => ({
+                        ...user,
+                        __link: "/users/" + user.cid
+                    }))}
+                />
             </DigitLayout.Row>
         </DigitLayout.Column>
     );

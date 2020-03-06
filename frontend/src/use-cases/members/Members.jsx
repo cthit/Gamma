@@ -35,9 +35,11 @@ const Members = () => {
                 getUsersMinified(),
                 getGroup(groupId)
             ]).then(response => {
-                setPosts(response[0].data);
-                setUsers(response[1].data);
-                setGroup(response[2].data);
+                if (response.length === 3) {
+                    setPosts(response[0].data);
+                    setUsers(response[1].data);
+                    setGroup(response[2].data);
+                }
             });
         }
     }, [admin, groupId]);

@@ -17,8 +17,12 @@ const MeGroups = () => {
             user == null
                 ? [[], []]
                 : [
-                      user.groups.filter(group => group.active),
-                      user.groups.filter(group => !group.active)
+                      user.relationships
+                          .filter(g => g.group.active)
+                          .map(g => g.group),
+                      user.relationships
+                          .filter(g => !g.group.active)
+                          .map(g => g.group)
                   ],
         [user]
     );
@@ -34,9 +38,6 @@ const MeGroups = () => {
             </DigitLayout.Center>
         );
     }
-
-    console.log(activeGroups);
-    console.log(pastGroups);
 
     return (
         <>
