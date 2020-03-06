@@ -11,12 +11,10 @@ import {
 import translations from "./MeAvatar.screen.translations";
 import { uploadUserAvatar } from "../../../../api/image/put.image.api";
 
-const MeAvatar = ({}) => {
+const MeAvatar = () => {
     const [text] = useDigitTranslations(translations);
     const [file, setFile] = useState(null);
     const user = useGammaUser();
-
-    console.log(user);
 
     return (
         <DigitLayout.Center>
@@ -29,7 +27,7 @@ const MeAvatar = ({}) => {
                         <DigitText.Text bold text={text.NoAvatar} />
                     )}
                     {user.avatarUrl != null && (
-                        <img src={user.avatarUrl} alt={"Avatar picture"} />
+                        <img src={user.avatarUrl} alt={"Avatar"} />
                     )}
                     <DigitSelectFile
                         image

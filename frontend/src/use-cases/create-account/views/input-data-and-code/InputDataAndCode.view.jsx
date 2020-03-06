@@ -89,10 +89,14 @@ const InputDataAndCode = () => {
                     nick: yup.string().required(text.FieldRequired),
                     firstName: yup.string().required(text.FieldRequired),
                     lastName: yup.string().required(text.FieldRequired),
-                    email: yup.string()
+                    email: yup
+                        .string()
                         .required(text.FieldRequired)
                         .email(text.NotEmail)
-                        .matches(/(^((?!@student.chalmers.se).)*$)/, text.NonStudentEmailError),
+                        .matches(
+                            /(^((?!@student.chalmers.se).)*$)/,
+                            text.NonStudentEmailError
+                        ),
                     acceptanceYear: yup
                         .number()
                         .min(2001)
