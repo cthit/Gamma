@@ -10,6 +10,7 @@ import {
     DigitSelect,
     DigitTextArea,
     DigitDatePicker,
+    DigitLayout,
     useGammaIsAdmin
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
@@ -292,11 +293,15 @@ const Groups = ({ history }) => {
                 admin ? (
                     <>
                         <div style={{ marginTop: "8px" }} />
-                        <DigitButton
-                            outlined
-                            text={"Edit members"}
-                            onClick={() => history.push("/members/" + data.id)}
-                        />
+                        <DigitLayout.Center>
+                            <DigitButton
+                                outlined
+                                text={"Edit members"}
+                                onClick={() =>
+                                    history.push("/members/" + data.id)
+                                }
+                            />
+                        </DigitLayout.Center>
                     </>
                 ) : null
             }
