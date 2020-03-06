@@ -7,5 +7,6 @@
     "Link": ["Details", "Detaljer"],
     "UnsavedEdits": ["You have unsaved edits", "Du har osparade ändringar"],
     "Nick": ["Nickname", "Nick"],
-    "NoChanges": ["You have no changes", "Du har inga ändringar"]
+    "NoChanges": ["You have no changes", "Du har inga ändringar"],
+    "Next": ["Next", "Nästa"]
 }

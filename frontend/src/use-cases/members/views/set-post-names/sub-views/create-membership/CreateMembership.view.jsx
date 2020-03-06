@@ -28,7 +28,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
-        <DigitLayout.Row centerVertical>
+        <DigitLayout.Row centerVertical alignItems={"baseline"}>
             <DigitText.Text
                 text={
                     value[FIRST_NAME] +
