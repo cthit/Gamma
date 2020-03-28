@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -98,9 +97,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Autowired
     private ResourceLoader resourceLoader;
 
-    private static final String ADMIN_GROUP_NAME = "digit";
-    private static final String GPDR_GROUP_NAME = "dpo";
-
     public DbInitializer(ITUserService userService,
                          FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService,
@@ -125,7 +121,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     @Override
     public void run(String... args) {
-        if(this.isMocking && !this.userService.userExists("admin")){
+        if (this.isMocking && !this.userService.userExists("admin")) {
             LOGGER.info("Running mock...");
             runMock();
             LOGGER.info("Mock finished");
@@ -231,34 +227,35 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
         }
     }
 
-    private void runMock(){
-        Resource resource = resourceLoader.getResource("classpath:/mock/mock.json");
+    @SuppressWarnings({"PMD.ExcessiveMethodLength"})
+    private void runMock()  {
+        Resource resource = this.resourceLoader.getResource("classpath:/mock/mock.json");
         ObjectMapper objectMapper = new ObjectMapper();
         MockData mockData = null;
         try {
             mockData = objectMapper.readValue(resource.getFile(), MockData.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
         }
 
-        if(mockData == null){
-            new Exception("Error when reading mock data").printStackTrace();
+        if (mockData == null) {
+            LOGGER.error("Error when trying to read mock.json");
             return;
         }
 
         Map<UUID, ITUserDTO> users = new HashMap<>();
 
         mockData.getUsers().forEach(mockUser -> {
-            ITUserDTO user = userService.createUser(
-                mockUser.getId(),
-                mockUser.getNick(),
-                mockUser.getFirstName(),
-                mockUser.getLastName(),
-                mockUser.getCid(),
-                mockUser.getAcceptanceYear(),
-                true,
-                mockUser.getCid() + "@student.chalmers.it", //bogus "it" student mail (if in anycase the student.chalmers.se mail actually exists
-                "password"
+            ITUserDTO user = this.userService.createUser(
+                    mockUser.getId(),
+                    mockUser.getNick(),
+                    mockUser.getFirstName(),
+                    mockUser.getLastName(),
+                    mockUser.getCid(),
+                    mockUser.getAcceptanceYear(),
+                    true,
+                    mockUser.getCid() + "@student.chalmers.it",
+                    "password"
             );
 
             users.put(user.getId(), user);
@@ -267,9 +264,9 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
         Map<UUID, PostDTO> posts = new HashMap<>();
 
         mockData.getPosts().forEach(mockPost -> {
-            PostDTO post = postService.addPost(
-                mockPost.getId(),
-                mockPost.getPostName()
+            PostDTO post = this.postService.addPost(
+                    mockPost.getId(),
+                    mockPost.getPostName()
             );
 
             posts.put(post.getId(), post);
@@ -277,18 +274,18 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
 
         Calendar activeGroupBecomesActive = toCalendar(
-            Instant.now().minus(1, ChronoUnit.DAYS)
+                Instant.now().minus(1, ChronoUnit.DAYS)
         );
         Calendar activeGroupBecomesInactive = toCalendar(
-            Instant.now().plus(365, ChronoUnit.DAYS)
+                Instant.now().plus(365, ChronoUnit.DAYS)
         );
 
         Calendar inactiveGroupBecomesActive = toCalendar(
-            Instant.now()
-                .minus(366, ChronoUnit.DAYS)
+                Instant.now()
+                        .minus(366, ChronoUnit.DAYS)
         );
         Calendar inactiveGroupBecomesInactive = toCalendar(
-            Instant.now().minus(1, ChronoUnit.DAYS)
+                Instant.now().minus(1, ChronoUnit.DAYS)
         );
 
         int activeYear = activeGroupBecomesActive.get(Calendar.YEAR);
@@ -298,7 +295,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
         mockData.getGroups().forEach(mockGroup -> {
             String name = mockGroup.getName() + (mockGroup.isActive() ? activeYear : inactiveYear);
-            String prettyName = mockGroup.getPrettyName() + (mockGroup.isActive() ? activeYear : inactiveYear);
+            String prettyName = mockGroup.getPrettyName()
+                    + (mockGroup.isActive() ? activeYear : inactiveYear);
             Calendar active = mockGroup.isActive()
                     ? activeGroupBecomesActive
                     : inactiveGroupBecomesActive;
@@ -307,26 +305,26 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
                     : inactiveGroupBecomesInactive;
 
             FKITGroupDTO group = new FKITGroupDTO(
-                mockGroup.getId(),
-                active,
-                inactive,
-                mockGroup.getDescription(),
-                name + "@chalmers.it",
-                mockGroup.getFunction(),
-                name,
-                prettyName,
-                null
+                    mockGroup.getId(),
+                    active,
+                    inactive,
+                    mockGroup.getDescription(),
+                    name + "@chalmers.it",
+                    mockGroup.getFunction(),
+                    name,
+                    prettyName,
+                    null
             );
 
             groups.put(group.getId(), group);
 
-            groupService.createGroup(group);
+            this.groupService.createGroup(group);
 
             mockGroup.getMembers().forEach(mockMembership -> {
                 PostDTO post = posts.get(mockMembership.getPostId());
                 ITUserDTO user = users.get(mockMembership.getUserId());
 
-                membershipService.addUserToGroup(
+                this.membershipService.addUserToGroup(
                         group,
                         user,
                         post,
@@ -337,27 +335,27 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
         mockData.getSuperGroups().forEach(mockSuperGroup -> {
             FKITSuperGroupDTO superGroup = new FKITSuperGroupDTO(
-                mockSuperGroup.getId(),
-                mockSuperGroup.getName(),
-                mockSuperGroup.getPrettyName(),
-                mockSuperGroup.getType(),
-                mockSuperGroup.getName() + "@chalmers.it"
+                    mockSuperGroup.getId(),
+                    mockSuperGroup.getName(),
+                    mockSuperGroup.getPrettyName(),
+                    mockSuperGroup.getType(),
+                    mockSuperGroup.getName() + "@chalmers.it"
             );
 
-            superGroupService.createSuperGroup(superGroup);
+            this.superGroupService.createSuperGroup(superGroup);
 
             mockSuperGroup.getGroups().forEach(groupId -> {
                 FKITGroupDTO group = groups.get(groupId);
 
-                groupToSuperGroupService.addRelationship(
-                    group,
-                    superGroup
+                this.groupToSuperGroupService.addRelationship(
+                        group,
+                        superGroup
                 );
             });
         });
     }
 
-    private Calendar toCalendar(Instant i){
+    private Calendar toCalendar(Instant i) {
         return GregorianCalendar.from(
                 ZonedDateTime.ofInstant(
                         i,

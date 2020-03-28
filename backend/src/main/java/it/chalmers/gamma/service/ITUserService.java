@@ -82,7 +82,7 @@ public class ITUserService implements UserDetailsService {
                                 Year year,
                                 boolean userAgreement,
                                 String email,
-                                String password){
+                                String password) {
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
         itUser.setFirstName(firstName);
@@ -96,7 +96,7 @@ public class ITUserService implements UserDetailsService {
         itUser.setEmail(email == null ? itUser.getCid() + "@student.chalmers.se" : email);
         itUser.setPassword(this.passwordEncoder.encode(password));
 
-        if(id != null){
+        if (id != null) {
             itUser.setId(id);
         }
 

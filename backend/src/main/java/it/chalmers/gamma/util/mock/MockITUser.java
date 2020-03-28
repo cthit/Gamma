@@ -13,7 +13,7 @@ public class MockITUser {
     private Year acceptanceYear;
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -21,7 +21,7 @@ public class MockITUser {
     }
 
     public String getCid() {
-        return cid;
+        return this.cid;
     }
 
     public void setCid(String cid) {
@@ -29,7 +29,7 @@ public class MockITUser {
     }
 
     public String getNick() {
-        return nick;
+        return this.nick;
     }
 
     public void setNick(String nick) {
@@ -37,7 +37,7 @@ public class MockITUser {
     }
 
     public String getFirstName() {
-        return firstName;
+        return this.firstName;
     }
 
     public void setFirstName(String firstName) {
@@ -45,7 +45,7 @@ public class MockITUser {
     }
 
     public String getLastName() {
-        return lastName;
+        return this.lastName;
     }
 
     public void setLastName(String lastName) {
@@ -53,7 +53,7 @@ public class MockITUser {
     }
 
     public Year getAcceptanceYear() {
-        return acceptanceYear;
+        return this.acceptanceYear;
     }
 
     public void setAcceptanceYear(Year acceptanceYear) {

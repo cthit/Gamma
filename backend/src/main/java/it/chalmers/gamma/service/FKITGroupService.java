@@ -26,7 +26,7 @@ public class FKITGroupService {
     public FKITGroupDTO createGroup(FKITGroupDTO fkitGroupDTO) {
         FKITGroup fkitGroup = new FKITGroup();
         UUID id = fkitGroupDTO.getId();
-        if(id == null) {
+        if (id == null) {
             id = UUID.randomUUID();
         }
         fkitGroup.setId(id);

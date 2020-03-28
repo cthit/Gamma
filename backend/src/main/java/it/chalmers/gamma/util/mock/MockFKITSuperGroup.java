@@ -14,7 +14,7 @@ public class MockFKITSuperGroup {
     private List<UUID> groups;
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -22,7 +22,7 @@ public class MockFKITSuperGroup {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -30,7 +30,7 @@ public class MockFKITSuperGroup {
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     public void setPrettyName(String prettyName) {
@@ -38,7 +38,7 @@ public class MockFKITSuperGroup {
     }
 
     public GroupType getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(GroupType type) {
@@ -46,7 +46,7 @@ public class MockFKITSuperGroup {
     }
 
     public List<UUID> getGroups() {
-        return groups;
+        return this.groups;
     }
 
     public void setGroups(List<UUID> groups) {

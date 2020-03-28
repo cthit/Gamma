@@ -9,7 +9,7 @@ public class MockMembership {
     private String unofficialPostName;
 
     public UUID getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void setUserId(UUID userId) {
@@ -17,7 +17,7 @@ public class MockMembership {
     }
 
     public UUID getPostId() {
-        return postId;
+        return this.postId;
     }
 
     public void setPostId(UUID postId) {
@@ -25,7 +25,7 @@ public class MockMembership {
     }
 
     public String getUnofficialPostName() {
-        return unofficialPostName;
+        return this.unofficialPostName;
     }
 
     public void setUnofficialPostName(String unofficialPostName) {

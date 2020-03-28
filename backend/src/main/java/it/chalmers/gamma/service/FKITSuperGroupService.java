@@ -25,7 +25,7 @@ public class FKITSuperGroupService {
     public FKITSuperGroupDTO createSuperGroup(FKITSuperGroupDTO superGroupDTO) {
         FKITSuperGroup group = new FKITSuperGroup();
         UUID id = superGroupDTO.getId();
-        if(id == null){
+        if (id == null) {
             id = UUID.randomUUID();
         }
         group.setId(id);

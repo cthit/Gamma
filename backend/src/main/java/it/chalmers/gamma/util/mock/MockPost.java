@@ -10,7 +10,7 @@ public class MockPost {
     private Text postName;
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -18,7 +18,7 @@ public class MockPost {
     }
 
     public Text getPostName() {
-        return postName;
+        return this.postName;
     }
 
     public void setPostName(Text postName) {

@@ -10,7 +10,7 @@ public class MockData {
     private List<MockPost> posts;
 
     public List<MockITUser> getUsers() {
-        return users;
+        return this.users;
     }
 
     public void setUsers(List<MockITUser> users) {
@@ -18,7 +18,7 @@ public class MockData {
     }
 
     public List<MockFKITGroup> getGroups() {
-        return groups;
+        return this.groups;
     }
 
     public void setGroups(List<MockFKITGroup> groups) {
@@ -26,7 +26,7 @@ public class MockData {
     }
 
     public List<MockFKITSuperGroup> getSuperGroups() {
-        return superGroups;
+        return this.superGroups;
     }
 
     public void setSuperGroups(List<MockFKITSuperGroup> superGroups) {
@@ -34,7 +34,7 @@ public class MockData {
     }
 
     public List<MockPost> getPosts() {
-        return posts;
+        return this.posts;
     }
 
     public void setPosts(List<MockPost> posts) {

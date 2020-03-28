@@ -16,13 +16,13 @@ public class MockFKITGroup {
     private List<MockMembership> members;
 
     /**
-     * If true, then this group will be active from today until a year forward
-     * If false, then this group was active a year ago to yesterday
+     * If true, then this group will be active from today until a year forward.
+     * If false, then this group was active a year ago to yesterday.
      */
     private boolean active;
 
     public UUID getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(UUID id) {
@@ -30,7 +30,7 @@ public class MockFKITGroup {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -38,7 +38,7 @@ public class MockFKITGroup {
     }
 
     public String getPrettyName() {
-        return prettyName;
+        return this.prettyName;
     }
 
     public void setPrettyName(String prettyName) {
@@ -46,7 +46,7 @@ public class MockFKITGroup {
     }
 
     public Text getDescription() {
-        return Objects.requireNonNullElseGet(description, Text::new);
+        return Objects.requireNonNullElseGet(this.description, Text::new);
     }
 
     public void setDescription(Text description) {
@@ -54,7 +54,7 @@ public class MockFKITGroup {
     }
 
     public Text getFunction() {
-        return Objects.requireNonNullElseGet(function, Text::new);
+        return Objects.requireNonNullElseGet(this.function, Text::new);
     }
 
     public void setFunction(Text function) {
@@ -62,7 +62,7 @@ public class MockFKITGroup {
     }
 
     public List<MockMembership> getMembers() {
-        return members;
+        return this.members;
     }
 
     public void setMembers(List<MockMembership> members) {
@@ -70,7 +70,7 @@ public class MockFKITGroup {
     }
 
     public boolean isActive() {
-        return active;
+        return this.active;
     }
 
     public void setActive(boolean active) {
