@@ -4,7 +4,7 @@ import {
     CID,
     EMAIL,
     FIRST_NAME,
-    GROUPS,
+    RELATIONSHIPS,
     ID,
     LANGUAGE,
     LAST_NAME,
@@ -66,7 +66,7 @@ export const generateUserKeyOrder = () => [
     EMAIL,
     ACCEPTANCE_YEAR,
     LANGUAGE,
-    GROUPS
+    RELATIONSHIPS
 ];
 
 export function generateUserInitialValues() {
@@ -214,12 +214,12 @@ export function generateUserCustomDetailsRenders(text, ignoreGroups) {
     const output = {};
 
     if (ignoreGroups) {
-        output[GROUPS] = data => null;
+        output[RELATIONSHIPS] = () => null;
     } else {
-        output[GROUPS] = data =>
-            data.groups != null ? (
+        output[RELATIONSHIPS] = data =>
+            data[RELATIONSHIPS] != null ? (
                 <DisplayGroupsTable
-                    groups={data.groups}
+                    groups={data[RELATIONSHIPS].map(g => g.group)}
                     title={text.Groups}
                     columnsOrder={[PRETTY_NAME]}
                 />
