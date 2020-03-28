@@ -1,5 +1,7 @@
 package it.chalmers.gamma.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
@@ -19,33 +21,48 @@ import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
+import it.chalmers.gamma.util.mock.MockData;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.Year;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 
 /**
  * This class adds a superadmin on startup if one does not already exist, to make sure one
- * always exists, and to make development easier.
+ * always exists, and to make development easier. It also adds mock data from /mock/mock.json
  */
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.ExcessiveParameterList"})
 @Component
 public class DbInitializer implements CommandLineRunner {   // maybe should be moved to more appropriate package
 
-    private final ITUserService userservice;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbInitializer.class);
+
+    private final ITUserService userService;
     private final FKITGroupService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
     private final AuthorityService authorityService;
     private final ITClientService itClientService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+    private final FKITGroupToSuperGroupService groupToSuperGroupService;
     private final ApiKeyService apiKeyService;
 
     @Value("${application.frontend-client-details.client-id}")
@@ -54,7 +71,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.frontend-client-details.redirect-uri}")
     private String redirectUri;
 
-    private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITSuperGroupService superGroupService;
 
     @Value("${application.standard-admin-account.password}")
     private String password;
@@ -78,37 +95,44 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     private static final String ADMIN_GROUP_NAME = "digit";
     private static final String GPDR_GROUP_NAME = "dpo";
 
-    public DbInitializer(ITUserService userservice,
+    public DbInitializer(ITUserService userService,
                          FKITGroupService groupService,
                          AuthorityLevelService authorityLevelService,
                          PostService postService,
                          MembershipService membershipService,
                          AuthorityService authorityService,
                          ITClientService itClientService,
-                         FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
+                         FKITGroupToSuperGroupService groupToSuperGroupService,
                          ApiKeyService apiKeyService,
-                         FKITSuperGroupService fkitSuperGroupService) {
-        this.userservice = userservice;
+                         FKITSuperGroupService superGroupService) {
+        this.userService = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
         this.postService = postService;
         this.membershipService = membershipService;
         this.authorityService = authorityService;
         this.itClientService = itClientService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
+        this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
-        this.fkitSuperGroupService = fkitSuperGroupService;
+        this.superGroupService = superGroupService;
     }
 
     @Override
     public void run(String... args) {
+        if(this.isMocking && !this.userService.userExists("admin")){
+            LOGGER.info("Running mock...");
+            runMock();
+            LOGGER.info("Mock finished");
+        }
+
         ensureAdminUser();
         ensureFrontendClientDetails();
-        ensureAdminGroup();
-        ensureGDPRGroup();
         if (this.isMocking) {
             ensureOauthClient();
         }
@@ -137,7 +161,7 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     private void ensureAdminUser() {
         String admin = "admin";
-        if (!this.userservice.userExists(admin)) {
+        if (!this.userService.userExists(admin)) {
             Text description = new Text();
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
@@ -153,17 +177,17 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();
             start.setTimeInMillis(System.currentTimeMillis());
-            FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.createSuperGroup(superGroupCreation);
+            FKITSuperGroupDTO superGroup = this.superGroupService.createSuperGroup(superGroupCreation);
             FKITGroupDTO group = new FKITGroupDTO(
                     start, end, description, adminMail, function, "superadmin", "superAdmin", null
             );
             group = this.groupService.createGroup(group);
-            this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
+            this.groupToSuperGroupService.addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
             PostDTO post = this.postService.addPost(p);
-            ITUserDTO user = this.userservice.createUser(admin,
+            ITUserDTO user = this.userService.createUser(admin,
                     admin,
                     admin,
                     admin,
@@ -180,29 +204,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             ); // This might break on a new year
             AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel(admin);
             this.authorityService.setAuthorityLevel(superGroup, post, authorityLevel);
-        }
-    }
-
-    // TODO This should be done dynamically, and should be removed once that feature is done in the frontend
-    private void ensureAdminGroup() {
-        if (this.fkitSuperGroupService.groupExists(this.ADMIN_GROUP_NAME)) {
-            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(this.ADMIN_GROUP_NAME);
-            PostDTO postDTO = this.postService.getPostDTO("ordförande");
-            AuthorityDTO authority = this.authorityService.getAuthorityLevel(groupDTO, postDTO);
-            AuthorityLevelDTO adminLevel = this.authorityLevelService.getAuthorityLevelDTO("admin");
-            if (authority == null) {
-                this.postService.getAllPosts().forEach(post ->
-                        this.authorityService.setAuthorityLevel(groupDTO, post, adminLevel));
-            }
-        }
-    }
-
-    private void ensureGDPRGroup() {
-        if (this.fkitSuperGroupService.groupExists(this.GPDR_GROUP_NAME)) {
-            FKITSuperGroupDTO groupDTO = this.fkitSuperGroupService.getGroupDTO(this.GPDR_GROUP_NAME);
-            PostDTO postDTO = this.postService.getPostDTO("medlem");
-            AuthorityLevelDTO authorityLevel = this.authorityLevelService.addAuthorityLevel("gdpr");
-            this.authorityService.setAuthorityLevel(groupDTO, postDTO, authorityLevel);
         }
     }
 
@@ -229,4 +230,140 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             this.apiKeyService.addApiKey(this.oauth2ClientName, this.oauth2ClientApiKey, apiDescription);
         }
     }
+
+    private void runMock(){
+        Resource resource = resourceLoader.getResource("classpath:/mock/mock.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        MockData mockData = null;
+        try {
+            mockData = objectMapper.readValue(resource.getFile(), MockData.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(mockData == null){
+            new Exception("Error when reading mock data").printStackTrace();
+            return;
+        }
+
+        Map<UUID, ITUserDTO> users = new HashMap<>();
+
+        mockData.getUsers().forEach(mockUser -> {
+            ITUserDTO user = userService.createUser(
+                mockUser.getId(),
+                mockUser.getNick(),
+                mockUser.getFirstName(),
+                mockUser.getLastName(),
+                mockUser.getCid(),
+                mockUser.getAcceptanceYear(),
+                true,
+                mockUser.getCid() + "@student.chalmers.it", //bogus "it" student mail (if in anycase the student.chalmers.se mail actually exists
+                "password"
+            );
+
+            users.put(user.getId(), user);
+        });
+
+        Map<UUID, PostDTO> posts = new HashMap<>();
+
+        mockData.getPosts().forEach(mockPost -> {
+            PostDTO post = postService.addPost(
+                mockPost.getId(),
+                mockPost.getPostName()
+            );
+
+            posts.put(post.getId(), post);
+        });
+
+
+        Calendar activeGroupBecomesActive = toCalendar(
+            Instant.now().minus(1, ChronoUnit.DAYS)
+        );
+        Calendar activeGroupBecomesInactive = toCalendar(
+            Instant.now().plus(365, ChronoUnit.DAYS)
+        );
+
+        Calendar inactiveGroupBecomesActive = toCalendar(
+            Instant.now()
+                .minus(366, ChronoUnit.DAYS)
+        );
+        Calendar inactiveGroupBecomesInactive = toCalendar(
+            Instant.now().minus(1, ChronoUnit.DAYS)
+        );
+
+        int activeYear = activeGroupBecomesActive.get(Calendar.YEAR);
+        int inactiveYear = inactiveGroupBecomesActive.get(Calendar.YEAR);
+
+        Map<UUID, FKITGroupDTO> groups = new HashMap<>();
+
+        mockData.getGroups().forEach(mockGroup -> {
+            String name = mockGroup.getName() + (mockGroup.isActive() ? activeYear : inactiveYear);
+            String prettyName = mockGroup.getPrettyName() + (mockGroup.isActive() ? activeYear : inactiveYear);
+            Calendar active = mockGroup.isActive()
+                    ? activeGroupBecomesActive
+                    : inactiveGroupBecomesActive;
+            Calendar inactive = mockGroup.isActive()
+                    ? activeGroupBecomesInactive
+                    : inactiveGroupBecomesInactive;
+
+            FKITGroupDTO group = new FKITGroupDTO(
+                mockGroup.getId(),
+                active,
+                inactive,
+                mockGroup.getDescription(),
+                name + "@chalmers.it",
+                mockGroup.getFunction(),
+                name,
+                prettyName,
+                null
+            );
+
+            groups.put(group.getId(), group);
+
+            groupService.createGroup(group);
+
+            mockGroup.getMembers().forEach(mockMembership -> {
+                PostDTO post = posts.get(mockMembership.getPostId());
+                ITUserDTO user = users.get(mockMembership.getUserId());
+
+                membershipService.addUserToGroup(
+                        group,
+                        user,
+                        post,
+                        mockMembership.getUnofficialPostName()
+                );
+            });
+        });
+
+        mockData.getSuperGroups().forEach(mockSuperGroup -> {
+            FKITSuperGroupDTO superGroup = new FKITSuperGroupDTO(
+                mockSuperGroup.getId(),
+                mockSuperGroup.getName(),
+                mockSuperGroup.getPrettyName(),
+                mockSuperGroup.getType(),
+                mockSuperGroup.getName() + "@chalmers.it"
+            );
+
+            superGroupService.createSuperGroup(superGroup);
+
+            mockSuperGroup.getGroups().forEach(groupId -> {
+                FKITGroupDTO group = groups.get(groupId);
+
+                groupToSuperGroupService.addRelationship(
+                    group,
+                    superGroup
+                );
+            });
+        });
+    }
+
+    private Calendar toCalendar(Instant i){
+        return GregorianCalendar.from(
+                ZonedDateTime.ofInstant(
+                        i,
+                        ZoneId.systemDefault()
+                )
+        );
+    }
+
 }

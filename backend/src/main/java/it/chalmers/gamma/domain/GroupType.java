@@ -5,5 +5,6 @@ public enum GroupType {
     SOCIETY,
     COMMITTEE,
     BOARD,
-    ALUMNI
+    ALUMNI,
+    FUNCTIONARIES
 }

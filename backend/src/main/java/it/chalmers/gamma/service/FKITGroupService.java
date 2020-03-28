@@ -25,6 +25,11 @@ public class FKITGroupService {
 
     public FKITGroupDTO createGroup(FKITGroupDTO fkitGroupDTO) {
         FKITGroup fkitGroup = new FKITGroup();
+        UUID id = fkitGroupDTO.getId();
+        if(id == null) {
+            id = UUID.randomUUID();
+        }
+        fkitGroup.setId(id);
         fkitGroup.setName(fkitGroupDTO.getName());
         fkitGroup.setFunction(fkitGroupDTO.getFunction());
         fkitGroup.setDescription(fkitGroupDTO.getDescription());
@@ -100,7 +105,7 @@ public class FKITGroupService {
         this.repo.save(group);
     }
 
-    protected FKITGroup getGroup(FKITGroupDTO group) {
+    public FKITGroup getGroup(FKITGroupDTO group) {
         return this.repo.findById(group.getId()).orElse(null);
     }
 
