@@ -22,6 +22,7 @@ import it.chalmers.gamma.service.PostService;
 
 import java.time.Instant;
 import java.time.Year;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -77,6 +78,8 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private boolean autoApprove;
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
+    @Value("${application.pre-populate-database}")
+    private boolean prePopulate;
 
     private static final String ADMIN_GROUP_NAME = "digit";
     private static final String GPDR_GROUP_NAME = "dpo";
@@ -105,12 +108,14 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
 
     @Override
     public void run(String... args) {
-        ensureAdminUser();
-        ensureFrontendClientDetails();
-        ensureAdminGroup();
-        ensureGDPRGroup();
-        if (this.isMocking) {
-            ensureOauthClient();
+        if(prePopulate) {
+            ensureAdminUser();
+            ensureFrontendClientDetails();
+            ensureAdminGroup();
+            ensureGDPRGroup();
+            if (this.isMocking) {
+                ensureOauthClient();
+            }
         }
     }
 
