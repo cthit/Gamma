@@ -7,10 +7,10 @@ import java.time.Year;
 import java.util.UUID;
 
 public class RandomITUserFactory {
-    public static ITUserDTO generateITUser() {
+    public static ITUserDTO generateITUser(String username) {
         return new ITUserDTO(
                 UUID.randomUUID(),
-                GenerationUtils.generateRandomString(),
+                username,
                 GenerationUtils.generateRandomString(),
                 GenerationUtils.generateRandomString(),
                 GenerationUtils.generateRandomString(),
@@ -23,5 +23,14 @@ public class RandomITUserFactory {
                 false,
                 Year.of(GenerationUtils.generateIntBetween(2001, 2020)),
                 true);
+    }
+
+    /**
+     * Generate User with admin privileges named "admin"
+     * @return
+     */
+    public static ITUserDTO generateAdminUser() {       // TODO
+        ITUserDTO user = generateITUser("admin");
+        return user;
     }
 }
