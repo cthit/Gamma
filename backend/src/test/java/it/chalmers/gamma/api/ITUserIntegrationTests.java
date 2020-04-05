@@ -1,4 +1,4 @@
-package it.chalmers.gamma.integration;
+package it.chalmers.gamma.api;
 
 import it.chalmers.gamma.TestUtils;
 import it.chalmers.gamma.db.repository.ActivationCodeRepository;

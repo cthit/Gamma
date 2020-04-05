@@ -1,4 +1,4 @@
-package it.chalmers.gamma.integration;
+package it.chalmers.gamma.api;
 
 import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.TestUtils;
@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
 @TestPropertySource(locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class WhitelistIntegrationTests {
 
     @Autowired
