@@ -42,9 +42,9 @@ services:
             POSTGRES_PASSWORD: password
             POSTGRES_USER: imageit
             POSTGRES_DB: imageit
-#    gamma_backend:
-#        build:
-#            context: ./backend
-#            dockerfile: dev.Dockerfile
-#        ports:
-#            - 8081:8081
+    gamma_backend:
+        build:
+            context: ./backend
+            dockerfile: dev.Dockerfile
+        ports:
+            - 8081:8081
