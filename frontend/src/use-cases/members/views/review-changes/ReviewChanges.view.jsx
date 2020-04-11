@@ -3,10 +3,10 @@ import React from "react";
 import Save from "@material-ui/icons/Save";
 
 import {
-    DigitFAB,
     DigitLayout,
     DigitDesign,
-    useDigitTranslations
+    useDigitTranslations,
+    DigitButton
 } from "@cthit/react-digit-components";
 import NewMember from "./elements/new-member";
 
@@ -17,6 +17,10 @@ import {
     LAST_NAME,
     NICK
 } from "../../../../api/users/props.users.api";
+import { editUserInGroup } from "../../../../api/groups/put.groups.api";
+import { removeUserFromGroup } from "../../../../api/groups/delete.groups.api";
+import { addUserToGroup } from "../../../../api/groups/post.groups.api";
+import { useHistory } from "react-router";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -39,96 +43,94 @@ function getEdits(previousMembers, newMembers) {
     );
 }
 
+const save = (previousMembers, newMembersData, groupId, onFinished) => {
+    const additions = getAdditions(previousMembers, newMembersData).map(
+        member =>
+            addUserToGroup(groupId, {
+                userId: member.id,
+                post: member.postId,
+                unofficialName: member.unofficialPostName
+            })
+    );
+
+    const deletions = getDeletions(
+        previousMembers,
+        newMembersData
+    ).map(previousMember => removeUserFromGroup(groupId, previousMember.id));
+
+    const edits = getEdits(previousMembers, newMembersData).map(member => {
+        const newMemberData = _.find(newMembersData, { id: member.id });
+
+        return editUserInGroup(groupId, member.id, {
+            userId: newMemberData.id,
+            post: newMemberData.postId,
+            unofficialName: newMemberData.unofficialPostName
+        });
+    });
+
+    Promise.all([...additions, ...deletions, ...edits])
+        .then(() => {
+            onFinished();
+        })
+        .catch(e => {
+            console.log(e);
+            // onFinished();
+        });
+};
+
 const ReviewChanges = ({
     groupName,
     previousMembers,
     groupId,
-    redirectTo,
-    addUserToGroup,
-    removeUserFromGroup,
-    editUserInGroup,
     posts,
-    onFinished
+    onFinished,
+    newMembersData
 }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
-    var savedPostNames = sessionStorage.getItem(groupId + ".postNames");
-    if (savedPostNames == null) {
-        redirectTo("/groups/" + groupId + "/members");
-        return null;
-    }
-
-    const members = JSON.parse(savedPostNames).members;
+    const history = useHistory();
 
     return (
         <DigitLayout.Center>
-            <>
-                <DigitDesign.Card>
-                    <DigitDesign.CardTitle
-                        text={text.NewMembersForGroup + " " + groupName}
+            <DigitDesign.Card>
+                <DigitDesign.CardTitle
+                    text={text.NewMembersForGroup + " " + groupName}
+                />
+                <DigitDesign.CardBody minWidth={"280px"}>
+                    {newMembersData.map(member => (
+                        <NewMember
+                            key={member.id}
+                            firstName={member[FIRST_NAME]}
+                            lastName={member[LAST_NAME]}
+                            nick={member[NICK]}
+                            unofficialPostName={member.unofficialPostName}
+                            activeLanguage={activeLanguage}
+                            post={_.find(posts, {
+                                id: member.postId
+                            })}
+                        />
+                    ))}
+                </DigitDesign.CardBody>
+                <DigitDesign.CardButtons leftRight>
+                    <DigitButton
+                        text={text.Back}
+                        onClick={() => history.goBack()}
                     />
-                    <DigitDesign.CardBody minWidth={"280px"}>
-                        {members.map(member => (
-                            <NewMember
-                                key={member.id}
-                                firstName={member[FIRST_NAME]}
-                                lastName={member[LAST_NAME]}
-                                nick={member[NICK]}
-                                unofficialPostName={member.unofficialPostName}
-                                activeLanguage={activeLanguage}
-                                post={_.find(posts, {
-                                    id: member.postId
-                                })}
-                            />
-                        ))}
-                    </DigitDesign.CardBody>
-                </DigitDesign.Card>
-                <DigitLayout.DownRightPosition>
-                    <DigitFAB
-                        icon={Save}
+                    <DigitButton
+                        text={text.Save}
+                        onClick={() =>
+                            save(
+                                previousMembers,
+                                newMembersData,
+                                groupId,
+                                onFinished
+                            )
+                        }
+                        startIcon={<Save />}
+                        raised
                         primary
-                        onClick={() => {
-                            const additions = getAdditions(
-                                previousMembers,
-                                members
-                            ).map(member =>
-                                addUserToGroup(groupId, {
-                                    userId: member.id,
-                                    post: member.postId,
-                                    unofficialName: member.unofficialPostName
-                                })
-                            );
-
-                            const deletions = getDeletions(
-                                previousMembers,
-                                members
-                            ).map(previousMember =>
-                                removeUserFromGroup(groupId, previousMember.id)
-                            );
-
-                            const edits = getEdits(
-                                previousMembers,
-                                members
-                            ).map(member =>
-                                editUserInGroup(groupId, member.id, {
-                                    userId: member.id,
-                                    post: member.post.id,
-                                    unofficialName: member.unofficialPostName
-                                })
-                            );
-
-                            Promise.all([...additions, ...deletions, ...edits])
-                                .then(() => {
-                                    sessionStorage.clear();
-                                    onFinished();
-                                })
-                                .catch(() => {
-                                    sessionStorage.clear();
-                                    onFinished();
-                                });
-                        }}
                     />
-                </DigitLayout.DownRightPosition>
-            </>
+                </DigitDesign.CardButtons>
+            </DigitDesign.Card>
         </DigitLayout.Center>
     );
 };

@@ -1,10 +1,15 @@
 import React from "react";
 
-import { DigitDesign, DigitText } from "@cthit/react-digit-components";
+import {
+    DigitDesign,
+    DigitText,
+    useDigitTranslations
+} from "@cthit/react-digit-components";
 import MemberCurrent from "./sub-elements/member-current";
 import * as _ from "lodash";
 import MemberAddition from "./sub-elements/member-addition";
 import MemberDeletion from "./sub-elements/member-deletion";
+import translations from "./UsersInGroupChanges.element.translations";
 
 function findAdditions(currentMembers, selectedMembers) {
     return selectedMembers.filter(
@@ -18,24 +23,28 @@ function findDeletions(currentMembers, selectedMembers) {
     );
 }
 
-const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => (
-    <DigitDesign.Card absWidth="280px">
-        <DigitDesign.CardBody>
-            <DigitText.Title text="Nuvarande" />
-            {currentMembers.map(member => (
-                <MemberCurrent key={member.id} member={member} />
-            ))}
-            <DigitText.Title text="Tillägg" />
-            {findAdditions(currentMembers, selectedMembers).map(member => (
-                <MemberAddition key={member.id} member={member} />
-            ))}
-            <DigitText.Title text="Borttagningar" />
-            {findDeletions(currentMembers, selectedMembers).map(member => (
-                <MemberDeletion key={member.id} member={member} />
-            ))}
-        </DigitDesign.CardBody>
-    </DigitDesign.Card>
-);
+const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => {
+    const [text] = useDigitTranslations(translations);
+
+    return (
+        <DigitDesign.Card absWidth="280px">
+            <DigitDesign.CardBody>
+                <DigitText.Title text={text.Current} />
+                {currentMembers.map(member => (
+                    <MemberCurrent key={member.id} member={member} />
+                ))}
+                <DigitText.Title text={text.Additions} />
+                {findAdditions(currentMembers, selectedMembers).map(member => (
+                    <MemberAddition key={member.id} member={member} />
+                ))}
+                <DigitText.Title text={text.Deletions} />
+                {findDeletions(currentMembers, selectedMembers).map(member => (
+                    <MemberDeletion key={member.id} member={member} />
+                ))}
+            </DigitDesign.CardBody>
+        </DigitDesign.Card>
+    );
+};
 
 UsersInGroupChanges.defaultProps = {
     currentMembers: [],

@@ -8,7 +8,7 @@ import {
 import translations from "./MeGroups.screen.translations";
 import DisplayGroupsTable from "../../../../common/elements/display-groups-table/DisplayGroupsTable.element";
 
-const MeGroups = ({}) => {
+const MeGroups = () => {
     const [text] = useDigitTranslations(translations);
     const user = useGammaUser();
 
@@ -17,10 +17,14 @@ const MeGroups = ({}) => {
             user == null
                 ? [[], []]
                 : [
-                      user.groups.filter(group => group.active),
-                      user.groups.filter(group => !group.active)
+                      user.relationships
+                          .filter(g => g.group.active)
+                          .map(g => g.group),
+                      user.relationships
+                          .filter(g => !g.group.active)
+                          .map(g => g.group)
                   ],
-        [JSON.stringify(user)]
+        [user]
     );
 
     if (user == null) {
@@ -34,9 +38,6 @@ const MeGroups = ({}) => {
             </DigitLayout.Center>
         );
     }
-
-    console.log(activeGroups);
-    console.log(pastGroups);
 
     return (
         <>

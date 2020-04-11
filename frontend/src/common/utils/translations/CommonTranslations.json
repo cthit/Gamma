@@ -44,5 +44,6 @@
         "Misslyckades att radera"
     ],
     "Groups": ["Groups", "Grupper"],
-    "NoGroups": ["No groups", "Inga grupper"]
+    "NoGroups": ["No groups", "Inga grupper"],
+    "Next": ["Next", "Nästa"]
 }

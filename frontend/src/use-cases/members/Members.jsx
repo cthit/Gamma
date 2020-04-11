@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    DigitLayout,
-    DigitLoading,
     DigitStepper,
     useDigitTranslations,
     useGammaIsAdmin
 } from "@cthit/react-digit-components";
-import { Route, Switch } from "react-router";
+import { Route, Switch, useHistory, useLocation } from "react-router";
 import { NAME } from "../../api/groups/props.groups.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import translations from "./Members.translations";
@@ -17,14 +15,16 @@ import { getPosts } from "../../api/posts/get.posts.api";
 import { getUsersMinified } from "../../api/users/get.users.api";
 import { getGroup } from "../../api/groups/get.groups.api";
 
-const Members = ({ history }) => {
+const Members = () => {
+    const history = useHistory();
+    const location = useLocation();
     const [text] = useDigitTranslations(translations);
-    const groupId = history.location.pathname.split("/")[2];
-    const [data, setData] = useState({
-        group: null,
-        users: null,
-        posts: null
-    });
+    const groupId = location.pathname.split("/")[2];
+    const [selectedMemberIds, setSelectedMemberIds] = useState(null);
+    const [newMembersData, setNewMembersData] = useState(null);
+    const [group, setGroup] = useState(null);
+    const [users, setUsers] = useState(null);
+    const [posts, setPosts] = useState(null);
 
     const admin = useGammaIsAdmin();
 
@@ -35,11 +35,11 @@ const Members = ({ history }) => {
                 getUsersMinified(),
                 getGroup(groupId)
             ]).then(response => {
-                setData({
-                    posts: response[0].data,
-                    users: response[1].data,
-                    group: response[2].data
-                });
+                if (response.length === 3) {
+                    setPosts(response[0].data);
+                    setUsers(response[1].data);
+                    setGroup(response[2].data);
+                }
             });
         }
     }, [admin, groupId]);
@@ -48,16 +48,13 @@ const Members = ({ history }) => {
         return <InsufficientAccess />;
     }
 
-    const redirectTo = to => history.push(to);
-
-    const { group, users, posts } = data;
-
     var step = 0; //Ends with members
 
-    const route = history.location.pathname;
+    const route = location.pathname;
 
-    const onMembersSelected = () => {
-        redirectTo("/members/" + group.id + "/posts");
+    const onMembersSelected = selectedMembers => {
+        setSelectedMemberIds(selectedMembers);
+        history.push("/members/" + groupId + "/posts");
     };
 
     if (route.endsWith("/posts")) {
@@ -66,72 +63,75 @@ const Members = ({ history }) => {
         step = 2;
     }
 
-    if (group != null && users != null && posts != null && users.length > 0) {
-        return (
-            <>
-                <DigitStepper
-                    activeStep={step}
-                    steps={[
-                        { text: text.SelectMembers },
-                        { text: text.SetPostNames },
-                        { text: text.ReviewChanges }
-                    ]}
-                />
-
-                <Switch>
-                    <Route
-                        path="/members/:id"
-                        exact
-                        render={() => (
-                            <SelectMembers
-                                group={group}
-                                users={users}
-                                groupId={groupId}
-                                onMembersSelected={onMembersSelected}
-                            />
-                        )}
-                    />
-                    <Route
-                        path="/members/:id/posts"
-                        exact
-                        render={() => (
-                            <SetPostNames
-                                groupId={groupId}
-                                posts={posts}
-                                currentMembers={group.groupMembers}
-                                users={users}
-                                onNewMembers={() =>
-                                    redirectTo(
-                                        "/members/" + groupId + "/review"
-                                    )
-                                }
-                            />
-                        )}
-                    />
-                    <Route
-                        path="/members/:id/review"
-                        exact
-                        render={() => (
-                            <ReviewChanges
-                                groupName={group[NAME]}
-                                posts={posts}
-                                previousMembers={group.groupMembers}
-                                groupId={groupId}
-                                onFinished={() => {
-                                    redirectTo("/groups/" + group.id);
-                                }}
-                            />
-                        )}
-                    />
-                </Switch>
-            </>
-        );
-    } else {
-        return (
-            <DigitLayout.Center>
-                <DigitLoading loading />
-            </DigitLayout.Center>
-        );
+    if (group == null || users == null || posts == null) {
+        return null;
     }
+
+    //turn into effect instead
+    if (step > 0 && selectedMemberIds == null) {
+        history.push("/members/" + groupId);
+        return null;
+    }
+
+    return (
+        <>
+            <DigitStepper
+                activeStep={step}
+                steps={[
+                    { text: text.SelectMembers },
+                    { text: text.SetPostNames },
+                    { text: text.ReviewChanges }
+                ]}
+            />
+
+            <Switch>
+                <Route
+                    path="/members/:id"
+                    exact
+                    render={() => (
+                        <SelectMembers
+                            group={group}
+                            users={users}
+                            groupId={groupId}
+                            onMembersSelected={onMembersSelected}
+                        />
+                    )}
+                />
+                <Route
+                    path="/members/:id/posts"
+                    exact
+                    render={() => (
+                        <SetPostNames
+                            selectedMemberIds={selectedMemberIds}
+                            groupId={groupId}
+                            posts={posts}
+                            currentMembers={group.groupMembers}
+                            users={users}
+                            onNewMembers={value => {
+                                setNewMembersData(value.members);
+                                history.push("/members/" + groupId + "/review");
+                            }}
+                        />
+                    )}
+                />
+                <Route
+                    path="/members/:id/review"
+                    exact
+                    render={() => (
+                        <ReviewChanges
+                            groupName={group[NAME]}
+                            posts={posts}
+                            previousMembers={group.groupMembers}
+                            newMembersData={newMembersData}
+                            groupId={groupId}
+                            onFinished={() => {
+                                history.push("/groups/" + group.id);
+                            }}
+                        />
+                    )}
+                />
+            </Switch>
+        </>
+    );
 };
 export default Members;

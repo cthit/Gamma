@@ -13,7 +13,7 @@
 it's real easy. Just replace the environment variables with suitable value (see wiki)
 and run:
 
-`docker-compose up -f prod.docker-compose.yml --build`
+`docker-compose -f prod.docker-compose.yml up --build`
 
 Depending on your build system, things might be different, and a proxy is probably needed for a real production version of Gamma. 
 

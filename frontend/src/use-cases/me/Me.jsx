@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import {
     FIRST_NAME,
     LAST_NAME,
@@ -9,11 +9,9 @@ import {
     useDigitTranslations,
     DigitCRUD,
     DigitTextField,
-    DigitButton,
-    DigitLayout,
-    DigitDesign,
     useGammaUser,
-    useGammaInvalidateMe
+    useGammaInvalidateMe,
+    DigitButtonGroup
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
 import { editMe } from "../../api/me/put.me.api";
@@ -30,11 +28,14 @@ import * as yup from "yup";
 import { Switch, Route } from "react-router-dom";
 import MeChangePassword from "./screens/me-change-password";
 import MeGroups from "./screens/me-groups";
+import { useHistory } from "react-router";
+import MeAvatar from "./screens/me-avatar";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
     const user = useGammaUser();
     const invalidateMe = useGammaInvalidateMe();
+    const history = useHistory();
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
@@ -42,6 +43,7 @@ const Me = () => {
     return (
         <Switch>
             <Route exact path={"/me/groups"} component={MeGroups} />
+            <Route exact path={"/me/avatar"} component={MeAvatar} />
             <Route
                 exact
                 path={"/me/change-password"}
@@ -73,24 +75,26 @@ const Me = () => {
                             )
                         }
                         detailsRenderCardEnd={() => (
-                            <DigitLayout.Padding>
-                                <DigitLayout.Row justifyContent={"center"}>
-                                    <DigitDesign.Link
-                                        to={"/me/change-password"}
-                                    >
-                                        <DigitButton
-                                            outlined
-                                            text={text.ChangePassword}
-                                        />
-                                    </DigitDesign.Link>
-                                    <DigitDesign.Link to={"/me/groups"}>
-                                        <DigitButton
-                                            outlined
-                                            text={text.YourGroups}
-                                        />
-                                    </DigitDesign.Link>
-                                </DigitLayout.Row>
-                            </DigitLayout.Padding>
+                            <DigitButtonGroup
+                                outlined
+                                buttons={[
+                                    {
+                                        text: text.ChangePassword,
+                                        onClick: () =>
+                                            history.push("/me/change-password")
+                                    },
+                                    {
+                                        text: text.YourGroups,
+                                        onClick: () =>
+                                            history.push("/me/groups")
+                                    },
+                                    {
+                                        text: text.YourAvatar,
+                                        onClick: () =>
+                                            history.push("/me/avatar")
+                                    }
+                                ]}
+                            />
                         )}
                         customDetailsRenders={generateUserCustomDetailsRenders(
                             text,

@@ -10,7 +10,9 @@ import {
     DigitSelect,
     DigitTextArea,
     DigitDatePicker,
-    useGammaIsAdmin
+    DigitLayout,
+    useGammaIsAdmin,
+    useGammaUser
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
@@ -29,6 +31,8 @@ import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
 import DisplayUsersTable from "../../common/elements/display-users-table";
+import * as _ from "lodash";
+import { useHistory } from "react-router";
 
 const DESCRIPTION_SV = "descriptionSv";
 const DESCRIPTION_EN = "descriptionEn";
@@ -191,16 +195,23 @@ function generateEditComponentData(text, superGroups = []) {
     return componentData;
 }
 
-const Groups = ({ history }) => {
+const Groups = () => {
     const [text, activeLanguage] = useDigitTranslations(translations);
     const admin = useGammaIsAdmin();
     const [superGroups, setSuperGroups] = useState([]);
+    const user = useGammaUser();
+    const history = useHistory();
 
     useEffect(() => {
         getSuperGroups().then(response => {
             setSuperGroups(response.data);
         });
     }, []);
+
+    useEffect(() => {
+        console.log(user);
+        // _.find(user.relationships, {name: })
+    }, [user]);
 
     if (superGroups.length === 0) {
         return null;
@@ -213,9 +224,8 @@ const Groups = ({ history }) => {
             readAllRequest={getGroupsMinified}
             readOneRequest={getGroup}
             updateRequest={
-                !admin
-                    ? null
-                    : (id, data) => {
+                admin
+                    ? (id, data) => {
                           const becomesActive = addDays(data.becomesActive, 1);
                           const becomesInactive = addDays(
                               data.becomesInactive,
@@ -239,6 +249,7 @@ const Groups = ({ history }) => {
                               becomesInactive: becomesInactive
                           });
                       }
+                    : null
             }
             createRequest={data => {
                 const becomesActive = addDays(data.becomesActive, 1);
@@ -292,11 +303,15 @@ const Groups = ({ history }) => {
                 admin ? (
                     <>
                         <div style={{ marginTop: "8px" }} />
-                        <DigitButton
-                            outlined
-                            text={"Edit members"}
-                            onClick={() => history.push("/members/" + data.id)}
-                        />
+                        <DigitLayout.Center>
+                            <DigitButton
+                                outlined
+                                text={"Edit members"}
+                                onClick={() =>
+                                    history.push("/members/" + data.id)
+                                }
+                            />
+                        </DigitLayout.Center>
                     </>
                 ) : null
             }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
     DigitCRUD,
     useDigitTranslations,
@@ -11,13 +11,13 @@ import {
     CID,
     EMAIL,
     FIRST_NAME,
-    GROUPS,
     ID,
     LANGUAGE,
     LAST_NAME,
     NICK,
     PASSWORD,
-    USER_AGREEMENT
+    USER_AGREEMENT,
+    RELATIONSHIPS
 } from "../../api/users/props.users.api";
 import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
@@ -57,7 +57,7 @@ const Users = () => {
                 ACCEPTANCE_YEAR,
                 LANGUAGE,
                 USER_AGREEMENT,
-                GROUPS
+                RELATIONSHIPS
             ]}
             tableProps={{
                 titleText: text.Users,

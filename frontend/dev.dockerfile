@@ -1,22 +1,9 @@
-FROM node:10.15
-
-RUN mkdir -p /usr/src/app/
-RUN chown -R node /usr/src/app
-
-USER node
-
+FROM node:13.2.0 as build
 WORKDIR /usr/src/app
-
-COPY package.json .
-COPY yarn.lock .
-
+COPY package.json yarn.lock ./
 RUN yarn install --network-timeout 10000000
 RUN yarn global add react-scripts
-
-EXPOSE 3000
-
-COPY /src .
-COPY /public .
-
+COPY src src
+COPY public public
 CMD yarn start
 

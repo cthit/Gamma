@@ -2,7 +2,6 @@ import React from "react";
 import translations from "./DisplayGroupsTable.element.translations";
 import {
     DigitTable,
-    DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import {
@@ -31,7 +30,6 @@ function generateHeaderTexts(text) {
 function modifyData(groups, text, activeLanguage, columns) {
     return groups.map(group => {
         const newGroup = { ...group };
-        console.log(group[DESCRIPTION]);
 
         newGroup[ID] = group[ID];
         newGroup[NAME] = group[NAME];

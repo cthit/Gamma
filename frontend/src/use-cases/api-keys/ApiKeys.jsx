@@ -4,7 +4,6 @@ import {
     DigitCRUD,
     DigitTextArea,
     DigitTextField,
-    DigitLayout,
     DigitText,
     useDigitCustomDialog,
     useDigitTranslations,
@@ -52,7 +51,6 @@ const ApiKeys = () => {
                     renderMain: () => (
                         <>
                             <DigitText.Text bold alignCenter text={secret} />
-                            <DigitLayout.Padding />
                             <DigitText.Text
                                 text={text.YourApiKeySecretDescription}
                             />

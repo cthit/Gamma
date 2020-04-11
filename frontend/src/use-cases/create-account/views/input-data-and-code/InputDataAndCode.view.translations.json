@@ -18,9 +18,14 @@
     "FirstName": ["First name", "Förnamn"],
     "LastName": ["Last name", "Efternamn"],
     "NotEmail": ["Not a valid email", "Inte en giltig email"],
-    "NonStudentEmailError": ["Email needs to be non-student email",
-                        "Email måste vara icke-studentmail"],
-    "NonStudentEmail": ["Enter a non-student email", "Skriv in din icke-studentmail"],
+    "NonStudentEmailError": [
+        "Email needs to be non-student email",
+        "Email måste vara icke-studentmail"
+    ],
+    "NonStudentEmail": [
+        "Enter a non-student email",
+        "Skriv in din icke-studentmail"
+    ],
     "WhichYearDidYouStart": [
         "Which year did you start at IT?",
         "Vilket år började du på IT?"
