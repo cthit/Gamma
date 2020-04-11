@@ -85,7 +85,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         return (accessToken, authentication) -> {
             Map<String, Object> additionalInfo = new HashMap<>();
             additionalInfo.put("iss", this.issuer);
-            additionalInfo.put("aud", this.audience);
+          //  additionalInfo.put("aud", this.audience);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             ((DefaultOAuth2AccessToken) accessToken).setExpiration(
                     new Date(System.currentTimeMillis() + this.expiration * 1000));
