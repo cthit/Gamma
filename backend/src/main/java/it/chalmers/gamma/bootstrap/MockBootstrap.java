@@ -49,9 +49,6 @@ public class MockBootstrap {
             mockData = objectMapper.readValue(resource.getFile(), MockData.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-        }
-
-        if (mockData == null) {
             LOGGER.error("Error when trying to read mock.json");
             return;
         }
@@ -134,9 +131,9 @@ public class MockBootstrap {
         Map<UUID, FKITGroupDTO> groups = new HashMap<>();
 
         mockData.getGroups().forEach(mockGroup -> {
-            String name = mockGroup.getName() + (mockGroup.isActive() ? activeYear : inactiveYear);
-            String prettyName = mockGroup.getPrettyName()
-                    + (mockGroup.isActive() ? activeYear : inactiveYear);
+            int year = (mockGroup.isActive() ? activeYear : inactiveYear);
+            String name = mockGroup.getName() + year;
+            String prettyName = mockGroup.getPrettyName() + year;
             Calendar active = mockGroup.isActive()
                     ? activeGroupBecomesActive
                     : inactiveGroupBecomesActive;
