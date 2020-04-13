@@ -131,7 +131,7 @@ public class MockBootstrap {
         Map<UUID, FKITGroupDTO> groups = new HashMap<>();
 
         mockData.getGroups().forEach(mockGroup -> {
-            int year = (mockGroup.isActive() ? activeYear : inactiveYear);
+            int year = mockGroup.isActive() ? activeYear : inactiveYear;
             String name = mockGroup.getName() + year;
             String prettyName = mockGroup.getPrettyName() + year;
             Calendar active = mockGroup.isActive()
