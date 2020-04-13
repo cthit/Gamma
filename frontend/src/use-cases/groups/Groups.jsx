@@ -10,9 +10,7 @@ import {
     DigitSelect,
     DigitTextArea,
     DigitDatePicker,
-    DigitLayout,
-    useGammaIsAdmin,
-    useGammaUser
+    DigitLayout
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
@@ -33,6 +31,8 @@ import { addGroup } from "../../api/groups/post.groups.api";
 import DisplayUsersTable from "../../common/elements/display-users-table";
 import * as _ from "lodash";
 import { useHistory } from "react-router";
+import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const DESCRIPTION_SV = "descriptionSv";
 const DESCRIPTION_EN = "descriptionEn";
@@ -209,7 +209,6 @@ const Groups = () => {
     }, []);
 
     useEffect(() => {
-        console.log(user);
         // _.find(user.relationships, {name: })
     }, [user]);
 

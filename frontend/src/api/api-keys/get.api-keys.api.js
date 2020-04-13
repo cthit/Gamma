@@ -2,7 +2,7 @@ import { getRequest } from "../utils/api";
 import { ADMIN_API_KEYS_ENDPOINT } from "../utils/endpoints";
 
 export function getApiKeys() {
-    return getRequest(ADMIN_API_KEYS_ENDPOINT, true, input => ({
+    return getRequest(ADMIN_API_KEYS_ENDPOINT, input => ({
         data: input.data.map(api => ({
             id: api.id,
             name: api.name,
@@ -13,7 +13,7 @@ export function getApiKeys() {
 }
 
 export function getApiKey(apiKeyId) {
-    return getRequest(ADMIN_API_KEYS_ENDPOINT + apiKeyId, true, ({ data }) => ({
+    return getRequest(ADMIN_API_KEYS_ENDPOINT + apiKeyId, ({ data }) => ({
         data: {
             id: data.id,
             name: data.name,

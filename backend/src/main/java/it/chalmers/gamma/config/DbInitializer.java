@@ -48,12 +48,6 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private final ApiKeyService apiKeyService;
 
-    @Value("${application.frontend-client-details.client-id}")
-    private String clientId;
-
-    @Value("${application.frontend-client-details.redirect-uri}")
-    private String redirectUri;
-
     private final FKITSuperGroupService fkitSuperGroupService;
 
     @Value("${application.standard-admin-account.password}")
@@ -106,32 +100,10 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
     @Override
     public void run(String... args) {
         ensureAdminUser();
-        ensureFrontendClientDetails();
         ensureAdminGroup();
         ensureGDPRGroup();
         if (this.isMocking) {
             ensureOauthClient();
-        }
-    }
-
-    private void ensureFrontendClientDetails() {
-        if (!this.itClientService.clientExists(this.clientId)) {
-            Text description = new Text();
-            description.setEn("The client details for the frontend of Gamma");
-            description.setSv("Klient detaljerna för Gammas frontend");
-            ITClient itClient = new ITClient();
-            itClient.setClientId(this.clientId);
-            itClient.setClientSecret("{noop}secret");
-            itClient.setAutoApprove(true);
-            itClient.setName("Gamma Frontend");
-            itClient.setCreatedAt(Instant.now());
-            itClient.setLastModifiedAt(Instant.now());
-            itClient.setRefreshTokenValidity(0);
-            this.redirectUri = this.redirectUri.trim();
-            itClient.setWebServerRedirectUri(this.redirectUri);
-            itClient.setDescription(description);
-            itClient.setAccessTokenValidity(60 * 60 * 24 * 30);
-            this.itClientService.addITClient(itClient);
         }
     }
 
@@ -163,9 +135,10 @@ public class DbInitializer implements CommandLineRunner {   // maybe should be m
             p.setSv(admin);
             p.setEn(admin);
             PostDTO post = this.postService.addPost(p);
-            ITUserDTO user = this.userservice.createUser(admin,
-                    admin,
-                    admin,
+            ITUserDTO user = this.userservice.createUser(
+                    "SuperSmurf",
+                    "Mr.",
+                    "Smurf",
                     admin,
                     Year.of(2018),
                     true,

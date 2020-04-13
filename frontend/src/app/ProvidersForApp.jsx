@@ -1,6 +1,7 @@
 import React from "react";
 import { DigitProviders } from "@cthit/react-digit-components";
 import { GammaLoadingSingletonProvider } from "../common/context/GammaLoading.context";
+import { GammaUserSingletonProvider } from "../common/context/GammaUser.context";
 
 const theme = {
     breakpoints: {
@@ -15,7 +16,7 @@ const theme = {
 const ProvidersForApp = ({ children }) => (
     <DigitProviders defaultLanguage="en" theme={theme}>
         <GammaLoadingSingletonProvider>
-            {children}
+            <GammaUserSingletonProvider>{children}</GammaUserSingletonProvider>
         </GammaLoadingSingletonProvider>
     </DigitProviders>
 );

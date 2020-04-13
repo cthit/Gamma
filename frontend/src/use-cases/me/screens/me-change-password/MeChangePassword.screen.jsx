@@ -4,13 +4,13 @@ import {
     useDigitTranslations,
     DigitTextField,
     DigitLayout,
-    useGammaUser,
     useDigitToast
 } from "@cthit/react-digit-components";
 import * as yup from "yup";
 import translations from "./MeChangePassword.screen.translations";
 import { editPassword } from "../../../../api/me/put.me.api";
 import { useHistory } from "react-router";
+import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
 const MeChangePassword = () => {
     const me = useGammaUser();
     const [text] = useDigitTranslations(translations);

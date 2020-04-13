@@ -5,8 +5,7 @@ import {
     DigitTextArea,
     DigitText,
     DigitButton,
-    useDigitCustomDialog,
-    useGammaIsAdmin
+    useDigitCustomDialog
 } from "@cthit/react-digit-components";
 import React from "react";
 import { getClient, getClients } from "../../api/clients/get.clients.api";
@@ -16,6 +15,7 @@ import * as yup from "yup";
 import { deleteClient } from "../../api/clients/delete.clients.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { CLIENT_NAME } from "../../api/clients/props.clients.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const Clients = () => {
     const [openDialog] = useDigitCustomDialog();
