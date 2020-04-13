@@ -43,3 +43,12 @@ services:
             POSTGRES_PASSWORD: password
             POSTGRES_USER: imageit
             POSTGRES_DB: imageit
+
+    redis:
+        image: bitnami/redis:5.0.8
+        restart: always
+        environment:
+            REDIS_PASSWORD: password
+        network_mode: host
+        ports:
+            - 6379:6379

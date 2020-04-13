@@ -57,6 +57,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-mail')
 	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.6.RELEASE')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.session:spring-session-data-redis')
+    compile('org.springframework.boot:spring-boot-starter-data-redis')
     compile('com.sun.xml.bind:jaxb-impl:2.2.11')
 	compile('com.sun.xml.bind:jaxb-core:2.2.11')
 	compile('javax.xml.bind:jaxb-api:2.3.1')
