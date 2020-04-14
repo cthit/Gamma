@@ -84,13 +84,10 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Bean
     public TokenEnhancer issuerTokenEnhancer() {
         return (accessToken, authentication) -> {
-            ITUserDTO user = (ITUserDTO) authentication.getPrincipal();
 
             Map<String, Object> additionalInfo = new HashMap<>();
             additionalInfo.put("iss", this.issuer);
             //  additionalInfo.put("aud", this.audience);
-            additionalInfo.put("uid", user.getId());
-            additionalInfo.put("nick", user.getNick());
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             ((DefaultOAuth2AccessToken) accessToken).setExpiration(
                     new Date(System.currentTimeMillis() + this.expiration * 1000));
