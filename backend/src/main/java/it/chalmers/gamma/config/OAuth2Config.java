@@ -1,6 +1,5 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
 
