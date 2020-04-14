@@ -47,6 +47,13 @@ public final class GenerationUtils {
         return str.toString();
     }
 
+    public static String generateEmail() {
+        return String.format("%s@%s.com",
+                generateRandomString(generateIntBetween(1, 15), CharacterTypes.LOWERCASE),
+                generateRandomString(generateIntBetween(1, 15), CharacterTypes.LOWERCASE)
+        );
+    }
+
     /**
      * Generate Random String of length 50 characters by default
      * @return randomly generated String
