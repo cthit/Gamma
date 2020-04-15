@@ -15,28 +15,24 @@ public class Bootstrap implements CommandLineRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Bootstrap.class);
 
-    private final BootstrapConfig cfg;
+    private final BootstrapConfig config;
 
-    private final BootstrapServiceHelper hlp;
+    private final BootstrapServiceHelper helper;
 
     private final AdminBootstrap adminBootstrap;
-
-    private final FrontendBootstrap frontendBootstrap;
 
     private final MockBootstrap mockBootstrap;
 
     private final TestClientBootstrap testClientBootstrap;
 
-    public Bootstrap(BootstrapConfig cfg,
-                     BootstrapServiceHelper hlp,
+    public Bootstrap(BootstrapConfig config,
+                     BootstrapServiceHelper helper,
                      AdminBootstrap adminBootstrap,
-                     FrontendBootstrap frontendBootstrap,
                      MockBootstrap mockBootstrap,
                      TestClientBootstrap testClientBootstrap) {
-        this.cfg = cfg;
-        this.hlp = hlp;
+        this.config = config;
+        this.helper = helper;
         this.adminBootstrap = adminBootstrap;
-        this.frontendBootstrap = frontendBootstrap;
         this.mockBootstrap = mockBootstrap;
         this.testClientBootstrap = testClientBootstrap;
     }
@@ -46,9 +42,8 @@ public class Bootstrap implements CommandLineRunner {
         if (shouldRunBootstrap()) {
             LOGGER.info("No admin user, running Bootstrap...");
             this.adminBootstrap.runAdminBootstrap();
-            this.frontendBootstrap.runFrontendClientDetails();
 
-            if (this.cfg.isMocking()) {
+            if (this.config.isMocking()) {
                 LOGGER.info("Mock enabled...");
                 this.mockBootstrap.runMockBootstrap();
                 this.testClientBootstrap.runOauthClient();
@@ -59,7 +54,7 @@ public class Bootstrap implements CommandLineRunner {
     }
 
     private boolean shouldRunBootstrap() {
-        return !this.hlp.getUserService().userExists("admin");
+        return !this.helper.getUserService().userExists("admin");
     }
 
 }

@@ -1,9 +1,5 @@
 import React from "react";
-import {
-    DigitCRUD,
-    useDigitTranslations,
-    useGammaIsAdmin
-} from "@cthit/react-digit-components";
+import { DigitCRUD, useDigitTranslations } from "@cthit/react-digit-components";
 import { getUser, getUsersMinified } from "../../api/users/get.users.api";
 import translations from "./Users.translations";
 import {
@@ -29,6 +25,7 @@ import {
     generateUserValidationSchema
 } from "../../common/utils/generators/user-form.generator";
 import { addUser } from "../../api/users/post.users.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const Users = () => {
     const admin = useGammaIsAdmin();

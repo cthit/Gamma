@@ -3,14 +3,8 @@ package it.chalmers.gamma.bootstrap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component("cfg")
+@Component
 public class BootstrapConfig {
-
-    @Value("${application.frontend-client-details.client-id}")
-    private String clientId;
-
-    @Value("${application.frontend-client-details.redirect-uri}")
-    private String redirectUri;
 
     @Value("${application.standard-admin-account.password}")
     private String password;
@@ -41,14 +35,6 @@ public class BootstrapConfig {
 
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
-
-    public String getClientId() {
-        return this.clientId;
-    }
-
-    public String getRedirectUri() {
-        return this.redirectUri;
-    }
 
     public String getPassword() {
         return this.password;

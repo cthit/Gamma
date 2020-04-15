@@ -30,12 +30,12 @@ public class MockBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockBootstrap.class);
 
-    private final BootstrapServiceHelper hlp;
+    private final BootstrapServiceHelper helper;
 
     private final ResourceLoader resourceLoader;
 
-    public MockBootstrap(BootstrapServiceHelper hlp, ResourceLoader resourceLoader) {
-        this.hlp = hlp;
+    public MockBootstrap(BootstrapServiceHelper helper, ResourceLoader resourceLoader) {
+        this.helper = helper;
         this.resourceLoader = resourceLoader;
     }
 
@@ -72,7 +72,7 @@ public class MockBootstrap {
         Map<UUID, ITUserDTO> users = new HashMap<>();
 
         mockData.getUsers().forEach(mockUser -> {
-            ITUserDTO user = this.hlp.getUserService().createUser(
+            ITUserDTO user = this.helper.getUserService().createUser(
                     mockUser.getId(),
                     mockUser.getNick(),
                     mockUser.getFirstName(),
@@ -94,7 +94,7 @@ public class MockBootstrap {
         Map<UUID, PostDTO> posts = new HashMap<>();
 
         mockData.getPosts().forEach(mockPost -> {
-            PostDTO post = this.hlp.getPostService().addPost(
+            PostDTO post = this.helper.getPostService().addPost(
                     mockPost.getId(),
                     mockPost.getPostName()
             );
@@ -155,13 +155,13 @@ public class MockBootstrap {
 
             groups.put(group.getId(), group);
 
-            this.hlp.getGroupService().createGroup(group);
+            this.helper.getGroupService().createGroup(group);
 
             mockGroup.getMembers().forEach(mockMembership -> {
                 PostDTO post = posts.get(mockMembership.getPostId());
                 ITUserDTO user = users.get(mockMembership.getUserId());
 
-                this.hlp.getMembershipService().addUserToGroup(
+                this.helper.getMembershipService().addUserToGroup(
                         group,
                         user,
                         post,
@@ -183,12 +183,12 @@ public class MockBootstrap {
                     mockSuperGroup.getName() + "@chalmers.it"
             );
 
-            this.hlp.getSuperGroupService().createSuperGroup(superGroup);
+            this.helper.getSuperGroupService().createSuperGroup(superGroup);
 
             mockSuperGroup.getGroups().forEach(groupId -> {
                 FKITGroupDTO group = groups.get(groupId);
 
-                this.hlp.getGroupToSuperGroupService().addRelationship(
+                this.helper.getGroupToSuperGroupService().addRelationship(
                         group,
                         superGroup
                 );

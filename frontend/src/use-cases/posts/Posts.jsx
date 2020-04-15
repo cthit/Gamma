@@ -4,8 +4,7 @@ import {
     DigitCRUD,
     DigitText,
     useDigitTranslations,
-    DigitTextField,
-    useGammaIsAdmin
+    DigitTextField
 } from "@cthit/react-digit-components";
 
 import translations from "./Posts.translations";
@@ -22,6 +21,7 @@ import { editPost } from "../../api/posts/put.posts.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 import { NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 function generateValidationSchema(text) {
     const schema = {};

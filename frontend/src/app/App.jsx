@@ -1,15 +1,11 @@
 import {
-    DigitDialog,
     DigitHeader,
+    DigitHeaderDrawer,
     DigitLayout,
-    DigitToast,
-    useDigitTranslations,
-    useGamma,
-    useGammaSignIn,
-    useGammaUser,
-    useGammaStatus
+    DigitLoading,
+    useDigitTranslations
 } from "@cthit/react-digit-components";
-import React, { useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
@@ -23,129 +19,126 @@ import Clients from "../use-cases/clients";
 import ApiKeys from "../use-cases/api-keys";
 import Whitelist from "../use-cases/whitelist";
 import translations from "./App.translations.json";
-import commonTranslations from "../common/utils/translations/CommonTranslations";
-import UserInformation from "./elements/user-information";
 import SuperGroups from "../use-cases/super-groups";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
 import Drawer from "./elements/drawer";
 import Members from "../use-cases/members";
-import {
-    getBackendUrl,
-    getFrontendUrl
-} from "../common/utils/configs/envVariablesLoader";
+import { getRequest } from "../api/utils/api";
+import GammaUserContext from "../common/context/GammaUser.context";
+import FiveZeroZero from "./elements/five-zero-zero";
 
 export const App = () => {
+    const [user, setUser] = useContext(GammaUserContext);
     const [, , , setCommonTranslations] = useDigitTranslations(translations);
+    const [[loading, error], setStatus] = useState([true, false]);
+    const { pathname } = useLocation();
 
     const title = "Gamma";
 
-    useGamma({
-        name: "gamma",
-        id: "7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc",
-        secret: "secret",
-        redirect: getFrontendUrl() + "/login",
-        gammaPath: getBackendUrl(),
-        forceSignedIn: false,
-        signOutFromGamma: true,
-        refreshOnFocus: true,
-        toast: true
-    });
-    const user = useGammaUser();
-    const [loading, error] = useGammaStatus();
-    const { pathname } = useLocation();
-    const signIn = useGammaSignIn();
+    const getMe = useCallback(
+        () =>
+            getRequest("/users/me")
+                .then(response => {
+                    setUser(response.data);
+                    setStatus([false, false]);
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        window.location.href =
+                            "http://localhost:8081/api/login";
+                    } else {
+                        console.log(error);
+                        setStatus([false, true]);
+                    }
+                }),
+        [setUser]
+    );
 
     useEffect(() => {
-        setCommonTranslations(commonTranslations);
-    }, [setCommonTranslations]);
+        setCommonTranslations(translations);
+        // translations can't change in run time since it's a json file
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (
-            !loading &&
+            loading &&
             !user &&
             !pathname.startsWith("/create-account") &&
             !pathname.startsWith("/reset-password")
         ) {
-            signIn();
+            getMe();
         }
-    }, [loading, pathname, user, signIn]);
+    }, [loading, error, pathname, getMe, user]);
 
-    if (loading) {
-        return null;
+    const main = (
+        <>
+            {loading && (
+                <DigitLoading loading alignSelf={"center"} margin={"auto"} />
+            )}
+            {error && <FiveZeroZero getMe={getMe} />}
+            {!error && (
+                <div
+                    style={{
+                        width: "100%",
+                        minHeight: "calc(100vh - 208px)"
+                    }}
+                >
+                    <DigitLayout.Hide hidden={loading}>
+                        <Switch>
+                            <Route path="/clients" component={Clients} />
+                            <Route path="/users" component={Users} />
+                            <Route path="/groups" component={Groups} />
+                            <Route
+                                path="/create-account"
+                                component={CreateAccount}
+                            />
+                            <Route path="/whitelist" component={Whitelist} />
+                            <Route path="/posts" component={Posts} />
+                            <Route
+                                path="/activation-codes"
+                                component={ActivationCodes}
+                            />
+                            <Route path="/gdpr" component={Gdpr} />
+                            <Route path="/clients" component={Clients} />
+                            <Route path="/access-keys" component={ApiKeys} />
+                            <Route
+                                path="/super-groups"
+                                component={SuperGroups}
+                            />
+                            <Route path={"/me"} component={Me} />
+                            <Route path="/members" component={Members} />
+                            <Route
+                                path="/reset-password"
+                                component={ResetPassword}
+                            />
+                            <Route path="/" exact component={Home} />
+                            <Route component={FourOFour} />
+                        </Switch>
+                    </DigitLayout.Hide>
+                </div>
+            )}
+        </>
+    );
+
+    const headerOptions = {
+        title,
+        headerHeight: "200px",
+        backgroundImage: "url(/enbarsskar.jpg)",
+        renderMain: () => main
+    };
+
+    if (user == null) {
+        return <DigitHeader {...headerOptions} />;
     }
 
     return (
-        <DigitHeader
-            headerHeight={"200px"}
-            cssImageString={"url(/enbarsskar.jpg)"}
-            title={title}
+        <DigitHeaderDrawer
+            {...headerOptions}
             renderDrawer={closeDrawer =>
                 user == null ? null : <Drawer closeDrawer={closeDrawer} />
             }
-            renderHeader={() => <UserInformation />}
-            renderMain={() => (
-                <>
-                    {!error && (
-                        <div
-                            style={{
-                                width: "100%",
-                                minHeight: "calc(100vh - 208px)"
-                            }}
-                        >
-                            <DigitDialog />
-                            <DigitToast />
-                            <DigitLayout.Hide hidden={loading}>
-                                <Switch>
-                                    <Route
-                                        path="/clients"
-                                        component={Clients}
-                                    />
-                                    <Route path="/users" component={Users} />
-                                    <Route path="/groups" component={Groups} />
-                                    <Route
-                                        path="/create-account"
-                                        component={CreateAccount}
-                                    />
-                                    <Route
-                                        path="/whitelist"
-                                        component={Whitelist}
-                                    />
-                                    <Route path="/posts" component={Posts} />
-                                    <Route
-                                        path="/activation-codes"
-                                        component={ActivationCodes}
-                                    />
-                                    <Route path="/gdpr" component={Gdpr} />
-                                    <Route
-                                        path="/clients"
-                                        component={Clients}
-                                    />
-                                    <Route
-                                        path="/access-keys"
-                                        component={ApiKeys}
-                                    />
-                                    <Route
-                                        path="/super-groups"
-                                        component={SuperGroups}
-                                    />
-                                    <Route path={"/me"} component={Me} />
-                                    <Route
-                                        path="/members"
-                                        component={Members}
-                                    />
-                                    <Route
-                                        path="/reset-password"
-                                        component={ResetPassword}
-                                    />
-                                    <Route path="/" exact component={Home} />
-                                    <Route component={FourOFour} />
-                                </Switch>
-                            </DigitLayout.Hide>
-                        </div>
-                    )}
-                </>
-            )}
         />
     );
 };

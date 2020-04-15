@@ -14,7 +14,7 @@ import it.chalmers.gamma.service.PostService;
 import org.springframework.stereotype.Component;
 
 @SuppressWarnings({"PMD.ExcessiveParameterList"})
-@Component("hlp")
+@Component()
 public final class BootstrapServiceHelper {
 
     private final ITUserService userService;

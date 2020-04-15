@@ -21,19 +21,19 @@ public class AdminBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminBootstrap.class);
 
-    private final BootstrapConfig cfg;
+    private final BootstrapConfig config;
 
-    private final BootstrapServiceHelper hlp;
+    private final BootstrapServiceHelper helper;
 
-    public AdminBootstrap(BootstrapConfig cfg, BootstrapServiceHelper hlp) {
-        this.cfg = cfg;
-        this.hlp = hlp;
+    public AdminBootstrap(BootstrapConfig bootstrapConfig, BootstrapServiceHelper bootstrapServiceHelper) {
+        this.config = bootstrapConfig;
+        this.helper = bootstrapServiceHelper;
     }
 
-    public void runAdminBootstrap() {
+    void runAdminBootstrap() {
         String admin = "admin";
-        if (!this.hlp.getUserService().userExists(admin)) {
-            LOGGER.info("Creating admin user, cid:admin, password: " + this.cfg.getPassword());
+        if (!this.helper.getUserService().userExists(admin)) {
+            LOGGER.info("Creating admin user, cid:admin, password: " + this.config.getPassword());
             Text description = new Text();
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
@@ -55,18 +55,18 @@ public class AdminBootstrap {
             Calendar start = new GregorianCalendar();
             start.setTimeInMillis(System.currentTimeMillis());
             FKITSuperGroupDTO superGroup =
-                    this.hlp.getSuperGroupService().createSuperGroup(superGroupCreation);
+                    this.helper.getSuperGroupService().createSuperGroup(superGroupCreation);
             FKITGroupDTO group = new FKITGroupDTO(
                     start, end, description, adminMail, function,
                     "superadmin", "superAdmin", null
             );
-            group = this.hlp.getGroupService().createGroup(group);
-            this.hlp.getGroupToSuperGroupService().addRelationship(group, superGroup);
+            group = this.helper.getGroupService().createGroup(group);
+            this.helper.getGroupToSuperGroupService().addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
-            PostDTO post = this.hlp.getPostService().addPost(p);
-            ITUserDTO user = this.hlp.getUserService().createUser(
+            PostDTO post = this.helper.getPostService().addPost(p);
+            ITUserDTO user = this.helper.getUserService().createUser(
                     admin,
                     admin,
                     admin,
@@ -74,16 +74,16 @@ public class AdminBootstrap {
                     Year.of(2018),
                     true,
                     adminMail,
-                    this.cfg.getPassword()
+                    this.config.getPassword()
             );
-            this.hlp.getMembershipService().addUserToGroup(
+            this.helper.getMembershipService().addUserToGroup(
                     group,
                     user,
                     post,
                     admin
             ); // This might break on a new year
-            AuthorityLevelDTO authorityLevel = this.hlp.getAuthorityLevelService().addAuthorityLevel(admin);
-            this.hlp.getAuthorityService().setAuthorityLevel(superGroup, post, authorityLevel);
+            AuthorityLevelDTO authorityLevel = this.helper.getAuthorityLevelService().addAuthorityLevel(admin);
+            this.helper.getAuthorityService().setAuthorityLevel(superGroup, post, authorityLevel);
             LOGGER.info("admin user created!");
         }
     }

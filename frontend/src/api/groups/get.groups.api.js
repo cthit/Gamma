@@ -8,7 +8,7 @@ export function getGroups() {
 }
 
 export function getGroup(groupId) {
-    return getRequest(GROUPS_ENDPOINT + groupId, true, input => ({
+    return getRequest(GROUPS_ENDPOINT + groupId, input => ({
         data: {
             ...input.data,
             functionSv: input.data["function"].sv,
@@ -21,7 +21,7 @@ export function getGroup(groupId) {
 }
 
 export function getGroupsMinified() {
-    return getRequest(GROUPS_ENDPOINT + MINIFIED, true, input =>
+    return getRequest(GROUPS_ENDPOINT + MINIFIED, input =>
         input.data.map(one => ({
             functionSv: one.function.sv,
             functionEn: one.function.en,

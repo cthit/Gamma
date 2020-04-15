@@ -10,11 +10,7 @@ export function getPost(postId) {
 }
 
 export function getPostUsage(postId) {
-    return getRequest(
-        ADMIN_POSTS_ENDPOINT + postId + "/usage",
-        true,
-        input => ({
-            data: { usages: input.data }
-        })
-    );
+    return getRequest(ADMIN_POSTS_ENDPOINT + postId + "/usage", input => ({
+        data: { usages: input.data }
+    }));
 }

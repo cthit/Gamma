@@ -14,39 +14,39 @@ class TestClientBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestClientBootstrap.class);
 
-    private final BootstrapConfig cfg;
+    private final BootstrapConfig config;
 
-    private final BootstrapServiceHelper hlp;
+    private final BootstrapServiceHelper helper;
 
-    public TestClientBootstrap(BootstrapConfig cfg, BootstrapServiceHelper hlp) {
-        this.cfg = cfg;
-        this.hlp = hlp;
+    public TestClientBootstrap(BootstrapConfig bootstrapConfig, BootstrapServiceHelper bootstrapServiceHelper) {
+        this.config = bootstrapConfig;
+        this.helper = bootstrapServiceHelper;
     }
 
     void runOauthClient() {
-        if (!this.hlp.getItClientService().clientExists(this.cfg.getOauth2ClientId())) {
+        if (!this.helper.getItClientService().clientExists(this.config.getOauth2ClientId())) {
             LOGGER.info("Creating test client...");
             ITClient client = new ITClient();
-            client.setName(this.cfg.getOauth2ClientName());
+            client.setName(this.config.getOauth2ClientName());
             Text description = new Text();
-            description.setEn("Client for mocking " + this.cfg.getOauth2ClientName());
-            description.setSv("Klient för att mocka " + this.cfg.getOauth2ClientName());
+            description.setEn("Client for mocking " + this.config.getOauth2ClientName());
+            description.setSv("Klient för att mocka " + this.config.getOauth2ClientName());
             client.setDescription(description);
-            client.setWebServerRedirectUri(this.cfg.getOauth2ClientRedirectUri());
+            client.setWebServerRedirectUri(this.config.getOauth2ClientRedirectUri());
             client.setCreatedAt(Instant.now());
             client.setLastModifiedAt(Instant.now());
-            client.setAccessTokenValidity(this.cfg.getAccessTokenValidityTime());
-            client.setAutoApprove(this.cfg.isAutoApprove());
-            client.setRefreshTokenValidity(this.cfg.getRefreshTokenValidityTime());
-            client.setClientId(this.cfg.getOauth2ClientId());
-            client.setClientSecret("{noop}" + this.cfg.getOauth2ClientSecret());
-            this.hlp.getItClientService().addITClient(client);
+            client.setAccessTokenValidity(this.config.getAccessTokenValidityTime());
+            client.setAutoApprove(this.config.isAutoApprove());
+            client.setRefreshTokenValidity(this.config.getRefreshTokenValidityTime());
+            client.setClientId(this.config.getOauth2ClientId());
+            client.setClientSecret("{noop}" + this.config.getOauth2ClientSecret());
+            this.helper.getItClientService().addITClient(client);
             Text apiDescription = new Text();
             apiDescription.setSv("API key");
             apiDescription.setEn("API key");
-            this.hlp.getApiKeyService().addApiKey(
-                    this.cfg.getOauth2ClientName(),
-                    this.cfg.getOauth2ClientApiKey(),
+            this.helper.getApiKeyService().addApiKey(
+                    this.config.getOauth2ClientName(),
+                    this.config.getOauth2ClientApiKey(),
                     apiDescription
             );
             LOGGER.info("Test client created!");
