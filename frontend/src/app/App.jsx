@@ -5,7 +5,7 @@ import {
     DigitLoading,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import ActivationCodes from "../use-cases/activation-codes";
 import CreateAccount from "../use-cases/create-account";
@@ -27,6 +27,7 @@ import Members from "../use-cases/members";
 import { getRequest } from "../api/utils/api";
 import GammaUserContext from "../common/context/GammaUser.context";
 import FiveZeroZero from "./elements/five-zero-zero";
+import { getBackendUrl } from "../common/utils/configs/envVariablesLoader";
 
 export const App = () => {
     const [user, setUser] = useContext(GammaUserContext);
@@ -36,23 +37,28 @@ export const App = () => {
 
     const title = "Gamma";
 
-    const getMe = () =>
-        getRequest("/users/me")
-            .then(response => {
-                setUser(response.data);
-                setStatus([false, false]);
-            })
-            .catch(error => {
-                if (error.response.status === 401) {
-                    window.location.href = "http://localhost:8081/api/login";
-                } else {
-                    console.log(error);
-                    setStatus([false, true]);
-                }
-            });
+    const getMe = useCallback(
+        () =>
+            getRequest("/users/me")
+                .then(response => {
+                    setUser(response.data);
+                    setStatus([false, false]);
+                })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        window.location.href = getBackendUrl() + "/login";
+                    } else {
+                        console.log(error);
+                        setStatus([false, true]);
+                    }
+                }),
+        [setUser]
+    );
 
     useEffect(() => {
         setCommonTranslations(translations);
+        // translations can't change in run time since it's a json file
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -64,7 +70,7 @@ export const App = () => {
         ) {
             getMe();
         }
-    }, [loading, error, pathname]);
+    }, [loading, error, pathname, getMe, user]);
 
     const main = (
         <>

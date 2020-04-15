@@ -12,12 +12,10 @@ import useGammaUser from "../../../common/hooks/use-gamma-user/useGammaUser";
 import useGammaIs from "../../../common/hooks/use-gamma-is/use-gamma-is";
 import useGammaIsAdmin from "../../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import { getBackendUrl } from "../../../common/utils/configs/envVariablesLoader";
-import { useHistory } from "react-router-dom";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 
 const GammaActions = ({ text }) => {
     const user = useGammaUser();
-    const history = useHistory();
 
     return (
         <DigitLayout.Row

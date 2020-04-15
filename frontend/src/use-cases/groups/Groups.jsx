@@ -29,7 +29,6 @@ import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
 import DisplayUsersTable from "../../common/elements/display-users-table";
-import * as _ from "lodash";
 import { useHistory } from "react-router";
 import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";

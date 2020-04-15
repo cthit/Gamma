@@ -2,7 +2,6 @@ import React from "react";
 
 import {
     DigitDesign,
-    DigitLayout,
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
