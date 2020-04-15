@@ -1,9 +1,10 @@
 package it.chalmers.gamma.bootstrap;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class BootstrapConfig {
 
     @Value("${application.standard-admin-account.password}")
