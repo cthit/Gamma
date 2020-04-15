@@ -3,7 +3,7 @@ const development = {
 };
 
 const production = {
-    backend: "gamma.chalmers.it/api"
+    backend: "https://gamma.chalmers.it/api"
 };
 
 function getBackendUrl() {
