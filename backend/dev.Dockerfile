@@ -1,4 +1,4 @@
-FROM gradle:4.10-jdk11
+FROM gradle:6.3.0-jdk11
 #Gradle docker has gradle user as default
 USER root
 
