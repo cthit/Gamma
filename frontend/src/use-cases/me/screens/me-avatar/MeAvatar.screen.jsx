@@ -5,11 +5,11 @@ import {
     DigitLayout,
     DigitSelectFile,
     DigitText,
-    useDigitTranslations,
-    useGammaUser
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import translations from "./MeAvatar.screen.translations";
 import { uploadUserAvatar } from "../../../../api/image/put.image.api";
+import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
 
 const MeAvatar = () => {
     const [text] = useDigitTranslations(translations);

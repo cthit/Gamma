@@ -1,39 +1,71 @@
 import {
+    DigitAvatar,
     DigitLayout,
     DigitText,
+    DigitMenu,
     DigitNavLink,
-    useDigitTranslations,
-    useGammaIs,
-    useGammaIsAdmin,
-    useGammaUser
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./Drawer.element.translations";
+import useGammaUser from "../../../common/hooks/use-gamma-user/useGammaUser";
+import useGammaIs from "../../../common/hooks/use-gamma-is/use-gamma-is";
+import useGammaIsAdmin from "../../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { getBackendUrl } from "../../../common/utils/configs/envVariablesLoader";
+import { useHistory } from "react-router-dom";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+
+const GammaActions = ({ text }) => {
+    const user = useGammaUser();
+    const history = useHistory();
+
+    return (
+        <DigitLayout.Row
+            justifyContent={"center"}
+            alignItems={"center"}
+            size={{
+                width: "100%",
+                height: "60px",
+                minHeight: "60px",
+                maxHeight: "60px"
+            }}
+        >
+            <DigitAvatar
+                imageAlt={"Avatar"}
+                imageSrc={user.avatarUrl}
+                margin={{ right: "16px" }}
+            />
+            <DigitText.Title text={user.nick} />
+            <DigitMenu
+                icon={ExpandMore}
+                onClick={item => {
+                    switch (item) {
+                        case "signOut":
+                            window.location.href = getBackendUrl() + "/logout";
+                            break;
+                        default:
+                            break;
+                    }
+                }}
+                valueToTextMap={{
+                    signOut: text.SignOut
+                }}
+                order={["signOut"]}
+            />
+        </DigitLayout.Row>
+    );
+};
 
 const Drawer = ({ closeDrawer }) => {
+    const user = useGammaUser();
     const admin = useGammaIsAdmin();
     const dpo = useGammaIs("gdpr");
     const [text] = useDigitTranslations(translations);
-    const user = useGammaUser();
 
     if (admin) {
         return (
-            <DigitLayout.Column padding="0">
-                {user != null && (
-                    <>
-                        <div style={{ height: "8px" }} />
-                        <DigitLayout.Center>
-                            <DigitText.Text bold text={user.nick} />
-                        </DigitLayout.Center>
-                        {user.avatarUrl != null && (
-                            <img
-                                style={{ objectFit: "contain" }}
-                                src={user.avatarUrl}
-                                alt={"Avatar"}
-                            />
-                        )}
-                    </>
-                )}
+            <DigitLayout.Column padding="0" margin="0">
+                {user != null && <GammaActions text={text} />}
 
                 <DigitNavLink onClick={closeDrawer} text={text.Home} link="/" />
                 <DigitNavLink onClick={closeDrawer} text={text.Me} link="/me" />

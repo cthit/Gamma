@@ -4,7 +4,6 @@ import {
     DigitDesign,
     DigitText,
     useDigitTranslations,
-    useGammaUser,
     DigitButton
 } from "@cthit/react-digit-components";
 import PropTypes from "prop-types";
@@ -16,6 +15,7 @@ import EmailHasBeenSent from "./views/email-has-been-sent";
 import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
 import { useHistory, useLocation } from "react-router";
+import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 
 const CreateAccount = () => {
     const [text] = useDigitTranslations(translations);

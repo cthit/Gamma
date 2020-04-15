@@ -23,6 +23,7 @@ services:
         volumes:
             - ./frontend/src:/usr/src/app/src
             - ./frontend/public:/usr/src/app/public
+        network_mode: host
     
     imageit:
         image: cthit/imageit
@@ -42,9 +43,9 @@ services:
             POSTGRES_PASSWORD: password
             POSTGRES_USER: imageit
             POSTGRES_DB: imageit
-    gamma_backend:
-        build:
-            context: ./backend
-            dockerfile: dev.Dockerfile
-        ports:
-            - 8081:8081
+
+    redis:
+      image: redis:5.0
+      restart: always
+      ports:
+        - 6379:6379

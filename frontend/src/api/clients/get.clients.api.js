@@ -2,7 +2,7 @@ import { getRequest } from "../utils/api";
 import { ADMIN_CLIENTS_ENDPOINT } from "../utils/endpoints";
 
 export function getClients() {
-    return getRequest(ADMIN_CLIENTS_ENDPOINT, true, input =>
+    return getRequest(ADMIN_CLIENTS_ENDPOINT, input =>
         input.data.map(client => ({
             id: client.id,
             name: client.name,
@@ -15,7 +15,7 @@ export function getClients() {
 }
 
 export function getClient(clientId) {
-    return getRequest(ADMIN_CLIENTS_ENDPOINT + clientId, true, input => ({
+    return getRequest(ADMIN_CLIENTS_ENDPOINT + clientId, input => ({
         data: {
             id: input.data.id,
             name: input.data.additionalInformation.name,

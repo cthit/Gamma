@@ -104,8 +104,15 @@ export function generateUserValidationSchema(
               .required()
         : yup.boolean();
     schema[CID] = forceCid
-        ? yup.string().required(text.FieldRequired)
-        : yup.string();
+        ? yup
+              .string()
+              .min(4)
+              .max(12)
+              .required(text.FieldRequired)
+        : yup
+              .string()
+              .min(4)
+              .max(12);
     schema[PASSWORD] = forcePassword
         ? yup
               .string()
