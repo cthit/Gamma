@@ -105,7 +105,7 @@ public class FKITGroupService {
         this.repo.save(group);
     }
 
-    public FKITGroup getGroup(FKITGroupDTO group) {
+    protected FKITGroup getGroup(FKITGroupDTO group) {
         return this.repo.findById(group.getId()).orElse(null);
     }
 
