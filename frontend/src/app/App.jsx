@@ -27,6 +27,7 @@ import Members from "../use-cases/members";
 import { getRequest } from "../api/utils/api";
 import GammaUserContext from "../common/context/GammaUser.context";
 import FiveZeroZero from "./elements/five-zero-zero";
+import { getBackendUrl } from "../common/utils/configs/envVariablesLoader";
 
 export const App = () => {
     const [user, setUser] = useContext(GammaUserContext);
@@ -45,8 +46,7 @@ export const App = () => {
                 })
                 .catch(error => {
                     if (error.response.status === 401) {
-                        window.location.href =
-                            "http://localhost:8081/api/login";
+                        window.location.href = getBackendUrl() + "/login";
                     } else {
                         console.log(error);
                         setStatus([false, true]);
