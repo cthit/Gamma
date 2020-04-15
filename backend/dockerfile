@@ -17,7 +17,7 @@ RUN chown -R gradle /app
 
 USER gradle
 
-RUN gradle :build -x test
+RUN gradle :build -x test -x pmdMain -x checkstyleMain -x pmdTest
 # This probably should not have a static path, but instead build in a custom path.
 CMD sleep 5 && java -jar -Dspring.profiles.active=production build/libs/gamma-0.0.1-SNAPSHOT.jar
 
