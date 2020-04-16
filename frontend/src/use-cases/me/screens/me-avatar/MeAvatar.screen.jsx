@@ -54,9 +54,9 @@ const MeAvatar = () => {
                                 })
                                 .catch(error => {
                                     const code = statusCode(error);
-                                    const message = statusMessage(error);
-                                    const errorMessage = text.UploadFailed;
-                                    if (code === 422) {
+                                    let errorMessage = text.UploadFailed;
+                                    if (code === 413) {
+                                        errorMessage = "File too large";
                                     }
                                     queueToast({
                                         text: errorMessage,
