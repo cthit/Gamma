@@ -3,6 +3,7 @@ package it.chalmers.gamma.config;
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.filter.OauthRedirectFilter;
+import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
