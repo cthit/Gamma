@@ -56,7 +56,7 @@ const MeAvatar = () => {
                                     const code = statusCode(error);
                                     let errorMessage = text.UploadFailed;
                                     if (code === 413) {
-                                        errorMessage = "File too large";
+                                        errorMessage = text.TooLargeFile;
                                     }
                                     queueToast({
                                         text: errorMessage,
