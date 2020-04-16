@@ -21,7 +21,7 @@ import it.chalmers.gamma.service.GroupWebsiteService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.WebsiteService;
 
-import it.chalmers.gamma.util.ImageITUtils;
+import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.IOException;
@@ -155,7 +155,7 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         try {
-            String url = ImageITUtils.saveImage(file);
+            String url = ImageUtils.saveImage(file);
             this.fkitGroupService.editGroupAvatar(group, url);
         } catch (IOException e) {
             throw new FileNotSavedException();
