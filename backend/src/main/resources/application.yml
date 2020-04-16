@@ -19,8 +19,8 @@ spring:
       ddl-auto: none
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 1MB
+      max-file-size: 2MB
+      max-request-size: 2MB
 
   thymeleaf:
     cache: false
@@ -51,10 +51,10 @@ server:
 
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:INFO}
+    root: ${ROOT_DEBUG_LEVEL:DEBUG}
     org:
       springframework:
-        web: ${WEB_DEBUG_LEVEL:INFO}
+        web: ${WEB_DEBUG_LEVEL:DEBUG}
       hibernate: ${HIBERNATE_DEBUG_LEVEL:INFO}
 
 security:
