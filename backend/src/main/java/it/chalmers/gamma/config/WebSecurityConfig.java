@@ -185,7 +185,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/css/**",
                     "/js/**",
                     "/auth/valid_token",
-                    "/img/**"
+                    "/img/**",
+                    "/uploads/**"
             };
 
 

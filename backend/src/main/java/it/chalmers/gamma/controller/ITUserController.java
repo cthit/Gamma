@@ -33,7 +33,7 @@ import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
-import it.chalmers.gamma.util.ImageITUtils;
+import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.IOException;
@@ -46,6 +46,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -72,6 +73,9 @@ public final class ITUserController {
     private final MembershipService membershipService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
+
+    @Value("#{servletContext.contextPath}")
+    private String contextPath;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
@@ -196,14 +200,16 @@ public final class ITUserController {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
         if (user != null) {
-            try {
-                String fileUrl = ImageITUtils.saveImage(file);
-                this.itUserService.editProfilePicture(user, fileUrl);
-            } catch (IOException e) {
-                throw new FileNotSavedException();
-            }
+            if (ImageUtils.isImageOrGif(file)) {
+                try {
+                    String fileUrl = ImageUtils.saveImage(file);
+                    this.itUserService.editProfilePicture(user, String.format("%s/%s", this.contextPath, fileUrl));
+                } catch (IOException e) {
+                    throw new FileNotSavedException();
+                }
 
-            return new EditedProfilePictureResponse();
+                return new EditedProfilePictureResponse();
+            }
         }
         throw new FileNotSavedException();
     }
