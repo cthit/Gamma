@@ -5,15 +5,19 @@ import {
     DigitLayout,
     DigitSelectFile,
     DigitText,
-    useDigitTranslations
+    useDigitTranslations,
+    useDigitToast
 } from "@cthit/react-digit-components";
 import translations from "./MeAvatar.screen.translations";
 import { uploadUserAvatar } from "../../../../api/image/put.image.api";
 import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
+import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
 const MeAvatar = () => {
     const [text] = useDigitTranslations(translations);
     const [file, setFile] = useState(null);
+    const [queueToast] = useDigitToast();
     const user = useGammaUser();
 
     return (
@@ -40,7 +44,25 @@ const MeAvatar = () => {
                         disabled={file == null}
                         text={text.UploadImage}
                         onClick={() => {
-                            uploadUserAvatar(file);
+                            uploadUserAvatar(file)
+                                .then(response => {
+                                    window.location.reload();
+                                    queueToast({
+                                        text: text.AvatarUploaded,
+                                        duration: 3000
+                                    });
+                                })
+                                .catch(error => {
+                                    const code = statusCode(error);
+                                    const message = statusMessage(error);
+                                    const errorMessage = text.UploadFailed;
+                                    if (code === 422) {
+                                    }
+                                    queueToast({
+                                        text: errorMessage,
+                                        duration: 5000
+                                    });
+                                });
                         }}
                     />
                 </DigitDesign.CardBody>

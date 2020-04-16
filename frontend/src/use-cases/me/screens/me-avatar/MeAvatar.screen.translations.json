@@ -2,5 +2,7 @@
     "MeAvatarTitle": ["Change your avatar image", "Ändra din profilbild"],
     "SelectImage": ["Select image", "Välj bild"],
     "UploadImage": ["Upload image", "Ladda upp bild"],
-    "NoAvatar": ["You have no avatar", "Du har ingen profilbild"]
+    "NoAvatar": ["You have no avatar", "Du har ingen profilbild"],
+    "AvatarUploaded": ["Avatar changed", "Avatar ändrad"],
+    "UploadFailed": ["Avatar upload failed", "Avatar uppladdning misslyckades"]
 }
