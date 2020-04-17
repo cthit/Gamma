@@ -5,11 +5,13 @@ import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.pk.FKITGroupToSuperGroupPK;
 import it.chalmers.gamma.db.repository.FKITGroupToSuperGroupRepository;
+import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -35,6 +37,21 @@ public class FKITGroupToSuperGroupService {
         FKITGroupToSuperGroupPK id = new FKITGroupToSuperGroupPK(superGroup, group);
         FKITGroupToSuperGroup relationship = new FKITGroupToSuperGroup(id);
         this.repository.save(relationship);
+    }
+
+    public List<FKITGroupToSuperGroupDTO> removeOldGroups(List<FKITGroupToSuperGroupDTO> relationships) {
+        for (FKITGroupToSuperGroupDTO relationship : relationships) {
+            FKITSuperGroupDTO superGroupDTO = relationship.getSuperGroup();
+            if(superGroupDTO.getType() == GroupType.ALUMNI){
+                relationships = relationships.stream().filter(r -> !(r.getGroup().equals(relationship.getGroup())
+                        && r.getSuperGroup().getType() != GroupType.ALUMNI)).collect(Collectors.toList());
+            }
+        }
+        return relationships;
+    }
+
+    public List<FKITGroupToSuperGroupDTO> getRelationships(List<FKITGroupDTO> groupDTOS) {
+        return groupDTOS.stream().map(this::getRelationships).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     public List<FKITGroupToSuperGroupDTO> getRelationships(FKITSuperGroupDTO superGroup) {
