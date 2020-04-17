@@ -39,7 +39,6 @@ import it.chalmers.gamma.util.InputValidationUtils;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;

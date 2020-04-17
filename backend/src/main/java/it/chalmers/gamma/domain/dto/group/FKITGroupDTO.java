@@ -99,18 +99,22 @@ public class FKITGroupDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FKITGroupDTO groupDTO = (FKITGroupDTO) o;
-        return Objects.equals(this.id, groupDTO.id) &&
-                Objects.equals(this.becomesActive, groupDTO.becomesActive) &&
-                Objects.equals(this.becomesInactive, groupDTO.becomesInactive) &&
-                Objects.equals(this.description, groupDTO.description) &&
-                Objects.equals(this.email, groupDTO.email) &&
-                Objects.equals(this.function, groupDTO.function) &&
-                Objects.equals(this.name, groupDTO.name) &&
-                Objects.equals(this.prettyName, groupDTO.prettyName) &&
-                Objects.equals(this.avatarURL, groupDTO.avatarURL);
+        return Objects.equals(this.id, groupDTO.id)
+                && Objects.equals(this.becomesActive, groupDTO.becomesActive)
+                && Objects.equals(this.becomesInactive, groupDTO.becomesInactive)
+                && Objects.equals(this.description, groupDTO.description)
+                && Objects.equals(this.email, groupDTO.email)
+                && Objects.equals(this.function, groupDTO.function)
+                && Objects.equals(this.name, groupDTO.name)
+                && Objects.equals(this.prettyName, groupDTO.prettyName)
+                && Objects.equals(this.avatarURL, groupDTO.avatarURL);
     }
 
     @Override

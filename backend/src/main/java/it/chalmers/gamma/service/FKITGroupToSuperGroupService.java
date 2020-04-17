@@ -39,10 +39,11 @@ public class FKITGroupToSuperGroupService {
         this.repository.save(relationship);
     }
 
-    public List<FKITGroupToSuperGroupDTO> removeOldGroups(List<FKITGroupToSuperGroupDTO> relationships) {
+    public List<FKITGroupToSuperGroupDTO> removeOldGroups(List<FKITGroupToSuperGroupDTO> groupToSuperGroupDTOS) {
+        List<FKITGroupToSuperGroupDTO> relationships = new ArrayList<>(groupToSuperGroupDTOS);
         for (FKITGroupToSuperGroupDTO relationship : relationships) {
             FKITSuperGroupDTO superGroupDTO = relationship.getSuperGroup();
-            if(superGroupDTO.getType() == GroupType.ALUMNI){
+            if (superGroupDTO.getType() == GroupType.ALUMNI) {
                 relationships = relationships.stream().filter(r -> !(r.getGroup().equals(relationship.getGroup())
                         && r.getSuperGroup().getType() != GroupType.ALUMNI)).collect(Collectors.toList());
             }
