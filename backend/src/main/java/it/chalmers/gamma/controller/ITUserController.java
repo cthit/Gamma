@@ -13,6 +13,7 @@ import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.response.InvalidFileTypeResponse;
 import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
@@ -209,6 +210,9 @@ public final class ITUserController {
                 }
 
                 return new EditedProfilePictureResponse();
+            }
+            else {
+                throw new InvalidFileTypeResponse();
             }
         }
         throw new FileNotSavedException();

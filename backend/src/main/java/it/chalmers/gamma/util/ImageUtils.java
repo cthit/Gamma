@@ -29,7 +29,7 @@ public class ImageUtils {
     public static String saveImage(MultipartFile file) throws IOException {
         File f;
         try {
-            f = convertToFile(file);
+            f = saveToDisk(file);
             if(f != null) {
                 return f.getPath();
             }
@@ -40,7 +40,7 @@ public class ImageUtils {
         }
     }
 
-    private static File convertToFile(MultipartFile file) throws IOException {
+    private static File saveToDisk(MultipartFile file) throws IOException {
         File f = new File(relativePath + file.getOriginalFilename());
         File dir = new File(f.getParent());
         if (dir.mkdir()) {

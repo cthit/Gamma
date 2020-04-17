@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FileController {
     @GetMapping("/{id}.{type}")
     public GetFileResponse getFile(@PathVariable("id") String fileName, @PathVariable("type") String type) {
-        File imageFile = new File("uploads/" + fileName + "." + type);
+        File imageFile = new File(String.format("uploads/%s.%s", fileName, type));
         if (!imageFile.isFile()) {
             throw new FileNotFoundResponse();
         }
