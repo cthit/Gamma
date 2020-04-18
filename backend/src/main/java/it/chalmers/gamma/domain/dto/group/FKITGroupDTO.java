@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.Text;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.UUID;
 
 @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -96,4 +97,53 @@ public class FKITGroupDTO {
         );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FKITGroupDTO groupDTO = (FKITGroupDTO) o;
+        return Objects.equals(this.id, groupDTO.id)
+                && Objects.equals(this.becomesActive, groupDTO.becomesActive)
+                && Objects.equals(this.becomesInactive, groupDTO.becomesInactive)
+                && Objects.equals(this.description, groupDTO.description)
+                && Objects.equals(this.email, groupDTO.email)
+                && Objects.equals(this.function, groupDTO.function)
+                && Objects.equals(this.name, groupDTO.name)
+                && Objects.equals(this.prettyName, groupDTO.prettyName)
+                && Objects.equals(this.avatarURL, groupDTO.avatarURL);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                this.id,
+                this.becomesActive,
+                this.becomesInactive,
+                this.description,
+                this.email,
+                this.function,
+                this.name,
+                this.prettyName,
+                this.avatarURL);
+
+    }
+
+    @Override
+    public String toString() {
+        return "FKITGroupDTO{"
+                + "id=" + this.id
+                + ", becomesActive=" + this.becomesActive
+                + ", becomesInactive=" + this.becomesInactive
+                + ", description=" + this.description
+                + ", email='" + this.email + '\''
+                + ", function=" + this.function
+                + ", name='" + this.name + '\''
+                + ", prettyName='" + this.prettyName + '\''
+                + ", avatarURL='" + this.avatarURL + '\''
+                + '}';
+    }
 }
