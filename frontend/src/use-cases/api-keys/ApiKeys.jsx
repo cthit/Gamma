@@ -6,8 +6,7 @@ import {
     DigitTextField,
     DigitText,
     useDigitCustomDialog,
-    useDigitTranslations,
-    useGammaIsAdmin
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import { getApiKey, getApiKeys } from "../../api/api-keys/get.api-keys.api";
 import { addApiKey } from "../../api/api-keys/post.api-keys.api";
@@ -15,6 +14,7 @@ import * as yup from "yup";
 import { deleteApiKey } from "../../api/api-keys/delete.api-keys.api";
 import translations from "./ApiKeys.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);

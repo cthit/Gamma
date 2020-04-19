@@ -9,8 +9,6 @@ import {
     useDigitTranslations,
     DigitCRUD,
     DigitTextField,
-    useGammaUser,
-    useGammaInvalidateMe,
     DigitButtonGroup
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
@@ -30,15 +28,19 @@ import MeChangePassword from "./screens/me-change-password";
 import MeGroups from "./screens/me-groups";
 import { useHistory } from "react-router";
 import MeAvatar from "./screens/me-avatar";
+import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
     const user = useGammaUser();
-    const invalidateMe = useGammaInvalidateMe();
     const history = useHistory();
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
+
+    if (user == null) {
+        return null;
+    }
 
     return (
         <Switch>
@@ -68,7 +70,6 @@ const Me = () => {
                             new Promise((resolve, reject) =>
                                 editMe(newData)
                                     .then(response => {
-                                        invalidateMe();
                                         resolve(response);
                                     })
                                     .catch(error => reject(error))

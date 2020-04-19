@@ -74,9 +74,10 @@ public class ITUserService implements UserDetailsService {
         return this.itUserRepository.existsById(id);
     }
 
-    public ITUserDTO createUser(String nick,
+    public ITUserDTO createUser(UUID id,
+                                String nick,
                                 String firstName,
-                                String lastname,
+                                String lastName,
                                 String cid,
                                 Year year,
                                 boolean userAgreement,
@@ -85,7 +86,7 @@ public class ITUserService implements UserDetailsService {
         ITUser itUser = new ITUser();
         itUser.setNick(nick);
         itUser.setFirstName(firstName);
-        itUser.setLastName(lastname);
+        itUser.setLastName(lastName);
         itUser.setCid(cid);
         itUser.setAcceptanceYear(year);
         itUser.setUserAgreement(userAgreement);
@@ -94,8 +95,24 @@ public class ITUserService implements UserDetailsService {
         itUser.setLanguage(Language.sv);
         itUser.setEmail(email == null ? itUser.getCid() + "@student.chalmers.se" : email);
         itUser.setPassword(this.passwordEncoder.encode(password));
+
+        if (id != null) {
+            itUser.setId(id);
+        }
+
         this.itUserRepository.save(itUser);
         return itUser.toDTO();
+    }
+
+    public ITUserDTO createUser(String nick,
+                                String firstName,
+                                String lastName,
+                                String cid,
+                                Year year,
+                                boolean userAgreement,
+                                String email,
+                                String password) {
+        return createUser(null, nick, firstName, lastName, cid, year, userAgreement, email, password);
     }
 
     public void removeUser(UUID id) {

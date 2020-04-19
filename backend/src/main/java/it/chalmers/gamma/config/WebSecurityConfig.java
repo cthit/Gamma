@@ -2,6 +2,7 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.filter.OauthRedirectFilter;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +26,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -37,9 +41,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
-    @Value("${application.frontend-client-details.successful-login-uri}")
-    private String frontendUrl;
-
     //@Value("${application.production}")
     //private boolean inProduction;
 
@@ -51,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
+    private final LoginRedirectHandler loginRedirectHandler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
@@ -58,13 +60,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              FKITGroupToSuperGroupService groupToSuperGroupService,
                              ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
-                             PasswordEncoder passwordEncoder) {
+                             PasswordEncoder passwordEncoder, LoginRedirectHandler loginRedirectHandler) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
+        this.loginRedirectHandler = loginRedirectHandler;
     }
 
     @Override
@@ -78,6 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         setPermittedPaths(http);
         setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
+        addRedirectFilter(http);
     }
 
 
@@ -106,6 +110,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf().disable();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when disabling csrf");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addRedirectFilter(HttpSecurity http) {
+        try {
+            OauthRedirectFilter oauthRedirectFilter = new OauthRedirectFilter();
+            http.addFilterBefore(oauthRedirectFilter, BasicAuthenticationFilter.class);
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when adding redirects");
             LOGGER.error(e.getMessage());
         }
     }
@@ -142,7 +156,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl((frontendUrl) + "/", false)
+                    .successHandler(this.loginRedirectHandler)
                     .permitAll()
                     .and()
                     .logout()
@@ -215,7 +229,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
         try {
-            http.authorizeRequests().anyRequest().authenticated();
+            http
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            ;
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting paths to authenticated only.");
             LOGGER.error(e.getMessage());

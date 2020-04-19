@@ -18,9 +18,9 @@ import javax.persistence.Table;
 
 public class FKITSuperGroup {
 
-    @Column(name = "id")
+    @Column(name = "id", updatable = false)
     @Id
-    private final UUID id;
+    private UUID id;
 
     @Column(name = "name")
     private String name;
@@ -40,6 +40,10 @@ public class FKITSuperGroup {
     }
 
     public FKITSuperGroup(UUID id) {
+        this.id = id;
+    }
+
+    public void setId(UUID id) {
         this.id = id;
     }
 

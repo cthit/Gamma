@@ -1,10 +1,8 @@
 import {
-    DigitTable,
+    DigitSelectMultipleTable,
     DigitLayout,
     useDigitTranslations,
-    useDigitToast,
-    useGammaIs,
-    useGammaIsAdmin
+    useDigitToast
 } from "@cthit/react-digit-components";
 import React, { useCallback, useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
@@ -19,6 +17,8 @@ import * as _ from "lodash";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { getUsersWithGDPRMinified } from "../../api/gdpr/get.gdpr.api";
 import { setGDPRValue } from "../../api/gdpr/put.gdpr.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import useGammaIs from "../../common/hooks/use-gamma-is/use-gamma-is";
 
 function _generateHeaderTexts(text) {
     const output = {};
@@ -65,13 +65,13 @@ const Gdpr = () => {
 
     return (
         <DigitLayout.Center>
-            <DigitTable
+            <DigitSelectMultipleTable
                 search
                 titleText={text.Users}
                 searchText={text.SearchForUsers}
                 idProp={ID}
                 startOrderBy={FIRST_NAME}
-                onSelectedUpdated={selected => {
+                onChange={selected => {
                     const c = _.xorWith(selected, lastSelected, _.isEqual);
 
                     if (c.length > 0) {
@@ -115,7 +115,7 @@ const Gdpr = () => {
                             });
                     }
                 }}
-                selected={users.filter(user => user.gdpr).map(user => user.id)}
+                value={users.filter(user => user.gdpr).map(user => user.id)}
                 columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
                 headerTexts={_generateHeaderTexts(text)}
                 data={users.map(user => {

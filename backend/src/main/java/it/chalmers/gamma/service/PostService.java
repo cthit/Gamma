@@ -26,9 +26,16 @@ public class PostService {
         this.repository = repository;
     }
 
-    public PostDTO addPost(Text postName) {
+    public PostDTO addPost(UUID id, Text postName) {
         Post post = new Post();
+        if (id != null) {
+            post.setId(id);
+        }
         return savePost(post, postName);
+    }
+
+    public PostDTO addPost(Text postName) {
+        return addPost(null, postName);
     }
 
     public PostDTO editPost(PostDTO post, Text text) {

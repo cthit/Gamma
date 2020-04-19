@@ -49,9 +49,6 @@ public class MembershipService {
     //TODO check which methods should be left in this class,
     // many are probably never going to be used.
 
-    //TODO this should perhaps be rewritten to return actual objects instead of the GROUP_ID:s of objects.
-
-
     /**
      * adds a userDTO to the groupDTO.
      *

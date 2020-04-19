@@ -1,17 +1,10 @@
 import axios from "axios";
 import _ from "lodash";
-import { getBackendUrl } from "../../common/utils/configs/envVariablesLoader";
 
-const path = getBackendUrl();
+const path = "/api";
 
-export function getRequest(endpoint, includeAuthorization = true, convert) {
+export function getRequest(endpoint, convert) {
     var headers = {};
-
-    if (includeAuthorization) {
-        headers = {
-            Authorization: "Bearer " + token()
-        };
-    }
 
     if (convert != null) {
         return new Promise((resolve, reject) => {
@@ -29,28 +22,16 @@ export function getRequest(endpoint, includeAuthorization = true, convert) {
     });
 }
 
-export function postRequest(endpoint, data, includeAuthorization = true) {
+export function postRequest(endpoint, data) {
     var headers = {};
-
-    if (includeAuthorization) {
-        headers = {
-            Authorization: "Bearer " + token()
-        };
-    }
 
     return axios.post(removeLastSlash(path + endpoint), data, {
         headers
     });
 }
 
-export function deleteRequest(endpoint, data, includeAuthorization = true) {
+export function deleteRequest(endpoint, data) {
     var headers = {};
-
-    if (includeAuthorization) {
-        headers = {
-            Authorization: "Bearer " + token()
-        };
-    }
 
     return axios.delete(removeLastSlash(path + endpoint), {
         data: data,
@@ -58,14 +39,8 @@ export function deleteRequest(endpoint, data, includeAuthorization = true) {
     });
 }
 
-export function putRequest(endpoint, data, includeAuthorization = true) {
+export function putRequest(endpoint, data) {
     var headers = {};
-
-    if (includeAuthorization) {
-        headers = {
-            Authorization: "Bearer " + token()
-        };
-    }
 
     return axios.put(removeLastSlash(path + endpoint), data, {
         headers
@@ -74,8 +49,4 @@ export function putRequest(endpoint, data, includeAuthorization = true) {
 
 function removeLastSlash(path) {
     return _.trimEnd(path, "/");
-}
-
-function token() {
-    return sessionStorage["auth-gamma"];
 }

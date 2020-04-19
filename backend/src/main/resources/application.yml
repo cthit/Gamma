@@ -30,14 +30,25 @@ spring:
     suffix: .html
     servlet:
       content-type: text/html
+
+  session:
+    store-type: redis
+
+  redis:
+    host: ${REDIS_HOST:0.0.0.0}
+    password: ${REDIS_PASSWORD:}
+    port: ${REDIS_PORT:6379}
+
 server:
   port: ${SERVER_PORT:8081}
   servlet:
     context-path: /api
 
+
+
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:DEBUG}
+    root: ${ROOT_DEBUG_LEVEL:INFO}
     org:
       springframework:
         web: ${WEB_DEBUG_LEVEL:INFO}
@@ -53,10 +64,10 @@ security:
 
 application:
   production: false
+  cookie:
+    domain: ${COOKIE_DOMAIN:localhost}
+    path: ${COOKIE_PATH:/}
   frontend-client-details:
-    client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
-    client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
-    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:3000/login}
     successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
