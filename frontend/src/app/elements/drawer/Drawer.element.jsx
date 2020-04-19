@@ -1,7 +1,6 @@
 import {
     DigitAvatar,
     DigitLayout,
-    DigitText,
     DigitMenu,
     DigitNavLink,
     useDigitTranslations
@@ -9,10 +8,20 @@ import {
 import React from "react";
 import translations from "./Drawer.element.translations";
 import useGammaUser from "../../../common/hooks/use-gamma-user/useGammaUser";
-import useGammaIs from "../../../common/hooks/use-gamma-is/use-gamma-is";
+import useGammaHasAuthority from "../../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
 import useGammaIsAdmin from "../../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import { getBackendUrl } from "../../../common/utils/configs/envVariablesLoader";
 import ExpandMore from "@material-ui/icons/ExpandMore";
+import styled from "styled-components";
+
+const Nick = styled.h6`
+    font-family: Roboto, serif;
+    font-size: 20px;
+    text-overflow: ellipsis;
+    max-width: 152px;
+    overflow: hidden;
+    white-space: nowrap;
+`;
 
 const GammaActions = ({ text }) => {
     const user = useGammaUser();
@@ -33,7 +42,7 @@ const GammaActions = ({ text }) => {
                 imageSrc={user.avatarUrl}
                 margin={{ right: "16px" }}
             />
-            <DigitText.Title text={user.nick} />
+            <Nick>{user.nick}</Nick>
             <DigitMenu
                 icon={ExpandMore}
                 onClick={item => {
@@ -57,7 +66,7 @@ const GammaActions = ({ text }) => {
 const Drawer = ({ closeDrawer }) => {
     const user = useGammaUser();
     const admin = useGammaIsAdmin();
-    const dpo = useGammaIs("gdpr");
+    const dpo = useGammaHasAuthority("gdpr");
     const [text] = useDigitTranslations(translations);
 
     if (admin) {
@@ -117,6 +126,8 @@ const Drawer = ({ closeDrawer }) => {
     } else {
         return (
             <DigitLayout.Column padding="0">
+                {user != null && <GammaActions text={text} />}
+
                 <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
                 <DigitNavLink onClick={closeDrawer} text="Me" link="/me" />
                 <DigitNavLink

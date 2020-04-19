@@ -7,6 +7,7 @@ import {
 } from "@cthit/react-digit-components";
 import React from "react";
 import translations from "./CreationOfAccountFinished.view.translations.json";
+import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 
 const CreationOfAccountFinished = () => {
     const [text] = useDigitTranslations(translations);
@@ -14,7 +15,9 @@ const CreationOfAccountFinished = () => {
     return (
         <DigitLayout.Center>
             <DigitDesign.Card>
-                <DigitDesign.CardTitle text={text.CongratsTitle} />
+                <DigitDesign.CardHeader>
+                    <DigitDesign.CardTitle text={text.CongratsTitle} />
+                </DigitDesign.CardHeader>
                 <DigitDesign.CardHeaderImage src="/theofficeparty.gif" />
                 <DigitDesign.CardBody>
                     <DigitLayout.Center>
@@ -22,13 +25,14 @@ const CreationOfAccountFinished = () => {
                     </DigitLayout.Center>
                 </DigitDesign.CardBody>
                 <DigitDesign.CardButtons reverseDirection>
-                    <DigitDesign.Link to="/login">
-                        <DigitButton
-                            raised
-                            primary
-                            text={text.LoginForTheFirstTime}
-                        />
-                    </DigitDesign.Link>
+                    <DigitButton
+                        raised
+                        primary
+                        text={text.LoginForTheFirstTime}
+                        onClick={() => {
+                            window.location.href = getBackendUrl() + "/login";
+                        }}
+                    />
                 </DigitDesign.CardButtons>
             </DigitDesign.Card>
         </DigitLayout.Center>

@@ -13,8 +13,10 @@ const EmailHasBeenSent = () => {
 
     return (
         <DigitLayout.Center>
-            <DigitDesign.Card minWidth="300px" maxWidth="500px">
-                <DigitDesign.CardTitle text={text.AnEmailShouldBeSent} />
+            <DigitDesign.Card size={{ minWidth: "300px", maxWidth: "600px" }}>
+                <DigitDesign.CardHeader>
+                    <DigitDesign.CardTitle text={text.AnEmailShouldBeSent} />
+                </DigitDesign.CardHeader>
                 <DigitDesign.CardBody>
                     <DigitText.Text
                         text={text.AnEmailShouldBeSentDescription}

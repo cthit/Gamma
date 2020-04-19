@@ -18,7 +18,7 @@ import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
 import ApiKeys from "../use-cases/api-keys";
 import Whitelist from "../use-cases/whitelist";
-import translations from "./App.translations.json";
+import translations from "../common/utils/translations/CommonTranslations";
 import SuperGroups from "../use-cases/super-groups";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
@@ -66,9 +66,15 @@ export const App = () => {
             loading &&
             !user &&
             !pathname.startsWith("/create-account") &&
-            !pathname.startsWith("/reset-password")
+            (!pathname.startsWith("/reset-password") ||
+                pathname.startsWith("/reset-password/admin"))
         ) {
             getMe();
+        } else if (
+            pathname.startsWith("/create-account") ||
+            pathname.startsWith("/reset-password")
+        ) {
+            setStatus([false, false]);
         }
     }, [loading, error, pathname, getMe, user]);
 

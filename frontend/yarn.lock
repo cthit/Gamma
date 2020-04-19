@@ -1033,10 +1033,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-9.0.1.tgz#c27b391d8457d1e893f1eddeaf5e5412d12ffbb5"
   integrity sha512-6It2EVfGskxZCQhuykrfnALg7oVeiI6KclWSmGDqB0AiInVrTGB9Jp9i4/Ad21u9Jde/voVQz6eFX/eSg/UsPA==
 
-"@cthit/react-digit-components@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.0.tgz#cff82edfeacffc1915ab44a26640921ff767e44f"
-  integrity sha512-tfaDfsB7h/Uvs5X5zyRR2qH8VQuMjQxh4myVZopxfzfT8XL5FWck5WH6QWQ+kan9DzGgFDYLYoPTWWG5spgcNA==
+"@cthit/react-digit-components@1.0.1-rc.1":
+  version "1.0.1-rc.1"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.1-rc.1.tgz#aa5384bb08c131c48961996db1f409658b20c6e0"
+  integrity sha512-Cmd6QIJdUAa7CvOkQXf/eSU1Hstmi3gopim20VEqCx4QV21l2v8O5wJckB7kxSacmp/q6ymeovA5qxLSa5cA3w==
   dependencies:
     "@date-io/date-fns" "1.3.11"
     "@material-ui/core" "4.9.5"

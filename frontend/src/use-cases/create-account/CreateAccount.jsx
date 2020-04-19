@@ -14,7 +14,7 @@ import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
 import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
-import { useHistory, useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router-dom";
 import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 
 const CreateAccount = () => {
@@ -26,7 +26,7 @@ const CreateAccount = () => {
     if (user != null) {
         return (
             <DigitLayout.Center>
-                <DigitDesign.Card absWidth="300px">
+                <DigitDesign.Card size={{ width: "300px" }}>
                     <DigitDesign.CardTitle
                         text={text.YouAlreadyHaveAnAccount}
                     />
