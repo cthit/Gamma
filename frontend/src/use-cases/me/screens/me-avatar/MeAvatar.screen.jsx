@@ -31,7 +31,7 @@ const MeAvatar = () => {
                         <DigitText.Text bold text={text.NoAvatar} />
                     )}
                     {user.avatarUrl != null && (
-                        <img src={user.avatarUrl} alt={"Avatar"} />
+                        <img width="500px" src={user.avatarUrl} alt={"Avatar"} />
                     )}
                     <DigitSelectFile
                         image
