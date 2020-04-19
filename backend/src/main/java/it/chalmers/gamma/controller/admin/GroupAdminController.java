@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
@@ -24,7 +25,6 @@ import it.chalmers.gamma.service.WebsiteService;
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -157,7 +157,7 @@ public final class GroupAdminController {
         try {
             String url = ImageUtils.saveImage(file);
             this.fkitGroupService.editGroupAvatar(group, url);
-        } catch (IOException e) {
+        } catch (FileNotFoundResponse e) {
             throw new FileNotSavedException();
         }
         return new GroupEditedResponse();

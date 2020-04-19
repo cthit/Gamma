@@ -27,17 +27,16 @@ public class ImageUtils {
     private static String relativePath;
     private static String absoluteBasePath;
 
-    public static String saveImage(MultipartFile file) throws IOException {
+    public static String saveImage(MultipartFile file) throws FileNotSavedException {
         File f;
         try {
             f = saveToDisk(file);
-            if(f != null) {
+            if (f != null) {
                 return f.getName();
             }
             throw new FileNotSavedException();
-        }
-        catch (IOException e ) {
-            throw new IOException(e);
+        } catch (IOException e) {
+            throw new FileNotSavedException();
         }
     }
 
@@ -60,8 +59,7 @@ public class ImageUtils {
         File f = new File(relativePath + path);
         if (f.delete()) {
             return true;
-        }
-        else {
+        } else {
             LOGGER.warn(String.format("could not remove file with path %s", path));
             return false;
         }
@@ -69,7 +67,7 @@ public class ImageUtils {
     }
 
     /**
-     * It's pronounced Gif
+     * It's pronounced Gif.
      *
      * @return true if file is image or gif, false otherwise
      */

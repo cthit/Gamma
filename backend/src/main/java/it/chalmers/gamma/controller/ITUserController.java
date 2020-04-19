@@ -11,6 +11,7 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.InvalidFileTypeResponse;
@@ -37,7 +38,6 @@ import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.List;
@@ -198,12 +198,11 @@ public final class ITUserController {
                 try {
                     String fileUrl = ImageUtils.saveImage(file);
                     this.itUserService.editProfilePicture(user, fileUrl);
-                } catch (IOException e) {
+                } catch (FileNotFoundResponse e) {
                     throw new FileNotSavedException();
                 }
                 return new EditedProfilePictureResponse();
-            }
-            else {
+            } else {
                 throw new InvalidFileTypeResponse();
             }
         }

@@ -2,9 +2,9 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.GetFileResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,16 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class FileController {
     @GetMapping("/{id}.{type}")
     public GetFileResponse getFile(@PathVariable("id") String fileName, @PathVariable("type") String type) {
-        File imageFile = new File(String.format("uploads/%s.%s", fileName, type));
-        if (!imageFile.isFile()) {
-            throw new FileNotFoundResponse();
-        }
+        String filePath = String.format("uploads/%s.%s", fileName, type);
         try {
-            byte[] data = StreamUtils.copyToByteArray(new FileInputStream(imageFile));
+            byte[] data = StreamUtils.copyToByteArray(Files.newInputStream(Paths.get(filePath)));
             return new GetFileResponse(data);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileNotFoundResponse();
         }
-        throw new FileNotFoundResponse();
     }
 }
