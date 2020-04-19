@@ -84,7 +84,7 @@ export const App = () => {
                 <DigitLoading loading alignSelf={"center"} margin={"auto"} />
             )}
             {error && <FiveZeroZero getMe={getMe} />}
-            {!error && (
+            {!loading && !error && (
                 <div
                     style={{
                         width: "100%",
