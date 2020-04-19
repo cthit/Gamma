@@ -28,6 +28,7 @@ import { getRequest } from "../api/utils/api";
 import GammaUserContext from "../common/context/GammaUser.context";
 import FiveZeroZero from "./elements/five-zero-zero";
 import { getBackendUrl } from "../common/utils/configs/envVariablesLoader";
+import About from "../use-cases/about";
 
 export const App = () => {
     const [user, setUser] = useContext(GammaUserContext);
@@ -114,6 +115,7 @@ export const App = () => {
                                 component={SuperGroups}
                             />
                             <Route path={"/me"} component={Me} />
+                            <Route path={"/about"} component={About} />
                             <Route path="/members" component={Members} />
                             <Route
                                 path="/reset-password"
