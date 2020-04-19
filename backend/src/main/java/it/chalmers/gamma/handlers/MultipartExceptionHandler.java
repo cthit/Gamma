@@ -1,7 +1,6 @@
 package it.chalmers.gamma.handlers;
 
 import it.chalmers.gamma.response.FileTooLargeResponse;
-import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,7 +15,7 @@ public class MultipartExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultipartExceptionHandler.class);
 
 
-    @ExceptionHandler({FileUploadBase.FileSizeLimitExceededException.class, MaxUploadSizeExceededException.class})
+    @ExceptionHandler({MaxUploadSizeExceededException.class})
     public FileTooLargeResponse handleUploadSizeException() {
         LOGGER.info("Too large file upload was attempted");
         return new FileTooLargeResponse();

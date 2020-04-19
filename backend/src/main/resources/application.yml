@@ -66,6 +66,7 @@ security:
       audience: http://localhost:3000
 
 application:
+  base-uri: http://localhost:8081/api/
   production: false
   files:
     path: uploads/

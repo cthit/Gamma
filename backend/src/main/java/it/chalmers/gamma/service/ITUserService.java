@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
+import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.UUIDUtil;
 
 import java.time.Instant;
@@ -177,6 +178,7 @@ public class ITUserService implements UserDetailsService {
 
     public void editProfilePicture(ITUserDTO userDTO, String fileUrl) {
         ITUser user = this.getITUser(userDTO);
+        ImageUtils.removeImage(user.getAvatarUrl());
         user.setAvatarUrl(fileUrl);
         this.itUserRepository.save(user);
     }

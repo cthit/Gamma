@@ -46,7 +46,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,9 +72,6 @@ public final class ITUserController {
     private final MembershipService membershipService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
     private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
-
-    @Value("#{servletContext.contextPath}")
-    private String contextPath;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
@@ -201,11 +197,10 @@ public final class ITUserController {
             if (ImageUtils.isImageOrGif(file)) {
                 try {
                     String fileUrl = ImageUtils.saveImage(file);
-                    this.itUserService.editProfilePicture(user, String.format("%s/%s", this.contextPath, fileUrl));
+                    this.itUserService.editProfilePicture(user, fileUrl);
                 } catch (IOException e) {
                     throw new FileNotSavedException();
                 }
-
                 return new EditedProfilePictureResponse();
             }
             else {

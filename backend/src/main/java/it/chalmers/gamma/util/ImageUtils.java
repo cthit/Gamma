@@ -25,13 +25,14 @@ public class ImageUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageUtils.class);
     private static String relativePath;
+    private static String absoluteBasePath;
 
     public static String saveImage(MultipartFile file) throws IOException {
         File f;
         try {
             f = saveToDisk(file);
             if(f != null) {
-                return f.getPath();
+                return f.getName();
             }
             throw new FileNotSavedException();
         }
@@ -55,6 +56,18 @@ public class ImageUtils {
         return null;
     }
 
+    public static boolean removeImage(String path) {
+        File f = new File(relativePath + path);
+        if (f.delete()) {
+            return true;
+        }
+        else {
+            LOGGER.warn(String.format("could not remove file with path %s", path));
+            return false;
+        }
+
+    }
+
     /**
      * It's pronounced Gif
      *
@@ -67,6 +80,15 @@ public class ImageUtils {
                 ContentType.IMAGE_PNG.toString(),
                 ContentType.IMAGE_JPEG.toString())
                 .contains(contentType);
+    }
+
+    public static String getAbsolutePath(String imageName) {
+        return absoluteBasePath + relativePath + imageName;
+    }
+
+    @Value("${application.base-uri}")
+    public void setAbsoluteBasePath(String absolutePath) {
+        ImageUtils.absoluteBasePath = absolutePath;
     }
 
     // Needed to inject into static field
