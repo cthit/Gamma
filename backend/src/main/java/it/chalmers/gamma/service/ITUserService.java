@@ -5,6 +5,9 @@ import it.chalmers.gamma.db.repository.ITUserRepository;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
+import it.chalmers.gamma.response.FileNotFoundResponse;
+import it.chalmers.gamma.response.FileNotSavedException;
+import it.chalmers.gamma.response.InvalidFileTypeResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.UUIDUtil;
@@ -20,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.UseObjectForClearerAPI"})
 @Service("userDetailsService")
@@ -142,11 +146,11 @@ public class ITUserService implements UserDetailsService {
         String idCidOrEmailLowerCase = idCidOrEmail.toLowerCase();
         if (UUIDUtil.validUUID(idCidOrEmailLowerCase)) {
             user = this.itUserRepository.findById(UUID.fromString(idCidOrEmailLowerCase))
-                .orElseThrow(UserNotFoundResponse::new);
+                    .orElseThrow(UserNotFoundResponse::new);
         } else {
             user = this.itUserRepository.findByEmail(idCidOrEmailLowerCase)
-                .orElse(this.itUserRepository.findByCid(idCidOrEmailLowerCase)
-                .orElseThrow(UserNotFoundResponse::new));
+                    .orElse(this.itUserRepository.findByCid(idCidOrEmailLowerCase)
+                            .orElseThrow(UserNotFoundResponse::new));
         }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
     }
@@ -176,11 +180,23 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    public void editProfilePicture(ITUserDTO userDTO, String fileUrl) {
+    public void editProfilePicture(ITUserDTO userDTO, MultipartFile file) {
         ITUser user = this.getITUser(userDTO);
-        ImageUtils.removeImage(user.getAvatarUrl());
-        user.setAvatarUrl(fileUrl);
-        this.itUserRepository.save(user);
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        }
+        if (ImageUtils.isImageOrGif(file)) {
+            try {
+                String fileUrl = ImageUtils.saveImage(file, user.getCid());
+                ImageUtils.removeImage(user.getAvatarUrl());
+                user.setAvatarUrl(fileUrl);
+                this.itUserRepository.save(user);
+            } catch (FileNotFoundResponse e) {
+                throw new FileNotSavedException();
+            }
+        } else {
+            throw new InvalidFileTypeResponse();
+        }
     }
 
     public boolean passwordMatches(ITUserDTO user, String password) {

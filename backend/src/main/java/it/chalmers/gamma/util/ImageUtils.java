@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,10 @@ public class ImageUtils {
     private static String relativePath;
     private static String absoluteBasePath;
 
-    public static String saveImage(MultipartFile file) throws FileNotSavedException {
+    public static String saveImage(MultipartFile file, String name) throws FileNotSavedException {
         File f;
         try {
-            f = saveToDisk(file);
+            f = saveToDisk(file, name);
             if (f != null) {
                 return f.getName();
             }
@@ -40,8 +41,8 @@ public class ImageUtils {
         }
     }
 
-    private static File saveToDisk(MultipartFile file) throws IOException {
-        File f = new File(relativePath + file.getOriginalFilename());
+    private static File saveToDisk(MultipartFile file, String name) throws IOException {
+        File f = new File(relativePath + name + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
         File dir = new File(f.getParent());
         if (dir.mkdir()) {
             LOGGER.info("no uploads directory exists, creating a new one");

@@ -11,10 +11,7 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.FileNotFoundResponse;
-import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.InvalidFileTypeResponse;
 import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
@@ -28,6 +25,7 @@ import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
+import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
@@ -35,7 +33,6 @@ import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
-import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.security.Principal;
@@ -193,20 +190,13 @@ public final class ITUserController {
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        if (user != null) {
-            if (ImageUtils.isImageOrGif(file)) {
-                try {
-                    String fileUrl = ImageUtils.saveImage(file);
-                    this.itUserService.editProfilePicture(user, fileUrl);
-                } catch (FileNotFoundResponse e) {
-                    throw new FileNotSavedException();
-                }
-                return new EditedProfilePictureResponse();
-            } else {
-                throw new InvalidFileTypeResponse();
-            }
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        } else {
+            this.itUserService.editProfilePicture(user, file);
+            return new EditedProfilePictureResponse();
         }
-        throw new FileNotSavedException();
+
     }
 
     @PutMapping("/me/change_password")

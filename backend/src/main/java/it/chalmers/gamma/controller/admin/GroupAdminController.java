@@ -155,7 +155,7 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         try {
-            String url = ImageUtils.saveImage(file);
+            String url = ImageUtils.saveImage(file, file.getName());
             this.fkitGroupService.editGroupAvatar(group, url);
         } catch (FileNotFoundResponse e) {
             throw new FileNotSavedException();
