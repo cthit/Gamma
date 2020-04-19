@@ -40,7 +40,6 @@ import it.chalmers.gamma.util.InputValidationUtils;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -151,9 +150,8 @@ public final class ITUserController {
         //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
-                this.fkitGroupToSuperGroupService::getRelationships)
-                .flatMap(Collection::stream).collect(Collectors.toList());
+        List<FKITGroupToSuperGroupDTO> relationships = this.fkitGroupToSuperGroupService.removeOldGroups(
+                this.fkitGroupToSuperGroupService.getRelationships(groups));
         return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
@@ -176,9 +174,8 @@ public final class ITUserController {
         //      );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
-                this.fkitGroupToSuperGroupService::getRelationships)
-                .flatMap(Collection::stream).collect(Collectors.toList());
+        List<FKITGroupToSuperGroupDTO> relationships = this.fkitGroupToSuperGroupService.removeOldGroups(
+                this.fkitGroupToSuperGroupService.getRelationships(groups));
         return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 

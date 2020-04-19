@@ -26,7 +26,6 @@ import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -117,9 +116,8 @@ public final class UsersAdminController {
         // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
         //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
-        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
-                this.fkitGroupToSuperGroupService::getRelationships)
-                .flatMap(Collection::stream).collect(Collectors.toList());
+        List<FKITGroupToSuperGroupDTO> relationships = this.fkitGroupToSuperGroupService.removeOldGroups(
+                this.fkitGroupToSuperGroupService.getRelationships(groups));
         return new GetITUserResponse(user, relationships, null).toResponseObject();
     }
 
@@ -128,10 +126,9 @@ public final class UsersAdminController {
 
         List<ITUserDTO> users = this.itUserService.loadAllUsers();
         List<GetITUserResponse> userResponses = users.stream()
-                .map(u -> new GetITUserResponse(u,
-                        this.membershipService.getUsersGroupDTO(u).stream().map(
-                                this.fkitGroupToSuperGroupService::getRelationships)
-                                .flatMap(Collection::stream).collect(Collectors.toList()),
+                .map(u -> new GetITUserResponse(u, this.fkitGroupToSuperGroupService.removeOldGroups(
+                        this.fkitGroupToSuperGroupService.getRelationships(
+                                this.membershipService.getUsersGroupDTO(u))),
                         null))
                 .collect(Collectors.toList());
         return new GetAllITUsersResponse(userResponses).toResponseObject();
