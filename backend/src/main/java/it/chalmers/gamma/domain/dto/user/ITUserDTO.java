@@ -2,6 +2,7 @@ package it.chalmers.gamma.domain.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.util.ImageUtils;
 import java.time.Year;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +29,6 @@ public class ITUserDTO implements UserDetails {
     @JsonIgnore
     private final String password;
     private final boolean activated;
-
 
     public ITUserDTO(UUID id,
                      String cid,
@@ -129,7 +129,7 @@ public class ITUserDTO implements UserDetails {
     }
 
     public String getAvatarUrl() {
-        return this.avatarUrl;
+        return ImageUtils.getAbsolutePath(this.avatarUrl);
     }
 
     public boolean isGdpr() {

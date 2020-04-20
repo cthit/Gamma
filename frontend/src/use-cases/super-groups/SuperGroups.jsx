@@ -127,7 +127,7 @@ const SuperGroups = () => {
             detailsRenderEnd={one => (
                 <div
                     style={{
-                        marginTop: "8px"
+                        marginTop: "16px"
                     }}
                 >
                     <ShowSubGroups subGroups={one.subGroups} />

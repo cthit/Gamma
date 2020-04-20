@@ -27,7 +27,7 @@ const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => {
     const [text] = useDigitTranslations(translations);
 
     return (
-        <DigitDesign.Card absWidth="280px">
+        <DigitDesign.Card size={{ width: "300px" }} margin={"0px"}>
             <DigitDesign.CardBody>
                 <DigitText.Title text={text.Current} />
                 {currentMembers.map(member => (

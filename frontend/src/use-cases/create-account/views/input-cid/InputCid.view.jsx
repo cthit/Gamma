@@ -8,7 +8,7 @@ import {
 import React from "react";
 import * as yup from "yup";
 import translations from "./InputCid.view.translations";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { activateCid } from "../../../../api/whitelist/post.whitelist.api";
 
 const InputCid = () => {
@@ -19,6 +19,7 @@ const InputCid = () => {
     return (
         <DigitLayout.Center>
             <DigitEditDataCard
+                centerFields
                 validationSchema={yup.object().shape({
                     cid: yup.string().required(text.FieldRequired)
                 })}
@@ -48,8 +49,7 @@ const InputCid = () => {
                     }
                 }}
                 keysOrder={["cid"]}
-                absWidth="300px"
-                absHeight="300px"
+                size={{ width: "300px", height: "300px" }}
                 titleText={text.EnterYourCid}
                 subtitleText={text.EnterYourCidDescription}
                 submitText={text.SendCid}

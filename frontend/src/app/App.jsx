@@ -18,7 +18,7 @@ import Users from "../use-cases/users";
 import Clients from "../use-cases/clients";
 import ApiKeys from "../use-cases/api-keys";
 import Whitelist from "../use-cases/whitelist";
-import translations from "./App.translations.json";
+import translations from "../common/utils/translations/CommonTranslations";
 import SuperGroups from "../use-cases/super-groups";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
@@ -28,6 +28,7 @@ import { getRequest } from "../api/utils/api";
 import GammaUserContext from "../common/context/GammaUser.context";
 import FiveZeroZero from "./elements/five-zero-zero";
 import { getBackendUrl } from "../common/utils/configs/envVariablesLoader";
+import About from "../use-cases/about";
 
 export const App = () => {
     const [user, setUser] = useContext(GammaUserContext);
@@ -66,9 +67,15 @@ export const App = () => {
             loading &&
             !user &&
             !pathname.startsWith("/create-account") &&
-            !pathname.startsWith("/reset-password")
+            (!pathname.startsWith("/reset-password") ||
+                pathname.startsWith("/reset-password/admin"))
         ) {
             getMe();
+        } else if (
+            pathname.startsWith("/create-account") ||
+            pathname.startsWith("/reset-password")
+        ) {
+            setStatus([false, false]);
         }
     }, [loading, error, pathname, getMe, user]);
 
@@ -78,7 +85,7 @@ export const App = () => {
                 <DigitLoading loading alignSelf={"center"} margin={"auto"} />
             )}
             {error && <FiveZeroZero getMe={getMe} />}
-            {!error && (
+            {!loading && !error && (
                 <div
                     style={{
                         width: "100%",
@@ -108,6 +115,7 @@ export const App = () => {
                                 component={SuperGroups}
                             />
                             <Route path={"/me"} component={Me} />
+                            <Route path={"/about"} component={About} />
                             <Route path="/members" component={Members} />
                             <Route
                                 path="/reset-password"

@@ -26,7 +26,7 @@ create table ituser (
   email            varchar(100) not null constraint ituser_email_unique unique,
   phone            varchar(15)  null,
   language         varchar(15)  null,
-  avatar_url       varchar(255) null,
+  avatar_url       varchar(255) default 'default.jpg',
   gdpr             boolean      not null default false,
   user_agreement   boolean      not null default false,
   account_locked   boolean      not null default false,

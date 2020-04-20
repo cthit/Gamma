@@ -25,24 +25,27 @@ public class Bootstrap implements CommandLineRunner {
 
     private final TestClientBootstrap testClientBootstrap;
 
+    private final MiscBootstrap miscBootstrap;
+
     public Bootstrap(BootstrapConfig config,
                      BootstrapServiceHelper helper,
                      AdminBootstrap adminBootstrap,
                      MockBootstrap mockBootstrap,
-                     TestClientBootstrap testClientBootstrap) {
+                     TestClientBootstrap testClientBootstrap, MiscBootstrap miscBootstrap) {
         this.config = config;
         this.helper = helper;
         this.adminBootstrap = adminBootstrap;
         this.mockBootstrap = mockBootstrap;
         this.testClientBootstrap = testClientBootstrap;
+        this.miscBootstrap = miscBootstrap;
     }
 
     @Override
     public void run(String... args) {
+        this.miscBootstrap.runImageBootstrap();
         if (shouldRunBootstrap()) {
             LOGGER.info("No admin user, running Bootstrap...");
             this.adminBootstrap.runAdminBootstrap();
-
             if (this.config.isMocking()) {
                 LOGGER.info("Mock enabled...");
                 this.mockBootstrap.runMockBootstrap();

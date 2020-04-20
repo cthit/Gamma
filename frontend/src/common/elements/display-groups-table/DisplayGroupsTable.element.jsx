@@ -48,11 +48,12 @@ function modifyData(groups, text, activeLanguage, columns) {
     });
 }
 
-const DisplayGroupsTable = ({ title, groups, columnsOrder }) => {
+const DisplayGroupsTable = ({ title, groups, columnsOrder, margin }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
         <DigitTable
+            margin={margin != null ? margin : "0px"}
             titleText={title ? title : text.Groups}
             searchText={text.SearchForGroups}
             idProp="id"
@@ -66,7 +67,7 @@ const DisplayGroupsTable = ({ title, groups, columnsOrder }) => {
 };
 
 DisplayGroupsTable.defaultProps = {
-    columnsOrder: [NAME, DESCRIPTION, EMAIL, FUNCTION]
+    columnsOrder: [NAME, EMAIL]
 };
 
 export default DisplayGroupsTable;

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import { addDays } from "date-fns";
-
 import {
     DigitCRUD,
     useDigitTranslations,
@@ -24,14 +22,15 @@ import {
     SUPER_GROUP
 } from "../../api/groups/props.groups.api";
 import { editGroup } from "../../api/groups/put.groups.api";
-
 import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
-import DisplayUsersTable from "../../common/elements/display-users-table";
-import { useHistory } from "react-router";
+import DisplayMembersTable from "../../common/elements/display-members-table";
+import { useHistory } from "react-router-dom";
 import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { inGroup } from "../../common/utils/checker/gamma";
+import { deleteGroup } from "../../api/groups/delete.groups.api";
 
 const DESCRIPTION_SV = "descriptionSv";
 const DESCRIPTION_EN = "descriptionEn";
@@ -84,11 +83,11 @@ function generateValidationSchema(text) {
     schema[PRETTY_NAME] = yup.string().required();
     schema[EMAIL] = yup.string().required();
 
-    schema[DESCRIPTION_SV] = yup.string().required();
-    schema[DESCRIPTION_EN] = yup.string().required();
+    schema[DESCRIPTION_SV] = yup.string();
+    schema[DESCRIPTION_EN] = yup.string();
 
-    schema[FUNCTION_SV] = yup.string().required();
-    schema[FUNCTION_EN] = yup.string().required();
+    schema[FUNCTION_SV] = yup.string();
+    schema[FUNCTION_EN] = yup.string();
 
     return yup.object().shape(schema);
 }
@@ -180,6 +179,7 @@ function generateEditComponentData(text, superGroups = []) {
     componentData[BECOMES_ACTIVE] = {
         component: DigitDatePicker,
         componentProps: {
+            upperLabel: text.BecomesActive,
             outlined: true
         }
     };
@@ -187,6 +187,7 @@ function generateEditComponentData(text, superGroups = []) {
     componentData[BECOMES_INACTIVE] = {
         component: DigitDatePicker,
         componentProps: {
+            upperLabel: text.BecomesInactive,
             outlined: true
         }
     };
@@ -195,7 +196,7 @@ function generateEditComponentData(text, superGroups = []) {
 }
 
 const Groups = () => {
-    const [text, activeLanguage] = useDigitTranslations(translations);
+    const [text] = useDigitTranslations(translations);
     const admin = useGammaIsAdmin();
     const [superGroups, setSuperGroups] = useState([]);
     const user = useGammaUser();
@@ -207,30 +208,50 @@ const Groups = () => {
         });
     }, []);
 
-    useEffect(() => {
-        // _.find(user.relationships, {name: })
-    }, [user]);
-
     if (superGroups.length === 0) {
         return null;
     }
 
     return (
         <DigitCRUD
+            canDelete={() => admin}
+            canUpdate={group => admin || inGroup(user, group)}
             name={"groups"}
             path={"/groups"}
             readAllRequest={getGroupsMinified}
             readOneRequest={getGroup}
-            updateRequest={
+            deleteRequest={deleteGroup}
+            updateRequest={(id, data) => {
+                const becomesActive = addDays(data.becomesActive, 1);
+                const becomesInactive = addDays(data.becomesInactive, 1);
+
+                return editGroup(id, {
+                    name: data.name,
+                    function: {
+                        sv: data.functionSv,
+                        en: data.functionEn
+                    },
+                    description: {
+                        sv: data.descriptionSv,
+                        en: data.descriptionEn
+                    },
+                    email: data.email,
+                    superGroup: data.superGroup,
+                    prettyName: data.prettyName,
+                    becomesActive: becomesActive,
+                    becomesInactive: becomesInactive
+                });
+            }}
+            createRequest={
                 admin
-                    ? (id, data) => {
+                    ? data => {
                           const becomesActive = addDays(data.becomesActive, 1);
                           const becomesInactive = addDays(
                               data.becomesInactive,
                               1
                           );
 
-                          return editGroup(id, {
+                          return addGroup({
                               name: data.name,
                               function: {
                                   sv: data.functionSv,
@@ -249,27 +270,6 @@ const Groups = () => {
                       }
                     : null
             }
-            createRequest={data => {
-                const becomesActive = addDays(data.becomesActive, 1);
-                const becomesInactive = addDays(data.becomesInactive, 1);
-
-                return addGroup({
-                    name: data.name,
-                    function: {
-                        sv: data.functionSv,
-                        en: data.functionEn
-                    },
-                    description: {
-                        sv: data.descriptionSv,
-                        en: data.descriptionEn
-                    },
-                    email: data.email,
-                    superGroup: data.superGroup,
-                    prettyName: data.prettyName,
-                    becomesActive: becomesActive,
-                    becomesInactive: becomesInactive
-                });
-            }}
             keysOrder={[
                 PRETTY_NAME,
                 NAME,
@@ -282,16 +282,13 @@ const Groups = () => {
                 BECOMES_ACTIVE,
                 BECOMES_INACTIVE
             ]}
-            readAllKeysOrder={[
-                NAME,
-                EMAIL,
-                activeLanguage === "sv" ? FUNCTION_SV : FUNCTION_EN
-            ]}
+            readAllKeysOrder={[NAME, PRETTY_NAME, EMAIL]}
             keysText={generateKeyTexts(text)}
             tableProps={{
                 orderBy: NAME,
                 startOrderBy: NAME,
-                titleText: text.Groups
+                titleText: text.Groups,
+                search: true
             }}
             formInitialValues={generateInitialValues()}
             formValidationSchema={generateValidationSchema(text)}
@@ -315,8 +312,8 @@ const Groups = () => {
             }
             detailsRenderEnd={data =>
                 admin ? (
-                    <div style={{ marginTop: "8px" }}>
-                        <DisplayUsersTable
+                    <div style={{ marginTop: "16px" }}>
+                        <DisplayMembersTable
                             noUsersText={text.NoGroupMembers}
                             users={data.groupMembers}
                         />

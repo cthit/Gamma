@@ -5,15 +5,18 @@ import {
     DigitLayout,
     DigitSelectFile,
     DigitText,
-    useDigitTranslations
+    useDigitTranslations,
+    useDigitToast
 } from "@cthit/react-digit-components";
 import translations from "./MeAvatar.screen.translations";
 import { uploadUserAvatar } from "../../../../api/image/put.image.api";
 import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
+import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 
 const MeAvatar = () => {
     const [text] = useDigitTranslations(translations);
     const [file, setFile] = useState(null);
+    const [queueToast] = useDigitToast();
     const user = useGammaUser();
 
     return (
@@ -27,7 +30,11 @@ const MeAvatar = () => {
                         <DigitText.Text bold text={text.NoAvatar} />
                     )}
                     {user.avatarUrl != null && (
-                        <img src={user.avatarUrl} alt={"Avatar"} />
+                        <img
+                            width="500px"
+                            src={user.avatarUrl}
+                            alt={"Avatar"}
+                        />
                     )}
                     <DigitSelectFile
                         image
@@ -40,7 +47,25 @@ const MeAvatar = () => {
                         disabled={file == null}
                         text={text.UploadImage}
                         onClick={() => {
-                            uploadUserAvatar(file);
+                            uploadUserAvatar(file)
+                                .then(response => {
+                                    window.location.reload();
+                                    queueToast({
+                                        text: text.AvatarUploaded,
+                                        duration: 3000
+                                    });
+                                })
+                                .catch(error => {
+                                    const code = statusCode(error);
+                                    let errorMessage = text.UploadFailed;
+                                    if (code === 413) {
+                                        errorMessage = text.TooLargeFile;
+                                    }
+                                    queueToast({
+                                        text: errorMessage,
+                                        duration: 5000
+                                    });
+                                });
                         }}
                     />
                 </DigitDesign.CardBody>
