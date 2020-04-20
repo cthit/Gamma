@@ -85,7 +85,7 @@ dependencies {
             'org.springframework.boot:spring-boot:2.2.6.RELEASE',
             'com.googlecode.json-simple:json-simple:1.1.1',
             'io.jsonwebtoken:jjwt:0.9.1',
-            'commons-io:commons-io:2.6'
+            'commons-io:commons-io:2.6',
             'org.apache.httpcomponents:httpmime:4.5.12',
             'io.springfox:springfox-swagger-ui:2.9.2',
             'io.springfox:springfox-swagger2:2.9.2'
