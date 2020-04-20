@@ -12,7 +12,6 @@ import translations from "./MeAvatar.screen.translations";
 import { uploadUserAvatar } from "../../../../api/image/put.image.api";
 import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 
 const MeAvatar = () => {
     const [text] = useDigitTranslations(translations);
@@ -31,7 +30,11 @@ const MeAvatar = () => {
                         <DigitText.Text bold text={text.NoAvatar} />
                     )}
                     {user.avatarUrl != null && (
-                        <img width="500px" src={user.avatarUrl} alt={"Avatar"} />
+                        <img
+                            width="500px"
+                            src={user.avatarUrl}
+                            alt={"Avatar"}
+                        />
                     )}
                     <DigitSelectFile
                         image
