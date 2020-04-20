@@ -34,7 +34,7 @@ public class CookieConfig {
         serializer.setDomainName(this.domain);
         serializer.setUseHttpOnlyCookie(true);
         serializer.setCookiePath(this.path);
-        serializer.setCookieMaxAge(validityTime);
+        serializer.setCookieMaxAge(this.validityTime);
         return serializer;
     }
 

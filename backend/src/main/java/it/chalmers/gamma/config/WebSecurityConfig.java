@@ -85,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         setSessionManagementToIfRequired(http);
         addAuthenticationFilter(http);
         addFormLogin(http);
+        addRememberMe(http);
         setPermittedPaths(http);
         setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
@@ -186,7 +187,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .key(this.secretKey)
                     .tokenValiditySeconds(this.remeberMeValidity)
                     .rememberMeCookieDomain(this.domain)
-                    .rememberMeCookieName("gamma-remember-me");
+                    .rememberMeCookieName("gamma-remember-me")
+                    .userDetailsService(this.itUserService);
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting up remember me");
             LOGGER.error(e.getMessage());
