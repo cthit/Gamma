@@ -42,6 +42,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
+    @Value("${application.cookie.remember-me-validity}")
+    private int remeberMeValidity;
+
+    @Value("${application.cookie.domain}")
+    private String domain;
+
     //@Value("${application.production}")
     //private boolean inProduction;
 
@@ -165,8 +171,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/login")
                     .and()
                     .httpBasic();
+
+
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding form login");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addRememberMe(HttpSecurity http) {
+        try {
+            http
+                    .rememberMe()
+                    .key(this.secretKey)
+                    .tokenValiditySeconds(this.remeberMeValidity)
+                    .rememberMeCookieDomain(this.domain)
+                    .rememberMeCookieName("gamma-remember-me");
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when setting up remember me");
             LOGGER.error(e.getMessage());
         }
     }
