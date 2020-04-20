@@ -2,5 +2,6 @@
     "NewMembersForGroup": [
         "New members for the group",
         "Nya medlemmar för gruppen"
-    ]
+    ],
+    "NoUsers": ["No users selected", "Inga användare valda"]
 }

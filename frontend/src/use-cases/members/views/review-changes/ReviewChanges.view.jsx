@@ -1,26 +1,19 @@
 import React from "react";
-
 import Save from "@material-ui/icons/Save";
-
 import {
     DigitLayout,
     DigitDesign,
     useDigitTranslations,
-    DigitButton
+    DigitButton,
+    DigitText
 } from "@cthit/react-digit-components";
-import NewMember from "./elements/new-member";
-
 import * as _ from "lodash";
 import translations from "./ReviewChanges.view.translations";
-import {
-    FIRST_NAME,
-    LAST_NAME,
-    NICK
-} from "../../../../api/users/props.users.api";
 import { editUserInGroup } from "../../../../api/groups/put.groups.api";
 import { removeUserFromGroup } from "../../../../api/groups/delete.groups.api";
 import { addUserToGroup } from "../../../../api/groups/post.groups.api";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+import DisplayMembersTable from "../../../../common/elements/display-members-table";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -86,52 +79,52 @@ const ReviewChanges = ({
     onFinished,
     newMembersData
 }) => {
-    const [text, activeLanguage] = useDigitTranslations(translations);
+    const [text] = useDigitTranslations(translations);
     const history = useHistory();
 
     return (
-        <DigitLayout.Center>
-            <DigitDesign.Card>
-                <DigitDesign.CardTitle
-                    text={text.NewMembersForGroup + " " + groupName}
-                />
-                <DigitDesign.CardBody minWidth={"280px"}>
-                    {newMembersData.map(member => (
-                        <NewMember
-                            key={member.id}
-                            firstName={member[FIRST_NAME]}
-                            lastName={member[LAST_NAME]}
-                            nick={member[NICK]}
-                            unofficialPostName={member.unofficialPostName}
-                            activeLanguage={activeLanguage}
-                            post={_.find(posts, {
-                                id: member.postId
-                            })}
+        <>
+            <DigitDesign.Card margin={{ bottom: "16px" }}>
+                <DigitDesign.CardBody>
+                    <DigitLayout.Row
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                    >
+                        <DigitText.Heading5
+                            text={text.NewMembersForGroup + " " + groupName}
                         />
-                    ))}
+                        <DigitLayout.Row>
+                            <DigitButton
+                                text={text.Back}
+                                onClick={() => history.goBack()}
+                            />
+                            <DigitButton
+                                text={text.Save}
+                                onClick={() =>
+                                    save(
+                                        previousMembers,
+                                        newMembersData,
+                                        groupId,
+                                        onFinished
+                                    )
+                                }
+                                startIcon={<Save />}
+                                raised
+                                primary
+                            />
+                        </DigitLayout.Row>
+                    </DigitLayout.Row>
                 </DigitDesign.CardBody>
-                <DigitDesign.CardButtons leftRight>
-                    <DigitButton
-                        text={text.Back}
-                        onClick={() => history.goBack()}
-                    />
-                    <DigitButton
-                        text={text.Save}
-                        onClick={() =>
-                            save(
-                                previousMembers,
-                                newMembersData,
-                                groupId,
-                                onFinished
-                            )
-                        }
-                        startIcon={<Save />}
-                        raised
-                        primary
-                    />
-                </DigitDesign.CardButtons>
             </DigitDesign.Card>
-        </DigitLayout.Center>
+            <DisplayMembersTable
+                users={newMembersData.map(member => ({
+                    ...member,
+                    post: _.find(posts, { id: member.postId }),
+                    unofficialPostName: member.unofficialPostName
+                }))}
+                noUsersText={text.NoUsers}
+            />
+        </>
     );
 };
 

@@ -59,6 +59,7 @@ const ActivationCodes = () => {
             deleteButtonText={data => text.Delete + " " + data.cid}
             detailsButtonText={text.Details}
             backButtonText={text.Back}
+            dateAndTimeProps={["createdAt"]}
         />
     );
 };

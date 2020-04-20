@@ -1,5 +1,11 @@
 import React from "react";
-import { DigitCRUD, useDigitTranslations } from "@cthit/react-digit-components";
+import { useHistory } from "react-router-dom";
+import {
+    DigitButton,
+    DigitCRUD,
+    DigitLayout,
+    useDigitTranslations
+} from "@cthit/react-digit-components";
 import { getUser, getUsersMinified } from "../../api/users/get.users.api";
 import translations from "./Users.translations";
 import {
@@ -11,7 +17,6 @@ import {
     LANGUAGE,
     LAST_NAME,
     NICK,
-    PASSWORD,
     USER_AGREEMENT,
     RELATIONSHIPS
 } from "../../api/users/props.users.api";
@@ -30,6 +35,7 @@ import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdm
 const Users = () => {
     const admin = useGammaIsAdmin();
     const [text] = useDigitTranslations(translations);
+    const history = useHistory();
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
@@ -46,7 +52,6 @@ const Users = () => {
             idProp={ID}
             keysOrder={[
                 CID,
-                PASSWORD,
                 FIRST_NAME,
                 LAST_NAME,
                 NICK,
@@ -119,6 +124,24 @@ const Users = () => {
             }
             toastCreateFailed={() => text.FailedCreatingUser}
             formInitialValues={generateUserInitialValues()}
+            detailsRenderCardEnd={data =>
+                admin ? (
+                    <>
+                        <div style={{ marginTop: "8px" }} />
+                        <DigitLayout.Center>
+                            <DigitButton
+                                outlined
+                                text={"Edit password"}
+                                onClick={() =>
+                                    history.push(
+                                        "/reset-password/admin/" + data.id
+                                    )
+                                }
+                            />
+                        </DigitLayout.Center>
+                    </>
+                ) : null
+            }
         />
     );
 };

@@ -26,7 +26,7 @@ import * as yup from "yup";
 import { Switch, Route } from "react-router-dom";
 import MeChangePassword from "./screens/me-change-password";
 import MeGroups from "./screens/me-groups";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import MeAvatar from "./screens/me-avatar";
 import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 

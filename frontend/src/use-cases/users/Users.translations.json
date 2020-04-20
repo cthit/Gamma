@@ -42,5 +42,6 @@
     "PasswordTooShort": [
         "The password must be atleast 8 characters",
         "Lösenordet måste vara minst 8 karaktärer"
-    ]
+    ],
+    "ChangePassword": ["Change password", "Ändra lösenordet"]
 }

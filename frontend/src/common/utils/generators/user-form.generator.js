@@ -204,16 +204,6 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[PASSWORD] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Password,
-            lowerLabel: text.PasswordAtleast,
-            password: true,
-            outlined: true
-        }
-    };
-
     return componentData;
 }
 

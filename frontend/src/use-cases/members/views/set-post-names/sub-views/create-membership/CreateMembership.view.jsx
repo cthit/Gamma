@@ -29,16 +29,20 @@ const CreateMembership = ({ posts, value, onChange }) => {
 
     return (
         <DigitLayout.Row centerVertical alignItems={"baseline"}>
-            <DigitText.Text
-                text={
-                    value[FIRST_NAME] +
-                    ' "' +
-                    value[NICK] +
-                    '" ' +
-                    value[LAST_NAME]
-                }
-            />
+            <div style={{ flex: "1" }}>
+                <DigitText.Text
+                    alignCenter
+                    text={
+                        value[FIRST_NAME] +
+                        ' "' +
+                        value[NICK] +
+                        '" ' +
+                        value[LAST_NAME]
+                    }
+                />
+            </div>
             <DigitSelect
+                flex={"1"}
                 outlined
                 value={value.postId || ""}
                 onChange={e => {
@@ -51,6 +55,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
                 upperLabel={text.Post}
             />
             <DigitTextField
+                flex={"1"}
                 outlined
                 upperLabel={text.UnofficialPostName}
                 value={value.unofficialPostName || ""}

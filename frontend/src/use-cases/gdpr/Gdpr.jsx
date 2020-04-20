@@ -1,6 +1,5 @@
 import {
     DigitSelectMultipleTable,
-    DigitLayout,
     useDigitTranslations,
     useDigitToast
 } from "@cthit/react-digit-components";
@@ -18,7 +17,7 @@ import InsufficientAccess from "../../common/views/insufficient-access";
 import { getUsersWithGDPRMinified } from "../../api/gdpr/get.gdpr.api";
 import { setGDPRValue } from "../../api/gdpr/put.gdpr.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import useGammaIs from "../../common/hooks/use-gamma-is/use-gamma-is";
+import useGammaHasAuthority from "../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
 
 function _generateHeaderTexts(text) {
     const output = {};
@@ -40,7 +39,7 @@ const Gdpr = () => {
 
     const [lastSelected, setLastSelected] = useState([]);
     const admin = useGammaIsAdmin();
-    const gdpr = useGammaIs("gdpr");
+    const gdpr = useGammaHasAuthority("gdpr");
     const access = admin || gdpr;
     const getUsersWithGDPRCallback = useCallback(getUsersWithGDPRMinified, []);
 
@@ -64,68 +63,67 @@ const Gdpr = () => {
     }
 
     return (
-        <DigitLayout.Center>
-            <DigitSelectMultipleTable
-                search
-                titleText={text.Users}
-                searchText={text.SearchForUsers}
-                idProp={ID}
-                startOrderBy={FIRST_NAME}
-                onChange={selected => {
-                    const c = _.xorWith(selected, lastSelected, _.isEqual);
+        <DigitSelectMultipleTable
+            disableSelectAll
+            search
+            titleText={text.Users}
+            searchText={text.SearchForUsers}
+            idProp={ID}
+            startOrderBy={FIRST_NAME}
+            onChange={selected => {
+                const c = _.xorWith(selected, lastSelected, _.isEqual);
 
-                    if (c.length > 0) {
-                        var newGDPRValue = false;
+                if (c.length > 0) {
+                    var newGDPRValue = false;
 
-                        if (selected.length > lastSelected.length) {
-                            //add
-                            newGDPRValue = true;
-                        }
-
-                        setGDPRValue(c[0], {
-                            gdpr: newGDPRValue
-                        })
-                            .then(() => {
-                                queueToast({
-                                    text:
-                                        text.SuccessfullySetOfGDPRTo +
-                                        " " +
-                                        _.find(users, {
-                                            id: c[0]
-                                        })[NICK] +
-                                        " " +
-                                        text.To +
-                                        ": " +
-                                        newGDPRValue
-                                });
-
-                                getUsersWithGDPRCallback().then(response => {
-                                    setUsers(response.data);
-                                    setLastSelected(
-                                        response.data
-                                            .filter(user => user.gdpr)
-                                            .map(user => user.id)
-                                    );
-                                });
-                            })
-                            .catch(() => {
-                                queueToast({
-                                    text: text.SomethingWentWrong
-                                });
-                            });
+                    if (selected.length > lastSelected.length) {
+                        //add
+                        newGDPRValue = true;
                     }
-                }}
-                value={users.filter(user => user.gdpr).map(user => user.id)}
-                columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
-                headerTexts={_generateHeaderTexts(text)}
-                data={users.map(user => {
-                    return {
-                        ...user,
-                        __checkbox: user.gdpr
-                    };
-                })}
-            />
-        </DigitLayout.Center>
+
+                    setGDPRValue(c[0], {
+                        gdpr: newGDPRValue
+                    })
+                        .then(() => {
+                            queueToast({
+                                text:
+                                    text.SuccessfullySetOfGDPRTo +
+                                    " " +
+                                    _.find(users, {
+                                        id: c[0]
+                                    })[NICK] +
+                                    " " +
+                                    text.To +
+                                    ": " +
+                                    newGDPRValue
+                            });
+
+                            getUsersWithGDPRCallback().then(response => {
+                                setUsers(response.data);
+                                setLastSelected(
+                                    response.data
+                                        .filter(user => user.gdpr)
+                                        .map(user => user.id)
+                                );
+                            });
+                        })
+                        .catch(() => {
+                            queueToast({
+                                text: text.SomethingWentWrong
+                            });
+                        });
+                }
+            }}
+            value={users.filter(user => user.gdpr).map(user => user.id)}
+            columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
+            headerTexts={_generateHeaderTexts(text)}
+            data={users.map(user => {
+                return {
+                    ...user,
+                    __checkbox: user.gdpr
+                };
+            })}
+        />
     );
 };
 

@@ -11,7 +11,7 @@ import statusCode from "../../../../common/utils/formatters/statusCode.formatter
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import { DigitSwitch, DigitTextField } from "@cthit/react-digit-components";
 import translations from "./InputDataAndCode.view.translations.json";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import { createAccount } from "../../../../api/create-account/post.createAccount.api";
 
 const InputDataAndCode = () => {
@@ -22,6 +22,7 @@ const InputDataAndCode = () => {
     return (
         <DigitLayout.Center>
             <DigitEditDataCard
+                centerFields
                 titleText={text.CompleteCreation}
                 subtitleText={text.CompleteCreationDescription}
                 submitText={text.CreateAccount}
@@ -115,8 +116,7 @@ const InputDataAndCode = () => {
                         .oneOf([true])
                         .required(text.FieldRequired)
                 })}
-                minWidth={"300px"}
-                maxWidth={"600px"}
+                size={{ minWidth: "300px", maxWidth: "600px" }}
                 keysOrder={[
                     "cid",
                     "code",
@@ -135,7 +135,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.YourCid,
                             outlined: true,
-                            maxLength: 12
+                            maxLength: 12,
+                            size: { width: "280px" }
                         }
                     },
                     code: {
@@ -143,7 +144,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.CodeFromYourStudentEmail,
                             outlined: true,
-                            maxLength: 15
+                            maxLength: 15,
+                            size: { width: "280px" }
                         }
                     },
                     nick: {
@@ -151,7 +153,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.Nick,
                             outlined: true,
-                            maxLength: 20
+                            maxLength: 20,
+                            size: { width: "280px" }
                         }
                     },
                     password: {
@@ -159,7 +162,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.Password,
                             outlined: true,
-                            password: true
+                            password: true,
+                            size: { width: "280px" }
                         }
                     },
                     passwordConfirmation: {
@@ -167,7 +171,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.ConfirmPassword,
                             outlined: true,
-                            password: true
+                            password: true,
+                            size: { width: "280px" }
                         }
                     },
                     firstName: {
@@ -175,7 +180,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.FirstName,
                             outlined: true,
-                            maxLength: 15
+                            maxLength: 15,
+                            size: { width: "280px" }
                         }
                     },
                     lastName: {
@@ -183,7 +189,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.LastName,
                             outlined: true,
-                            maxLength: 15
+                            maxLength: 15,
+                            size: { width: "280px" }
                         }
                     },
                     email: {
@@ -191,7 +198,8 @@ const InputDataAndCode = () => {
                         componentProps: {
                             upperLabel: text.NonStudentEmail,
                             outlined: true,
-                            maxLength: 100
+                            maxLength: 100,
+                            size: { width: "280px" }
                         }
                     },
                     acceptanceYear: {
@@ -200,14 +208,16 @@ const InputDataAndCode = () => {
                             valueToTextMap: _generateAcceptanceYears(),
                             upperLabel: text.WhichYearDidYouStart,
                             reverse: true,
-                            outlined: true
+                            outlined: true,
+                            size: { width: "280px" }
                         }
                     },
                     userAgreement: {
                         component: DigitSwitch,
                         componentProps: {
                             label: text.AcceptUserAgreement,
-                            primary: true
+                            primary: true,
+                            size: { width: "280px" }
                         }
                     }
                 }}
