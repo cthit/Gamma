@@ -6,5 +6,9 @@
     "NoGroupsForYou": [
         "You have no groups.... yet ;)",
         "Du har inga grupper... än ;)"
+    ],
+    "FutureGroups": [
+        "Future groups (Not active yet)",
+        "Framtida grupper (Inte aktiv än)"
     ]
 }

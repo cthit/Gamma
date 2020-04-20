@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
     DigitButton,
-    DigitTable,
+    DigitSelectMultipleTable,
     DigitText,
     DigitLayout,
     DigitDesign,
@@ -44,9 +44,12 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
 
     return (
         <DigitLayout.Column>
-            <DigitDesign.Card>
+            <DigitDesign.Card margin={{ bottom: "16px" }}>
                 <DigitDesign.CardBody>
-                    <DigitLayout.Row justifyContent={"space-between"}>
+                    <DigitLayout.Row
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                    >
                         <DigitText.Heading5
                             text={
                                 unsavedEdits
@@ -72,9 +75,12 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                         _.find(users, { id: memberId })
                     )}
                 />
-                <DigitTable
-                    selected={selectedMemberIds}
-                    onSelectedUpdated={newSelected => {
+                <DigitSelectMultipleTable
+                    disableSelectAll
+                    margin={{ left: "16px" }}
+                    flex={"1"}
+                    value={selectedMemberIds}
+                    onChange={newSelected => {
                         setSelectedMemberIds(newSelected);
                     }}
                     search

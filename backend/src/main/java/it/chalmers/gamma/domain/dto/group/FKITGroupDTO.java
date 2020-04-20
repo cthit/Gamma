@@ -93,7 +93,7 @@ public class FKITGroupDTO {
 
     public FKITMinifiedGroupDTO toMinifiedDTO() {
         return new FKITMinifiedGroupDTO(
-            this.name, this.function, this.email, this.description, this.id
+            this.name, this.function, this.email, this.description, this.id, this.prettyName
         );
     }
 

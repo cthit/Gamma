@@ -9,7 +9,7 @@ import {
 import * as yup from "yup";
 import translations from "./MeChangePassword.screen.translations";
 import { editPassword } from "../../../../api/me/put.me.api";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
 const MeChangePassword = () => {
     const me = useGammaUser();
@@ -20,6 +20,7 @@ const MeChangePassword = () => {
     return (
         <DigitLayout.Center>
             <DigitEditDataCard
+                centerFields
                 onSubmit={v => {
                     const { oldPassword, password } = v;
                     editPassword({

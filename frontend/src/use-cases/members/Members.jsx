@@ -3,7 +3,7 @@ import {
     DigitStepper,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { Route, Switch, useHistory, useLocation } from "react-router";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { NAME } from "../../api/groups/props.groups.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import translations from "./Members.translations";

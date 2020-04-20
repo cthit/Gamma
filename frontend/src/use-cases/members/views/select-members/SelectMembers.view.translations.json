@@ -8,5 +8,6 @@
     "UnsavedEdits": ["You have unsaved edits", "Du har osparade ändringar"],
     "Nick": ["Nickname", "Nick"],
     "NoChanges": ["You have no changes", "Du har inga ändringar"],
-    "Next": ["Next", "Nästa"]
+    "Next": ["Next", "Nästa"],
+    "PostName": ["Post name", "Postnamn"]
 }
