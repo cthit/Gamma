@@ -136,5 +136,4 @@ jacocoTestReport {
 // Is not perfect, but gives you an idea of what needs to be changed
 gradleLint {
     rules = ['dependency-parentheses', 'archaic-wrapper']
-    criticalRules = ['unused-dependency'] // <-- this will fail the build in the event of a violation
 }
