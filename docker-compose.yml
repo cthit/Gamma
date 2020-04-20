@@ -24,25 +24,6 @@ services:
             - ./frontend/src:/usr/src/app/src
             - ./frontend/public:/usr/src/app/public
         network_mode: host
-    
-    imageit:
-        image: cthit/imageit
-        environment:
-            IMAGEIT_POSTGRES_USER: imageit
-            IMAGEIT_POSTGRES_PASSWORD: password
-            IMAGEIT_POSTGRES_DB: imageit
-            IMAGEIT_POSTGRES_HOST: imageit_db
-        ports: 
-            - 5000:5000
-        command: sh startscript.sh
-
-    imageit_db:
-        image: postgres:11
-        restart: always
-        environment: 
-            POSTGRES_PASSWORD: password
-            POSTGRES_USER: imageit
-            POSTGRES_DB: imageit
 
     redis:
       image: redis:5.0
