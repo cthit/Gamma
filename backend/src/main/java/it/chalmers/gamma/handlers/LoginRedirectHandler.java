@@ -1,4 +1,4 @@
-package it.chalmers.gamma.config;
+package it.chalmers.gamma.handlers;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

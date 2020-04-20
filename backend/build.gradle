@@ -85,7 +85,8 @@ dependencies {
             'org.springframework.boot:spring-boot:2.2.6.RELEASE',
             'com.googlecode.json-simple:json-simple:1.1.1',
             'io.jsonwebtoken:jjwt:0.9.1',
-            "org.apache.httpcomponents:httpmime:4.5.12"
+            "org.apache.httpcomponents:httpmime:4.5.12",
+            'commons-io:commons-io:2.6'
     )
 
     testCompile(
@@ -136,5 +137,4 @@ jacocoTestReport {
 // Is not perfect, but gives you an idea of what needs to be changed
 gradleLint {
     rules = ['dependency-parentheses', 'archaic-wrapper']
-    criticalRules = ['unused-dependency'] // <-- this will fail the build in the event of a violation
 }
