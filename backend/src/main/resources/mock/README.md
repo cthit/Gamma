@@ -13,6 +13,7 @@ Creates `FKITGroup`:s. Each object in the array is represented in code by `MockF
 * `name`: String
 * `prettyName`: String
 * `active`: boolean
+* `superGroup`: Object
 * `members`: Array
 * `function`: Object | null
 * `description`: Object | null

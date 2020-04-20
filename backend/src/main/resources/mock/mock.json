@@ -111,6 +111,7 @@
       "name": "digit",
       "prettyName": "digIT",
       "active": false,
+      "superGroup": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
       "members": [
         {
           "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -134,6 +135,7 @@
       "name": "digit",
       "prettyName": "digIT",
       "active": true,
+      "superGroup": "aed27030-ad90-4526-855c-1e909b1dcecb",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
@@ -157,6 +159,7 @@
       "name": "styrit",
       "prettyName": "styrIT",
       "active": false,
+      "superGroup": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
       "members": [
         {
           "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
@@ -185,6 +188,7 @@
       "name": "styrit",
       "prettyName": "styrIT",
       "active": true,
+      "superGroup": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
       "members": [
         {
           "userId": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
@@ -213,6 +217,7 @@
       "name": "drawit",
       "prettyName": "DrawIT",
       "active": false,
+      "superGroup": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
@@ -236,6 +241,7 @@
       "name": "drawit",
       "prettyName": "DrawIT",
       "active": true,
+      "superGroup": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
       "members": [
         {
           "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
@@ -259,6 +265,7 @@
       "name": "prit",
       "prettyName": "P.R.I.T.",
       "active": false,
+      "superGroup": "326807b4-ae68-4626-8382-919a15a8e23c",
       "members": [
         {
           "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
@@ -282,6 +289,7 @@
       "name": "prit",
       "prettyName": "P.R.I.T.",
       "active": true,
+      "superGroup": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
       "members": [
         {
           "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -305,6 +313,7 @@
       "name": "kandidatmiddagen",
       "prettyName": "Kandidatmiddagen",
       "active": true,
+      "superGroup": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",

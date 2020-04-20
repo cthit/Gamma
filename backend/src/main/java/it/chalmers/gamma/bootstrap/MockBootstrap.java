@@ -53,17 +53,17 @@ public class MockBootstrap {
             return;
         }
 
-        var users = createUsers(mockData);
+        final Map<UUID, ITUserDTO> users = createUsers(mockData);
         LOGGER.info("Users created");
 
-        var posts = createPosts(mockData);
+        final Map<UUID, PostDTO> posts = createPosts(mockData);
         LOGGER.info("Posts created");
 
-        var groups = createGroups(mockData, users, posts);
-        LOGGER.info("Groups created");
-
-        createSuperGroups(mockData, groups);
+        final Map<UUID, FKITSuperGroupDTO> superGroups = createSuperGroups(mockData);
         LOGGER.info("Super groups created");
+
+        createGroups(mockData, users, posts, superGroups);
+        LOGGER.info("Groups created");
 
         LOGGER.info("Mock finished");
     }
@@ -108,7 +108,8 @@ public class MockBootstrap {
     private Map<UUID, FKITGroupDTO> createGroups(
             MockData mockData,
             Map<UUID, ITUserDTO> users,
-            Map<UUID, PostDTO> posts) {
+            Map<UUID, PostDTO> posts,
+            Map<UUID, FKITSuperGroupDTO> superGroups) {
 
         Calendar activeGroupBecomesActive = toCalendar(
                 Instant.now().minus(1, ChronoUnit.DAYS)
@@ -150,7 +151,8 @@ public class MockBootstrap {
                     mockGroup.getFunction(),
                     name,
                     prettyName,
-                    null
+                    null,
+                    superGroups.get(mockGroup.getSuperGroup())
             );
 
             groups.put(group.getId(), group);
@@ -173,7 +175,8 @@ public class MockBootstrap {
         return groups;
     }
 
-    private void createSuperGroups(MockData mockData, Map<UUID, FKITGroupDTO> groups) {
+    private Map<UUID, FKITSuperGroupDTO> createSuperGroups(MockData mockData) {
+        Map<UUID, FKITSuperGroupDTO> superGroupDTOMap = new HashMap<>();
         mockData.getSuperGroups().forEach(mockSuperGroup -> {
             FKITSuperGroupDTO superGroup = new FKITSuperGroupDTO(
                     mockSuperGroup.getId(),
@@ -183,17 +186,9 @@ public class MockBootstrap {
                     mockSuperGroup.getName() + "@chalmers.it"
             );
 
-            this.helper.getSuperGroupService().createSuperGroup(superGroup);
-
-            mockSuperGroup.getGroups().forEach(groupId -> {
-                FKITGroupDTO group = groups.get(groupId);
-
-                this.helper.getGroupToSuperGroupService().addRelationship(
-                        group,
-                        superGroup
-                );
-            });
+            superGroupDTOMap.put(superGroup.getId(), this.helper.getSuperGroupService().createSuperGroup(superGroup));
         });
+        return superGroupDTOMap;
     }
 
     private Calendar toCalendar(Instant i) {

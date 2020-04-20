@@ -1,12 +1,12 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.filter.OauthRedirectFilter;
 import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
 import it.chalmers.gamma.service.PasswordResetService;
@@ -53,10 +53,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ITUserService itUserService;
     private final AuthorityService authorityService;
-    private final FKITGroupToSuperGroupService groupToSuperGroupService;
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
+    private final FKITGroupService fkitGroupService;
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
     private final LoginRedirectHandler loginRedirectHandler;
@@ -64,16 +64,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
-                             FKITGroupToSuperGroupService groupToSuperGroupService,
                              ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
-                             PasswordEncoder passwordEncoder, LoginRedirectHandler loginRedirectHandler) {
+                             PasswordEncoder passwordEncoder,
+                             FKITGroupService fkitGroupService,
+                             LoginRedirectHandler loginRedirectHandler) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
-        this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
+        this.fkitGroupService = fkitGroupService;
         this.loginRedirectHandler = loginRedirectHandler;
     }
 
@@ -225,9 +226,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            List<FKITGroupToSuperGroup> relationships = this.groupToSuperGroupService.getAllRelationships();
-            for (FKITGroupToSuperGroup relationship : relationships) {
-                addPathRole(http, relationship);
+            List<FKITGroupDTO> groups = this.fkitGroupService.getGroups();
+            for (FKITGroupDTO group : groups) {
+                addPathRole(http, group);
             }
             http.authorizeRequests().antMatchers("/admin/gdpr/**")
                     .hasAnyAuthority("gdpr", "admin").and().authorizeRequests().antMatchers("/admin/**")
@@ -238,12 +239,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
+    private void addPathRole(HttpSecurity http, FKITGroupDTO group) {
         this.authorityService.getAllAuthorities().forEach(a -> {
-            if (a.getFkitSuperGroup().getId().equals(relationship.getId().getSuperGroup().getId())) {
+            if (a.getFkitSuperGroup().getId().equals(group.getSuperGroup().getId())) {
                 try {
                     http.authorizeRequests().antMatchers("/admin/groups/"
-                            + relationship.getId().getGroup().getId() + "/**")
+                            + group.getId() + "/**")
                             .hasAuthority(a.getAuthorityLevelDTO().getAuthority());
                 } catch (Exception e) {
                     LOGGER.error("Something went wrong when setting authorized paths");

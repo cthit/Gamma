@@ -1,7 +1,6 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
@@ -28,7 +27,6 @@ import it.chalmers.gamma.response.user.UserEditedResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -68,20 +66,17 @@ public final class ITUserController {
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService,
-                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+                            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @PostMapping("/create")
@@ -143,9 +138,7 @@ public final class ITUserController {
         //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        List<FKITGroupToSuperGroupDTO> relationships = this.fkitGroupToSuperGroupService.removeOldGroups(
-                this.fkitGroupToSuperGroupService.getRelationships(groups));
-        return new GetITUserResponse(user, relationships, null).toResponseObject();
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @GetMapping("/minified")
@@ -167,9 +160,7 @@ public final class ITUserController {
         //      );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        List<FKITGroupToSuperGroupDTO> relationships = this.fkitGroupToSuperGroupService.removeOldGroups(
-                this.fkitGroupToSuperGroupService.getRelationships(groups));
-        return new GetITUserResponse(user, relationships, null).toResponseObject();
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @PutMapping("/me")
