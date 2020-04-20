@@ -21,7 +21,10 @@ public class CookieConfig {
     @Value("${application.cookie.path}")
     private String path;
 
-    //TODO Add remember me functionality
+    @Value("${application.cookie.validity-time}")
+    private int validityTime;
+
+    //Remember Me functionality is in WebSecurityConfig
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
@@ -31,7 +34,7 @@ public class CookieConfig {
         serializer.setDomainName(this.domain);
         serializer.setUseHttpOnlyCookie(true);
         serializer.setCookiePath(this.path);
-        serializer.setCookieMaxAge(60 * 60 * 24 * 30); //one month
+        serializer.setCookieMaxAge(this.validityTime);
         return serializer;
     }
 

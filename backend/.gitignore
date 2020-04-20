@@ -1,6 +1,8 @@
 .gradle/
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+/uploads/
+
 /src/main/resources/secrets.properties
 
 ### STS ###
@@ -11,7 +13,6 @@
 .settings
 .springBeans
 .sts4-cache
-uploads/
 
 ### IntelliJ IDEA ###
 .idea
