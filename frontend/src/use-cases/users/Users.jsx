@@ -18,7 +18,7 @@ import {
     LAST_NAME,
     NICK,
     USER_AGREEMENT,
-    RELATIONSHIPS
+    GROUPS
 } from "../../api/users/props.users.api";
 import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
@@ -59,7 +59,7 @@ const Users = () => {
                 ACCEPTANCE_YEAR,
                 LANGUAGE,
                 USER_AGREEMENT,
-                RELATIONSHIPS
+                GROUPS
             ]}
             tableProps={{
                 titleText: text.Users,

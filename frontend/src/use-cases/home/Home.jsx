@@ -23,8 +23,8 @@ const Home = () => {
                 <DigitLayout.Spacing />
                 <UserOptions
                     hasGroups={
-                        user.relationships != null &&
-                        user.relationships.length > 0
+                        user.groups != null &&
+                        user.groups.length > 0
                     }
                 />
                 {admin && (

@@ -35,7 +35,6 @@ public class GetITUserResponse {
         return this.user;
     }
 
-    @JsonIgnore
     public List<FKITGroupDTO> getGroups() {
         return this.groups;
     }
