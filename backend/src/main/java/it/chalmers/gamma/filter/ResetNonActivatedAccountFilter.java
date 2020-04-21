@@ -38,7 +38,8 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
                 ITUserDTO userDTO = this.itUserService.getITUser(username);
                 if (!userDTO.isActivated()) {
                     this.passwordResetService.handlePasswordReset(userDTO);
-                    response.sendRedirect(String.format("%s/reset-password/finish", this.baseFrontendUrl));
+                    String params = "accountLocked=true";
+                    response.sendRedirect(String.format("%s/reset-password/finish?%s", this.baseFrontendUrl, params));
                     return;
                 }
             } catch (UserNotFoundResponse e) {
