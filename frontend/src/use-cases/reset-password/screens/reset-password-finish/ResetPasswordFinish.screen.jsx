@@ -4,6 +4,8 @@ import {
     useDigitTranslations,
     DigitEditDataCard,
     useDigitToast,
+    DigitDesign,
+    DigitText,
     DigitLayout
 } from "@cthit/react-digit-components";
 import * as yup from "yup";
@@ -12,13 +14,32 @@ import statusCode from "../../../../common/utils/formatters/statusCode.formatter
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import { resetPasswordFinalize } from "../../../../api/reset-password/put.reset-password";
 import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
+import { useLocation } from "react-router-dom"
 
 const ResetPasswordFinish = () => {
     const [text] = useDigitTranslations(translations);
     const [queueToast] = useDigitToast();
+    const { search } = useLocation();
+    const accountLocked = search.includes("accountLocked=true");
 
     return (
         <DigitLayout.Center>
+            {accountLocked && (
+                <DigitDesign.Card
+                    size={{ width: "300px" }}
+                    margin={{ bottom: "16px" }}
+                >
+                    <DigitDesign.CardHeader>
+                        <DigitDesign.CardTitle
+                            text={"Hey! You're finally awake!"}
+                        />
+                    </DigitDesign.CardHeader>
+                    <DigitDesign.CardHeaderImage src="/awake.gif" />
+                    <DigitDesign.CardBody>
+                        <DigitText.Text text={text.AccountLocked} />
+                    </DigitDesign.CardBody>
+                </DigitDesign.Card>
+            )}
             <DigitEditDataCard
                 centerFields
                 validationSchema={yup.object().shape({
