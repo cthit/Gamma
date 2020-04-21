@@ -18,19 +18,14 @@ const MeGroups = () => {
         return user == null
             ? [[], [], []]
             : [
-                  user.relationships
-                      .filter(g => g.group.active)
-                      .map(g => g.group),
-                  user.relationships
+                  user.groups
+                      .filter(g => g.active),
+                  user.groups
                       .filter(
-                          g => !g.group.active && g.group.becomesActive <= now
-                      )
-                      .map(g => g.group),
-                  user.relationships
+                          g => !g.active && g.becomesActive <= now),
+                  user.groups
                       .filter(
-                          g => !g.group.active && g.group.becomesActive > now
-                      )
-                      .map(g => g.group)
+                          g => !g.active && g.becomesActive > now),
               ];
     }, [user]);
 
