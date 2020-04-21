@@ -68,14 +68,9 @@ create table fkit_group (
   function          uuid         not null references internal_text,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
+  fkit_super_group  uuid         not null references fkit_super_group,
   email             varchar(100) null,
   avatar_url        varchar(255) null
-);
-
-create table fkit_group_to_super_group (
-  fkit_super_group_id   uuid     not null references fkit_super_group,
-  fkit_group_id         uuid     not null references fkit_group,
-  constraint            fkit_group_to_super_group_pk  primary key (fkit_super_group_id, fkit_group_id)
 );
 
 create table post (

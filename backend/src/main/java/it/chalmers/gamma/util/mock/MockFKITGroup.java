@@ -14,6 +14,7 @@ public class MockFKITGroup {
     private Text description;
     private Text function;
     private List<MockMembership> members;
+    private UUID superGroup;
 
     /**
      * If true, then this group will be active from today until a year forward.
@@ -75,5 +76,13 @@ public class MockFKITGroup {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public UUID getSuperGroup() {
+        return this.superGroup;
+    }
+
+    public void setSuperGroup(UUID superGroup) {
+        this.superGroup = superGroup;
     }
 }

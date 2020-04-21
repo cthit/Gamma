@@ -58,10 +58,9 @@ public class AdminBootstrap {
                     this.helper.getSuperGroupService().createSuperGroup(superGroupCreation);
             FKITGroupDTO group = new FKITGroupDTO(
                     start, end, description, adminMail, function,
-                    "superadmin", "superAdmin", null
+                    "superadmin", "superAdmin", null, superGroup
             );
             group = this.helper.getGroupService().createGroup(group);
-            this.helper.getGroupToSuperGroupService().addRelationship(group, superGroup);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);

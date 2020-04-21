@@ -26,7 +26,7 @@ create table ituser (
   email            varchar(100) not null constraint ituser_email_unique unique,
   phone            varchar(15)  null,
   language         varchar(15)  null,
-  avatar_url       varchar(255) null,
+  avatar_url       varchar(255) default 'default.jpg',
   gdpr             boolean      not null default false,
   user_agreement   boolean      not null default false,
   account_locked   boolean      not null default false,
@@ -68,19 +68,15 @@ create table fkit_group (
   function          uuid         not null references internal_text,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
+  fkit_super_group  uuid         not null references fkit_super_group,
   email             varchar(100) null,
   avatar_url        varchar(255) null
-);
-
-create table fkit_group_to_super_group (
-  fkit_super_group_id   uuid     not null references fkit_super_group,
-  fkit_group_id         uuid     not null references fkit_group,
-  constraint            fkit_group_to_super_group_pk  primary key (fkit_super_group_id, fkit_group_id)
 );
 
 create table post (
   id        uuid constraint post_pk primary key,
   post_name uuid not null references internal_text
+
 );
 
 create table authority (

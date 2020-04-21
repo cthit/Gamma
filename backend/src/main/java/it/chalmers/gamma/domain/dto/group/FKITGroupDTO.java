@@ -19,6 +19,7 @@ public class FKITGroupDTO {
     private final String name;
     private final String prettyName;
     private final String avatarURL;
+    private final FKITSuperGroupDTO superGroup;
 
     public FKITGroupDTO(UUID id,
                         Calendar becomesActive,
@@ -27,7 +28,9 @@ public class FKITGroupDTO {
                         String email,
                         Text function,
                         String name,
-                        String prettyName, String avatarURL) {
+                        String prettyName,
+                        String avatarURL,
+                        FKITSuperGroupDTO superGroup) {
         this.id = id;
         this.becomesActive = becomesActive;
         this.becomesInactive = becomesInactive;
@@ -37,6 +40,7 @@ public class FKITGroupDTO {
         this.name = name;
         this.prettyName = prettyName;
         this.avatarURL = avatarURL;
+        this.superGroup = superGroup;
     }
 
     public FKITGroupDTO(Calendar becomesActive,
@@ -45,8 +49,19 @@ public class FKITGroupDTO {
                         String email,
                         Text function,
                         String name,
-                        String prettyName, String avatarURL) {
-        this(null, becomesActive, becomesInactive, description, email, function, name, prettyName, avatarURL);
+                        String prettyName,
+                        String avatarURL,
+                        FKITSuperGroupDTO superGroup) {
+        this(null,
+                becomesActive,
+                becomesInactive,
+                description,
+                email,
+                function,
+                name,
+                prettyName,
+                avatarURL,
+                superGroup);
 
     }
 
@@ -91,6 +106,10 @@ public class FKITGroupDTO {
         return this.avatarURL;
     }
 
+    public FKITSuperGroupDTO getSuperGroup() {
+        return this.superGroup;
+    }
+
     public FKITMinifiedGroupDTO toMinifiedDTO() {
         return new FKITMinifiedGroupDTO(
             this.name, this.function, this.email, this.description, this.id, this.prettyName
@@ -114,7 +133,8 @@ public class FKITGroupDTO {
                 && Objects.equals(this.function, groupDTO.function)
                 && Objects.equals(this.name, groupDTO.name)
                 && Objects.equals(this.prettyName, groupDTO.prettyName)
-                && Objects.equals(this.avatarURL, groupDTO.avatarURL);
+                && Objects.equals(this.avatarURL, groupDTO.avatarURL)
+                && Objects.equals(this.superGroup, groupDTO.superGroup);
     }
 
     @Override
@@ -128,7 +148,8 @@ public class FKITGroupDTO {
                 this.function,
                 this.name,
                 this.prettyName,
-                this.avatarURL);
+                this.avatarURL,
+                this.superGroup);
 
     }
 
@@ -144,6 +165,7 @@ public class FKITGroupDTO {
                 + ", name='" + this.name + '\''
                 + ", prettyName='" + this.prettyName + '\''
                 + ", avatarURL='" + this.avatarURL + '\''
+                + ", superGroup=" + this.superGroup
                 + '}';
     }
 }

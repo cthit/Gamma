@@ -4,7 +4,6 @@ import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserService;
@@ -31,7 +30,6 @@ public final class BootstrapServiceHelper {
 
     private final ITClientService itClientService;
 
-    private final FKITGroupToSuperGroupService groupToSuperGroupService;
 
     private final ApiKeyService apiKeyService;
 
@@ -44,7 +42,6 @@ public final class BootstrapServiceHelper {
                                    MembershipService membershipService,
                                    AuthorityService authorityService,
                                    ITClientService itClientService,
-                                   FKITGroupToSuperGroupService groupToSuperGroupService,
                                    ApiKeyService apiKeyService,
                                    FKITSuperGroupService superGroupService) {
         this.userService = userService;
@@ -54,7 +51,6 @@ public final class BootstrapServiceHelper {
         this.membershipService = membershipService;
         this.authorityService = authorityService;
         this.itClientService = itClientService;
-        this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
         this.superGroupService = superGroupService;
     }
@@ -85,10 +81,6 @@ public final class BootstrapServiceHelper {
 
     public ITClientService getItClientService() {
         return this.itClientService;
-    }
-
-    public FKITGroupToSuperGroupService getGroupToSuperGroupService() {
-        return this.groupToSuperGroupService;
     }
 
     public ApiKeyService getApiKeyService() {

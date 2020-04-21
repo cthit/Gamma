@@ -3,14 +3,12 @@ package it.chalmers.gamma.db.entity;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "membership")
@@ -21,12 +19,6 @@ public class Membership {
 
     @Column(name = "unofficial_post_name", length = 100)
     private String unofficialPostName;
-
-    // This enables easy and safe transport of a groups superGroup, without storing it in the database.
-    @Transient
-    private List<FKITSuperGroup> fkitSuperGroups;
-
-
 
     public MembershipPK getId() {
         return this.id;
@@ -42,14 +34,6 @@ public class Membership {
 
     public void setUnofficialPostName(String unofficialPostName) {
         this.unofficialPostName = unofficialPostName;
-    }
-
-    public List<FKITSuperGroup> getFkitSuperGroups() {
-        return this.fkitSuperGroups;
-    }
-
-    public void setFkitSuperGroups(List<FKITSuperGroup> fkitSuperGroups) {
-        this.fkitSuperGroups = fkitSuperGroups;
     }
 
     public MembershipDTO toDTO() {
@@ -70,13 +54,12 @@ public class Membership {
         }
         Membership that = (Membership) o;
         return Objects.equals(this.id, that.id)
-            && Objects.equals(this.unofficialPostName, that.unofficialPostName)
-            && Objects.equals(this.fkitSuperGroups, that.fkitSuperGroups);
+            && Objects.equals(this.unofficialPostName, that.unofficialPostName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.unofficialPostName, this.fkitSuperGroups);
+        return Objects.hash(this.id, this.unofficialPostName);
     }
 
     @Override
@@ -84,7 +67,6 @@ public class Membership {
         return "Membership{"
             + "id=" + this.id
             + ", unofficialPostName='" + this.unofficialPostName + '\''
-            + ", fkitSuperGroups='" + this.fkitSuperGroups + '\''
             + '}';
     }
 

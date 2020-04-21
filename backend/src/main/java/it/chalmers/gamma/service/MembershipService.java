@@ -1,19 +1,15 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Membership;
-import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
-import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
 import it.chalmers.gamma.response.membership.MembershipDoesNotExistResponse;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,21 +24,15 @@ public class MembershipService {
     private final FKITGroupService fkitGroupService;
     private final DTOToEntityService dtoToEntityService;
     private final PostService postService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
-    private final FKITSuperGroupService fkitSuperGroupService;
 
     public MembershipService(MembershipRepository membershipRepository,
                              FKITGroupService fkitGroupService,
                              DTOToEntityService dtoToEntityService,
-                             PostService postService,
-                             FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
-                             FKITSuperGroupService fkitSuperGroupService) {
+                             PostService postService) {
         this.membershipRepository = membershipRepository;
         this.fkitGroupService = fkitGroupService;
         this.dtoToEntityService = dtoToEntityService;
         this.postService = postService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
-        this.fkitSuperGroupService = fkitSuperGroupService;
     }
 
 
@@ -104,14 +94,8 @@ public class MembershipService {
     public List<FKITGroupDTO> getUsersGroupDTO(ITUserDTO user) {
         List<Membership> memberships = this.membershipRepository.findAllById_ItUser(this.dtoToEntityService
                 .fromDTO(user));
-        List<FKITGroupDTO> groups = new ArrayList<>();
-        for (Membership membership : memberships) {
-            FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
-            membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.getSuperGroups(group)
-                    .stream().map(this.fkitSuperGroupService::getGroup).collect(Collectors.toList()));
-            groups.add(membership.getId().getFKITGroup().toDTO());
-        }
-        return groups;
+        return memberships.stream()
+                .map(m -> m.getId().getFKITGroup().toDTO()).collect(Collectors.toList());
     }
 
     /**
@@ -147,16 +131,7 @@ public class MembershipService {
     public List<MembershipDTO> getMembershipsByUser(ITUserDTO userDTO) {
         List<Membership> memberships = this.membershipRepository
                 .findAllById_ItUser(this.dtoToEntityService.fromDTO(userDTO));
-        for (Membership membership : memberships) {
-            FKITGroupDTO group = membership.getId().getFKITGroup().toDTO();
-            membership.setFkitSuperGroups(this.fkitGroupToSuperGroupService.getSuperGroups(group)
-                    .stream().map(this.fkitSuperGroupService::getGroup).collect(Collectors.toList()));
-        }
         return memberships.stream().map(Membership::toDTO).collect(Collectors.toList());
-    }
-    public List<GroupType> getGroupType(FKITGroupDTO groupDTO) {
-        return this.fkitGroupToSuperGroupService.getSuperGroups(groupDTO).stream().map(FKITSuperGroupDTO::getType)
-                .collect(Collectors.toList());
     }
 
     public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO)
@@ -198,20 +173,7 @@ public class MembershipService {
     }
 
     public boolean groupIsActiveCommittee(FKITGroupDTO group) {
-        return this.getGroupType(group).stream()
-                .anyMatch(type -> type.equals(GroupType.COMMITTEE)) && group.isActive();
-    }
-
-    public List<Membership> getMembershipsFilterByPostAndGroupType(PostDTO postDTO, GroupType groupType) {
-        Post post = this.postService.getPost(postDTO);
-        List<FKITGroupDTO> groups = this.fkitSuperGroupService.getAllGroups()
-                .stream().filter(g -> g.getType().equals(groupType))
-                .map(this.fkitGroupToSuperGroupService::getActiveGroups)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-        return groups.stream().map(g -> this.membershipRepository
-                .findAllById_FkitGroupAndId_Post(this.fkitGroupService.getGroup(g), post))
-                .flatMap(Collection::stream).collect(Collectors.toList());
+        return group.isActive();
     }
 
     private Membership getMembership(MembershipDTO membershipDTO) {

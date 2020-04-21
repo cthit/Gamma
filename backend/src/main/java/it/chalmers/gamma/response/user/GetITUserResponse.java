@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +15,14 @@ public class GetITUserResponse {
 
     @JsonUnwrapped
     private final ITUserDTO user;
-    private final List<FKITGroupToSuperGroupDTO> groupRelationships;
+    private final List<FKITGroupDTO> groups;
     private final List<WebsiteUrlDTO> websiteURLs;
 
     public GetITUserResponse(ITUserDTO user,
-                             List<FKITGroupToSuperGroupDTO> groupRelationships,
+                             List<FKITGroupDTO> groups,
                              List<WebsiteUrlDTO> websiteURLs) {
         this.user = user;
-        this.groupRelationships = groupRelationships;
+        this.groups = groups;
         this.websiteURLs = websiteURLs;
     }
 
@@ -39,16 +37,11 @@ public class GetITUserResponse {
 
     @JsonIgnore
     public List<FKITGroupDTO> getGroups() {
-        return this.groupRelationships.stream().map(FKITGroupToSuperGroupDTO::getGroup)
-                .collect(Collectors.toList());
+        return this.groups;
     }
 
     public List<WebsiteUrlDTO> getWebsiteURLs() {
         return this.websiteURLs;
-    }
-
-    public List<FKITGroupToSuperGroupDTO> getRelationships() {
-        return this.groupRelationships;
     }
 
     @JsonIgnore
