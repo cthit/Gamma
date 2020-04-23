@@ -29,6 +29,7 @@ import GammaUserContext from "../common/context/GammaUser.context";
 import FiveZeroZero from "./elements/five-zero-zero";
 import { getBackendUrl } from "../common/utils/configs/envVariablesLoader";
 import About from "../use-cases/about";
+import Authorities from "../use-cases/authorities/Authorities";
 
 export const App = () => {
     const [user, setUser] = useContext(GammaUserContext);
@@ -97,6 +98,10 @@ export const App = () => {
                 >
                     <DigitLayout.Hide hidden={loading}>
                         <Switch>
+                            <Route
+                                path="/authorities"
+                                component={Authorities}
+                            />
                             <Route path="/clients" component={Clients} />
                             <Route path="/users" component={Users} />
                             <Route path="/groups" component={Groups} />

@@ -67,7 +67,7 @@ public class AuthorityService {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
         //  for (MembershipDTO membership : memberships) {
         //      AuthorityLevel authorityLevel = this.authorityLevelService
-        //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
+        //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevel(
         //                      membership.getFkitGroupDTO().getId().toString()));
         //      if (authorityLevel != null) {
         //          authorities.add(authorityLevel);
@@ -117,7 +117,7 @@ public class AuthorityService {
                 Calendar end = membership.getFkitGroupDTO().getBecomesInactive();
                 Calendar now = Calendar.getInstance();
                 if (now.after(start) && now.before(end)) {
-                    authorityLevels.add(authority.getAuthorityLevelDTO());
+                    authorityLevels.add(authority.getAuthorityLevel());
                 }
             }
         }

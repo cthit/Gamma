@@ -69,6 +69,11 @@ const Drawer = ({ closeDrawer }) => {
                     text={text.ApiKeys}
                     link="/access-keys"
                 />
+                <DigitNavLink
+                    text={text.Authorities}
+                    onClick={closeDrawer}
+                    link={"/authorities"}
+                />
                 <LanguageSelection />
             </DigitLayout.Column>
         );

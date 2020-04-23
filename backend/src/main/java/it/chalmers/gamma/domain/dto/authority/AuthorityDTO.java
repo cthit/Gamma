@@ -6,21 +6,21 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class AuthorityDTO {
-    private final FKITSuperGroupDTO fkitSuperGroup;
+    private final FKITSuperGroupDTO superGroup;
     private final PostDTO post;
     private final UUID internalID;
-    private final AuthorityLevelDTO authorityLevelDTO;
+    private final AuthorityLevelDTO authorityLevel;
 
-    public AuthorityDTO(FKITSuperGroupDTO fkitSuperGroup, PostDTO post,
-                        UUID internalID, AuthorityLevelDTO authorityLevelDTO) {
-        this.fkitSuperGroup = fkitSuperGroup;
+    public AuthorityDTO(FKITSuperGroupDTO superGroup, PostDTO post,
+                        UUID internalID, AuthorityLevelDTO authorityLevel) {
+        this.superGroup = superGroup;
         this.post = post;
         this.internalID = internalID;
-        this.authorityLevelDTO = authorityLevelDTO;
+        this.authorityLevel = authorityLevel;
     }
 
-    public FKITSuperGroupDTO getFkitSuperGroup() {
-        return this.fkitSuperGroup;
+    public FKITSuperGroupDTO getSuperGroup() {
+        return this.superGroup;
     }
 
     public PostDTO getPost() {
@@ -31,8 +31,8 @@ public class AuthorityDTO {
         return this.internalID;
     }
 
-    public AuthorityLevelDTO getAuthorityLevelDTO() {
-        return this.authorityLevelDTO;
+    public AuthorityLevelDTO getAuthorityLevel() {
+        return this.authorityLevel;
     }
 
     @Override
@@ -44,24 +44,24 @@ public class AuthorityDTO {
             return false;
         }
         AuthorityDTO that = (AuthorityDTO) o;
-        return Objects.equals(this.fkitSuperGroup, that.fkitSuperGroup)
+        return Objects.equals(this.superGroup, that.superGroup)
                 && Objects.equals(this.post, that.post)
                 && Objects.equals(this.internalID, that.internalID)
-                && Objects.equals(this.authorityLevelDTO, that.authorityLevelDTO);
+                && Objects.equals(this.authorityLevel, that.authorityLevel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.fkitSuperGroup, this.post, this.internalID, this.authorityLevelDTO);
+        return Objects.hash(this.superGroup, this.post, this.internalID, this.authorityLevel);
     }
 
     @Override
     public String toString() {
         return "AuthorityDTO{"
-                + "fkitSuperGroup=" + this.fkitSuperGroup
+                + "superGroup=" + this.superGroup
                 + ", post=" + this.post
                 + ", internalID=" + this.internalID
-                + ", authorityLevelDTO=" + this.authorityLevelDTO
+                + ", authorityLevel=" + this.authorityLevel
                 + '}';
     }
 }

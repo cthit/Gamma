@@ -9,5 +9,6 @@
     "GDPR": ["GDPR", "GDPR"],
     "ActivationCodes": ["Activation code", "Aktiveringskoder"],
     "Clients": ["Clients", "Klienter"],
-    "ApiKeys": ["API keys", "API nycklar"]
+    "ApiKeys": ["API keys", "API nycklar"],
+    "Authorities" : ["Authorities", "Rättigheter"]
 }
