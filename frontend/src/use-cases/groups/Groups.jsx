@@ -69,6 +69,7 @@ function generateKeyTexts(text) {
     output[FUNCTION_SV] = text.FunctionSv;
     output[FUNCTION_EN] = text.FunctionEn;
     output[SUPER_GROUP] = text.SuperGroup;
+    output["superGroupPrettyName"] = text.SuperGroup;
     output[PRETTY_NAME] = text.PrettyName;
     output[BECOMES_ACTIVE] = text.BecomesActive;
     output[BECOMES_INACTIVE] = text.BecomesInactive;
@@ -282,6 +283,18 @@ const Groups = () => {
                 BECOMES_ACTIVE,
                 BECOMES_INACTIVE
             ]}
+            readOneKeysOrder={[
+                PRETTY_NAME,
+                NAME,
+                EMAIL,
+                DESCRIPTION_SV,
+                DESCRIPTION_EN,
+                FUNCTION_SV,
+                FUNCTION_EN,
+                "superGroupPrettyName",
+                BECOMES_ACTIVE,
+                BECOMES_INACTIVE
+            ]}
             readAllKeysOrder={[NAME, PRETTY_NAME, EMAIL]}
             keysText={generateKeyTexts(text)}
             tableProps={{
@@ -325,7 +338,7 @@ const Groups = () => {
             updateTitle={group => text.Update + " " + group.prettyName}
             createTitle={text.CreateGroup}
             detailsTitle={group => group.prettyName}
-        />
+        ></DigitCRUD>
     );
 };
 

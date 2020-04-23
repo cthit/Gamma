@@ -9,7 +9,5 @@
     "GDPR": ["GDPR", "GDPR"],
     "ActivationCodes": ["Activation code", "Aktiveringskoder"],
     "Clients": ["Clients", "Klienter"],
-    "ApiKeys": ["API keys", "API nycklar"],
-    "ViewAccount": ["View your account", "Visa ditt konto"],
-    "SignOut": ["Sign out", "Logga ut"]
+    "ApiKeys": ["API keys", "API nycklar"]
 }

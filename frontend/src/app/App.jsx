@@ -22,7 +22,7 @@ import translations from "../common/utils/translations/CommonTranslations";
 import SuperGroups from "../use-cases/super-groups";
 import Me from "../use-cases/me";
 import ResetPassword from "../use-cases/reset-password";
-import Drawer from "./elements/drawer";
+import Drawer from "./views/drawer";
 import Members from "../use-cases/members";
 import { getRequest } from "../api/utils/api";
 import GammaUserContext from "../common/context/GammaUser.context";
@@ -46,7 +46,10 @@ export const App = () => {
                     setStatus([false, false]);
                 })
                 .catch(error => {
-                    if (error.response.status === 401) {
+                    if (
+                        error.response != null &&
+                        error.response.status === 401
+                    ) {
                         window.location.href = getBackendUrl() + "/login";
                     } else {
                         console.log(error);

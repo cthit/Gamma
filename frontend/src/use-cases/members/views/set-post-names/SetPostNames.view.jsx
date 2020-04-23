@@ -83,6 +83,11 @@ const SetPostNames = ({
                                 raised
                                 primary
                                 submit
+                                onClick={() => {
+                                    if (selectedMemberIds.length === 0) {
+                                        onNewMembers({ members: [] });
+                                    }
+                                }}
                                 form={"set-post-names"}
                             />
                         </DigitLayout.Row>
@@ -91,44 +96,52 @@ const SetPostNames = ({
             </DigitDesign.Card>
             <DigitDesign.Card>
                 <DigitDesign.CardBody>
-                    <DigitEditData
-                        formName={"set-post-names"}
-                        size={{ minWidth: "300px" }}
-                        onSubmit={onNewMembers}
-                        keysOrder={["members"]}
-                        initialValues={getInitialValues(
-                            selectedMemberIds,
-                            currentMembers,
-                            users,
-                            groupId
-                        )}
-                        validationSchema={yup.object().shape({
-                            members: yup
-                                .array(
-                                    yup
-                                        .object()
-                                        .shape({
-                                            postId: yup.string().required(),
-                                            unofficialPostName: yup
-                                                .string()
-                                                .required()
-                                        })
-                                        .required()
-                                )
-                                .required()
-                        })}
-                        keysComponentData={{
-                            members: {
-                                component: NewMembershipArray,
-                                componentProps: {
-                                    posts,
-                                    currentMembers,
-                                    groupId
-                                },
-                                array: true
-                            }
-                        }}
-                    />
+                    {selectedMemberIds.length === 0 && (
+                        <DigitText.Title
+                            alignCenter
+                            text={text.NoSelectedMembers}
+                        />
+                    )}
+                    {selectedMemberIds.length > 0 && (
+                        <DigitEditData
+                            formName={"set-post-names"}
+                            size={{ minWidth: "300px" }}
+                            onSubmit={onNewMembers}
+                            keysOrder={["members"]}
+                            initialValues={getInitialValues(
+                                selectedMemberIds,
+                                currentMembers,
+                                users,
+                                groupId
+                            )}
+                            validationSchema={yup.object().shape({
+                                members: yup
+                                    .array(
+                                        yup
+                                            .object()
+                                            .shape({
+                                                postId: yup.string().required(),
+                                                unofficialPostName: yup
+                                                    .string()
+                                                    .required()
+                                            })
+                                            .required()
+                                    )
+                                    .required()
+                            })}
+                            keysComponentData={{
+                                members: {
+                                    component: NewMembershipArray,
+                                    componentProps: {
+                                        posts,
+                                        currentMembers,
+                                        groupId
+                                    },
+                                    array: true
+                                }
+                            }}
+                        />
+                    )}
                 </DigitDesign.CardBody>
             </DigitDesign.Card>
         </>

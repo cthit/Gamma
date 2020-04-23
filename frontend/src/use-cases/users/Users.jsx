@@ -61,6 +61,16 @@ const Users = () => {
                 USER_AGREEMENT,
                 GROUPS
             ]}
+            readOneKeysOrder={[
+                CID,
+                FIRST_NAME,
+                LAST_NAME,
+                NICK,
+                EMAIL,
+                ACCEPTANCE_YEAR,
+                LANGUAGE,
+                "relationships"
+            ]}
             tableProps={{
                 titleText: text.Users,
                 startOrderBy: NICK,
