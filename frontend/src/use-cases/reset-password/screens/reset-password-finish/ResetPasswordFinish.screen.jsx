@@ -14,7 +14,7 @@ import statusCode from "../../../../common/utils/formatters/statusCode.formatter
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import { resetPasswordFinalize } from "../../../../api/reset-password/put.reset-password";
 import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom";
 
 const ResetPasswordFinish = () => {
     const [text] = useDigitTranslations(translations);

@@ -1,67 +1,15 @@
 import {
-    DigitAvatar,
     DigitLayout,
-    DigitMenu,
     DigitNavLink,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import React from "react";
-import translations from "./Drawer.element.translations";
+import translations from "./Drawer.view.translations";
 import useGammaUser from "../../../common/hooks/use-gamma-user/useGammaUser";
 import useGammaHasAuthority from "../../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
 import useGammaIsAdmin from "../../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { getBackendUrl } from "../../../common/utils/configs/envVariablesLoader";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import styled from "styled-components";
-
-const Nick = styled.h6`
-    font-family: Roboto, serif;
-    font-size: 20px;
-    text-overflow: ellipsis;
-    max-width: 152px;
-    overflow: hidden;
-    white-space: nowrap;
-`;
-
-const GammaActions = ({ text }) => {
-    const user = useGammaUser();
-
-    return (
-        <DigitLayout.Row
-            justifyContent={"center"}
-            alignItems={"center"}
-            size={{
-                width: "100%",
-                height: "60px",
-                minHeight: "60px",
-                maxHeight: "60px"
-            }}
-        >
-            <DigitAvatar
-                imageAlt={"Avatar"}
-                imageSrc={user.avatarUrl}
-                margin={{ right: "16px" }}
-            />
-            <Nick>{user.nick}</Nick>
-            <DigitMenu
-                icon={ExpandMore}
-                onClick={item => {
-                    switch (item) {
-                        case "signOut":
-                            window.location.href = getBackendUrl() + "/logout";
-                            break;
-                        default:
-                            break;
-                    }
-                }}
-                valueToTextMap={{
-                    signOut: text.SignOut
-                }}
-                order={["signOut"]}
-            />
-        </DigitLayout.Row>
-    );
-};
+import LanguageSelection from "./elements/language-selection";
+import GammaActions from "./elements/gamma-actions/GammaActions.element";
 
 const Drawer = ({ closeDrawer }) => {
     const user = useGammaUser();
@@ -121,6 +69,7 @@ const Drawer = ({ closeDrawer }) => {
                     text={text.ApiKeys}
                     link="/access-keys"
                 />
+                <LanguageSelection />
             </DigitLayout.Column>
         );
     } else {
@@ -152,6 +101,7 @@ const Drawer = ({ closeDrawer }) => {
                         link="/gdpr"
                     />
                 )}
+                <LanguageSelection />
             </DigitLayout.Column>
         );
     }

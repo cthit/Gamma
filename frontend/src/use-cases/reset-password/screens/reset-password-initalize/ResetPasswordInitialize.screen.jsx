@@ -20,7 +20,6 @@ const ResetPasswordInitialize = () => {
 
     return (
         <DigitLayout.Center>
-
             <DigitEditDataCard
                 centerFields
                 validationSchema={yup.object().shape({

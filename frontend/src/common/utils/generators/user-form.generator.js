@@ -220,9 +220,7 @@ export function generateUserCustomDetailsRenders(text, ignoreGroups) {
                     title={text.Groups}
                     columnsOrder={[PRETTY_NAME]}
                 />
-            ) : (
-                <DigitText.Text text={text.NoGroups} />
-            );
+            ) : null;
     }
 
     return output;

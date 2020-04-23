@@ -22,10 +22,7 @@ const Home = () => {
                 <WelcomeUser user={user} />
                 <DigitLayout.Spacing />
                 <UserOptions
-                    hasGroups={
-                        user.groups != null &&
-                        user.groups.length > 0
-                    }
+                    hasGroups={user.groups != null && user.groups.length > 0}
                 />
                 {admin && (
                     <>
