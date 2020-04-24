@@ -89,6 +89,7 @@ const ReviewChanges = ({
                     <DigitLayout.Row
                         justifyContent={"space-between"}
                         alignItems={"center"}
+                        flexWrap={"wrap"}
                     >
                         <DigitText.Heading5
                             text={text.NewMembersForGroup + " " + groupName}

@@ -16,8 +16,7 @@ import * as yup from "yup";
 import {
     DigitSelect,
     DigitSwitch,
-    DigitTextField,
-    DigitText
+    DigitTextField
 } from "@cthit/react-digit-components";
 import {
     ENGLISH_LANGUAGE,

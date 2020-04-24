@@ -10,18 +10,30 @@ import translations from "./LanguageSelection.element.translations";
 
 const LanguageSelection = () => {
     const user = useGammaUser();
-    const [text, , setActiveLanguage] = useDigitTranslations(translations);
+    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
+        translations
+    );
     const [queueToast] = useDigitToast();
     const [language, setLanguage] = useState(user.language);
-    const [initialRender, setInitialRender] = useState(true);
+    const [firstRender, setFirstRender] = useState(true);
+
+    const languageUpdatedText = text.LanguageUpdated;
 
     useEffect(() => {
         setActiveLanguage(language);
-        if (!initialRender) {
-            queueToast({ text: text.LanguageUpdated });
+        if (activeLanguage !== language && !firstRender) {
+            queueToast({ text: languageUpdatedText });
         }
-        setInitialRender(false);
-    }, [language]);
+        setFirstRender(false);
+    }, [
+        language,
+        queueToast,
+        languageUpdatedText,
+        setActiveLanguage,
+        activeLanguage,
+        setFirstRender,
+        firstRender
+    ]);
 
     return (
         <DigitSelect

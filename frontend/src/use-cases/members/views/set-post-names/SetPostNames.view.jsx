@@ -65,7 +65,7 @@ const SetPostNames = ({
 
     return (
         <>
-            <DigitDesign.Card margin={{ bottom: "16px" }}>
+            <DigitDesign.Card>
                 <DigitDesign.CardBody>
                     <DigitLayout.Row
                         justifyContent={"space-between"}
