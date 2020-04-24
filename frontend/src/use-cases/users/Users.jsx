@@ -31,6 +31,7 @@ import {
 } from "../../common/utils/generators/user-form.generator";
 import { addUser } from "../../api/users/post.users.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 
 const Users = () => {
     const admin = useGammaIsAdmin();
@@ -134,6 +135,16 @@ const Users = () => {
             }
             toastCreateFailed={() => text.FailedCreatingUser}
             formInitialValues={generateUserInitialValues()}
+            detailsRenderEnd={data => (
+                <>
+                    <DisplayGroupsTable
+                        margin={{ top: "16px" }}
+                        groups={data.groups}
+                        title={data.nick + ":s " + text.Groups}
+                        columnsOrder={["prettyName"]}
+                    />
+                </>
+            )}
             detailsRenderCardEnd={data =>
                 admin ? (
                     <>

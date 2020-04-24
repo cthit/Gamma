@@ -1,4 +1,7 @@
 {
-  "YourLanguage": ["Your language", "Ditt språk"],
-  "LanguageUpdated": ["Language updated to English", "Språk uppdaterat till Svenska"]
+    "YourLanguage": ["Your language", "Ditt språk"],
+    "LanguageUpdated": [
+        "Språk uppdaterat till Svenska",
+        "Language updated to English"
+    ]
 }

@@ -1,19 +1,29 @@
 import React from "react";
-
 import {
-    DigitLayout,
     DigitTextField,
     DigitText,
     DigitSelect,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-
 import translations from "./CreateMembership.view.translations";
 import {
     FIRST_NAME,
     LAST_NAME,
     NICK
 } from "../../../../../../api/users/props.users.api";
+import styled from "styled-components";
+
+const CustomRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 16px;
+    align-items: baseline;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-self: center;
+    }
+`;
 
 function getDifferentPostNames(posts, activeLanguage) {
     const output = {};
@@ -28,7 +38,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
-        <DigitLayout.Row centerVertical alignItems={"baseline"}>
+        <CustomRow>
             <div style={{ flex: "1" }}>
                 <DigitText.Text
                     alignCenter
@@ -66,7 +76,7 @@ const CreateMembership = ({ posts, value, onChange }) => {
                     });
                 }}
             />
-        </DigitLayout.Row>
+        </CustomRow>
     );
 };
 
