@@ -44,7 +44,7 @@ public class ITClientService implements ClientDetailsService {
     public ITClientDTO createITClient(String name, Text description, String redirect) {
         ITClient client = new ITClient();
         client.setName(name);
-        client.setDescription(description);
+        client.setDescription(description == null ? new Text() : description);
         client.setWebServerRedirectUri(redirect);
         client.setCreatedAt(Instant.now());
         client.setLastModifiedAt(Instant.now());
