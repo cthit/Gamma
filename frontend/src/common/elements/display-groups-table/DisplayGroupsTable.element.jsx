@@ -51,6 +51,10 @@ function modifyData(groups, text, activeLanguage, columns) {
 const DisplayGroupsTable = ({ title, groups, columnsOrder, margin }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
+    if (groups == null) {
+        return null;
+    }
+
     return (
         <DigitTable
             margin={margin != null ? margin : "0px"}

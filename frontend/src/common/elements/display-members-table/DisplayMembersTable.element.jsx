@@ -28,17 +28,17 @@ function generateHeaderTexts(text) {
     return headerTexts;
 }
 
-const DisplayMembersTable = ({ users, noUsersText }) => {
+const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
         <DigitTable
-            margin={"0px"}
+            margin={margin}
             titleText={text.Users}
             searchText={text.SearchForUsers}
             idProp={CID}
             startOrderBy={FIRST_NAME}
-            columnsOrder={[NICK, "postName", ACCEPTANCE_YEAR]}
+            columnsOrder={[NICK, "postName"]}
             headerTexts={generateHeaderTexts(text)}
             data={users.map(user => {
                 const officialPostName =

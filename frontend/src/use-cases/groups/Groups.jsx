@@ -323,16 +323,13 @@ const Groups = () => {
                     </>
                 ) : null
             }
-            detailsRenderEnd={data =>
-                admin ? (
-                    <div style={{ marginTop: "16px" }}>
-                        <DisplayMembersTable
-                            noUsersText={text.NoGroupMembers}
-                            users={data.groupMembers}
-                        />
-                    </div>
-                ) : null
-            }
+            detailsRenderEnd={data => (
+                <DisplayMembersTable
+                    margin={{ top: "16px" }}
+                    noUsersText={text.NoGroupMembers}
+                    users={data.groupMembers}
+                />
+            )}
             dateProps={[BECOMES_ACTIVE, BECOMES_INACTIVE]}
             createButtonText={text.Create + " " + text.Group}
             updateTitle={group => text.Update + " " + group.prettyName}
