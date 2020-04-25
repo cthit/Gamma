@@ -60,7 +60,7 @@ public class SuperGroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
-        if(!this.fkitGroupService.getAllGroupsWithSuperGroup(superGroup).isEmpty()) {
+        if (!this.fkitGroupService.getAllGroupsWithSuperGroup(superGroup).isEmpty()) {
             throw new RemoveSubGroupsBeforeRemovingSuperGroupResponse();
         }
         this.fkitSuperGroupService.removeGroup(UUID.fromString(id));
