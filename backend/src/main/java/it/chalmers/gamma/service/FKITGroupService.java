@@ -45,7 +45,7 @@ public class FKITGroupService {
     }
 
     public FKITGroupDTO editGroup(String id, FKITGroupDTO fkitGroupDTO) {
-        FKITGroup group = this.getGroup(this.getDTOGroup(id));
+        FKITGroup group = this.getGroup(this.getGroup(id));
         if (group == null) {
             return null;
         }
@@ -111,7 +111,7 @@ public class FKITGroupService {
         return this.repo.findAll().stream().map(FKITGroup::toDTO).collect(Collectors.toList());
     }
 
-    public FKITGroupDTO getDTOGroup(String name) {
+    public FKITGroupDTO getGroup(String name) {
         if (UUIDUtil.validUUID(name)) {
             return this.repo.findById(UUID.fromString(name))
                     .orElseThrow(GroupDoesNotExistResponse::new).toDTO();

@@ -27,7 +27,7 @@ public class GroupMemberController {
 
     @GetMapping("/{id}/members")
     public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        FKITGroupDTO group = this.fkitGroupService.getGroup(id);
         List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group);
         return new GetMembershipResponse(members).toResponseObject();
     }

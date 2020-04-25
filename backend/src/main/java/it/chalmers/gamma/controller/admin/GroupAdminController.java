@@ -133,16 +133,16 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-                this.fkitGroupService.getDTOGroup(id)
+                this.fkitGroupService.getGroup(id)
         );
-        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getDTOGroup(id));
+        this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getGroup(id));
         this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
     @PutMapping("/{id}/avatar")
     public GroupEditedResponse editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        FKITGroupDTO group = this.fkitGroupService.getGroup(id);
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
