@@ -50,7 +50,7 @@ public class FKITGroup {
     private String email;
 
     @JoinColumn(name = "fkit_super_group")
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     private FKITSuperGroup superGroup;
 
     public FKITGroup() {
