@@ -86,7 +86,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
     }
 
     public List<WebsiteInterfaceDTO> getWebsites(FKITGroupDTO group) {
-        return this.repository.findAllByGroup(group).stream()
+        return this.repository.findAllByGroup(this.fkitGroupService.getGroup(group)).stream()
                 .map(GroupWebsite::toDTO).collect(Collectors.toList());
     }
 
@@ -96,7 +96,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
 
     @Transactional
     public void deleteWebsitesConnectedToGroup(FKITGroupDTO group) {
-        this.repository.deleteAllByGroup(group);
+        this.repository.deleteAllByGroup(this.fkitGroupService.getGroup(group));
     }
 
     protected GroupWebsiteDTO getGroupWebsite(GroupWebsiteDTO websiteDTO) {
