@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getAuthority } from "../../../../api/authorities/get.authorities";
+import { getAuthorityLevel } from "../../../../api/authorities/get.authorities";
 
 const AddToAuthorityLevel = () => {
     const { id } = useParams();
@@ -10,7 +10,7 @@ const AddToAuthorityLevel = () => {
             return null;
         }
 
-        getAuthority(id).then(response => {
+        getAuthorityLevel(id).then(response => {
             console.log(response);
         });
     }, [id]);

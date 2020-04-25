@@ -1,6 +1,6 @@
 import { getRequest } from "../utils/api";
 
-export const getAuthority = id => getRequest("/admin/authority/" + id);
+export const getAuthorityLevel = id => getRequest("/admin/authority/level/" + id);
 
 export const getAuthorities = () => getRequest("/admin/authority");
 

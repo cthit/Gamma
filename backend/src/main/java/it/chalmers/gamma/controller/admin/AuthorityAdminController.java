@@ -1,5 +1,6 @@
 package it.chalmers.gamma.controller.admin;
 
+import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -11,9 +12,10 @@ import it.chalmers.gamma.response.authority.AuthorityAddedResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAddedResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAlreadyExists;
 import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
-import it.chalmers.gamma.response.authority.AuthorityNotFoundResponse;
+import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
+import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse.GetAllAuthoritiesResponseObject;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse.GetAllAuthorityLevelsResponseObject;
 import it.chalmers.gamma.response.authority.GetAuthorityResponse;
@@ -73,7 +75,7 @@ public final class AuthorityAdminController {
     @DeleteMapping("/{id}")
     public AuthorityRemovedResponse removeAuthority(@PathVariable("id") String id) {
         if (!this.authorityService.authorityExists(id)) {
-            throw new AuthorityNotFoundResponse();
+            throw new AuthorityDoesNotExistResponse();
         }
         this.authorityService.removeAuthority(UUID.fromString(id)); // TODO move check to service?
         return new AuthorityRemovedResponse();
@@ -107,19 +109,26 @@ public final class AuthorityAdminController {
 
     @DeleteMapping("/level/{id}")
     public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
-        if (this.authorityLevelService.authorityLevelExists(UUID.fromString(id))) {
-            throw new AuthorityNotFoundResponse();
+        System.out.println(id);
+        System.out.println("got here");
+        System.out.println(this.authorityLevelService.getAllAuthorityLevels());
+        if (!this.authorityLevelService.authorityLevelExists(UUID.fromString(id))) {
+            throw new AuthorityDoesNotExistResponse();
         }
         this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));       // TODO Move check to service?
         return new AuthorityLevelRemovedResponse();
     }
 
+    @GetMapping("level/{id}")
+    public GetAllAuthoritiesResponseObject getAuthoritiesWithLevel(@PathVariable("id") String id) {
+        List<AuthorityDTO> authorities = this.authorityService.getAuthoritiesWithLevel(UUID.fromString(id));
+        return new GetAllAuthoritiesResponse(authorities).toResponseObject();
+    }
+
     @GetMapping("/{id}")
     public GetAuthorityResponseObject getAuthority(@PathVariable("id") String id) {
+
         AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
-        if (authority == null) {
-            throw new AuthorityNotFoundResponse();
-        }
         return new GetAuthorityResponse(authority).toResponseObject();
     }
 
