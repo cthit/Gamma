@@ -9,6 +9,8 @@ import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GroupEditedResponse;
 import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse;
 import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse.GetSuperGroupResponseObject;
+import it.chalmers.gamma.response.supergroup.RemoveSubGroupsBeforeRemovingSuperGroupResponse;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -29,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/superGroups")       // What should this URL be?
 public class SuperGroupAdminController {
     private final FKITSuperGroupService fkitSuperGroupService;
+    private final FKITGroupService fkitGroupService;
 
 
-    public SuperGroupAdminController(FKITSuperGroupService fkitSuperGroupService) {
+    public SuperGroupAdminController(FKITSuperGroupService fkitSuperGroupService, FKITGroupService fkitGroupService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
+        this.fkitGroupService = fkitGroupService;
     }
 
     @PostMapping()
@@ -54,6 +58,10 @@ public class SuperGroupAdminController {
     public GroupDeletedResponse removeSuperGroup(@PathVariable("id") String id) {
         if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
+        }
+        FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
+        if(!this.fkitGroupService.getAllGroupsWithSuperGroup(superGroup).isEmpty()) {
+            throw new RemoveSubGroupsBeforeRemovingSuperGroupResponse();
         }
         this.fkitSuperGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
