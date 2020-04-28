@@ -66,8 +66,11 @@ public class WhitelistService {
      * @return the whitelist object that has corresponding GROUP_ID
      */
     public WhitelistDTO getWhitelist(String id) {
-        return this.whitelistRepository.findById(UUID.fromString(id))
-                .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
+        if(UUIDUtil.validUUID(id)) {
+            return this.whitelistRepository.findById(UUID.fromString(id))
+                    .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
+        }
+        throw new WhitelistDoesNotExistsException();
     }
 
     /**

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/admin/goldapps", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/admin/goldapps")
 public class GoldappsController {
 
     private final FKITSuperGroupService fkitSuperGroupService;
