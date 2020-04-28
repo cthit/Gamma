@@ -2,8 +2,7 @@ import React from "react";
 import {
     DigitCRUD,
     DigitTextField,
-    useDigitTranslations,
-    useGammaIsAdmin
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import {
     getWhitelist,
@@ -15,6 +14,7 @@ import translations from "./Whitelist.translations";
 import * as yup from "yup";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);

@@ -2,36 +2,39 @@ import React, { useMemo } from "react";
 import {
     DigitText,
     DigitLayout,
-    useDigitTranslations,
-    useGammaUser
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import translations from "./MeGroups.screen.translations";
 import DisplayGroupsTable from "../../../../common/elements/display-groups-table/DisplayGroupsTable.element";
+import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
 
 const MeGroups = () => {
     const [text] = useDigitTranslations(translations);
     const user = useGammaUser();
 
-    const [activeGroups, pastGroups] = useMemo(
-        () =>
-            user == null
-                ? [[], []]
-                : [
-                      user.relationships
-                          .filter(g => g.group.active)
-                          .map(g => g.group),
-                      user.relationships
-                          .filter(g => !g.group.active)
-                          .map(g => g.group)
-                  ],
-        [user]
-    );
+    const [activeGroups, pastGroups, futureGroups] = useMemo(() => {
+        console.log(user);
+
+        const now = new Date().getTime();
+
+        return user == null
+            ? [[], [], []]
+            : [
+                  user.groups.filter(g => g.active),
+                  user.groups.filter(g => !g.active && g.becomesActive <= now),
+                  user.groups.filter(g => !g.active && g.becomesActive > now)
+              ];
+    }, [user]);
 
     if (user == null) {
         return null;
     }
 
-    if (activeGroups.length === 0 && pastGroups.length === 0) {
+    if (
+        activeGroups.length === 0 &&
+        pastGroups.length === 0 &&
+        futureGroups.length === 0
+    ) {
         return (
             <DigitLayout.Center>
                 <DigitText.Heading3 text={text.NoGroupsForYou} />
@@ -41,14 +44,26 @@ const MeGroups = () => {
 
     return (
         <>
+            {futureGroups.length > 0 && (
+                <DisplayGroupsTable
+                    title={text.FutureGroups}
+                    groups={activeGroups}
+                />
+            )}
             {activeGroups.length > 0 && (
                 <DisplayGroupsTable
+                    margin={futureGroups.length > 0 ? { top: "16px" } : null}
                     title={text.ActiveGroups}
                     groups={activeGroups}
                 />
             )}
             {pastGroups.length > 0 && (
                 <DisplayGroupsTable
+                    margin={
+                        futureGroups.length > 0 || futureGroups.length > 0
+                            ? { top: "16px" }
+                            : null
+                    }
                     title={text.PastGroups}
                     groups={pastGroups}
                 />

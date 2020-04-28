@@ -1,8 +1,10 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import {
+    DigitButton,
     DigitCRUD,
-    useDigitTranslations,
-    useGammaIsAdmin
+    DigitLayout,
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 import { getUser, getUsersMinified } from "../../api/users/get.users.api";
 import translations from "./Users.translations";
@@ -15,9 +17,8 @@ import {
     LANGUAGE,
     LAST_NAME,
     NICK,
-    PASSWORD,
     USER_AGREEMENT,
-    RELATIONSHIPS
+    GROUPS
 } from "../../api/users/props.users.api";
 import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
@@ -29,10 +30,13 @@ import {
     generateUserValidationSchema
 } from "../../common/utils/generators/user-form.generator";
 import { addUser } from "../../api/users/post.users.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 
 const Users = () => {
     const admin = useGammaIsAdmin();
     const [text] = useDigitTranslations(translations);
+    const history = useHistory();
 
     const fullName = data =>
         data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
@@ -49,7 +53,6 @@ const Users = () => {
             idProp={ID}
             keysOrder={[
                 CID,
-                PASSWORD,
                 FIRST_NAME,
                 LAST_NAME,
                 NICK,
@@ -57,7 +60,17 @@ const Users = () => {
                 ACCEPTANCE_YEAR,
                 LANGUAGE,
                 USER_AGREEMENT,
-                RELATIONSHIPS
+                GROUPS
+            ]}
+            readOneKeysOrder={[
+                CID,
+                FIRST_NAME,
+                LAST_NAME,
+                NICK,
+                EMAIL,
+                ACCEPTANCE_YEAR,
+                LANGUAGE,
+                "relationships"
             ]}
             tableProps={{
                 titleText: text.Users,
@@ -122,6 +135,34 @@ const Users = () => {
             }
             toastCreateFailed={() => text.FailedCreatingUser}
             formInitialValues={generateUserInitialValues()}
+            detailsRenderEnd={data => (
+                <>
+                    <DisplayGroupsTable
+                        margin={{ top: "16px" }}
+                        groups={data.groups}
+                        title={data.nick + ":s " + text.Groups}
+                        columnsOrder={["prettyName"]}
+                    />
+                </>
+            )}
+            detailsRenderCardEnd={data =>
+                admin ? (
+                    <>
+                        <div style={{ marginTop: "8px" }} />
+                        <DigitLayout.Center>
+                            <DigitButton
+                                outlined
+                                text={"Edit password"}
+                                onClick={() =>
+                                    history.push(
+                                        "/reset-password/admin/" + data.id
+                                    )
+                                }
+                            />
+                        </DigitLayout.Center>
+                    </>
+                ) : null
+            }
         />
     );
 };

@@ -11,14 +11,16 @@ public class FKITMinifiedGroupDTO {
     private final String email;
     private final Text description;
     private final UUID id;
+    private final String prettyName;
 
     public FKITMinifiedGroupDTO(String name, Text function,
-                                String email, Text description, UUID id) {
+                                String email, Text description, UUID id, String prettyName) {
         this.name = name;
         this.function = function;
         this.email = email;
         this.description = description;
         this.id = id;
+        this.prettyName = prettyName;
     }
 
     public String getName() {
@@ -39,5 +41,9 @@ public class FKITMinifiedGroupDTO {
 
     public UUID getId() {
         return this.id;
+    }
+
+    public String getPrettyName() {
+        return this.prettyName;
     }
 }

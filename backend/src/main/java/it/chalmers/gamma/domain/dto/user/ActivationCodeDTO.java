@@ -1,10 +1,11 @@
 package it.chalmers.gamma.domain.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class ActivationCodeDTO {
     private final UUID id;

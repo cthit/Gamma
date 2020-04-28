@@ -1,10 +1,12 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.db.entity.FKITGroupToSuperGroup;
+import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.filter.OauthRedirectFilter;
+import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
 import it.chalmers.gamma.service.PasswordResetService;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +27,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -37,34 +42,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
-    @Value("${application.frontend-client-details.successful-login-uri}")
-    private String frontendUrl;
+    @Value("${application.cookie.remember-me-validity}")
+    private int remeberMeValidity;
+
+    @Value("${application.cookie.domain}")
+    private String domain;
 
     //@Value("${application.production}")
     //private boolean inProduction;
 
     private final ITUserService itUserService;
     private final AuthorityService authorityService;
-    private final FKITGroupToSuperGroupService groupToSuperGroupService;
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
+    private final FKITGroupService fkitGroupService;
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
+    private final LoginRedirectHandler loginRedirectHandler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
-                             FKITGroupToSuperGroupService groupToSuperGroupService,
                              ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
-                             PasswordEncoder passwordEncoder) {
+                             PasswordEncoder passwordEncoder,
+                             FKITGroupService fkitGroupService,
+                             LoginRedirectHandler loginRedirectHandler) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
-        this.groupToSuperGroupService = groupToSuperGroupService;
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
+        this.fkitGroupService = fkitGroupService;
+        this.loginRedirectHandler = loginRedirectHandler;
     }
 
     @Override
@@ -75,9 +86,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         setSessionManagementToIfRequired(http);
         addAuthenticationFilter(http);
         addFormLogin(http);
+        addRememberMe(http);
         setPermittedPaths(http);
         setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
+        addRedirectFilter(http);
     }
 
 
@@ -106,6 +119,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf().disable();
         } catch (Exception e) {
             LOGGER.error("Something went wrong when disabling csrf");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addRedirectFilter(HttpSecurity http) {
+        try {
+            OauthRedirectFilter oauthRedirectFilter = new OauthRedirectFilter();
+            http.addFilterBefore(oauthRedirectFilter, BasicAuthenticationFilter.class);
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when adding redirects");
             LOGGER.error(e.getMessage());
         }
     }
@@ -142,7 +165,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl((frontendUrl) + "/", false)
+                    .successHandler(this.loginRedirectHandler)
                     .permitAll()
                     .and()
                     .logout()
@@ -150,8 +173,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/login")
                     .and()
                     .httpBasic();
+
+
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding form login");
+            LOGGER.error(e.getMessage());
+        }
+    }
+
+    private void addRememberMe(HttpSecurity http) {
+        try {
+            http
+                    .rememberMe()
+                    .key(this.secretKey)
+                    .tokenValiditySeconds(this.remeberMeValidity)
+                    .rememberMeCookieDomain(this.domain)
+                    .rememberMeCookieName("gamma-remember-me")
+                    .userDetailsService(this.itUserService);
+        } catch (Exception e) {
+            LOGGER.error("Something went wrong when setting up remember me");
             LOGGER.error(e.getMessage());
         }
     }
@@ -170,7 +210,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/css/**",
                     "/js/**",
                     "/auth/valid_token",
-                    "/img/**"
+                    "/img/**",
+                    "/uploads/**"
             };
 
 
@@ -185,9 +226,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            List<FKITGroupToSuperGroup> relationships = this.groupToSuperGroupService.getAllRelationships();
-            for (FKITGroupToSuperGroup relationship : relationships) {
-                addPathRole(http, relationship);
+            List<FKITGroupDTO> groups = this.fkitGroupService.getGroups();
+            for (FKITGroupDTO group : groups) {
+                addPathRole(http, group);
             }
             http.authorizeRequests().antMatchers("/admin/gdpr/**")
                     .hasAnyAuthority("gdpr", "admin").and().authorizeRequests().antMatchers("/admin/**")
@@ -198,12 +239,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    private void addPathRole(HttpSecurity http, FKITGroupToSuperGroup relationship) {
+    private void addPathRole(HttpSecurity http, FKITGroupDTO group) {
         this.authorityService.getAllAuthorities().forEach(a -> {
-            if (a.getFkitSuperGroup().getId().equals(relationship.getId().getSuperGroup().getId())) {
+            if (a.getFkitSuperGroup().getId().equals(group.getSuperGroup().getId())) {
                 try {
                     http.authorizeRequests().antMatchers("/admin/groups/"
-                            + relationship.getId().getGroup().getId() + "/**")
+                            + group.getId() + "/**")
                             .hasAuthority(a.getAuthorityLevelDTO().getAuthority());
                 } catch (Exception e) {
                     LOGGER.error("Something went wrong when setting authorized paths");
@@ -215,7 +256,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
         try {
-            http.authorizeRequests().anyRequest().authenticated();
+            http
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            ;
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting paths to authenticated only.");
             LOGGER.error(e.getMessage());

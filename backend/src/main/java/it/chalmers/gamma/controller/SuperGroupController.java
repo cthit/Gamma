@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
@@ -12,7 +11,7 @@ import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.supergroup.GetAllSuperGroupsResponse;
 import it.chalmers.gamma.response.supergroup.GetAllSuperGroupsResponse.GetAllSuperGroupsResponseObject;
 import it.chalmers.gamma.response.supergroup.GetSuperGroupResponse;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
+import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.MembershipService;
 
@@ -30,25 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class SuperGroupController {
 
     private final FKITSuperGroupService fkitSuperGroupService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private final MembershipService membershipService;
+    private final FKITGroupService fkitGroupService;
 
     public SuperGroupController(FKITSuperGroupService fkitSuperGroupService,
-                                FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
-                                MembershipService membershipService) {
+                                MembershipService membershipService, FKITGroupService fkitGroupService) {
         this.fkitSuperGroupService = fkitSuperGroupService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.membershipService = membershipService;
+        this.fkitGroupService = fkitGroupService;
     }
 
     @GetMapping("/{id}/subgroups")
     public GetAllFKITGroupsMinifiedResponseObject getAllSubGroups(@PathVariable("id") String id) {
         FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
-        List<FKITGroupToSuperGroupDTO> groupRelationships =
-                this.fkitGroupToSuperGroupService.getRelationships(superGroup);
-        List<GetFKITGroupMinifiedResponse> responses = groupRelationships.stream().map(
-                g -> new GetFKITGroupMinifiedResponse(g.getGroup().toMinifiedDTO())).collect(Collectors.toList());
-        return new GetAllFKITGroupsMinifiedResponse(responses).toResponseObject();
+        return new GetAllFKITGroupsMinifiedResponse(
+                this.fkitGroupService.getAllGroupsWithSuperGroup(superGroup).stream()
+                        .map(g -> new GetFKITGroupMinifiedResponse(g.toMinifiedDTO()))
+                        .collect(Collectors.toList())).toResponseObject();
     }
 
     @GetMapping()
@@ -68,7 +65,7 @@ public class SuperGroupController {
     @GetMapping("/{id}/active")
     public GetActiveFKITGroupResponseObject getActiveGroup(@PathVariable("id") String id) {
         FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
-        List<GetFKITGroupResponse> groups = this.fkitGroupToSuperGroupService.getActiveGroups(superGroup)
+        List<GetFKITGroupResponse> groups = this.fkitGroupService.getActiveGroups(superGroup)
                 .stream().map(g -> new GetFKITGroupResponse(
                         g,
                         this.membershipService.getMembershipsInGroup(g)))

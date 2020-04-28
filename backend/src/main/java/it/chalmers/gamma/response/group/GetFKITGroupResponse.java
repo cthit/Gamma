@@ -3,7 +3,6 @@ package it.chalmers.gamma.response.group;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
@@ -16,19 +15,16 @@ public class GetFKITGroupResponse {
     @JsonUnwrapped
     private final FKITGroupDTO group;
     private final List<MembershipDTO> groupMembers;
-    private final List<FKITSuperGroupDTO> superGroup;
     private final List<WebsiteUrlDTO> websites;
 
-    public GetFKITGroupResponse(FKITGroupDTO group, List<MembershipDTO> groupMembers,
-                                List<FKITSuperGroupDTO> superGroup, List<WebsiteUrlDTO> websites) {
+    public GetFKITGroupResponse(FKITGroupDTO group, List<MembershipDTO> groupMembers, List<WebsiteUrlDTO> websites) {
         this.group = group;
         this.groupMembers = groupMembers;
-        this.superGroup = superGroup;
         this.websites = websites;
     }
 
     public GetFKITGroupResponse(FKITGroupDTO group, List<MembershipDTO> groupMembers) {
-        this(group, groupMembers, null, null);
+        this(group, groupMembers, null);
     }
 
     public FKITGroupDTO getGroup() {
@@ -37,10 +33,6 @@ public class GetFKITGroupResponse {
 
     public List<MembershipDTO> getGroupMembers() {
         return this.groupMembers;
-    }
-
-    public List<FKITSuperGroupDTO> getSuperGroup() {
-        return this.superGroup;
     }
 
     public List<WebsiteUrlDTO> getWebsites() {

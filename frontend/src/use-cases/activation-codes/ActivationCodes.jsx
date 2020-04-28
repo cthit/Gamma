@@ -4,14 +4,11 @@ import {
     getActivationCodes
 } from "../../api/activation-codes/get.activationCodes.api";
 import { deleteActivationCode } from "../../api/activation-codes/delete.activationCodes.api";
-import {
-    useDigitTranslations,
-    DigitCRUD,
-    useGammaIsAdmin
-} from "@cthit/react-digit-components";
+import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
 import translations from "./ActivationCodes.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { NAME } from "../../api/super-groups/props.super-groups.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);
@@ -62,6 +59,7 @@ const ActivationCodes = () => {
             deleteButtonText={data => text.Delete + " " + data.cid}
             detailsButtonText={text.Details}
             backButtonText={text.Back}
+            dateAndTimeProps={["createdAt"]}
         />
     );
 };

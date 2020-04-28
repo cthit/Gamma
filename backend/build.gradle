@@ -1,38 +1,34 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.0.RELEASE'
+        springBootVersion = '2.2.6.RELEASE'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.+'
-        classpath group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.+'
-        classpath group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.+'
-        classpath group: 'javax.activation', name: 'activation', version: '1.1.1'
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
 
 plugins {
     id "java"
-	id "eclipse"
-	id "application"
-	id "checkstyle"
-	id "pmd"
-	id 'io.franzbecker.gradle-lombok' version '1.14'
-	id "jacoco"
+    id "eclipse"
+    id "application"
+    id "checkstyle"
+    id "pmd"
+    id "jacoco"
+    id "nebula.lint" version "16.7.0"
 }
 
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 group = 'it.chalmers'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 10
+version = '0.9.0-SNAPSHOT'
+sourceCompatibility = 11
 mainClassName = 'it.chalmers.gamma.GammaApplication'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 jar {
     manifest {
@@ -45,43 +41,76 @@ jar {
 
 dependencies {
 
-    compileOnly (
-        'com.github.spotbugs:spotbugs-annotations:3.1.8'
+    compileOnly(
+            'com.github.spotbugs:spotbugs-annotations:3.1.8'
+    )
+    // Are not needed to compile and build, only to configure
+    runtime(
+            'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.2.6.RELEASE',
+            'org.springframework.boot:spring-boot-devtools:2.2.6.RELEASE',
+            'org.postgresql:postgresql:42.2.12',
+            'org.springframework.boot:spring-boot-starter-data-jpa:2.2.6.RELEASE',
+            'org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE',
+            'org.springframework.boot:spring-boot-starter-data-redis:2.2.6.RELEASE',
+            'org.springframework.session:spring-session-data-redis:2.2.2.RELEASE',
+            'org.springframework.boot:spring-boot-starter-thymeleaf:2.2.6.RELEASE',
+            'org.flywaydb:flyway-core:6.3.3'
+
+    )
+    compile(
+            'org.springframework.data:spring-data-jpa:2.2.6.RELEASE',
+            'org.springframework.security.oauth:spring-security-oauth2:2.4.0.RELEASE',
+            'org.springframework:spring-tx:5.2.5.RELEASE',
+            'org.hibernate:hibernate-core:5.4.14.Final',
+            'org.springframework.security:spring-security-core:5.3.1.RELEASE',
+            'javax.validation:validation-api:2.0.1.Final',
+            'org.apache.tomcat.embed:tomcat-embed-core:9.0.34',
+            'org.springframework.boot:spring-boot-autoconfigure:2.2.6.RELEASE',
+            'org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final',
+            'org.springframework.security:spring-security-web:5.3.1.RELEASE',
+            'org.springframework.session:spring-session-core:2.2.2.RELEASE',
+            'org.springframework:spring-beans:5.2.5.RELEASE',
+            'org.apache.httpcomponents:httpcore:4.4.13',
+            'org.springframework:spring-core:5.2.5.RELEASE',
+            'org.springframework:spring-web:5.2.5.RELEASE',
+            'javax.persistence:javax.persistence-api:2.2',
+            'org.apache.httpcomponents:httpclient:4.5.6',
+            'javax.transaction:javax.transaction-api:1.3',
+            'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
+            'org.slf4j:slf4j-api:1.7.30',
+            'org.springframework:spring-context:5.2.5.RELEASE',
+            'org.springframework:spring-webmvc:5.2.5.RELEASE',
+            'org.springframework.security:spring-security-config:5.3.1.RELEASE',
+            'com.fasterxml.jackson.core:jackson-databind:2.10.3',
+            'org.springframework.boot:spring-boot:2.2.6.RELEASE',
+            'com.googlecode.json-simple:json-simple:1.1.1',
+            'io.jsonwebtoken:jjwt:0.9.1',
+            'commons-io:commons-io:2.6',
+            'org.apache.httpcomponents:httpmime:4.5.12',
+            'io.springfox:springfox-swagger-ui:2.9.2',
+            'io.springfox:springfox-swagger2:2.9.2'
+
     )
 
-	compile('com.google.api-client:google-api-client:1.30.2')
-	compile('com.google.apis:google-api-services-gmail:v1-rev105-1.25.0')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-security')
-	compile('org.springframework.boot:spring-boot-starter-mail')
-	compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.6.RELEASE')
-	compile('org.springframework.boot:spring-boot-starter-web')
-    compile('com.sun.xml.bind:jaxb-impl:2.2.11')
-	compile('com.sun.xml.bind:jaxb-core:2.2.11')
-	compile('javax.xml.bind:jaxb-api:2.3.1')
-	compile('javax.activation:activation:1.1.1')
-    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
-	compile group: 'com.h2database', name: 'h2', version: '1.4.199'
-	compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-    compile('org.flywaydb:flyway-core:5.2.4')
-    compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
-    compile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
-    compile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
-	compile 'io.jsonwebtoken:jjwt:0.9.1'
-    compile "org.apache.httpcomponents:httpmime:4.5.9"
-	runtime('org.springframework.boot:spring-boot-devtools')
-	runtime('org.postgresql:postgresql')
+    testCompile(
+            'org.springframework:spring-test:5.2.5.RELEASE',
+            'org.springframework.boot:spring-boot-test-autoconfigure:2.2.6.RELEASE',
+            'org.springframework.boot:spring-boot-test:2.2.6.RELEASE',
+            'junit:junit:4.13'
+    )
 
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
-	testCompile('org.springframework.security:spring-security-test')
-	testCompile group: 'junit', name: 'junit', version: '4.+'
+    testRuntimeOnly(
+            'com.h2database:h2:1.4.200',
+            'org.springframework.restdocs:spring-restdocs-mockmvc',
+            'org.springframework.security:spring-security-test'
+    )
+
 
 }
 
+
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 checkstyle {
@@ -89,27 +118,26 @@ checkstyle {
     ignoreFailures false
     maxWarnings 0
     configFile = project(':').file('config/checkstyle/checkstyle.xml')
-	configProperties = [ "suppressionFile" : project(':').file('config/checkstyle/suppressions.xml')]
-}
-
-lombok {
-	version = '1.18.2'
-	sha256 = ""
+    configProperties = ["suppressionFile": project(':').file('config/checkstyle/suppressions.xml')]
 }
 
 pmd {
     toolVersion '6.8.0'
     consoleOutput true
     ignoreFailures false
-	ruleSetFiles files("config/pmd/ruleset.xml")
+    ruleSetFiles files("config/pmd/ruleset.xml")
 }
 
 jacoco {
-    toolVersion '0.8.2'
+    toolVersion '0.8.5'
 }
 
 jacocoTestReport {
     reports {
         html.enabled true
     }
+}
+// Is not perfect, but gives you an idea of what needs to be changed
+gradleLint {
+    rules = ['dependency-parentheses', 'archaic-wrapper']
 }

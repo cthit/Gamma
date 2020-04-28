@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
     DigitButton,
-    DigitTable,
+    DigitSelectMultipleTable,
     DigitText,
     DigitLayout,
     DigitDesign,
@@ -17,6 +17,16 @@ import {
     LAST_NAME,
     NICK
 } from "../../../../api/users/props.users.api";
+import styled from "styled-components";
+
+const CustomRow = styled.div`
+    display: flex;
+    flex-direction: row;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+    }
+`;
 
 const generateHeaderTexts = text => {
     const headerTexts = {};
@@ -25,8 +35,6 @@ const generateHeaderTexts = text => {
     headerTexts[LAST_NAME] = text.LastName;
     headerTexts[NICK] = text.Nickname;
     headerTexts[ID] = text.Id;
-    headerTexts["__link"] = text.Link;
-    headerTexts["__checkbox"] = text.Checkbox;
 
     return headerTexts;
 };
@@ -44,9 +52,12 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
 
     return (
         <DigitLayout.Column>
-            <DigitDesign.Card>
+            <DigitDesign.Card margin={{ bottom: "8px" }}>
                 <DigitDesign.CardBody>
-                    <DigitLayout.Row justifyContent={"space-between"}>
+                    <DigitLayout.Row
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                    >
                         <DigitText.Heading5
                             text={
                                 unsavedEdits
@@ -65,16 +76,19 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                     </DigitLayout.Row>
                 </DigitDesign.CardBody>
             </DigitDesign.Card>
-            <DigitLayout.Row>
+            <CustomRow>
                 <UsersInGroupChanges
                     currentMembers={group.groupMembers}
                     selectedMembers={selectedMemberIds.map(memberId =>
                         _.find(users, { id: memberId })
                     )}
                 />
-                <DigitTable
-                    selected={selectedMemberIds}
-                    onSelectedUpdated={newSelected => {
+                <DigitSelectMultipleTable
+                    margin={"4px"}
+                    disableSelectAll
+                    flex={"1"}
+                    value={selectedMemberIds}
+                    onChange={newSelected => {
                         setSelectedMemberIds(newSelected);
                     }}
                     search
@@ -84,12 +98,9 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                     startOrderBy={NICK}
                     columnsOrder={[FIRST_NAME, NICK, LAST_NAME]}
                     headerTexts={generateHeaderTexts(text)}
-                    data={users.map(user => ({
-                        ...user,
-                        __link: "/users/" + user.cid
-                    }))}
+                    data={users}
                 />
-            </DigitLayout.Row>
+            </CustomRow>
         </DigitLayout.Column>
     );
 };

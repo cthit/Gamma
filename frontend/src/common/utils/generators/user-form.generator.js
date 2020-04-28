@@ -4,7 +4,7 @@ import {
     CID,
     EMAIL,
     FIRST_NAME,
-    RELATIONSHIPS,
+    GROUPS,
     ID,
     LANGUAGE,
     LAST_NAME,
@@ -16,8 +16,7 @@ import * as yup from "yup";
 import {
     DigitSelect,
     DigitSwitch,
-    DigitTextField,
-    DigitText
+    DigitTextField
 } from "@cthit/react-digit-components";
 import {
     ENGLISH_LANGUAGE,
@@ -66,7 +65,7 @@ export const generateUserKeyOrder = () => [
     EMAIL,
     ACCEPTANCE_YEAR,
     LANGUAGE,
-    RELATIONSHIPS
+    GROUPS
 ];
 
 export function generateUserInitialValues() {
@@ -104,8 +103,15 @@ export function generateUserValidationSchema(
               .required()
         : yup.boolean();
     schema[CID] = forceCid
-        ? yup.string().required(text.FieldRequired)
-        : yup.string();
+        ? yup
+              .string()
+              .min(4)
+              .max(12)
+              .required(text.FieldRequired)
+        : yup
+              .string()
+              .min(4)
+              .max(12);
     schema[PASSWORD] = forcePassword
         ? yup
               .string()
@@ -197,16 +203,6 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[PASSWORD] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Password,
-            lowerLabel: text.PasswordAtleast,
-            password: true,
-            outlined: true
-        }
-    };
-
     return componentData;
 }
 
@@ -214,18 +210,16 @@ export function generateUserCustomDetailsRenders(text, ignoreGroups) {
     const output = {};
 
     if (ignoreGroups) {
-        output[RELATIONSHIPS] = () => null;
+        output[GROUPS] = () => null;
     } else {
-        output[RELATIONSHIPS] = data =>
-            data[RELATIONSHIPS] != null ? (
+        output[GROUPS] = data =>
+            data[GROUPS] != null ? (
                 <DisplayGroupsTable
-                    groups={data[RELATIONSHIPS].map(g => g.group)}
+                    groups={data[GROUPS]}
                     title={text.Groups}
                     columnsOrder={[PRETTY_NAME]}
                 />
-            ) : (
-                <DigitText.Text text={text.NoGroups} />
-            );
+            ) : null;
     }
 
     return output;

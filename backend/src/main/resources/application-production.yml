@@ -16,12 +16,20 @@ spring:
         temp:
           #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
           use_jdbc_metadata_defaults: false
+  session:
+    store-type: redis
 
+  redis:
+    host: ${REDIS_HOST:localhost}
+    password: ${REDIS_PASSWORD:password}
+    port: ${REDIS_PORT:6379}
 
 server:
   port: ${SERVER_PORT:9090}
   servlet:
     context-path: /api
+
+
 
 logging:
   file: ${LOGGING_FILE:production.log}
@@ -38,12 +46,18 @@ security:
       secret-key: ${JWT_SECRET_KEY:jwtkey} # This is only for Development, should also be a secret one for Production
       expire-length: ${JWT_EXPIRE_LENGTH:25200} #7 Hours. Subject to change.
       issuer: ${JWT_ISSUER:http://localhost:9090}
-      audience: http://localhost:3000
+      audience: ${JWT_AUDIENCE:http://localhost:3000}
 
 
 
 application:
+  base-uri: ${BACKEND_URI:http://localhost:9090/api}
   production: true
+  cookie:
+    domain: ${COOKIE_DOMAIN:https://gamma.chalmers.it}
+    path: ${COOKIE_PATH:/}
+    validity-time: 86400
+    remember-me-validity: 2629746
   password-expiration-time: 3600
   frontend-client-details:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}

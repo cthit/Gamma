@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
@@ -14,17 +15,15 @@ import it.chalmers.gamma.response.group.GroupDoesNotExistResponse;
 import it.chalmers.gamma.response.group.GroupEditedResponse;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.GroupWebsiteService;
 
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.WebsiteService;
 
-import it.chalmers.gamma.util.ImageITUtils;
+import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +53,6 @@ public final class GroupAdminController {
     private final WebsiteService websiteService;
     private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final MembershipService membershipService;
     private final AuthorityLevelService authorityLevelService;
@@ -64,14 +62,12 @@ public final class GroupAdminController {
             WebsiteService websiteService,
             GroupWebsiteService groupWebsiteService,
             FKITSuperGroupService fkitSuperGroupService,
-            FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
             MembershipService membershipService,
             AuthorityLevelService authorityLevelService) {
         this.fkitGroupService = fkitGroupService;
         this.websiteService = websiteService;
         this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.membershipService = membershipService;
         this.authorityLevelService = authorityLevelService;
     }
@@ -97,7 +93,6 @@ public final class GroupAdminController {
                 WebsiteUrlDTO websiteURL = new WebsiteUrlDTO(websiteInfo.getUrl(), website);
                 websiteURLs.add(websiteURL);
             }
-
             try {
                 this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
             } catch (DataIntegrityViolationException e) {
@@ -105,14 +100,11 @@ public final class GroupAdminController {
                 LOGGER.warn("Warning was non-fatal, continuing without adding websites");
             }
         }
-
         if (createGroupRequest.getSuperGroup() != null) {   // TODO move to service?
             FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(createGroupRequest.getSuperGroup());
             if (superGroup == null) {
                 throw new GroupDoesNotExistResponse();
             }
-
-            this.fkitGroupToSuperGroupService.addRelationship(group, superGroup);
         }
         this.authorityLevelService.addAuthorityLevel(group.getName());
         return new GroupCreatedResponse();
@@ -155,9 +147,9 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         try {
-            String url = ImageITUtils.saveImage(file);
+            String url = ImageUtils.saveImage(file, file.getName());
             this.fkitGroupService.editGroupAvatar(group, url);
-        } catch (IOException e) {
+        } catch (FileNotFoundResponse e) {
             throw new FileNotSavedException();
         }
         return new GroupEditedResponse();
@@ -172,7 +164,8 @@ public final class GroupAdminController {
                 request.getFunction(),
                 request.getName(),
                 request.getPrettyName(),
-                request.getAvatarURL()
+                request.getAvatarURL(),
+                this.fkitSuperGroupService.getGroupDTO(request.getSuperGroup())
         );
     }
 

@@ -40,7 +40,7 @@ const DisplayUserDetails = ({ user, isMe }) => (
     <DigitTranslations
         translations={translations}
         render={text => (
-            <DigitDesign.Card minWidth="300px" maxWidth="600px">
+            <DigitDesign.Card size={{ minWidth: "300px", maxWidth: "600px" }}>
                 <DigitDesign.CardTitle
                     text={
                         user[FIRST_NAME] +

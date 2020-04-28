@@ -1,8 +1,11 @@
 import React from "react";
-
+import translations from "./SetPostNames.view.translations.json";
 import {
-    DigitEditDataCard,
+    DigitButton,
+    DigitDesign,
+    DigitEditData,
     DigitLayout,
+    DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import NewMembershipArray from "./sub-views/new-membership-array";
@@ -18,7 +21,8 @@ import {
     LAST_NAME,
     NICK
 } from "../../../../api/users/props.users.api";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
+import Save from "@material-ui/icons/Save";
 
 function getInitialValues(selectedMemberIds, currentMembers, users, groupId) {
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
@@ -56,53 +60,91 @@ const SetPostNames = ({
     users,
     onNewMembers
 }) => {
-    const [text] = useDigitTranslations();
+    const [text] = useDigitTranslations(translations);
     const history = useHistory();
 
     return (
-        <DigitLayout.Center>
-            <DigitEditDataCard
-                absWidth={"650px"}
-                onSubmit={onNewMembers}
-                keysOrder={["members"]}
-                initialValues={getInitialValues(
-                    selectedMemberIds,
-                    currentMembers,
-                    users,
-                    groupId
-                )}
-                validationSchema={yup.object().shape({
-                    members: yup
-                        .array(
-                            yup
-                                .object()
-                                .shape({
-                                    postId: yup.string().required(),
-                                    unofficialPostName: yup.string().required()
-                                })
-                                .required()
-                        )
-                        .required()
-                })}
-                keysComponentData={{
-                    members: {
-                        component: NewMembershipArray,
-                        componentProps: {
-                            posts,
-                            currentMembers,
-                            groupId
-                        },
-                        array: true
-                    }
-                }}
-                titleText={""}
-                submitText={text.Next}
-                extraButton={{
-                    text: text.Back,
-                    onClick: () => history.goBack()
-                }}
-            />
-        </DigitLayout.Center>
+        <>
+            <DigitDesign.Card>
+                <DigitDesign.CardBody>
+                    <DigitLayout.Row
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                    >
+                        <DigitText.Heading5 text={text.SetPostNames} />
+                        <DigitLayout.Row>
+                            <DigitButton
+                                text={text.Back}
+                                onClick={() => history.goBack()}
+                            />
+                            <DigitButton
+                                text={text.Next}
+                                startIcon={<Save />}
+                                raised
+                                primary
+                                submit
+                                onClick={() => {
+                                    if (selectedMemberIds.length === 0) {
+                                        onNewMembers({ members: [] });
+                                    }
+                                }}
+                                form={"set-post-names"}
+                            />
+                        </DigitLayout.Row>
+                    </DigitLayout.Row>
+                </DigitDesign.CardBody>
+            </DigitDesign.Card>
+            <DigitDesign.Card>
+                <DigitDesign.CardBody>
+                    {selectedMemberIds.length === 0 && (
+                        <DigitText.Title
+                            alignCenter
+                            text={text.NoSelectedMembers}
+                        />
+                    )}
+                    {selectedMemberIds.length > 0 && (
+                        <DigitEditData
+                            formName={"set-post-names"}
+                            size={{ minWidth: "300px" }}
+                            onSubmit={onNewMembers}
+                            keysOrder={["members"]}
+                            initialValues={getInitialValues(
+                                selectedMemberIds,
+                                currentMembers,
+                                users,
+                                groupId
+                            )}
+                            validationSchema={yup.object().shape({
+                                members: yup
+                                    .array(
+                                        yup
+                                            .object()
+                                            .shape({
+                                                postId: yup.string().required(),
+                                                unofficialPostName: yup
+                                                    .string()
+                                                    .required()
+                                            })
+                                            .required()
+                                    )
+                                    .required()
+                            })}
+                            keysComponentData={{
+                                members: {
+                                    component: NewMembershipArray,
+                                    componentProps: {
+                                        posts,
+                                        currentMembers,
+                                        groupId
+                                    },
+                                    array: true
+                                }
+                            }}
+                        />
+                    )}
+                </DigitDesign.CardBody>
+            </DigitDesign.Card>
+        </>
     );
 };
 

@@ -4,23 +4,44 @@ import {
     useDigitTranslations,
     DigitEditDataCard,
     useDigitToast,
+    DigitDesign,
+    DigitText,
     DigitLayout
 } from "@cthit/react-digit-components";
 import * as yup from "yup";
 import translations from "./ResetPasswordFinish.screen.translations";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-import { useHistory } from "react-router";
 import { resetPasswordFinalize } from "../../../../api/reset-password/put.reset-password";
+import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
+import { useLocation } from "react-router-dom";
 
 const ResetPasswordFinish = () => {
     const [text] = useDigitTranslations(translations);
     const [queueToast] = useDigitToast();
-    const history = useHistory();
+    const { search } = useLocation();
+    const accountLocked = search.includes("accountLocked=true");
 
     return (
         <DigitLayout.Center>
+            {accountLocked && (
+                <DigitDesign.Card
+                    size={{ width: "300px" }}
+                    margin={{ bottom: "16px" }}
+                >
+                    <DigitDesign.CardHeader>
+                        <DigitDesign.CardTitle
+                            text={"Hey! You're finally awake!"}
+                        />
+                    </DigitDesign.CardHeader>
+                    <DigitDesign.CardHeaderImage src="/awake.gif" />
+                    <DigitDesign.CardBody>
+                        <DigitText.Text text={text.AccountLocked} />
+                    </DigitDesign.CardBody>
+                </DigitDesign.Card>
+            )}
             <DigitEditDataCard
+                centerFields
                 validationSchema={yup.object().shape({
                     cid: yup.string().required(text.FieldRequired),
                     token: yup.string().required(text.FieldRequired),
@@ -41,10 +62,17 @@ const ResetPasswordFinish = () => {
                 }}
                 onSubmit={(values, actions) => {
                     resetPasswordFinalize(values)
-                        .then(response => {
+                        .then(() => {
                             actions.resetForm();
                             actions.setSubmitting(false);
-                            history.push("/login");
+                            queueToast({
+                                text: text.Success,
+                                duration: 5000
+                            });
+                            setTimeout(() => {
+                                window.location.href =
+                                    getBackendUrl() + "/login";
+                            }, 5000);
                         })
                         .catch(error => {
                             const code = statusCode(error);

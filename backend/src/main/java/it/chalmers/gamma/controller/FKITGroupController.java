@@ -2,7 +2,6 @@ package it.chalmers.gamma.controller;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
@@ -14,7 +13,6 @@ import it.chalmers.gamma.response.group.GetFKITGroupMinifiedResponse.GetFKITGrou
 import it.chalmers.gamma.response.group.GetFKITGroupResponse;
 import it.chalmers.gamma.response.group.GetFKITGroupResponse.GetFKITGroupResponseObject;
 import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.MembershipService;
 
 import java.util.List;
@@ -35,24 +33,20 @@ public final class FKITGroupController {
 
     private final FKITGroupService fkitGroupService;
     private final MembershipService membershipService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public FKITGroupController(
             FKITGroupService fkitGroupService,
-            MembershipService membershipService,
-            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+            MembershipService membershipService) {
         this.fkitGroupService = fkitGroupService;
         this.membershipService = membershipService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @GetMapping("/{id}")
     public GetFKITGroupResponseObject getGroup(@PathVariable("id") String id) {
         final FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
         List<MembershipDTO> minifiedMembers = this.membershipService.getMembershipsInGroup(group);
-        List<FKITSuperGroupDTO> superGroups = this.fkitGroupToSuperGroupService.getSuperGroups(group);
         //List<WebsiteDTO> websites = this.getWebsiteDTO(group);
-        return new GetFKITGroupResponse(group, minifiedMembers, superGroups, null).toResponseObject();
+        return new GetFKITGroupResponse(group, minifiedMembers, null).toResponseObject();
     }
 
     @GetMapping("/minified")
@@ -74,7 +68,6 @@ public final class FKITGroupController {
                 .stream().map(g -> new GetFKITGroupResponse(
                         g,
                         this.membershipService.getMembershipsInGroup(g),
-                        this.fkitGroupToSuperGroupService.getSuperGroups(g),
                         null
                 )).collect(Collectors.toList());
 
@@ -89,7 +82,6 @@ public final class FKITGroupController {
         List<GetFKITGroupResponse> groupResponses = groups.stream().map(g -> new GetFKITGroupResponse(
                 g,
                 this.membershipService.getMembershipsInGroup(g),
-                this.fkitGroupToSuperGroupService.getSuperGroups(g),
                 null
         )).collect(Collectors.toList());
         return new GetActiveFKITGroupsResponse(groupResponses).toResponseObject();

@@ -13,8 +13,7 @@ import {
     DigitSelect,
     DigitTextField,
     useDigitTranslations,
-    DigitCRUD,
-    useGammaIsAdmin
+    DigitCRUD
 } from "@cthit/react-digit-components";
 import translations from "./SuperGroups.translations";
 import {
@@ -26,6 +25,7 @@ import { addSuperGroup } from "../../api/super-groups/post.super-groups.api";
 import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api";
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
 import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -127,7 +127,7 @@ const SuperGroups = () => {
             detailsRenderEnd={one => (
                 <div
                     style={{
-                        marginTop: "8px"
+                        marginTop: "16px"
                     }}
                 >
                     <ShowSubGroups subGroups={one.subGroups} />

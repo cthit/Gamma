@@ -28,19 +28,16 @@ import org.springframework.stereotype.Service;
 public class AuthorityService {
 
     private final AuthorityRepository authorityRepository;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
     private final FKITSuperGroupService fkitSuperGroupService;
     private final PostService postService;
     private final AuthorityLevelService authorityLevelService;
     private final MembershipService membershipService;
 
     public AuthorityService(AuthorityRepository authorityRepository,
-                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService,
                             FKITSuperGroupService fkitSuperGroupService,
                             PostService postService,
                             AuthorityLevelService authorityLevelService, MembershipService membershipService) {
         this.authorityRepository = authorityRepository;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.postService = postService;
         this.authorityLevelService = authorityLevelService;
@@ -110,18 +107,17 @@ public class AuthorityService {
     public List<AuthorityLevelDTO> getAuthorities(List<MembershipDTO> memberships) {
         List<AuthorityLevelDTO> authorityLevels = new ArrayList<>();
         for (MembershipDTO membership : memberships) {
-            List<AuthorityDTO> authorities = this.fkitGroupToSuperGroupService
-                    .getSuperGroups(membership.getFkitGroupDTO())
-                    .stream().map(group -> this.getAuthorityLevel(group,
-                            membership.getPost())).collect(Collectors.toList());
-            for (AuthorityDTO authority : authorities) {
-                if (authority != null) {
-                    Calendar start = membership.getFkitGroupDTO().getBecomesActive();
-                    Calendar end = membership.getFkitGroupDTO().getBecomesInactive();
-                    Calendar now = Calendar.getInstance();
-                    if (now.after(start) && now.before(end)) {
-                        authorityLevels.add(authority.getAuthorityLevelDTO());
-                    }
+            AuthorityDTO authority = this.getAuthorityLevel(
+                    membership.getFkitGroupDTO().getSuperGroup(),
+                    membership.getPost()
+            );
+
+            if (authority != null) {
+                Calendar start = membership.getFkitGroupDTO().getBecomesActive();
+                Calendar end = membership.getFkitGroupDTO().getBecomesInactive();
+                Calendar now = Calendar.getInstance();
+                if (now.after(start) && now.before(end)) {
+                    authorityLevels.add(authority.getAuthorityLevelDTO());
                 }
             }
         }

@@ -59,7 +59,8 @@ public class ITUser {
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    @Column(name = "avatar_url", length = 255)
+    @Column(name = "avatar_url", length = 255, nullable = false)
+    @ColumnDefault("default.jpg")
     private String avatarUrl;
 
     @Column(name = "gdpr", nullable = false)
@@ -93,6 +94,7 @@ public class ITUser {
         this.createdAt = Instant.now();
         this.lastModifiedAt = Instant.now();
         this.activated = true;
+        this.avatarUrl = "default.jpg";
     }
 
     public ITUserDTO toDTO() {

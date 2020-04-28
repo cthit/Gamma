@@ -1,7 +1,6 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
@@ -18,7 +17,6 @@ import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
@@ -26,7 +24,6 @@ import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,17 +50,14 @@ public final class UsersAdminController {
 
 
     private final MembershipService membershipService;
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public UsersAdminController(
             ITUserService itUserService,
             UserWebsiteService userWebsiteService,
-            MembershipService membershipService, FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.userWebsiteService = userWebsiteService;
-
         this.membershipService = membershipService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @PutMapping("/{id}/change_password")
@@ -117,10 +111,7 @@ public final class UsersAdminController {
         // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
         //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
-        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
-                this.fkitGroupToSuperGroupService::getRelationships)
-                .flatMap(Collection::stream).collect(Collectors.toList());
-        return new GetITUserResponse(user, relationships, null).toResponseObject();
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @GetMapping()
@@ -128,10 +119,7 @@ public final class UsersAdminController {
 
         List<ITUserDTO> users = this.itUserService.loadAllUsers();
         List<GetITUserResponse> userResponses = users.stream()
-                .map(u -> new GetITUserResponse(u,
-                        this.membershipService.getUsersGroupDTO(u).stream().map(
-                                this.fkitGroupToSuperGroupService::getRelationships)
-                                .flatMap(Collection::stream).collect(Collectors.toList()),
+                .map(u -> new GetITUserResponse(u, this.membershipService.getUsersGroupDTO(u),
                         null))
                 .collect(Collectors.toList());
         return new GetAllITUsersResponse(userResponses).toResponseObject();

@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -48,6 +49,10 @@ public class FKITGroup {
     @Column(name = "email")
     private String email;
 
+    @JoinColumn(name = "fkit_super_group")
+    @ManyToOne(fetch = FetchType.EAGER)
+    private FKITSuperGroup superGroup;
+
     public FKITGroup() {
         this.id = UUID.randomUUID();
     }
@@ -62,7 +67,8 @@ public class FKITGroup {
                 this.function,
                 this.name,
                 this.prettyName,
-                this.avatarURL);
+                this.avatarURL,
+                this.superGroup.toDTO());
     }
 
     public UUID getId() {
@@ -137,6 +143,14 @@ public class FKITGroup {
         this.email = email.toLowerCase();
     }
 
+    public FKITSuperGroup getSuperGroup() {
+        return this.superGroup;
+    }
+
+    public void setSuperGroup(FKITSuperGroup superGroup) {
+        this.superGroup = superGroup;
+    }
+
     @Override
     public String toString() {
         return "FKITGroup{"
@@ -148,7 +162,8 @@ public class FKITGroup {
                 + ", func=" + this.function
                 + ", becomesActive=" + this.becomesActive
                 + ", becomesInactive=" + this.becomesInactive
-                + ", email='" + this.email + '\''
+                + ", email=" + this.email + '\''
+                + ", superGroup='" + this.superGroup
                 + '}';
     }
 

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
     DigitStepper,
-    useDigitTranslations,
-    useGammaIsAdmin
+    useDigitTranslations
 } from "@cthit/react-digit-components";
-import { Route, Switch, useHistory, useLocation } from "react-router";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { NAME } from "../../api/groups/props.groups.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import translations from "./Members.translations";
@@ -14,6 +13,7 @@ import SelectMembers from "./views/select-members";
 import { getPosts } from "../../api/posts/get.posts.api";
 import { getUsersMinified } from "../../api/users/get.users.api";
 import { getGroup } from "../../api/groups/get.groups.api";
+import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 
 const Members = () => {
     const history = useHistory();

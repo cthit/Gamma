@@ -1,7 +1,6 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITGroupToSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
@@ -11,7 +10,6 @@ import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.requests.DeleteMeRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.EditedProfilePictureResponse;
 import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
@@ -26,20 +24,17 @@ import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
 import it.chalmers.gamma.response.user.UserCreatedResponse;
 import it.chalmers.gamma.response.user.UserDeletedResponse;
 import it.chalmers.gamma.response.user.UserEditedResponse;
+import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.FKITGroupToSuperGroupService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
-import it.chalmers.gamma.util.ImageITUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -71,20 +66,17 @@ public final class ITUserController {
     private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-    private final FKITGroupToSuperGroupService fkitGroupToSuperGroupService;
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             UserWebsiteService userWebsiteService,
-                            MembershipService membershipService,
-                            FKITGroupToSuperGroupService fkitGroupToSuperGroupService) {
+                            MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
         this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
-        this.fkitGroupToSuperGroupService = fkitGroupToSuperGroupService;
     }
 
     @PostMapping("/create")
@@ -146,10 +138,7 @@ public final class ITUserController {
         //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
-                this.fkitGroupToSuperGroupService::getRelationships)
-                .flatMap(Collection::stream).collect(Collectors.toList());
-        return new GetITUserResponse(user, relationships, null).toResponseObject();
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @GetMapping("/minified")
@@ -171,10 +160,7 @@ public final class ITUserController {
         //      );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        List<FKITGroupToSuperGroupDTO> relationships = groups.stream().map(
-                this.fkitGroupToSuperGroupService::getRelationships)
-                .flatMap(Collection::stream).collect(Collectors.toList());
-        return new GetITUserResponse(user, relationships, null).toResponseObject();
+        return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 
     @PutMapping("/me")
@@ -195,17 +181,13 @@ public final class ITUserController {
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        if (user != null) {
-            try {
-                String fileUrl = ImageITUtils.saveImage(file);
-                this.itUserService.editProfilePicture(user, fileUrl);
-            } catch (IOException e) {
-                throw new FileNotSavedException();
-            }
-
+        if (user == null) {
+            throw new UserNotFoundResponse();
+        } else {
+            this.itUserService.editProfilePicture(user, file);
             return new EditedProfilePictureResponse();
         }
-        throw new FileNotSavedException();
+
     }
 
     @PutMapping("/me/change_password")
