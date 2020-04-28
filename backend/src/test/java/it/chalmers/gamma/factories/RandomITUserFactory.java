@@ -2,15 +2,13 @@ package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
-import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Year;
-import static org.mockito.Mockito.*;
 import java.util.UUID;
 
 public class RandomITUserFactory {
+
     public static ITUserDTO generateITUser(String username) {
         return new ITUserDTO(
                 UUID.randomUUID(),

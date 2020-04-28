@@ -1,7 +1,7 @@
 package it.chalmers.gamma.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 public class JSONUtils {
     public static String objectToJSONString(Object o) {

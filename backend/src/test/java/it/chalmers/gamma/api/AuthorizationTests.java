@@ -4,12 +4,12 @@ import it.chalmers.gamma.Endoints.Endpoint;
 import it.chalmers.gamma.Endoints.Endpoints;
 import it.chalmers.gamma.Endoints.Method;
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockDatabaseGeneratorFactory;
-import it.chalmers.gamma.factories.RandomITUserFactory;
-import it.chalmers.gamma.utils.JSONUtils;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static it.chalmers.gamma.utils.ResponseUtils.expectedStatus;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
@@ -46,60 +47,68 @@ public class AuthorizationTests {
     private MockMvc mockMvc;
 
     @Autowired
-    MockDatabaseGeneratorFactory mockDatabaseGeneratorFactory;
+    private MockDatabaseGeneratorFactory mockDatabaseGeneratorFactory;
 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
+        this.mockDatabaseGeneratorFactory.generateNewMock();
 
     }
 
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = "admin", authorities = "admin")
     @Test
-    public void testAllEndpointsAsAdmin() throws Exception {
-        System.out.println("got here");
-        mockMvc.perform(get("/users/minified", String.class)).andDo(print());
+    public void testAllGETEndpointsAsAdmin() throws Exception {
+        testGetEndpoints(
+                Stream.of(
+                        Endpoints.getAuthorizedEndpoints(),
+                        Endpoints.getNonAuthorizedEndpoints(),
+                        Endpoints.getNormalUserEndpoints())
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList()), new ArrayList<>());
     }
 
     @WithMockUser(username = "normal")
     @Test       // TODO Generate and populate database with mock data
-    public void testAllEndpointsAsNormalUser() throws Exception {
-        mockDatabaseGeneratorFactory.generateNewMock();
-       List<Endpoint> normalUserEndpoints = Endpoints.getNormalUserEndpoints();
-       for (Endpoint endpoint : normalUserEndpoints) {
-           testEndpoint(String.format(endpoint.getPath(), mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getC())),
-                   endpoint.getMethod(), true);
-       }
+    public void testAllGETEndpointsAsNormalUser() throws Exception {
+        testGetEndpoints(
+                Stream.concat(
+                        Endpoints.getNormalUserEndpoints().stream(),
+                        Endpoints.getNonAuthorizedEndpoints().stream())
+                        .collect(Collectors.toList()),
+                Endpoints.getAuthorizedEndpoints());
     }
 
     @WithAnonymousUser
     @Test
-    public void testAllEndpointsAsAnonymous() throws Exception {
-
+    public void testAllGETEndpointsAsAnonymous() throws Exception {
+        testGetEndpoints(Endpoints.getNonAuthorizedEndpoints(),
+                Stream.concat(
+                        Endpoints.getNormalUserEndpoints().stream(),
+                        Endpoints.getAuthorizedEndpoints().stream())
+                        .collect(Collectors.toList()));
     }
 
-    private void testEndpoint(String endpoint, Method method, boolean authorized) throws Exception {
-        System.out.println(endpoint + method.name());
-            switch (method) {
-                case GET:
-                    this.mockMvc.perform(get(endpoint, String.class)).andExpect(expectedStatus(authorized));
-                    break;
-                case PUT:
-                    this.mockMvc.perform(put(endpoint, String.class)).andExpect(expectedStatus(authorized));
-                    break;
-                case POST:
-                    this.mockMvc.perform(post(endpoint, String.class).contentType(MediaType.APPLICATION_JSON)
-                            .content(JSONUtils.objectToJSONString(
-                                    RandomITUserFactory.generateValidAdminCreateUserRequest())))
-                            .andExpect(expectedStatus(authorized));
-                    break;
-                case DELETE:
-                    this.mockMvc.perform(delete(endpoint, String.class)).andExpect(expectedStatus(authorized));
-                    break;
-                default:
-                    break;
-            }
+    private void testGetEndpoints(List<Endpoint> allowedEndpoints, List<Endpoint> nonAllowedEndpoints) throws Exception {
+        for (Endpoint endpoint : allowedEndpoints) {
+            this.testGetEndpoint(String.format(endpoint.getPath(),
+                    mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getMockClass())),
+                    endpoint.getMethod(), true);
+        }
+        for (Endpoint endpoint : nonAllowedEndpoints) {
+            this.testGetEndpoint(String.format(endpoint.getPath(),
+                    mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getMockClass())),
+                    endpoint.getMethod(), false);
+        }
+    }
+
+    private void testGetEndpoint(String endpoint, Method method, boolean authorized) throws Exception {
+        System.out.println(endpoint + " " + method);
+        if (method.equals(Method.GET)) {
+            this.mockMvc.perform(get(endpoint, String.class)).andExpect(expectedStatus(authorized));
+        }
+
     }
 }

@@ -5,6 +5,7 @@ import it.chalmers.gamma.factories.RandomITUserFactory;
 
 import it.chalmers.gamma.utils.JSONUtils;
 import it.chalmers.gamma.utils.ResponseUtils;
+import java.util.Objects;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,9 +58,9 @@ public class AdminITUserTests {
     private void testAdminCreateUser(boolean authorized) throws Exception{
         this.mockMvc.perform(MockMvcRequestBuilders.post(
                 "/admin/users")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(JSONUtils.objectToJSONString(
-                        RandomITUserFactory.generateValidAdminCreateUserRequest())))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(Objects.requireNonNull(JSONUtils.objectToJSONString(
+                        RandomITUserFactory.generateValidAdminCreateUserRequest()))))
                 .andExpect(ResponseUtils.expectedStatus(authorized));
     }
 

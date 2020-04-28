@@ -3,18 +3,18 @@ package it.chalmers.gamma.Endoints;
 public class Endpoint {
     private final String path;
     private final Method method;
-    private final Class c;
+    private final Class mockClass;
             // Add Permission?
     public Endpoint(String path, Method method) {
         this.path = path;
         this.method = method;
-        this.c = null;
+        this.mockClass = null;
     }
 
     public Endpoint(String path, Method method, Class c) {
         this.path = path;
         this.method = method;
-        this.c = c;
+        this.mockClass = c;
     }
 
     public String getPath() {
@@ -25,7 +25,16 @@ public class Endpoint {
         return method;
     }
 
-    public Class getC() {
-        return c;
+    public Class getMockClass() {
+        return mockClass;
+    }
+
+    @Override
+    public String toString() {
+        return "Endpoint{"
+                + "path='" + this.path + '\''
+                + ", method=" + this.method
+                + ", mockClass=" + this.mockClass
+                + '}';
     }
 }

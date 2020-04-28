@@ -1,5 +1,6 @@
 package it.chalmers.gamma.utils;
 
+import it.chalmers.gamma.db.entity.Text;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -52,6 +53,10 @@ public final class GenerationUtils {
                 generateRandomString(generateIntBetween(1, 15), CharacterTypes.LOWERCASE),
                 generateRandomString(generateIntBetween(1, 15), CharacterTypes.LOWERCASE)
         );
+    }
+
+    public static Text generateText() {
+        return new Text(generateRandomString(), generateRandomString());
     }
 
     /**
