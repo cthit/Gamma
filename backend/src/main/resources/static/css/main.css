@@ -18,11 +18,34 @@ canvas {
     z-index: 1;
 }
 
-@font-face {
-    font-family: 'Matrix';
-    src: url('matrix_code_nfi.ttf') format('truetype');
+body {
+    background: black;
+    margin: 0;
 }
-html, body { background:black; width:100%; height:100%; margin: 0; font-family: Matrix; }
+
+.fadeInBackground {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+
+    animation-name: fadeIn;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+    animation-duration: 0.5s;
+    animation-fill-mode:forwards;
+
+    object-fit: cover;
+    object-position: center;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 
 footer {
     text-align: center;
