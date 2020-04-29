@@ -32,6 +32,9 @@ import {
 import { addUser } from "../../api/users/post.users.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 const Users = () => {
     const admin = useGammaIsAdmin();
@@ -163,6 +166,11 @@ const Users = () => {
                     </>
                 ) : null
             }
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

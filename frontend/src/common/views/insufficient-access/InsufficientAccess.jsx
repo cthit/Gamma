@@ -14,7 +14,9 @@ const InsufficientAccess = () => {
     return (
         <DigitLayout.Center>
             <DigitDesign.Card size={{ width: "300px" }}>
-                <DigitDesign.CardTitle text={text.InsufficientAccess} />
+                <DigitDesign.CardHeader>
+                    <DigitDesign.CardTitle text={text.InsufficientAccess} />
+                </DigitDesign.CardHeader>
                 <DigitDesign.CardHeaderImage src="/theoffice-no-admin.gif" />
                 <DigitDesign.CardBody>
                     <DigitText.Text text={text.YouDontHaveAccess} />

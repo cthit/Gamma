@@ -22,6 +22,9 @@ import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
 import { NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -178,6 +181,11 @@ const Posts = () => {
             }
             deleteButtonText={() => text.DeletePost}
             detailsTitle={() => text.Details}
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

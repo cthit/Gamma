@@ -16,6 +16,9 @@ import { deleteClient } from "../../api/clients/delete.clients.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { CLIENT_NAME } from "../../api/clients/props.clients.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 const Clients = () => {
     const [openDialog] = useDigitCustomDialog();
@@ -161,6 +164,11 @@ const Clients = () => {
             backButtonText={text.Back}
             detailsButtonText={text.Details}
             deleteButtonText={data => text.Delete + " " + data[CLIENT_NAME]}
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

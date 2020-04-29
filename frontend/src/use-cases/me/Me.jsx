@@ -29,6 +29,9 @@ import MeGroups from "./screens/me-groups";
 import { useHistory } from "react-router-dom";
 import MeAvatar from "./screens/me-avatar";
 import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
@@ -136,6 +139,11 @@ const Me = () => {
                                 }
                             }
                         }}
+                        on401={on401}
+                        render404={() => <FourOFour />}
+                        render500={(error, reset) => (
+                            <FiveZeroZero error={error} reset={reset} />
+                        )}
                     />
                 )}
             />

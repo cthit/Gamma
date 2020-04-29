@@ -13,8 +13,6 @@ const MeGroups = () => {
     const user = useGammaUser();
 
     const [activeGroups, pastGroups, futureGroups] = useMemo(() => {
-        console.log(user);
-
         const now = new Date().getTime();
 
         return user == null

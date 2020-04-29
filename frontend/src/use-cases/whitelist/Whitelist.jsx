@@ -15,6 +15,9 @@ import * as yup from "yup";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
@@ -46,7 +49,10 @@ const Whitelist = () => {
                 }
             }}
             formValidationSchema={yup.object().shape({
-                cid: yup.string().required()
+                cid: yup
+                    .string()
+                    .min(4)
+                    .required()
             })}
             formInitialValues={{
                 cid: ""
@@ -89,6 +95,11 @@ const Whitelist = () => {
             detailsTitle={data => data.cid}
             deleteButtonText={data => text.Delete + " " + data.cid}
             detailsButtonText={text.Details}
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

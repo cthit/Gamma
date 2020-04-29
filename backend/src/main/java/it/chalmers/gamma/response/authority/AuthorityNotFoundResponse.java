@@ -5,6 +5,6 @@ import org.springframework.http.HttpStatus;
 
 public class AuthorityNotFoundResponse extends CustomResponseStatusException {
     public AuthorityNotFoundResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "AUTHORITY_NOT_FOUND");
+        super(HttpStatus.NOT_FOUND, "AUTHORITY_NOT_FOUND");
     }
 }

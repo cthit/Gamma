@@ -9,6 +9,9 @@ import translations from "./ActivationCodes.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import { NAME } from "../../api/super-groups/props.super-groups.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);
@@ -60,6 +63,11 @@ const ActivationCodes = () => {
             detailsButtonText={text.Details}
             backButtonText={text.Back}
             dateAndTimeProps={["createdAt"]}
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

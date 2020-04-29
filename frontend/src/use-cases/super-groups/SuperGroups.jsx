@@ -26,6 +26,9 @@ import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
 import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 function generateValidationSchema(text) {
     const schema = {};
@@ -171,6 +174,11 @@ const SuperGroups = () => {
             updateButtonText={data => text.Update + " " + data[NAME]}
             deleteButtonText={data => text.Delete + " " + data[NAME]}
             detailsTitle={data => data[NAME]}
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

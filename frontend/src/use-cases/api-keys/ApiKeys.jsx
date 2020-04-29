@@ -15,6 +15,9 @@ import { deleteApiKey } from "../../api/api-keys/delete.api-keys.api";
 import translations from "./ApiKeys.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);
@@ -130,6 +133,11 @@ const ApiKeys = () => {
             deleteButtonText={data => text.Delete + " " + data.name}
             createButtonText={text.Create}
             createTitle={text.CreateNewApiKey}
+            on401={on401}
+            render404={() => <FourOFour />}
+            render500={(error, reset) => (
+                <FiveZeroZero error={error} reset={reset} />
+            )}
         />
     );
 };

@@ -7,9 +7,13 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
-const FiveZeroZero = ({ getMe }) => {
+const FiveZeroZero = ({ getMe, reset, error }) => {
     const [text] = useDigitTranslations(translations);
     const [tryAgainButtonDisabled, setTryAgainButtonDisabled] = useState(false);
+
+    if (error != null) {
+        console.log(error);
+    }
 
     return (
         <DigitDesign.Card
@@ -32,9 +36,15 @@ const FiveZeroZero = ({ getMe }) => {
                     raised
                     onClick={() => {
                         setTryAgainButtonDisabled(true);
-                        getMe()
-                            .then(() => setTryAgainButtonDisabled(false))
-                            .catch(() => setTryAgainButtonDisabled(false));
+                        if (getMe != null) {
+                            getMe()
+                                .then(() => setTryAgainButtonDisabled(false))
+                                .catch(() => setTryAgainButtonDisabled(false));
+                        } else if (reset != null) {
+                            reset();
+                        } else {
+                            window.location.reload();
+                        }
                     }}
                 />
             </DigitDesign.CardButtons>
