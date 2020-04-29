@@ -16,10 +16,8 @@ import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
-import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.service.WebsiteService;
@@ -33,11 +31,7 @@ import org.springframework.stereotype.Component;
 public class MockDatabaseGeneratorFactory {
 
     @Autowired
-    private ITUserService userService;
-    @Autowired
     private PostService postService;
-    @Autowired
-    private FKITGroupService groupService;
     @Autowired
     private FKITSuperGroupService superGroupService;
     @Autowired
@@ -57,6 +51,11 @@ public class MockDatabaseGeneratorFactory {
     @Autowired
     private MembershipService membershipService;
 
+    @Autowired
+    private MockITUserFactory mockITUserFactory;
+    @Autowired
+    private MockFKITGroupFactory mockFKITGroupFactory;
+
 
     private ITUserDTO user;
     private PostDTO post;
@@ -74,21 +73,14 @@ public class MockDatabaseGeneratorFactory {
 
     public void generateNewMock() { // TODO Remove the clutter in this method
         if (!hasGeneratedMock) {
-            ITUserDTO generatedUser = RandomITUserFactory.generateITUser("user");
-            this.user = this.userService.createUser(
-                    generatedUser.getNick(),
-                    generatedUser.getFirstName(),
-                    generatedUser.getLastName(),
-                    generatedUser.getCid(),
-                    generatedUser.getAcceptanceYear(),
-                    generatedUser.isUserAgreement(),
-                    generatedUser.getEmail(),
-                    "password");
+            this.user = this.mockITUserFactory.saveUser(this.mockITUserFactory.generateITUser("user", true));
             this.post = this.postService.addPost(new Text());
             this.superGroup =
                     this.superGroupService.createSuperGroup(RandomSuperGroupFactory.generateSuperGroup("supergroup"));
-            this.group = this.groupService.createGroup(RandomFKITGroupFactory
-                    .generateActiveFKITGroup("group", superGroup));
+            this.group = this.mockFKITGroupFactory.saveGroup(mockFKITGroupFactory.generateActiveFKITGroup(
+                    "group",
+                    superGroup
+            ));
             this.whitelist = this.whitelistService.addWhiteListedCID("user");
             this.activationCode = this.activationCodeService.saveActivationCode(
                     this.whitelist,

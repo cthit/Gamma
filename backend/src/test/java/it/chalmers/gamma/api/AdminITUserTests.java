@@ -1,7 +1,7 @@
 package it.chalmers.gamma.api;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.factories.RandomITUserFactory;
+import it.chalmers.gamma.factories.MockITUserFactory;
 
 import it.chalmers.gamma.utils.JSONUtils;
 import it.chalmers.gamma.utils.ResponseUtils;
@@ -34,7 +34,10 @@ public class AdminITUserTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
+
+    @Autowired
+    private MockITUserFactory mockITUserFactory;
 
     @Before
     public void setup() {
@@ -60,7 +63,7 @@ public class AdminITUserTests {
                 "/admin/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Objects.requireNonNull(JSONUtils.objectToJSONString(
-                        RandomITUserFactory.generateValidAdminCreateUserRequest()))))
+                        mockITUserFactory.generateValidAdminCreateUserRequest()))))
                 .andExpect(ResponseUtils.expectedStatus(authorized));
     }
 

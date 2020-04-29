@@ -3,13 +3,33 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
+import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Year;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class RandomITUserFactory {
+@Component
+public class MockITUserFactory {
 
-    public static ITUserDTO generateITUser(String username) {
+    @Autowired
+    private ITUserService userService;
+
+    private static MockITUserFactory instance;
+
+    private MockITUserFactory() {
+
+    }
+
+    public static MockITUserFactory getInstance() {
+        if(instance == null) {
+            instance = new MockITUserFactory();
+        }
+        return instance;
+    }
+
+    public ITUserDTO generateITUser(String username, boolean activated) {
         return new ITUserDTO(
                 UUID.randomUUID(),
                 username,
@@ -24,19 +44,19 @@ public class RandomITUserFactory {
                 true,
                 false,
                 Year.of(GenerationUtils.generateIntBetween(2001, 2020)),
-                true);
+                activated);
     }
 
     /**
      * Generate User with admin privileges named "admin"
      * @return
      */
-    public static ITUserDTO generateAdminUser() {       // TODO
-        ITUserDTO user = generateITUser("admin");
+    public ITUserDTO generateAdminUser() {       // TODO
+        ITUserDTO user = this.generateITUser("admin", true);
         return user;
     }
 
-    public static AdminViewCreateITUserRequest generateValidAdminCreateUserRequest() {
+    public AdminViewCreateITUserRequest generateValidAdminCreateUserRequest() {
         AdminViewCreateITUserRequest request = new AdminViewCreateITUserRequest();
         request.setAcceptanceYear(GenerationUtils.generateIntBetween(2001, 2020));
         request.setEmail(GenerationUtils.generateEmail());
@@ -48,5 +68,20 @@ public class RandomITUserFactory {
         request.setUserAgreement(true);
         request.setCid(GenerationUtils.generateRandomString(10, GenerationUtils.CharacterTypes.LOWERCASE));
         return request;
+    }
+
+    public ITUserDTO saveUser(ITUserDTO userDTO) {
+        ITUserDTO user = this.userService.createUser(
+                userDTO.getId(),
+                userDTO.getNick(),
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
+                userDTO.getCid(),
+                userDTO.getAcceptanceYear(),
+                userDTO.isUserAgreement(),
+                userDTO.getEmail(),
+                "password"
+        );
+        return userService.setAccountActivated(user, userDTO.isActivated());
     }
 }
