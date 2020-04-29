@@ -16,19 +16,6 @@ public class MockITUserFactory {
     @Autowired
     private ITUserService userService;
 
-    private static MockITUserFactory instance;
-
-    private MockITUserFactory() {
-
-    }
-
-    public static MockITUserFactory getInstance() {
-        if(instance == null) {
-            instance = new MockITUserFactory();
-        }
-        return instance;
-    }
-
     public ITUserDTO generateITUser(String username, boolean activated) {
         return new ITUserDTO(
                 UUID.randomUUID(),

@@ -17,7 +17,6 @@ import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.service.WebsiteService;
@@ -41,8 +40,6 @@ public class MockDatabaseGeneratorFactory {
     @Autowired
     private AuthorityService authorityService;
     @Autowired
-    private ITClientService clientService;
-    @Autowired
     private WhitelistService whitelistService;
     @Autowired
     private WebsiteService websiteService;
@@ -55,6 +52,8 @@ public class MockDatabaseGeneratorFactory {
     private MockITUserFactory mockITUserFactory;
     @Autowired
     private MockFKITGroupFactory mockFKITGroupFactory;
+    @Autowired
+    private MockITClientFactory mockITClientFactory;
 
 
     private ITUserDTO user;
@@ -90,10 +89,9 @@ public class MockDatabaseGeneratorFactory {
             this.apiKey = this.apiKeyService.getApiKeyDetails("client");
             this.authorityLevel = this.authorityLevelService.addAuthorityLevel("test");
             this.authority = this.authorityService.setAuthorityLevel(this.superGroup, this.post, this.authorityLevel);
-            this.client = this.clientService.createITClient(
-                    GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.LOWERCASE),
-                    GenerationUtils.generateText(),
-                    GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.LOWERCASE));
+            this.client = this.mockITClientFactory.saveClient(this.mockITClientFactory.generateClient(
+                    GenerationUtils.generateRandomString()
+            ));
             this.website = this.websiteService.addPossibleWebsite(
                     GenerationUtils.generateRandomString(),
                     GenerationUtils.generateRandomString());

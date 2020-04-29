@@ -96,7 +96,8 @@ dependencies {
             'org.springframework:spring-test:5.2.5.RELEASE',
             'org.springframework.boot:spring-boot-test-autoconfigure:2.2.6.RELEASE',
             'org.springframework.boot:spring-boot-test:2.2.6.RELEASE',
-            'junit:junit:4.13'
+            'junit:junit:4.13',
+            'org.mockito:mockito-all:1.10.19'
     )
 
     testRuntimeOnly(

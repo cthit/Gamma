@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -53,7 +54,7 @@ public class EndpointGETTests {
 
     }
 
-    @WithMockUser(username = "admin", authorities = "admin")
+    @WithUserDetails("admin")
     @Test
     public void testAllGETEndpointsAsAdmin() throws Exception {
         testGetEndpoints(

@@ -3,6 +3,7 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.response.whitelist.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.util.UUIDUtil;
 
@@ -31,6 +32,9 @@ public class WhitelistService {
      */
     public WhitelistDTO addWhiteListedCID(String cid) {
         Whitelist whitelistedCID = new Whitelist(cid);
+        if (this.whitelistRepository.existsByCid(cid)) {
+            throw new WhitelistAlreadyAddedException();
+        }
         return this.whitelistRepository.save(whitelistedCID).toDTO();
     }
 

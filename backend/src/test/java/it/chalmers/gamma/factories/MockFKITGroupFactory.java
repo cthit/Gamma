@@ -15,19 +15,6 @@ public class MockFKITGroupFactory {
     @Autowired
     private FKITGroupService groupService;
 
-    private static MockFKITGroupFactory instance;
-
-    private MockFKITGroupFactory() {
-
-    }
-
-    public static MockFKITGroupFactory getInstance() {
-        if (instance == null) {
-            instance = new MockFKITGroupFactory();
-        }
-        return instance;
-    }
-
     public FKITGroupDTO generateActiveFKITGroup(String groupName, FKITSuperGroupDTO superGroupDTO) {
         Calendar current = Calendar.getInstance();
         Calendar nextYear = Calendar.getInstance();
