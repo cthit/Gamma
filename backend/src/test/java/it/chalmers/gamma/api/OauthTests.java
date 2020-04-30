@@ -123,7 +123,6 @@ public class OauthTests {
                         .generateClient(redirect));
         String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());
         MvcResult result = this.mockMvc.perform(get(query)).andReturn();
-        System.out.println(result.getResponse().getRedirectedUrl());
         String code = Objects.requireNonNull(result.getResponse().getRedirectedUrl()).split("code=")[1];
         String tokenQuery = JSONUtils.toFormUrlEncoded(
 

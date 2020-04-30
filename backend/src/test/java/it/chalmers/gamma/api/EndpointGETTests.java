@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static it.chalmers.gamma.utils.ResponseUtils.expectedStatus;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -109,7 +110,7 @@ public class EndpointGETTests {
     private void testGetEndpoint(String endpoint, Method method, boolean authorized) throws Exception {
         if (method.equals(Method.GET)) {
             LOGGER.info(String.format("testing %s", endpoint));
-            this.mockMvc.perform(get(endpoint, String.class)).andExpect(expectedStatus(authorized));
+            this.mockMvc.perform(get(endpoint, String.class)).andExpect(expectedStatus(authorized)).andDo(print());
         }
 
     }
