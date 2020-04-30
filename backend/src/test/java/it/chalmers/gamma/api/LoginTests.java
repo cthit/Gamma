@@ -5,6 +5,7 @@ import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.factories.MockDatabaseGeneratorFactory;
 import it.chalmers.gamma.factories.MockITUserFactory;
+import it.chalmers.gamma.utils.GenerationUtils;
 import it.chalmers.gamma.utils.JSONUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,11 @@ public class LoginTests {
     @Test
     public void testSuccessfulLogin() throws Exception {
         ITUserDTO user = this.mockITUserFactory.saveUser(
-                this.mockITUserFactory.generateITUser("user", true));
+                this.mockITUserFactory.generateITUser(
+                        GenerationUtils.generateRandomString(
+                                10,
+                                GenerationUtils.CharacterTypes.LOWERCASE),
+                        true));
         String request = JSONUtils.toFormUrlEncoded(
                 new JSONParameter("username", user.getCid()),
                 new JSONParameter("password", "password")
