@@ -66,7 +66,7 @@ public final class AuthorityAdminController {
         PostDTO post = this.postService.getPostDTO(request.getPost());
         FKITSuperGroupDTO group = this.fkitSuperGroupService.getGroupDTO(request.getSuperGroup());
         AuthorityLevelDTO level = this.authorityLevelService.getAuthorityLevelDTO(request.getAuthority());
-        this.authorityService.setAuthorityLevel(group, post, level);
+        this.authorityService.createAuthority(group, post, level);
         return new AuthorityAddedResponse();
     }
 

@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
-import it.chalmers.gamma.requests.AddAuthorityLevelRequest;
 import it.chalmers.gamma.requests.AddAuthorityRequest;
 import it.chalmers.gamma.service.AuthorityService;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class MockAuthorityFactory {
     }
 
     public AuthorityDTO saveAuthority(AuthorityDTO authority) {
-        return this.authorityService.setAuthorityLevel(
+        return this.authorityService.createAuthority(
                 authority.getFkitSuperGroup(),
                 authority.getPost(),
                 authority.getAuthorityLevelDTO());

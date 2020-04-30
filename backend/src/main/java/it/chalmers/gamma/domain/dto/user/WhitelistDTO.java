@@ -7,9 +7,8 @@ public class WhitelistDTO {
     private UUID id;
     private String cid;
 
-
     public WhitelistDTO() {
-
+        // Needed for Jackson serialization
     }
 
     public WhitelistDTO(UUID id, String cid) {

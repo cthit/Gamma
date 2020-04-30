@@ -71,7 +71,8 @@ public class MockITUserFactory {
                 userDTO.getEmail(),
                 "password"
         );
-        return userService.setAccountActivated(user, userDTO.isActivated());
+        userService.setAccountActivated(user, userDTO.isActivated());
+        return this.userService.getITUser(user.getCid());
     }
 
     public CreateITUserRequest createValidCreateRequest(ITUserDTO user, ActivationCodeDTO activationCode) {

@@ -31,10 +31,10 @@ public class WhitelistService {
      * @return a copy of the whitelist object that is created
      */
     public WhitelistDTO addWhiteListedCID(String cid) {
-        Whitelist whitelistedCID = new Whitelist(cid);
         if (this.whitelistRepository.existsByCid(cid)) {
             throw new WhitelistAlreadyAddedException();
         }
+        Whitelist whitelistedCID = new Whitelist(cid);
         return this.whitelistRepository.save(whitelistedCID).toDTO();
     }
 
@@ -70,7 +70,7 @@ public class WhitelistService {
      * @return the whitelist object that has corresponding GROUP_ID
      */
     public WhitelistDTO getWhitelist(String id) {
-        if(UUIDUtil.validUUID(id)) {
+        if (UUIDUtil.validUUID(id)) {
             return this.whitelistRepository.findById(UUID.fromString(id))
                     .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
         }

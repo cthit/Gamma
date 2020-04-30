@@ -11,7 +11,6 @@ import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
 
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.util.TokenUtils;
 
 import javax.validation.Valid;
 

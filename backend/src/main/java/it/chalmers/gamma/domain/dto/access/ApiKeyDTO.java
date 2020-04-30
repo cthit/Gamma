@@ -50,7 +50,7 @@ public class ApiKeyDTO {
 
     @JsonIgnore
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     @Override

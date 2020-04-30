@@ -44,7 +44,11 @@ public class AuthorityService {
         this.membershipService = membershipService;
     }
 
-    public AuthorityDTO setAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO, AuthorityLevelDTO authorityLevelDTO) {
+    public AuthorityDTO createAuthority(
+            FKITSuperGroupDTO groupDTO,
+            PostDTO postDTO,
+            AuthorityLevelDTO authorityLevelDTO) {
+
         Post post = this.postService.getPost(postDTO);
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         AuthorityLevel authorityLevel = this.authorityLevelService.getAuthorityLevel(authorityLevelDTO);
