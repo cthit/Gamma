@@ -4,6 +4,7 @@ import it.chalmers.gamma.Endoints.Endpoint;
 import it.chalmers.gamma.Endoints.Endpoints;
 import it.chalmers.gamma.Endoints.Method;
 import it.chalmers.gamma.GammaApplication;
+import it.chalmers.gamma.controller.admin.GroupAdminController;
 import it.chalmers.gamma.factories.MockDatabaseGeneratorFactory;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,8 @@ import java.util.stream.Stream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static it.chalmers.gamma.utils.ResponseUtils.expectedStatus;
@@ -37,6 +40,9 @@ import org.springframework.web.context.WebApplicationContext;
 @ActiveProfiles("test")
 public class EndpointGETTests {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EndpointGETTests.class);
+
+
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -50,7 +56,7 @@ public class EndpointGETTests {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
-        this.mockDatabaseGeneratorFactory.generateNewMock();
+        this.mockDatabaseGeneratorFactory.populateMockDatabase();
 
     }
 
@@ -101,8 +107,8 @@ public class EndpointGETTests {
     }
 
     private void testGetEndpoint(String endpoint, Method method, boolean authorized) throws Exception {
-        System.out.println(endpoint + " " + method);
         if (method.equals(Method.GET)) {
+            LOGGER.info(String.format("testing %s", endpoint));
             this.mockMvc.perform(get(endpoint, String.class)).andExpect(expectedStatus(authorized));
         }
 

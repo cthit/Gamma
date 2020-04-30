@@ -12,8 +12,6 @@ import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
@@ -32,21 +30,11 @@ public class MockDatabaseGeneratorFactory {
     @Autowired
     private PostService postService;
     @Autowired
-    private FKITSuperGroupService superGroupService;
-    @Autowired
-    private ActivationCodeService activationCodeService;
-    @Autowired
-    private ApiKeyService apiKeyService;
-    @Autowired
     private AuthorityService authorityService;
     @Autowired
     private WhitelistService whitelistService;
     @Autowired
     private WebsiteService websiteService;
-    @Autowired
-    private AuthorityLevelService authorityLevelService;
-    @Autowired
-    private MembershipService membershipService;
 
     @Autowired
     private MockITUserFactory mockITUserFactory;
@@ -54,6 +42,17 @@ public class MockDatabaseGeneratorFactory {
     private MockFKITGroupFactory mockFKITGroupFactory;
     @Autowired
     private MockITClientFactory mockITClientFactory;
+    @Autowired
+    private MockActivationCodeFactory mockActivationCodeFactory;
+    @Autowired
+    private MockApiKeyFactory mockApiKeyFactory;
+    @Autowired
+    private MockAuthorityLevelFactory mockAuthorityLevelFactory;
+    @Autowired
+    private MockSuperGroupFactory mockSuperGroupFactory;
+    @Autowired
+    private MockMembershipFactory mockMembershipFactory;
+
 
 
     private ITUserDTO user;
@@ -70,24 +69,25 @@ public class MockDatabaseGeneratorFactory {
 
     private static boolean hasGeneratedMock;
 
-    public void generateNewMock() { // TODO Remove the clutter in this method
+    public void populateMockDatabase() { // TODO Remove the clutter in this method
         if (!hasGeneratedMock) {
             this.user = this.mockITUserFactory.saveUser(this.mockITUserFactory.generateITUser("user", true));
             this.post = this.postService.addPost(new Text());
-            this.superGroup =
-                    this.superGroupService.createSuperGroup(RandomSuperGroupFactory.generateSuperGroup("supergroup"));
+            this.superGroup = this.mockSuperGroupFactory.saveSuperGroup(
+                    this.mockSuperGroupFactory.generateSuperGroup("group")
+            );
             this.group = this.mockFKITGroupFactory.saveGroup(mockFKITGroupFactory.generateActiveFKITGroup(
                     "group",
                     superGroup
             ));
             this.whitelist = this.whitelistService.addWhiteListedCID("user");
-            this.activationCode = this.activationCodeService.saveActivationCode(
-                    this.whitelist,
-                    GenerationUtils.generateRandomString(10, GenerationUtils.CharacterTypes.NUMBERS));
-            this.apiKeyService.createApiKey(new ApiKeyDTO("client",
-                    new Text("client", "client")));
-            this.apiKey = this.apiKeyService.getApiKeyDetails("client");
-            this.authorityLevel = this.authorityLevelService.addAuthorityLevel("test");
+            this.activationCode = this.mockActivationCodeFactory.saveActivationCode(
+                    whitelist, GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.NUMBERS)
+            );
+            this.apiKey = this.mockApiKeyFactory.saveApiKey(this.mockApiKeyFactory.generateApiKey());
+
+            this.authorityLevel = this.mockAuthorityLevelFactory.saveAuthorityLevel(
+                    this.mockAuthorityLevelFactory.generateAuthorityLevel());
             this.authority = this.authorityService.setAuthorityLevel(this.superGroup, this.post, this.authorityLevel);
             this.client = this.mockITClientFactory.saveClient(this.mockITClientFactory.generateClient(
                     GenerationUtils.generateRandomString()
@@ -95,14 +95,12 @@ public class MockDatabaseGeneratorFactory {
             this.website = this.websiteService.addPossibleWebsite(
                     GenerationUtils.generateRandomString(),
                     GenerationUtils.generateRandomString());
-            this.membershipService.addUserToGroup(this.group, this.user, this.post, "test");
+            this.mockMembershipFactory.saveMembership(this.mockMembershipFactory.generateMembership(this.post, this.group,
+                    this.user));
             hasGeneratedMock = true;
         }
     }
 
-    public ITUserDTO getMockedUser() {
-        return this.user;
-    }
     // Make this prettier by making a list and looping
     public UUID getMockedUUID(Class c) {
         if (this.user.getClass() == c) {

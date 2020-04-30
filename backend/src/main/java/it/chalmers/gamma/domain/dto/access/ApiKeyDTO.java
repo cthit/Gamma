@@ -11,17 +11,19 @@ public class ApiKeyDTO {
     private final Text description;
     private final Instant createdAt;
     private final Instant lastModifiedAt;
+    private final String key;
 
-    public ApiKeyDTO(UUID id, String name, Text description, Instant createdAt, Instant lastModifiedAt) {
+    public ApiKeyDTO(UUID id, String name, Text description, Instant createdAt, Instant lastModifiedAt, String key) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.createdAt = createdAt;
         this.lastModifiedAt = lastModifiedAt;
+        this.key = key;
     }
 
     public ApiKeyDTO(String name, Text description) {
-        this(null, name, description, null, null);
+        this(null, name, description, null, null, "");
     }
 
     public UUID getId() {
@@ -42,6 +44,10 @@ public class ApiKeyDTO {
 
     public Instant getLastModifiedAt() {
         return this.lastModifiedAt;
+    }
+
+    public String getKey() {
+        return key;
     }
 
     @Override
@@ -78,6 +84,7 @@ public class ApiKeyDTO {
                 + ", description=" + this.description
                 + ", createdAt=" + this.createdAt
                 + ", lastModifiedAt=" + this.lastModifiedAt
+                + ", key={secret}"
                 + '}';
     }
 }

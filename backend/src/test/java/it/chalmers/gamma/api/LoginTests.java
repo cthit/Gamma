@@ -36,9 +36,6 @@ public class LoginTests {
 
     private MockMvc mockMvc;
 
-    @Autowired
-    private MockDatabaseGeneratorFactory mockDatabaseGeneratorFactory;
-
      @Autowired
      private MockITUserFactory mockITUserFactory;
 
@@ -50,14 +47,14 @@ public class LoginTests {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
-        this.mockDatabaseGeneratorFactory.generateNewMock();
     }
 
     @Test
     public void testSuccessfulLogin() throws Exception {
-        ITUserDTO userDTO = this.mockDatabaseGeneratorFactory.getMockedUser();
+        ITUserDTO user = this.mockITUserFactory.saveUser(
+                this.mockITUserFactory.generateITUser("user", true));
         String request = JSONUtils.toFormUrlEncoded(
-                new JSONParameter("username", userDTO.getCid()),
+                new JSONParameter("username", user.getCid()),
                 new JSONParameter("password", "password")
         );
         testLogin(request, this.frontendUri);
