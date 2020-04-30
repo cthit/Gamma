@@ -10,5 +10,11 @@ export function getUsers() {
 }
 
 export function getUser(id) {
-    return getRequest(ADMIN_USERS_ENDPOINT + id);
+    return getRequest(ADMIN_USERS_ENDPOINT + id, response => {
+        const user = response.data;
+        if (user.phone == null) {
+            user.phone = "";
+        }
+        return { data: user };
+    });
 }

@@ -83,6 +83,11 @@ const MeChangePassword = () => {
                 keysOrder={["oldPassword", "password", "confirmNewPassword"]}
                 submitText={text.ChangePassword}
                 titleText={text.ChangePasswordOn + " " + me.nick}
+                extraButton={{
+                    onClick: () => history.goBack(),
+                    text: text.Back,
+                    outlined: true
+                }}
             />
         </DigitLayout.Center>
     );

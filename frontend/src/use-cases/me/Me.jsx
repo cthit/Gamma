@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     FIRST_NAME,
     LAST_NAME,
@@ -9,7 +9,8 @@ import {
     useDigitTranslations,
     DigitCRUD,
     DigitTextField,
-    DigitButtonGroup
+    DigitButton,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import translations from "./Me.translations.json";
 import { editMe } from "../../api/me/put.me.api";
@@ -26,16 +27,24 @@ import * as yup from "yup";
 import { Switch, Route } from "react-router-dom";
 import MeChangePassword from "./screens/me-change-password";
 import MeGroups from "./screens/me-groups";
-import { useHistory } from "react-router-dom";
 import MeAvatar from "./screens/me-avatar";
-import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import { Link, useHistory } from "react-router-dom";
+import styled from "styled-components";
+import GammaUserContext from "../../common/context/GammaUser.context";
+
+const NoStyleLink = styled(Link)`
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+`;
 
 const Me = () => {
     const [text] = useDigitTranslations(translations);
-    const user = useGammaUser();
+    const [user, update] = useContext(GammaUserContext);
     const history = useHistory();
 
     const fullName = data =>
@@ -74,31 +83,37 @@ const Me = () => {
                                 editMe(newData)
                                     .then(response => {
                                         resolve(response);
+                                        update().then(() => {
+                                            history.push("/me");
+                                        });
                                     })
                                     .catch(error => reject(error))
                             )
                         }
                         detailsRenderCardEnd={() => (
-                            <DigitButtonGroup
-                                outlined
-                                buttons={[
-                                    {
-                                        text: text.ChangePassword,
-                                        onClick: () =>
-                                            history.push("/me/change-password")
-                                    },
-                                    {
-                                        text: text.YourGroups,
-                                        onClick: () =>
-                                            history.push("/me/groups")
-                                    },
-                                    {
-                                        text: text.YourAvatar,
-                                        onClick: () =>
-                                            history.push("/me/avatar")
-                                    }
-                                ]}
-                            />
+                            <DigitLayout.Row
+                                justifyContent={"center"}
+                                flexWrap={"wrap"}
+                            >
+                                <NoStyleLink to={"/me/change-password"}>
+                                    <DigitButton
+                                        outlined
+                                        text={text.ChangePassword}
+                                    />
+                                </NoStyleLink>
+                                <NoStyleLink to={"/me/groups"}>
+                                    <DigitButton
+                                        outlined
+                                        text={text.YourGroups}
+                                    />
+                                </NoStyleLink>
+                                <NoStyleLink to={"/me/avatar"}>
+                                    <DigitButton
+                                        outlined
+                                        text={text.YourAvatar}
+                                    />
+                                </NoStyleLink>
+                            </DigitLayout.Row>
                         )}
                         customDetailsRenders={generateUserCustomDetailsRenders(
                             text,
@@ -113,7 +128,9 @@ const Me = () => {
                         detailsTitle={data => fullName(data)}
                         updateTitle={data => fullName(data)}
                         deleteRequest={(_, form) =>
-                            deleteMe(form).then(() => null)
+                            deleteMe(form).then(() => {
+                                window.location.reload();
+                            })
                         }
                         dialogDeleteTitle={() => text.AreYouSure}
                         dialogDeleteDescription={() => text.AreYouReallySure}

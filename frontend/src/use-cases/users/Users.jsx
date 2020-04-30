@@ -61,6 +61,7 @@ const Users = () => {
                 NICK,
                 EMAIL,
                 ACCEPTANCE_YEAR,
+                "phone",
                 LANGUAGE,
                 USER_AGREEMENT,
                 GROUPS
@@ -72,6 +73,7 @@ const Users = () => {
                 NICK,
                 EMAIL,
                 ACCEPTANCE_YEAR,
+                "phone",
                 LANGUAGE,
                 "relationships"
             ]}
@@ -85,7 +87,9 @@ const Users = () => {
                     NICK,
                     LAST_NAME,
                     ACCEPTANCE_YEAR
-                ]
+                ],
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             customDetailsRenders={generateUserCustomDetailsRenders(text)}
             keysText={generateUserKeysTexts(text)}

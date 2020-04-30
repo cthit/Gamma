@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
     DigitStepper,
+    DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
@@ -74,7 +75,7 @@ const Members = () => {
     }
 
     return (
-        <>
+        <DigitLayout.Column flex={"1"}>
             <DigitStepper
                 activeStep={step}
                 steps={[
@@ -131,7 +132,7 @@ const Members = () => {
                     )}
                 />
             </Switch>
-        </>
+        </DigitLayout.Column>
     );
 };
 export default Members;

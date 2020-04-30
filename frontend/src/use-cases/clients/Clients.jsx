@@ -70,7 +70,9 @@ const Clients = () => {
             tableProps={{
                 titleText: text.Clients,
                 startOrderBy: "name",
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             keysOrder={[
                 "name",

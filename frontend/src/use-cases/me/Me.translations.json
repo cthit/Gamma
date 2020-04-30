@@ -22,5 +22,6 @@
         "Du måste bekräfta ditt lösenord för att kunna radera ditt konto"
     ],
     "YourGroups": ["Your groups", "Dina grupper"],
-    "YourAvatar": ["Your avatar", "Din avatar"]
+    "YourAvatar": ["Your avatar", "Din avatar"],
+    "Phone": ["Phone number", "Telefonnummer"]
 }

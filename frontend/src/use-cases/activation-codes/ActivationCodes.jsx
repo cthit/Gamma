@@ -31,7 +31,9 @@ const ActivationCodes = () => {
             tableProps={{
                 titleText: text.ActivationCodes,
                 startOrderBy: "cid",
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             keysOrder={["cid", "code", "createdAt"]}
             readAllKeysOrder={["cid", "code", "createdAt"]}

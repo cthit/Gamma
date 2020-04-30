@@ -304,7 +304,9 @@ const Groups = () => {
                 orderBy: NAME,
                 startOrderBy: NAME,
                 titleText: text.Groups,
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             formInitialValues={generateInitialValues()}
             formValidationSchema={generateValidationSchema(text)}

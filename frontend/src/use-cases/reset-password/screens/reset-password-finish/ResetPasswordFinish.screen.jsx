@@ -41,6 +41,7 @@ const ResetPasswordFinish = () => {
                 </DigitDesign.Card>
             )}
             <DigitEditDataCard
+                size={{ width: "300px" }}
                 centerFields
                 validationSchema={yup.object().shape({
                     cid: yup.string().required(text.FieldRequired),

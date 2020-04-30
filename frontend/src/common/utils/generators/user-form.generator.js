@@ -39,6 +39,7 @@ export function generateUserKeysTexts(text) {
     output[CID] = text.Cid;
     output[USER_AGREEMENT] = text.AcceptUserAgreement;
     output[PASSWORD] = text.Password;
+    output["phone"] = text.Phone;
 
     return output;
 }
@@ -64,6 +65,7 @@ export const generateUserKeyOrder = () => [
     NICK,
     EMAIL,
     ACCEPTANCE_YEAR,
+    "phone",
     LANGUAGE,
     GROUPS
 ];
@@ -80,6 +82,7 @@ export function generateUserInitialValues() {
     output[USER_AGREEMENT] = false;
     output[CID] = "";
     output[PASSWORD] = "";
+    output["phone"] = "";
 
     return output;
 }
@@ -96,6 +99,7 @@ export function generateUserValidationSchema(
     schema[NICK] = yup.string().required(text.FieldRequired);
     schema[EMAIL] = yup.string().required(text.FieldRequired);
     schema[ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
+    schema["phone"] = yup.string();
     schema[USER_AGREEMENT] = forceUserAgreement
         ? yup
               .boolean()
@@ -186,6 +190,15 @@ export function generateUserEditComponentData(text) {
         componentProps: {
             label: text.AcceptUserAgreement,
             primary: true
+        }
+    };
+
+    componentData["phone"] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Phone,
+            outlined: true,
+            maxLength: 15
         }
     };
 

@@ -124,7 +124,9 @@ const SuperGroups = () => {
             tableProps={{
                 titleText: text.SuperGroups,
                 startOrderBy: NAME,
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             idProp={"id"}
             detailsRenderEnd={one => (

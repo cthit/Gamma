@@ -18,6 +18,7 @@ import { getUsersWithGDPRMinified } from "../../api/gdpr/get.gdpr.api";
 import { setGDPRValue } from "../../api/gdpr/put.gdpr.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import useGammaHasAuthority from "../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
+import { on401 } from "../../common/utils/error-handling/error-handling";
 
 function _generateHeaderTexts(text) {
     const output = {};
@@ -64,11 +65,14 @@ const Gdpr = () => {
 
     return (
         <DigitSelectMultipleTable
+            flex={"1"}
+            size={{ height: "100%" }}
             disableSelectAll
             search
             titleText={text.Users}
             searchText={text.SearchForUsers}
             idProp={ID}
+            startOrderByDirection="asc"
             startOrderBy={FIRST_NAME}
             onChange={selected => {
                 const c = _.xorWith(selected, lastSelected, _.isEqual);
@@ -107,7 +111,11 @@ const Gdpr = () => {
                                 );
                             });
                         })
-                        .catch(() => {
+                        .catch(error => {
+                            if (error && error.response.status === 401) {
+                                on401();
+                            }
+
                             queueToast({
                                 text: text.SomethingWentWrong
                             });

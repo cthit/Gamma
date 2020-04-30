@@ -93,7 +93,9 @@ const Posts = () => {
             tableProps={{
                 titleText: text.Posts,
                 startOrderBy: "sv",
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             detailsButtonText={text.Details}
             deleteRequest={deletePost}

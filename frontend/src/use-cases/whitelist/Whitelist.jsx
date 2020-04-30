@@ -61,7 +61,9 @@ const Whitelist = () => {
             tableProps={{
                 titleText: text.Whitelist,
                 startOrderBy: "cid",
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc"
             }}
             toastCreateSuccessful={data =>
                 data.cid + " " + text.WasCreatedSuccessfully

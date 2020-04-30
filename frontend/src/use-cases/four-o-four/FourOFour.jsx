@@ -16,7 +16,7 @@ const FourOFour = () => {
 
     return (
         <DigitDesign.Card
-            size={{ width: "300px" }}
+            size={{ width: "300px", height: "100%" }}
             margin={{ left: "auto", right: "auto" }}
         >
             <DigitDesign.CardHeader>
