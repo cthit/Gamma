@@ -1,13 +1,11 @@
 package it.chalmers.gamma.service;
 
-import io.swagger.annotations.Authorization;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;

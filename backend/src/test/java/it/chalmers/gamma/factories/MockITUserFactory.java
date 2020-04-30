@@ -37,12 +37,11 @@ public class MockITUserFactory {
     }
 
     /**
-     * Generate User with admin privileges named "admin"
+     * Generate User with admin privileges named "admin"..
      * @return
      */
     public ITUserDTO generateAdminUser() {       // TODO
-        ITUserDTO user = this.generateITUser("admin", true);
-        return user;
+        return this.generateITUser("admin", true);
     }
 
     public AdminViewCreateITUserRequest generateValidAdminCreateUserRequest() {
@@ -71,7 +70,7 @@ public class MockITUserFactory {
                 userDTO.getEmail(),
                 "password"
         );
-        userService.setAccountActivated(user, userDTO.isActivated());
+        this.userService.setAccountActivated(user, userDTO.isActivated());
         return this.userService.getITUser(user.getCid());
     }
 

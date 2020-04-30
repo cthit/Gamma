@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 
 public final class GenerationUtils {
 
+    private GenerationUtils() {
+
+    }
+
     public enum CharacterTypes {
         UPPERCASE("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
         LOWERCASE("abcdefghijklmnopqrstuvwxyz"),
@@ -31,9 +35,9 @@ public final class GenerationUtils {
     }
 
     /**
-     * Generate String of custom length
-     * @param length length of String to generate
-     * @param types Types of characters to use
+     * Generate String of custom length.
+     * @param length length of String to generate.
+     * @param types Types of characters to use.
      * @return A randomly generated String of custom length.
      */
     public static String generateRandomString(int length, CharacterTypes...types) {
@@ -46,6 +50,9 @@ public final class GenerationUtils {
             str.append(characters.charAt(rand.nextInt(characters.length() - 1)));
         }
         return str.toString();
+    }
+    public static String generateRandomString() {
+        return generateRandomString(50, CharacterTypes.allValues());
     }
 
     public static String generateEmail() {
@@ -60,14 +67,11 @@ public final class GenerationUtils {
     }
 
     /**
-     * Generate Random String of length 50 characters by default
-     * @return randomly generated String
+     * Generate Random String of length 50 characters by default.
+     * @return randomly generated String.
      */
-    public static String generateRandomString() {
-        return generateRandomString(50, CharacterTypes.allValues());
-    }
 
     public static int generateIntBetween(int min, int max) {
-        return (new Random()).nextInt(max - min) + min;
+        return new Random().nextInt(max - min) + min;
     }
 }

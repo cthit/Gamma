@@ -28,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = GammaApplication.class)
 @ActiveProfiles("test")
+@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
 public class AdminITUserTests {
 
     @Autowired
@@ -39,7 +40,7 @@ public class AdminITUserTests {
     private MockITUserFactory mockITUserFactory;
 
     @Before
-    public void setup() {
+    public void setupTests() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
@@ -47,28 +48,23 @@ public class AdminITUserTests {
 
     @WithUserDetails("admin")
     @Test
-    public void testAdminCreateUserAsAdmin() throws Exception{
+    public void testAdminCreateUserAsAdmin() throws Exception {
         testAdminCreateUser(true);
     }
 
     @WithMockUser("nonAdmin")
     @Test
-    public void testAdminCreateUserAsNonAdmin() throws Exception{
+    public void testAdminCreateUserAsNonAdmin() throws Exception {
         testAdminCreateUser(false);
     }
 
-    private void testAdminCreateUser(boolean authorized) throws Exception{
+    private void testAdminCreateUser(boolean authorized) throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.post(
                 "/admin/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Objects.requireNonNull(JSONUtils.objectToJSONString(
-                        mockITUserFactory.generateValidAdminCreateUserRequest()))))
+                        this.mockITUserFactory.generateValidAdminCreateUserRequest()))))
                 .andExpect(ResponseUtils.expectedStatus(authorized));
-    }
-
-    @WithUserDetails("admin")
-    private void testAdminGetAllUsers() throws Exception{
-        
     }
 
 }

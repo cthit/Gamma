@@ -1,6 +1,5 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
@@ -12,19 +11,13 @@ import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.service.AuthorityLevelService;
-import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PostService;
-import it.chalmers.gamma.service.WebsiteService;
-import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressWarnings({"PMD.TooManyFields", "PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
 public class MockDatabaseGeneratorFactory {
 
     @Autowired
@@ -75,12 +68,12 @@ public class MockDatabaseGeneratorFactory {
             this.superGroup = this.mockSuperGroupFactory.saveSuperGroup(
                     this.mockSuperGroupFactory.generateSuperGroup("group")
             );
-            this.group = this.mockFKITGroupFactory.saveGroup(mockFKITGroupFactory.generateActiveFKITGroup(
+            this.group = this.mockFKITGroupFactory.saveGroup(this.mockFKITGroupFactory.generateActiveFKITGroup(
                     "group",
-                    superGroup
+                    this.superGroup
             ));
             this.whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-            this.activationCode = this.mockActivationCodeFactory.saveActivationCode(whitelist);
+            this.activationCode = this.mockActivationCodeFactory.saveActivationCode(this.whitelist);
             this.apiKey = this.mockApiKeyFactory.saveApiKey(this.mockApiKeyFactory.generateApiKey());
 
             this.authorityLevel = this.mockAuthorityLevelFactory.saveAuthorityLevel(
@@ -95,8 +88,11 @@ public class MockDatabaseGeneratorFactory {
                     GenerationUtils.generateRandomString()
             ));
             this.website = this.mockWebsiteFactory.saveWebsite(this.mockWebsiteFactory.generateWebsite());
-            this.mockMembershipFactory.saveMembership(this.mockMembershipFactory.generateMembership(this.post, this.group,
-                    this.user));
+            this.mockMembershipFactory.saveMembership(
+                    this.mockMembershipFactory.generateMembership(
+                            this.post,
+                            this.group,
+                            this.user));
             hasGeneratedMock = true;
         }
     }

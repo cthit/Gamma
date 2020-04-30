@@ -16,7 +16,9 @@ public class MockAuthorityFactory {
     @Autowired
     private AuthorityService authorityService;
 
-    public AuthorityDTO generateAuthority(FKITSuperGroupDTO superGroup, PostDTO post, AuthorityLevelDTO authorityLevel) {
+    public AuthorityDTO generateAuthority(FKITSuperGroupDTO superGroup,
+                                          PostDTO post,
+                                          AuthorityLevelDTO authorityLevel) {
         return new AuthorityDTO(
                 superGroup,
                 post,

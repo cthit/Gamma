@@ -1,9 +1,12 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.Endoints.JSONParameter;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.factories.MockDatabaseGeneratorFactory;
+import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.utils.GenerationUtils;
 import it.chalmers.gamma.utils.JSONUtils;
@@ -22,14 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = GammaApplication.class)
 @ActiveProfiles("test")
+@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
 public class LoginTests {
 
     @Autowired
@@ -37,14 +37,17 @@ public class LoginTests {
 
     private MockMvc mockMvc;
 
-     @Autowired
-     private MockITUserFactory mockITUserFactory;
+    @Autowired
+    private MockITUserFactory mockITUserFactory;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String frontendUri;
 
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
     @Before
-    public void setup() {
+    public void setupTests() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
@@ -59,8 +62,8 @@ public class LoginTests {
                                 GenerationUtils.CharacterTypes.LOWERCASE),
                         true));
         String request = JSONUtils.toFormUrlEncoded(
-                new JSONParameter("username", user.getCid()),
-                new JSONParameter("password", "password")
+                new JSONParameter(USERNAME, user.getCid()),
+                new JSONParameter(PASSWORD, PASSWORD)
         );
         testLogin(request, this.frontendUri);
     }
@@ -78,8 +81,8 @@ public class LoginTests {
     @Test
     public void testWrongPasswordLogin() throws Exception {
         String invalidPasswordRequest = JSONUtils.toFormUrlEncoded(
-                new JSONParameter("username", "user"),
-                new JSONParameter("password", "invalidPassword")
+                new JSONParameter(USERNAME, "user"),
+                new JSONParameter(PASSWORD, "invalidPassword")
         );
         testLogin(invalidPasswordRequest, "/login?error");
     }
@@ -87,8 +90,8 @@ public class LoginTests {
     @Test
     public void testWrongUsernameLogin() throws Exception {
         String invalidUsernameRequest = JSONUtils.toFormUrlEncoded(
-                new JSONParameter("username", "invalidUser"),
-                new JSONParameter("password", "password")
+                new JSONParameter(USERNAME, "invalidUser"),
+                new JSONParameter(PASSWORD, PASSWORD)
         );
         testLogin(invalidUsernameRequest, "/login?error");
     }
@@ -98,9 +101,10 @@ public class LoginTests {
         ITUserDTO user = this.mockITUserFactory.generateITUser("nActUser", false);
         ITUserDTO editedUser = this.mockITUserFactory.saveUser(user);
         String nonActivatedPasswordRequest = JSONUtils.toFormUrlEncoded(
-                new JSONParameter("username", editedUser.getCid()),
-                new JSONParameter("password", "password") // Does not do any difference
+                new JSONParameter(USERNAME, editedUser.getCid()),
+                new JSONParameter(PASSWORD, PASSWORD) // Does not do any difference
         );
-        testLogin(nonActivatedPasswordRequest, String.format("%s/reset-password/finish?accountLocked=true", this.frontendUri));
+        testLogin(nonActivatedPasswordRequest,
+                String.format("%s/reset-password/finish?accountLocked=true", this.frontendUri));
     }
 }

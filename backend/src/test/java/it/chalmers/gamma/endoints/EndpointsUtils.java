@@ -1,4 +1,9 @@
-package it.chalmers.gamma.Endoints;
+package it.chalmers.gamma.endoints;
+
+import static it.chalmers.gamma.endoints.Method.DELETE;
+import static it.chalmers.gamma.endoints.Method.GET;
+import static it.chalmers.gamma.endoints.Method.POST;
+import static it.chalmers.gamma.endoints.Method.PUT;
 
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
@@ -14,12 +19,12 @@ import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import java.util.Arrays;
 import java.util.List;
 
-import static it.chalmers.gamma.Endoints.Method.DELETE;
-import static it.chalmers.gamma.Endoints.Method.GET;
-import static it.chalmers.gamma.Endoints.Method.POST;
-import static it.chalmers.gamma.Endoints.Method.PUT;
+public final class EndpointsUtils { // Doesn't return me endpoints.
 
-public final class Endpoints { // Doesn't return me endpoints.
+    private EndpointsUtils() {
+
+    }
+
     public static List<Endpoint> getNormalUserEndpoints() {
         return Arrays.asList(
                 new Endpoint("/groups", GET),

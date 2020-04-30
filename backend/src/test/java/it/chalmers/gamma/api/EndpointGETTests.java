@@ -1,27 +1,26 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.Endoints.Endpoint;
-import it.chalmers.gamma.Endoints.Endpoints;
-import it.chalmers.gamma.Endoints.Method;
+import static it.chalmers.gamma.utils.ResponseUtils.expectedStatus;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.controller.admin.GroupAdminController;
+import it.chalmers.gamma.endoints.Endpoint;
+import it.chalmers.gamma.endoints.EndpointsUtils;
+import it.chalmers.gamma.endoints.Method;
 import it.chalmers.gamma.factories.MockDatabaseGeneratorFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static it.chalmers.gamma.utils.ResponseUtils.expectedStatus;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -32,13 +31,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = GammaApplication.class)
 @ActiveProfiles("test")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.JUnitTestsShouldIncludeAssert"})
 public class EndpointGETTests {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EndpointGETTests.class);
@@ -53,7 +52,7 @@ public class EndpointGETTests {
     private MockDatabaseGeneratorFactory mockDatabaseGeneratorFactory;
 
     @Before
-    public void setup() {
+    public void setupTests() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
@@ -66,9 +65,9 @@ public class EndpointGETTests {
     public void testAllGETEndpointsAsAdmin() throws Exception {
         testGetEndpoints(
                 Stream.of(
-                        Endpoints.getAuthorizedEndpoints(),
-                        Endpoints.getNonAuthorizedEndpoints(),
-                        Endpoints.getNormalUserEndpoints())
+                        EndpointsUtils.getAuthorizedEndpoints(),
+                        EndpointsUtils.getNonAuthorizedEndpoints(),
+                        EndpointsUtils.getNormalUserEndpoints())
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList()), new ArrayList<>());
     }
@@ -78,31 +77,31 @@ public class EndpointGETTests {
     public void testAllGETEndpointsAsNormalUser() throws Exception {
         testGetEndpoints(
                 Stream.concat(
-                        Endpoints.getNormalUserEndpoints().stream(),
-                        Endpoints.getNonAuthorizedEndpoints().stream())
+                        EndpointsUtils.getNormalUserEndpoints().stream(),
+                        EndpointsUtils.getNonAuthorizedEndpoints().stream())
                         .collect(Collectors.toList()),
-                Endpoints.getAuthorizedEndpoints());
+                EndpointsUtils.getAuthorizedEndpoints());
     }
 
     @WithAnonymousUser
     @Test
     public void testAllGETEndpointsAsAnonymous() throws Exception {
-        testGetEndpoints(Endpoints.getNonAuthorizedEndpoints(),
+        testGetEndpoints(EndpointsUtils.getNonAuthorizedEndpoints(),
                 Stream.concat(
-                        Endpoints.getNormalUserEndpoints().stream(),
-                        Endpoints.getAuthorizedEndpoints().stream())
+                        EndpointsUtils.getNormalUserEndpoints().stream(),
+                        EndpointsUtils.getAuthorizedEndpoints().stream())
                         .collect(Collectors.toList()));
     }
 
-    private void testGetEndpoints(List<Endpoint> allowedEndpoints, List<Endpoint> nonAllowedEndpoints) throws Exception {
+    private void testGetEndpoints(List<Endpoint> allowedEndpoints, List<Endpoint> deniedEndpoints) throws Exception {
         for (Endpoint endpoint : allowedEndpoints) {
             this.testGetEndpoint(String.format(endpoint.getPath(),
-                    mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getMockClass())),
+                    this.mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getMockClass())),
                     endpoint.getMethod(), true);
         }
-        for (Endpoint endpoint : nonAllowedEndpoints) {
+        for (Endpoint endpoint : deniedEndpoints) {
             this.testGetEndpoint(String.format(endpoint.getPath(),
-                    mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getMockClass())),
+                    this.mockDatabaseGeneratorFactory.getMockedUUID(endpoint.getMockClass())),
                     endpoint.getMethod(), false);
         }
     }

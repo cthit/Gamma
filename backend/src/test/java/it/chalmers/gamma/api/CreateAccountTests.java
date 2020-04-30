@@ -1,5 +1,8 @@
 package it.chalmers.gamma.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
@@ -13,8 +16,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -26,17 +27,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = GammaApplication.class)
 @ActiveProfiles("test")
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"})
 public class CreateAccountTests {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EndpointDeleteTests.class);
-
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -56,7 +52,7 @@ public class CreateAccountTests {
     private ITUserService userService;
 
     @Before
-    public void setup() {
+    public void setupTests() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
@@ -74,10 +70,10 @@ public class CreateAccountTests {
     }
 
     private void testCreateAccount(WhitelistDTO whitelist, boolean shouldCreate) throws Exception {
-        mockMvc.perform(post("/whitelist/activate_cid")
+        this.mockMvc.perform(post("/whitelist/activate_cid")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Objects.requireNonNull(JSONUtils.objectToJSONString(
-                        mockWhitelistFactory.createValidRequest(whitelist)))))
+                        this.mockWhitelistFactory.createValidRequest(whitelist)))))
                 .andExpect(status().is(202));       // To hide if user exists, we always return OK
         Assert.assertEquals(this.activationCodeService.codeExists(whitelist.getCid()), shouldCreate);
     }
@@ -87,7 +83,7 @@ public class CreateAccountTests {
         WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
         this.testCreateAccount(whitelist, true);
         ActivationCodeDTO activationCodeDTO = this.activationCodeService.getActivationCodeDTO(whitelist.getCid());
-        mockMvc.perform(post("/users/create")
+        this.mockMvc.perform(post("/users/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Objects.requireNonNull(JSONUtils.objectToJSONString(
                         this.mockITUserFactory.createValidCreateRequest(

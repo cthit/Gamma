@@ -1,27 +1,31 @@
 package it.chalmers.gamma.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.chalmers.gamma.Endoints.JSONParameter;
+import it.chalmers.gamma.endoints.JSONParameter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class JSONUtils {
+public final class JSONUtils {
+
+    private JSONUtils() {
+
+    }
+
     public static String objectToJSONString(Object o) {
+
         try {
             return new ObjectMapper().writeValueAsString(o);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
+            return null;
         }
-        return null;
     }
 
     public static String toJsonTemplate(JSONParameter... rawParameters) {
-        List<JSONParameter> parameters = (Arrays.asList(rawParameters));
+        List<JSONParameter> parameters = Arrays.asList(rawParameters);
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
-        for(JSONParameter parameter : parameters) {
+        for (JSONParameter parameter : parameters) {
             builder.append(String.format("\"%s\": \"%s\"%s",
                     parameter.getKey(),
                     parameter.getValue(),
@@ -32,7 +36,7 @@ public class JSONUtils {
     }
 
     public static String toFormUrlEncoded(JSONParameter... rawParameters) {
-        List<JSONParameter> parameters = (Arrays.asList(rawParameters));
+        List<JSONParameter> parameters = Arrays.asList(rawParameters);
         StringBuilder builder = new StringBuilder();
         for (JSONParameter parameter : parameters) {
             builder.append(String.format("%s=%s%s",

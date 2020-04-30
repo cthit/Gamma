@@ -29,4 +29,5 @@ public class MockAuthorityLevelFactory {
         AddAuthorityLevelRequest request = new AddAuthorityLevelRequest();
         request.setAuthorityLevel(authorityLevel.getAuthority());
         return request;
-    }}
+    }
+}

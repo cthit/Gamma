@@ -1,4 +1,4 @@
-package it.chalmers.gamma.Endoints;
+package it.chalmers.gamma.endoints;
 
 public class JSONParameter {
     private final String key;
@@ -10,18 +10,18 @@ public class JSONParameter {
     }
 
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return "JSONParameter{" +
-                "key='" + key + '\'' +
-                ", value='" + value + '\'' +
-                '}';
+        return "JSONParameter{"
+                + "key='" + this.key + '\''
+                + ", value='" + this.value + '\''
+                + '}';
     }
 }
