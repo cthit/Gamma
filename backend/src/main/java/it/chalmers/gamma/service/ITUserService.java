@@ -187,10 +187,10 @@ public class ITUserService implements UserDetailsService {
         }
         if (ImageUtils.isImageOrGif(file)) {
             try {
-                String fileUrl = ImageUtils.saveImage(file, user.getCid());
                 if (!user.getAvatarUrl().equals("default.jpg")) {
                     ImageUtils.removeImage(user.getAvatarUrl());
                 }
+                String fileUrl = ImageUtils.saveImage(file, user.getCid());
                 user.setAvatarUrl(fileUrl);
                 this.itUserRepository.save(user);
             } catch (FileNotFoundResponse e) {
