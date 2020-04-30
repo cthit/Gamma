@@ -1,6 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
+import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Instant;
@@ -27,6 +28,13 @@ public class MockApiKeyFactory {
 
     public ApiKeyDTO saveApiKey(ApiKeyDTO apiKeyDTO) {
         return this.apiKeyService.createApiKey(apiKeyDTO);
+    }
+
+    public CreateApiKeyRequest createValidRequest(ApiKeyDTO apiKey) {
+        CreateApiKeyRequest request = new CreateApiKeyRequest();
+        request.setName(apiKey.getName());
+        request.setDescription(apiKey.getDescription());
+        return request;
     }
 
 }

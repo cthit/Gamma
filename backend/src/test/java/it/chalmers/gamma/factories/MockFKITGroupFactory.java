@@ -3,6 +3,7 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.Calendar;
@@ -34,5 +35,15 @@ public class MockFKITGroupFactory {
 
     public FKITGroupDTO saveGroup(FKITGroupDTO group) {
         return this.groupService.createGroup(group);
+    }
+
+    public CreateGroupRequest createValidRequest() {
+        CreateGroupRequest request = new CreateGroupRequest();
+        request.setName(GenerationUtils.generateRandomString(30, GenerationUtils.CharacterTypes.LOWERCASE));
+        request.setPrettyName(GenerationUtils.generateRandomString(30, GenerationUtils.CharacterTypes.LOWERCASE));
+        request.setFunction(GenerationUtils.generateText());
+        request.setBecomesActive(Calendar.getInstance());
+        request.setBecomesInactive(Calendar.getInstance());
+        return request;
     }
 }

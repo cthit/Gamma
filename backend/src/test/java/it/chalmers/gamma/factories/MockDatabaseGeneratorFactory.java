@@ -28,15 +28,6 @@ import org.springframework.stereotype.Component;
 public class MockDatabaseGeneratorFactory {
 
     @Autowired
-    private PostService postService;
-    @Autowired
-    private AuthorityService authorityService;
-    @Autowired
-    private WhitelistService whitelistService;
-    @Autowired
-    private WebsiteService websiteService;
-
-    @Autowired
     private MockITUserFactory mockITUserFactory;
     @Autowired
     private MockFKITGroupFactory mockFKITGroupFactory;
@@ -52,6 +43,14 @@ public class MockDatabaseGeneratorFactory {
     private MockSuperGroupFactory mockSuperGroupFactory;
     @Autowired
     private MockMembershipFactory mockMembershipFactory;
+    @Autowired
+    private MockWebsiteFactory mockWebsiteFactory;
+    @Autowired
+    private MockAuthorityFactory mockAuthorityFactory;
+    @Autowired
+    private MockPostFactory mockPostFactory;
+    @Autowired
+    private MockWhitelistFactory mockWhitelistFactory;
 
 
 
@@ -72,7 +71,7 @@ public class MockDatabaseGeneratorFactory {
     public void populateMockDatabase() { // TODO Remove the clutter in this method
         if (!hasGeneratedMock) {
             this.user = this.mockITUserFactory.saveUser(this.mockITUserFactory.generateITUser("user", true));
-            this.post = this.postService.addPost(new Text());
+            this.post = this.mockPostFactory.savePost(this.mockPostFactory.generatePost());
             this.superGroup = this.mockSuperGroupFactory.saveSuperGroup(
                     this.mockSuperGroupFactory.generateSuperGroup("group")
             );
@@ -80,28 +79,29 @@ public class MockDatabaseGeneratorFactory {
                     "group",
                     superGroup
             ));
-            this.whitelist = this.whitelistService.addWhiteListedCID("user");
-            this.activationCode = this.mockActivationCodeFactory.saveActivationCode(
-                    whitelist, GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.NUMBERS)
-            );
+            this.whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
+            this.activationCode = this.mockActivationCodeFactory.saveActivationCode(whitelist);
             this.apiKey = this.mockApiKeyFactory.saveApiKey(this.mockApiKeyFactory.generateApiKey());
 
             this.authorityLevel = this.mockAuthorityLevelFactory.saveAuthorityLevel(
                     this.mockAuthorityLevelFactory.generateAuthorityLevel());
-            this.authority = this.authorityService.setAuthorityLevel(this.superGroup, this.post, this.authorityLevel);
+            this.authority = this.mockAuthorityFactory.saveAuthority(
+                    this.mockAuthorityFactory.generateAuthority(
+                            this.superGroup,
+                            this.post,
+                            this.authorityLevel
+                            ));
             this.client = this.mockITClientFactory.saveClient(this.mockITClientFactory.generateClient(
                     GenerationUtils.generateRandomString()
             ));
-            this.website = this.websiteService.addPossibleWebsite(
-                    GenerationUtils.generateRandomString(),
-                    GenerationUtils.generateRandomString());
+            this.website = this.mockWebsiteFactory.saveWebsite(this.mockWebsiteFactory.generateWebsite());
             this.mockMembershipFactory.saveMembership(this.mockMembershipFactory.generateMembership(this.post, this.group,
                     this.user));
             hasGeneratedMock = true;
         }
     }
 
-    // Make this prettier by making a list and looping
+    // Make this prettier by making a list and looping, or by using interfaces
     public UUID getMockedUUID(Class c) {
         if (this.user.getClass() == c) {
             return this.user.getId();
@@ -138,4 +138,5 @@ public class MockDatabaseGeneratorFactory {
         }
         return null;
     }
+
 }

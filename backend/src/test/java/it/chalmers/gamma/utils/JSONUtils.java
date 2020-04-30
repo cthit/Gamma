@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 public class JSONUtils {
     public static String objectToJSONString(Object o) {
         try {
-            System.out.println(o);
             return new ObjectMapper().writeValueAsString(o);
         } catch (IOException e) {
             e.printStackTrace();

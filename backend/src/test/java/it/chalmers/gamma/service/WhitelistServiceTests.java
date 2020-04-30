@@ -1,4 +1,4 @@
-package it.chalmers.gamma;
+package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.service.WhitelistService;
 
@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class WhitelistTests {
+public class WhitelistServiceTests {
 
     @Autowired
     WhitelistService whitelistService;

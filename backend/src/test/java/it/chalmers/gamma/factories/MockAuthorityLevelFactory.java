@@ -1,6 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.requests.AddAuthorityLevelRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
@@ -23,4 +24,9 @@ public class MockAuthorityLevelFactory {
     public AuthorityLevelDTO saveAuthorityLevel(AuthorityLevelDTO authorityLevel) {
         return this.authorityLevelService.addAuthorityLevel(authorityLevel.getAuthority());
     }
-}
+
+    public AddAuthorityLevelRequest createValidRequest(AuthorityLevelDTO authorityLevel) {
+        AddAuthorityLevelRequest request = new AddAuthorityLevelRequest();
+        request.setAuthorityLevel(authorityLevel.getAuthority());
+        return request;
+    }}

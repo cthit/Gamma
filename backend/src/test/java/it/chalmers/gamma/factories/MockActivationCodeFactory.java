@@ -2,6 +2,7 @@ package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Instant;
@@ -25,7 +26,13 @@ public class MockActivationCodeFactory {
         );
     }
 
-    public ActivationCodeDTO saveActivationCode(WhitelistDTO whitelist, String code) {
-        return this.activationCodeService.saveActivationCode(whitelist, code);
+    public ActivationCodeDTO saveActivationCode(WhitelistDTO whitelist) {
+        return this.activationCodeService.saveActivationCode(whitelist);
+    }
+
+    public WhitelistCodeRequest createValidRequest(WhitelistDTO whitelist) {
+        WhitelistCodeRequest request =  new WhitelistCodeRequest();
+        request.setCid(whitelist.getCid());
+        return request;
     }
 }
