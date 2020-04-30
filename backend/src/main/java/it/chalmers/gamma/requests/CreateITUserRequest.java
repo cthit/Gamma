@@ -1,6 +1,5 @@
 package it.chalmers.gamma.requests;
 
-import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.domain.Language;
 
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
@@ -53,8 +52,8 @@ public class CreateITUserRequest {
         return this.whitelist;
     }
 
-    public void setWhitelist(WhitelistDTO cid) {
-        this.whitelist = cid;
+    public void setWhitelist(WhitelistDTO whitelist) {
+        this.whitelist = whitelist;
     }
 
     public String getCode() {

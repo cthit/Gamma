@@ -4,9 +4,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class WhitelistDTO {
-    private final UUID id;
-    private final String cid;
+    private UUID id;
+    private String cid;
 
+
+    public WhitelistDTO() {
+
+    }
 
     public WhitelistDTO(UUID id, String cid) {
         this.id = id;

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.dto.access;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.db.entity.Text;
 import java.time.Instant;
 import java.util.Objects;
@@ -11,6 +12,7 @@ public class ApiKeyDTO {
     private final Text description;
     private final Instant createdAt;
     private final Instant lastModifiedAt;
+    @JsonIgnore
     private final String key;
 
     public ApiKeyDTO(UUID id, String name, Text description, Instant createdAt, Instant lastModifiedAt, String key) {
@@ -46,6 +48,7 @@ public class ApiKeyDTO {
         return this.lastModifiedAt;
     }
 
+    @JsonIgnore
     public String getKey() {
         return key;
     }

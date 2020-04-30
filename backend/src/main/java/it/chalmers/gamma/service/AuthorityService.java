@@ -138,5 +138,9 @@ public class AuthorityService {
         return this.authorityRepository.findByInternalId(id).toDTO();
     }
 
-
+    @Transactional
+    public void removeAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
+        List<AuthorityDTO> authorities = this.getAllAuthoritiesWithAuthorityLevel(authorityLevelDTO);
+        authorities.forEach(a -> this.removeAuthority(a.getInternalID()));
+    }
 }

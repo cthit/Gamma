@@ -6,11 +6,13 @@ import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Target;
@@ -27,7 +29,7 @@ public class Authority {
     private UUID internalId;
 
     @JoinColumn(name = "authority_level")
-    @OneToOne
+    @ManyToOne
     private AuthorityLevel authorityLevel;
 
     public AuthorityPK getId() {
