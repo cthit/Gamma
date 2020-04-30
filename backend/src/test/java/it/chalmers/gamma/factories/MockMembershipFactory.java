@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class MockMembershipFactory {
         return new MembershipDTO(
                 post,
                 group,
-                GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.LOWERCASE),
+                GenerationUtils.generateRandomString(20, CharacterTypes.LOWERCASE),
                 user
         );
     }

@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.CreateITUserRequest;
 import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Year;
 import java.util.UUID;
@@ -54,7 +55,7 @@ public class MockITUserFactory {
         request.setNick(GenerationUtils.generateRandomString());
         request.setPassword(GenerationUtils.generateRandomString());
         request.setUserAgreement(true);
-        request.setCid(GenerationUtils.generateRandomString(10, GenerationUtils.CharacterTypes.LOWERCASE));
+        request.setCid(GenerationUtils.generateRandomString(10, CharacterTypes.LOWERCASE));
         return request;
     }
 

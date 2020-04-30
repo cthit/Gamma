@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.service.FKITGroupService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,8 @@ public class MockFKITGroupFactory {
 
     public CreateGroupRequest createValidRequest() {
         CreateGroupRequest request = new CreateGroupRequest();
-        request.setName(GenerationUtils.generateRandomString(30, GenerationUtils.CharacterTypes.LOWERCASE));
-        request.setPrettyName(GenerationUtils.generateRandomString(30, GenerationUtils.CharacterTypes.LOWERCASE));
+        request.setName(GenerationUtils.generateRandomString(30, CharacterTypes.LOWERCASE));
+        request.setPrettyName(GenerationUtils.generateRandomString(30, CharacterTypes.LOWERCASE));
         request.setFunction(GenerationUtils.generateText());
         request.setBecomesActive(Calendar.getInstance());
         request.setBecomesInactive(Calendar.getInstance());

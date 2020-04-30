@@ -8,6 +8,7 @@ import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITUserFactory;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import it.chalmers.gamma.utils.JSONUtils;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class LoginTests {
                 this.mockITUserFactory.generateITUser(
                         GenerationUtils.generateRandomString(
                                 10,
-                                GenerationUtils.CharacterTypes.LOWERCASE),
+                                CharacterTypes.LOWERCASE),
                         true));
         String request = JSONUtils.toFormUrlEncoded(
                 new JSONParameter(USERNAME, user.getCid()),

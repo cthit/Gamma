@@ -4,6 +4,7 @@ import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Instant;
 import java.util.UUID;
@@ -20,7 +21,7 @@ public class MockActivationCodeFactory {
         return new ActivationCodeDTO(
                 UUID.randomUUID(),
                 whitelist,
-                GenerationUtils.generateRandomString(15, GenerationUtils.CharacterTypes.NUMBERS),
+                GenerationUtils.generateRandomString(15, CharacterTypes.NUMBERS),
                 Instant.now(),
                 100000
         );

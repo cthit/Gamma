@@ -3,6 +3,7 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class MockWhitelistFactory {
     public WhitelistDTO generateWhitelist() {
         return new WhitelistDTO(
                 UUID.randomUUID(),
-                GenerationUtils.generateRandomString(5, GenerationUtils.CharacterTypes.LOWERCASE)
+                GenerationUtils.generateRandomString(5, CharacterTypes.LOWERCASE)
         );
     }
 

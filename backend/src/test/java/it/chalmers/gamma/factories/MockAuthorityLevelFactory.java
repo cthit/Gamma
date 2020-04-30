@@ -3,6 +3,7 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.requests.AddAuthorityLevelRequest;
 import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class MockAuthorityLevelFactory {
     public AuthorityLevelDTO generateAuthorityLevel() {
         return new AuthorityLevelDTO(
                 UUID.randomUUID(),
-                GenerationUtils.generateRandomString(10, GenerationUtils.CharacterTypes.LOWERCASE)
+                GenerationUtils.generateRandomString(10, CharacterTypes.LOWERCASE)
         );
     }
 

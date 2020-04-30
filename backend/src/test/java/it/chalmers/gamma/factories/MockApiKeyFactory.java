@@ -3,6 +3,7 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.service.ApiKeyService;
+import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Instant;
 import java.util.UUID;
@@ -18,11 +19,11 @@ public class MockApiKeyFactory {
     public ApiKeyDTO generateApiKey() {
         return new ApiKeyDTO(
                 UUID.randomUUID(),
-                GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.LOWERCASE),
+                GenerationUtils.generateRandomString(20, CharacterTypes.LOWERCASE),
                 GenerationUtils.generateText(),
                 Instant.now(),
                 Instant.now(),
-                GenerationUtils.generateRandomString(20, GenerationUtils.CharacterTypes.LOWERCASE)
+                GenerationUtils.generateRandomString(20, CharacterTypes.LOWERCASE)
         );
     }
 
