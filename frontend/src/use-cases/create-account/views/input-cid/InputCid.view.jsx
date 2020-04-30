@@ -1,58 +1,76 @@
 import {
-    DigitTextField,
     useDigitTranslations,
     DigitEditDataCard,
     DigitLayout,
+    DigitDesign,
+    DigitSelect,
     useDigitToast
 } from "@cthit/react-digit-components";
 import React from "react";
-import * as yup from "yup";
 import translations from "./InputCid.view.translations";
 import { useHistory } from "react-router-dom";
 import { activateCid } from "../../../../api/whitelist/post.whitelist.api";
+import {
+    initialValues,
+    keysComponentData,
+    keysOrder,
+    validationSchema
+} from "./InputCid.view.options";
 
 const InputCid = () => {
     const [queueToast] = useDigitToast();
-    const [text] = useDigitTranslations(translations);
+    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
+        translations
+    );
     const history = useHistory();
 
     return (
         <DigitLayout.Center>
+            <DigitDesign.Card margin={{ bottom: "16px" }}>
+                <DigitDesign.CardHeader>
+                    <DigitDesign.CardTitle text={text.ChooseLanguage} />
+                </DigitDesign.CardHeader>
+                <DigitDesign.CardBody>
+                    <DigitSelect
+                        alignSelf={"center"}
+                        value={activeLanguage}
+                        onChange={e => {
+                            setActiveLanguage(e.target.value);
+                        }}
+                        valueToTextMap={{ sv: text.Swedish, en: text.English }}
+                        outlined
+                        upperLabel={text.YourLanguage}
+                    />
+                </DigitDesign.CardBody>
+            </DigitDesign.Card>
             <DigitEditDataCard
+                validationSchema={validationSchema(text)}
+                initialValues={initialValues()}
+                keysComponentData={keysComponentData(text)}
+                keysOrder={keysOrder()}
                 centerFields
-                validationSchema={yup.object().shape({
-                    cid: yup.string().required(text.FieldRequired)
-                })}
-                initialValues={{ cid: "" }}
                 onSubmit={(values, actions) => {
                     activateCid(values)
-                        .then(response => {
+                        .then(() => {
                             actions.resetForm();
                             actions.setSubmitting(false);
                             history.push("/create-account/email-sent");
                         })
-                        .catch(error => {
+                        .catch(() => {
                             queueToast({
                                 text: text.SomethingWentWrong,
-                                duration: 10000
+                                duration: 3000
                             });
                         });
                 }}
-                keysComponentData={{
-                    cid: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Cid,
-                            outlined: true,
-                            maxLength: 12
-                        }
-                    }
-                }}
-                keysOrder={["cid"]}
-                size={{ width: "300px", height: "300px" }}
+                size={{ width: "400px", height: "300px" }}
                 titleText={text.EnterYourCid}
                 subtitleText={text.EnterYourCidDescription}
                 submitText={text.SendCid}
+                extraButton={{
+                    text: text.AlreadyHaveCode
+                }}
+                extraButtonTo={"/create-account/email-sent"}
             />
         </DigitLayout.Center>
     );

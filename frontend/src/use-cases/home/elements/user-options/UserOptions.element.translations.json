@@ -1,5 +1,7 @@
 {
     "UserOptions": ["User options", "Användare alternativ"],
     "MyAccount": ["My account", "Mitt konto"],
-    "MyGroups": ["My groups", "Mina grupper"]
+    "MyGroups": ["My groups", "Mina grupper"],
+    "ChangePassword": ["Change my password", "Ändra mitt lösenord"],
+    "ChangeAvatar": ["Change avatar", "Ändra avatar"]
 }

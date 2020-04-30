@@ -2,15 +2,12 @@ import React from "react";
 import {
     DigitButton,
     DigitCRUD,
-    DigitTextArea,
-    DigitTextField,
     DigitText,
     useDigitCustomDialog,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import { getApiKey, getApiKeys } from "../../api/api-keys/get.api-keys.api";
 import { addApiKey } from "../../api/api-keys/post.api-keys.api";
-import * as yup from "yup";
 import { deleteApiKey } from "../../api/api-keys/delete.api-keys.api";
 import translations from "./ApiKeys.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
@@ -18,6 +15,18 @@ import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdm
 import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import {
+    initialValues,
+    keysComponentData,
+    keysOrder,
+    keysText,
+    validationSchema
+} from "./ApiKeys.options";
+import {
+    API_ID,
+    API_NAME,
+    API_SECRET
+} from "../../api/api-keys/props.api-keys.api";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);
@@ -35,6 +44,11 @@ const ApiKeys = () => {
 
     return (
         <DigitCRUD
+            keysText={keysText(text)}
+            keysOrder={keysOrder()}
+            formComponentData={keysComponentData(text)}
+            formValidationSchema={validationSchema(text)}
+            formInitialValues={initialValues()}
             readOneRequest={getApiKey}
             readAllRequest={getApiKeys}
             deleteRequest={deleteApiKey}
@@ -48,8 +62,7 @@ const ApiKeys = () => {
                 })
             }
             onCreate={response => {
-                console.log(response);
-                const secret = response.data.secret;
+                const secret = response.data[API_SECRET];
                 showDialog({
                     renderMain: () => (
                         <>
@@ -61,78 +74,32 @@ const ApiKeys = () => {
                     )
                 });
             }}
-            idProp={"id"}
+            idProp={API_ID}
             name={"api"}
             path={"/access-keys"}
-            keysText={{
-                name: text.Name,
-                descriptionSv: text.Swedish,
-                descriptionEn: text.English
-            }}
-            keysOrder={["name", "descriptionSv", "descriptionEn"]}
-            formComponentData={{
-                name: {
-                    component: DigitTextField,
-                    componentProps: {
-                        outlined: true,
-                        upperLabel: text.Name,
-                        maxLength: 50
-                    }
-                },
-                descriptionSv: {
-                    component: DigitTextArea,
-                    componentProps: {
-                        numbersOnly: true,
-                        outlined: true,
-                        rows: 3,
-                        upperLabel: text.Swedish,
-                        maxLength: 500
-                    }
-                },
-                descriptionEn: {
-                    component: DigitTextArea,
-                    componentProps: {
-                        numbersOnly: true,
-                        outlined: true,
-                        rows: 3,
-                        upperLabel: text.English,
-                        maxLength: 500
-                    }
-                }
-            }}
-            formValidationSchema={yup.object().shape({
-                name: yup.string().required(),
-                descriptionSv: yup.string().required(),
-                descriptionEn: yup.string().required()
-            })}
-            formInitialValues={{
-                name: "",
-                descriptionSv: "",
-                descriptionEn: ""
-            }}
             tableProps={{
                 titleText: text.ApiKeysTitle,
-                startOrderBy: "name",
+                startOrderBy: API_NAME,
                 search: true,
                 flex: "1",
                 startOrderByDirection: "asc"
             }}
             detailsButtonText={text.Details}
-            dialogDeleteConfirm={data => text.Delete + " " + data.name}
+            dialogDeleteConfirm={data => text.Delete + " " + data[API_NAME]}
             dialogDeleteTitle={() => text.DialogDeleteTitle}
             dialogDeleteDescription={data =>
                 text.DialogDeleteDescription1 +
-                data.name +
+                data[API_NAME] +
                 text.DialogDeleteDescription2
             }
             toastDeleteSuccessful={data =>
-                text.ToastDelete1 + data.name + text.ToastDeleteSuccessful2
+                text.ToastDelete1 + data[API_NAME] + text.ToastDeleteSuccessful2
             }
             toastDeleteFailed={data =>
-                text.ToastDelete1 + data.name + text.ToastDeleteFailed2
+                text.ToastDelete1 + data[API_NAME] + text.ToastDeleteFailed2
             }
             backButtonText={text.Back}
-            deleteButtonText={data => text.Delete + " " + data.name}
+            deleteButtonText={data => text.Delete + " " + data[API_NAME]}
             createButtonText={text.Create}
             createTitle={text.CreateNewApiKey}
             on401={on401}

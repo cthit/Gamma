@@ -43,14 +43,12 @@ export const App = () => {
     }, []);
 
     useEffect(() => {
-        if (
-            loading &&
-            !user &&
-            !pathname.startsWith("/create-account") &&
-            (!pathname.startsWith("/reset-password") ||
-                pathname.startsWith("/reset-password/admin"))
-        ) {
-            update();
+        if (loading && !user) {
+            update(
+                !pathname.startsWith("/create-account") &&
+                    (!pathname.startsWith("/reset-password") ||
+                        pathname.startsWith("/reset-password/admin"))
+            );
         } else if (
             pathname.startsWith("/create-account") ||
             pathname.startsWith("/reset-password")

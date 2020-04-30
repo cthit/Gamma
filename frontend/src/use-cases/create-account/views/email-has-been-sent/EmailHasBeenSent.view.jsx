@@ -33,7 +33,7 @@ const EmailHasBeenSent = () => {
                     </DigitDesign.Link>
                     <DigitDesign.Link to="/create-account">
                         <DigitButton
-                            onClick={() => {}}
+                            outlined
                             text={text.IHaveNotReceivedACode}
                         />
                     </DigitDesign.Link>

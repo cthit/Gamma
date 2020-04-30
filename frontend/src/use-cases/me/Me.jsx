@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import {
-    FIRST_NAME,
-    LAST_NAME,
-    NICK,
-    PASSWORD
+    USER_FIRST_NAME,
+    USER_LAST_NAME,
+    USER_NICK,
+    USER_PASSWORD
 } from "../../api/users/props.users.api";
 import {
     useDigitTranslations,
@@ -48,7 +48,11 @@ const Me = () => {
     const history = useHistory();
 
     const fullName = data =>
-        data[FIRST_NAME] + " '" + data[NICK] + "' " + data[LAST_NAME];
+        data[USER_FIRST_NAME] +
+        " '" +
+        data[USER_NICK] +
+        "' " +
+        data[USER_LAST_NAME];
 
     if (user == null) {
         return null;
@@ -136,7 +140,7 @@ const Me = () => {
                         dialogDeleteDescription={() => text.AreYouReallySure}
                         dialogDeleteConfirm={() => text.Delete}
                         dialogDeleteCancel={() => text.Cancel}
-                        deleteDialogFormKeysOrder={[PASSWORD]}
+                        deleteDialogFormKeysOrder={[USER_PASSWORD]}
                         deleteDialogFormValidationSchema={() =>
                             yup.object().shape({
                                 password: yup

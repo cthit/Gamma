@@ -1,20 +1,6 @@
 import React from "react";
-import {
-    EMAIL,
-    NAME,
-    PRETTY_NAME,
-    TYPE,
-    TYPE_BOARD,
-    TYPE_COMMITTEE,
-    TYPE_SOCIETY
-} from "../../api/super-groups/props.super-groups.api";
-import * as yup from "yup";
-import {
-    DigitSelect,
-    DigitTextField,
-    useDigitTranslations,
-    DigitCRUD
-} from "@cthit/react-digit-components";
+import { SG_ID, SG_NAME } from "../../api/super-groups/props.super-groups.api";
+import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
 import translations from "./SuperGroups.translations";
 import {
     getSuperGroup,
@@ -29,66 +15,13 @@ import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdm
 import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
-
-function generateValidationSchema(text) {
-    const schema = {};
-    schema[NAME] = yup.string().required(text.FieldRequired);
-    schema[PRETTY_NAME] = yup.string().required(text.FieldRequired);
-    schema[TYPE] = yup.string().required(text.FieldRequired);
-    schema[EMAIL] = yup
-        .string()
-        .email(text.FieldNotEmail)
-        .required(text.FieldRequired);
-
-    return yup.object().shape(schema);
-}
-
-function generateEditComponentData(text) {
-    const componentData = {};
-
-    componentData[NAME] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Name,
-            outlined: true,
-            maxLength: 50
-        }
-    };
-
-    componentData[PRETTY_NAME] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.PrettyName,
-            outlined: true,
-            maxLength: 50
-        }
-    };
-
-    componentData[EMAIL] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Email,
-            outlined: true,
-            maxLength: 100
-        }
-    };
-
-    const typeValueToTextMap = {};
-    typeValueToTextMap[TYPE_SOCIETY] = text.Society;
-    typeValueToTextMap[TYPE_COMMITTEE] = text.Committee;
-    typeValueToTextMap[TYPE_BOARD] = text.Board;
-
-    componentData[TYPE] = {
-        component: DigitSelect,
-        componentProps: {
-            upperLabel: text.Type,
-            valueToTextMap: typeValueToTextMap,
-            outlined: true
-        }
-    };
-
-    return componentData;
-}
+import {
+    initialValues,
+    keysComponentData,
+    keysOrder,
+    keysText,
+    validationSchema
+} from "./SuperGroups.options";
 
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
@@ -97,6 +30,11 @@ const SuperGroups = () => {
 
     return (
         <DigitCRUD
+            keysOrder={keysOrder()}
+            keysText={keysText(text)}
+            formInitialValues={initialValues()}
+            formComponentData={keysComponentData(text)}
+            formValidationSchema={validationSchema(text)}
             name={"superGroups"}
             path={"/super-groups"}
             readAllRequest={getSuperGroups}
@@ -106,29 +44,14 @@ const SuperGroups = () => {
             createRequest={admin ? addSuperGroup : null}
             deleteRequest={admin ? deleteSuperGroup : null}
             updateRequest={admin ? editSuperGroup : null}
-            keysOrder={[NAME, PRETTY_NAME, TYPE, EMAIL]}
-            keysText={{
-                name: text.Name,
-                prettyName: text.PrettyName,
-                type: text.Type,
-                email: text.Email
-            }}
-            formComponentData={generateEditComponentData(text)}
-            formInitialValues={{
-                name: "",
-                prettyName: "",
-                type: TYPE_SOCIETY,
-                email: ""
-            }}
-            formValidationSchema={generateValidationSchema(text)}
             tableProps={{
                 titleText: text.SuperGroups,
-                startOrderBy: NAME,
+                startOrderBy: SG_NAME,
                 search: true,
                 flex: "1",
                 startOrderByDirection: "asc"
             }}
-            idProp={"id"}
+            idProp={SG_ID}
             detailsRenderEnd={one => (
                 <div
                     style={{
@@ -139,26 +62,26 @@ const SuperGroups = () => {
                 </div>
             )}
             toastCreateSuccessful={data =>
-                data[NAME] + " " + text.WasCreatedSuccessfully
+                data[SG_NAME] + " " + text.WasCreatedSuccessfully
             }
             toastCreateFailed={() => text.FailedCreatingSuperGroup}
             toastDeleteSuccessful={data =>
-                data[NAME] + " " + text.WasDeletedSuccessfully
+                data[SG_NAME] + " " + text.WasDeletedSuccessfully
             }
             toastDeleteFailed={data =>
                 text.SuperGroupDeletionFailed1 +
                 " " +
-                data[NAME] +
+                data[SG_NAME] +
                 " " +
                 text.SuperGroupDeletionFailed2
             }
             toastUpdateSuccessful={data =>
-                data[NAME] + " " + text.WasUpdatedSuccessfully
+                data[SG_NAME] + " " + text.WasUpdatedSuccessfully
             }
             toastUpdateFailed={data =>
                 text.SuperGroupUpdateFailed1 +
                 " " +
-                data[NAME] +
+                data[SG_NAME] +
                 " " +
                 text.SuperGroupUpdateFailed2
             }
@@ -166,16 +89,16 @@ const SuperGroups = () => {
             dialogDeleteConfirm={() => text.Delete}
             dialogDeleteTitle={() => text.AreYouSure}
             dialogDeleteDescription={data =>
-                text.AreYouSureYouWantToDelete + " " + data[NAME] + "?"
+                text.AreYouSureYouWantToDelete + " " + data[SG_NAME] + "?"
             }
             backButtonText={text.Back}
             detailsButtonText={text.Details}
             createTitle={text.CreateSuperGroup}
             createButtonText={text.CreateSuperGroup}
-            updateTitle={data => text.Update + " " + data[NAME]}
-            updateButtonText={data => text.Update + " " + data[NAME]}
-            deleteButtonText={data => text.Delete + " " + data[NAME]}
-            detailsTitle={data => data[NAME]}
+            updateTitle={data => text.Update + " " + data[SG_NAME]}
+            updateButtonText={data => text.Update + " " + data[SG_NAME]}
+            deleteButtonText={data => text.Delete + " " + data[SG_NAME]}
+            detailsTitle={data => data[SG_NAME]}
             on401={on401}
             render404={() => <FourOFour />}
             render500={(error, reset) => (

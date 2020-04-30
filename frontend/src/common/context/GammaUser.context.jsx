@@ -7,34 +7,38 @@ const GammaUserSingletonProvider = ({ children }) => {
     const [[loading, error], setStatus] = useState([true, false]);
     const [user, setUser] = useState(null);
 
-    const update = useCallback(() => {
-        setStatus([true, false]);
-        return new Promise((resolve, reject) => {
-            getRequest("/users/me")
-                .then(response => {
-                    const user = response.data;
-                    if (user.phone == null) {
-                        //since phone isn't required. :(
-                        user.phone = "";
-                    }
-                    setUser(user);
-                    setStatus([false, false]);
-                    resolve(response);
-                })
-                .catch(error => {
-                    if (
-                        error.response != null &&
-                        error.response.status === 401
-                    ) {
-                        on401();
-                    } else {
-                        console.log(error);
-                        setStatus([false, true]);
-                    }
-                    reject(error);
-                });
-        });
-    }, [setUser]);
+    const update = useCallback(
+        (redirect = true) => {
+            setStatus([true, false]);
+            return new Promise((resolve, reject) => {
+                getRequest("/users/me")
+                    .then(response => {
+                        const user = response.data;
+                        if (user.phone == null) {
+                            //since phone isn't required. :(
+                            user.phone = "";
+                        }
+                        setUser(user);
+                        setStatus([false, false]);
+                        resolve(response);
+                    })
+                    .catch(error => {
+                        if (
+                            error.response != null &&
+                            error.response.status === 401 &&
+                            redirect
+                        ) {
+                            on401();
+                        } else {
+                            console.log(error);
+                            setStatus([false, true]);
+                        }
+                        reject(error);
+                    });
+            });
+        },
+        [setUser]
+    );
 
     const ignore = useCallback(() => {
         setStatus([false, false]);

@@ -1,8 +1,3 @@
-/**
- * Is an text object.
- * {
- *      SWEDISH_LANGUAGE: String
- *      ENGLISH_LANGAUGE: String
- * }
- */
-export const POST = "post";
+export const POST_ID = "id";
+export const POST_SWEDISH = "sv";
+export const POST_ENGLISH = "en";

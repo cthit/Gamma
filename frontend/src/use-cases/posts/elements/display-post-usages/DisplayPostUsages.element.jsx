@@ -1,12 +1,18 @@
 import React from "react";
 
 import { DigitLayout, DigitText } from "@cthit/react-digit-components";
-import { ID, PRETTY_NAME } from "../../../../api/groups/props.groups.api";
+import {
+    GROUP_ID,
+    GROUP_PRETTY_NAME
+} from "../../../../api/groups/props.groups.api";
 
 const DisplayPostUsages = ({ usages }) => (
     <DigitLayout.Column>
         {usages.map(usage => (
-            <DigitText.Text key={usage[ID]} text={usage[PRETTY_NAME]} />
+            <DigitText.Text
+                key={usage[GROUP_ID]}
+                text={usage[GROUP_PRETTY_NAME]}
+            />
         ))}
     </DigitLayout.Column>
 );

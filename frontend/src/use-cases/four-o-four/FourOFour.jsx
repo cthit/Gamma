@@ -16,8 +16,9 @@ const FourOFour = () => {
 
     return (
         <DigitDesign.Card
-            size={{ width: "300px", height: "100%" }}
+            size={{ width: "300px", height: "450px" }}
             margin={{ left: "auto", right: "auto" }}
+            alignSelf={"center"}
         >
             <DigitDesign.CardHeader>
                 <DigitDesign.CardTitle text={"404 - " + text.PageNotFound} />

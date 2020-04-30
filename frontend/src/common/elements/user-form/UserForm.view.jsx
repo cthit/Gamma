@@ -7,14 +7,14 @@ import {
 import React from "react";
 import * as yup from "yup";
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    EMAIL,
-    FIRST_NAME,
-    LAST_NAME,
-    NICK,
-    PASSWORD,
-    LANGUAGE
+    USER_ACCEPTANCE_YEAR,
+    USER_CID,
+    USER_EMAIL,
+    USER_FIRST_NAME,
+    USER_LAST_NAME,
+    USER_NICK,
+    USER_PASSWORD,
+    USER_LANGUAGE
 } from "../../../api/users/props.users.api";
 import translations from "./UserForm.view.translations.json";
 import {
@@ -39,15 +39,15 @@ function _generateAcceptanceYears() {
 
 function generateValidationSchema(text, includeCidAndPassword) {
     const schema = {};
-    schema[FIRST_NAME] = yup.string().required(text.FieldRequired);
-    schema[LAST_NAME] = yup.string().required(text.FieldRequired);
-    schema[NICK] = yup.string().required(text.FieldRequired);
-    schema[EMAIL] = yup.string().required(text.FieldRequired);
-    schema[ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
+    schema[USER_FIRST_NAME] = yup.string().required(text.FieldRequired);
+    schema[USER_LAST_NAME] = yup.string().required(text.FieldRequired);
+    schema[USER_NICK] = yup.string().required(text.FieldRequired);
+    schema[USER_EMAIL] = yup.string().required(text.FieldRequired);
+    schema[USER_ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
 
     if (includeCidAndPassword) {
-        schema[CID] = yup.string().required(text.FieldRequired);
-        schema[PASSWORD] = yup.string().required(text.FieldRequired);
+        schema[USER_CID] = yup.string().required(text.FieldRequired);
+        schema[USER_PASSWORD] = yup.string().required(text.FieldRequired);
     }
 
     return yup.object().shape(schema);
@@ -56,7 +56,7 @@ function generateValidationSchema(text, includeCidAndPassword) {
 function generateEditComponentData(text, includeCidAndPassword) {
     const componentData = {};
 
-    componentData[FIRST_NAME] = {
+    componentData[USER_FIRST_NAME] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.FirstName,
@@ -64,7 +64,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
         }
     };
 
-    componentData[LAST_NAME] = {
+    componentData[USER_LAST_NAME] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.LastName,
@@ -72,7 +72,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
         }
     };
 
-    componentData[NICK] = {
+    componentData[USER_NICK] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Nick,
@@ -80,7 +80,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
         }
     };
 
-    componentData[EMAIL] = {
+    componentData[USER_EMAIL] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Email,
@@ -88,7 +88,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
         }
     };
 
-    componentData[ACCEPTANCE_YEAR] = {
+    componentData[USER_ACCEPTANCE_YEAR] = {
         component: DigitSelect,
         componentProps: {
             upperLabel: text.AcceptanceYear,
@@ -102,7 +102,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
     languageOptions[SWEDISH_LANGUAGE] = "Svenska";
     languageOptions[ENGLISH_LANGUAGE] = "English";
 
-    componentData[LANGUAGE] = {
+    componentData[USER_LANGUAGE] = {
         component: DigitSelect,
         componentProps: {
             upperLabel: text.Language,
@@ -112,7 +112,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
     };
 
     if (includeCidAndPassword) {
-        componentData[CID] = {
+        componentData[USER_CID] = {
             component: DigitTextField,
             componentProps: {
                 upperLabel: text.Cid,
@@ -120,7 +120,7 @@ function generateEditComponentData(text, includeCidAndPassword) {
             }
         };
 
-        componentData[PASSWORD] = {
+        componentData[USER_PASSWORD] = {
             component: DigitTextField,
             componentProps: {
                 upperLabel: text.Password,
@@ -134,17 +134,17 @@ function generateEditComponentData(text, includeCidAndPassword) {
 
 function getKeysOrder(includeCidAndPassword) {
     const output = [
-        FIRST_NAME,
-        LAST_NAME,
-        NICK,
-        EMAIL,
-        ACCEPTANCE_YEAR,
-        LANGUAGE
+        USER_FIRST_NAME,
+        USER_LAST_NAME,
+        USER_NICK,
+        USER_EMAIL,
+        USER_ACCEPTANCE_YEAR,
+        USER_LANGUAGE
     ];
 
     if (includeCidAndPassword) {
-        output.push(CID);
-        output.push(PASSWORD);
+        output.push(USER_CID);
+        output.push(USER_PASSWORD);
     }
 
     return output;
