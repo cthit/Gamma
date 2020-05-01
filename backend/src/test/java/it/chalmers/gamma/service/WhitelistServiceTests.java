@@ -1,6 +1,5 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
@@ -67,8 +66,9 @@ public class WhitelistServiceTests {
     @Test
     public void testRemoveWhitelistWithConnectedActivationCode() {
         WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        ActivationCodeDTO activationCode = this.mockActivationCodeFactory.saveActivationCode(whitelist);
+        this.mockActivationCodeFactory.saveActivationCode(whitelist);
         this.whitelistService.removeWhiteListedCID(whitelist.getCid());
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed(whitelist.getCid()));
     }
 
 }

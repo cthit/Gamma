@@ -1,9 +1,11 @@
 package it.chalmers.gamma.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
-import it.chalmers.gamma.factories.MockITClientFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,14 +21,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = GammaApplication.class)
 @ActiveProfiles("test")
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"})
 public class WhitelistTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -39,6 +38,8 @@ public class WhitelistTests {
     @Autowired
     private MockActivationCodeFactory mockActivationCodeFactory;
 
+    private static final String WHITELIST_URL = "/admin/users/whitelist/%s";
+
     @Before
     public void setupTests() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
@@ -47,34 +48,44 @@ public class WhitelistTests {
     }
 
     /**
-     * Tests first to delete whitelist that has valid activation code using the id, then the cid
-     * @throws Exception if mockMvc fails
+     * Tests first to delete whitelist that has valid activation code using the id, then the cid.
+     * @throws Exception if mockMvc fails.
      */
     @WithUserDetails("admin")
     @Test
     public void testDeleteWhitelistWithActiveActivationCode() throws Exception {
-        WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        mockActivationCodeFactory.saveActivationCode(whitelist);
-        this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist.getId())))
+        WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(
+                this.mockWhitelistFactory.generateWhitelist());
+        this.mockActivationCodeFactory.saveActivationCode(whitelist);
+
+        this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist.getId())))
                 .andExpect(status().isAccepted());
-        WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        mockActivationCodeFactory.saveActivationCode(whitelist2);
-        this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist2.getCid())))
+
+        WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(
+                this.mockWhitelistFactory.generateWhitelist());
+        this.mockActivationCodeFactory.saveActivationCode(whitelist2);
+
+        this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist2.getCid())))
                 .andExpect(status().isAccepted());
     }
 
     /**
-     * Tests first to delete whitelist that does not hav a activation code using the id, then the cid
-     * @throws Exception if mockMvc fails
+     * Tests first to delete whitelist that does not hav a activation code using the id, then the cid.
+     * @throws Exception if mockMvc fails.
      */
     @WithUserDetails("admin")
     @Test
     public void testDeleteWhitelistWithNoActiveActivationCode() throws Exception {
-        WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist.getId())))
+        WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(
+                this.mockWhitelistFactory.generateWhitelist());
+
+        this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist.getId())))
                 .andExpect(status().isAccepted());
-        WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist2.getCid())))
+
+        WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(
+                this.mockWhitelistFactory.generateWhitelist());
+
+        this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist2.getCid())))
                 .andExpect(status().isAccepted());
     }
 

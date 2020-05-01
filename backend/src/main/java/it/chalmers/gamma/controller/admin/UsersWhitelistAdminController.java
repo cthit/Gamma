@@ -23,7 +23,6 @@ import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
