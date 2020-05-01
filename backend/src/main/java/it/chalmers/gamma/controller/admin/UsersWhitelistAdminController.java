@@ -23,7 +23,6 @@ import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
@@ -122,7 +121,7 @@ public final class UsersWhitelistAdminController {
         if (!this.whitelistService.isCIDWhiteListed(id)) {
             throw new UserNotFoundResponse();
         }
-        this.whitelistService.removeWhiteListedCID(UUID.fromString(id));
+        this.whitelistService.removeWhiteListedCID(id);
         return new UserDeletedResponse();
     }
 

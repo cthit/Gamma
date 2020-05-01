@@ -59,17 +59,17 @@ public class CreateAccountTests {
     }
 
     @Test
-    public void testCreateWhitelistedAccount() throws Exception {
+    public void testCreateActivationCodeWhitelistedAccount() throws Exception {
         WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        this.testCreateAccount(whitelist, true);
+        this.testCreateActivationCode(whitelist, true);
     }
 
     @Test
-    public void testCreateNonWhitelistedAccount() throws Exception {
-        this.testCreateAccount(this.mockWhitelistFactory.generateWhitelist(), false);
+    public void testCreateActivationCodeNonWhitelistedAccount() throws Exception {
+        this.testCreateActivationCode(this.mockWhitelistFactory.generateWhitelist(), false);
     }
 
-    private void testCreateAccount(WhitelistDTO whitelist, boolean shouldCreate) throws Exception {
+    private void testCreateActivationCode(WhitelistDTO whitelist, boolean shouldCreate) throws Exception {
         this.mockMvc.perform(post("/whitelist/activate_cid")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(Objects.requireNonNull(JSONUtils.objectToJSONString(
@@ -81,7 +81,7 @@ public class CreateAccountTests {
     @Test
     public void testCreateAccountValidCode() throws Exception {
         WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
-        this.testCreateAccount(whitelist, true);
+        this.testCreateActivationCode(whitelist, true);
         ActivationCodeDTO activationCodeDTO = this.activationCodeService.getActivationCodeDTO(whitelist.getCid());
         this.mockMvc.perform(post("/users/create")
                 .contentType(MediaType.APPLICATION_JSON)

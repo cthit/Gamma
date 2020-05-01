@@ -1,5 +1,8 @@
 package it.chalmers.gamma.service;
 
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.factories.MockActivationCodeFactory;
+import it.chalmers.gamma.factories.MockWhitelistFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +19,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class WhitelistServiceTests {
 
     @Autowired
-    WhitelistService whitelistService;
+    private WhitelistService whitelistService;
+
+    @Autowired
+    private MockWhitelistFactory mockWhitelistFactory;
+
+    @Autowired
+    private MockActivationCodeFactory mockActivationCodeFactory;
 
     /**
      * Tests if adding a CID to the whitelist works, and if seeing if a non-whitelisted CID returns correct result.
@@ -52,6 +61,14 @@ public class WhitelistServiceTests {
         } catch (Exception ignored) {
             Assert.assertTrue(true);
         }
+    }
+
+    @Test
+    public void testRemoveWhitelistWithConnectedActivationCode() {
+        WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
+        this.mockActivationCodeFactory.saveActivationCode(whitelist);
+        this.whitelistService.removeWhiteListedCID(whitelist.getCid());
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed(whitelist.getCid()));
     }
 
 }

@@ -21,11 +21,12 @@ import org.springframework.stereotype.Service;
 public class ActivationCodeService {
 
     private final ActivationCodeRepository activationCodeRepository;
-    private final WhitelistService whitelistService;
+    private final DTOToEntityService dtoToEntityService;
 
-    public ActivationCodeService(ActivationCodeRepository activationCodeRepository, WhitelistService whitelistService) {
+    public ActivationCodeService(ActivationCodeRepository activationCodeRepository,
+                                 DTOToEntityService dtoToEntityService) {
         this.activationCodeRepository = activationCodeRepository;
-        this.whitelistService = whitelistService;
+        this.dtoToEntityService = dtoToEntityService;
     }
 
     /**
@@ -38,7 +39,7 @@ public class ActivationCodeService {
         if (this.activationCodeRepository.existsActivationCodeByCid_Cid(whitelistDTO.getCid())) {
             this.deleteCode(whitelistDTO.getCid());
         }
-        Whitelist whitelist = this.whitelistService.getWhitelist(whitelistDTO);
+        Whitelist whitelist = this.dtoToEntityService.fromDTO(whitelistDTO);
         ActivationCode activationCode = new ActivationCode(whitelist);
         activationCode.setCode(TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS));
         this.activationCodeRepository.save(activationCode);
@@ -59,9 +60,14 @@ public class ActivationCodeService {
     }
 
     @Transactional
-    public void deleteCode(String id) {
-        ActivationCode activationCode = this.getActivationCodeDTO(this.getActivationCodeDTO(id));
-        this.activationCodeRepository.delete(activationCode);
+    public boolean deleteCode(String id) {
+        try {
+            ActivationCode activationCode = this.fromDTO(this.getActivationCodeDTO(id));
+            this.activationCodeRepository.delete(activationCode);
+            return true;
+        } catch (ActivationCodeDoesNotExistResponse e) {
+            return false;
+        }
     }
 
     public boolean codeExists(String id) {
@@ -85,7 +91,8 @@ public class ActivationCodeService {
                     .map(ActivationCode::toDTO).orElseThrow(ActivationCodeDoesNotExistResponse::new);
         }
     }
-    protected ActivationCode getActivationCodeDTO(ActivationCodeDTO activationCodeDTO) {
+
+    protected ActivationCode fromDTO(ActivationCodeDTO activationCodeDTO) {
         return this.activationCodeRepository.findById(activationCodeDTO.getId())
                 .orElseThrow(ActivationCodeDoesNotExistResponse::new);
     }
