@@ -102,7 +102,7 @@ public class ApiKey {
     }
 
     public ApiKeyDTO toDTO() {
-        return new ApiKeyDTO(this.id, this.name, this.description, this.createdAt, this.lastModifiedAt);
+        return new ApiKeyDTO(this.id, this.name, this.description, this.createdAt, this.lastModifiedAt, this.key);
     }
 
     @Override

@@ -3,6 +3,7 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.response.whitelist.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.util.UUIDUtil;
 
@@ -30,6 +31,9 @@ public class WhitelistService {
      * @return a copy of the whitelist object that is created
      */
     public WhitelistDTO addWhiteListedCID(String cid) {
+        if (this.whitelistRepository.existsByCid(cid)) {
+            throw new WhitelistAlreadyAddedException();
+        }
         Whitelist whitelistedCID = new Whitelist(cid);
         return this.whitelistRepository.save(whitelistedCID).toDTO();
     }
@@ -66,8 +70,11 @@ public class WhitelistService {
      * @return the whitelist object that has corresponding GROUP_ID
      */
     public WhitelistDTO getWhitelist(String id) {
-        return this.whitelistRepository.findById(UUID.fromString(id))
-                .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
+        if (UUIDUtil.validUUID(id)) {
+            return this.whitelistRepository.findById(UUID.fromString(id))
+                    .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
+        }
+        throw new WhitelistDoesNotExistsException();
     }
 
     /**

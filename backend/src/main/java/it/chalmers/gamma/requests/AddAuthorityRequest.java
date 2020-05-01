@@ -3,7 +3,7 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
-public class AuthorizationRequest {
+public class AddAuthorityRequest {
     @NotNull(message = "POST_MUST_BE_PROVIDED")
     private String post;
     @NotNull(message = "SUPER_GROUP_MUST_BE_PROVIDED")
@@ -52,7 +52,7 @@ public class AuthorizationRequest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AuthorizationRequest that = (AuthorizationRequest) o;
+        AddAuthorityRequest that = (AddAuthorityRequest) o;
         return Objects.equals(this.post, that.post)
             && Objects.equals(this.superGroup, that.superGroup)
             && Objects.equals(this.authority, that.authority);

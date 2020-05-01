@@ -75,6 +75,7 @@ application:
     path: ${COOKIE_PATH:/}
     validity-time: 3600
     remember-me-validity: 7200
+  pre-populate-database: true
   frontend-client-details:
     successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
   standard-admin-account:

@@ -47,7 +47,7 @@ public class MembershipService {
      * @param postDTO  what post the userDTO has in groupDTO
      * @param postname what the unoficial-post name is
      */
-    public void addUserToGroup(FKITGroupDTO groupDTO, ITUserDTO userDTO, PostDTO postDTO, String postname) {
+    public MembershipDTO addUserToGroup(FKITGroupDTO groupDTO, ITUserDTO userDTO, PostDTO postDTO, String postname) {
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(this.fkitGroupService.getGroup(groupDTO));
         pk.setITUser(this.dtoToEntityService.fromDTO(userDTO));
@@ -55,7 +55,7 @@ public class MembershipService {
         Membership membership = new Membership();
         membership.setId(pk);
         membership.setUnofficialPostName(postname);
-        this.membershipRepository.save(membership);
+        return this.membershipRepository.save(membership).toDTO();
     }
 
     /**

@@ -201,7 +201,14 @@ public class ITUserService implements UserDetailsService {
         }
     }
 
+    public void setAccountActivated(ITUserDTO userDTO, boolean activated) {
+        ITUser user = this.getITUser(userDTO);
+        user.setActivated(activated);
+        this.itUserRepository.save(user).toDTO();
+    }
+
     public boolean passwordMatches(ITUserDTO user, String password) {
         return this.passwordEncoder.matches(password, user.getPassword());
     }
+
 }

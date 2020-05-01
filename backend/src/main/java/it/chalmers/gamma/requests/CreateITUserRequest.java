@@ -1,8 +1,8 @@
 package it.chalmers.gamma.requests;
 
-import it.chalmers.gamma.db.entity.Whitelist;
 import it.chalmers.gamma.domain.Language;
 
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import java.util.Objects;
 
 import javax.validation.constraints.AssertTrue;
@@ -44,16 +44,16 @@ public class CreateITUserRequest {
     private int acceptanceYear;
 
     @NotNull(message = "WHITELIST_MUST_BE_PROVIDED")
-    private Whitelist whitelist;
+    private WhitelistDTO whitelist;
 
     private Language language = Language.sv;
 
-    public Whitelist getWhitelist() {
+    public WhitelistDTO getWhitelist() {
         return this.whitelist;
     }
 
-    public void setWhitelist(Whitelist cid) {
-        this.whitelist = cid;
+    public void setWhitelist(WhitelistDTO whitelist) {
+        this.whitelist = whitelist;
     }
 
     public String getCode() {

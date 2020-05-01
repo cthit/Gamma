@@ -17,14 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/admin/goldapps", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/admin/goldapps")
 public class GoldappsController {
 
     private final FKITSuperGroupService fkitSuperGroupService;

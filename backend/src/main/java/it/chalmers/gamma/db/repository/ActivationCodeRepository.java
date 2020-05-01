@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ActivationCodeRepository extends JpaRepository<ActivationCode, UUID> {
     Optional<ActivationCode> findByCid_Cid(String cid);
-    void deleteActivationCodeByCid_Cid(String cid);
     boolean existsActivationCodeByCid_Cid(String cid);
 }

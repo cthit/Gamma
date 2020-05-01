@@ -1,6 +1,4 @@
-package it.chalmers.gamma;
-
-import it.chalmers.gamma.service.WhitelistService;
+package it.chalmers.gamma.service;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class WhitelistTests {
+public class WhitelistServiceTests {
 
     @Autowired
     WhitelistService whitelistService;
@@ -56,11 +54,4 @@ public class WhitelistTests {
         }
     }
 
-    /*
-     * TODO Set up test environment that specifies mail address to send from and to.
-     */
-    @Test
-    public void testSendEmail() {
-        Assert.assertTrue(true);
-    }
 }
