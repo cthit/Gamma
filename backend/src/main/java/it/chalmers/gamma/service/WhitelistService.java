@@ -1,8 +1,10 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Whitelist;
+import it.chalmers.gamma.db.repository.ActivationCodeRepository;
 import it.chalmers.gamma.db.repository.WhitelistRepository;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.response.activationcode.ActivationCodeDoesNotExistResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.util.UUIDUtil;
@@ -20,8 +22,12 @@ public class WhitelistService {
 
     private final WhitelistRepository whitelistRepository;
 
-    public WhitelistService(WhitelistRepository whitelistRepository) {
+    private final ActivationCodeService activationCodeService;
+
+    public WhitelistService(WhitelistRepository whitelistRepository,
+                            ActivationCodeService activationCodeService) {
         this.whitelistRepository = whitelistRepository;
+        this.activationCodeService = activationCodeService;
     }
 
     /**
@@ -39,26 +45,13 @@ public class WhitelistService {
     }
 
     @Transactional
-    public void removeWhiteListedCID(String cid) {
-        this.whitelistRepository.delete(
-                Objects.requireNonNull(this.whitelistRepository.findByCid(cid).orElse(null)));
+    public void removeWhiteListedCID(String id) {
+        WhitelistDTO whitelistDTO = this.getWhitelist(id);
+        this.activationCodeService.deleteCode(whitelistDTO.getCid());
+        this.whitelistRepository.delete(this.fromDTO(whitelistDTO));
     }
 
-    public void removeWhiteListedCID(UUID id) {
-        this.whitelistRepository.deleteById(id);
-    }
-
-    /**
-     * gets whitelist object by cid.
-     *
-     * @param cid the cid thats searched for
-     * @return if found the whitelist object searched for, otherwise null
-     */
-    public WhitelistDTO getWhitelistDTO(String cid) throws WhitelistDoesNotExistsException {
-        return this.whitelistRepository.findByCid(cid.toLowerCase()).map(Whitelist::toDTO)
-                .orElseThrow(WhitelistDoesNotExistsException::new);
-    }
-    protected Whitelist getWhitelist(WhitelistDTO whitelistDTO) throws WhitelistDoesNotExistsException {
+    protected Whitelist fromDTO(WhitelistDTO whitelistDTO) throws WhitelistDoesNotExistsException {
         return this.whitelistRepository.findById(whitelistDTO.getId())
                 .orElseThrow(WhitelistDoesNotExistsException::new);
     }
@@ -73,8 +66,10 @@ public class WhitelistService {
         if (UUIDUtil.validUUID(id)) {
             return this.whitelistRepository.findById(UUID.fromString(id))
                     .orElseThrow(WhitelistDoesNotExistsException::new).toDTO();
+        } else {
+            return this.whitelistRepository.findByCid(id)
+                    .orElseThrow(WhitelistAlreadyAddedException::new).toDTO();
         }
-        throw new WhitelistDoesNotExistsException();
     }
 
     /**

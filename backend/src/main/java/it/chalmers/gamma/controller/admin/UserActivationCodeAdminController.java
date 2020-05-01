@@ -45,7 +45,9 @@ public final class UserActivationCodeAdminController {
         if (!this.activationCodeService.codeExists(activationCode)) {
             throw new ActivationCodeDoesNotExistResponse();
         }
-        this.activationCodeService.deleteCode(activationCode);
+        if (!this.activationCodeService.deleteCode(activationCode)) {
+            throw new ActivationCodeDoesNotExistResponse();
+        }
         return new ActivationCodeDeletedResponse();
     }
 }

@@ -52,7 +52,7 @@ public final class WhitelistController {
                 throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
             }
             if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
-                WhitelistDTO whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
+                WhitelistDTO whitelist = this.whitelistService.getWhitelist(cid.getCid());
                 ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist);
                 sendEmail(activationCode);
             } else {

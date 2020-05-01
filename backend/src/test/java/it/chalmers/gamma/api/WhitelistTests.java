@@ -46,6 +46,10 @@ public class WhitelistTests {
                 .build();
     }
 
+    /**
+     * Tests first to delete whitelist that has valid activation code using the id, then the cid
+     * @throws Exception if mockMvc fails
+     */
     @WithUserDetails("admin")
     @Test
     public void testDeleteWhitelistWithActiveActivationCode() throws Exception {
@@ -53,13 +57,24 @@ public class WhitelistTests {
         mockActivationCodeFactory.saveActivationCode(whitelist);
         this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist.getId())))
                 .andExpect(status().isAccepted());
+        WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
+        mockActivationCodeFactory.saveActivationCode(whitelist2);
+        this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist2.getCid())))
+                .andExpect(status().isAccepted());
     }
 
+    /**
+     * Tests first to delete whitelist that does not hav a activation code using the id, then the cid
+     * @throws Exception if mockMvc fails
+     */
     @WithUserDetails("admin")
     @Test
     public void testDeleteWhitelistWithNoActiveActivationCode() throws Exception {
         WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
         this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist.getId())))
+                .andExpect(status().isAccepted());
+        WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
+        this.mockMvc.perform(delete(String.format("/admin/users/whitelist/%s", whitelist2.getCid())))
                 .andExpect(status().isAccepted());
     }
 

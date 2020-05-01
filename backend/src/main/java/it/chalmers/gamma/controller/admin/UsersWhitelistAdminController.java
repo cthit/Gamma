@@ -122,7 +122,7 @@ public final class UsersWhitelistAdminController {
         if (!this.whitelistService.isCIDWhiteListed(id)) {
             throw new UserNotFoundResponse();
         }
-        this.whitelistService.removeWhiteListedCID(UUID.fromString(id));
+        this.whitelistService.removeWhiteListedCID(id);
         return new UserDeletedResponse();
     }
 
