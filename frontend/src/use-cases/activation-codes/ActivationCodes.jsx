@@ -38,7 +38,9 @@ const ActivationCodes = () => {
                 startOrderBy: AC_CID,
                 search: true,
                 flex: "1",
-                startOrderByDirection: "asc"
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             keysText={keysText(text)}
             idProp={AC_CID}
@@ -69,9 +71,7 @@ const ActivationCodes = () => {
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
-                500: (error, reset) => (
-                    <FiveZeroZero error={error} reset={reset} />
-                )
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
         />
     );

@@ -74,6 +74,7 @@ const SetPostNames = ({
                         <DigitText.Heading5 text={text.SetPostNames} />
                         <DigitLayout.Row>
                             <DigitButton
+                                outlined
                                 text={text.Back}
                                 onClick={() => history.goBack()}
                             />

@@ -66,7 +66,8 @@ const Gdpr = () => {
     return (
         <DigitSelectMultipleTable
             flex={"1"}
-            size={{ height: "100%" }}
+            padding={"0px"}
+            size={{ minWidth: "288px", height: "100%" }}
             disableSelectAll
             search
             titleText={text.Users}

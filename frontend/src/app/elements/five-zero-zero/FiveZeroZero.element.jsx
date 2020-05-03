@@ -7,13 +7,9 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
-const FiveZeroZero = ({ getMe, reset, error }) => {
+const FiveZeroZero = ({ getMe, reset }) => {
     const [text] = useDigitTranslations(translations);
     const [tryAgainButtonDisabled, setTryAgainButtonDisabled] = useState(false);
-
-    if (error != null) {
-        console.log(error);
-    }
 
     return (
         <DigitDesign.Card

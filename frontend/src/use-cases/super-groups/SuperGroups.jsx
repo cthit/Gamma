@@ -50,17 +50,16 @@ const SuperGroups = () => {
                 startOrderBy: SG_NAME,
                 search: true,
                 flex: "1",
-                startOrderByDirection: "asc"
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             idProp={SG_ID}
             detailsRenderEnd={one => (
-                <div
-                    style={{
-                        marginTop: "16px"
-                    }}
-                >
-                    <ShowSubGroups subGroups={one.subGroups} />
-                </div>
+                <ShowSubGroups
+                    margin={{ top: "16px" }}
+                    subGroups={one.subGroups}
+                />
             )}
             toastCreateSuccessful={data =>
                 data[SG_NAME] + " " + text.WasCreatedSuccessfully
@@ -106,9 +105,7 @@ const SuperGroups = () => {
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
-                500: (error, reset) => (
-                    <FiveZeroZero error={error} reset={reset} />
-                )
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
         />
     );

@@ -77,7 +77,9 @@ const Users = () => {
                 startOrderBy: USER_NICK,
                 search: true,
                 flex: "1",
-                startOrderByDirection: "asc"
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             customDetailsRenders={generateUserCustomDetailsRenders(text)}
             backButtonText={text.Back}
@@ -153,9 +155,7 @@ const Users = () => {
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
-                500: (error, reset) => (
-                    <FiveZeroZero error={error} reset={reset} />
-                )
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
         />
     );

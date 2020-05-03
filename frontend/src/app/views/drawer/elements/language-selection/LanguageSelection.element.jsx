@@ -44,8 +44,10 @@ const LanguageSelection = () => {
                     .then(() => {
                         setLanguage(e.target.value);
                     })
-                    .catch(error => {
-                        console.log(error);
+                    .catch(() => {
+                        queueToast({
+                            text: text.FailedEditMe
+                        });
                     });
             }} //update me
             valueToTextMap={{ sv: text.Swedish, en: text.English }}

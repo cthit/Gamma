@@ -8,19 +8,19 @@ import {
     useDigitToast,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import translations from "./AuthorityLevelCard.element.translations";
-import Delete from "@material-ui/icons/Delete";
 import { deleteAuthorityLevel } from "../../../../../../api/authorities/delete.authoritites";
 
-const AuthorityLevelCard = ({ authorityLevel, authorities = [] }) => {
-    const [text, activeLanguage] = useDigitTranslations(translations);
+const AuthorityLevelCard = ({
+    authorityLevel,
+    authorities = [],
+    forceUpdate
+}) => {
+    const [text, activeLanguage] = useDigitTranslations();
     const [openDialog] = useDigitDialog();
     const [queueToast] = useDigitToast();
 
-    console.log(authorities);
-
     return (
-        <DigitDesign.Card size={{ minWidth: "280px", maxWidth: "400px" }}>
+        <DigitDesign.Card size={{ height: "400px" }}>
             <DigitDesign.CardHeader>
                 <DigitDesign.CardTitle text={authorityLevel.authority} />
             </DigitDesign.CardHeader>
@@ -34,11 +34,7 @@ const AuthorityLevelCard = ({ authorityLevel, authorities = [] }) => {
                             text:
                                 authority.superGroup.prettyName +
                                 " - " +
-                                authority.post[activeLanguage],
-                            actionIcon: Delete,
-                            actionOnClick: () => {
-                                console.log("delete");
-                            }
+                                authority.post[activeLanguage]
                         }))}
                         onClick={null}
                         dense
@@ -60,6 +56,7 @@ const AuthorityLevelCard = ({ authorityLevel, authorities = [] }) => {
                                         queueToast({
                                             text: text.DeleteSuccessful
                                         });
+                                        forceUpdate();
                                     })
                                     .catch(() => {
                                         queueToast({
@@ -71,7 +68,7 @@ const AuthorityLevelCard = ({ authorityLevel, authorities = [] }) => {
                     }}
                 />
                 <DigitDesign.Link to={"/authorities/edit/" + authorityLevel.id}>
-                    <DigitButton text={text.AddToAuthority} outlined />
+                    <DigitButton text={text.Edit} outlined />
                 </DigitDesign.Link>
             </DigitDesign.CardButtons>
         </DigitDesign.Card>

@@ -96,7 +96,9 @@ const Clients = () => {
                 startOrderBy: CLIENT_NAME,
                 search: true,
                 flex: "1",
-                startOrderByDirection: "asc"
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             idProp={CLIENT_ID}
             createTitle={text.CreateClient}
@@ -131,9 +133,7 @@ const Clients = () => {
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
-                500: (error, reset) => (
-                    <FiveZeroZero error={error} reset={reset} />
-                )
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             useKeyTextsInUpperLabel
         />

@@ -82,7 +82,9 @@ const ApiKeys = () => {
                 startOrderBy: API_NAME,
                 search: true,
                 flex: "1",
-                startOrderByDirection: "asc"
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             detailsButtonText={text.Details}
             dialogDeleteConfirm={data => text.Delete + " " + data[API_NAME]}
@@ -108,9 +110,7 @@ const ApiKeys = () => {
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
-                500: (error, reset) => (
-                    <FiveZeroZero error={error} reset={reset} />
-                )
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
         />
     );

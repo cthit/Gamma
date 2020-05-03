@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -14,6 +13,7 @@ import it.chalmers.gamma.response.authority.AuthorityLevelAlreadyExists;
 import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
 import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
+import it.chalmers.gamma.response.authority.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse.GetAllAuthoritiesResponseObject;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse;
@@ -109,9 +109,6 @@ public final class AuthorityAdminController {
 
     @DeleteMapping("/level/{id}")
     public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
-        System.out.println(id);
-        System.out.println("got here");
-        System.out.println(this.authorityLevelService.getAllAuthorityLevels());
         if (!this.authorityLevelService.authorityLevelExists(UUID.fromString(id))) {
             throw new AuthorityDoesNotExistResponse();
         }
@@ -119,15 +116,15 @@ public final class AuthorityAdminController {
         return new AuthorityLevelRemovedResponse();
     }
 
-    @GetMapping("level/{id}")
-    public GetAllAuthoritiesResponseObject getAuthoritiesWithLevel(@PathVariable("id") String id) {
+    @GetMapping("/level/{id}")
+    public GetAllAuthoritiesForLevelResponse.GetAllAuthoritiesForLevelResponseObject getAuthoritiesWithLevel(@PathVariable("id") String id) {
         List<AuthorityDTO> authorities = this.authorityService.getAuthoritiesWithLevel(UUID.fromString(id));
-        return new GetAllAuthoritiesResponse(authorities).toResponseObject();
+        AuthorityLevelDTO authorityLevel = this.authorityLevelService.getAuthorityLevelDTO(id);
+        return new GetAllAuthoritiesForLevelResponse(authorities, authorityLevel.getAuthority()).toResponseObject();
     }
 
     @GetMapping("/{id}")
     public GetAuthorityResponseObject getAuthority(@PathVariable("id") String id) {
-
         AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
         return new GetAuthorityResponse(authority).toResponseObject();
     }

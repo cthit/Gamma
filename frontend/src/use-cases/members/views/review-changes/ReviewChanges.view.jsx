@@ -114,6 +114,7 @@ const ReviewChanges = ({
                         />
                         <DigitLayout.Row>
                             <DigitButton
+                                outlined
                                 text={text.Back}
                                 onClick={() => history.goBack()}
                             />

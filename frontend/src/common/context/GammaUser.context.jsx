@@ -30,7 +30,6 @@ const GammaUserSingletonProvider = ({ children }) => {
                         ) {
                             on401();
                         } else {
-                            console.log(error);
                             setStatus([false, true]);
                         }
                         reject(error);

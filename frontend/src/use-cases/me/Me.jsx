@@ -168,7 +168,7 @@ const Me = () => {
                             403: () => <InsufficientAccess />,
                             404: () => <FourOFour />,
                             500: (error, reset) => (
-                                <FiveZeroZero error={error} reset={reset} />
+                                <FiveZeroZero reset={reset} />
                             )
                         }}
                     />

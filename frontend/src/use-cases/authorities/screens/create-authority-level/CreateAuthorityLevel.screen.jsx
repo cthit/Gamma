@@ -31,8 +31,7 @@ const CreateAuthorityLevel = () => {
                                 text: values.authorityLevel + text.AddSuccessful
                             });
                         })
-                        .catch(error => {
-                            console.log(error);
+                        .catch(() => {
                             queueToast({
                                 text: text.AddError
                             });
