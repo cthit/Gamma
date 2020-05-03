@@ -56,8 +56,7 @@ application:
   cookie:
     domain: ${COOKIE_DOMAIN:https://gamma.chalmers.it}
     path: ${COOKIE_PATH:/}
-    validity-time: 86400
-    remember-me-validity: 2629746
+    validity-time: 82629746
   password-expiration-time: 3600
   frontend-client-details:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}

@@ -15,13 +15,14 @@ import it.chalmers.gamma.factories.MockITClientFactory;
 import it.chalmers.gamma.utils.GenerationUtils;
 import it.chalmers.gamma.utils.JSONUtils;
 import java.util.Objects;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,7 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = GammaApplication.class)
 @ActiveProfiles("test")
-@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.ExcessiveImports"})
 public class OauthTests {
 
     @Autowired
@@ -112,7 +113,7 @@ public class OauthTests {
         this.mockMvc.perform(get(query)).andExpect(redirectedUrlPattern(String.format("%s?code=**", redirect)));
     }
 
-    @WithUserDetails("admin")
+    @WithMockUser
     @Test
     public void testSuccessfulAuthorizationCode() throws Exception {
         String redirect = TEST_COM;
@@ -120,16 +121,22 @@ public class OauthTests {
                 .saveClient(this.mockITClientFactory
                         .generateClient(redirect));
         String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());
-        MvcResult result = this.mockMvc.perform(get(query)).andReturn();
+        MvcResult result = this.mockMvc.perform(get(query)).andDo(print()).andReturn();
         String code = Objects.requireNonNull(result.getResponse().getRedirectedUrl()).split("code=")[1];
         String tokenQuery = JSONUtils.toFormUrlEncoded(
 
                 new JSONParameter("client_id", clientDTO.getClientId()),
-                new JSONParameter("client_secret", clientDTO.getClientSecret()),
+                new JSONParameter("client_secret", clientDTO.getClientSecret().replace("{noop}", "")),
                 new JSONParameter("code", code),
                 new JSONParameter("grant_type", "authorization_code"),
                 new JSONParameter("redirect_uri", clientDTO.getWebServerRedirectUri())
         );
-        this.mockMvc.perform(post("/oauth/token").content(tokenQuery)).andDo(print());
+        String rawAuth = clientDTO.getClientId() + ":"
+                + clientDTO.getClientSecret().replace("{noop}", "");
+        String auth = Base64.encodeBase64String(rawAuth.getBytes());
+        this.mockMvc.perform(post("/oauth/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Basic " + auth)
+                .content(tokenQuery)).andDo(print()).andExpect(status().is(200));
     }
 }
