@@ -29,14 +29,14 @@ public class MockAuthorityFactory {
 
     public AuthorityDTO saveAuthority(AuthorityDTO authority) {
         return this.authorityService.createAuthority(
-                authority.getFkitSuperGroup(),
+                authority.getSuperGroup(),
                 authority.getPost(),
-                authority.getAuthorityLevelDTO());
+                authority.getAuthorityLevel());
     }
 
     public AddAuthorityRequest createValidRequest(AuthorityDTO authority, PostDTO post, FKITSuperGroupDTO superGroup) {
         AddAuthorityRequest request = new AddAuthorityRequest();
-        request.setAuthority(authority.getAuthorityLevelDTO().getId().toString());
+        request.setAuthority(authority.getAuthorityLevel().getId().toString());
         request.setPost(post.getId().toString());
         request.setSuperGroup(superGroup.getId().toString());
         return request;

@@ -15,7 +15,6 @@ import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
 import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
-import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse.GetAllAuthoritiesResponseObject;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse.GetAllAuthorityLevelsResponseObject;
 import it.chalmers.gamma.response.authority.GetAuthorityResponse;
