@@ -12,6 +12,7 @@ import statusCode from "../../../../common/utils/formatters/statusCode.formatter
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import { resetPasswordInitialize } from "../../../../api/reset-password/post.reset-password";
 import { useHistory } from "react-router-dom";
+import ChangeLanguageLocally from "../../../../common/views/change-language-locally";
 
 const ResetPasswordInitialize = () => {
     const [text] = useDigitTranslations(translations);
@@ -20,6 +21,7 @@ const ResetPasswordInitialize = () => {
 
     return (
         <DigitLayout.Center>
+            <ChangeLanguageLocally />
             <DigitEditDataCard
                 centerFields
                 validationSchema={yup.object().shape({

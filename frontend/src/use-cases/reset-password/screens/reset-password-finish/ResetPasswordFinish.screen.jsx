@@ -15,6 +15,7 @@ import statusMessage from "../../../../common/utils/formatters/statusMessage.for
 import { resetPasswordFinalize } from "../../../../api/reset-password/put.reset-password";
 import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 import { useLocation } from "react-router-dom";
+import ChangeLanguageLocally from "../../../../common/views/change-language-locally";
 
 const ResetPasswordFinish = () => {
     const [text] = useDigitTranslations(translations);
@@ -25,35 +26,40 @@ const ResetPasswordFinish = () => {
     return (
         <DigitLayout.Center>
             {accountLocked && (
-                <DigitDesign.Card
-                    size={{ width: "300px" }}
-                    margin={{ bottom: "16px" }}
-                >
-                    <DigitDesign.CardHeader>
-                        <DigitDesign.CardTitle
-                            text={"Hey! You're finally awake!"}
-                        />
-                    </DigitDesign.CardHeader>
-                    <DigitDesign.CardHeaderImage src="/awake.gif" />
-                    <DigitDesign.CardBody>
-                        <DigitText.Text text={text.AccountLocked} />
-                    </DigitDesign.CardBody>
-                </DigitDesign.Card>
+                <>
+                    <ChangeLanguageLocally />
+                    <DigitDesign.Card
+                        size={{ width: "300px" }}
+                        margin={{ bottom: "16px" }}
+                    >
+                        <DigitDesign.CardHeader>
+                            <DigitDesign.CardTitle
+                                text={text.AccountLockedTitle}
+                            />
+                        </DigitDesign.CardHeader>
+                        <DigitDesign.CardBody>
+                            <DigitText.Text text={text.AccountLocked} />
+                        </DigitDesign.CardBody>
+                    </DigitDesign.Card>
+                </>
             )}
             <DigitEditDataCard
                 size={{ width: "300px" }}
                 centerFields
                 validationSchema={yup.object().shape({
-                    cid: yup.string().required(text.FieldRequired),
-                    token: yup.string().required(text.FieldRequired),
+                    cid: yup.string().required(text.Cid + text.IsRequired),
+                    token: yup.string().required(text.Code + text.IsRequired),
                     password: yup
                         .string()
                         .min(8, text.MinimumLength)
-                        .required(text.FieldRequired),
+                        .required(text.Password + text.IsRequired),
                     passwordConfirmation: yup
                         .string()
-                        .oneOf([yup.ref("password")], text.PasswordDoNotMatch)
-                        .required(text.FieldRequired)
+                        .oneOf(
+                            [yup.ref("password"), null],
+                            text.PasswordsDoNotMatch
+                        )
+                        .required(text.PasswordConfirmation + text.IsRequired)
                 })}
                 initialValues={{
                     cid: "",
@@ -104,7 +110,8 @@ const ResetPasswordFinish = () => {
                         componentProps: {
                             upperLabel: text.Cid,
                             filled: false,
-                            outlined: true
+                            outlined: true,
+                            maxLength: 15
                         }
                     },
                     token: {

@@ -24,7 +24,7 @@ import {
 import { useHistory } from "react-router-dom";
 import Save from "@material-ui/icons/Save";
 
-function getInitialValues(selectedMemberIds, currentMembers, users, groupId) {
+function getInitialValues(selectedMemberIds, currentMembers, users) {
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
         const user = _.find(users, { id: selectedMember });
 
@@ -115,19 +115,21 @@ const SetPostNames = ({
                                 groupId
                             )}
                             validationSchema={yup.object().shape({
-                                members: yup
-                                    .array(
-                                        yup
-                                            .object()
-                                            .shape({
-                                                postId: yup.string().required(),
-                                                unofficialPostName: yup
-                                                    .string()
-                                                    .required()
-                                            })
-                                            .required()
-                                    )
-                                    .required()
+                                members: yup.array().of(
+                                    yup.object().shape({
+                                        postId: yup
+                                            .string()
+                                            .required(
+                                                text.Post + text.IsRequired
+                                            ),
+                                        unofficialPostName: yup
+                                            .string()
+                                            .required(
+                                                text.UnofficialPostName +
+                                                    text.IsRequired
+                                            )
+                                    })
+                                )
                             })}
                             keysComponentData={{
                                 members: {
@@ -137,7 +139,10 @@ const SetPostNames = ({
                                         currentMembers,
                                         groupId
                                     },
-                                    array: true
+                                    array: true,
+                                    formFieldArrayOptions: {
+                                        inputs: ["postId", "unofficialPostName"]
+                                    }
                                 }
                             }}
                         />

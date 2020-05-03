@@ -19,8 +19,7 @@ import { editUser } from "../../api/users/put.users.api";
 import { deleteUser } from "../../api/users/delete.users.api";
 import {
     generateUserCustomDetailsRenders,
-    generateUserEditComponentData,
-    generateUserInitialValues
+    generateUserEditComponentData
 } from "../../common/utils/generators/user-form.generator";
 import { addUser } from "../../api/users/post.users.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
@@ -31,6 +30,7 @@ import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
     createKeysOrder,
     createValidationSchema,
+    initialValues,
     keysOrder,
     keysText,
     readAllKeysOrder,
@@ -39,6 +39,7 @@ import {
     updateValidationSchema
 } from "./Users.options";
 import { GROUP_PRETTY_NAME } from "../../api/groups/props.groups.api";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Users = () => {
     const admin = useGammaIsAdmin();
@@ -66,7 +67,7 @@ const Users = () => {
             name={"users"}
             path={"/users"}
             readAllRequest={getUsersMinified}
-            readOneRequest={admin ? getUser : null}
+            readOneRequest={getUser}
             updateRequest={admin ? editUser : null}
             deleteRequest={admin ? deleteUser : null}
             createRequest={admin ? addUser : null}
@@ -117,7 +118,7 @@ const Users = () => {
                 fullName(data) + " " + text.WasCreatedSuccessfully
             }
             toastCreateFailed={() => text.FailedCreatingUser}
-            formInitialValues={generateUserInitialValues()}
+            formInitialValues={initialValues()}
             detailsRenderEnd={data => (
                 <>
                     <DisplayGroupsTable
@@ -146,11 +147,16 @@ const Users = () => {
                     </>
                 ) : null
             }
-            on401={on401}
-            render404={() => <FourOFour />}
-            render500={(error, reset) => (
-                <FiveZeroZero error={error} reset={reset} />
-            )}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => (
+                    <FiveZeroZero error={error} reset={reset} />
+                )
+            }}
         />
     );
 };

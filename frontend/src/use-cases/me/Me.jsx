@@ -16,11 +16,7 @@ import translations from "./Me.translations.json";
 import { editMe } from "../../api/me/put.me.api";
 import {
     generateUserCustomDetailsRenders,
-    generateUserEditComponentData,
-    generateUserInitialValues,
-    generateUserKeyOrder,
-    generateUserKeysTexts,
-    generateUserValidationSchema
+    generateUserEditComponentData
 } from "../../common/utils/generators/user-form.generator";
 import { deleteMe } from "../../api/me/delete.me.api";
 import * as yup from "yup";
@@ -34,6 +30,13 @@ import FiveZeroZero from "../../app/elements/five-zero-zero";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import GammaUserContext from "../../common/context/GammaUser.context";
+import {
+    initialValues,
+    keysText,
+    validationSchema,
+    keysOrder
+} from "./Me.options";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const NoStyleLink = styled(Link)`
     color: inherit;
@@ -70,6 +73,11 @@ const Me = () => {
             <Route
                 render={() => (
                     <DigitCRUD
+                        keysOrder={keysOrder()}
+                        keysText={keysText(text)}
+                        formValidationSchema={validationSchema(text)}
+                        formComponentData={generateUserEditComponentData(text)}
+                        formInitialValues={initialValues()}
                         backFromReadOneLink={"/"}
                         name={"me"}
                         path={"/me"}
@@ -81,7 +89,6 @@ const Me = () => {
                                 resolve({ data: user });
                             })
                         }
-                        keysOrder={generateUserKeyOrder()}
                         updateRequest={(id, newData) =>
                             new Promise((resolve, reject) =>
                                 editMe(newData)
@@ -123,12 +130,6 @@ const Me = () => {
                             text,
                             true
                         )}
-                        keysText={generateUserKeysTexts(text)}
-                        formValidationSchema={generateUserValidationSchema(
-                            text
-                        )}
-                        formComponentData={generateUserEditComponentData(text)}
-                        formInitialValues={generateUserInitialValues()}
                         detailsTitle={data => fullName(data)}
                         updateTitle={data => fullName(data)}
                         deleteRequest={(_, form) =>
@@ -160,11 +161,16 @@ const Me = () => {
                                 }
                             }
                         }}
-                        on401={on401}
-                        render404={() => <FourOFour />}
-                        render500={(error, reset) => (
-                            <FiveZeroZero error={error} reset={reset} />
-                        )}
+                        statusHandlers={{
+                            401: on401
+                        }}
+                        statusRenders={{
+                            403: () => <InsufficientAccess />,
+                            404: () => <FourOFour />,
+                            500: (error, reset) => (
+                                <FiveZeroZero error={error} reset={reset} />
+                            )
+                        }}
                     />
                 )}
             />

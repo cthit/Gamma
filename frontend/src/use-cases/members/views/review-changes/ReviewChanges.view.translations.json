@@ -3,5 +3,10 @@
         "New members for the group",
         "Nya medlemmar för gruppen"
     ],
-    "NoUsers": ["No users selected", "Inga användare valda"]
+    "NoUsers": ["No users selected", "Inga användare valda"],
+    "MembersSaved": ["Members saved", "Medlemmarna sparade"],
+    "MembersError": [
+        "Something went wrong when saving the members",
+        "Någonting gick fel när medlemmarna försökter sparas"
+    ]
 }

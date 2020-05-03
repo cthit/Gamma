@@ -2,8 +2,6 @@ import {
     useDigitTranslations,
     DigitEditDataCard,
     DigitLayout,
-    DigitDesign,
-    DigitSelect,
     useDigitToast
 } from "@cthit/react-digit-components";
 import React from "react";
@@ -16,33 +14,16 @@ import {
     keysOrder,
     validationSchema
 } from "./InputCid.view.options";
+import ChangeLanguageLocally from "../../../../common/views/change-language-locally";
 
 const InputCid = () => {
     const [queueToast] = useDigitToast();
-    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
-        translations
-    );
+    const [text] = useDigitTranslations(translations);
     const history = useHistory();
 
     return (
         <DigitLayout.Center>
-            <DigitDesign.Card margin={{ bottom: "16px" }}>
-                <DigitDesign.CardHeader>
-                    <DigitDesign.CardTitle text={text.ChooseLanguage} />
-                </DigitDesign.CardHeader>
-                <DigitDesign.CardBody>
-                    <DigitSelect
-                        alignSelf={"center"}
-                        value={activeLanguage}
-                        onChange={e => {
-                            setActiveLanguage(e.target.value);
-                        }}
-                        valueToTextMap={{ sv: text.Swedish, en: text.English }}
-                        outlined
-                        upperLabel={text.YourLanguage}
-                    />
-                </DigitDesign.CardBody>
-            </DigitDesign.Card>
+            <ChangeLanguageLocally />
             <DigitEditDataCard
                 validationSchema={validationSchema(text)}
                 initialValues={initialValues()}

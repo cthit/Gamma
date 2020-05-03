@@ -21,9 +21,9 @@ const FourOFour = () => {
             alignSelf={"center"}
         >
             <DigitDesign.CardHeader>
-                <DigitDesign.CardTitle text={"404 - " + text.PageNotFound} />
+                <DigitDesign.CardTitle text={text.PageNotFound} />
             </DigitDesign.CardHeader>
-            <DigitDesign.CardHeaderImage src="/jedimind.jpg" />
+            <DigitDesign.CardHeaderImage src="/404.jpg" />
             <DigitDesign.CardBody>
                 <DigitText.Text
                     text={

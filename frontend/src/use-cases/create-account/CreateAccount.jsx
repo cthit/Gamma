@@ -35,7 +35,6 @@ const CreateAccount = () => {
                         text={text.YouAlreadyHaveAnAccount}
                     />
                 </DigitDesign.CardHeader>
-                <DigitDesign.CardHeaderImage src="/jim.gif" />
                 <DigitDesign.CardBody>
                     <DigitText.Text
                         text={text.YouAlreadyHaveAnAccountDescription}

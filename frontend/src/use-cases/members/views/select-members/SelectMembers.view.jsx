@@ -86,7 +86,7 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                 <DigitSelectMultipleTable
                     margin={"4px"}
                     disableSelectAll
-                    flex={"1"}
+                    flex={"2"}
                     value={selectedMemberIds}
                     onChange={newSelected => {
                         setSelectedMemberIds(newSelected);

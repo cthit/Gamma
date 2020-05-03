@@ -91,11 +91,16 @@ const Whitelist = () => {
             detailsTitle={data => data.cid}
             deleteButtonText={data => text.Delete + " " + data[WHITELIST_CID]}
             detailsButtonText={text.Details}
-            on401={on401}
-            render404={() => <FourOFour />}
-            render500={(error, reset) => (
-                <FiveZeroZero error={error} reset={reset} />
-            )}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => (
+                    <FiveZeroZero error={error} reset={reset} />
+                )
+            }}
             useKeyTextsInUpperLabel
         />
     );

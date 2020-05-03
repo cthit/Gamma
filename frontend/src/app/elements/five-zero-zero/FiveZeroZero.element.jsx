@@ -24,7 +24,7 @@ const FiveZeroZero = ({ getMe, reset, error }) => {
             <DigitDesign.CardHeader>
                 <DigitDesign.CardTitle text={text.BackendDownTitle} />
             </DigitDesign.CardHeader>
-            <DigitDesign.CardHeaderImage src="/nope.gif" />
+            <DigitDesign.CardHeaderImage src="/500.gif" />
             <DigitDesign.CardBody>
                 <DigitText.Text text={text.BackendDown} />
             </DigitDesign.CardBody>

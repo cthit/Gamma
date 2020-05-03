@@ -34,7 +34,7 @@ function getDifferentPostNames(posts, activeLanguage) {
     return output;
 }
 
-const CreateMembership = ({ posts, value, onChange }) => {
+const CreateMembership = ({ posts, value, onChange, innerInputs }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
@@ -54,27 +54,15 @@ const CreateMembership = ({ posts, value, onChange }) => {
             <DigitSelect
                 flex={"1"}
                 outlined
-                value={value.postId || ""}
-                onChange={e => {
-                    onChange({
-                        ...value,
-                        postId: e.target.value
-                    });
-                }}
                 valueToTextMap={getDifferentPostNames(posts, activeLanguage)}
                 upperLabel={text.Post}
+                {...innerInputs.postId}
             />
             <DigitTextField
                 flex={"1"}
                 outlined
                 upperLabel={text.UnofficialPostName}
-                value={value.unofficialPostName || ""}
-                onChange={e => {
-                    onChange({
-                        ...value,
-                        unofficialPostName: e.target.value
-                    });
-                }}
+                {...innerInputs.unofficialPostName}
             />
         </CustomRow>
     );

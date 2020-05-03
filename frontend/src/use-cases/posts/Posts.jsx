@@ -157,11 +157,16 @@ const Posts = () => {
             }
             deleteButtonText={() => text.DeletePost}
             detailsTitle={() => text.Details}
-            on401={on401}
-            render404={() => <FourOFour />}
-            render500={(error, reset) => (
-                <FiveZeroZero error={error} reset={reset} />
-            )}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => (
+                    <FiveZeroZero error={error} reset={reset} />
+                )
+            }}
         />
     );
 };

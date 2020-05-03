@@ -51,8 +51,6 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
                         ? ""
                         : " - " + user.unofficialPostName;
 
-                console.log(user);
-
                 return {
                     ...user,
                     postName: officialPostName + unofficialPostName,

@@ -22,6 +22,7 @@ import {
     keysText,
     validationSchema
 } from "./SuperGroups.options";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
@@ -99,11 +100,16 @@ const SuperGroups = () => {
             updateButtonText={data => text.Update + " " + data[SG_NAME]}
             deleteButtonText={data => text.Delete + " " + data[SG_NAME]}
             detailsTitle={data => data[SG_NAME]}
-            on401={on401}
-            render404={() => <FourOFour />}
-            render500={(error, reset) => (
-                <FiveZeroZero error={error} reset={reset} />
-            )}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => (
+                    <FiveZeroZero error={error} reset={reset} />
+                )
+            }}
         />
     );
 };

@@ -5,7 +5,6 @@ import {
     USER_EMAIL,
     USER_FIRST_NAME,
     USER_GROUPS,
-    USER_ID,
     USER_LANGUAGE,
     USER_LAST_NAME,
     USER_NICK,
@@ -13,7 +12,6 @@ import {
     USER_PHONE,
     USER_AGREEMENT
 } from "../../../api/users/props.users.api";
-import * as yup from "yup";
 import {
     DigitSelect,
     DigitSwitch,
@@ -25,25 +23,6 @@ import {
 } from "../../../api/utils/commonProps";
 import DisplayGroupsTable from "../../elements/display-groups-table/DisplayGroupsTable.element";
 import { GROUP_PRETTY_NAME } from "../../../api/groups/props.groups.api";
-
-export function generateUserKeysTexts(text) {
-    const output = {};
-
-    output[USER_ID] = text.Id;
-    output[USER_CID] = text.Cid;
-    output[USER_FIRST_NAME] = text.FirstName;
-    output[USER_LAST_NAME] = text.LastName;
-    output[USER_NICK] = text.Nick;
-    output[USER_EMAIL] = text.Email;
-    output[USER_ACCEPTANCE_YEAR] = text.AcceptanceYear;
-    output[USER_LANGUAGE] = text.Language;
-    output[USER_CID] = text.Cid;
-    output[USER_AGREEMENT] = text.AcceptUserAgreement;
-    output[USER_PASSWORD] = text.Password;
-    output[USER_PHONE] = text.Phone;
-
-    return output;
-}
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";
@@ -58,73 +37,6 @@ function _generateAcceptanceYears() {
     }
 
     return output;
-}
-
-export const generateUserKeyOrder = () => [
-    USER_FIRST_NAME,
-    USER_LAST_NAME,
-    USER_NICK,
-    USER_EMAIL,
-    USER_ACCEPTANCE_YEAR,
-    USER_PHONE,
-    USER_LANGUAGE,
-    USER_GROUPS
-];
-
-export function generateUserInitialValues() {
-    const output = {};
-
-    output[USER_FIRST_NAME] = "";
-    output[USER_LAST_NAME] = "";
-    output[USER_NICK] = "";
-    output[USER_EMAIL] = "";
-    output[USER_ACCEPTANCE_YEAR] = "";
-    output[USER_LANGUAGE] = "";
-    output[USER_AGREEMENT] = false;
-    output[USER_CID] = "";
-    output[USER_PASSWORD] = "";
-    output[USER_PHONE] = "";
-
-    return output;
-}
-
-export function generateUserValidationSchema(
-    text,
-    forceUserAgreement = false,
-    forceCid = false,
-    forcePassword = false
-) {
-    const schema = {};
-    schema[USER_FIRST_NAME] = yup.string().required(text.FieldRequired);
-    schema[USER_LAST_NAME] = yup.string().required(text.FieldRequired);
-    schema[USER_NICK] = yup.string().required(text.FieldRequired);
-    schema[USER_EMAIL] = yup.string().required(text.FieldRequired);
-    schema[USER_ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
-    schema[USER_PHONE] = yup.string();
-    schema[USER_AGREEMENT] = forceUserAgreement
-        ? yup
-              .boolean()
-              .oneOf([true])
-              .required()
-        : yup.boolean();
-    schema[USER_CID] = forceCid
-        ? yup
-              .string()
-              .min(4)
-              .max(12)
-              .required(text.FieldRequired)
-        : yup
-              .string()
-              .min(4)
-              .max(12);
-    schema[USER_PASSWORD] = forcePassword
-        ? yup
-              .string()
-              .min(8, text.PasswordTooShort)
-              .required(text.FieldRequired)
-        : yup.string();
-
-    return yup.object().shape(schema);
 }
 
 export function generateUserEditComponentData(text) {

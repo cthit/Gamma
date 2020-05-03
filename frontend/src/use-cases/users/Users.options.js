@@ -11,9 +11,9 @@ import {
     USER_PASSWORD,
     USER_PHONE,
     USER_RELATIONSHIPS,
-    USER_AGREEMENT
+    USER_AGREEMENT,
+    USER_ID
 } from "../../api/users/props.users.api";
-import { generateUserKeysTexts } from "../../common/utils/generators/user-form.generator";
 
 export const createValidationSchema = text => {
     const schema = {};
@@ -91,7 +91,22 @@ export const initialValues = () => {
 };
 
 export const keysText = text => {
-    return generateUserKeysTexts(text);
+    const output = {};
+
+    output[USER_ID] = text.Id;
+    output[USER_CID] = text.Cid;
+    output[USER_FIRST_NAME] = text.FirstName;
+    output[USER_LAST_NAME] = text.LastName;
+    output[USER_NICK] = text.Nick;
+    output[USER_EMAIL] = text.Email;
+    output[USER_ACCEPTANCE_YEAR] = text.AcceptanceYear;
+    output[USER_LANGUAGE] = text.Language;
+    output[USER_CID] = text.Cid;
+    output[USER_AGREEMENT] = text.AcceptUserAgreement;
+    output[USER_PASSWORD] = text.Password;
+    output[USER_PHONE] = text.Phone;
+
+    return output;
 };
 
 export const keysOrder = () => [
