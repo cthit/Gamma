@@ -13,12 +13,10 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.response.authority.AuthorityLevelDoesNotExistException;
 import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
@@ -47,7 +45,11 @@ public class AuthorityService {
         this.membershipService = membershipService;
     }
 
-    public void setAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO, AuthorityLevelDTO authorityLevelDTO) {
+    public AuthorityDTO createAuthority(
+            FKITSuperGroupDTO groupDTO,
+            PostDTO postDTO,
+            AuthorityLevelDTO authorityLevelDTO) {
+
         Post post = this.postService.getPost(postDTO);
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         AuthorityLevel authorityLevel = this.authorityLevelService.getAuthorityLevel(authorityLevelDTO);
@@ -63,7 +65,7 @@ public class AuthorityService {
             return auth;
         });
         authority.setAuthorityLevel(authorityLevel);
-        this.authorityRepository.save(authority);
+        return this.authorityRepository.save(authority).toDTO();
     }
     protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
@@ -151,5 +153,9 @@ public class AuthorityService {
                 .orElseThrow(AuthorityDoesNotExistResponse::new).toDTO();
     }
 
-
+    @Transactional
+    public void removeAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
+        List<AuthorityDTO> authorities = this.getAllAuthoritiesWithAuthorityLevel(authorityLevelDTO);
+        authorities.forEach(a -> this.removeAuthority(a.getId()));
+    }
 }

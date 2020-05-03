@@ -9,13 +9,14 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import { deleteAuthorityLevel } from "../../../../../../api/authorities/delete.authoritites";
+import translations from "./AuthorityLevelCard.element.translations";
 
 const AuthorityLevelCard = ({
     authorityLevel,
     authorities = [],
     forceUpdate
 }) => {
-    const [text, activeLanguage] = useDigitTranslations();
+    const [text, activeLanguage] = useDigitTranslations(translations);
     const [openDialog] = useDigitDialog();
     const [queueToast] = useDigitToast();
 
@@ -29,22 +30,25 @@ const AuthorityLevelCard = ({
                     <DigitText.Text alignCenter text={text.NoAuthorities} />
                 )}
                 {authorities.length > 0 && (
-                    <DigitList
-                        items={authorities.map(authority => ({
-                            text:
-                                authority.superGroup.prettyName +
-                                " - " +
-                                authority.post[activeLanguage]
-                        }))}
-                        onClick={null}
-                        dense
-                    />
+                    <div style={{ overflowY: "auto" }}>
+                        <DigitList
+                            items={authorities.map(authority => ({
+                                text:
+                                    authority.superGroup.prettyName +
+                                    " - " +
+                                    authority.post[activeLanguage]
+                            }))}
+                            onClick={null}
+                            dense
+                        />
+                    </div>
                 )}
             </DigitDesign.CardBody>
             <DigitDesign.CardButtons leftRight>
                 <DigitButton
                     text={text.Delete}
                     onClick={() => {
+                        console.log("hmmm");
                         openDialog({
                             title: text.AreYouSure,
                             description: text.AreYouSureDeleteAuthorityLevel,

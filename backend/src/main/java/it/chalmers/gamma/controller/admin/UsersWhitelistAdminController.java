@@ -23,7 +23,6 @@ import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 
@@ -86,6 +85,18 @@ public final class UsersWhitelistAdminController {
         return new WhitelistAddedResponse(numAdded, numNotAdded);
     }
 
+    /**
+     * /whitelist/valid will be able to return whether or not a
+     * user is whitelist, without doing anything to modify the data.
+     *
+     * @return true if the user is whitelisted false otherwise
+     */
+    @GetMapping("/{id}/valid")      // Should this be changed to a Pathvar?
+    public WhitelistIsValidResponseObject validCid(@PathVariable("id") String id) {
+
+        return new WhitelistIsValidResponse(this.whitelistService.isCIDWhiteListed(id)).toResponseObject();
+    }
+
     @PutMapping("/{id}")
     public EditedWhitelistResponse editWhitelist(
             @Valid @RequestBody WhitelistCodeRequest request,
@@ -110,7 +121,7 @@ public final class UsersWhitelistAdminController {
         if (!this.whitelistService.isCIDWhiteListed(id)) {
             throw new UserNotFoundResponse();
         }
-        this.whitelistService.removeWhiteListedCID(UUID.fromString(id));
+        this.whitelistService.removeWhiteListedCID(id);
         return new UserDeletedResponse();
     }
 
@@ -126,20 +137,6 @@ public final class UsersWhitelistAdminController {
         return new GetWhitelistResponse(this.whitelistService.getWhitelist(id)).toResponseObject();
     }
 
-    /**
-     * /whitelist/valid will be able to return whether or not a
-     * user is whitelist, without doing anything to modify the data.
-     *
-     * @param cid CID of a user.
-     * @return true if the user is whitelisted false otherwise
-     */
-    @PostMapping("/valid")      // Should this be changed to a Pathvar?
-    public WhitelistIsValidResponseObject validCid(@Valid @RequestBody WhitelistCodeRequest cid, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-        return new WhitelistIsValidResponse(this.whitelistService.isCIDWhiteListed(cid.getCid())).toResponseObject();
-    }
 
 
 }

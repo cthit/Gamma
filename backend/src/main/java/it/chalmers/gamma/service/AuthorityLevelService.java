@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,10 +37,6 @@ public class AuthorityLevelService {
             && this.authorityLevelRepository.existsById(UUID.fromString(authorityLevel));
     }
 
-    public boolean authorityLevelExists(UUID id) {
-        return this.authorityLevelRepository.existsById(id);
-    }
-
     public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {
         if (UUIDUtil.validUUID(authorityLevel)) {
             return this.authorityLevelRepository.findById(UUID.fromString(authorityLevel))
@@ -54,6 +51,7 @@ public class AuthorityLevelService {
         return this.authorityLevelRepository.findAll().stream().map(AuthorityLevel::toDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     public void removeAuthorityLevel(UUID id) {
         this.authorityLevelRepository.deleteById(id);
     }

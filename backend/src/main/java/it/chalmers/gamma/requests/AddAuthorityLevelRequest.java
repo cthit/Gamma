@@ -3,7 +3,7 @@ package it.chalmers.gamma.requests;
 import java.util.Objects;
 import javax.validation.constraints.NotEmpty;
 
-public class AuthorizationLevelRequest {
+public class AddAuthorityLevelRequest {
     @NotEmpty(message = "AUTHORITY_LEVEL_MUST_BE_PROVIDED")
     private String authorityLevel;
 
@@ -23,7 +23,7 @@ public class AuthorizationLevelRequest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AuthorizationLevelRequest that = (AuthorizationLevelRequest) o;
+        AddAuthorityLevelRequest that = (AddAuthorityLevelRequest) o;
         return Objects.equals(this.authorityLevel, that.authorityLevel);
     }
 

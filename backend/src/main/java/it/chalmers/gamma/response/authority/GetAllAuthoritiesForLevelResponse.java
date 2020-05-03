@@ -22,14 +22,15 @@ public class GetAllAuthoritiesForLevelResponse {
     }
 
     public String getAuthorityLevel() {
-        return authorityLevel;
+        return this.authorityLevel;
     }
 
     public GetAllAuthoritiesForLevelResponseObject toResponseObject() {
         return new GetAllAuthoritiesForLevelResponseObject(this);
     }
 
-    public static class GetAllAuthoritiesForLevelResponseObject extends ResponseEntity<GetAllAuthoritiesForLevelResponse> {
+    public static class GetAllAuthoritiesForLevelResponseObject
+            extends ResponseEntity<GetAllAuthoritiesForLevelResponse> {
         GetAllAuthoritiesForLevelResponseObject(GetAllAuthoritiesForLevelResponse body) {
             super(body, HttpStatus.ACCEPTED);
         }

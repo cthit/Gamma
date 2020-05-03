@@ -4,6 +4,7 @@ import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.db.repository.ITClientRepository;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
+import it.chalmers.gamma.response.client.ITClientDoesNotExistException;
 import it.chalmers.gamma.util.TokenUtils;
 
 import it.chalmers.gamma.util.UUIDUtil;
@@ -38,7 +39,8 @@ public class ITClientService implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        return this.itClientRepository.findByClientId(clientId).toDTO();
+        return this.itClientRepository.findByClientId(clientId).orElseThrow(ITClientDoesNotExistException::new)
+        .toDTO();
     }
 
     public ITClientDTO createITClient(String name, Text description, String redirect) {

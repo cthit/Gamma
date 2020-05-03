@@ -27,11 +27,11 @@ public class WebsiteService {
      * @param name       the name of the website
      * @param prettyName the display-name of the website
      */
-    public void addPossibleWebsite(String name, String prettyName) {
+    public WebsiteDTO addPossibleWebsite(String name, String prettyName) {
         Website website = new Website();
         website.setPrettyName(prettyName == null ? name.toLowerCase() : prettyName);
         website.setName(name);
-        this.repository.save(website);
+        return this.repository.save(website).toDTO();
     }
 
     public WebsiteDTO getWebsite(String websiteName) {

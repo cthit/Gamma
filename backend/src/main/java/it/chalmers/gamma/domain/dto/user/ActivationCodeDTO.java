@@ -75,4 +75,15 @@ public class ActivationCodeDTO {
                 this.code,
                 this.createdAt);
     }
+
+    @Override
+    public String toString() {
+        return "ActivationCodeDTO{"
+                + "id=" + this.id
+                + ", whitelistDTO=" + this.whitelistDTO
+                + ", code='" + this.code + '\''
+                + ", createdAt=" + this.createdAt
+                + ", passwordExpirationTime=" + this.passwordExpirationTime
+                + '}';
+    }
 }

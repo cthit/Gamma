@@ -1,7 +1,8 @@
-package it.chalmers.gamma;
+package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.service.WhitelistService;
-
+import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.factories.MockActivationCodeFactory;
+import it.chalmers.gamma.factories.MockWhitelistFactory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +16,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class WhitelistTests {
+public class WhitelistServiceTests {
 
     @Autowired
-    WhitelistService whitelistService;
+    private WhitelistService whitelistService;
+
+    @Autowired
+    private MockWhitelistFactory mockWhitelistFactory;
+
+    @Autowired
+    private MockActivationCodeFactory mockActivationCodeFactory;
 
     /**
      * Tests if adding a CID to the whitelist works, and if seeing if a non-whitelisted CID returns correct result.
@@ -56,11 +63,12 @@ public class WhitelistTests {
         }
     }
 
-    /*
-     * TODO Set up test environment that specifies mail address to send from and to.
-     */
     @Test
-    public void testSendEmail() {
-        Assert.assertTrue(true);
+    public void testRemoveWhitelistWithConnectedActivationCode() {
+        WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
+        this.mockActivationCodeFactory.saveActivationCode(whitelist);
+        this.whitelistService.removeWhiteListedCID(whitelist.getCid());
+        Assert.assertFalse(this.whitelistService.isCIDWhiteListed(whitelist.getCid()));
     }
+
 }

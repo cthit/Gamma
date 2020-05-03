@@ -96,13 +96,15 @@ dependencies {
             'org.springframework:spring-test:5.2.5.RELEASE',
             'org.springframework.boot:spring-boot-test-autoconfigure:2.2.6.RELEASE',
             'org.springframework.boot:spring-boot-test:2.2.6.RELEASE',
-            'junit:junit:4.13'
+            'junit:junit:4.13',
+            'org.mockito:mockito-all:1.10.19',
+            'org.springframework.security:spring-security-test'
     )
 
     testRuntimeOnly(
             'com.h2database:h2:1.4.200',
             'org.springframework.restdocs:spring-restdocs-mockmvc',
-            'org.springframework.security:spring-security-test'
+
     )
 
 

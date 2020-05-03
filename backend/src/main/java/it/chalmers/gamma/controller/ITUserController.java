@@ -89,7 +89,7 @@ public final class ITUserController {
             if (result.hasErrors()) {
                 throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
             }
-            WhitelistDTO user = this.whitelistService.getWhitelistDTO(createITUserRequest.getWhitelist().getCid());
+            WhitelistDTO user = this.whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
 
             if (this.itUserService.userExists(user.getCid())) {
                 throw new UserAlreadyExistsResponse();
@@ -112,20 +112,13 @@ public final class ITUserController {
                         createITUserRequest.getEmail(),
 
                         createITUserRequest.getPassword());
-                this.removeCidFromWhitelist(createITUserRequest);
+                this.whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
                 return new UserCreatedResponse();
             }
         } catch (WhitelistDoesNotExistsException e) {
             LOGGER.warn(String.format("user %s entered non-valid code", createITUserRequest.getNick()));
             return new UserCreatedResponse();
         }
-    }
-
-
-    // Check if this cascades automatically
-    private void removeCidFromWhitelist(CreateITUserRequest createITUserRequest) {
-        this.activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
-        this.whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
     }
 
     @GetMapping("/me")

@@ -4,14 +4,14 @@ import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
-import it.chalmers.gamma.requests.AuthorizationLevelRequest;
-import it.chalmers.gamma.requests.AuthorizationRequest;
+import it.chalmers.gamma.requests.AddAuthorityLevelRequest;
+import it.chalmers.gamma.requests.AddAuthorityRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.authority.AuthorityAddedResponse;
+import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAddedResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAlreadyExists;
 import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
-import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
@@ -61,14 +61,14 @@ public final class AuthorityAdminController {
     }
 
     @PostMapping()
-    public AuthorityAddedResponse addAuthority(@Valid @RequestBody AuthorizationRequest request, BindingResult result) {
+    public AuthorityAddedResponse addAuthority(@Valid @RequestBody AddAuthorityRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         PostDTO post = this.postService.getPostDTO(request.getPost());
         FKITSuperGroupDTO group = this.fkitSuperGroupService.getGroupDTO(request.getSuperGroup());
         AuthorityLevelDTO level = this.authorityLevelService.getAuthorityLevelDTO(request.getAuthority());
-        this.authorityService.setAuthorityLevel(group, post, level);
+        this.authorityService.createAuthority(group, post, level);
         return new AuthorityAddedResponse();
     }
 
@@ -89,7 +89,7 @@ public final class AuthorityAdminController {
 
     // BELOW THIS SHOULD MAYBE BE MOVED TO A DIFFERENT FILE
     @PostMapping("/level")
-    public AuthorityLevelAddedResponse addAuthorityLevel(@Valid @RequestBody AuthorizationLevelRequest request,
+    public AuthorityLevelAddedResponse addAuthorityLevel(@Valid @RequestBody AddAuthorityLevelRequest request,
                                                     BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -109,15 +109,18 @@ public final class AuthorityAdminController {
 
     @DeleteMapping("/level/{id}")
     public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
-        if (!this.authorityLevelService.authorityLevelExists(UUID.fromString(id))) {
+        if (!this.authorityLevelService.authorityLevelExists(id)) {
             throw new AuthorityDoesNotExistResponse();
         }
+        AuthorityLevelDTO authorityLevel = this.authorityLevelService.getAuthorityLevelDTO(id);
+        this.authorityService.removeAllAuthoritiesWithAuthorityLevel(authorityLevel);
         this.authorityLevelService.removeAuthorityLevel(UUID.fromString(id));       // TODO Move check to service?
         return new AuthorityLevelRemovedResponse();
     }
 
     @GetMapping("/level/{id}")
-    public GetAllAuthoritiesForLevelResponse.GetAllAuthoritiesForLevelResponseObject getAuthoritiesWithLevel(@PathVariable("id") String id) {
+    public GetAllAuthoritiesForLevelResponse.GetAllAuthoritiesForLevelResponseObject getAuthoritiesWithLevel(
+            @PathVariable("id") String id) {
         List<AuthorityDTO> authorities = this.authorityService.getAuthoritiesWithLevel(UUID.fromString(id));
         AuthorityLevelDTO authorityLevel = this.authorityLevelService.getAuthorityLevelDTO(id);
         return new GetAllAuthoritiesForLevelResponse(authorities, authorityLevel.getAuthority()).toResponseObject();

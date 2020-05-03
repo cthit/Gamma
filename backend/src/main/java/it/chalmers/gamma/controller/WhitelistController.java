@@ -11,7 +11,6 @@ import it.chalmers.gamma.service.MailSenderService;
 import it.chalmers.gamma.service.WhitelistService;
 
 import it.chalmers.gamma.util.InputValidationUtils;
-import it.chalmers.gamma.util.TokenUtils;
 
 import javax.validation.Valid;
 
@@ -53,9 +52,8 @@ public final class WhitelistController {
                 throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
             }
             if (this.whitelistService.isCIDWhiteListed(cid.getCid())) {
-                WhitelistDTO whitelist = this.whitelistService.getWhitelistDTO(cid.getCid());
-                String code = TokenUtils.generateToken(15, TokenUtils.CharacterTypes.NUMBERS);
-                ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist, code);
+                WhitelistDTO whitelist = this.whitelistService.getWhitelist(cid.getCid());
+                ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(whitelist);
                 sendEmail(activationCode);
             } else {
                 String nonWhitelistWarning = "Non Whitelisted User: %s Tried to Create Account";

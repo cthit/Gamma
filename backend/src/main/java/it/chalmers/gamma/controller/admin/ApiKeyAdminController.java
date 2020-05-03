@@ -42,8 +42,8 @@ public class ApiKeyAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        String apiKeySecret = this.apiKeyService.createApiKey(requestToDTO(request));
-        return new GetApiKeySecretResponse(apiKeySecret).toResponseObject();
+        ApiKeyDTO apiKeyDTO = this.apiKeyService.createApiKey(requestToDTO(request));
+        return new GetApiKeySecretResponse(apiKeyDTO.getKey()).toResponseObject();
     }
 
     @GetMapping()
