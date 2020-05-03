@@ -47,7 +47,11 @@ public class AuthorityService {
         this.membershipService = membershipService;
     }
 
-    public void setAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO, AuthorityLevelDTO authorityLevelDTO) {
+    public AuthorityDTO createAuthority(
+            FKITSuperGroupDTO groupDTO,
+            PostDTO postDTO,
+            AuthorityLevelDTO authorityLevelDTO) {
+
         Post post = this.postService.getPost(postDTO);
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         AuthorityLevel authorityLevel = this.authorityLevelService.getAuthorityLevel(authorityLevelDTO);
@@ -63,7 +67,7 @@ public class AuthorityService {
             return auth;
         });
         authority.setAuthorityLevel(authorityLevel);
-        this.authorityRepository.save(authority);
+        return this.authorityRepository.save(authority).toDTO();
     }
     protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
@@ -151,5 +155,9 @@ public class AuthorityService {
                 .orElseThrow(AuthorityDoesNotExistResponse::new).toDTO();
     }
 
-
+    @Transactional
+    public void removeAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
+        List<AuthorityDTO> authorities = this.getAllAuthoritiesWithAuthorityLevel(authorityLevelDTO);
+        authorities.forEach(a -> this.removeAuthority(a.getInternalID()));
+    }
 }

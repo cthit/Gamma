@@ -57,7 +57,8 @@ public class ITClientDTO implements ClientDetails {
     }
 
     public ITClientDTO(String webServerRedirectUri, String name, Text description) {
-        this(null, null, null, webServerRedirectUri, null, null, null, name, description, null, null);
+        this(null, null, null, webServerRedirectUri, Integer.MAX_VALUE, Integer.MAX_VALUE,
+                true, name, description, null, null);
     }
 
     public UUID getId() {

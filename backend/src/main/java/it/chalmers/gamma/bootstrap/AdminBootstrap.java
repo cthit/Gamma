@@ -82,7 +82,7 @@ public class AdminBootstrap {
                     admin
             ); // This might break on a new year
             AuthorityLevelDTO authorityLevel = this.helper.getAuthorityLevelService().addAuthorityLevel(admin);
-            this.helper.getAuthorityService().setAuthorityLevel(superGroup, post, authorityLevel);
+            this.helper.getAuthorityService().createAuthority(superGroup, post, authorityLevel);
             LOGGER.info("admin user created!");
         }
     }

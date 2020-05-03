@@ -21,7 +21,8 @@ public class OauthRedirectFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
         SecurityContext context = SecurityContextHolder.getContext();
-        if (requestURI.startsWith("/api/oauth")
+        String prefix = ((HttpServletRequest) request).getContextPath();
+        if (requestURI.startsWith(prefix + "/oauth")
                 && (context.getAuthentication() == null || !context.getAuthentication().isAuthenticated())) {
             ((HttpServletRequest) request).getSession().setAttribute("redirect", requestURI
                     + "?" + httpServletRequest.getQueryString());

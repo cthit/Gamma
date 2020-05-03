@@ -8,8 +8,6 @@ import it.chalmers.gamma.response.activationcode.GetAllActivationCodesResponse;
 import it.chalmers.gamma.response.activationcode.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
 import it.chalmers.gamma.service.ActivationCodeService;
 
-import java.util.UUID;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +37,7 @@ public final class UserActivationCodeAdminController {
             throw new ActivationCodeDoesNotExistResponse();
         }
         return new GetActivationCodeResponse(
-                this.activationCodeService.getActivationCode(activationCode)).toResponseObject();
+                this.activationCodeService.getActivationCodeDTO(activationCode)).toResponseObject();
     }
 
     @DeleteMapping("/{activationCode}")
@@ -47,7 +45,9 @@ public final class UserActivationCodeAdminController {
         if (!this.activationCodeService.codeExists(activationCode)) {
             throw new ActivationCodeDoesNotExistResponse();
         }
-        this.activationCodeService.deleteCode(UUID.fromString(activationCode));
+        if (!this.activationCodeService.deleteCode(activationCode)) {
+            throw new ActivationCodeDoesNotExistResponse();
+        }
         return new ActivationCodeDeletedResponse();
     }
 }
