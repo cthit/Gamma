@@ -90,7 +90,7 @@ public class AuthorityService {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         Post post = this.postService.getPost(postDTO);
         Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post)
-                .orElseThrow(AuthorityDoesNotExistResponse::new);
+                .orElse(null);
         if (authority != null) {
             return authority.toDTO();
         }
