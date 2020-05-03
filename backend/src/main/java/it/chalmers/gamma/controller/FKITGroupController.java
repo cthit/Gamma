@@ -43,7 +43,7 @@ public final class FKITGroupController {
 
     @GetMapping("/{id}")
     public GetFKITGroupResponseObject getGroup(@PathVariable("id") String id) {
-        final FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        final FKITGroupDTO group = this.fkitGroupService.getGroup(id);
         List<MembershipDTO> minifiedMembers = this.membershipService.getMembershipsInGroup(group);
         //List<WebsiteDTO> websites = this.getWebsiteDTO(group);
         return new GetFKITGroupResponse(group, minifiedMembers, null).toResponseObject();
@@ -58,7 +58,7 @@ public final class FKITGroupController {
 
     @GetMapping("/{id}/minified")
     public GetFKITGroupMinifiedResponseObject getGroupMinified(@PathVariable("id") String id) {
-        return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getDTOGroup(id)
+        return new GetFKITGroupMinifiedResponse(this.fkitGroupService.getGroup(id)
                 .toMinifiedDTO()).toResponseObject();
     }
 

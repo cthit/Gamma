@@ -57,7 +57,7 @@ public final class GroupMemberAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         ITUserDTO user = this.itUserService.getITUser(request.getUserId());
-        FKITGroupDTO fkitGroup = this.fkitGroupService.getDTOGroup(id);
+        FKITGroupDTO fkitGroup = this.fkitGroupService.getGroup(id);
         PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new MemberAddedToGroupResponse();
@@ -66,7 +66,7 @@ public final class GroupMemberAdminController {
     @DeleteMapping("/{id}/members/{user}")
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") String id,
                                                               @PathVariable("user") String userId) {
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
+        FKITGroupDTO group = this.fkitGroupService.getGroup(id);
         ITUserDTO user = this.itUserService.getITUser(userId);
         this.membershipService.removeUserFromGroup(group, user);
         return new MemberRemovedFromGroupResponse();
@@ -80,7 +80,7 @@ public final class GroupMemberAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITGroupDTO group = this.fkitGroupService.getDTOGroup(groupId);
+        FKITGroupDTO group = this.fkitGroupService.getGroup(groupId);
         ITUserDTO user = this.itUserService.getITUser(userId);
         MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, group);
         PostDTO post = this.postService.getPostDTO(request.getPost());

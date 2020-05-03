@@ -26,6 +26,7 @@ import Members from "../use-cases/members";
 import GammaUserContext from "../common/context/GammaUser.context";
 import FiveZeroZero from "./elements/five-zero-zero";
 import About from "../use-cases/about";
+import Authorities from "../use-cases/authorities/Authorities";
 
 export const App = () => {
     const [user, update, [loading, error], ignore] = useContext(
@@ -65,6 +66,7 @@ export const App = () => {
             {error && <FiveZeroZero getMe={update} />}
             {!loading && !error && (
                 <Switch>
+                    <Route path="/authorities" component={Authorities} />
                     <Route path="/clients" component={Clients} />
                     <Route path="/users" component={Users} />
                     <Route path="/groups" component={Groups} />

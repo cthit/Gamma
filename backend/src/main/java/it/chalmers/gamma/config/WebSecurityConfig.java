@@ -241,11 +241,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addPathRole(HttpSecurity http, FKITGroupDTO group) {
         this.authorityService.getAllAuthorities().forEach(a -> {
-            if (a.getFkitSuperGroup().getId().equals(group.getSuperGroup().getId())) {
+            if (a.getSuperGroup().getId().equals(group.getSuperGroup().getId())) {
                 try {
                     http.authorizeRequests().antMatchers("/admin/groups/"
                             + group.getId() + "/**")
-                            .hasAuthority(a.getAuthorityLevelDTO().getAuthority());
+                            .hasAuthority(a.getAuthorityLevel().getAuthority());
                 } catch (Exception e) {
                     LOGGER.error("Something went wrong when setting authorized paths");
                     LOGGER.error(e.getMessage());
