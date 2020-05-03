@@ -7,9 +7,9 @@ import {
 } from "@cthit/react-digit-components";
 import translations from "./CreateMembership.view.translations";
 import {
-    FIRST_NAME,
-    LAST_NAME,
-    NICK
+    USER_FIRST_NAME,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../../../../../api/users/props.users.api";
 import styled from "styled-components";
 
@@ -34,7 +34,7 @@ function getDifferentPostNames(posts, activeLanguage) {
     return output;
 }
 
-const CreateMembership = ({ posts, value, onChange }) => {
+const CreateMembership = ({ posts, value, onChange, innerInputs }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
@@ -43,38 +43,26 @@ const CreateMembership = ({ posts, value, onChange }) => {
                 <DigitText.Text
                     alignCenter
                     text={
-                        value[FIRST_NAME] +
+                        value[USER_FIRST_NAME] +
                         ' "' +
-                        value[NICK] +
+                        value[USER_NICK] +
                         '" ' +
-                        value[LAST_NAME]
+                        value[USER_LAST_NAME]
                     }
                 />
             </div>
             <DigitSelect
                 flex={"1"}
                 outlined
-                value={value.postId || ""}
-                onChange={e => {
-                    onChange({
-                        ...value,
-                        postId: e.target.value
-                    });
-                }}
                 valueToTextMap={getDifferentPostNames(posts, activeLanguage)}
                 upperLabel={text.Post}
+                {...innerInputs.postId}
             />
             <DigitTextField
                 flex={"1"}
                 outlined
                 upperLabel={text.UnofficialPostName}
-                value={value.unofficialPostName || ""}
-                onChange={e => {
-                    onChange({
-                        ...value,
-                        unofficialPostName: e.target.value
-                    });
-                }}
+                {...innerInputs.unofficialPostName}
             />
         </CustomRow>
     );

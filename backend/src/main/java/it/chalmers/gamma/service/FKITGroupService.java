@@ -45,7 +45,7 @@ public class FKITGroupService {
     }
 
     public FKITGroupDTO editGroup(String id, FKITGroupDTO fkitGroupDTO) {
-        FKITGroup group = this.getGroup(this.getDTOGroup(id));
+        FKITGroup group = this.fromDTO(this.getGroup(id));
         if (group == null) {
             return null;
         }
@@ -111,7 +111,7 @@ public class FKITGroupService {
         return this.repo.findAll().stream().map(FKITGroup::toDTO).collect(Collectors.toList());
     }
 
-    public FKITGroupDTO getDTOGroup(String name) {
+    public FKITGroupDTO getGroup(String name) {
         if (UUIDUtil.validUUID(name)) {
             return this.repo.findById(UUID.fromString(name))
                     .orElseThrow(GroupDoesNotExistResponse::new).toDTO();
@@ -122,12 +122,12 @@ public class FKITGroupService {
     }
 
     public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse {
-        FKITGroup group = this.getGroup(groupDTO);
+        FKITGroup group = this.fromDTO(groupDTO);
         group.setAvatarURL(url);
         this.repo.save(group);
     }
 
-    protected FKITGroup getGroup(FKITGroupDTO group) {
+    protected FKITGroup fromDTO(FKITGroupDTO group) {
         return this.repo.findById(group.getId()).orElse(null);
     }
 

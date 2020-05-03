@@ -29,8 +29,12 @@ public class AuthorityLevelService {
     }
 
     public boolean authorityLevelExists(String authorityLevel) {
-        return this.authorityLevelRepository.existsByAuthorityLevel(authorityLevel)
-                || this.authorityLevelRepository.existsById(UUID.fromString(authorityLevel));
+        if (this.authorityLevelRepository.existsByAuthorityLevel(authorityLevel)) {
+            return true;
+        }
+
+        return UUIDUtil.validUUID(authorityLevel)
+            && this.authorityLevelRepository.existsById(UUID.fromString(authorityLevel));
     }
 
     public AuthorityLevelDTO getAuthorityLevelDTO(String authorityLevel) {

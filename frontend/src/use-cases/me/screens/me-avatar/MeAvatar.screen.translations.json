@@ -3,7 +3,10 @@
     "SelectImage": ["Select image", "Välj bild"],
     "UploadImage": ["Upload image", "Ladda upp bild"],
     "NoAvatar": ["You have no avatar", "Du har ingen profilbild"],
-    "AvatarUploaded": ["Avatar changed", "Avatar ändrad"],
     "UploadFailed": ["Avatar upload failed", "Avatar uppladdning misslyckades"],
-    "TooLargeFile": ["File is to large", "Filen är för stor"]
+    "TooLargeFile": [
+        "File is to large (Max 2MB)",
+        "Filen är för stor (Max 2MB)"
+    ],
+    "InvalidFileType": ["Invalid file type", "Ogiltig filtyp"]
 }

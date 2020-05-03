@@ -1,4 +1,5 @@
 {
+    "Add": ["Add", "Lägg till"],
     "Cancel": ["Cancel", "Avbryt"],
     "Back": ["Back", "Tillbaka"],
     "Close": ["Close", "Stäng"],
@@ -7,10 +8,7 @@
     "Delete": ["Delete", "Radera"],
     "Create": ["Create", "Skapa"],
     "Details": ["Details", "Detaljer"],
-    "FieldRequired": [
-        "This field is required",
-        "Det här fältet är obligatoriskt"
-    ],
+    "IsRequired": [" is required", " krävs"],
     "FieldNotEmail": ["Must be an email", "Måste vara en giltig emailadress"],
     "SomethingWentWrong": [
         "Something went wrong when trying to send the data, please try again or contact digit@chalmers.it",
@@ -21,7 +19,10 @@
     "Save": ["Save", "Spara"],
     "Swedish": ["Swedish", "Svenska"],
     "English": ["English", "Engelska"],
+    "Email": ["Email", "Email"],
     "Id": ["Id", "Id"],
+    "Cid": ["Cid", "Cid"],
+    "Name": ["Name", "Namn"],
     "AreYouSure": ["Are you sure?", "Är du säker?"],
     "AreYouSureYouWantToDelete": [
         "Are you sure you want to delete",
@@ -45,5 +46,22 @@
     ],
     "Groups": ["Groups", "Grupper"],
     "NoGroups": ["No groups", "Inga grupper"],
-    "Next": ["Next", "Nästa"]
+    "Next": ["Next", "Nästa"],
+    "SwedishDescription": ["Swedish description", "Svensk beskrivning"],
+    "EnglishDescription": ["English description", "Engelsk beskrivning"],
+    "Nick": ["Nick", "Nick"],
+    "Password": ["Password", "Lösenord"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "ConfirmPassword": ["Confirm password", "Bekräfta lösenord"],
+    "PrettyName": ["Pretty name", "Pretty namn"],
+    "Type": ["Group type", "Grupp typ"],
+    "Society": ["Society", "Förening"],
+    "Committee": ["Committee", "Kommitté"],
+    "Board": ["Board", "Nämnd"],
+    "Admin": ["Admin", "Admin"],
+    "Functionaries": ["Functionaries", "Funktionärer"],
+    "Alumni": ["Alumni", "Pateter"],
+    "SuperGroup": ["Super group", "Supergrupp"],
+    "Post": ["Post", "Post"]
 }

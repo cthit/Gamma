@@ -10,12 +10,12 @@ import {
 import translations from "./SelectMembers.view.translations";
 import UsersInGroupChanges from "./elements/users-in-group-changes";
 import * as _ from "lodash";
-import { PRETTY_NAME } from "../../../../api/groups/props.groups.api";
+import { GROUP_PRETTY_NAME } from "../../../../api/groups/props.groups.api";
 import {
-    FIRST_NAME,
-    ID,
-    LAST_NAME,
-    NICK
+    USER_FIRST_NAME,
+    USER_ID,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../../../api/users/props.users.api";
 import styled from "styled-components";
 
@@ -31,10 +31,10 @@ const CustomRow = styled.div`
 const generateHeaderTexts = text => {
     const headerTexts = {};
 
-    headerTexts[FIRST_NAME] = text.FirstName;
-    headerTexts[LAST_NAME] = text.LastName;
-    headerTexts[NICK] = text.Nickname;
-    headerTexts[ID] = text.Id;
+    headerTexts[USER_FIRST_NAME] = text.FirstName;
+    headerTexts[USER_LAST_NAME] = text.LastName;
+    headerTexts[USER_NICK] = text.Nickname;
+    headerTexts[USER_ID] = text.Id;
 
     return headerTexts;
 };
@@ -86,17 +86,17 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                 <DigitSelectMultipleTable
                     margin={"4px"}
                     disableSelectAll
-                    flex={"1"}
+                    flex={"2"}
                     value={selectedMemberIds}
                     onChange={newSelected => {
                         setSelectedMemberIds(newSelected);
                     }}
                     search
-                    titleText={text.UsersFor + group[PRETTY_NAME]}
+                    titleText={text.UsersFor + group[GROUP_PRETTY_NAME]}
                     searchText="Search for users"
                     idProp="id"
-                    startOrderBy={NICK}
-                    columnsOrder={[FIRST_NAME, NICK, LAST_NAME]}
+                    startOrderBy={USER_NICK}
+                    columnsOrder={[USER_FIRST_NAME, USER_NICK, USER_LAST_NAME]}
                     headerTexts={generateHeaderTexts(text)}
                     data={users}
                 />

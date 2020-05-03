@@ -2,17 +2,20 @@ import {
     DigitLayout,
     useDigitTranslations,
     useDigitToast,
-    DigitEditDataCard,
-    DigitSelect
+    DigitEditDataCard
 } from "@cthit/react-digit-components";
 import React from "react";
-import * as yup from "yup";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-import { DigitSwitch, DigitTextField } from "@cthit/react-digit-components";
 import translations from "./InputDataAndCode.view.translations.json";
 import { useHistory } from "react-router-dom";
 import { createAccount } from "../../../../api/create-account/post.createAccount.api";
+import {
+    initialValues,
+    keysComponentData,
+    keysOrder,
+    validationSchema
+} from "./InputDataAndCode.view.options";
 
 const InputDataAndCode = () => {
     const [text] = useDigitTranslations(translations);
@@ -22,11 +25,16 @@ const InputDataAndCode = () => {
     return (
         <DigitLayout.Center>
             <DigitEditDataCard
+                initialValues={initialValues()}
+                validationSchema={validationSchema(text)}
+                keysOrder={keysOrder()}
+                keysComponentData={keysComponentData(text)}
                 centerFields
                 titleText={text.CompleteCreation}
                 subtitleText={text.CompleteCreationDescription}
                 submitText={text.CreateAccount}
                 extraButton={{
+                    outlined: true,
                     text: text.Back,
                     onClick: () => history.goBack()
                 }}
@@ -46,7 +54,7 @@ const InputDataAndCode = () => {
                         .catch(error => {
                             const code = statusCode(error);
                             const message = statusMessage(error);
-                            var errorMessage = text.SomethingWentWrong;
+                            var errorMessage;
                             switch (code) {
                                 case 422:
                                     switch (message) {
@@ -72,172 +80,10 @@ const InputDataAndCode = () => {
                             });
                         });
                 }}
-                initialValues={{
-                    cid: "",
-                    code: "",
-                    nick: "",
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    acceptanceYear: "",
-                    password: "",
-                    passwordConfirmation: "",
-                    userAgreement: false
-                }}
-                validationSchema={yup.object().shape({
-                    cid: yup.string().required(text.FieldRequired),
-                    code: yup.string().required(text.FieldRequired),
-                    nick: yup.string().required(text.FieldRequired),
-                    firstName: yup.string().required(text.FieldRequired),
-                    lastName: yup.string().required(text.FieldRequired),
-                    email: yup
-                        .string()
-                        .required(text.FieldRequired)
-                        .email(text.NotEmail)
-                        .matches(
-                            /(^((?!@student.chalmers.se).)*$)/,
-                            text.NonStudentEmailError
-                        ),
-                    acceptanceYear: yup
-                        .number()
-                        .min(2001)
-                        .max(_getCurrentYear())
-                        .required(text.FieldRequired),
-                    password: yup
-                        .string()
-                        .min(8, text.MinimumLength)
-                        .required(text.FieldRequired),
-                    passwordConfirmation: yup
-                        .string()
-                        .oneOf([yup.ref("password")], text.PasswordsDoNotMatch)
-                        .required(text.FieldRequired),
-                    userAgreement: yup
-                        .boolean()
-                        .oneOf([true])
-                        .required(text.FieldRequired)
-                })}
                 size={{ minWidth: "300px", maxWidth: "600px" }}
-                keysOrder={[
-                    "cid",
-                    "code",
-                    "password",
-                    "passwordConfirmation",
-                    "nick",
-                    "firstName",
-                    "lastName",
-                    "email",
-                    "acceptanceYear",
-                    "userAgreement"
-                ]}
-                keysComponentData={{
-                    cid: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.YourCid,
-                            outlined: true,
-                            maxLength: 12,
-                            size: { width: "280px" }
-                        }
-                    },
-                    code: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.CodeFromYourStudentEmail,
-                            outlined: true,
-                            maxLength: 15,
-                            size: { width: "280px" }
-                        }
-                    },
-                    nick: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Nick,
-                            outlined: true,
-                            maxLength: 20,
-                            size: { width: "280px" }
-                        }
-                    },
-                    password: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.Password,
-                            outlined: true,
-                            password: true,
-                            size: { width: "280px" }
-                        }
-                    },
-                    passwordConfirmation: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.ConfirmPassword,
-                            outlined: true,
-                            password: true,
-                            size: { width: "280px" }
-                        }
-                    },
-                    firstName: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.FirstName,
-                            outlined: true,
-                            maxLength: 15,
-                            size: { width: "280px" }
-                        }
-                    },
-                    lastName: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.LastName,
-                            outlined: true,
-                            maxLength: 15,
-                            size: { width: "280px" }
-                        }
-                    },
-                    email: {
-                        component: DigitTextField,
-                        componentProps: {
-                            upperLabel: text.NonStudentEmail,
-                            outlined: true,
-                            maxLength: 100,
-                            size: { width: "280px" }
-                        }
-                    },
-                    acceptanceYear: {
-                        component: DigitSelect,
-                        componentProps: {
-                            valueToTextMap: _generateAcceptanceYears(),
-                            upperLabel: text.WhichYearDidYouStart,
-                            reverse: true,
-                            outlined: true,
-                            size: { width: "280px" }
-                        }
-                    },
-                    userAgreement: {
-                        component: DigitSwitch,
-                        componentProps: {
-                            label: text.AcceptUserAgreement,
-                            primary: true,
-                            size: { width: "280px" }
-                        }
-                    }
-                }}
             />
         </DigitLayout.Center>
     );
 };
-
-function _getCurrentYear() {
-    return new Date().getFullYear() + "";
-}
-
-function _generateAcceptanceYears() {
-    const output = {};
-    const startYear = 2001;
-    const currentYear = _getCurrentYear();
-    for (var i = currentYear; i >= startYear; i--) {
-        output[i] = i + "";
-    }
-    return output;
-}
 
 export default InputDataAndCode;

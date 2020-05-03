@@ -77,6 +77,9 @@ const ResetPasswordAdmin = () => {
                         .min(8, text.MinimumLength)
                         .required(text.FieldRequired)
                 })}
+                initialValues={{
+                    password: ""
+                }}
             />
         </DigitLayout.Center>
     );

@@ -1,18 +1,17 @@
 import React from "react";
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    EMAIL,
-    FIRST_NAME,
-    GROUPS,
-    ID,
-    LANGUAGE,
-    LAST_NAME,
-    NICK,
-    PASSWORD,
+    USER_ACCEPTANCE_YEAR,
+    USER_CID,
+    USER_EMAIL,
+    USER_FIRST_NAME,
+    USER_GROUPS,
+    USER_LANGUAGE,
+    USER_LAST_NAME,
+    USER_NICK,
+    USER_PASSWORD,
+    USER_PHONE,
     USER_AGREEMENT
 } from "../../../api/users/props.users.api";
-import * as yup from "yup";
 import {
     DigitSelect,
     DigitSwitch,
@@ -23,25 +22,7 @@ import {
     SWEDISH_LANGUAGE
 } from "../../../api/utils/commonProps";
 import DisplayGroupsTable from "../../elements/display-groups-table/DisplayGroupsTable.element";
-import { PRETTY_NAME } from "../../../api/groups/props.groups.api";
-
-export function generateUserKeysTexts(text) {
-    const output = {};
-
-    output[ID] = text.Id;
-    output[CID] = text.Cid;
-    output[FIRST_NAME] = text.FirstName;
-    output[LAST_NAME] = text.LastName;
-    output[NICK] = text.Nick;
-    output[EMAIL] = text.Email;
-    output[ACCEPTANCE_YEAR] = text.AcceptanceYear;
-    output[LANGUAGE] = text.Language;
-    output[CID] = text.Cid;
-    output[USER_AGREEMENT] = text.AcceptUserAgreement;
-    output[PASSWORD] = text.Password;
-
-    return output;
-}
+import { GROUP_PRETTY_NAME } from "../../../api/groups/props.groups.api";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";
@@ -58,74 +39,10 @@ function _generateAcceptanceYears() {
     return output;
 }
 
-export const generateUserKeyOrder = () => [
-    FIRST_NAME,
-    LAST_NAME,
-    NICK,
-    EMAIL,
-    ACCEPTANCE_YEAR,
-    LANGUAGE,
-    GROUPS
-];
-
-export function generateUserInitialValues() {
-    const output = {};
-
-    output[FIRST_NAME] = "";
-    output[LAST_NAME] = "";
-    output[NICK] = "";
-    output[EMAIL] = "";
-    output[ACCEPTANCE_YEAR] = "";
-    output[LANGUAGE] = "";
-    output[USER_AGREEMENT] = false;
-    output[CID] = "";
-    output[PASSWORD] = "";
-
-    return output;
-}
-
-export function generateUserValidationSchema(
-    text,
-    forceUserAgreement = false,
-    forceCid = false,
-    forcePassword = false
-) {
-    const schema = {};
-    schema[FIRST_NAME] = yup.string().required(text.FieldRequired);
-    schema[LAST_NAME] = yup.string().required(text.FieldRequired);
-    schema[NICK] = yup.string().required(text.FieldRequired);
-    schema[EMAIL] = yup.string().required(text.FieldRequired);
-    schema[ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
-    schema[USER_AGREEMENT] = forceUserAgreement
-        ? yup
-              .boolean()
-              .oneOf([true])
-              .required()
-        : yup.boolean();
-    schema[CID] = forceCid
-        ? yup
-              .string()
-              .min(4)
-              .max(12)
-              .required(text.FieldRequired)
-        : yup
-              .string()
-              .min(4)
-              .max(12);
-    schema[PASSWORD] = forcePassword
-        ? yup
-              .string()
-              .min(8, text.PasswordTooShort)
-              .required(text.FieldRequired)
-        : yup.string();
-
-    return yup.object().shape(schema);
-}
-
 export function generateUserEditComponentData(text) {
     const componentData = {};
 
-    componentData[FIRST_NAME] = {
+    componentData[USER_FIRST_NAME] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.FirstName,
@@ -134,7 +51,7 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[LAST_NAME] = {
+    componentData[USER_LAST_NAME] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.LastName,
@@ -143,7 +60,7 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[NICK] = {
+    componentData[USER_NICK] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Nick,
@@ -152,7 +69,7 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[EMAIL] = {
+    componentData[USER_EMAIL] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Email,
@@ -161,7 +78,7 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[ACCEPTANCE_YEAR] = {
+    componentData[USER_ACCEPTANCE_YEAR] = {
         component: DigitSelect,
         componentProps: {
             upperLabel: text.AcceptanceYear,
@@ -172,7 +89,7 @@ export function generateUserEditComponentData(text) {
         }
     };
 
-    componentData[CID] = {
+    componentData[USER_CID] = {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Cid,
@@ -189,17 +106,35 @@ export function generateUserEditComponentData(text) {
         }
     };
 
+    componentData[USER_PHONE] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Phone,
+            outlined: true,
+            maxLength: 15
+        }
+    };
+
     const languageOptions = {};
     languageOptions[SWEDISH_LANGUAGE] = "Svenska";
     languageOptions[ENGLISH_LANGUAGE] = "English";
 
-    componentData[LANGUAGE] = {
+    componentData[USER_LANGUAGE] = {
         component: DigitSelect,
         componentProps: {
             upperLabel: text.Language,
             lowerLabel: text.LanguageLowerLabel,
             valueToTextMap: languageOptions,
             outlined: true
+        }
+    };
+
+    componentData[USER_PASSWORD] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.Password,
+            outlined: true,
+            password: true
         }
     };
 
@@ -210,14 +145,14 @@ export function generateUserCustomDetailsRenders(text, ignoreGroups) {
     const output = {};
 
     if (ignoreGroups) {
-        output[GROUPS] = () => null;
+        output[USER_GROUPS] = () => null;
     } else {
-        output[GROUPS] = data =>
-            data[GROUPS] != null ? (
+        output[USER_GROUPS] = data =>
+            data[USER_GROUPS] != null ? (
                 <DisplayGroupsTable
-                    groups={data[GROUPS]}
+                    groups={data[USER_GROUPS]}
                     title={text.Groups}
-                    columnsOrder={[PRETTY_NAME]}
+                    columnsOrder={[GROUP_PRETTY_NAME]}
                 />
             ) : null;
     }

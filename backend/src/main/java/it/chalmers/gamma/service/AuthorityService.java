@@ -13,6 +13,7 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -55,23 +56,22 @@ public class AuthorityService {
         Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(
                 group,
                 post
-        );
-        if (authority == null) {
-            authority = new Authority();
+        ).orElseGet(() -> {
+            Authority auth = new Authority();
             AuthorityPK pk = new AuthorityPK();
             pk.setFkitGroup(group);
             pk.setPost(post);
-            authority.setId(pk);
-        }
+            auth.setId(pk);
+            return auth;
+        });
         authority.setAuthorityLevel(authorityLevel);
         return this.authorityRepository.save(authority).toDTO();
     }
-
     protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
         //  for (MembershipDTO membership : memberships) {
         //      AuthorityLevel authorityLevel = this.authorityLevelService
-        //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevelDTO(
+        //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevel(
         //                      membership.getFkitGroupDTO().getId().toString()));
         //      if (authorityLevel != null) {
         //          authorities.add(authorityLevel);
@@ -83,13 +83,14 @@ public class AuthorityService {
 
     // TODO Check for name?
     public boolean authorityExists(String id) {
-        return this.authorityRepository.existsById(UUID.fromString(id));
+        return this.authorityRepository.existsByInternalId(UUID.fromString(id));
     }
 
     public AuthorityDTO getAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         Post post = this.postService.getPost(postDTO);
-        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post);
+        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post)
+                .orElse(null);
         if (authority != null) {
             return authority.toDTO();
         }
@@ -99,7 +100,8 @@ public class AuthorityService {
     public void removeAuthority(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         Post post = this.postService.getPost(postDTO);
-        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post);
+        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post)
+                .orElseThrow(AuthorityDoesNotExistResponse::new);
         this.authorityRepository.delete(authority);
     }
 
@@ -121,7 +123,7 @@ public class AuthorityService {
                 Calendar end = membership.getFkitGroupDTO().getBecomesInactive();
                 Calendar now = Calendar.getInstance();
                 if (now.after(start) && now.before(end)) {
-                    authorityLevels.add(authority.getAuthorityLevelDTO());
+                    authorityLevels.add(authority.getAuthorityLevel());
                 }
             }
         }
@@ -138,13 +140,22 @@ public class AuthorityService {
                 .stream().map(Authority::toDTO).collect(Collectors.toList());
     }
 
+    public List<AuthorityDTO> getAuthoritiesWithLevel(UUID id) {
+        return this.authorityRepository.findAllByAuthorityLevel(
+                this.authorityLevelService.getAuthorityLevel(
+                this.authorityLevelService.getAuthorityLevelDTO(id.toString()))).stream()
+                .map(Authority::toDTO)
+                .collect(Collectors.toList());
+    }
+
     public AuthorityDTO getAuthority(UUID id) {
-        return this.authorityRepository.findByInternalId(id).toDTO();
+        return this.authorityRepository.findByInternalId(id)
+                .orElseThrow(AuthorityDoesNotExistResponse::new).toDTO();
     }
 
     @Transactional
     public void removeAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
         List<AuthorityDTO> authorities = this.getAllAuthoritiesWithAuthorityLevel(authorityLevelDTO);
-        authorities.forEach(a -> this.removeAuthority(a.getInternalID()));
+        authorities.forEach(a -> this.removeAuthority(a.getId()));
     }
 }

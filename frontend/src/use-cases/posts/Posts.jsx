@@ -1,12 +1,9 @@
 import React from "react";
-
 import {
     DigitCRUD,
     DigitText,
-    useDigitTranslations,
-    DigitTextField
+    useDigitTranslations
 } from "@cthit/react-digit-components";
-
 import translations from "./Posts.translations";
 import { getPost, getPosts, getPostUsage } from "../../api/posts/get.posts.api";
 import { addPost } from "../../api/posts/post.posts.api";
@@ -15,46 +12,29 @@ import {
     ENGLISH_LANGUAGE,
     SWEDISH_LANGUAGE
 } from "../../api/utils/commonProps";
-
-import * as yup from "yup";
 import { editPost } from "../../api/posts/put.posts.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
-import { NAME, PRETTY_NAME } from "../../api/groups/props.groups.api";
+import {
+    GROUP_NAME,
+    GROUP_PRETTY_NAME
+} from "../../api/groups/props.groups.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-
-function generateValidationSchema(text) {
-    const schema = {};
-
-    schema[SWEDISH_LANGUAGE] = yup.string().required(text.FieldRequired);
-    schema[ENGLISH_LANGUAGE] = yup.string().required(text.FieldRequired);
-
-    return yup.object().shape(schema);
-}
-
-function generateEditComponentData(text) {
-    const componentData = {};
-
-    componentData[SWEDISH_LANGUAGE] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.SwedishInput,
-            outlined: true,
-            maxLength: 50
-        }
-    };
-
-    componentData[ENGLISH_LANGUAGE] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.EnglishInput,
-            outlined: true,
-            maxLength: 50
-        }
-    };
-
-    return componentData;
-}
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
+import {
+    initialValues,
+    keysComponentData,
+    keysOrder,
+    keysText,
+    validationSchema
+} from "./Posts.options";
+import {
+    POST_ENGLISH,
+    POST_ID,
+    POST_SWEDISH
+} from "../../api/posts/props.posts.api";
 
 const Posts = () => {
     const [text] = useDigitTranslations(translations);
@@ -66,35 +46,38 @@ const Posts = () => {
 
     return (
         <DigitCRUD
+            formComponentData={keysComponentData(text)}
+            formValidationSchema={validationSchema(text)}
+            keysText={keysText(text)}
+            formInitialValues={initialValues()}
+            keysOrder={keysOrder()}
             path={"/posts"}
             name={"posts"}
             updateRequest={(id, data) =>
-                editPost(id, { post: { sv: data.sv, en: data.en } })
+                editPost(id, {
+                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] }
+                })
             }
             createRequest={data =>
-                addPost({ post: { sv: data.sv, en: data.en } })
+                addPost({
+                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] }
+                })
             }
             readAllRequest={getPosts}
             readOneRequest={id => Promise.all([getPost(id), getPostUsage(id)])}
             createTitle={text.AddNewPost}
-            keysText={{
-                id: "Id",
-                sv: text.Swedish,
-                en: text.English
-            }}
-            formInitialValues={{
-                sv: "",
-                en: ""
-            }}
-            keysOrder={["sv", "en"]}
             tableProps={{
                 titleText: text.Posts,
-                startOrderBy: "sv",
-                search: true
+                startOrderBy: POST_SWEDISH,
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             detailsButtonText={text.Details}
             deleteRequest={deletePost}
-            idProp={"id"}
+            idProp={POST_ID}
             detailsRenderCardEnd={data => (
                 <>
                     {(data.usages == null || data.usages.length) === 0 && (
@@ -108,13 +91,11 @@ const Posts = () => {
                         <DisplayGroupsTable
                             groups={data.usages}
                             title={text.Usages}
-                            columnsOrder={[NAME, PRETTY_NAME]}
+                            columnsOrder={[GROUP_NAME, GROUP_PRETTY_NAME]}
                         />
                     )}
                 </div>
             )}
-            formComponentData={generateEditComponentData(text)}
-            formValidationSchema={generateValidationSchema(text)}
             createButtonText={text.CreatePost}
             backButtonText={text.Back}
             updateButtonText={() => text.Update}
@@ -178,6 +159,14 @@ const Posts = () => {
             }
             deleteButtonText={() => text.DeletePost}
             detailsTitle={() => text.Details}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => <FiveZeroZero reset={reset} />
+            }}
         />
     );
 };

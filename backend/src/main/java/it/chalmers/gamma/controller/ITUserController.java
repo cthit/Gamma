@@ -147,12 +147,9 @@ public final class ITUserController {
     @GetMapping("/{id}")
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
-        //      List<WebsiteDTO> websites =
-        //                this.userWebsiteService.getWebsitesOrdered(
-        //                        this.userWebsiteService.getWebsites(user)
-        //      );
-        List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
-                .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
+        // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
+        //                 this.userWebsiteService.getWebsites(user));
+        List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
         return new GetITUserResponse(user, groups, null).toResponseObject();
     }
 

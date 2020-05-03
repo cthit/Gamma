@@ -2,10 +2,7 @@
     "SendCid": ["Send email", "Skicka email"],
     "GetActivationCode": ["Get activation code", "Hämta aktiveringskod"],
     "CreateAccount": ["Create account", "Skapa konto"],
-    "YouAlreadyHaveAnAccount": [
-        "You already have an account",
-        "Du har redan ett konto"
-    ],
+    "YouAlreadyHaveAnAccount": ["Another account??", "Ett till konto??"],
     "YouAlreadyHaveAnAccountDescription": [
         "You really want another account??",
         "Vill du verkligen ha ett till konto??"

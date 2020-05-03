@@ -3,204 +3,51 @@ import { addDays } from "date-fns";
 import {
     DigitCRUD,
     useDigitTranslations,
-    DigitTextField,
     DigitButton,
-    DigitSelect,
-    DigitTextArea,
-    DigitDatePicker,
     DigitLayout
 } from "@cthit/react-digit-components";
 import translations from "./Groups.translations";
 import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
 import {
-    BECOMES_ACTIVE,
-    BECOMES_INACTIVE,
-    EMAIL,
-    ID,
-    NAME,
-    PRETTY_NAME,
-    SUPER_GROUP
+    GROUP_BECOMES_ACTIVE,
+    GROUP_BECOMES_INACTIVE,
+    GROUP_MEMBERS,
+    GROUP_ID,
+    GROUP_NAME,
+    GROUP_PRETTY_NAME,
+    GROUP_SUPER_GROUP,
+    GROUP_EMAIL,
+    GROUP_DESCRIPTION_EN,
+    GROUP_DESCRIPTION_SV,
+    GROUP_FUNCTION_EN,
+    GROUP_FUNCTION_SV
 } from "../../api/groups/props.groups.api";
 import { editGroup } from "../../api/groups/put.groups.api";
-import * as yup from "yup";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
 import { addGroup } from "../../api/groups/post.groups.api";
 import DisplayMembersTable from "../../common/elements/display-members-table";
 import { useHistory } from "react-router-dom";
-import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { inGroup } from "../../common/utils/checker/gamma";
 import { deleteGroup } from "../../api/groups/delete.groups.api";
-
-const DESCRIPTION_SV = "descriptionSv";
-const DESCRIPTION_EN = "descriptionEn";
-const FUNCTION_SV = "functionSv";
-const FUNCTION_EN = "functionEn";
-
-function generateInitialValues() {
-    const output = {};
-
-    output[ID] = "";
-    output[NAME] = "";
-    output[EMAIL] = "";
-    output[DESCRIPTION_SV] = "";
-    output[DESCRIPTION_EN] = "";
-    output[FUNCTION_SV] = "";
-    output[FUNCTION_EN] = "";
-    output[SUPER_GROUP] = "";
-    output[PRETTY_NAME] = "";
-    output[BECOMES_ACTIVE] = new Date();
-
-    var aYearFromNow = new Date();
-    aYearFromNow.setFullYear(aYearFromNow.getFullYear() + 1);
-    output[BECOMES_INACTIVE] = aYearFromNow;
-
-    return output;
-}
-
-function generateKeyTexts(text) {
-    const output = {};
-
-    output[ID] = text.Id;
-    output[NAME] = text.Name;
-    output[EMAIL] = text.Email;
-    output[DESCRIPTION_SV] = text.DescriptionSv;
-    output[DESCRIPTION_EN] = text.DescriptionEn;
-    output[FUNCTION_SV] = text.FunctionSv;
-    output[FUNCTION_EN] = text.FunctionEn;
-    output[SUPER_GROUP] = text.SuperGroup;
-    output["superGroupPrettyName"] = text.SuperGroup;
-    output[PRETTY_NAME] = text.PrettyName;
-    output[BECOMES_ACTIVE] = text.BecomesActive;
-    output[BECOMES_INACTIVE] = text.BecomesInactive;
-
-    return output;
-}
-
-function generateValidationSchema(text) {
-    const schema = {};
-
-    schema[NAME] = yup.string().required();
-    schema[PRETTY_NAME] = yup.string().required();
-    schema[EMAIL] = yup.string().required();
-
-    schema[DESCRIPTION_SV] = yup.string();
-    schema[DESCRIPTION_EN] = yup.string();
-
-    schema[FUNCTION_SV] = yup.string();
-    schema[FUNCTION_EN] = yup.string();
-
-    return yup.object().shape(schema);
-}
-
-function generateEditComponentData(text, superGroups = []) {
-    const componentData = {};
-
-    componentData[NAME] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Name,
-            maxLength: 50,
-            outlined: true
-        }
-    };
-
-    componentData[PRETTY_NAME] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.PrettyName,
-            maxLength: 50,
-            outlined: true
-        }
-    };
-
-    componentData[DESCRIPTION_SV] = {
-        component: DigitTextArea,
-        componentProps: {
-            upperLabel: text.DescriptionSv,
-            maxLength: 500,
-            rows: 5,
-            maxRows: 10,
-            outlined: true
-        }
-    };
-
-    componentData[DESCRIPTION_EN] = {
-        component: DigitTextArea,
-        componentProps: {
-            upperLabel: text.DescriptionEn,
-            maxLength: 500,
-            rows: 5,
-            maxRows: 10,
-            outlined: true
-        }
-    };
-
-    componentData[EMAIL] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Email,
-            maxLength: 100,
-            outlined: true
-        }
-    };
-
-    componentData[FUNCTION_SV] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.FunctionSv,
-            maxLength: 100,
-            outlined: true
-        }
-    };
-
-    componentData[FUNCTION_EN] = {
-        component: DigitTextField,
-        componentProps: {
-            maxLength: 100,
-            upperLabel: text.FunctionEn,
-            outlined: true
-        }
-    };
-
-    const superGroupMap = {};
-    for (let i = 0; i < superGroups.length; i++) {
-        superGroupMap[superGroups[i].id] = superGroups[i].prettyName;
-    }
-
-    componentData[SUPER_GROUP] = {
-        component: DigitSelect,
-        componentProps: {
-            upperLabel: text.SuperGroup,
-            valueToTextMap: superGroupMap,
-            outlined: true
-        }
-    };
-
-    componentData[BECOMES_ACTIVE] = {
-        component: DigitDatePicker,
-        componentProps: {
-            upperLabel: text.BecomesActive,
-            outlined: true
-        }
-    };
-
-    componentData[BECOMES_INACTIVE] = {
-        component: DigitDatePicker,
-        componentProps: {
-            upperLabel: text.BecomesInactive,
-            outlined: true
-        }
-    };
-
-    return componentData;
-}
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
+import {
+    initialValues,
+    keysOrder,
+    keysText,
+    readAllKeysOrder,
+    readOneKeysOrder,
+    keysComponentData,
+    validationSchema,
+    updateKeysOrder
+} from "./Groups.options";
+import InsufficientAccess from "../../common/views/insufficient-access";
 
 const Groups = () => {
     const [text] = useDigitTranslations(translations);
     const admin = useGammaIsAdmin();
     const [superGroups, setSuperGroups] = useState([]);
-    const user = useGammaUser();
     const history = useHistory();
 
     useEffect(() => {
@@ -215,8 +62,16 @@ const Groups = () => {
 
     return (
         <DigitCRUD
+            formInitialValues={initialValues()}
+            formValidationSchema={validationSchema(text)}
+            formComponentData={keysComponentData(text, superGroups)}
+            keysOrder={keysOrder()}
+            readOneKeysOrder={readOneKeysOrder()}
+            readAllKeysOrder={readAllKeysOrder()}
+            updateKeysOrder={updateKeysOrder()}
+            keysText={keysText(text)}
             canDelete={() => admin}
-            canUpdate={group => admin || inGroup(user, group)}
+            canUpdate={() => admin} //|| inGroup(user, group)}
             name={"groups"}
             path={"/groups"}
             readAllRequest={getGroupsMinified}
@@ -246,67 +101,45 @@ const Groups = () => {
             createRequest={
                 admin
                     ? data => {
-                          const becomesActive = addDays(data.becomesActive, 1);
+                          const becomesActive = addDays(
+                              data[GROUP_BECOMES_ACTIVE],
+                              1
+                          );
                           const becomesInactive = addDays(
-                              data.becomesInactive,
+                              data[GROUP_BECOMES_INACTIVE],
                               1
                           );
 
                           return addGroup({
-                              name: data.name,
+                              name: data[GROUP_NAME],
                               function: {
-                                  sv: data.functionSv,
-                                  en: data.functionEn
+                                  sv: data[GROUP_FUNCTION_SV],
+                                  en: data[GROUP_FUNCTION_EN]
                               },
                               description: {
-                                  sv: data.descriptionSv,
-                                  en: data.descriptionEn
+                                  sv: data[GROUP_DESCRIPTION_SV],
+                                  en: data[GROUP_DESCRIPTION_EN]
                               },
-                              email: data.email,
-                              superGroup: data.superGroup,
-                              prettyName: data.prettyName,
-                              becomesActive: becomesActive,
-                              becomesInactive: becomesInactive
+                              email: data[GROUP_EMAIL],
+                              superGroup: data[GROUP_SUPER_GROUP],
+                              prettyName: data[GROUP_PRETTY_NAME],
+                              becomesActive,
+                              becomesInactive
                           });
                       }
                     : null
             }
-            keysOrder={[
-                PRETTY_NAME,
-                NAME,
-                EMAIL,
-                DESCRIPTION_SV,
-                DESCRIPTION_EN,
-                FUNCTION_SV,
-                FUNCTION_EN,
-                SUPER_GROUP,
-                BECOMES_ACTIVE,
-                BECOMES_INACTIVE
-            ]}
-            readOneKeysOrder={[
-                PRETTY_NAME,
-                NAME,
-                EMAIL,
-                DESCRIPTION_SV,
-                DESCRIPTION_EN,
-                FUNCTION_SV,
-                FUNCTION_EN,
-                "superGroupPrettyName",
-                BECOMES_ACTIVE,
-                BECOMES_INACTIVE
-            ]}
-            readAllKeysOrder={[NAME, PRETTY_NAME, EMAIL]}
-            keysText={generateKeyTexts(text)}
             tableProps={{
-                orderBy: NAME,
-                startOrderBy: NAME,
+                orderBy: GROUP_NAME,
+                startOrderBy: GROUP_NAME,
                 titleText: text.Groups,
-                search: true
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
-            formInitialValues={generateInitialValues()}
-            formValidationSchema={generateValidationSchema(text)}
-            formComponentData={generateEditComponentData(text, superGroups)}
-            idProp={"id"}
+            idProp={GROUP_ID}
             detailsRenderCardEnd={data =>
                 admin ? (
                     <>
@@ -327,15 +160,23 @@ const Groups = () => {
                 <DisplayMembersTable
                     margin={{ top: "16px" }}
                     noUsersText={text.NoGroupMembers}
-                    users={data.groupMembers}
+                    users={data[GROUP_MEMBERS]}
                 />
             )}
-            dateProps={[BECOMES_ACTIVE, BECOMES_INACTIVE]}
+            dateProps={[GROUP_BECOMES_ACTIVE, GROUP_BECOMES_INACTIVE]}
             createButtonText={text.Create + " " + text.Group}
-            updateTitle={group => text.Update + " " + group.prettyName}
+            updateTitle={group => text.Update + " " + group[GROUP_PRETTY_NAME]}
             createTitle={text.CreateGroup}
-            detailsTitle={group => group.prettyName}
-        ></DigitCRUD>
+            detailsTitle={group => group[GROUP_PRETTY_NAME]}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => <FiveZeroZero reset={reset} />
+            }}
+        />
     );
 };
 

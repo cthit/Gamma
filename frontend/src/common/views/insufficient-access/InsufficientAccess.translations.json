@@ -1,5 +1,8 @@
 {
-    "InsufficientAccess": ["Insufficient access", "Otillräcklig tillgång"],
+    "InsufficientAccess": [
+        "403 - Insufficient access",
+        "403 - Otillräcklig tillgång"
+    ],
     "YouDontHaveAccess": [
         "You do not have access to this page. Please contact digit@chalmers.it if you think this is a mistake.",
         "Du har inte tillgång till denna sida. Kontakta digit@chalmers.it om du tror det här är ett misstag."

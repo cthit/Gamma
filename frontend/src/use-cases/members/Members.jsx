@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
     DigitStepper,
+    DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { NAME } from "../../api/groups/props.groups.api";
+import { GROUP_NAME } from "../../api/groups/props.groups.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import translations from "./Members.translations";
 import SetPostNames from "./views/set-post-names";
@@ -74,7 +75,7 @@ const Members = () => {
     }
 
     return (
-        <>
+        <DigitLayout.Column flex={"1"}>
             <DigitStepper
                 activeStep={step}
                 steps={[
@@ -119,7 +120,7 @@ const Members = () => {
                     exact
                     render={() => (
                         <ReviewChanges
-                            groupName={group[NAME]}
+                            groupName={group[GROUP_NAME]}
                             posts={posts}
                             previousMembers={group.groupMembers}
                             newMembersData={newMembersData}
@@ -131,7 +132,7 @@ const Members = () => {
                     )}
                 />
             </Switch>
-        </>
+        </DigitLayout.Column>
     );
 };
 export default Members;

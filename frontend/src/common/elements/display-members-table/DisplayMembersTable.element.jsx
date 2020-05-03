@@ -7,21 +7,21 @@ import {
 import translations from "./DisplayMembersTable.element.translations";
 
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    FIRST_NAME,
-    LAST_NAME,
-    NICK
+    USER_ACCEPTANCE_YEAR,
+    USER_CID,
+    USER_FIRST_NAME,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../../api/users/props.users.api";
 
 function generateHeaderTexts(text) {
     const headerTexts = {};
 
-    headerTexts[FIRST_NAME] = text.FirstName;
-    headerTexts[LAST_NAME] = text.LastName;
-    headerTexts[CID] = text.Cid;
-    headerTexts[NICK] = text.Nick;
-    headerTexts[ACCEPTANCE_YEAR] = text.AcceptanceYear;
+    headerTexts[USER_FIRST_NAME] = text.FirstName;
+    headerTexts[USER_LAST_NAME] = text.LastName;
+    headerTexts[USER_CID] = text.Cid;
+    headerTexts[USER_NICK] = text.Nick;
+    headerTexts[USER_ACCEPTANCE_YEAR] = text.AcceptanceYear;
     headerTexts["postName"] = text.PostName;
     headerTexts["__link"] = text.Details;
 
@@ -36,9 +36,9 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
             margin={margin}
             titleText={text.Users}
             searchText={text.SearchForUsers}
-            idProp={CID}
-            startOrderBy={FIRST_NAME}
-            columnsOrder={[NICK, "postName"]}
+            idProp={USER_CID}
+            startOrderBy={USER_FIRST_NAME}
+            columnsOrder={[USER_NICK, "postName"]}
             headerTexts={generateHeaderTexts(text)}
             data={users.map(user => {
                 const officialPostName =
@@ -46,7 +46,8 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
 
                 const unofficialPostName =
                     user.unofficialPostName === user.post.sv ||
-                    user.unofficialPostName === user.post.en
+                    user.unofficialPostName === user.post.en ||
+                    user.unofficialPostName == null
                         ? ""
                         : " - " + user.unofficialPostName;
 
@@ -57,6 +58,7 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
                 };
             })}
             emptyTableText={noUsersText || text.NoUsers}
+            startRowsPerPage={10}
         />
     );
 };

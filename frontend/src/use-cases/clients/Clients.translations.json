@@ -1,7 +1,5 @@
 {
-    "Id": ["Id", "Id"],
     "Details": ["Details", "Detaljer"],
-    "Name": ["Name", "Namn"],
     "ClientId": ["Client Id", "Klient Id"],
     "RedirectURI": ["Redirect URI", "Redirect URI"],
     "SearchForClients": ["Search for client", "Sök efter klient"],
@@ -9,15 +7,13 @@
     "Clients": ["Registered clients", "Registrerade klienter"],
     "ClientName": ["Client name", "Klientnamn"],
     "ClientRedirect": ["Client redirect", "Klient omdirigeringslänk"],
-    "DescriptionSv": ["Description Swedish", "Beskrivning Svenska"],
-    "DescriptionEn": ["Description English", "Beskrivning Engelska"],
     "CreateClient": ["Create new client", "Skapa ny klient"],
     "SubmitClient": ["Create client", "Skapa klient"],
-    "YourClientSecret": [
-        "Your client secret \n (Save this)",
-        "Din klient secret \n (Spara detta)"
+    "YourClientSecret": ["Your client secret", "Din klient secret"],
+    "YourClientSecretDescription": [
+        "Make sure this is kept safe. This secret can be used to access other users information! This will be the last time it will be shown.",
+        "Se till att denna nyckel behålls hemlig. Denna hemliga nyckel kan användas för att komma åt andra användares data! Detta är enda gången den kommer att synas."
     ],
-    "CloseDialog": ["Close", "Stäng"],
     "CopyToClipboard": ["Copy to clipboard", "kopiera till urklipp"],
     "ClientCreatingSuccessful": [
         "was successfully created",

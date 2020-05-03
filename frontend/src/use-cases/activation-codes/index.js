@@ -1,1 +1,2 @@
-export { default } from "./ActivationCodes";
+import ActivationCodes from "./ActivationCodes";
+export default ActivationCodes;

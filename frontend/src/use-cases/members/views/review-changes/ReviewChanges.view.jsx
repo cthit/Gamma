@@ -5,7 +5,8 @@ import {
     DigitDesign,
     useDigitTranslations,
     DigitButton,
-    DigitText
+    DigitText,
+    useDigitToast
 } from "@cthit/react-digit-components";
 import * as _ from "lodash";
 import translations from "./ReviewChanges.view.translations";
@@ -14,6 +15,7 @@ import { removeUserFromGroup } from "../../../../api/groups/delete.groups.api";
 import { addUserToGroup } from "../../../../api/groups/post.groups.api";
 import { useHistory } from "react-router-dom";
 import DisplayMembersTable from "../../../../common/elements/display-members-table";
+import { on401 } from "../../../../common/utils/error-handling/error-handling";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -36,7 +38,14 @@ function getEdits(previousMembers, newMembers) {
     );
 }
 
-const save = (previousMembers, newMembersData, groupId, onFinished) => {
+const save = (
+    previousMembers,
+    newMembersData,
+    groupId,
+    onFinished,
+    queueToast,
+    text
+) => {
     const additions = getAdditions(previousMembers, newMembersData).map(
         member =>
             addUserToGroup(groupId, {
@@ -64,10 +73,18 @@ const save = (previousMembers, newMembersData, groupId, onFinished) => {
     Promise.all([...additions, ...deletions, ...edits])
         .then(() => {
             onFinished();
+            queueToast({
+                text: text.MembersSaved
+            });
         })
         .catch(e => {
+            if (e != null && e.response.status === 401) {
+                on401();
+            }
+            queueToast({
+                text: text.MembersError
+            });
             console.log(e);
-            // onFinished();
         });
 };
 
@@ -79,6 +96,7 @@ const ReviewChanges = ({
     onFinished,
     newMembersData
 }) => {
+    const [queueToast] = useDigitToast();
     const [text] = useDigitTranslations(translations);
     const history = useHistory();
 
@@ -96,6 +114,7 @@ const ReviewChanges = ({
                         />
                         <DigitLayout.Row>
                             <DigitButton
+                                outlined
                                 text={text.Back}
                                 onClick={() => history.goBack()}
                             />
@@ -106,7 +125,9 @@ const ReviewChanges = ({
                                         previousMembers,
                                         newMembersData,
                                         groupId,
-                                        onFinished
+                                        onFinished,
+                                        queueToast,
+                                        text
                                     )
                                 }
                                 startIcon={<Save />}

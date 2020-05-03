@@ -6,11 +6,11 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
 import {
-    CID,
-    FIRST_NAME,
-    ID,
-    LAST_NAME,
-    NICK
+    USER_CID,
+    USER_FIRST_NAME,
+    USER_ID,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../api/users/props.users.api";
 import * as _ from "lodash";
 import InsufficientAccess from "../../common/views/insufficient-access";
@@ -18,15 +18,16 @@ import { getUsersWithGDPRMinified } from "../../api/gdpr/get.gdpr.api";
 import { setGDPRValue } from "../../api/gdpr/put.gdpr.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import useGammaHasAuthority from "../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
+import { on401 } from "../../common/utils/error-handling/error-handling";
 
 function _generateHeaderTexts(text) {
     const output = {};
 
-    output[CID] = text.Cid;
-    output[FIRST_NAME] = text.FirstName;
-    output[LAST_NAME] = text.LastName;
-    output[NICK] = text.Nick;
-    output[ID] = text.Id;
+    output[USER_CID] = text.Cid;
+    output[USER_FIRST_NAME] = text.FirstName;
+    output[USER_LAST_NAME] = text.LastName;
+    output[USER_NICK] = text.Nick;
+    output[USER_ID] = text.Id;
     output["__checkbox"] = text.HasGDPR;
 
     return output;
@@ -64,12 +65,16 @@ const Gdpr = () => {
 
     return (
         <DigitSelectMultipleTable
+            flex={"1"}
+            padding={"0px"}
+            size={{ minWidth: "288px", height: "100%" }}
             disableSelectAll
             search
             titleText={text.Users}
             searchText={text.SearchForUsers}
-            idProp={ID}
-            startOrderBy={FIRST_NAME}
+            idProp={USER_ID}
+            startOrderByDirection="asc"
+            startOrderBy={USER_FIRST_NAME}
             onChange={selected => {
                 const c = _.xorWith(selected, lastSelected, _.isEqual);
 
@@ -91,7 +96,7 @@ const Gdpr = () => {
                                     " " +
                                     _.find(users, {
                                         id: c[0]
-                                    })[NICK] +
+                                    })[USER_NICK] +
                                     " " +
                                     text.To +
                                     ": " +
@@ -107,7 +112,11 @@ const Gdpr = () => {
                                 );
                             });
                         })
-                        .catch(() => {
+                        .catch(error => {
+                            if (error && error.response.status === 401) {
+                                on401();
+                            }
+
                             queueToast({
                                 text: text.SomethingWentWrong
                             });
@@ -115,7 +124,12 @@ const Gdpr = () => {
                 }
             }}
             value={users.filter(user => user.gdpr).map(user => user.id)}
-            columnsOrder={[CID, FIRST_NAME, NICK, LAST_NAME]}
+            columnsOrder={[
+                USER_CID,
+                USER_FIRST_NAME,
+                USER_NICK,
+                USER_LAST_NAME
+            ]}
             headerTexts={_generateHeaderTexts(text)}
             data={users.map(user => {
                 return {

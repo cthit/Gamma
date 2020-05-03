@@ -25,27 +25,30 @@ const CreateAccount = () => {
 
     if (user != null) {
         return (
-            <DigitLayout.Center>
-                <DigitDesign.Card size={{ width: "300px" }}>
+            <DigitDesign.Card
+                size={{ width: "300px", height: "400px" }}
+                margin={{ left: "auto", right: "auto" }}
+                alignSelf={"center"}
+            >
+                <DigitDesign.CardHeader>
                     <DigitDesign.CardTitle
                         text={text.YouAlreadyHaveAnAccount}
                     />
-                    <DigitDesign.CardHeaderImage src="/jim.gif" />
-                    <DigitDesign.CardBody>
-                        <DigitText.Text
-                            text={text.YouAlreadyHaveAnAccountDescription}
-                        />
-                    </DigitDesign.CardBody>
-                    <DigitDesign.CardButtons reverseDirection>
-                        <DigitButton
-                            text={text.NahImGood}
-                            onClick={() => history.push("/")}
-                            raised
-                            primary
-                        />
-                    </DigitDesign.CardButtons>
-                </DigitDesign.Card>
-            </DigitLayout.Center>
+                </DigitDesign.CardHeader>
+                <DigitDesign.CardBody>
+                    <DigitText.Text
+                        text={text.YouAlreadyHaveAnAccountDescription}
+                    />
+                </DigitDesign.CardBody>
+                <DigitDesign.CardButtons reverseDirection>
+                    <DigitButton
+                        text={text.NahImGood}
+                        onClick={() => history.push("/")}
+                        raised
+                        primary
+                    />
+                </DigitDesign.CardButtons>
+            </DigitDesign.Card>
         );
     }
 
@@ -59,7 +62,7 @@ const CreateAccount = () => {
                 "/create-account/finished": 3
             }}
             render={step => (
-                <DigitLayout.Column>
+                <DigitLayout.Column justifyContent={"center"} flex={"1"}>
                     <DigitStepper
                         activeStep={step}
                         steps={[

@@ -14,27 +14,27 @@ import _ from "lodash";
 
 import * as yup from "yup";
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    FIRST_NAME,
-    ID,
-    LAST_NAME,
-    NICK
+    USER_ACCEPTANCE_YEAR,
+    USER_CID,
+    USER_FIRST_NAME,
+    USER_ID,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../../../api/users/props.users.api";
 import { useHistory } from "react-router-dom";
 import Save from "@material-ui/icons/Save";
 
-function getInitialValues(selectedMemberIds, currentMembers, users, groupId) {
+function getInitialValues(selectedMemberIds, currentMembers, users) {
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
         const user = _.find(users, { id: selectedMember });
 
         const necessaryMemberData = {};
-        necessaryMemberData[FIRST_NAME] = user[FIRST_NAME];
-        necessaryMemberData[LAST_NAME] = user[LAST_NAME];
-        necessaryMemberData[NICK] = user[NICK];
-        necessaryMemberData[CID] = user[CID];
-        necessaryMemberData[ACCEPTANCE_YEAR] = user[ACCEPTANCE_YEAR];
-        necessaryMemberData[ID] = user[ID];
+        necessaryMemberData[USER_FIRST_NAME] = user[USER_FIRST_NAME];
+        necessaryMemberData[USER_LAST_NAME] = user[USER_LAST_NAME];
+        necessaryMemberData[USER_NICK] = user[USER_NICK];
+        necessaryMemberData[USER_CID] = user[USER_CID];
+        necessaryMemberData[USER_ACCEPTANCE_YEAR] = user[USER_ACCEPTANCE_YEAR];
+        necessaryMemberData[USER_ID] = user[USER_ID];
 
         const previousMemberData = _.find(currentMembers, { id: user.id });
 
@@ -74,6 +74,7 @@ const SetPostNames = ({
                         <DigitText.Heading5 text={text.SetPostNames} />
                         <DigitLayout.Row>
                             <DigitButton
+                                outlined
                                 text={text.Back}
                                 onClick={() => history.goBack()}
                             />
@@ -115,19 +116,21 @@ const SetPostNames = ({
                                 groupId
                             )}
                             validationSchema={yup.object().shape({
-                                members: yup
-                                    .array(
-                                        yup
-                                            .object()
-                                            .shape({
-                                                postId: yup.string().required(),
-                                                unofficialPostName: yup
-                                                    .string()
-                                                    .required()
-                                            })
-                                            .required()
-                                    )
-                                    .required()
+                                members: yup.array().of(
+                                    yup.object().shape({
+                                        postId: yup
+                                            .string()
+                                            .required(
+                                                text.Post + text.IsRequired
+                                            ),
+                                        unofficialPostName: yup
+                                            .string()
+                                            .required(
+                                                text.UnofficialPostName +
+                                                    text.IsRequired
+                                            )
+                                    })
+                                )
                             })}
                             keysComponentData={{
                                 members: {
@@ -137,7 +140,10 @@ const SetPostNames = ({
                                         currentMembers,
                                         groupId
                                     },
-                                    array: true
+                                    array: true,
+                                    formFieldArrayOptions: {
+                                        inputs: ["postId", "unofficialPostName"]
+                                    }
                                 }
                             }}
                         />

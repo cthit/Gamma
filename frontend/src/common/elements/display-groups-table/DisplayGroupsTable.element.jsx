@@ -5,23 +5,23 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import {
-    DESCRIPTION,
-    EMAIL,
-    FUNCTION,
-    ID,
-    NAME,
-    PRETTY_NAME
+    GROUP_DESCRIPTION,
+    GROUP_EMAIL,
+    GROUP_FUNCTION,
+    GROUP_ID,
+    GROUP_NAME,
+    GROUP_PRETTY_NAME
 } from "../../../api/groups/props.groups.api";
 
 function generateHeaderTexts(text) {
     const output = {};
 
-    output[ID] = text.Id;
-    output[NAME] = text.Name;
-    output[DESCRIPTION] = text.Description;
-    output[EMAIL] = text.Email;
-    output[FUNCTION] = text.Function;
-    output[PRETTY_NAME] = text.PrettyName;
+    output[GROUP_ID] = text.Id;
+    output[GROUP_NAME] = text.Name;
+    output[GROUP_DESCRIPTION] = text.Description;
+    output[GROUP_EMAIL] = text.Email;
+    output[GROUP_FUNCTION] = text.Function;
+    output[GROUP_PRETTY_NAME] = text.PrettyName;
     output["__link"] = text.Details;
 
     return output;
@@ -31,24 +31,25 @@ function modifyData(groups, text, activeLanguage, columns) {
     return groups.map(group => {
         const newGroup = { ...group };
 
-        newGroup[ID] = group[ID];
-        newGroup[NAME] = group[NAME];
-        newGroup[DESCRIPTION] =
-            columns.includes(DESCRIPTION) && group[DESCRIPTION] != null
-                ? group[DESCRIPTION][activeLanguage]
+        newGroup[GROUP_ID] = group[GROUP_ID];
+        newGroup[GROUP_NAME] = group[GROUP_NAME];
+        newGroup[GROUP_DESCRIPTION] =
+            columns.includes(GROUP_DESCRIPTION) &&
+            group[GROUP_DESCRIPTION] != null
+                ? group[GROUP_DESCRIPTION][activeLanguage]
                 : null;
-        newGroup[EMAIL] = group[EMAIL];
-        newGroup[FUNCTION] =
-            columns.includes(FUNCTION) && group[FUNCTION] != null
-                ? group[FUNCTION][activeLanguage]
+        newGroup[GROUP_EMAIL] = group[GROUP_EMAIL];
+        newGroup[GROUP_FUNCTION] =
+            columns.includes(GROUP_FUNCTION) && group[GROUP_FUNCTION] != null
+                ? group[GROUP_FUNCTION][activeLanguage]
                 : null;
-        newGroup["__link"] = "/groups/" + group[ID];
+        newGroup["__link"] = "/groups/" + group[GROUP_ID];
 
         return newGroup;
     });
 }
 
-const DisplayGroupsTable = ({ title, groups, columnsOrder, margin }) => {
+const DisplayGroupsTable = ({ title, groups, columnsOrder, margin = {} }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     if (groups == null) {
@@ -57,11 +58,12 @@ const DisplayGroupsTable = ({ title, groups, columnsOrder, margin }) => {
 
     return (
         <DigitTable
-            margin={margin != null ? margin : "0px"}
+            size={{ width: "100%" }}
+            margin={margin}
             titleText={title ? title : text.Groups}
             searchText={text.SearchForGroups}
             idProp="id"
-            startOrderBy={NAME}
+            startOrderBy={GROUP_NAME}
             columnsOrder={columnsOrder}
             headerTexts={generateHeaderTexts(text)}
             data={modifyData(groups, text, activeLanguage, columnsOrder)}
@@ -71,7 +73,7 @@ const DisplayGroupsTable = ({ title, groups, columnsOrder, margin }) => {
 };
 
 DisplayGroupsTable.defaultProps = {
-    columnsOrder: [NAME, EMAIL]
+    columnsOrder: [GROUP_NAME, GROUP_EMAIL]
 };
 
 export default DisplayGroupsTable;

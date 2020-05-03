@@ -6,12 +6,12 @@ import {
     DigitTranslations
 } from "@cthit/react-digit-components";
 import {
-    ACCEPTANCE_YEAR,
-    CID,
-    EMAIL,
-    FIRST_NAME,
-    LAST_NAME,
-    NICK
+    USER_ACCEPTANCE_YEAR,
+    USER_CID,
+    USER_EMAIL,
+    USER_FIRST_NAME,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../../api/users/props.users.api";
 
 import translations from "./DisplayUserDetails.element.translations";
@@ -19,12 +19,12 @@ import translations from "./DisplayUserDetails.element.translations";
 function createKeysTexts(text) {
     const output = {};
 
-    output[CID] = text.cid;
-    output[FIRST_NAME] = text.firstName;
-    output[LAST_NAME] = text.lastName;
-    output[NICK] = text.nick;
-    output[EMAIL] = text.email;
-    output[ACCEPTANCE_YEAR] = text.acceptanceYear;
+    output[USER_CID] = text.cid;
+    output[USER_FIRST_NAME] = text.firstName;
+    output[USER_LAST_NAME] = text.lastName;
+    output[USER_NICK] = text.nick;
+    output[USER_EMAIL] = text.email;
+    output[USER_ACCEPTANCE_YEAR] = text.acceptanceYear;
 
     return output;
 }
@@ -43,11 +43,11 @@ const DisplayUserDetails = ({ user, isMe }) => (
             <DigitDesign.Card size={{ minWidth: "300px", maxWidth: "600px" }}>
                 <DigitDesign.CardTitle
                     text={
-                        user[FIRST_NAME] +
+                        user[USER_FIRST_NAME] +
                         " '" +
-                        user[NICK] +
+                        user[USER_NICK] +
                         "' " +
-                        user[LAST_NAME]
+                        user[USER_LAST_NAME]
                     }
                 />
                 <DigitDesign.CardBody>
@@ -55,12 +55,12 @@ const DisplayUserDetails = ({ user, isMe }) => (
                         data={user}
                         keysText={createKeysTexts(text)}
                         keysOrder={[
-                            CID,
-                            FIRST_NAME,
-                            LAST_NAME,
-                            NICK,
-                            EMAIL,
-                            ACCEPTANCE_YEAR
+                            USER_CID,
+                            USER_FIRST_NAME,
+                            USER_LAST_NAME,
+                            USER_NICK,
+                            USER_EMAIL,
+                            USER_ACCEPTANCE_YEAR
                         ]}
                     />
                 </DigitDesign.CardBody>

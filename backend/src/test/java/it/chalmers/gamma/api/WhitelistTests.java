@@ -59,14 +59,14 @@ public class WhitelistTests {
         this.mockActivationCodeFactory.saveActivationCode(whitelist);
 
         this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist.getId())))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
 
         WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(
                 this.mockWhitelistFactory.generateWhitelist());
         this.mockActivationCodeFactory.saveActivationCode(whitelist2);
 
         this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist2.getCid())))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
     }
 
     /**
@@ -80,13 +80,13 @@ public class WhitelistTests {
                 this.mockWhitelistFactory.generateWhitelist());
 
         this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist.getId())))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
 
         WhitelistDTO whitelist2 = this.mockWhitelistFactory.saveWhitelist(
                 this.mockWhitelistFactory.generateWhitelist());
 
         this.mockMvc.perform(delete(String.format(WHITELIST_URL, whitelist2.getCid())))
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
     }
 
 }

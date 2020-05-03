@@ -3,5 +3,9 @@
     "LanguageUpdated": [
         "Språk uppdaterat till Svenska",
         "Language updated to English"
+    ],
+    "FailedEditMe": [
+        "Failed to update to your selected language",
+        "Misslyckades att uppdatera till ditt valda språk"
     ]
 }

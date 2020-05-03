@@ -17,6 +17,10 @@ const Drawer = ({ closeDrawer }) => {
     const dpo = useGammaHasAuthority("gdpr");
     const [text] = useDigitTranslations(translations);
 
+    if (Object.keys(text).length === 0) {
+        return null;
+    }
+
     if (admin) {
         return (
             <DigitLayout.Column padding="0" margin="0">
@@ -68,6 +72,11 @@ const Drawer = ({ closeDrawer }) => {
                     onClick={closeDrawer}
                     text={text.ApiKeys}
                     link="/access-keys"
+                />
+                <DigitNavLink
+                    text={text.Authorities}
+                    onClick={closeDrawer}
+                    link={"/authorities"}
                 />
                 <LanguageSelection />
             </DigitLayout.Column>

@@ -13,8 +13,6 @@ const MeGroups = () => {
     const user = useGammaUser();
 
     const [activeGroups, pastGroups, futureGroups] = useMemo(() => {
-        console.log(user);
-
         const now = new Date().getTime();
 
         return user == null
@@ -43,7 +41,7 @@ const MeGroups = () => {
     }
 
     return (
-        <>
+        <DigitLayout.Column alignItems={"center"} flex={"1"}>
             {futureGroups.length > 0 && (
                 <DisplayGroupsTable
                     title={text.FutureGroups}
@@ -52,7 +50,7 @@ const MeGroups = () => {
             )}
             {activeGroups.length > 0 && (
                 <DisplayGroupsTable
-                    margin={futureGroups.length > 0 ? { top: "16px" } : null}
+                    margin={futureGroups.length > 0 ? { top: "16px" } : {}}
                     title={text.ActiveGroups}
                     groups={activeGroups}
                 />
@@ -60,15 +58,15 @@ const MeGroups = () => {
             {pastGroups.length > 0 && (
                 <DisplayGroupsTable
                     margin={
-                        futureGroups.length > 0 || futureGroups.length > 0
+                        activeGroups.length > 0 || activeGroups.length > 0
                             ? { top: "16px" }
-                            : null
+                            : {}
                     }
                     title={text.PastGroups}
                     groups={pastGroups}
                 />
             )}
-        </>
+        </DigitLayout.Column>
     );
 };
 

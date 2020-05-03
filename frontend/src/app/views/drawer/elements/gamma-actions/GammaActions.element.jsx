@@ -1,5 +1,4 @@
-import React from "react";
-import useGammaUser from "../../../../../common/hooks/use-gamma-user/useGammaUser";
+import React, { useContext } from "react";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import { getBackendUrl } from "../../../../../common/utils/configs/envVariablesLoader";
 import {
@@ -10,6 +9,7 @@ import {
 } from "@cthit/react-digit-components";
 import styled from "styled-components";
 import translations from "./GammaActions.element.translations";
+import GammaUserContext from "../../../../../common/context/GammaUser.context";
 
 const Nick = styled.h6`
     font-family: Roboto, serif;
@@ -21,8 +21,13 @@ const Nick = styled.h6`
 `;
 
 const GammaActions = () => {
-    const user = useGammaUser();
+    const [user, , [loading]] = useContext(GammaUserContext);
     const [text] = useDigitTranslations(translations);
+
+    //this will update the image if updating your avatar
+    if (loading) {
+        return null;
+    }
 
     return (
         <DigitLayout.Row

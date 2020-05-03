@@ -2,15 +2,19 @@ import React from "react";
 
 import { DigitText } from "@cthit/react-digit-components";
 import {
-    FIRST_NAME,
-    LAST_NAME,
-    NICK
+    USER_FIRST_NAME,
+    USER_LAST_NAME,
+    USER_NICK
 } from "../../../../../../../../api/users/props.users.api";
 
 const MemberDeletion = ({ member }) => (
     <DigitText.Text
         text={
-            member[FIRST_NAME] + ' "' + member[NICK] + '" ' + member[LAST_NAME]
+            member[USER_FIRST_NAME] +
+            ' "' +
+            member[USER_NICK] +
+            '" ' +
+            member[USER_LAST_NAME]
         }
     />
 );

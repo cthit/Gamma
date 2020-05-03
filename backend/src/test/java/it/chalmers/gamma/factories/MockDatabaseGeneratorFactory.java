@@ -118,7 +118,7 @@ public class MockDatabaseGeneratorFactory {
             return this.apiKey.getId();
         }
         if (this.authority.getClass() == c) {
-            return this.authority.getInternalID();
+            return this.authority.getId();
         }
         if (this.client.getClass() == c) {
             return this.client.getId();

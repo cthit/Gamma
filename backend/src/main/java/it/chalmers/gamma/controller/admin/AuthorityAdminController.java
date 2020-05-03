@@ -8,11 +8,12 @@ import it.chalmers.gamma.requests.AddAuthorityLevelRequest;
 import it.chalmers.gamma.requests.AddAuthorityRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.authority.AuthorityAddedResponse;
+import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAddedResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAlreadyExists;
 import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
-import it.chalmers.gamma.response.authority.AuthorityNotFoundResponse;
 import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
+import it.chalmers.gamma.response.authority.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthorityLevelsResponse.GetAllAuthorityLevelsResponseObject;
@@ -73,7 +74,7 @@ public final class AuthorityAdminController {
     @DeleteMapping("/{id}")
     public AuthorityRemovedResponse removeAuthority(@PathVariable("id") String id) {
         if (!this.authorityService.authorityExists(id)) {
-            throw new AuthorityNotFoundResponse();
+            throw new AuthorityDoesNotExistResponse();
         }
         this.authorityService.removeAuthority(UUID.fromString(id)); // TODO move check to service?
         return new AuthorityRemovedResponse();
@@ -108,7 +109,7 @@ public final class AuthorityAdminController {
     @DeleteMapping("/level/{id}")
     public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
         if (!this.authorityLevelService.authorityLevelExists(id)) {
-            throw new AuthorityNotFoundResponse();
+            throw new AuthorityDoesNotExistResponse();
         }
         AuthorityLevelDTO authorityLevel = this.authorityLevelService.getAuthorityLevelDTO(id);
         this.authorityService.removeAllAuthoritiesWithAuthorityLevel(authorityLevel);
@@ -116,12 +117,17 @@ public final class AuthorityAdminController {
         return new AuthorityLevelRemovedResponse();
     }
 
+    @GetMapping("/level/{id}")
+    public GetAllAuthoritiesForLevelResponse.GetAllAuthoritiesForLevelResponseObject getAuthoritiesWithLevel(
+            @PathVariable("id") String id) {
+        List<AuthorityDTO> authorities = this.authorityService.getAuthoritiesWithLevel(UUID.fromString(id));
+        AuthorityLevelDTO authorityLevel = this.authorityLevelService.getAuthorityLevelDTO(id);
+        return new GetAllAuthoritiesForLevelResponse(authorities, authorityLevel.getAuthority()).toResponseObject();
+    }
+
     @GetMapping("/{id}")
     public GetAuthorityResponseObject getAuthority(@PathVariable("id") String id) {
         AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
-        if (authority == null) {
-            throw new AuthorityNotFoundResponse();
-        }
         return new GetAuthorityResponse(authority).toResponseObject();
     }
 

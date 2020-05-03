@@ -49,7 +49,7 @@ public class MembershipService {
      */
     public MembershipDTO addUserToGroup(FKITGroupDTO groupDTO, ITUserDTO userDTO, PostDTO postDTO, String postname) {
         MembershipPK pk = new MembershipPK();
-        pk.setFKITGroup(this.fkitGroupService.getGroup(groupDTO));
+        pk.setFKITGroup(this.fkitGroupService.fromDTO(groupDTO));
         pk.setITUser(this.dtoToEntityService.fromDTO(userDTO));
         pk.setPost(this.postService.getPost(postDTO));
         Membership membership = new Membership();
@@ -75,7 +75,7 @@ public class MembershipService {
 
     public List<MembershipDTO> getMembershipsInGroup(FKITGroupDTO group) {
         return this.membershipRepository
-                .findAllById_FkitGroup(this.fkitGroupService.getGroup(group))
+                .findAllById_FkitGroup(this.fkitGroupService.fromDTO(group))
                 .stream()
                 .map(Membership::toDTO)
                 .collect(Collectors.toList());
@@ -112,7 +112,7 @@ public class MembershipService {
 
     public List<MembershipDTO> getUserDTOByGroupAndPost(FKITGroupDTO group, PostDTO post) {
         return this.membershipRepository.findAllById_FkitGroupAndId_Post(
-                this.fkitGroupService.getGroup(group),
+                this.fkitGroupService.fromDTO(group),
                 this.postService.getPost(post)).stream().map(Membership::toDTO).collect(Collectors.toList());
     }
 
@@ -139,7 +139,7 @@ public class MembershipService {
         return this.membershipRepository
                 .findById_ItUserAndId_FkitGroup(
                         this.dtoToEntityService.fromDTO(userDTO),
-                        this.fkitGroupService.getGroup(groupDTO)).orElseThrow(MembershipDoesNotExistResponse::new)
+                        this.fkitGroupService.fromDTO(groupDTO)).orElseThrow(MembershipDoesNotExistResponse::new)
                 .toDTO();
     }
 
@@ -179,6 +179,6 @@ public class MembershipService {
     private Membership getMembership(MembershipDTO membershipDTO) {
         return this.membershipRepository.findById_ItUserAndId_FkitGroup(
                 this.dtoToEntityService.fromDTO(membershipDTO.getUser()),
-                this.fkitGroupService.getGroup(membershipDTO.getFkitGroupDTO())).orElse(null);
+                this.fkitGroupService.fromDTO(membershipDTO.getFkitGroupDTO())).orElse(null);
     }
 }

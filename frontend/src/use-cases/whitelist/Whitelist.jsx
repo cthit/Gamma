@@ -1,9 +1,5 @@
 import React from "react";
-import {
-    DigitCRUD,
-    DigitTextField,
-    useDigitTranslations
-} from "@cthit/react-digit-components";
+import { DigitCRUD, useDigitTranslations } from "@cthit/react-digit-components";
 import {
     getWhitelist,
     getWhitelistItem
@@ -11,10 +7,23 @@ import {
 import { addUsersToWhitelist } from "../../api/whitelist/post.whitelist.api";
 import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
 import translations from "./Whitelist.translations";
-import * as yup from "yup";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import { on401 } from "../../common/utils/error-handling/error-handling";
+import FourOFour from "../four-o-four";
+import FiveZeroZero from "../../app/elements/five-zero-zero";
+import {
+    initialValues,
+    keysComponentData,
+    keysOrder,
+    keysText,
+    validationSchema
+} from "./Whitelist.options";
+import {
+    WHITELIST_CID,
+    WHITELIST_ID
+} from "../../api/whitelist/props.whitelist.api";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
@@ -26,69 +35,73 @@ const Whitelist = () => {
 
     return (
         <DigitCRUD
+            keysText={keysText(text)}
             name={"whitelist"}
             path={"/whitelist"}
             readAllRequest={getWhitelist}
             readOneRequest={getWhitelistItem}
-            createRequest={data => addUsersToWhitelist({ cids: [data.cid] })}
+            createRequest={data =>
+                addUsersToWhitelist({ cids: [data[WHITELIST_CID]] })
+            }
             updateRequest={editWhitelistItem}
             deleteRequest={deleteWhitelistItem}
-            keysText={{ id: text.Id, cid: text.Cid }}
-            keysOrder={["cid"]}
-            readAllKeysOrder={["cid"]}
-            formComponentData={{
-                cid: {
-                    component: DigitTextField,
-                    componentProps: {
-                        outlined: true,
-                        maxLength: 12
-                    }
-                }
-            }}
-            formValidationSchema={yup.object().shape({
-                cid: yup.string().required()
-            })}
-            formInitialValues={{
-                cid: ""
-            }}
-            idProp={"id"}
+            keysOrder={keysOrder()}
+            formComponentData={keysComponentData()}
+            formValidationSchema={validationSchema(text)}
+            formInitialValues={initialValues()}
+            idProp={WHITELIST_ID}
             tableProps={{
                 titleText: text.Whitelist,
-                startOrderBy: "cid",
-                search: true
+                startOrderBy: WHITELIST_CID,
+                search: true,
+                flex: "1",
+                startOrderByDirection: "asc",
+                size: { minWidth: "288px" },
+                padding: "0px"
             }}
             toastCreateSuccessful={data =>
-                data.cid + " " + text.WasCreatedSuccessfully
+                data[WHITELIST_CID] + " " + text.WasCreatedSuccessfully
             }
             toastCreateFailed={() => text.FailedCreatingWhitelist}
             toastDeleteSuccessful={data =>
-                data.cid + " " + text.WasDeletedSuccessfully
+                data[WHITELIST_CID] + " " + text.WasDeletedSuccessfully
             }
-            toastDeleteFailed={data => text.FailedDeleting + " " + data.cid}
+            toastDeleteFailed={data =>
+                text.FailedDeleting + " " + data[WHITELIST_CID]
+            }
             toastUpdateSuccessful={data =>
-                data.cid + " " + text.WasUpdatedSuccessfully
+                data[WHITELIST_CID] + " " + text.WasUpdatedSuccessfully
             }
             toastUpdateFailed={data =>
                 text.WhitelistUpdateFailed1 +
                 " " +
-                data.cid +
+                data[WHITELIST_CID] +
                 " " +
                 text.WhitelistUpdateFailed2
             }
             createTitle={text.SaveCidToWhitelist}
             createButtonText={text.AddWhitelist}
-            updateTitle={data => text.Update + " " + data.cid}
-            updateButtonText={data => text.Update + " " + data.cid}
+            updateTitle={data => text.Update + " " + data[WHITELIST_CID]}
+            updateButtonText={data => text.Update + " " + data[WHITELIST_CID]}
             backButtonText={text.Back}
             dialogDeleteTitle={() => text.AreYouSure}
             dialogDeleteCancel={() => text.Cancel}
             dialogDeleteConfirm={() => text.Delete}
             dialogDeleteDescription={data =>
-                text.WouldYouLikeToDelete + " " + data.cid + "?"
+                text.WouldYouLikeToDelete + " " + data[WHITELIST_CID] + "?"
             }
             detailsTitle={data => data.cid}
-            deleteButtonText={data => text.Delete + " " + data.cid}
+            deleteButtonText={data => text.Delete + " " + data[WHITELIST_CID]}
             detailsButtonText={text.Details}
+            statusHandlers={{
+                401: on401
+            }}
+            statusRenders={{
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => <FiveZeroZero reset={reset} />
+            }}
+            useKeyTextsInUpperLabel
         />
     );
 };

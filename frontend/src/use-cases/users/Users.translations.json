@@ -43,5 +43,14 @@
         "The password must be atleast 8 characters",
         "Lösenordet måste vara minst 8 karaktärer"
     ],
-    "ChangePassword": ["Change password", "Ändra lösenordet"]
+    "ChangePassword": ["Change password", "Ändra lösenordet"],
+    "Phone": ["Phone number", "Telefonnummer"],
+    "YouMustAccept": [
+        "You must accept the user agreement",
+        "Du måste acceptera användaravtalen"
+    ],
+    "Min4CharCid": [
+        "Cid must be atleast 4 characters",
+        "Cid måste vara minst 4 karaktärer"
+    ]
 }
