@@ -1,6 +1,5 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -9,10 +8,10 @@ import it.chalmers.gamma.requests.AddAuthorityLevelRequest;
 import it.chalmers.gamma.requests.AddAuthorityRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.authority.AuthorityAddedResponse;
+import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAddedResponse;
 import it.chalmers.gamma.response.authority.AuthorityLevelAlreadyExists;
 import it.chalmers.gamma.response.authority.AuthorityLevelRemovedResponse;
-import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.response.authority.AuthorityRemovedResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse;
 import it.chalmers.gamma.response.authority.GetAllAuthoritiesResponse.GetAllAuthoritiesResponseObject;
@@ -110,7 +109,7 @@ public final class AuthorityAdminController {
     @DeleteMapping("/level/{id}")
     public AuthorityLevelRemovedResponse removeAuthorityLevel(@PathVariable("id") String id) {
         if (!this.authorityLevelService.authorityLevelExists(id)) {
-            throw new AuthorityNotFoundResponse();
+            throw new AuthorityDoesNotExistResponse();
         }
         AuthorityLevelDTO authorityLevel = this.authorityLevelService.getAuthorityLevelDTO(id);
         this.authorityService.removeAllAuthoritiesWithAuthorityLevel(authorityLevel);

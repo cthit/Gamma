@@ -13,12 +13,10 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.response.authority.AuthorityLevelDoesNotExistException;
 import it.chalmers.gamma.response.authority.AuthorityDoesNotExistResponse;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
@@ -158,6 +156,6 @@ public class AuthorityService {
     @Transactional
     public void removeAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
         List<AuthorityDTO> authorities = this.getAllAuthoritiesWithAuthorityLevel(authorityLevelDTO);
-        authorities.forEach(a -> this.removeAuthority(a.getInternalID()));
+        authorities.forEach(a -> this.removeAuthority(a.getId()));
     }
 }

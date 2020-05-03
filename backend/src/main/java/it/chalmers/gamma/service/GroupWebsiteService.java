@@ -55,7 +55,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
                 error = true;
                 continue;
             }
-            FKITGroup group = this.fkitGroupService.getGroup(groupDTO);
+            FKITGroup group = this.fkitGroupService.fromDTO(groupDTO);
             WebsiteURL websiteURL = this.websiteURLService.getWebsiteURL(websiteUrlDTO);
             GroupWebsite groupWebsite = new GroupWebsite();
             groupWebsite.setGroup(group);
@@ -86,7 +86,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
     }
 
     public List<WebsiteInterfaceDTO> getWebsites(FKITGroupDTO group) {
-        return this.repository.findAllByGroup(this.fkitGroupService.getGroup(group)).stream()
+        return this.repository.findAllByGroup(this.fkitGroupService.fromDTO(group)).stream()
                 .map(GroupWebsite::toDTO).collect(Collectors.toList());
     }
 
@@ -96,7 +96,7 @@ public class GroupWebsiteService extends EntityWebsiteService {
 
     @Transactional
     public void deleteWebsitesConnectedToGroup(FKITGroupDTO group) {
-        this.repository.deleteAllByGroup(this.fkitGroupService.getGroup(group));
+        this.repository.deleteAllByGroup(this.fkitGroupService.fromDTO(group));
     }
 
     protected GroupWebsiteDTO getGroupWebsite(GroupWebsiteDTO websiteDTO) {
