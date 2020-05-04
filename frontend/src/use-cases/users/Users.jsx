@@ -141,7 +141,7 @@ const Users = () => {
                         <DigitLayout.Center>
                             <DigitButton
                                 outlined
-                                text={"Edit password"}
+                                text={text.EditPassword}
                                 onClick={() =>
                                     history.push(
                                         "/reset-password/admin/" + data[USER_ID]
