@@ -50,6 +50,7 @@ const ResetPasswordAdmin = () => {
                                 text: text.PasswordChanged
                             });
                             actions.resetForm();
+                            history.goBack();
                         })
                         .catch(() => {
                             queueToast({
