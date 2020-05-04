@@ -10,14 +10,16 @@ const error401Redirect = error => {
     }
 };
 
-export function getRequest(endpoint, convert) {
+export function getRequest(endpoint, convert, redirect = true) {
     if (convert != null) {
         return new Promise((resolve, reject) => {
             axios
                 .get(removeLastSlash(path + endpoint))
                 .then(response => resolve(convert(response)))
                 .catch(error => {
-                    error401Redirect(error);
+                    if (redirect) {
+                        error401Redirect(error);
+                    }
                     reject(error);
                 });
         });
@@ -25,31 +27,31 @@ export function getRequest(endpoint, convert) {
 
     return wrapWithPromise(
         () => axios.get(removeLastSlash(path + endpoint)),
-        error401Redirect
+        redirect ? error401Redirect : () => {}
     );
 }
 
-export function postRequest(endpoint, data) {
+export function postRequest(endpoint, data, redirect = true) {
     return wrapWithPromise(
         () => axios.post(removeLastSlash(path + endpoint), data),
-        error401Redirect
+        redirect ? error401Redirect : () => {}
     );
 }
 
-export function deleteRequest(endpoint, data) {
+export function deleteRequest(endpoint, data, redirect) {
     return wrapWithPromise(
         () =>
             axios.delete(removeLastSlash(path + endpoint), {
                 data: data
             }),
-        error401Redirect
+        redirect ? error401Redirect : () => {}
     );
 }
 
-export function putRequest(endpoint, data) {
+export function putRequest(endpoint, data, redirect) {
     return wrapWithPromise(
         () => axios.put(removeLastSlash(path + endpoint), data),
-        error401Redirect
+        redirect ? error401Redirect : () => {}
     );
 }
 
