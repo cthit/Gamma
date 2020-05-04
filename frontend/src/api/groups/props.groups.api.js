@@ -13,3 +13,4 @@ export const GROUP_DESCRIPTION_SV = "descriptionSv";
 export const GROUP_DESCRIPTION_EN = "descriptionEn";
 export const GROUP_FUNCTION_SV = "functionSv";
 export const GROUP_FUNCTION_EN = "functionEn";
+export const GROUP_NO_ACCOUNT_MEMBERS = "noAccountMembers";

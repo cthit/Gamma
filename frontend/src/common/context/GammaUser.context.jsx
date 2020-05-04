@@ -11,7 +11,7 @@ const GammaUserSingletonProvider = ({ children }) => {
         (redirect = true) => {
             setStatus([true, false]);
             return new Promise((resolve, reject) => {
-                getRequest("/users/me")
+                getRequest("/users/me", null, redirect)
                     .then(response => {
                         const user = response.data;
                         if (user.phone == null) {

@@ -12,7 +12,6 @@ import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api
 import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
 import ShowSubGroups from "./elements/show-super-groups/ShowSuperGroups.element";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -99,9 +98,6 @@ const SuperGroups = () => {
             updateButtonText={data => text.Update + " " + data[SG_NAME]}
             deleteButtonText={data => text.Delete + " " + data[SG_NAME]}
             detailsTitle={data => data[SG_NAME]}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

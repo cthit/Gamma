@@ -23,5 +23,14 @@
     ],
     "YourGroups": ["Your groups", "Dina grupper"],
     "YourAvatar": ["Your avatar", "Din avatar"],
-    "Phone": ["Phone number", "Telefonnummer"]
+    "Phone": ["Phone number", "Telefonnummer"],
+    "DeleteMe": ["Delete my account", "Radera mitt konto"],
+    "UpdateMe": [
+        "You have updated your account",
+        "Du har uppdaterat ditt konto"
+    ],
+    "UpdateMeFailed": [
+        "Something went wrong when updating your account",
+        "Någonting gick fel när du försökte uppdatera ditt konto"
+    ]
 }

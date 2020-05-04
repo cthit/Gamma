@@ -52,5 +52,6 @@
     "Min4CharCid": [
         "Cid must be atleast 4 characters",
         "Cid måste vara minst 4 karaktärer"
-    ]
+    ],
+    "EditPassword": ["Edit password", "Redigera lösenord"]
 }

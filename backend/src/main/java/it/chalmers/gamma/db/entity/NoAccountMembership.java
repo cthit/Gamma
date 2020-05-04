@@ -2,11 +2,14 @@ package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.NoAccountMembershipPK;
 
+import it.chalmers.gamma.domain.dto.membership.NoAccountMembershipDTO;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -18,7 +21,8 @@ public class NoAccountMembership {
     @EmbeddedId
     private NoAccountMembershipPK id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @Column(name = "unofficial_post_name", length = 100)
@@ -46,6 +50,15 @@ public class NoAccountMembership {
 
     public void setUnofficialPostName(String unofficialPostName) {
         this.unofficialPostName = unofficialPostName;
+    }
+
+    public NoAccountMembershipDTO toDTO() {
+        return new NoAccountMembershipDTO(
+                this.id.getITUser(),
+                this.id.getFKITGroup(),
+                this.post,
+                this.unofficialPostName
+        );
     }
 
     @Override

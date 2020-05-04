@@ -6,7 +6,11 @@ import {
     DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { getUser, getUsersMinified } from "../../api/users/get.users.api";
+import {
+    getUser,
+    getUserAdmin,
+    getUsersMinified
+} from "../../api/users/get.users.api";
 import translations from "./Users.translations";
 import {
     USER_FIRST_NAME,
@@ -24,7 +28,6 @@ import {
 import { addUser } from "../../api/users/post.users.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -67,7 +70,7 @@ const Users = () => {
             name={"users"}
             path={"/users"}
             readAllRequest={getUsersMinified}
-            readOneRequest={getUser}
+            readOneRequest={admin ? getUserAdmin : getUser}
             updateRequest={admin ? editUser : null}
             deleteRequest={admin ? deleteUser : null}
             createRequest={admin ? addUser : null}
@@ -138,7 +141,7 @@ const Users = () => {
                         <DigitLayout.Center>
                             <DigitButton
                                 outlined
-                                text={"Edit password"}
+                                text={text.EditPassword}
                                 onClick={() =>
                                     history.push(
                                         "/reset-password/admin/" + data[USER_ID]
@@ -149,9 +152,6 @@ const Users = () => {
                     </>
                 ) : null
             }
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

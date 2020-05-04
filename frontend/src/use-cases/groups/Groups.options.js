@@ -35,6 +35,10 @@ export const validationSchema = text => {
     schema[GROUP_FUNCTION_SV] = yup.string();
     schema[GROUP_FUNCTION_EN] = yup.string();
 
+    schema[GROUP_SUPER_GROUP] = yup
+        .string()
+        .required(text.GroupMustHaveSuperGroup);
+
     return yup.object().shape(schema);
 };
 

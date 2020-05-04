@@ -28,13 +28,13 @@ function generateHeaderTexts(text) {
     return headerTexts;
 }
 
-const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
+const DisplayMembersTable = ({ users, noUsersText, margin = "0px", title }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
         <DigitTable
             margin={margin}
-            titleText={text.Users}
+            titleText={title == null ? text.Users : title}
             searchText={text.SearchForUsers}
             idProp={USER_CID}
             startOrderBy={USER_FIRST_NAME}
@@ -58,7 +58,10 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px" }) => {
                 };
             })}
             emptyTableText={noUsersText || text.NoUsers}
-            startRowsPerPage={10}
+            startRowsPerPage={
+                users.length < 5 ? 5 : users.length < 10 ? 10 : 25
+            }
+            size={{ minWidth: "288px", height: "100%" }}
         />
     );
 };

@@ -20,7 +20,6 @@ import {
     GROUP_PRETTY_NAME
 } from "../../api/groups/props.groups.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -86,15 +85,16 @@ const Posts = () => {
                 </>
             )}
             detailsRenderEnd={data => (
-                <div style={{ marginTop: "8px" }}>
+                <>
                     {data.usages != null && data.usages.length > 0 && (
                         <DisplayGroupsTable
+                            margin={{ top: "16px" }}
                             groups={data.usages}
                             title={text.Usages}
                             columnsOrder={[GROUP_NAME, GROUP_PRETTY_NAME]}
                         />
                     )}
-                </div>
+                </>
             )}
             createButtonText={text.CreatePost}
             backButtonText={text.Back}
@@ -159,9 +159,6 @@ const Posts = () => {
             }
             deleteButtonText={() => text.DeletePost}
             detailsTitle={() => text.Details}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

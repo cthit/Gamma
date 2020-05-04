@@ -3,6 +3,7 @@ package it.chalmers.gamma.controller;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserRestrictedDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.filter.JwtAuthenticationFilter;
 import it.chalmers.gamma.requests.ChangeUserPassword;
@@ -17,6 +18,7 @@ import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUse
 import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
 import it.chalmers.gamma.response.user.GetITUserResponse;
 import it.chalmers.gamma.response.user.GetITUserResponse.GetITUserResponseObject;
+import it.chalmers.gamma.response.user.GetITUserRestrictedResponse;
 import it.chalmers.gamma.response.user.IncorrectCidOrPasswordResponse;
 import it.chalmers.gamma.response.user.PasswordChangedResponse;
 import it.chalmers.gamma.response.user.PasswordTooShortResponse;
@@ -145,12 +147,11 @@ public final class ITUserController {
      * First tries to get user using id, if not found gets it using the cid.
      */
     @GetMapping("/{id}")
-    public GetITUserResponseObject getUser(@PathVariable("id") String id) {
+    public GetITUserRestrictedResponse.GetITUserRestrictedResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
-        // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
-        //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
-        return new GetITUserResponse(user, groups, null).toResponseObject();
+        return new GetITUserRestrictedResponse(new ITUserRestrictedDTO(user), groups, null)
+                .toResponseObject();
     }
 
     @PutMapping("/me")

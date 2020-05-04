@@ -86,16 +86,16 @@ const Drawer = ({ closeDrawer }) => {
             <DigitLayout.Column padding="0">
                 {user != null && <GammaActions text={text} />}
 
-                <DigitNavLink onClick={closeDrawer} text="Home" link="/" />
-                <DigitNavLink onClick={closeDrawer} text="Me" link="/me" />
+                <DigitNavLink onClick={closeDrawer} text={text.Home} link="/" />
+                <DigitNavLink onClick={closeDrawer} text={text.Me} link="/me" />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text="Users"
+                    text={text.Users}
                     link="/users"
                 />
                 <DigitNavLink
                     onClick={closeDrawer}
-                    text="Groups"
+                    text={text.Groups}
                     link="/groups"
                 />
                 <DigitNavLink

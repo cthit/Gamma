@@ -1,10 +1,13 @@
 import {
-    DigitLayout,
+    DigitButton,
+    DigitDesign,
     useDigitTranslations,
     useDigitToast,
-    DigitEditDataCard
+    DigitEditDataCard,
+    useDigitCustomDialog,
+    DigitMarkdown
 } from "@cthit/react-digit-components";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
 import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
 import translations from "./InputDataAndCode.view.translations.json";
@@ -16,15 +19,59 @@ import {
     keysOrder,
     validationSchema
 } from "./InputDataAndCode.view.options";
+import axios from "axios";
 
 const InputDataAndCode = () => {
-    const [text] = useDigitTranslations(translations);
+    const [text, activeLanguage] = useDigitTranslations(translations);
     const [queueToast] = useDigitToast();
+    const [showDialog] = useDigitCustomDialog();
     const history = useHistory();
+    const [userAgreement, setUserAgreement] = useState();
+
+    useEffect(() => {
+        axios.get("/useragreement-" + activeLanguage + ".md").then(response => {
+            setUserAgreement(response.data);
+        });
+    }, [activeLanguage]);
 
     return (
-        <DigitLayout.Center>
+        <>
+            <DigitDesign.Card alignSelf={"center"}>
+                <DigitDesign.CardHeader>
+                    <DigitDesign.CardTitle text={text.UserAgreement} />
+                </DigitDesign.CardHeader>
+                <DigitDesign.CardBody>
+                    <DigitButton
+                        text={text.ShowUserAgreement}
+                        primary
+                        raised
+                        onClick={() => {
+                            showDialog({
+                                renderMain: () => (
+                                    <DigitMarkdown
+                                        size={{
+                                            minWidth: "320px",
+                                            width: "100%",
+                                            maxWidth: "600px"
+                                        }}
+                                        markdownSource={userAgreement}
+                                    />
+                                ),
+                                renderButtons: confirm => (
+                                    <DigitButton
+                                        primary
+                                        raised
+                                        text={text.Close}
+                                        onClick={confirm}
+                                    />
+                                )
+                            });
+                        }}
+                    />
+                </DigitDesign.CardBody>
+            </DigitDesign.Card>
             <DigitEditDataCard
+                alignSelf={"center"}
                 initialValues={initialValues()}
                 validationSchema={validationSchema(text)}
                 keysOrder={keysOrder()}
@@ -82,7 +129,7 @@ const InputDataAndCode = () => {
                 }}
                 size={{ minWidth: "300px", maxWidth: "600px" }}
             />
-        </DigitLayout.Center>
+        </>
     );
 };
 

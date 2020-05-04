@@ -10,7 +10,6 @@ import translations from "./Whitelist.translations";
 import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -93,9 +92,6 @@ const Whitelist = () => {
             detailsTitle={data => data.cid}
             deleteButtonText={data => text.Delete + " " + data[WHITELIST_CID]}
             detailsButtonText={text.Details}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

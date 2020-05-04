@@ -56,7 +56,7 @@ application:
   cookie:
     domain: ${COOKIE_DOMAIN:https://gamma.chalmers.it}
     path: ${COOKIE_PATH:/}
-    validity-time: 82629746
+    validity-time: 31536000 # One year
   password-expiration-time: 3600
   frontend-client-details:
     client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
@@ -80,6 +80,3 @@ application:
     accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
     autoApprove: ${AUTH_AUTO_APPROVE:true}
     refreshTokenValidityTime: ${AUTH_REFRESH_TOKEN_VALIDITY:500000000}
-  imageit:
-    url: ${IMAGEIT_URL:http://localhost:5000}
-    apiKey: ${IMAGEIT_API_KEY:secret}

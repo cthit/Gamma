@@ -73,7 +73,7 @@ application:
   cookie:
     domain: ${COOKIE_DOMAIN:localhost}
     path: ${COOKIE_PATH:/}
-    validity-time: 3600
+    validity-time: 31536000
   pre-populate-database: true
   frontend-client-details:
     successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
@@ -94,6 +94,3 @@ application:
     accessTokenValidityTime: 3600
     autoApprove: true
     refreshTokenValidityTime: 500000000
-  imageit:
-    url: ${IMAGEIT_URL:http://localhost:5000}
-    apiKey: ${IMAGEIT_API_KEY:SUPERSECRETKEY}

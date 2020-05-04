@@ -27,6 +27,8 @@ const UserOptions = ({ hasGroups }) => {
                         link={"/me/change-password"}
                     />
                     <HomeLink text={text.ChangeAvatar} link={"/me/avatar"} />
+                    <HomeLink text={text.AllUsers} link={"/users"} />
+                    <HomeLink text={text.AllGroups} link={"/groups"} />
                 </DigitLayout.Grid>
             </DigitDesign.CardBody>
         </DigitDesign.Card>

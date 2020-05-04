@@ -20,7 +20,8 @@ import {
     GROUP_DESCRIPTION_EN,
     GROUP_DESCRIPTION_SV,
     GROUP_FUNCTION_EN,
-    GROUP_FUNCTION_SV
+    GROUP_FUNCTION_SV,
+    GROUP_NO_ACCOUNT_MEMBERS
 } from "../../api/groups/props.groups.api";
 import { editGroup } from "../../api/groups/put.groups.api";
 import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
@@ -29,7 +30,6 @@ import DisplayMembersTable from "../../common/elements/display-members-table";
 import { useHistory } from "react-router-dom";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import { deleteGroup } from "../../api/groups/delete.groups.api";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -147,7 +147,7 @@ const Groups = () => {
                         <DigitLayout.Center>
                             <DigitButton
                                 outlined
-                                text={"Edit members"}
+                                text={text.EditMembers}
                                 onClick={() =>
                                     history.push("/members/" + data.id)
                                 }
@@ -157,25 +157,58 @@ const Groups = () => {
                 ) : null
             }
             detailsRenderEnd={data => (
-                <DisplayMembersTable
-                    margin={{ top: "16px" }}
-                    noUsersText={text.NoGroupMembers}
-                    users={data[GROUP_MEMBERS]}
-                />
+                <DigitLayout.Row flexWrap={"wrap"} justifyContent={"center"}>
+                    <DisplayMembersTable
+                        margin={{ top: "16px", right: "8px" }}
+                        noUsersText={text.NoGroupMembers}
+                        users={data[GROUP_MEMBERS]}
+                    />
+
+                    {data[GROUP_NO_ACCOUNT_MEMBERS].length > 0 && (
+                        <DisplayMembersTable
+                            title={text.NoAccountMembers}
+                            margin={{ top: "16px", left: "8px" }}
+                            users={data[GROUP_NO_ACCOUNT_MEMBERS].map(
+                                member => ({
+                                    nick: member.cid,
+                                    ...member
+                                })
+                            )}
+                        />
+                    )}
+                </DigitLayout.Row>
             )}
             dateProps={[GROUP_BECOMES_ACTIVE, GROUP_BECOMES_INACTIVE]}
             createButtonText={text.Create + " " + text.Group}
             updateTitle={group => text.Update + " " + group[GROUP_PRETTY_NAME]}
             createTitle={text.CreateGroup}
             detailsTitle={group => group[GROUP_PRETTY_NAME]}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
+            toastCreateSuccessful={() => text.GroupWasCreated}
+            toastCreateFailed={() => text.GroupCreateFailed}
+            toastDeleteSuccessful={() => text.GroupWasDeleted}
+            toastDeleteFailed={() => text.GroupDeleteFailed}
+            toastUpdateSuccessful={one =>
+                one[GROUP_PRETTY_NAME] + text.GroupWasUpdated
+            }
+            toastUpdateFailed={() => text.GroupUpdateFailed}
+            backButtonText={text.Back}
+            updateButtonText={() => text.Edit}
+            deleteButtonText={one => text.Delete + " " + one[GROUP_PRETTY_NAME]}
+            detailsButtonText={text.Details}
+            dialogDeleteCancel={() => text.Cancel}
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={one =>
+                text.AreYouSureYouWantToDelete +
+                " " +
+                one[GROUP_PRETTY_NAME] +
+                "?"
+            }
         />
     );
 };
