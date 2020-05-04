@@ -4,8 +4,8 @@
         "Slutför registreringen av konto"
     ],
     "CompleteCreationDescription": [
-        "Enter your cid and your code that you recieved from your student email along with the following information",
-        "Skriv in ditt cid och koden du fick på din skolmail samt följande information"
+        "Enter your cid and your code that you recieved from your student email along with the following information.",
+        "Skriv in ditt cid och koden du fick på din skolmail samt följande information."
     ],
     "YourCid": ["Your cid", "Ditt cid"],
     "CodeFromYourStudentEmail": [
@@ -26,7 +26,7 @@
         "Vilket år började du på IT?"
     ],
     "AcceptUserAgreement": [
-        "I accept the user agreements",
+        "I accept the user agreement",
         "Jag accepterar användaravtalet"
     ],
     "CreateAccount": ["Create account", "Skapa konto"],
@@ -46,5 +46,7 @@
         "You must accept the user agreement",
         "Du måste acceptera användaravtalen"
     ],
-    "Code": ["Code", "Kod"]
+    "Code": ["Code", "Kod"],
+    "UserAgreement": ["User agreement", "Användaravtal"],
+    "ShowUserAgreement": ["Show user agreement", "Visa användaravtal"]
 }
