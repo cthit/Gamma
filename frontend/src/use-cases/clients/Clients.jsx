@@ -20,7 +20,6 @@ import {
     CLIENT_ID
 } from "../../api/clients/props.clients.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -127,9 +126,6 @@ const Clients = () => {
             backButtonText={text.Back}
             detailsButtonText={text.Details}
             deleteButtonText={data => text.Delete + " " + data[CLIENT_NAME]}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

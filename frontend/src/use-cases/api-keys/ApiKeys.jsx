@@ -12,7 +12,6 @@ import { deleteApiKey } from "../../api/api-keys/delete.api-keys.api";
 import translations from "./ApiKeys.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -104,9 +103,6 @@ const ApiKeys = () => {
             deleteButtonText={data => text.Delete + " " + data[API_NAME]}
             createButtonText={text.Create}
             createTitle={text.CreateNewApiKey}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

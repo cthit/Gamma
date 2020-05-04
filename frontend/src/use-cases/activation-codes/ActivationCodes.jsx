@@ -8,7 +8,6 @@ import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
 import translations from "./ActivationCodes.translations";
 import InsufficientAccess from "../../common/views/insufficient-access";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import { keysOrder, keysText } from "./ActivationCodes.options";
@@ -65,9 +64,6 @@ const ActivationCodes = () => {
             detailsButtonText={text.Details}
             backButtonText={text.Back}
             dateAndTimeProps={["createdAt"]}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

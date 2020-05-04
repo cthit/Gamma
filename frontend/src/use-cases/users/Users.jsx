@@ -24,7 +24,6 @@ import {
 import { addUser } from "../../api/users/post.users.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -149,9 +148,6 @@ const Users = () => {
                     </>
                 ) : null
             }
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,

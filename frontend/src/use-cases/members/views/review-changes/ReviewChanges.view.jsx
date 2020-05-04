@@ -15,7 +15,6 @@ import { removeUserFromGroup } from "../../../../api/groups/delete.groups.api";
 import { addUserToGroup } from "../../../../api/groups/post.groups.api";
 import { useHistory } from "react-router-dom";
 import DisplayMembersTable from "../../../../common/elements/display-members-table";
-import { on401 } from "../../../../common/utils/error-handling/error-handling";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -78,9 +77,6 @@ const save = (
             });
         })
         .catch(e => {
-            if (e != null && e.response.status === 401) {
-                on401();
-            }
             queueToast({
                 text: text.MembersError
             });

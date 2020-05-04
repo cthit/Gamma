@@ -24,7 +24,6 @@ import { Switch, Route } from "react-router-dom";
 import MeChangePassword from "./screens/me-change-password";
 import MeGroups from "./screens/me-groups";
 import MeAvatar from "./screens/me-avatar";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import { Link, useHistory } from "react-router-dom";
@@ -160,9 +159,6 @@ const Me = () => {
                                     outlined: true
                                 }
                             }
-                        }}
-                        statusHandlers={{
-                            401: on401
                         }}
                         statusRenders={{
                             403: () => <InsufficientAccess />,

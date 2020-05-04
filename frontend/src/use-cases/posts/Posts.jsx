@@ -20,7 +20,6 @@ import {
     GROUP_PRETTY_NAME
 } from "../../api/groups/props.groups.api";
 import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { on401 } from "../../common/utils/error-handling/error-handling";
 import FourOFour from "../four-o-four";
 import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
@@ -159,9 +158,6 @@ const Posts = () => {
             }
             deleteButtonText={() => text.DeletePost}
             detailsTitle={() => text.Details}
-            statusHandlers={{
-                401: on401
-            }}
             statusRenders={{
                 403: () => <InsufficientAccess />,
                 404: () => <FourOFour />,
