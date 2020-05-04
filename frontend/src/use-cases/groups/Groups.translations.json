@@ -26,5 +26,6 @@
     "NoGroupMembers": [
         "There's no users in this group",
         "Det finns inga användare i den här gruppen"
-    ]
+    ],
+    "NoAccountMembers": ["Have no account members", "Har inget konto medlemmar"]
 }

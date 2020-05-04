@@ -18,9 +18,11 @@ const Grid = styled.div`
     flex: 1;
 
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(288px, 400px));
     column-gap: 16px;
     row-gap: 16px;
+
+    justify-content: center;
 
     margin-bottom: calc(56px + 16px);
 `;

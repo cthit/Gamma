@@ -52,7 +52,7 @@ const EditAuthority = () => {
                 });
         }
         setRead(false);
-    }, [id, read, JSON.stringify(error)]);
+    }, [id, read]);
 
     useEffect(() => {
         Promise.all([getSuperGroups(), getPosts()])
@@ -160,8 +160,10 @@ const EditAuthority = () => {
                 submitText={text.Add}
                 titleText={text.AddToAuthorityLevel}
                 validationSchema={yup.object().shape({
-                    superGroup: yup.string().required(),
-                    post: yup.string().required()
+                    superGroup: yup
+                        .string()
+                        .required(text.SuperGroup + text.IsRequired),
+                    post: yup.string().required(text.Post + text.IsRequired)
                 })}
                 onSubmit={(values, actions) =>
                     addToAuthorityLevel({

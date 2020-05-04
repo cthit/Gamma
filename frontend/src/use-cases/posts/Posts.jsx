@@ -85,15 +85,16 @@ const Posts = () => {
                 </>
             )}
             detailsRenderEnd={data => (
-                <div style={{ marginTop: "8px" }}>
+                <>
                     {data.usages != null && data.usages.length > 0 && (
                         <DisplayGroupsTable
+                            margin={{ top: "16px" }}
                             groups={data.usages}
                             title={text.Usages}
                             columnsOrder={[GROUP_NAME, GROUP_PRETTY_NAME]}
                         />
                     )}
-                </div>
+                </>
             )}
             createButtonText={text.CreatePost}
             backButtonText={text.Back}

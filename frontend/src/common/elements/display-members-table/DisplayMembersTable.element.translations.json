@@ -9,7 +9,7 @@
         "There's no users, wait how are you logged in?!?!?!?!",
         "Det finns inga användare, wait hur är du inloggad?!?!?!?!"
     ],
-    "Users": ["Users", "Användare"],
+    "Users": ["Members", "Medlemmar"],
     "SearchForUsers": ["Search for users", "Sök efter användare"],
     "PostName": ["Post name", "Postnamn"]
 }

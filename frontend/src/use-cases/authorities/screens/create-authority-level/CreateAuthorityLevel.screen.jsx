@@ -49,7 +49,9 @@ const CreateAuthorityLevel = () => {
                 }}
                 keysOrder={["authorityLevel"]}
                 validationSchema={yup.object().shape({
-                    authorityLevel: yup.string().required()
+                    authorityLevel: yup
+                        .string()
+                        .required(text.AuthorityLevel + text.IsRequired)
                 })}
                 extraButton={{
                     text: text.Back,
