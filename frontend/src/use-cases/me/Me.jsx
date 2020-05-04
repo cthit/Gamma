@@ -169,6 +169,11 @@ const Me = () => {
                         }}
                         useHistoryGoBackOnBack={false}
                         backFromReadOnePath={() => "/"}
+                        backButtonText={text.Back}
+                        deleteButtonText={() => text.DeleteMe}
+                        updateButtonText={() => text.Edit}
+                        toastUpdateSuccessful={() => text.UpdateMe}
+                        toastUpdateFailed={() => text.UpdateMeFailed}
                     />
                 )}
             />

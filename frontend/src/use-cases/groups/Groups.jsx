@@ -188,6 +188,18 @@ const Groups = () => {
                 404: () => <FourOFour />,
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
+            toastCreateSuccessful={() => text.GroupWasCreated}
+            toastCreateFailed={() => text.GroupCreateFailed}
+            toastDeleteSuccessful={() => Text.GroupWasDeleted}
+            toastDeleteFailed={() => text.GroupDeleteFailed}
+            toastUpdateSuccessful={one =>
+                one[GROUP_PRETTY_NAME] + text.GroupWasUpdated
+            }
+            toastUpdateFailed={() => text.GroupUpdateFailed}
+            backButtonText={text.Back}
+            updateButtonText={one => text.Edit + " " + one[GROUP_PRETTY_NAME]}
+            deleteButtonText={one => text.Delete + " " + one[GROUP_PRETTY_NAME]}
+            detailsButtonText={() => text.Details}
         />
     );
 };

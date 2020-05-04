@@ -15,7 +15,7 @@ const FiveZeroZero = ({ getMe, reset }) => {
         <DigitDesign.Card
             margin={{ left: "auto", right: "auto" }}
             alignSelf="center"
-            size={{ width: "300px", height: "450px" }}
+            size={{ minWidth: "300px", maxWidth: "400px", height: "450px" }}
         >
             <DigitDesign.CardHeader>
                 <DigitDesign.CardTitle text={text.BackendDownTitle} />

@@ -34,5 +34,17 @@
     "GroupMustHaveSuperGroup": [
         "A group must have a supergroup",
         "En grupp måste ha en supergrupp"
+    ],
+    "GroupWasCreated": ["Group was created", "Gruppen skapades"],
+    "GroupCreateFailed": [
+        "Something went wrong! Group wasn't created.",
+        "Någonting gick fel! Gruppen skapades inte."
+    ],
+    "GroupWasDeleted": ["Group was deleted", "Gruppen raderades"],
+    "GroupDeleteFailed": ["Something went wrong! Group wasn't created."],
+    "GroupWasUpdated": [" was updated", " har uppdaterats"],
+    "GroupUpdateFailed": [
+        "Something went wrong! Group wasn't updated.",
+        "Någonting gick fel! Grupp uppdaterades inte."
     ]
 }

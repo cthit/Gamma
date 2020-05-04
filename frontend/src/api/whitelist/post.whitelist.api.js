@@ -17,15 +17,6 @@ export function addUsersToWhitelist(whitelistData) {
 
 /**
  * {
- *     cid: String
- * }
- */
-export function cidIsWhitelisted(whitelistData) {
-    return postRequest(ADMIN_WHITELIST_ENDPOINT, whitelistData);
-}
-
-/**
- * {
  *      cid: String
  * }
  */

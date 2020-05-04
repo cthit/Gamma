@@ -108,6 +108,13 @@ const ApiKeys = () => {
                 404: () => <FourOFour />,
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
+            detailsTitle={one => one[API_NAME]}
+            createSubtitle={text.CreateApiKeySubtitle}
+            createProps={{
+                size: { maxWidth: "400px" }
+            }}
+            toastCreateSuccessful={() => text.ApiKeyCreated}
+            toastCreateFailed={() => text.ApiKeyCreateFailed}
         />
     );
 };
