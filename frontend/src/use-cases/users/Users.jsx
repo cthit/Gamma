@@ -6,7 +6,11 @@ import {
     DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { getUser, getUsersMinified } from "../../api/users/get.users.api";
+import {
+    getUser,
+    getUserAdmin,
+    getUsersMinified
+} from "../../api/users/get.users.api";
 import translations from "./Users.translations";
 import {
     USER_FIRST_NAME,
@@ -66,7 +70,7 @@ const Users = () => {
             name={"users"}
             path={"/users"}
             readAllRequest={getUsersMinified}
-            readOneRequest={getUser}
+            readOneRequest={admin ? getUserAdmin : getUser}
             updateRequest={admin ? editUser : null}
             deleteRequest={admin ? deleteUser : null}
             createRequest={admin ? addUser : null}
