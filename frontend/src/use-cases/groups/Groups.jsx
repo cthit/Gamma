@@ -190,16 +190,25 @@ const Groups = () => {
             }}
             toastCreateSuccessful={() => text.GroupWasCreated}
             toastCreateFailed={() => text.GroupCreateFailed}
-            toastDeleteSuccessful={() => Text.GroupWasDeleted}
+            toastDeleteSuccessful={() => text.GroupWasDeleted}
             toastDeleteFailed={() => text.GroupDeleteFailed}
             toastUpdateSuccessful={one =>
                 one[GROUP_PRETTY_NAME] + text.GroupWasUpdated
             }
             toastUpdateFailed={() => text.GroupUpdateFailed}
             backButtonText={text.Back}
-            updateButtonText={one => text.Edit + " " + one[GROUP_PRETTY_NAME]}
+            updateButtonText={() => text.Edit}
             deleteButtonText={one => text.Delete + " " + one[GROUP_PRETTY_NAME]}
             detailsButtonText={text.Details}
+            dialogDeleteCancel={() => text.Cancel}
+            dialogDeleteConfirm={() => text.Delete}
+            dialogDeleteTitle={() => text.AreYouSure}
+            dialogDeleteDescription={one =>
+                text.AreYouSureYouWantToDelete +
+                " " +
+                one[GROUP_PRETTY_NAME] +
+                "?"
+            }
         />
     );
 };
