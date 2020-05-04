@@ -167,6 +167,8 @@ const Me = () => {
                                 <FiveZeroZero reset={reset} />
                             )
                         }}
+                        useHistoryGoBackOnBack={false}
+                        backFromReadOnePath={() => "/"}
                     />
                 )}
             />
