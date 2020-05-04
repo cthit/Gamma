@@ -147,7 +147,7 @@ const Groups = () => {
                         <DigitLayout.Center>
                             <DigitButton
                                 outlined
-                                text={"Edit members"}
+                                text={text.EditMembers}
                                 onClick={() =>
                                     history.push("/members/" + data.id)
                                 }
@@ -199,7 +199,7 @@ const Groups = () => {
             backButtonText={text.Back}
             updateButtonText={one => text.Edit + " " + one[GROUP_PRETTY_NAME]}
             deleteButtonText={one => text.Delete + " " + one[GROUP_PRETTY_NAME]}
-            detailsButtonText={() => text.Details}
+            detailsButtonText={text.Details}
         />
     );
 };

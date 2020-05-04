@@ -46,5 +46,6 @@
     "GroupUpdateFailed": [
         "Something went wrong! Group wasn't updated.",
         "Någonting gick fel! Grupp uppdaterades inte."
-    ]
+    ],
+    "EditMembers": ["Edit members", "Redigera medlemmarna"]
 }
