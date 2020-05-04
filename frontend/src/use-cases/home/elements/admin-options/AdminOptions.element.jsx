@@ -17,8 +17,6 @@ const AdminOptions = () => {
             <DigitDesign.CardTitle text={text.AdminOptions} />
             <DigitDesign.CardBody>
                 <DigitLayout.Grid columns={`repeat(${2}, 1fr)`} margin={"4px"}>
-                    <HomeLink text={text.AllUsers} link={"/users"} />
-                    <HomeLink text={text.AllGroups} link={"/groups"} />
                     <HomeLink
                         text={text.ActivationCodes}
                         link={"/activation-codes"}
