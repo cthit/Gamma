@@ -30,7 +30,7 @@ export const keysComponentData = () => {
         component: DigitTextField,
         componentProps: {
             outlined: true,
-            maxLength: 12,
+            maxLength: 10,
             alignSelf: "center",
             flex: "1"
         }

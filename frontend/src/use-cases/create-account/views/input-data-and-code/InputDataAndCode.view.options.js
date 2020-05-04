@@ -97,7 +97,7 @@ export const keysComponentData = text => {
         componentProps: {
             upperLabel: text.YourCid,
             outlined: true,
-            maxLength: 12,
+            maxLength: 10,
             size: { width: "280px" }
         }
     };

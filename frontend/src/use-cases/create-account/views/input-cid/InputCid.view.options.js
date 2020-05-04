@@ -23,7 +23,7 @@ export const keysComponentData = text => {
         componentProps: {
             upperLabel: text.Cid,
             outlined: true,
-            maxLength: 12
+            maxLength: 10
         }
     };
 

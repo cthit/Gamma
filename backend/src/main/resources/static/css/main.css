@@ -1,7 +1,7 @@
 
 *{
-    --mdc-theme-primary: #4CAF50;
-    --mdc-theme-secondary: #4CAF50;
+    --mdc-theme-primary: #2196F3;
+    --mdc-theme-secondary: #2196F3;
 }
 
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
