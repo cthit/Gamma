@@ -1,10 +1,14 @@
 package it.chalmers.gamma.service;
 
+import it.chalmers.gamma.db.entity.FKITGroup;
 import it.chalmers.gamma.db.entity.Membership;
+import it.chalmers.gamma.db.entity.NoAccountMembership;
 import it.chalmers.gamma.db.entity.pk.MembershipPK;
 import it.chalmers.gamma.db.repository.MembershipRepository;
+import it.chalmers.gamma.db.repository.NoAccountMembershipRepository;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
+import it.chalmers.gamma.domain.dto.membership.NoAccountMembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 
@@ -24,15 +28,17 @@ public class MembershipService {
     private final FKITGroupService fkitGroupService;
     private final DTOToEntityService dtoToEntityService;
     private final PostService postService;
+    private final NoAccountMembershipRepository noAccountMembershipRepository;
 
     public MembershipService(MembershipRepository membershipRepository,
                              FKITGroupService fkitGroupService,
                              DTOToEntityService dtoToEntityService,
-                             PostService postService) {
+                             PostService postService, NoAccountMembershipRepository noAccountMembershipRepository) {
         this.membershipRepository = membershipRepository;
         this.fkitGroupService = fkitGroupService;
         this.dtoToEntityService = dtoToEntityService;
         this.postService = postService;
+        this.noAccountMembershipRepository = noAccountMembershipRepository;
     }
 
 
@@ -170,6 +176,17 @@ public class MembershipService {
         List<Membership> memberships = this.membershipRepository
                 .findAllById_ItUser(this.dtoToEntityService.fromDTO(user));
         memberships.forEach(this.membershipRepository::delete);
+    }
+
+    /**
+     * This is a Legacy function, only to keep track of which users have been in different committees long ago.
+     * @param fkitGroupDTO the group which to fetch users with no account for.
+     * @return A list of NoAccountMemberships corresponding to members of that group.
+     */
+    public List<NoAccountMembershipDTO> getNoAccountMembership(FKITGroupDTO fkitGroupDTO) {
+        FKITGroup group = this.fkitGroupService.fromDTO(fkitGroupDTO);
+        return this.noAccountMembershipRepository.findAllById_FkitGroup(group).stream()
+                .map(NoAccountMembership::toDTO).collect(Collectors.toList());
     }
 
     public boolean groupIsActiveCommittee(FKITGroupDTO group) {

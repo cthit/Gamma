@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
+import it.chalmers.gamma.domain.dto.membership.NoAccountMembershipDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -15,16 +16,21 @@ public class GetFKITGroupResponse {
     @JsonUnwrapped
     private final FKITGroupDTO group;
     private final List<MembershipDTO> groupMembers;
+    private final List<NoAccountMembershipDTO> noAccountMembers;
     private final List<WebsiteUrlDTO> websites;
 
-    public GetFKITGroupResponse(FKITGroupDTO group, List<MembershipDTO> groupMembers, List<WebsiteUrlDTO> websites) {
+    public GetFKITGroupResponse(FKITGroupDTO group,
+                                List<MembershipDTO> groupMembers,
+                                List<NoAccountMembershipDTO> noAccountMembers,
+                                List<WebsiteUrlDTO> websites) {
         this.group = group;
         this.groupMembers = groupMembers;
+        this.noAccountMembers = noAccountMembers;
         this.websites = websites;
     }
 
     public GetFKITGroupResponse(FKITGroupDTO group, List<MembershipDTO> groupMembers) {
-        this(group, groupMembers, null);
+        this(group, groupMembers, null, null);
     }
 
     public FKITGroupDTO getGroup() {
@@ -33,6 +39,10 @@ public class GetFKITGroupResponse {
 
     public List<MembershipDTO> getGroupMembers() {
         return this.groupMembers;
+    }
+
+    public List<NoAccountMembershipDTO> getNoAccountMembers() {
+        return this.noAccountMembers;
     }
 
     public List<WebsiteUrlDTO> getWebsites() {

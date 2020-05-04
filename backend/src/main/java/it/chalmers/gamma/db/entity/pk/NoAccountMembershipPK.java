@@ -6,6 +6,7 @@ import it.chalmers.gamma.db.entity.FKITGroup;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +16,7 @@ import javax.persistence.ManyToOne;
 public class NoAccountMembershipPK implements Serializable {
 
     private static final long serialVersionUID = 6624119509779427L;
-    @JoinColumn(name = "ituser")
+    @Column(name = "user_name")
     private String itUser;
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
