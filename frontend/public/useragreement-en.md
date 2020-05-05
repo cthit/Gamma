@@ -4,11 +4,11 @@
 
 This agreement refers to IT:s user account system Gamma.
 
-Identifying data such as name, nickname, year of admission, CID, phone number, e-mail, added websites, commitées and societies you are and have been part of, prefered language and your profile picture is collected to authenticate you against IT:s and third party services, create a profile that can be used in IT:s services and third party services you accept and to contact you with matters regarding this processing and other matters that is of your interest. The data is also aggregated and used for statistical purposes.
+IT will collect and manage name, nickname, year of admission, CID, phone number, e-mail, added websites, commitées and societies you are and have been part of, prefered language and your profile picture. The data is managed in order to authenticate you to IT and third party services. The data is used to create a profile that can be used on IT services as well as the third party services you approve. The data is also used if we need to contact you for matters of special interest to you. The data is also handled for statistical purposes.
 
-The data is saved until you choose to remove your profiler or until the IT division chooses to remove your data, after a 30 day notice.
+The data is saved until you choose to delete your profile or the IT section chooses to delete your data. You will be notified of this 30 days prior.
 
-Name, CID, nickname and year of admission is shared with all users of Gamma. Data may also be shared with third party services with the user’s approval.
+Name, Chalmers ID, nickname and year of admission is shared with all users of Gamma. Data may also be shared with third party services with the user’s approval.
 
 If you have any questions or want to exercise your rights you can contact:
 * The board of the IT student division: styrit@chalmers.it
