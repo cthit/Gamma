@@ -98,6 +98,7 @@ const Whitelist = () => {
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             useKeyTextsInUpperLabel
+            useHistoryGoBackOnBack
         />
     );
 };

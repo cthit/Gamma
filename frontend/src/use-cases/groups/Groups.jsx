@@ -209,6 +209,7 @@ const Groups = () => {
                 one[GROUP_PRETTY_NAME] +
                 "?"
             }
+            useHistoryGoBackOnBack
         />
     );
 };

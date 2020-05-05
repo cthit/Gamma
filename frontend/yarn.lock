@@ -1066,10 +1066,10 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@cthit/react-digit-components@1.0.1-rc.23":
-  version "1.0.1-rc.23"
-  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.1-rc.23.tgz#fcf980b0fa616202068b43575e077acbbf015172"
-  integrity sha512-EsQXCPPZPdpHOgp7JhiNgtt/mC5Wc9bB2wDVvFn4nmuIixHJDQ1qhDQ4odFpoQufDjGCIVHTfQxYtw6KvHZEvQ==
+"@cthit/react-digit-components@1.0.1-rc.24":
+  version "1.0.1-rc.24"
+  resolved "https://registry.yarnpkg.com/@cthit/react-digit-components/-/react-digit-components-1.0.1-rc.24.tgz#0caad9e592fb6ec3e808944d1d9da8b5d40c80d1"
+  integrity sha512-bUEUn3Sf5JHPlNrYKRG0VWL7RCV3cA52wwQTbzz2InYgp2K9nfO9+zLjsHnKevFVWNtQdpagEJIkgXvh2rAgiQ==
   dependencies:
     "@date-io/date-fns" "1.3.13"
     "@material-ui/core" "4.9.12"
@@ -2872,9 +2872,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001039, caniuse-lite@^1.0.30001043:
-  version "1.0.30001050"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001050.tgz#11218af4b6b85dc1089536f31e10e3181e849e71"
-  integrity sha512-OvGZqalCwmapci76ISq5q4kuAskb1ebqF3FEQBv1LE1kWht0pojlDDqzFlmk5jgYkuZN7MNZ1n+ULwe/7MaDNQ==
+  version "1.0.30001051"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001051.tgz#8e944abf9c796bc7ea0bec3c3688a250561fc9ac"
+  integrity sha512-sw8UUnTlRevawTMZKN7vpfwSjCBVoiMPlYd8oT2VwNylyPCBdMAUmLGUApnYYTtIm5JXsQegUAY7GPHqgfDzjw==
 
 capture-exit@^2.0.0:
   version "2.0.0"

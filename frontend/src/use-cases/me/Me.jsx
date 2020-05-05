@@ -167,8 +167,6 @@ const Me = () => {
                                 <FiveZeroZero reset={reset} />
                             )
                         }}
-                        useHistoryGoBackOnBack={false}
-                        backFromReadOnePath={() => "/"}
                         backButtonText={text.Back}
                         deleteButtonText={() => text.DeleteMe}
                         updateButtonText={() => text.Edit}

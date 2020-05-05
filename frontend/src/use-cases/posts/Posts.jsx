@@ -164,6 +164,7 @@ const Posts = () => {
                 404: () => <FourOFour />,
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
+            useHistoryGoBackOnBack
         />
     );
 };
