@@ -4,7 +4,7 @@
 
 This agreement refers to IT:s user account system Gamma.
 
-Identifying data such as name, nickname, year of admission, CID, phone number, and e-mail, added websites, commitées and societies you are and have been part of, prefered language and your profile picture is collected to authenticate you against IT:s and third party services, create a profile that can be used in IT:s services and third party services you accept and to contact you with matters regarding this processing and other matters that is of your interest. The data is also aggregated and used for statistical purposes.
+Identifying data such as name, nickname, year of admission, CID, phone number, e-mail, added websites, commitées and societies you are and have been part of, prefered language and your profile picture is collected to authenticate you against IT:s and third party services, create a profile that can be used in IT:s services and third party services you accept and to contact you with matters regarding this processing and other matters that is of your interest. The data is also aggregated and used for statistical purposes.
 
 The data is saved until you choose to remove your profiler or until the IT division chooses to remove your data, after a 30 day notice.
 
