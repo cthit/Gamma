@@ -1,6 +1,11 @@
 package it.chalmers.gamma.domain.dto.user;
 
+import it.chalmers.gamma.db.entity.Authority;
+import it.chalmers.gamma.domain.Language;
+import org.springframework.security.core.GrantedAuthority;
+
 import java.time.Year;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,8 +18,10 @@ public class ITUserRestrictedDTO {
     private final String lastName;
     private final String email;
     private final String phone;
+    private final Language language;
     private final String avatarUrl;
     private final Year acceptanceYear;
+    private final List<GrantedAuthority> authorities;
 
     public ITUserRestrictedDTO(ITUserDTO userDTO) {
         this.id = userDTO.getId();
@@ -26,6 +33,8 @@ public class ITUserRestrictedDTO {
         this.phone = userDTO.getPhone();
         this.avatarUrl = userDTO.getAvatarUrl();
         this.acceptanceYear = userDTO.getAcceptanceYear();
+        this.language = userDTO.getLanguage();
+        this.authorities = userDTO.getAuthorities();
     }
 
     public UUID getId() {
@@ -64,6 +73,14 @@ public class ITUserRestrictedDTO {
         return this.acceptanceYear;
     }
 
+    public Language getLanguage() {
+        return this.language;
+    }
+
+    public List<GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -74,14 +91,15 @@ public class ITUserRestrictedDTO {
         }
         ITUserRestrictedDTO that = (ITUserRestrictedDTO) o;
         return Objects.equals(this.id, that.id)
-            && Objects.equals(this.cid, that.cid)
-            && Objects.equals(this.nick, that.nick)
-            && Objects.equals(this.firstName, that.firstName)
-            && Objects.equals(this.lastName, that.lastName)
-            && Objects.equals(this.email, that.email)
-            && Objects.equals(this.phone, that.phone)
-            && Objects.equals(this.avatarUrl, that.avatarUrl)
-            && Objects.equals(this.acceptanceYear, that.acceptanceYear);
+                && Objects.equals(this.cid, that.cid)
+                && Objects.equals(this.nick, that.nick)
+                && Objects.equals(this.firstName, that.firstName)
+                && Objects.equals(this.lastName, that.lastName)
+                && Objects.equals(this.email, that.email)
+                && Objects.equals(this.phone, that.phone)
+                && Objects.equals(this.avatarUrl, that.avatarUrl)
+                && Objects.equals(this.acceptanceYear, that.acceptanceYear)
+                && Objects.equals(this.authorities, that.authorities);
     }
 
     @Override
@@ -95,22 +113,25 @@ public class ITUserRestrictedDTO {
                 this.email,
                 this.phone,
                 this.avatarUrl,
-                this.acceptanceYear
+                this.acceptanceYear,
+                this.authorities
         );
     }
 
     @Override
     public String toString() {
         return "ITUserRestrictedDTO{"
-            + "id=" + id
-            + ", cid='" + cid + '\''
-            + ", nick='" + nick + '\''
-            + ", firstName='" + firstName + '\''
-            + ", lastName='" + lastName + '\''
-            + ", email='" + email + '\''
-            + ", phone='" + phone + '\''
-            + ", avatarUrl='" + avatarUrl + '\''
-            + ", acceptanceYear=" + acceptanceYear
-            + '}';
+                + "id=" + this.id
+                + ", cid='" + this.cid + '\''
+                + ", nick='" + this.nick + '\''
+                + ", firstName='" + this.firstName + '\''
+                + ", lastName='" + this.lastName + '\''
+                + ", email='" + this.email + '\''
+                + ", phone='" + this.phone + '\''
+                + ", avatarUrl='" + this.avatarUrl + '\''
+                + ", acceptanceYear=" + this.acceptanceYear + '\''
+                + ", language=" + this.language + '\''
+                + ", authorities=" + this.authorities
+                +'}';
     }
 }
