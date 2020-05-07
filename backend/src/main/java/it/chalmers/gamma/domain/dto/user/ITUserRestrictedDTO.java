@@ -1,14 +1,13 @@
 package it.chalmers.gamma.domain.dto.user;
 
-import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.domain.Language;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.time.Year;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.security.core.GrantedAuthority;
 
 public class ITUserRestrictedDTO {
     private final UUID id;
@@ -78,7 +77,7 @@ public class ITUserRestrictedDTO {
     }
 
     public List<GrantedAuthority> getAuthorities() {
-        return authorities;
+        return this.authorities;
     }
 
     @Override
@@ -132,6 +131,6 @@ public class ITUserRestrictedDTO {
                 + ", acceptanceYear=" + this.acceptanceYear + '\''
                 + ", language=" + this.language + '\''
                 + ", authorities=" + this.authorities
-                +'}';
+                + '}';
     }
 }
