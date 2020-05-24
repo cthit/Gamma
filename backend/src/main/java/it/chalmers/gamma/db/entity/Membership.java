@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 
 import java.util.Objects;
 
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
