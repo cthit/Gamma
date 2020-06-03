@@ -29,7 +29,10 @@ public class CustomErrorController implements ErrorController {
             model.addAttribute("error_message", request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
             return "error-422";
         }
-        return "standard-error";
+        model.addAttribute("error_code", request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
+        model.addAttribute("error_message", request.getAttribute(RequestDispatcher.ERROR_MESSAGE));
+        model.addAttribute("origin_url", request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI));
+        return "common-error";
     }
 
     @Override
