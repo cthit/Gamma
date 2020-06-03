@@ -25,7 +25,7 @@ Depending on your build system, things might be different, and a proxy is probab
 
 run
 
-`docker-compose up --build` to build the frontend, database, databasemonitoring, and all microservices that's needed for gamma.
+`docker-compose up --build` to build the frontend, database, databasemonitoring, and all microservices that's needed for Gamma.
 
 then you will need to start the server, this is done by running the Java code in the backend, and is probably best done through an IDE.
 
