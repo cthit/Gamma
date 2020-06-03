@@ -17,7 +17,7 @@ ENV DB_HOST db
 
 USER gradle
 
-RUN gradle :build -x test
+RUN gradle :build -x test -x pmdMain -x checkstyleMain -x pmdTest
 # This probably should not have a static path, but instead build in a custom path.
 CMD sleep 5 && java -jar -Dspring.profiles.active=development build/libs/gamma-0.9.0-SNAPSHOT.jar
 
