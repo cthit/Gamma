@@ -4,6 +4,8 @@
 
 # Gamma is Chalmers IT section account system
 
+Gamma is licensed under the GNU AGPL, see `LICENSE`.
+
 ---
 
 ## More information about Gamma can be found on the [Wiki](https://github.com/cthit/Gamma/wiki)
