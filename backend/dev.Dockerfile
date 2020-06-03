@@ -13,8 +13,6 @@ COPY . /app
 RUN mkdir -p /app
 RUN chown -R gradle /app
 
-ENV DB_HOST db
-
 USER gradle
 
 RUN gradle :build -x test -x pmdMain -x checkstyleMain -x pmdTest
