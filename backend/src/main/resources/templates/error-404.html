@@ -1,10 +1,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
     <title>404 Error</title>
 </head>
 <body style="background-color: rgb(222,219,208)">
+
 <div style="text-align: center; padding-top: 50px">
     <h2 class="text--roboto">
         404 <br>
@@ -14,7 +15,10 @@
     </p>
     <img th:src="@{/img/404.jpg}" alt="This image did not load, but imagine it did :)">
     <br>
-    (The page really just doesn't exist)
+    <div>
+        <span th:text="${original_page}"></span>
+            does not exist
+    </div>
 </div>
 </body>
 </html>
