@@ -1,0 +1,21 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <title>Unprocessable Entity</title>
+</head>
+<body style="background-color: rgb(238,238,238)">
+<div style="text-align: center; padding-top: 50px">
+    <h2 class="text--roboto">
+        422 <br>
+    </h2>
+    <p class="text text--large">
+        Unprocessable Entity
+    </p>
+    <div>
+        The internal reason was:
+        <span th:text="${error_message}"></span>
+    </div>
+</div>
+</body>
+</html>

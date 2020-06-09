@@ -44,6 +44,9 @@ spring:
 
 server:
   port: ${SERVER_PORT:8081}
+  error:
+    whitelabel:
+      enabled: false
   servlet:
     context-path: /api
 
