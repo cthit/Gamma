@@ -49,7 +49,7 @@ public class WhitelistService {
         this.whitelistRepository.delete(this.fromDTO(whitelistDTO));
     }
 
-    protected Whitelist fromDTO(WhitelistDTO whitelistDTO) throws WhitelistDoesNotExistsException {
+    protected Whitelist fromDTO(WhitelistDTO whitelistDTO) {
         return this.whitelistRepository.findById(whitelistDTO.getId())
                 .orElseThrow(WhitelistDoesNotExistsException::new);
     }
