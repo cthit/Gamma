@@ -107,7 +107,6 @@ public class LoginTests {
                                 10,
                                 CharacterTypes.LOWERCASE),
                         true));
-        System.out.println(user.getEmail());
         String request = JSONUtils.toFormUrlEncoded(
                 new JSONParameter(USERNAME, user.getEmail()),
                 new JSONParameter(PASSWORD, PASSWORD)
