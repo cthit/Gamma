@@ -1,0 +1,24 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <title>Not Found</title>
+</head>
+<body style="background-color: rgb(238,238,238)">
+
+<div style="text-align: center; padding-top: 50px">
+    <h2 class="text--roboto">
+        404 <br>
+    </h2>
+    <p class="text text--large">
+        This is not the page you're looking for
+    </p>
+    <img th:src="@{/img/404.jpg}" alt="This image did not load, but imagine it did :)">
+    <br>
+    <div>
+        <span th:text="${original_page}"></span>
+        does not exist
+    </div>
+</div>
+</body>
+</html>
