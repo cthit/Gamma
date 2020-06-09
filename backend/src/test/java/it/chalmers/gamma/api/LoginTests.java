@@ -69,16 +69,6 @@ public class LoginTests {
         testLogin(request, this.frontendUri);
     }
 
-    private void testLogin(String request, String redirect) throws Exception {
-        this.mockMvc.perform(post("/login")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .content(
-                        request
-                ))
-                .andExpect(redirectedUrl(redirect))
-                .andExpect(status().is(302));
-    }
-
     @Test
     public void testWrongPasswordLogin() throws Exception {
         String invalidPasswordRequest = JSONUtils.toFormUrlEncoded(
@@ -108,4 +98,32 @@ public class LoginTests {
         testLogin(nonActivatedPasswordRequest,
                 String.format("%s/reset-password/finish?accountLocked=true", this.frontendUri));
     }
+
+    @Test
+    public void testSuccessfulEmailLogin() throws Exception {
+        ITUserDTO user = this.mockITUserFactory.saveUser(
+                this.mockITUserFactory.generateITUser(
+                        GenerationUtils.generateRandomString(
+                                10,
+                                CharacterTypes.LOWERCASE),
+                        true));
+        System.out.println(user.getEmail());
+        String request = JSONUtils.toFormUrlEncoded(
+                new JSONParameter(USERNAME, user.getEmail()),
+                new JSONParameter(PASSWORD, PASSWORD)
+        );
+        testLogin(request, this.frontendUri);
+    }
+
+
+    private void testLogin(String request, String redirect) throws Exception {
+        this.mockMvc.perform(post("/login")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .content(
+                        request
+                ))
+                .andExpect(redirectedUrl(redirect))
+                .andExpect(status().is(302));
+    }
+
 }
