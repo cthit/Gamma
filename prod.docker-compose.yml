@@ -23,7 +23,16 @@ services:
       dockerfile: dockerfile
     ports: 
       - 9090:9090
+    environment:
+      COOKIE_DOMAIN: http://localhost
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ""
       
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  
   adminer:
     image: adminer
     restart: always

@@ -23,7 +23,7 @@ public class MockActivationCodeFactory {
                 whitelist,
                 GenerationUtils.generateRandomString(15, CharacterTypes.NUMBERS),
                 Instant.now(),
-                100000
+                100_000 // Easier to read
         );
     }
 
