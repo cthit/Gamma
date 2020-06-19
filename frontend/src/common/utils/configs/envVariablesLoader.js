@@ -1,17 +1,7 @@
-const development = {
-    backend: "http://localhost:8081/api"
-};
-
-const production = {
-    backend: "https://gamma.chalmers.it/api"
-};
-
 function getBackendUrl() {
-    return isDevelopment() ? development.backend : production.backend;
-}
-
-function isDevelopment() {
-    return process.env.NODE_ENV === "development";
+    var backendUrl = process.env.REACT_APP_BACKEND_URL;
+    console.log(process.env);
+    return backendUrl == null ? "http://localhost:8081/api" : backendUrl;
 }
 
 export { getBackendUrl };
