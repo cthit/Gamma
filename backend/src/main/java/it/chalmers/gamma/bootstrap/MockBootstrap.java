@@ -46,7 +46,7 @@ public class MockBootstrap {
         ObjectMapper objectMapper = new ObjectMapper();
         MockData mockData = null;
         try {
-            mockData = objectMapper.readValue(resource.getFile(), MockData.class);
+            mockData = objectMapper.readValue(resource.getInputStream(), MockData.class);
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("Error when trying to read mock.json");
