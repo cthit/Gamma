@@ -4,6 +4,8 @@
 
 # Gamma is Chalmers IT section account system
 
+Gamma is licensed under the GNU AGPL, see `LICENSE`.
+
 ---
 
 ## More information about Gamma can be found on the [Wiki](https://github.com/cthit/Gamma/wiki)
@@ -23,9 +25,12 @@ Depending on your build system, things might be different, and a proxy is probab
 
 run
 
-`docker-compose up --build` to build the frontend, database, databasemonitoring, and all microservices that's needed for Gamma.
-
+`docker-compose up --build` to build the frontend, backend, database, databasemonitoring, and all microservices that's needed for Gamma.
+ 
+If developing on the backend, we recomend not running the backend in the docker-compose file. There is a docker-compose file that sets up all microservice but the backend, to use this run: `docker-compose -f no_backend.docker-compose.ym up --build`
 then you will need to start the server, this is done by running the Java code in the backend, and is probably best done through an IDE.
+
+You'll need to run `docker-compose down` if you want to try the production build. Same if you're going from production to development.
 
 ## API Documentation
 

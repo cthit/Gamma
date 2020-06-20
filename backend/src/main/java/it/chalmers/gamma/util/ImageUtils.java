@@ -28,7 +28,7 @@ public class ImageUtils {
     private static String relativePath;
     private static String absoluteBasePath;
 
-    public static String saveImage(MultipartFile file, String name) throws FileNotSavedException {
+    public static String saveImage(MultipartFile file, String name) {
         File f;
         try {
             f = saveToDisk(file, name);
@@ -48,9 +48,15 @@ public class ImageUtils {
             LOGGER.info("no uploads directory exists, creating a new one");
         }
         if (f.createNewFile()) {
-            OutputStream fos = Files.newOutputStream(Path.of(f.getPath()));
-            fos.write(file.getBytes());
-            fos.close();
+            OutputStream fos = null;
+            try {
+                fos = Files.newOutputStream(Path.of(f.getPath()));
+                fos.write(file.getBytes());
+            } finally {
+                if (fos != null) {
+                    fos.close();
+                }
+            }
             return f;
         }
         return null;

@@ -50,16 +50,16 @@ public class ITUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String cidOrEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String cidOrEmail) {
         String cidOrEmailLowerCase = cidOrEmail.toLowerCase();
         ITUser user = this.itUserRepository.findByEmail(cidOrEmailLowerCase)
-                .orElse(this.itUserRepository.findByCid(cidOrEmailLowerCase)
+                .orElseGet(() -> this.itUserRepository.findByCid(cidOrEmailLowerCase)
                         .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG)));
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
 
     }
 
-    public ITUserDTO loadUser(String cid) throws UsernameNotFoundException {
+    public ITUserDTO loadUser(String cid) {
         String cidLowerCase = cid.toLowerCase();
         return this.itUserRepository.findByCid(cidLowerCase)
                 .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
@@ -125,8 +125,7 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void editUser(UUID user, String nick, String firstName, String lastName,
-                         String email, String phone, Language language, int acceptanceYear)
-            throws UsernameNotFoundException {
+                         String email, String phone, Language language, int acceptanceYear) {
         ITUser itUser = this.itUserRepository.findById(user)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
 
@@ -141,15 +140,15 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUserDTO getITUser(String idCidOrEmail) throws UsernameNotFoundException {
+    public ITUserDTO getITUser(String idCidOrEmail) {
         ITUser user;
         String idCidOrEmailLowerCase = idCidOrEmail.toLowerCase();
-        if (UUIDUtil.validUUID(idCidOrEmailLowerCase)) {
-            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmailLowerCase))
+        if (UUIDUtil.validUUID(idCidOrEmail)) {
+            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
                     .orElseThrow(UserNotFoundResponse::new);
         } else {
             user = this.itUserRepository.findByEmail(idCidOrEmailLowerCase)
-                    .orElse(this.itUserRepository.findByCid(idCidOrEmailLowerCase)
+                    .orElseGet(() -> this.itUserRepository.findByCid(idCidOrEmailLowerCase)
                             .orElseThrow(UserNotFoundResponse::new));
         }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
@@ -160,7 +159,7 @@ public class ITUserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
     }
 
-    public ITUserDTO getUserByEmail(String email) throws UsernameNotFoundException {
+    public ITUserDTO getUserByEmail(String email) {
         return this.itUserRepository.findByCid(email)
                 .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
@@ -173,7 +172,7 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(user);
     }
 
-    public void editGdpr(UUID id, boolean gdpr) throws UsernameNotFoundException {
+    public void editGdpr(UUID id, boolean gdpr) {
         ITUser user = this.itUserRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
         user.setGdpr(gdpr);

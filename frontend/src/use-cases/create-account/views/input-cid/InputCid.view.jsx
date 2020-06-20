@@ -44,7 +44,7 @@ const InputCid = () => {
                             });
                         });
                 }}
-                size={{ width: "400px", height: "300px" }}
+                size={{ width: "300px", height: "300px" }}
                 titleText={text.EnterYourCid}
                 subtitleText={text.EnterYourCidDescription}
                 submitText={text.SendCid}

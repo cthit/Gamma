@@ -121,8 +121,11 @@ public class FKITGroupService {
                 .toDTO();
     }
 
-    public void editGroupAvatar(FKITGroupDTO groupDTO, String url) throws GroupDoesNotExistResponse {
+    public void editGroupAvatar(FKITGroupDTO groupDTO, String url) {
         FKITGroup group = this.fromDTO(groupDTO);
+        if (group == null) {
+            throw new GroupDoesNotExistResponse();
+        }
         group.setAvatarURL(url);
         this.repo.save(group);
     }
