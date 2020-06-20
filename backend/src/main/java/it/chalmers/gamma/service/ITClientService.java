@@ -10,6 +10,7 @@ import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class ITClientService implements ClientDetailsService {
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
         return this.itClientRepository.findByClientId(clientId).orElseThrow(ITClientDoesNotExistException::new)
-        .toDTO();
+            .toDTO();
     }
 
     public ITClientDTO createITClient(String name, Text description, String redirect) {
@@ -53,11 +54,11 @@ public class ITClientService implements ClientDetailsService {
         client.setAutoApprove(this.autoApprove);
         client.setRefreshTokenValidity(this.refreshTokenValidityTime);
         client.setClientId(TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
-                TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS));
+            TokenUtils.CharacterTypes.UPPERCASE,
+            TokenUtils.CharacterTypes.NUMBERS));
         String clientSecret = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
-                TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS);
+            TokenUtils.CharacterTypes.UPPERCASE,
+            TokenUtils.CharacterTypes.NUMBERS);
         client.setClientSecret("{noop}" + clientSecret);
         return this.itClientRepository.save(client).toDTO();
     }
@@ -83,14 +84,14 @@ public class ITClientService implements ClientDetailsService {
         client.setLastModifiedAt(Instant.now());
         client.setName(clientDTO.getName() == null ? client.getName() : clientDTO.getName());
         client.setDescription(clientDTO.getDescription() == null
-                ? client.getDescription() : clientDTO.getDescription());
+            ? client.getDescription() : clientDTO.getDescription());
         client.setWebServerRedirectUri(clientDTO.getWebServerRedirectUri() == null
-                ? client.getWebServerRedirectUri() : clientDTO.getWebServerRedirectUri());
+            ? client.getWebServerRedirectUri() : clientDTO.getWebServerRedirectUri());
     }
 
     public boolean clientExists(String id) {
         return UUIDUtil.validUUID(id) && this.itClientRepository.existsById(UUID.fromString(id))
-                || this.itClientRepository.existsITClientByClientId(id);
+            || this.itClientRepository.existsITClientByClientId(id);
     }
 
 
@@ -98,4 +99,7 @@ public class ITClientService implements ClientDetailsService {
         this.itClientRepository.save(itClient);
     }
 
+    public Optional<ITClientDTO> getITClientById(String clientId) {
+        return this.itClientRepository.findByClientId(clientId).map(ITClient::toDTO);
+    }
 }
