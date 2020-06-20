@@ -25,9 +25,6 @@ public class ITClientService implements ClientDetailsService {
     @Value("${application.auth.accessTokenValidityTime}")       // TODO Fix this
     private int accessTokenValidityTime;
 
-    @Value("${application.auth.autoApprove}")
-    private boolean autoApprove;
-
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
@@ -43,7 +40,7 @@ public class ITClientService implements ClientDetailsService {
             .toDTO();
     }
 
-    public ITClientDTO createITClient(String name, Text description, String redirect) {
+    public ITClientDTO createITClient(String name, Text description, String redirect, boolean autoApprove) {
         ITClient client = new ITClient();
         client.setName(name);
         client.setDescription(description == null ? new Text() : description);
@@ -51,14 +48,15 @@ public class ITClientService implements ClientDetailsService {
         client.setCreatedAt(Instant.now());
         client.setLastModifiedAt(Instant.now());
         client.setAccessTokenValidity(this.accessTokenValidityTime);
-        client.setAutoApprove(this.autoApprove);
+        client.setAutoApprove(autoApprove);
         client.setRefreshTokenValidity(this.refreshTokenValidityTime);
         client.setClientId(TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
-            TokenUtils.CharacterTypes.UPPERCASE,
-            TokenUtils.CharacterTypes.NUMBERS));
+                TokenUtils.CharacterTypes.UPPERCASE,
+                TokenUtils.CharacterTypes.NUMBERS)
+        );
         String clientSecret = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
-            TokenUtils.CharacterTypes.UPPERCASE,
-            TokenUtils.CharacterTypes.NUMBERS);
+                TokenUtils.CharacterTypes.UPPERCASE,
+                TokenUtils.CharacterTypes.NUMBERS);
         client.setClientSecret("{noop}" + clientSecret);
         return this.itClientRepository.save(client).toDTO();
     }
@@ -84,9 +82,9 @@ public class ITClientService implements ClientDetailsService {
         client.setLastModifiedAt(Instant.now());
         client.setName(clientDTO.getName() == null ? client.getName() : clientDTO.getName());
         client.setDescription(clientDTO.getDescription() == null
-            ? client.getDescription() : clientDTO.getDescription());
+                ? client.getDescription() : clientDTO.getDescription());
         client.setWebServerRedirectUri(clientDTO.getWebServerRedirectUri() == null
-            ? client.getWebServerRedirectUri() : clientDTO.getWebServerRedirectUri());
+                ? client.getWebServerRedirectUri() : clientDTO.getWebServerRedirectUri());
     }
 
     public boolean clientExists(String id) {

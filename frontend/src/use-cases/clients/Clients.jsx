@@ -50,7 +50,7 @@ const Clients = () => {
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
             formInitialValues={initialValues()}
-            formComponentData={keysComponentData()}
+            formComponentData={keysComponentData(text)}
             name={"clients"}
             path={"/clients"}
             readAllRequest={getClients}
