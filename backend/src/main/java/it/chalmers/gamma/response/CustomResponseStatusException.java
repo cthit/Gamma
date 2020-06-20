@@ -1,5 +1,7 @@
 package it.chalmers.gamma.response;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,9 @@ public class CustomResponseStatusException extends ResponseStatusException {
                 "An exception was thrown in the application: \n status: %d, \n Reason: %s",
                 status.value(),
                 reason));
+        LOGGER.debug(String.format("Stacktrace: \n %s:", Arrays.stream(super.fillInStackTrace().getStackTrace())
+                .map(StackTraceElement::toString).collect(Collectors.joining("\n    "))));
+        // Prints the stacktrace to debug
     }
 
     @Override

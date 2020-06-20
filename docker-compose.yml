@@ -15,6 +15,7 @@ services:
             - 8080:8080
 
     frontend:
+        image: frontend:development
         build:
             context: ./frontend/
             dockerfile: dev.dockerfile
