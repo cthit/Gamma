@@ -129,7 +129,7 @@ hr{
     padding: 0;
 }
 
-#loginForm{
+.centerCard {
     position: absolute;
     z-index: 2;
     width: 100%;
