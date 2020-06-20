@@ -53,7 +53,7 @@ public class ITUserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String cidOrEmail) {
         String cidOrEmailLowerCase = cidOrEmail.toLowerCase();
         ITUser user = this.itUserRepository.findByEmail(cidOrEmailLowerCase)
-                .orElse(this.itUserRepository.findByCid(cidOrEmailLowerCase)
+                .orElseGet(() -> this.itUserRepository.findByCid(cidOrEmailLowerCase)
                         .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG)));
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
 
@@ -143,12 +143,12 @@ public class ITUserService implements UserDetailsService {
     public ITUserDTO getITUser(String idCidOrEmail) {
         ITUser user;
         String idCidOrEmailLowerCase = idCidOrEmail.toLowerCase();
-        if (UUIDUtil.validUUID(idCidOrEmailLowerCase)) {
-            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmailLowerCase))
+        if (UUIDUtil.validUUID(idCidOrEmail)) {
+            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
                     .orElseThrow(UserNotFoundResponse::new);
         } else {
             user = this.itUserRepository.findByEmail(idCidOrEmailLowerCase)
-                    .orElse(this.itUserRepository.findByCid(idCidOrEmailLowerCase)
+                    .orElseGet(() -> this.itUserRepository.findByCid(idCidOrEmailLowerCase)
                             .orElseThrow(UserNotFoundResponse::new));
         }
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
