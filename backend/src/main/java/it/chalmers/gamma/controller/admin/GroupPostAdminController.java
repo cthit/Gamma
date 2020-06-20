@@ -10,7 +10,6 @@ import it.chalmers.gamma.response.post.GetPostUsagesResponse.GetPostUsagesRespon
 import it.chalmers.gamma.response.post.PostAlreadyExistsResponse;
 import it.chalmers.gamma.response.post.PostCreatedResponse;
 import it.chalmers.gamma.response.post.PostDeletedResponse;
-import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
 import it.chalmers.gamma.response.post.PostEditedResponse;
 import it.chalmers.gamma.response.post.PostIsInUseResponse;
 import it.chalmers.gamma.service.MembershipService;
@@ -86,7 +85,7 @@ public final class GroupPostAdminController {
     @DeleteMapping("/{id}")
     public PostDeletedResponse deletePost(@PathVariable("id") String id) {
         UUID uuid = UUID.fromString(id);
-        if(membershipService.isPostUsed(uuid)){
+        if (this.membershipService.isPostUsed(uuid)) {
             throw new PostIsInUseResponse();
         }
 

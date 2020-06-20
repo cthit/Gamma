@@ -6,7 +6,6 @@ import it.chalmers.gamma.db.repository.PostRepository;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.response.post.PostDoesNotExistResponse;
-import it.chalmers.gamma.response.post.PostIsInUseResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;
 import java.util.UUID;

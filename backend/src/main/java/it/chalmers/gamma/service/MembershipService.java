@@ -199,6 +199,6 @@ public class MembershipService {
     }
 
     public boolean isPostUsed(UUID id) {
-        return !membershipRepository.findAllById_PostId(id).isEmpty();
+        return !this.membershipRepository.findAllById_PostId(id).isEmpty();
     }
 }
