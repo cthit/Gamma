@@ -25,6 +25,7 @@ public class MockITClientFactory {
         return this.clientService.createITClient(
                 client.getName(),
                 client.getDescription(),
-                client.getWebServerRedirectUri());
+                client.getWebServerRedirectUri(),
+                client.isAutoApprove());
     }
 }

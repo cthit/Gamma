@@ -14,6 +14,9 @@ public class AddITClientRequest {
     @NotNull
     private String name;
 
+    @NotNull
+    private boolean autoApprove;
+
     private Text description;
 
     public String getWebServerRedirectUri() {
@@ -40,6 +43,14 @@ public class AddITClientRequest {
         this.description = description;
     }
 
+    public boolean isAutoApprove() {
+        return this.autoApprove;
+    }
+
+    public void setAutoApprove(boolean autoApprove) {
+        this.autoApprove = autoApprove;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -49,21 +60,23 @@ public class AddITClientRequest {
             return false;
         }
         AddITClientRequest that = (AddITClientRequest) o;
-        return Objects.equals(this.webServerRedirectUri, that.webServerRedirectUri)
+        return this.autoApprove == that.autoApprove
+            && Objects.equals(this.webServerRedirectUri, that.webServerRedirectUri)
             && Objects.equals(this.name, that.name)
             && Objects.equals(this.description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.webServerRedirectUri, this.name, this.description);
+        return Objects.hash(this.webServerRedirectUri, this.name, this.autoApprove, this.description);
     }
 
     @Override
     public String toString() {
         return "AddITClientRequest{"
-            + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''
+            + "webServerRedirectUri='" + this.webServerRedirectUri + '\''
             + ", name='" + this.name + '\''
+            + ", autoApprove=" + this.autoApprove
             + ", description=" + this.description
             + '}';
     }

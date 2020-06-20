@@ -95,5 +95,4 @@ application:
   allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:3000}
   auth:
     accessTokenValidityTime: 3600
-    autoApprove: true
     refreshTokenValidityTime: 500000000

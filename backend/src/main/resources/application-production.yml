@@ -78,5 +78,4 @@ application:
   allowed-origin: ${CORS_ALLOWED_ORIGIN:https://gamma.chalmers.it}
   auth:
     accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
-    autoApprove: ${AUTH_AUTO_APPROVE:true}
     refreshTokenValidityTime: ${AUTH_REFRESH_TOKEN_VALIDITY:500000000}

@@ -39,7 +39,8 @@ public class ITClientAdminController {
         return new ClientAddedResponse(this.itClientService.createITClient(
                 request.getName(),
                 request.getDescription(),
-                request.getWebServerRedirectUri()
+                request.getWebServerRedirectUri(),
+                request.isAutoApprove()
         )
                 .getClientSecret()).toResponseObject();
     }

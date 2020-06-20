@@ -98,6 +98,15 @@ public class ITClientDTO implements ClientDetails {
         return this.clientId;
     }
 
+    public boolean isAutoApprove() {
+        return this.autoApprove;
+    }
+
+    @Override
+    public boolean isAutoApprove(String scope) {
+        return isAutoApprove();
+    }
+
     @Override
     @JsonIgnore
     public Set<String> getResourceIds() {
@@ -158,11 +167,6 @@ public class ITClientDTO implements ClientDetails {
     @Override
     public Integer getRefreshTokenValiditySeconds() {
         return this.refreshTokenValidity;
-    }
-
-    @Override
-    public boolean isAutoApprove(String scope) {
-        return this.autoApprove;
     }
 
     @Override
