@@ -69,6 +69,10 @@ public class PostService {
     }
 
     public void deletePost(UUID id) {
+        if (!this.postExists(id.toString())) {
+            throw new PostDoesNotExistResponse();
+        }
+
         this.repository.deleteById(id);
     }
 

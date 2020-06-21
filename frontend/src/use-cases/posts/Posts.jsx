@@ -158,6 +158,7 @@ const Posts = () => {
                 data[ENGLISH_LANGUAGE]
             }
             deleteButtonText={() => text.DeletePost}
+            canDelete={data => !data.usages || data.usages.length === 0}
             detailsTitle={() => text.Details}
             statusRenders={{
                 403: () => <InsufficientAccess />,

@@ -15,6 +15,7 @@ import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.response.membership.MembershipDoesNotExistResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -195,5 +196,9 @@ public class MembershipService {
         return this.membershipRepository.findById_ItUserAndId_FkitGroup(
                 this.dtoToEntityService.fromDTO(membershipDTO.getUser()),
                 this.fkitGroupService.fromDTO(membershipDTO.getFkitGroupDTO())).orElse(null);
+    }
+
+    public boolean isPostUsed(UUID id) {
+        return !this.membershipRepository.findAllById_PostId(id).isEmpty();
     }
 }
