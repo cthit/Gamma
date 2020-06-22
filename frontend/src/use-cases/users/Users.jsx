@@ -43,6 +43,13 @@ import {
 } from "./Users.options";
 import { GROUP_PRETTY_NAME } from "../../api/groups/props.groups.api";
 import InsufficientAccess from "../../common/views/insufficient-access";
+import styled from "styled-components";
+
+const UserImage = styled.img`
+    width: 250px;
+    max-height: 500px;
+    margin: auto;
+`;
 
 const Users = () => {
     const admin = useGammaIsAdmin();
@@ -124,6 +131,9 @@ const Users = () => {
             }
             toastCreateFailed={() => text.FailedCreatingUser}
             formInitialValues={initialValues()}
+            detailsRenderCardStart={data => (
+                <UserImage src={data.avatarUrl} alt={"Profile picture"} />
+            )}
             detailsRenderEnd={data => (
                 <>
                     <DisplayGroupsTable
