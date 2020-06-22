@@ -48,7 +48,6 @@ const AuthorityLevelCard = ({
                 <DigitButton
                     text={text.Delete}
                     onClick={() => {
-                        console.log("hmmm");
                         openDialog({
                             title: text.AreYouSure,
                             description: text.AreYouSureDeleteAuthorityLevel,
