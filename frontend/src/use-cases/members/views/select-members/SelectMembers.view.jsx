@@ -93,7 +93,7 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                     }}
                     search
                     titleText={text.UsersFor + group[GROUP_PRETTY_NAME]}
-                    searchText="Search for users"
+                    searchText={text.Search}
                     idProp="id"
                     startOrderBy={USER_NICK}
                     columnsOrder={[USER_FIRST_NAME, USER_NICK, USER_LAST_NAME]}
