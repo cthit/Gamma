@@ -39,7 +39,8 @@ const ActivationCodes = () => {
                 flex: "1",
                 startOrderByDirection: "asc",
                 size: { minWidth: "288px" },
-                padding: "0px"
+                padding: "0px",
+                searchText: text.Search
             }}
             keysText={keysText(text)}
             idProp={AC_CID}

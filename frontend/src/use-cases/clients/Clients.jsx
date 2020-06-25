@@ -97,7 +97,8 @@ const Clients = () => {
                 flex: "1",
                 startOrderByDirection: "asc",
                 size: { minWidth: "288px" },
-                padding: "0px"
+                padding: "0px",
+                searchText: text.Search
             }}
             idProp={CLIENT_ID}
             createTitle={text.CreateClient}

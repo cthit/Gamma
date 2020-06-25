@@ -83,7 +83,8 @@ const ApiKeys = () => {
                 flex: "1",
                 startOrderByDirection: "asc",
                 size: { minWidth: "288px" },
-                padding: "0px"
+                padding: "0px",
+                searchText: text.Search
             }}
             detailsButtonText={text.Details}
             dialogDeleteConfirm={data => text.Delete + " " + data[API_NAME]}

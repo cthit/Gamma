@@ -1,7 +1,9 @@
 import {
     DigitSelectMultipleTable,
     useDigitTranslations,
-    useDigitToast
+    useDigitToast,
+    DigitLoading,
+    DigitLayout
 } from "@cthit/react-digit-components";
 import React, { useCallback, useEffect, useState } from "react";
 import translations from "./Gdpr.translations.json";
@@ -59,7 +61,11 @@ const Gdpr = () => {
     }
 
     if (users == null) {
-        return null;
+        return (
+            <DigitLayout.Center size={{ height: "200px" }}>
+                <DigitLoading loading />
+            </DigitLayout.Center>
+        );
     }
 
     return (

@@ -63,5 +63,6 @@
     "Functionaries": ["Functionaries", "Funktionärer"],
     "Alumni": ["Alumni", "Pateter"],
     "SuperGroup": ["Super group", "Supergrupp"],
-    "Post": ["Post", "Post"]
+    "Post": ["Post", "Post"],
+    "Search": ["Search", "Sök"]
 }
