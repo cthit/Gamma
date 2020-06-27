@@ -18,7 +18,7 @@ spring:
           use_jdbc_metadata_defaults: false
   session:
     store-type: redis
-
+    
   redis:
     host: ${REDIS_HOST:localhost}
     password: ${REDIS_PASSWORD:password}
@@ -28,6 +28,8 @@ server:
   port: ${SERVER_PORT:9090}
   servlet:
     context-path: /api
+    session:
+      timeout: ${SESSION_TIMEOUT:-1}
 
 
 
