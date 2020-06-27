@@ -56,7 +56,8 @@ const Whitelist = () => {
                 flex: "1",
                 startOrderByDirection: "asc",
                 size: { minWidth: "288px" },
-                padding: "0px"
+                padding: "0px",
+                searchText: text.Search
             }}
             toastCreateSuccessful={data =>
                 data[WHITELIST_CID] + " " + text.WasCreatedSuccessfully

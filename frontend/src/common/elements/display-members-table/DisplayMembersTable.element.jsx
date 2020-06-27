@@ -54,7 +54,7 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px", title }) => {
                 return {
                     ...user,
                     postName: officialPostName + unofficialPostName,
-                    __link: "/users/" + user.id
+                    __link: user.id != null ? "/users/" + user.id : null
                 };
             })}
             emptyTableText={noUsersText || text.NoUsers}

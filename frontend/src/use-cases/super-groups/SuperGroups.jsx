@@ -51,7 +51,8 @@ const SuperGroups = () => {
                 flex: "1",
                 startOrderByDirection: "asc",
                 size: { minWidth: "288px" },
-                padding: "0px"
+                padding: "0px",
+                searchText: text.Search
             }}
             idProp={SG_ID}
             detailsRenderEnd={one => (

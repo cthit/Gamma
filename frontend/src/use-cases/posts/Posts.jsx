@@ -72,7 +72,8 @@ const Posts = () => {
                 flex: "1",
                 startOrderByDirection: "asc",
                 size: { minWidth: "288px" },
-                padding: "0px"
+                padding: "0px",
+                searchText: text.Search
             }}
             detailsButtonText={text.Details}
             deleteRequest={deletePost}
@@ -158,6 +159,7 @@ const Posts = () => {
                 data[ENGLISH_LANGUAGE]
             }
             deleteButtonText={() => text.DeletePost}
+            canDelete={data => !data.usages || data.usages.length === 0}
             detailsTitle={() => text.Details}
             statusRenders={{
                 403: () => <InsufficientAccess />,
