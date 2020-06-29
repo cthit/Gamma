@@ -88,7 +88,8 @@ dependencies {
             'commons-io:commons-io:2.6',
             'org.apache.httpcomponents:httpmime:4.5.12',
             'io.springfox:springfox-swagger-ui:2.9.2',
-            'io.springfox:springfox-swagger2:2.9.2'
+            'io.springfox:springfox-swagger2:2.9.2',
+            'org.springframework.boot:spring-boot-starter-actuator'
 
     )
 

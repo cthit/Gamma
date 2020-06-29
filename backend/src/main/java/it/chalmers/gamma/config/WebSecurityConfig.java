@@ -178,6 +178,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
 
             String[] permittedPaths = {
+                    "/actuator/health",
                     "/login",
                     "/oauth/authorize",
                     "/oauth/token",
