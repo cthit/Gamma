@@ -30,7 +30,7 @@ run
 If developing on the backend, we recomend not running the backend in the docker-compose file. There is a docker-compose file that sets up all microservice but the backend, to use this run: `docker-compose -f no_backend.docker-compose.ym up --build`
 then you will need to start the server, this is done by running the Java code in the backend, and is probably best done through an IDE.
 
-You'll need to run `docker-compose down` if you want to try the production build. Same if you're going from production to development.
+You'll need to run `docker-compose down` / `docker-compose -f no_backed.docker-compose.yml down` if you want to try the production build. Same if you're going from production to development.
 
 ## API Documentation
 
