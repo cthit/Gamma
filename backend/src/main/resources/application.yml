@@ -97,3 +97,8 @@ application:
     accessTokenValidityTime: 3600
     autoApprove: true
     refreshTokenValidityTime: 500000000
+
+management:
+  endpoints:
+    web:
+      base-path: /admin/actuator/
