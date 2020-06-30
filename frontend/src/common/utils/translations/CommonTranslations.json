@@ -64,5 +64,6 @@
     "Alumni": ["Alumni", "Pateter"],
     "SuperGroup": ["Super group", "Supergrupp"],
     "Post": ["Post", "Post"],
-    "Search": ["Search", "Sök"]
+    "Search": ["Search", "Sök"],
+    "PostEmail": ["Post email", "Post mail"]
 }
