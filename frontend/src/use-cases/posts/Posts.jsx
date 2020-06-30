@@ -32,7 +32,8 @@ import {
 import {
     POST_ENGLISH,
     POST_ID,
-    POST_SWEDISH
+    POST_SWEDISH,
+    EMAIL_PREFIX
 } from "../../api/posts/props.posts.api";
 
 const Posts = () => {
@@ -54,12 +55,14 @@ const Posts = () => {
             name={"posts"}
             updateRequest={(id, data) =>
                 editPost(id, {
-                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] }
+                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] },
+                    emailPrefix: data[EMAIL_PREFIX]
                 })
             }
             createRequest={data =>
                 addPost({
-                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] }
+                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] },
+                    emailPrefix: data[EMAIL_PREFIX]
                 })
             }
             readAllRequest={getPosts}
@@ -132,13 +135,13 @@ const Posts = () => {
                 text.WasUpdatedSuccessfully
             }
             toastUpdateFailed={data =>
-                text.PostDeletionFailed1 +
+                text.PostUpdateFailed1 +
                 " " +
                 data[SWEDISH_LANGUAGE] +
                 "/" +
                 data[ENGLISH_LANGUAGE] +
                 " " +
-                text.PostDeletionFailed2
+                text.PostUpdateFailed2
             }
             dialogDeleteCancel={() => text.Cancel}
             dialogDeleteConfirm={() => text.Delete}

@@ -26,25 +26,33 @@ public class PostService {
         this.repository = repository;
     }
 
-    public PostDTO addPost(UUID id, Text postName) {
-        Post post = new Post();
-        if (id != null) {
-            post.setId(id);
-        }
-        return savePost(post, postName);
-    }
-
     public PostDTO addPost(Text postName) {
-        return addPost(null, postName);
+        return this.repository.save(new Post(postName, null)).toDTO();
     }
 
-    public PostDTO editPost(PostDTO post, Text text) {
-        return savePost(this.getPost(post), text);
+    public PostDTO addPost(Text postName, String emailPrefix) {
+        return this.repository.save(new Post(postName, emailPrefix)).toDTO();
     }
 
-    private PostDTO savePost(Post post, Text postName) {
+    public PostDTO addPost(UUID id, Text postName, String emailPrefix) {
+        Post post = new Post(postName, emailPrefix);
+        post.setId(id);
+        return this.repository.save(post).toDTO();
+    }
+
+    public PostDTO editPost(PostDTO postDTO, Text postName) {
+        Post post = this.getPost(postDTO);
         post.setSVPostName(postName.getSv());
         post.setENPostName(postName.getEn());
+        post.setEmailPrefix("");
+        return this.repository.save(post).toDTO();
+    }
+
+    public PostDTO editPost(PostDTO postDTO, Text postName, String emailPrefix) {
+        Post post = this.getPost(postDTO);
+        post.setSVPostName(postName.getSv());
+        post.setENPostName(postName.getEn());
+        post.setEmailPrefix(emailPrefix);
         return this.repository.save(post).toDTO();
     }
 

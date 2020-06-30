@@ -8,7 +8,8 @@ import javax.validation.constraints.NotNull;
 public class AddPostRequest {
     @NotNull(message = "POST_CANNOT_BE_NULL")
     private Text post;
-    //TODO ADD LEVEL OF CLEARANCE OF SOMETHING
+
+    private String emailPrefix;
 
     public Text getPost() {
         return this.post;
@@ -16,6 +17,14 @@ public class AddPostRequest {
 
     public void setPost(Text post) {
         this.post = post;
+    }
+
+    public String getEmailPrefix() {
+        return this.emailPrefix;
+    }
+
+    public void setEmailPrefix(String emailPrefix) {
+        this.emailPrefix = emailPrefix;
     }
 
     @Override
@@ -27,18 +36,20 @@ public class AddPostRequest {
             return false;
         }
         AddPostRequest that = (AddPostRequest) o;
-        return this.post.equals(that.post);
+        return Objects.equals(this.post, that.post)
+            && Objects.equals(this.emailPrefix, that.emailPrefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.post);
+        return Objects.hash(this.post, this.emailPrefix);
     }
 
     @Override
     public String toString() {
         return "AddPostRequest{"
             + "post=" + this.post
+            + ", emailPrefix='" + this.emailPrefix + '\''
             + '}';
     }
 }
