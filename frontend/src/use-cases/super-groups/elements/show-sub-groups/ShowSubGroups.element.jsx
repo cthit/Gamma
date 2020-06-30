@@ -2,7 +2,7 @@ import React from "react";
 
 import { DigitText, useDigitTranslations } from "@cthit/react-digit-components";
 
-import translations from "./ShowSuperGroups.element.translations";
+import translations from "./ShowSubGroups.element.translations";
 import DisplayGroupsTable from "../../../../common/elements/display-groups-table/DisplayGroupsTable.element";
 
 const ShowSubGroups = ({ title, subGroups, margin }) => {
