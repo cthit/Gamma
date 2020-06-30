@@ -143,18 +143,14 @@ const Groups = () => {
             idProp={GROUP_ID}
             detailsRenderCardEnd={data =>
                 admin ? (
-                    <>
-                        <div style={{ marginTop: "8px" }} />
-                        <DigitLayout.Center>
-                            <DigitButton
-                                outlined
-                                text={text.EditMembers}
-                                onClick={() =>
-                                    history.push("/members/" + data.id)
-                                }
-                            />
-                        </DigitLayout.Center>
-                    </>
+                    <DigitButton
+                        alignSelf={"center"}
+                        size={{ width: "max-content" }}
+                        margin={{ top: "8px" }}
+                        outlined
+                        text={text.EditMembers}
+                        onClick={() => history.push("/members/" + data.id)}
+                    />
                 ) : null
             }
             detailsRenderEnd={data => (
@@ -163,6 +159,7 @@ const Groups = () => {
                         margin={{ top: "16px", right: "8px" }}
                         noUsersText={text.NoGroupMembers}
                         users={data[GROUP_MEMBERS]}
+                        group={data}
                     />
 
                     {data[GROUP_NO_ACCOUNT_MEMBERS].length > 0 && (

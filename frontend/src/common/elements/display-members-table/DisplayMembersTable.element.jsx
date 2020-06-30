@@ -23,12 +23,19 @@ function generateHeaderTexts(text) {
     headerTexts[USER_NICK] = text.Nick;
     headerTexts[USER_ACCEPTANCE_YEAR] = text.AcceptanceYear;
     headerTexts["postName"] = text.PostName;
+    headerTexts["postEmail"] = text.PostEmail;
     headerTexts["__link"] = text.Details;
 
     return headerTexts;
 }
 
-const DisplayMembersTable = ({ users, noUsersText, margin = "0px", title }) => {
+const DisplayMembersTable = ({
+    group,
+    users,
+    noUsersText,
+    margin = "0px",
+    title
+}) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
@@ -38,7 +45,10 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px", title }) => {
             searchText={text.SearchForUsers}
             idProp={USER_CID}
             startOrderBy={USER_FIRST_NAME}
-            columnsOrder={[USER_NICK, "postName"]}
+            columnsOrder={[
+                ...[USER_NICK, "postName"],
+                ...(group.active ? ["postEmail"] : [])
+            ]}
             headerTexts={generateHeaderTexts(text)}
             data={users.map(user => {
                 const officialPostName =
@@ -51,9 +61,20 @@ const DisplayMembersTable = ({ users, noUsersText, margin = "0px", title }) => {
                         ? ""
                         : " - " + user.unofficialPostName;
 
+                var postEmail;
+
+                if (group.active && user.post.emailPrefix) {
+                    postEmail =
+                        user.post.emailPrefix +
+                        "." +
+                        group.superGroupName +
+                        "@chalmers.it";
+                }
+
                 return {
                     ...user,
                     postName: officialPostName + unofficialPostName,
+                    postEmail,
                     __link: user.id != null ? "/users/" + user.id : null
                 };
             })}
