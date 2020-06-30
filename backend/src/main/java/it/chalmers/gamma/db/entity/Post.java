@@ -32,8 +32,13 @@ public class Post {
 
     public Post() {
         this.postName = new Text();
-        this.id = UUID.randomUUID();
         this.emailPrefix = "";
+    }
+
+    public Post(Text postName, String emailPrefix) {
+        this.postName = postName;
+        this.id = UUID.randomUUID();
+        this.emailPrefix = emailPrefix;
     }
 
     public UUID getId() {
@@ -67,7 +72,7 @@ public class Post {
     }
 
     public void setEmailPrefix(String emailPrefix) {
-        this.emailPrefix = emailPrefix.toLowerCase();
+        this.emailPrefix = emailPrefix == null ? null : emailPrefix.toLowerCase();
     }
 
     public PostDTO toDTO() {
@@ -84,19 +89,21 @@ public class Post {
         }
         Post post = (Post) o;
         return Objects.equals(this.id, post.id)
-            && Objects.equals(this.postName, post.postName);
+            && Objects.equals(this.postName, post.postName)
+            && Objects.equals(this.emailPrefix, post.emailPrefix);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.postName);
+        return Objects.hash(this.id, this.postName, this.emailPrefix);
     }
 
     @Override
     public String toString() {
         return "Post{"
             + "id=" + this.id
-            + ", postName='" + this.postName + '\''
+            + ", postName=" + this.postName
+            + ", emailPrefix='" + this.emailPrefix + '\''
             + '}';
     }
 }

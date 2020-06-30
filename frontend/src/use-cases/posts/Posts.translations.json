@@ -25,5 +25,6 @@
         "Någonting gick fel när posten"
     ],
     "PostUpdateFailed2": ["", "försökte uppdateras"],
-    "DeletePost": ["Delete post", "Radera post"]
+    "DeletePost": ["Delete post", "Radera post"],
+    "EmailPrefix": ["Email prefix", "Mail prefix"]
 }

@@ -4,7 +4,11 @@ import {
     ENGLISH_LANGUAGE,
     SWEDISH_LANGUAGE
 } from "../../api/utils/commonProps";
-import { POST_ENGLISH, POST_SWEDISH } from "../../api/posts/props.posts.api";
+import {
+    EMAIL_PREFIX,
+    POST_ENGLISH,
+    POST_SWEDISH
+} from "../../api/posts/props.posts.api";
 
 export const validationSchema = text => {
     const schema = {};
@@ -15,6 +19,7 @@ export const validationSchema = text => {
     schema[POST_ENGLISH] = yup
         .string()
         .required(text.EnglishInput + text.IsRequired);
+    schema[EMAIL_PREFIX] = yup.string();
 
     return yup.object().shape(schema);
 };
@@ -24,6 +29,7 @@ export const initialValues = () => {
 
     output[POST_SWEDISH] = "";
     output[POST_ENGLISH] = "";
+    output[EMAIL_PREFIX] = "";
 
     return output;
 };
@@ -49,6 +55,15 @@ export const keysComponentData = text => {
         }
     };
 
+    componentData[EMAIL_PREFIX] = {
+        component: DigitTextField,
+        componentProps: {
+            upperLabel: text.EmailPrefix,
+            outlined: true,
+            maxLength: 20
+        }
+    };
+
     return componentData;
 };
 
@@ -57,8 +72,9 @@ export const keysText = text => {
 
     keysText[POST_SWEDISH] = text.Swedish;
     keysText[POST_ENGLISH] = text.English;
+    keysText[EMAIL_PREFIX] = text.EmailPrefix;
 
     return keysText;
 };
 
-export const keysOrder = () => [POST_SWEDISH, POST_ENGLISH];
+export const keysOrder = () => [POST_SWEDISH, POST_ENGLISH, EMAIL_PREFIX];

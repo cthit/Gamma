@@ -61,7 +61,7 @@ public final class GroupPostAdminController {
         if (this.postService.postExists(request.getPost().getSv())) {
             throw new PostAlreadyExistsResponse();
         }
-        this.postService.addPost(request.getPost());
+        this.postService.addPost(request.getPost(), request.getEmailPrefix());
         return new PostCreatedResponse();
     }
 
@@ -77,7 +77,7 @@ public final class GroupPostAdminController {
             @RequestBody AddPostRequest request,
             @PathVariable("id") String id) {
         PostDTO post = this.postService.getPostDTO(id);
-        this.postService.editPost(post, request.getPost());
+        this.postService.editPost(post, request.getPost(), request.getEmailPrefix());
         return new PostEditedResponse();
     }
 

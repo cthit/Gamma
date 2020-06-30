@@ -16,7 +16,8 @@ export function getGroup(groupId) {
             descriptionSv: input.data.description.sv,
             descriptionEn: input.data.description.en,
             superGroup: input.data.superGroup.id,
-            superGroupPrettyName: input.data.superGroup.prettyName
+            superGroupPrettyName: input.data.superGroup.prettyName,
+            superGroupName: input.data.superGroup.name
         }
     }));
 }

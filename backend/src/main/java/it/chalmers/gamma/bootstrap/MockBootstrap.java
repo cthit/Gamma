@@ -96,7 +96,8 @@ public class MockBootstrap {
         mockData.getPosts().forEach(mockPost -> {
             PostDTO post = this.helper.getPostService().addPost(
                     mockPost.getId(),
-                    mockPost.getPostName()
+                    mockPost.getPostName(),
+                    ""
             );
 
             posts.put(post.getId(), post);
