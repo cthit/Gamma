@@ -7,7 +7,9 @@ import ProvidersForApp from "./app/ProvidersForApp";
 
 const Index = () => (
     <ProvidersForApp>
-        <App />
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>
     </ProvidersForApp>
 );
 

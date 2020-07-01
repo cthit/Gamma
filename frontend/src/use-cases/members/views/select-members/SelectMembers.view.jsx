@@ -19,12 +19,21 @@ import {
 } from "../../../../api/users/props.users.api";
 import styled from "styled-components";
 
-const CustomRow = styled.div`
-    display: flex;
-    flex-direction: row;
+const Table = styled.div`
+    display: grid;
+    grid-template-columns: min-content auto;
+    grid-auto-rows: min-content;
+    grid-gap: 1rem;
 
     @media (max-width: 600px) {
-        flex-direction: column;
+        grid-template-columns: auto;
+    }
+`;
+
+const SpannedCard = styled(DigitDesign.Card)`
+    @media (min-width: 600px) {
+        grid-column-start: 1;
+        grid-column-end: 3;
     }
 `;
 
@@ -51,8 +60,8 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
     );
 
     return (
-        <DigitLayout.Column>
-            <DigitDesign.Card margin={{ bottom: "8px" }}>
+        <Table>
+            <SpannedCard size={{ minHeight: "min-content" }}>
                 <DigitDesign.CardBody>
                     <DigitLayout.Row
                         justifyContent={"space-between"}
@@ -75,33 +84,32 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                         />
                     </DigitLayout.Row>
                 </DigitDesign.CardBody>
-            </DigitDesign.Card>
-            <CustomRow>
-                <UsersInGroupChanges
-                    currentMembers={group.groupMembers}
-                    selectedMembers={selectedMemberIds.map(memberId =>
-                        _.find(users, { id: memberId })
-                    )}
-                />
-                <DigitSelectMultipleTable
-                    margin={"4px"}
-                    disableSelectAll
-                    flex={"2"}
-                    value={selectedMemberIds}
-                    onChange={newSelected => {
-                        setSelectedMemberIds(newSelected);
-                    }}
-                    search
-                    titleText={text.UsersFor + group[GROUP_PRETTY_NAME]}
-                    searchText={text.Search}
-                    idProp="id"
-                    startOrderBy={USER_NICK}
-                    columnsOrder={[USER_FIRST_NAME, USER_NICK, USER_LAST_NAME]}
-                    headerTexts={generateHeaderTexts(text)}
-                    data={users}
-                />
-            </CustomRow>
-        </DigitLayout.Column>
+            </SpannedCard>
+            <UsersInGroupChanges
+                currentMembers={group.groupMembers}
+                selectedMembers={selectedMemberIds.map(memberId =>
+                    _.find(users, { id: memberId })
+                )}
+            />
+            <DigitSelectMultipleTable
+                size={{ minWidth: "0" }}
+                margin={"0"}
+                disableSelectAll
+                flex={"2"}
+                value={selectedMemberIds}
+                onChange={newSelected => {
+                    setSelectedMemberIds(newSelected);
+                }}
+                search
+                titleText={text.UsersFor + group[GROUP_PRETTY_NAME]}
+                searchText={text.Search}
+                idProp="id"
+                startOrderBy={USER_NICK}
+                columnsOrder={[USER_FIRST_NAME, USER_NICK, USER_LAST_NAME]}
+                headerTexts={generateHeaderTexts(text)}
+                data={users}
+            />
+        </Table>
     );
 };
 

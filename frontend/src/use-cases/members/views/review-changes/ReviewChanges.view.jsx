@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Save from "@material-ui/icons/Save";
 import {
     DigitLayout,
@@ -96,11 +96,21 @@ const ReviewChanges = ({
     const [text] = useDigitTranslations(translations);
     const history = useHistory();
 
+    useEffect(() => {
+        if (newMembersData == null) {
+            history.push("/members/" + groupId);
+        }
+    }, [newMembersData, history, groupId]);
+
     return (
         <>
-            <DigitDesign.Card margin={{ bottom: "16px" }}>
+            <DigitDesign.Card
+                size={{ minHeight: "min-content" }}
+                margin={{ bottom: "8px" }}
+            >
                 <DigitDesign.CardBody>
                     <DigitLayout.Row
+                        margin={"0"}
                         justifyContent={"space-between"}
                         alignItems={"center"}
                         flexWrap={"wrap"}
@@ -108,7 +118,7 @@ const ReviewChanges = ({
                         <DigitText.Heading5
                             text={text.NewMembersForGroup + " " + groupName}
                         />
-                        <DigitLayout.Row>
+                        <DigitLayout.Row margin={"0"}>
                             <DigitButton
                                 outlined
                                 text={text.Back}
