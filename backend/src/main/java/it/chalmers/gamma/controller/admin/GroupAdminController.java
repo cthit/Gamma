@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.requests.EditGroupRequest;
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
@@ -112,7 +113,7 @@ public final class GroupAdminController {
 
     @PutMapping("/{id}")
     public GroupEditedResponse editGroup(
-            @RequestBody CreateGroupRequest request,
+            @RequestBody EditGroupRequest request,
             @PathVariable("id") String id) {
         if (!this.fkitGroupService.groupExists(id)) {      // TODO move to service?
             throw new GroupDoesNotExistResponse();
@@ -153,6 +154,20 @@ public final class GroupAdminController {
             throw new FileNotSavedException();
         }
         return new GroupEditedResponse();
+    }
+
+    private FKITGroupDTO requestToDTO(EditGroupRequest request) {
+        return new FKITGroupDTO(
+                request.getBecomesActive(),
+                request.getBecomesInactive(),
+                request.getDescription(),
+                null,
+                request.getFunction(),
+                null,
+                request.getPrettyName(),
+                request.getAvatarURL(),
+                this.fkitSuperGroupService.getGroupDTO(request.getSuperGroup())
+        );
     }
 
     private FKITGroupDTO requestToDTO(CreateGroupRequest request) {

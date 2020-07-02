@@ -102,3 +102,5 @@ export const keysText = text => {
 };
 
 export const keysOrder = () => [SG_NAME, SG_PRETTY_NAME, SG_TYPE, SG_EMAIL];
+
+export const updateKeysOrder = () => [SG_PRETTY_NAME];

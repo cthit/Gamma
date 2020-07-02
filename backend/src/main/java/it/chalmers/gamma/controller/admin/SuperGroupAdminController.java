@@ -2,6 +2,7 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.requests.EditSuperGroupRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.group.GroupDeletedResponse;
@@ -69,12 +70,22 @@ public class SuperGroupAdminController {
 
     @PutMapping("/{id}")
     public GroupEditedResponse updateSuperGroup(@PathVariable("id") String id,
-                                                   @RequestBody CreateSuperGroupRequest request) {
+                                                   @RequestBody EditSuperGroupRequest request) {
         if (!this.fkitSuperGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
+
         this.fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), requestToDTO(request));
         return new GroupEditedResponse();
+    }
+
+    private FKITSuperGroupDTO requestToDTO(EditSuperGroupRequest request) {
+        return new FKITSuperGroupDTO(
+                null,
+                request.getPrettyName(),
+                null,
+                null
+        );
     }
 
     private FKITSuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {

@@ -19,6 +19,7 @@ import {
     keysComponentData,
     keysOrder,
     keysText,
+    updateKeysOrder,
     validationSchema
 } from "./SuperGroups.options";
 import InsufficientAccess from "../../common/views/insufficient-access";
@@ -31,6 +32,7 @@ const SuperGroups = () => {
     return (
         <DigitCRUD
             keysOrder={keysOrder()}
+            updateKeysOrder={updateKeysOrder()}
             keysText={keysText(text)}
             formInitialValues={initialValues()}
             formComponentData={keysComponentData(text)}

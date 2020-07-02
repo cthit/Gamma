@@ -219,7 +219,6 @@ export const readAllKeysOrder = () => [
 
 export const updateKeysOrder = () => [
     GROUP_PRETTY_NAME,
-    GROUP_EMAIL,
     GROUP_DESCRIPTION_SV,
     GROUP_DESCRIPTION_EN,
     GROUP_FUNCTION_SV,
