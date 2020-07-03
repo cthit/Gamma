@@ -4,7 +4,7 @@ COPY package.json yarn.lock ./
 RUN yarn --production --frozen-lockfile --network-timeout 10000000
 COPY src src
 COPY public public
-ARG REACT_APP_BACKEND_URL
+ARG REACT_APP_BACKEND_URL=https://gamma.chalmers.it/api
 ENV REACT_APP_BACKEND_URL $REACT_APP_BACKEND_URL
 RUN yarn build
 FROM nginx:1.16.0-alpine
