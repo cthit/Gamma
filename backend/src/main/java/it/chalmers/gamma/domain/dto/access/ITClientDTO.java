@@ -132,8 +132,7 @@ public class ITClientDTO implements ClientDetails {
     @Override
     public Set<String> getScope() {
         Set<String> scopes = new HashSet<>();
-        scopes.add("read");
-        scopes.add("write");
+        scopes.add("access");
         return scopes;
     }
 

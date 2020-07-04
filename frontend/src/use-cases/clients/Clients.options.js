@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import {
-    DigitSwitch,
+    DigitCheckbox,
     DigitTextArea,
     DigitTextField
 } from "@cthit/react-digit-components";
@@ -84,7 +84,7 @@ export const keysComponentData = text => {
     };
 
     keysComponentData[CLIENT_AUTO_APPROVE] = {
-        component: DigitSwitch,
+        component: DigitCheckbox,
         componentProps: {
             primary: true,
             label: text.AutoApprove
