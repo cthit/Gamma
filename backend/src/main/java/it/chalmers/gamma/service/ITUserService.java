@@ -154,7 +154,7 @@ public class ITUserService implements UserDetailsService {
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
     }
 
-    private ITUser getITUser(ITUserDTO userDTO) {
+    ITUser getITUser(ITUserDTO userDTO) {
         return this.itUserRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
     }
