@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
     DigitStepper,
     DigitLayout,
-    useDigitTranslations
+    useDigitTranslations,
+    DigitLoading
 } from "@cthit/react-digit-components";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { GROUP_NAME } from "../../api/groups/props.groups.api";
@@ -45,38 +46,38 @@ const Members = () => {
         }
     }, [admin, groupId]);
 
-    if (!admin) {
-        return <InsufficientAccess />;
-    }
-
-    var step = 0; //Ends with members
-
     const route = location.pathname;
+    const step = route.endsWith("/posts")
+        ? 1
+        : route.endsWith("/review")
+        ? 2
+        : 0; //Ends with members
+
+    useEffect(() => {
+        //turn into effect instead
+        if (step > 0 && selectedMemberIds == null) {
+            history.push("/members/" + groupId);
+        }
+    }, [step, selectedMemberIds, groupId, history]);
 
     const onMembersSelected = selectedMembers => {
         setSelectedMemberIds(selectedMembers);
         history.push("/members/" + groupId + "/posts");
     };
 
-    if (route.endsWith("/posts")) {
-        step = 1;
-    } else if (route.endsWith("/review")) {
-        step = 2;
+    if (!admin) {
+        return <InsufficientAccess />;
     }
 
     if (group == null || users == null || posts == null) {
-        return null;
-    }
-
-    //turn into effect instead
-    if (step > 0 && selectedMemberIds == null) {
-        history.push("/members/" + groupId);
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (
         <DigitLayout.Column flex={"1"}>
             <DigitStepper
+                size={{ minHeight: "min-content" }}
+                padding={"0"}
                 activeStep={step}
                 steps={[
                     { text: text.SelectMembers },
@@ -126,6 +127,7 @@ const Members = () => {
                             newMembersData={newMembersData}
                             groupId={groupId}
                             onFinished={() => {
+                                history.push("/groups");
                                 history.push("/groups/" + group.id);
                             }}
                         />
