@@ -156,7 +156,13 @@ const Groups = () => {
             detailsRenderEnd={data => (
                 <DigitLayout.Row flexWrap={"wrap"} justifyContent={"center"}>
                     <DisplayMembersTable
-                        margin={{ top: "16px", right: "8px" }}
+                        margin={{
+                            top: "16px",
+                            right:
+                                data[GROUP_NO_ACCOUNT_MEMBERS].length > 0
+                                    ? "8px"
+                                    : "0px"
+                        }}
                         noUsersText={text.NoGroupMembers}
                         users={data[GROUP_MEMBERS]}
                         group={data}

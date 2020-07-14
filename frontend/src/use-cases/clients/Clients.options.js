@@ -115,3 +115,5 @@ export const keysOrder = () => [
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_AUTO_APPROVE
 ];
+
+export const readAllKeysOrder = () => [CLIENT_NAME, CLIENT_REDIRECT];

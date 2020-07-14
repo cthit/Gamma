@@ -3,11 +3,14 @@ package it.chalmers.gamma.service;
 import it.chalmers.gamma.db.entity.ITUserApproval;
 import it.chalmers.gamma.db.entity.pk.ITUserApprovalPK;
 import it.chalmers.gamma.db.repository.ITUserApprovalRepository;
+import it.chalmers.gamma.domain.dto.user.ITUserApprovalDTO;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
@@ -78,6 +81,20 @@ public class ITUserApprovalService implements ApprovalStore {
         itUserApproval.setId(itUserApprovalPK);
 
         this.itUserApprovalRepository.save(itUserApproval);
+    }
+
+    public List<ITUserApprovalDTO> getApprovalsByClientId(String clientId) {
+        return this.itUserApprovalRepository.findAllById_ItClient_ClientIdContaining(clientId)
+                .stream()
+                .map(ITUserApproval::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ITUserApprovalDTO> getApprovalsByCid(String cid) {
+        return this.itUserApprovalRepository.findAllById_ItUser_CidContaining(cid)
+                .stream()
+                .map(ITUserApproval::toDTO)
+                .collect(Collectors.toList());
     }
 
 }

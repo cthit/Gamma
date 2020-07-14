@@ -23,12 +23,16 @@ public class ITClientDTO implements ClientDetails {
     @JsonIgnore
     private final String clientSecret;
     private final String webServerRedirectUri;
+    @JsonIgnore
     private final int accessTokenValidity;
+    @JsonIgnore
     private final int refreshTokenValidity;
     private final boolean autoApprove;
     private final String name;
     private final Text description;
+    @JsonIgnore
     private final Instant createdAt;
+    @JsonIgnore
     private final Instant lastModifiedAt;
 
 
@@ -38,7 +42,7 @@ public class ITClientDTO implements ClientDetails {
                        String webServerRedirectUri,
                        Integer accessTokenValidity,
                        Integer refreshTokenValidity,
-                       Boolean autoApprove,
+                       boolean autoApprove,
                        String name,
                        Text description,
                        Instant createdAt,
