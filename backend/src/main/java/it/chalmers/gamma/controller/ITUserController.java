@@ -138,8 +138,12 @@ public final class ITUserController {
 
     @GetMapping("/minified")
     public GetAllITUsersMinifiedResponseObject getAllUserMini() {
-        List<GetITUserMinifiedResponse> itUsers = this.itUserService.loadAllUsers()
-                .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
+        List<GetITUserMinifiedResponse> itUsers = this.itUserService
+                .loadAllUsers()
+                .stream()
+                .map(ITUserRestrictedDTO::new)
+                .map(GetITUserMinifiedResponse::new)
+                .collect(Collectors.toList());
         return new GetAllITUsersMinifiedResponse(itUsers).toResponseObject();
     }
 

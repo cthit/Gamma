@@ -2,21 +2,22 @@ package it.chalmers.gamma.response.user;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.dto.user.ITUserRestrictedDTO;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetITUserMinifiedResponse {
 
     @JsonUnwrapped
-    private final ITUserDTO user;
+    private final ITUserRestrictedDTO user;
 
-    public GetITUserMinifiedResponse(ITUserDTO user) {
+    public GetITUserMinifiedResponse(ITUserRestrictedDTO user) {
         this.user = user;
     }
 
     @JsonUnwrapped
-    public ITUserDTO getUser() {
+    public ITUserRestrictedDTO getUser() {
         return this.user;
     }
 
