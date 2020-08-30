@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
 import it.chalmers.gamma.response.group.GetAllFKITGroupsMinifiedResponse;
@@ -68,8 +69,11 @@ public class SuperGroupController {
         List<GetFKITGroupResponse> groups = this.fkitGroupService.getActiveGroups(superGroup)
                 .stream().map(g -> new GetFKITGroupResponse(
                         g,
-                        this.membershipService.getMembershipsInGroup(g)))
-                .collect(Collectors.toList());
+                        this.membershipService.getMembershipsInGroup(g)
+                                .stream()
+                                .map(RestrictedMembershipDTO::new)
+                                .collect(Collectors.toList())
+            )).collect(Collectors.toList());
         return new GetActiveFKITGroupsResponse(groups).toResponseObject();
     }
 }

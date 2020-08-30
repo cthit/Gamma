@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.dto.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.requests.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
@@ -106,7 +107,11 @@ public final class GroupPostAdminController {
         List<FKITGroupDTO> groups = this.membershipService.getGroupsWithPost(post);
         List<GetFKITGroupResponse> groupResponses = groups.stream()
                 .map(g -> new GetFKITGroupResponse(g,
-                        this.membershipService.getUserDTOByGroupAndPost(g, post)))
+                        this.membershipService.getUserDTOByGroupAndPost(g, post)
+                                .stream()
+                                .map(RestrictedMembershipDTO::new)
+                                .collect(Collectors.toList())
+                    ))
                 .collect(Collectors.toList());
         return new GetPostUsagesResponse(groupResponses).toResponseObject();
     }

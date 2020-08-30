@@ -4,6 +4,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.membership.NoAccountMembershipDTO;
+import it.chalmers.gamma.domain.dto.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.response.group.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
 import it.chalmers.gamma.response.group.GetAllFKITGroupsMinifiedResponse;
@@ -48,7 +49,12 @@ public final class FKITGroupController {
         List<MembershipDTO> minifiedMembers = this.membershipService.getMembershipsInGroup(group);
         List<NoAccountMembershipDTO> noAccountMemberships = this.membershipService.getNoAccountMembership(group);
         //List<WebsiteDTO> websites = this.getWebsiteDTO(group);
-        return new GetFKITGroupResponse(group, minifiedMembers, noAccountMemberships, null).toResponseObject();
+        return new GetFKITGroupResponse(
+                group,
+                toRestrictedMembershipDTO(minifiedMembers),
+                noAccountMemberships,
+                null)
+            .toResponseObject();
     }
 
     @GetMapping("/minified")
@@ -69,7 +75,7 @@ public final class FKITGroupController {
         List<GetFKITGroupResponse> responses = this.fkitGroupService.getGroups()
                 .stream().map(g -> new GetFKITGroupResponse(
                         g,
-                        this.membershipService.getMembershipsInGroup(g),
+                        toRestrictedMembershipDTO(this.membershipService.getMembershipsInGroup(g)),
                         this.membershipService.getNoAccountMembership(g),
                         null
                 )).collect(Collectors.toList());
@@ -84,11 +90,18 @@ public final class FKITGroupController {
 
         List<GetFKITGroupResponse> groupResponses = groups.stream().map(g -> new GetFKITGroupResponse(
                 g,
-                this.membershipService.getMembershipsInGroup(g),
+                toRestrictedMembershipDTO(this.membershipService.getMembershipsInGroup(g)),
                 this.membershipService.getNoAccountMembership(g),
                 null
         )).collect(Collectors.toList());
         return new GetActiveFKITGroupsResponse(groupResponses).toResponseObject();
+    }
+
+    private List<RestrictedMembershipDTO> toRestrictedMembershipDTO(List<MembershipDTO> membershipList) {
+        return membershipList
+                .stream()
+                .map(RestrictedMembershipDTO::new)
+                .collect(Collectors.toList());
     }
 
 }
