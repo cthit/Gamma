@@ -32,7 +32,7 @@ export const createValidationSchema = text => {
         .number()
         .required(text.AcceptanceYear + text.IsRequired);
 
-    schema[USER_PHONE] = yup.string();
+    schema[USER_PHONE] = yup.string().nullable();
 
     schema[USER_AGREEMENT] = yup
         .boolean()
@@ -69,7 +69,7 @@ export const updateValidationSchema = text => {
         .number()
         .required(text.AcceptanceYear + text.IsRequired);
 
-    schema[USER_PHONE] = yup.string();
+    schema[USER_PHONE] = yup.string().nullable();
     return yup.object().shape(schema);
 };
 

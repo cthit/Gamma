@@ -22,7 +22,7 @@ export const validationSchema = text => {
     schema[USER_NICK] = yup.string().required(text.FieldRequired);
     schema[USER_EMAIL] = yup.string().required(text.FieldRequired);
     schema[USER_ACCEPTANCE_YEAR] = yup.number().required(text.FieldRequired);
-    schema[USER_PHONE] = yup.string();
+    schema[USER_PHONE] = yup.string().nullable();
 
     return yup.object().shape(schema);
 };
