@@ -3,9 +3,8 @@ package it.chalmers.gamma.controller.admin;
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.user.GDPRStatusEditedResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse;
-import it.chalmers.gamma.response.user.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
-import it.chalmers.gamma.response.user.GetITUserMinifiedResponse;
+import it.chalmers.gamma.response.user.GetAllITUsersResponse;
+import it.chalmers.gamma.response.user.GetITUserResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
@@ -49,9 +48,9 @@ public class GDPRAdminController {
     }
 
     @GetMapping("/minified")
-    public GetAllITUsersMinifiedResponseObject getAllUserMini() {
-        List<GetITUserMinifiedResponse> userResponses = this.itUserService.loadAllUsers()
-                .stream().map(GetITUserMinifiedResponse::new).collect(Collectors.toList());
-        return new GetAllITUsersMinifiedResponse(userResponses).toResponseObject();
+    public GetAllITUsersResponse getAllUserMini() {
+        List<GetITUserResponse> userResponses = this.itUserService.loadAllUsers()
+                .stream().map(GetITUserResponse::new).collect(Collectors.toList());
+        return new GetAllITUsersResponse(userResponses);
     }
 }
