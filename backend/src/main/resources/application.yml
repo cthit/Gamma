@@ -34,13 +34,6 @@ spring:
     servlet:
       content-type: text/html
 
-  session:
-    store-type: redis
-
-  redis:
-    host: ${REDIS_HOST:0.0.0.0}
-    password: ${REDIS_PASSWORD:}
-    port: ${REDIS_PORT:6379}
 
 server:
   port: ${SERVER_PORT:8081}
@@ -67,6 +60,10 @@ security:
       expire-length: 2629746 #One Month. Subject to change.
       issuer: http://localhost:8081
       audience: http://localhost:3000
+redis:
+  host: ${REDIS_HOST:0.0.0.0}
+  password: ${REDIS_PASSWORD:}
+  port: ${REDIS_PORT:6379}
 
 application:
   base-uri: http://localhost:8081/api/
