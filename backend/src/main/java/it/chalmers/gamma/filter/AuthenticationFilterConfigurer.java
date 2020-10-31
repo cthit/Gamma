@@ -49,7 +49,7 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
                 this.apiKeyService,
                 this.itUserService,
-                sessionService
+                this.sessionService
         );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.itUserService,

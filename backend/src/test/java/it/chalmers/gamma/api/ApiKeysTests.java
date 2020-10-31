@@ -1,18 +1,11 @@
 package it.chalmers.gamma.api;
 
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.factories.MockApiKeyFactory;
-import it.chalmers.gamma.factories.MockITUserFactory;
-import it.chalmers.gamma.factories.MockWhitelistFactory;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

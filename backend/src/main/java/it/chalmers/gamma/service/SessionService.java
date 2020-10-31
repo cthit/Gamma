@@ -32,17 +32,17 @@ public class SessionService {
     }
 
     public void removeSessionFromRedis(HttpSession session) {
-        String prefix1 = "spring:session:sessions:";
-        String prefix2 = "spring:session:sessions:expires:";
-        RedisConnectionFactory connectionFactory = redisTemplate.getConnectionFactory();
+        RedisConnectionFactory connectionFactory = this.redisTemplate.getConnectionFactory();
         if (connectionFactory == null) {
             LOGGER.error("Connection to Redis Failed");
             throw new RedisConnectionException("Redis connection failed");
         }
+        String prefix1 = "spring:session:sessions:";
+        String prefix2 = "spring:session:sessions:expires:";
         RedisConnection connection = connectionFactory.getConnection();
         String sessionsKey = prefix1 + session.getId();
         String expiresKey = prefix2 + session.getId();
         connection.del(expiresKey.getBytes());
-        connection.del((sessionsKey).getBytes());
+        connection.del(sessionsKey.getBytes());
     }
 }
