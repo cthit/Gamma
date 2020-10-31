@@ -10,6 +10,7 @@ import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.ITUserService;
 
 import it.chalmers.gamma.service.PasswordResetService;
+import it.chalmers.gamma.service.SessionService;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
     private final LoginRedirectHandler loginRedirectHandler;
+    private final SessionService sessionService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
@@ -62,7 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
                              FKITGroupService fkitGroupService,
-                             LoginRedirectHandler loginRedirectHandler) {
+                             LoginRedirectHandler loginRedirectHandler,
+                             SessionService sessionService) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.apiKeyService = apiKeyService;
@@ -70,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.passwordEncoder = passwordEncoder;
         this.fkitGroupService = fkitGroupService;
         this.loginRedirectHandler = loginRedirectHandler;
+        this.sessionService = sessionService;
     }
 
     @Override
@@ -144,6 +148,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.issuer,
                             this.apiKeyService,
                             this.passwordResetService,
+                            this.sessionService,
                             this.baseFrontendUrl
                     )
             );

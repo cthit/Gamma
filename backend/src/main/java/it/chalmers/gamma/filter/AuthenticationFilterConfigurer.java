@@ -4,6 +4,7 @@ import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.ITUserService;
 
 import it.chalmers.gamma.service.PasswordResetService;
+import it.chalmers.gamma.service.SessionService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -19,6 +20,7 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
     private final ITUserService itUserService;
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
+    private final SessionService sessionService;
 
     public AuthenticationFilterConfigurer(
             ITUserService itUserService,
@@ -26,6 +28,7 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
             String issuer,
             ApiKeyService apiKeyService,
             PasswordResetService passwordResetService,
+            SessionService sessionService,
             String baseFrontendUrl) {
         this.itUserService = itUserService;
         this.secretKey = secretKey;
@@ -33,6 +36,7 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.baseFrontendUrl = baseFrontendUrl;
+        this.sessionService = sessionService;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
         );
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
                 this.apiKeyService,
-                this.itUserService
+                this.itUserService,
+                sessionService
         );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.itUserService,
