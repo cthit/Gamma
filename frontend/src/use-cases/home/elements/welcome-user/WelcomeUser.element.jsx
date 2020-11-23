@@ -4,14 +4,14 @@ import translations from "./WelcomeUser.element.translations.json";
 
 import { DigitText, useDigitTranslations } from "@cthit/react-digit-components";
 
-import { USER_FIRST_NAME } from "../../../../api/users/props.users.api";
+import { USER_NICK } from "../../../../api/users/props.users.api";
 
 const WelcomeUser = ({ user }) => {
     const [text] = useDigitTranslations(translations);
     return (
         <>
             <DigitText.Heading2
-                text={text.Hi + " " + user[USER_FIRST_NAME] + "!"}
+                text={text.Hi + " " + user[USER_NICK] + "!"}
             />
             <DigitText.Heading5 text={text.WelcomeToIT} />
         </>
