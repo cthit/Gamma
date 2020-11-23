@@ -14,10 +14,6 @@ const GammaUserSingletonProvider = ({ children }) => {
                 getRequest("/users/me", null, redirect)
                     .then(response => {
                         const user = response.data;
-                        if (user.phone == null) {
-                            //since phone isn't required. :(
-                            user.phone = "";
-                        }
                         setUser(user);
                         setStatus([false, false]);
                         resolve(response);
