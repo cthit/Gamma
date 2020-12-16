@@ -113,27 +113,29 @@ repositories {
 }
 
 checkstyle {
-    toolVersion "8.11"
-    ignoreFailures false
-    maxWarnings 0
+    toolVersion = "8.11"
+    ignoreFailures = false
+    maxWarnings = 0
     configFile = project(":").file("config/checkstyle/checkstyle.xml")
     configProperties = ["suppressionFile": project(":").file("config/checkstyle/suppressions.xml")]
 }
 
 pmd {
-    toolVersion "6.21.0"
-    consoleOutput true
-    ignoreFailures false
-    ruleSetFiles = files("./config/pmd/ruleset.xml")
+    toolVersion = "6.21.0"
+    consoleOutput = false
+    ignoreFailures = false
+    rulePriority = 5
+    ruleSets = []
+    ruleSetConfig = resources.text.fromFile("./config/pmd/ruleset.xml")
 }
 
 jacoco {
-    toolVersion "0.8.5"
+    toolVersion = "0.8.5"
 }
 
 jacocoTestReport {
     reports {
-        html.enabled true
+        html.enabled = true
     }
 }
 // Is not perfect, but gives you an idea of what needs to be changed
