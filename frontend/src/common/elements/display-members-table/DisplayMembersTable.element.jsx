@@ -47,7 +47,7 @@ const DisplayMembersTable = ({
             startOrderBy={USER_FIRST_NAME}
             columnsOrder={[
                 ...[USER_NICK, "postName"],
-                ...(group.active ? ["postEmail"] : [])
+                ...(group != null && group.active ? ["postEmail"] : [])
             ]}
             headerTexts={generateHeaderTexts(text)}
             data={users.map(user => {
@@ -55,15 +55,15 @@ const DisplayMembersTable = ({
                     activeLanguage === "sv" ? user.post.sv : user.post.en;
 
                 const unofficialPostName =
-                    user.unofficialPostName === user.post.sv ||
-                    user.unofficialPostName === user.post.en ||
-                    user.unofficialPostName == null
+                    user.unofficialPostName === officialPostName ||
+                    user.unofficialPostName == null ||
+                    user.unofficialPostName === ""
                         ? ""
                         : " - " + user.unofficialPostName;
 
                 var postEmail;
 
-                if (group.active && user.post.emailPrefix) {
+                if (group != null && group.active && user.post.emailPrefix) {
                     postEmail =
                         user.post.emailPrefix +
                         "." +

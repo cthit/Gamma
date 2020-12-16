@@ -1,14 +1,5 @@
 {
-    "SelectMembers": [
-        "Select members for the group",
-        "Välj medlemmar för gruppen"
-    ],
-    "SetPostNames": [
-        "Set post names for members",
-        "Sätt postnamn för medlemmarna"
-    ],
-    "ReviewChanges": [
-        "Review changes before saving",
-        "Granska ändringar innan du sparar"
-    ]
+    "SelectMembers": ["Select members", "Välj medlemmar"],
+    "SetPostNames": ["Set post names", "Sätt postnamn"],
+    "ReviewChanges": ["Review changes", "Granska ändringar"]
 }

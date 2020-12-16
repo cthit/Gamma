@@ -3,15 +3,13 @@ import translations from "./SetPostNames.view.translations.json";
 import {
     DigitButton,
     DigitDesign,
-    DigitEditData,
+    DigitForm,
     DigitLayout,
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 import NewMembershipArray from "./sub-views/new-membership-array";
-
 import _ from "lodash";
-
 import * as yup from "yup";
 import {
     USER_ACCEPTANCE_YEAR,
@@ -38,11 +36,16 @@ function getInitialValues(selectedMemberIds, currentMembers, users) {
 
         const previousMemberData = _.find(currentMembers, { id: user.id });
 
+        var postId = "";
+        var unofficialPostName = "";
+
         if (previousMemberData != null) {
-            necessaryMemberData.postId = previousMemberData.post.id;
-            necessaryMemberData.unofficialPostName =
-                previousMemberData.unofficialPostName;
+            postId = previousMemberData.post.id;
+            unofficialPostName = previousMemberData.unofficialPostName;
         }
+
+        necessaryMemberData.postId = postId;
+        necessaryMemberData.unofficialPostName = unofficialPostName;
 
         return necessaryMemberData;
     });
@@ -64,93 +67,69 @@ const SetPostNames = ({
     const history = useHistory();
 
     return (
-        <>
-            <DigitDesign.Card>
-                <DigitDesign.CardBody>
-                    <DigitLayout.Row
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
+        <DigitForm
+            onSubmit={onNewMembers}
+            initialValues={getInitialValues(
+                selectedMemberIds,
+                currentMembers,
+                users,
+                groupId
+            )}
+            validationSchema={yup.object().shape({
+                members: yup.array().of(
+                    yup.object().shape({
+                        postId: yup
+                            .string()
+                            .required(text.Post + text.IsRequired),
+                        unofficialPostName: yup.string()
+                    })
+                )
+            })}
+            render={({ isValid }) => (
+                <>
+                    <DigitDesign.Card
+                        size={{ minHeight: "min-content" }}
+                        margin={{ bottom: "8px" }}
                     >
-                        <DigitText.Heading5 text={text.SetPostNames} />
-                        <DigitLayout.Row>
-                            <DigitButton
-                                outlined
-                                text={text.Back}
-                                onClick={() => history.goBack()}
-                            />
-                            <DigitButton
-                                text={text.Next}
-                                startIcon={<Save />}
-                                raised
-                                primary
-                                submit
-                                onClick={() => {
-                                    if (selectedMemberIds.length === 0) {
-                                        onNewMembers({ members: [] });
-                                    }
-                                }}
-                                form={"set-post-names"}
-                            />
-                        </DigitLayout.Row>
-                    </DigitLayout.Row>
-                </DigitDesign.CardBody>
-            </DigitDesign.Card>
-            <DigitDesign.Card>
-                <DigitDesign.CardBody>
-                    {selectedMemberIds.length === 0 && (
-                        <DigitText.Title
-                            alignCenter
-                            text={text.NoSelectedMembers}
-                        />
-                    )}
-                    {selectedMemberIds.length > 0 && (
-                        <DigitEditData
-                            formName={"set-post-names"}
-                            size={{ minWidth: "300px" }}
-                            onSubmit={onNewMembers}
-                            keysOrder={["members"]}
-                            initialValues={getInitialValues(
-                                selectedMemberIds,
-                                currentMembers,
-                                users,
-                                groupId
+                        <DigitDesign.CardBody>
+                            <DigitLayout.Row
+                                justifyContent={"space-between"}
+                                alignItems={"center"}
+                                flexWrap={"wrap"}
+                            >
+                                <DigitText.Heading5 text={text.SetPostNames} />
+                                <DigitLayout.Row>
+                                    <DigitButton
+                                        outlined
+                                        text={text.Back}
+                                        onClick={() => history.goBack()}
+                                    />
+                                    <DigitButton
+                                        text={text.Next}
+                                        startIcon={<Save />}
+                                        raised
+                                        primary
+                                        submit
+                                        disabled={!isValid}
+                                    />
+                                </DigitLayout.Row>
+                            </DigitLayout.Row>
+                        </DigitDesign.CardBody>
+                    </DigitDesign.Card>
+                    <DigitDesign.Card>
+                        <DigitDesign.CardBody>
+                            {selectedMemberIds.length === 0 && (
+                                <DigitText.Title
+                                    alignCenter
+                                    text={text.NoSelectedMembers}
+                                />
                             )}
-                            validationSchema={yup.object().shape({
-                                members: yup.array().of(
-                                    yup.object().shape({
-                                        postId: yup
-                                            .string()
-                                            .required(
-                                                text.Post + text.IsRequired
-                                            ),
-                                        unofficialPostName: yup
-                                            .string()
-                                            .required(
-                                                text.UnofficialPostName +
-                                                    text.IsRequired
-                                            )
-                                    })
-                                )
-                            })}
-                            keysComponentData={{
-                                members: {
-                                    component: NewMembershipArray,
-                                    componentProps: {
-                                        posts,
-                                        currentMembers,
-                                        groupId
-                                    },
-                                    array: true,
-                                    formFieldArrayOptions: {
-                                        inputs: ["postId", "unofficialPostName"]
-                                    }
-                                }
-                            }}
-                        />
-                    )}
-                </DigitDesign.CardBody>
-            </DigitDesign.Card>
-        </>
+                            <NewMembershipArray posts={posts} />
+                        </DigitDesign.CardBody>
+                    </DigitDesign.Card>
+                </>
+            )}
+        />
     );
 };
 
