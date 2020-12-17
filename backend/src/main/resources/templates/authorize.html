@@ -1,0 +1,73 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+
+    <link rel="stylesheet" type="text/css"
+          href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.css"/>
+    <script type="text/javascript"
+            src="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,900" rel="stylesheet">
+
+    <link rel="icon" type="image/png" th:href="@{/img/favicon.ico}">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mdc.ripple.MDCRipple.attachTo(document.querySelector('#confirmButton'));
+            mdc.ripple.MDCRipple.attachTo(document.querySelector('#denialButton'));
+
+            var image = new Image();
+            image.onload = function () {
+                document.getElementsByTagName("body")[0].appendChild(image);
+            }
+            image.src = "/api/img/enbarsskar.jpg";
+            image.className = "fadeInBackground";
+
+        }, false);
+    </script>
+</head>
+<body>
+<div class="centerCard" th:fragment="content">
+    <div class="card mdc-elevation--z8">
+
+        <div class="row">
+            <img id="it-logo" th:src="@{/img/itlogo.svg}"/>
+            <div class="padding"></div>
+            <h1 class="text text--large text--roboto center-vertical">
+                Gamma - IT account
+            </h1>
+        </div>
+
+        <div class="padding"></div>
+
+        <div class="row">
+            <h2 th:text="'Do you want to authorize ' + ${clientName} + ' to access your data?'" class="text text--roboto center-vertical">
+            </h2>
+        </div>
+
+        <div class="padding"></div>
+
+        <form id="confirmationForm" name="confirmationForm" action="/api/oauth/authorize" method="post">
+            <input name="user_oauth_approval" value="true" type="hidden"/>
+            <label><input id="confirmButton" name="authorize" value="Authorize" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
+        </form>
+
+        <form id="denialForm" name="denialForm" action="/api/oauth/authorize" method="post">
+            <input name="user_oauth_approval" value="false" type="hidden"/>
+            <label><input id="denialButton" name="deny" value="Deny" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
+        </form>
+    </div>
+</div>
+
+
+<footer class="text text--roboto">
+    Made by digIT '18
+</footer>
+
+</body>
+</html>

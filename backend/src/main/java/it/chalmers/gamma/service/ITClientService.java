@@ -10,6 +10,7 @@ import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
@@ -24,9 +25,6 @@ public class ITClientService implements ClientDetailsService {
     @Value("${application.auth.accessTokenValidityTime}")       // TODO Fix this
     private int accessTokenValidityTime;
 
-    @Value("${application.auth.autoApprove}")
-    private boolean autoApprove;
-
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
 
@@ -39,10 +37,10 @@ public class ITClientService implements ClientDetailsService {
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
         return this.itClientRepository.findByClientId(clientId).orElseThrow(ITClientDoesNotExistException::new)
-        .toDTO();
+            .toDTO();
     }
 
-    public ITClientDTO createITClient(String name, Text description, String redirect) {
+    public ITClientDTO createITClient(String name, Text description, String redirect, boolean autoApprove) {
         ITClient client = new ITClient();
         client.setName(name);
         client.setDescription(description == null ? new Text() : description);
@@ -50,11 +48,12 @@ public class ITClientService implements ClientDetailsService {
         client.setCreatedAt(Instant.now());
         client.setLastModifiedAt(Instant.now());
         client.setAccessTokenValidity(this.accessTokenValidityTime);
-        client.setAutoApprove(this.autoApprove);
+        client.setAutoApprove(autoApprove);
         client.setRefreshTokenValidity(this.refreshTokenValidityTime);
         client.setClientId(TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS));
+                TokenUtils.CharacterTypes.NUMBERS)
+        );
         String clientSecret = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS);
@@ -90,7 +89,7 @@ public class ITClientService implements ClientDetailsService {
 
     public boolean clientExists(String id) {
         return UUIDUtil.validUUID(id) && this.itClientRepository.existsById(UUID.fromString(id))
-                || this.itClientRepository.existsITClientByClientId(id);
+            || this.itClientRepository.existsITClientByClientId(id);
     }
 
 
@@ -98,4 +97,7 @@ public class ITClientService implements ClientDetailsService {
         this.itClientRepository.save(itClient);
     }
 
+    public Optional<ITClientDTO> getITClientById(String clientId) {
+        return this.itClientRepository.findByClientId(clientId).map(ITClient::toDTO);
+    }
 }

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.service.ITClientService;
+import it.chalmers.gamma.service.ITUserApprovalService;
 import it.chalmers.gamma.service.ITUserService;
 
 import java.net.MalformedURLException;
@@ -45,6 +46,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Qualifier("clientDetailsService")
     private final ITClientService clientDetailsService;
 
+    private final ITUserApprovalService itUserApprovalService;
+
     @Value("${security.jwt.token.secret-key}")
     private String signingKey;
 
@@ -58,10 +61,11 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private long expiration;
 
     public OAuth2Config(ITUserService userDetailsService, AuthenticationManager authenticationManager,
-                        ITClientService clientDetailsService) {
+                        ITClientService clientDetailsService, ITUserApprovalService itUserApprovalService) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.clientDetailsService = clientDetailsService;
+        this.itUserApprovalService = itUserApprovalService;
     }
 
 
@@ -72,7 +76,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         configurer.tokenEnhancer(enhancerChain)
                 .accessTokenConverter(accessTokenConverter())
                 .authenticationManager(this.authenticationManager)
-                .userDetailsService(this.userDetailsService);
+                .userDetailsService(this.userDetailsService)
+                .approvalStore(this.itUserApprovalService);
     }
 
     @Override

@@ -31,5 +31,6 @@
         "Something went wrong when trying to delete the client",
         "Någonting gick fel när klienten"
     ],
-    "ClientDeletionFailed2": ["", "försökte raderas"]
+    "ClientDeletionFailed2": ["", "försökte raderas"],
+    "AutoApprove": ["Auto approve client", "Automatiskt godkänn client"]
 }

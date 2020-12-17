@@ -39,7 +39,8 @@ public class ITClientAdminController {
         return new ClientAddedResponse(this.itClientService.createITClient(
                 request.getName(),
                 request.getDescription(),
-                request.getWebServerRedirectUri()
+                request.getWebServerRedirectUri(),
+                request.isAutoApprove()
         )
                 .getClientSecret()).toResponseObject();
     }
@@ -75,6 +76,11 @@ public class ITClientAdminController {
     }
 
     private ITClientDTO responseToDTO(AddITClientRequest request) {
-        return new ITClientDTO(request.getWebServerRedirectUri(), request.getName(), request.getDescription());
+        return new ITClientDTO(
+                request.getWebServerRedirectUri(),
+                request.getName(),
+                request.getDescription(),
+                request.isAutoApprove()
+        );
     }
 }

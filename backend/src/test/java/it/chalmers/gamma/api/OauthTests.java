@@ -12,10 +12,12 @@ import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITClientFactory;
+import it.chalmers.gamma.factories.MockITUserApprovalFactory;
 import it.chalmers.gamma.utils.GenerationUtils;
 import it.chalmers.gamma.utils.JSONUtils;
 import java.util.Objects;
 import org.apache.commons.codec.binary.Base64;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -47,6 +50,9 @@ public class OauthTests {
     @Autowired
     private MockITClientFactory mockITClientFactory;
 
+    @Autowired
+    private MockITUserApprovalFactory mockITUserApprovalFactory;
+
     private static final String TEST_COM = "https://test.com/auth";
 
     @Before
@@ -69,7 +75,6 @@ public class OauthTests {
         .andDo(print());
     }
 
-    // This will fail right now.
     @WithMockUser
     @Test
     public void testAuthorizationRequestWithIncorrectId() throws Exception {
@@ -95,25 +100,60 @@ public class OauthTests {
     }
 
     private String getTestAuthorizationQuery(String clientId, String redirect) {
-        return String.format("/oauth/authorize/?%s", JSONUtils.toFormUrlEncoded(
+        return String.format("/oauth/authorize?%s", JSONUtils.toFormUrlEncoded(
                 new JSONParameter("client_id", clientId),
                 new JSONParameter("redirect_uri", redirect),
                 new JSONParameter("response_type", "code"))
         );
     }
 
-    @WithMockUser
+    @WithMockUser("admin")
     @Test
     public void testSuccessfulAuthorizationRequest() throws Exception {
         String redirect = TEST_COM;
         ITClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory
                         .generateClient(redirect));
+
         String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());
         this.mockMvc.perform(get(query)).andExpect(redirectedUrlPattern(String.format("%s?code=**", redirect)));
     }
 
-    @WithMockUser
+    @WithMockUser("admin")
+    @Test
+    public void testSuccessfulAuthorizationRequestConfirm() throws Exception {
+        String redirect = TEST_COM;
+        ITClientDTO clientDTO = this.mockITClientFactory
+                .saveClient(this.mockITClientFactory
+                        .generateClientNonAutoApprove(redirect));
+
+        String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());
+
+        this.mockMvc.perform(get(query)).andExpect(result -> {
+            Assert.assertEquals(result.getResponse().getForwardedUrl(), "/oauth/confirm_access");
+            var model = result.getModelAndView().getModel();
+            Assert.assertEquals(model.get("client_id"), clientDTO.getClientId());
+            Assert.assertEquals(model.get("redirect_uri"), clientDTO.getWebServerRedirectUri());
+        });
+    }
+
+    //TODO: Kolla så att du kan lägga till en användare som redan har accepterat
+    @WithUserDetails("admin")
+    @Test
+    public void testCorrectRedirectIfAlreadyApproved() throws Exception {
+        String redirect = TEST_COM;
+        ITClientDTO clientDTO = this.mockITClientFactory
+                .saveClient(this.mockITClientFactory
+                        .generateClientNonAutoApprove(redirect));
+
+        this.mockITUserApprovalFactory.approve("admin", clientDTO.getClientId());
+
+        String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());
+
+        this.mockMvc.perform(get(query)).andExpect(redirectedUrlPattern(String.format("%s?code=**", redirect)));
+    }
+
+    @WithMockUser("admin")
     @Test
     public void testSuccessfulAuthorizationCode() throws Exception {
         String redirect = TEST_COM;
@@ -124,7 +164,6 @@ public class OauthTests {
         MvcResult result = this.mockMvc.perform(get(query)).andDo(print()).andReturn();
         String code = Objects.requireNonNull(result.getResponse().getRedirectedUrl()).split("code=")[1];
         String tokenQuery = JSONUtils.toFormUrlEncoded(
-
                 new JSONParameter("client_id", clientDTO.getClientId()),
                 new JSONParameter("client_secret", clientDTO.getClientSecret().replace("{noop}", "")),
                 new JSONParameter("code", code),

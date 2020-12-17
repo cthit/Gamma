@@ -36,7 +36,7 @@ class TestClientBootstrap {
             client.setCreatedAt(Instant.now());
             client.setLastModifiedAt(Instant.now());
             client.setAccessTokenValidity(this.config.getAccessTokenValidityTime());
-            client.setAutoApprove(this.config.isAutoApprove());
+            client.setAutoApprove(true);
             client.setRefreshTokenValidity(this.config.getRefreshTokenValidityTime());
             client.setClientId(this.config.getOauth2ClientId());
             client.setClientSecret("{noop}" + this.config.getOauth2ClientSecret());

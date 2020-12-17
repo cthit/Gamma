@@ -15,16 +15,28 @@ public class MockITClientFactory {
 
     public ITClientDTO generateClient(String redirect) {
         return new ITClientDTO(
-            redirect,
+                redirect,
                 GenerationUtils.generateRandomString(20, CharacterTypes.LOWERCASE),
-                GenerationUtils.generateText()
+                GenerationUtils.generateText(),
+                true
         );
+    }
+
+    public ITClientDTO generateClientNonAutoApprove(String redirect) {
+        return new ITClientDTO(
+                redirect,
+                GenerationUtils.generateRandomString(20, CharacterTypes.LOWERCASE),
+                GenerationUtils.generateText(),
+                false
+        );
+
     }
 
     public ITClientDTO saveClient(ITClientDTO client) {
         return this.clientService.createITClient(
                 client.getName(),
                 client.getDescription(),
-                client.getWebServerRedirectUri());
+                client.getWebServerRedirectUri(),
+                client.isAutoApprove());
     }
 }

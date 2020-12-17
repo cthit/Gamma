@@ -23,12 +23,16 @@ public class ITClientDTO implements ClientDetails {
     @JsonIgnore
     private final String clientSecret;
     private final String webServerRedirectUri;
+    @JsonIgnore
     private final int accessTokenValidity;
+    @JsonIgnore
     private final int refreshTokenValidity;
     private final boolean autoApprove;
     private final String name;
     private final Text description;
+    @JsonIgnore
     private final Instant createdAt;
+    @JsonIgnore
     private final Instant lastModifiedAt;
 
 
@@ -38,7 +42,7 @@ public class ITClientDTO implements ClientDetails {
                        String webServerRedirectUri,
                        Integer accessTokenValidity,
                        Integer refreshTokenValidity,
-                       Boolean autoApprove,
+                       boolean autoApprove,
                        String name,
                        Text description,
                        Instant createdAt,
@@ -56,9 +60,9 @@ public class ITClientDTO implements ClientDetails {
         this.lastModifiedAt = lastModifiedAt;
     }
 
-    public ITClientDTO(String webServerRedirectUri, String name, Text description) {
+    public ITClientDTO(String webServerRedirectUri, String name, Text description, boolean autoApprove) {
         this(null, null, null, webServerRedirectUri, Integer.MAX_VALUE, Integer.MAX_VALUE,
-                true, name, description, null, null);
+                autoApprove, name, description, null, null);
     }
 
     public UUID getId() {
@@ -98,6 +102,15 @@ public class ITClientDTO implements ClientDetails {
         return this.clientId;
     }
 
+    public boolean isAutoApprove() {
+        return this.autoApprove;
+    }
+
+    @Override
+    public boolean isAutoApprove(String scope) {
+        return isAutoApprove();
+    }
+
     @Override
     @JsonIgnore
     public Set<String> getResourceIds() {
@@ -123,8 +136,7 @@ public class ITClientDTO implements ClientDetails {
     @Override
     public Set<String> getScope() {
         Set<String> scopes = new HashSet<>();
-        scopes.add("read");
-        scopes.add("write");
+        scopes.add("access");
         return scopes;
     }
 
@@ -158,11 +170,6 @@ public class ITClientDTO implements ClientDetails {
     @Override
     public Integer getRefreshTokenValiditySeconds() {
         return this.refreshTokenValidity;
-    }
-
-    @Override
-    public boolean isAutoApprove(String scope) {
-        return this.autoApprove;
     }
 
     @Override

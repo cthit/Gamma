@@ -9,7 +9,8 @@ export function getClients() {
             clientId: client.clientId,
             descriptionEn: client.description.en,
             descriptionSv: client.description.sv,
-            webServerRedirectUri: client.webServerRedirectUri
+            webServerRedirectUri: client.webServerRedirectUri,
+            autoApprove: client.autoApprove + ""
         }))
     );
 }
@@ -22,7 +23,8 @@ export function getClient(clientId) {
             clientId: input.data.clientId,
             descriptionEn: input.data.additionalInformation.description.en,
             descriptionSv: input.data.additionalInformation.description.sv,
-            webServerRedirectUri: input.data.webServerRedirectUri
+            webServerRedirectUri: input.data.webServerRedirectUri,
+            autoApprove: input.data.autoApprove + ""
         }
     }));
 }

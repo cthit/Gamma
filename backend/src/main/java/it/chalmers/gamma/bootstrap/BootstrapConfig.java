@@ -24,14 +24,11 @@ public class BootstrapConfig {
     @Value("${application.default-oauth2-client.api-key}")
     private String oauth2ClientApiKey;
 
-    @Value("${application.default-oauth2-client.mock-client}")
+    @Value("${application.mocking}")
     private boolean mocking;
 
     @Value("${application.auth.accessTokenValidityTime}")       // TODO Fix this
     private int accessTokenValidityTime;
-
-    @Value("${application.auth.autoApprove}")
-    private boolean autoApprove;
 
     @Value("${application.auth.refreshTokenValidityTime}")
     private int refreshTokenValidityTime;
@@ -66,10 +63,6 @@ public class BootstrapConfig {
 
     public int getAccessTokenValidityTime() {
         return this.accessTokenValidityTime;
-    }
-
-    public boolean isAutoApprove() {
-        return this.autoApprove;
     }
 
     public int getRefreshTokenValidityTime() {
