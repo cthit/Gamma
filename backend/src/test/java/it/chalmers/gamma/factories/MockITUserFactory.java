@@ -37,13 +37,6 @@ public class MockITUserFactory {
                 activated);
     }
 
-    /**
-     * Generate User with admin privileges named "admin"..
-     * @return
-     */
-    public ITUserDTO generateAdminUser() {       // TODO
-        return this.generateITUser("admin", true);
-    }
 
     public AdminViewCreateITUserRequest generateValidAdminCreateUserRequest() {
         AdminViewCreateITUserRequest request = new AdminViewCreateITUserRequest();

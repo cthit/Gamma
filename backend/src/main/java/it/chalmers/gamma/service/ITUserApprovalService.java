@@ -67,10 +67,7 @@ public class ITUserApprovalService implements ApprovalStore {
         );
     }
 
-    private void saveApproval(Approval approval) {
-        String cid = approval.getUserId();
-        String clientId = approval.getClientId();
-
+    public void saveApproval(String cid, String clientId) {
         ITUserApprovalPK itUserApprovalPK = new ITUserApprovalPK();
         itUserApprovalPK.setItUser(this.itUserService.getITUser(this.itUserService.getITUser(cid)));
         itUserApprovalPK.setItClient(this.itClientService.getITClient(
@@ -81,6 +78,13 @@ public class ITUserApprovalService implements ApprovalStore {
         itUserApproval.setId(itUserApprovalPK);
 
         this.itUserApprovalRepository.save(itUserApproval);
+    }
+
+    private void saveApproval(Approval approval) {
+        String cid = approval.getUserId();
+        String clientId = approval.getClientId();
+
+        saveApproval(cid, clientId);
     }
 
     public List<ITUserApprovalDTO> getApprovalsByClientId(String clientId) {

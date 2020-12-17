@@ -60,9 +60,9 @@ public class ITClientDTO implements ClientDetails {
         this.lastModifiedAt = lastModifiedAt;
     }
 
-    public ITClientDTO(String webServerRedirectUri, String name, Text description) {
+    public ITClientDTO(String webServerRedirectUri, String name, Text description, boolean autoApprove) {
         this(null, null, null, webServerRedirectUri, Integer.MAX_VALUE, Integer.MAX_VALUE,
-                true, name, description, null, null);
+                autoApprove, name, description, null, null);
     }
 
     public UUID getId() {

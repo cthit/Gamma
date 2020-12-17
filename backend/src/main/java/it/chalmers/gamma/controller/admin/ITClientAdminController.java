@@ -76,6 +76,6 @@ public class ITClientAdminController {
     }
 
     private ITClientDTO responseToDTO(AddITClientRequest request) {
-        return new ITClientDTO(request.getWebServerRedirectUri(), request.getName(), request.getDescription());
+        return new ITClientDTO(request.getWebServerRedirectUri(), request.getName(), request.getDescription(), request.isAutoApprove());
     }
 }

@@ -52,7 +52,7 @@ public class AdminITUserTests {
         testAdminCreateUser(true);
     }
 
-    @WithMockUser("nonAdmin")
+    @WithMockUser
     @Test
     public void testAdminCreateUserAsNonAdmin() throws Exception {
         testAdminCreateUser(false);
