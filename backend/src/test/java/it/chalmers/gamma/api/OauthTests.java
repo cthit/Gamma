@@ -10,11 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITClientFactory;
 import it.chalmers.gamma.factories.MockITUserApprovalFactory;
-import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.utils.GenerationUtils;
 import it.chalmers.gamma.utils.JSONUtils;
 import java.util.Objects;
@@ -30,7 +28,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -165,7 +162,6 @@ public class OauthTests {
                         .generateClient(redirect));
         String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());
         MvcResult result = this.mockMvc.perform(get(query)).andDo(print()).andReturn();
-        System.out.println(result.getResponse().getRedirectedUrl());
         String code = Objects.requireNonNull(result.getResponse().getRedirectedUrl()).split("code=")[1];
         String tokenQuery = JSONUtils.toFormUrlEncoded(
                 new JSONParameter("client_id", clientDTO.getClientId()),
