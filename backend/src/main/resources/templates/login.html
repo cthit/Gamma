@@ -7,10 +7,9 @@
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.css"/>
-    <script type="text/javascript"
-            src="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/mcw.min.css}"/>
+
+    <script type="text/javascript" th:src="@{/js/mcw.min.js}"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,900" rel="stylesheet">
 
@@ -35,7 +34,7 @@
     </script>
 </head>
 <body>
-<div id="loginForm" th:fragment="content">
+<div class="centerCard" th:fragment="content">
     <form name="f" th:action="@{/login}" method="post">
         <div class="card mdc-elevation--z8">
 

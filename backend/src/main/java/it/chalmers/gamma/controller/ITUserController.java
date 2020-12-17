@@ -35,15 +35,17 @@ import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,7 +61,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 @RestController
-@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping("/users")
 public final class ITUserController {
 
     private final ITUserService itUserService;
@@ -156,6 +158,12 @@ public final class ITUserController {
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
         return new GetITUserRestrictedResponse(new ITUserRestrictedDTO(user), groups, null)
                 .toResponseObject();
+    }
+
+    @GetMapping("/{id}/avatar")
+    public void getUserAvatar(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
+        ITUserDTO user = this.itUserService.getITUser(id);
+        response.sendRedirect(user.getAvatarUrl());
     }
 
     @PutMapping("/me")

@@ -22,7 +22,7 @@
         "Du måste bekräfta ditt lösenord för att kunna radera ditt konto"
     ],
     "YourGroups": ["Your groups", "Dina grupper"],
-    "YourAvatar": ["Your avatar", "Din avatar"],
+    "ChangeAvatar": ["Change avatar image", "Ändra avatar bild"],
     "Phone": ["Phone number", "Telefonnummer"],
     "DeleteMe": ["Delete my account", "Radera mitt konto"],
     "UpdateMe": [
@@ -32,5 +32,8 @@
     "UpdateMeFailed": [
         "Something went wrong when updating your account",
         "Någonting gick fel när du försökte uppdatera ditt konto"
-    ]
+    ],
+    "EditMe": ["Edit your information", "Redigera dina uppgifter"],
+    "YourInformation": ["Your information", "Din information"],
+    "YourApprovals": ["Your client approvals", "Dina klient godkännanden"]
 }

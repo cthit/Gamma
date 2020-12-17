@@ -26,9 +26,11 @@ import {
     initialValues,
     keysComponentData,
     keysOrder,
+    readAllKeysOrder,
     keysText,
     validationSchema
 } from "./Clients.options";
+import UserClientApprovals from "./views/user-client-approvals";
 
 const Clients = () => {
     const [text] = useDigitTranslations(translations);
@@ -47,10 +49,11 @@ const Clients = () => {
     return (
         <DigitCRUD
             keysOrder={keysOrder()}
+            readAllKeysOrder={readAllKeysOrder()}
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
             formInitialValues={initialValues()}
-            formComponentData={keysComponentData()}
+            formComponentData={keysComponentData(text)}
             name={"clients"}
             path={"/clients"}
             readAllRequest={getClients}
@@ -133,6 +136,16 @@ const Clients = () => {
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             useKeyTextsInUpperLabel
+            detailsRenderEnd={client =>
+                String(client.autoApprove) === "false" ? (
+                    <UserClientApprovals client={client} />
+                ) : null
+            }
+            readOneProps={{
+                margin: {
+                    bottom: "16px"
+                }
+            }}
         />
     );
 };

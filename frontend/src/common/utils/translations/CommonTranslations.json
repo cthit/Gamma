@@ -49,6 +49,7 @@
     "Next": ["Next", "Nästa"],
     "SwedishDescription": ["Swedish description", "Svensk beskrivning"],
     "EnglishDescription": ["English description", "Engelsk beskrivning"],
+    "Description": ["Description", "Beskrivning"],
     "Nick": ["Nick", "Nick"],
     "Password": ["Password", "Lösenord"],
     "FirstName": ["First name", "Förnamn"],
