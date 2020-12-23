@@ -9,7 +9,7 @@ import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
 import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.utils.JSONUtils;
 import java.util.Objects;
 import org.junit.Assert;

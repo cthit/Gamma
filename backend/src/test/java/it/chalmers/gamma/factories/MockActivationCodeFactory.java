@@ -2,7 +2,7 @@ package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.user.request.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;

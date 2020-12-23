@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ApiKey;
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.ApiKeyRepository;
+import it.chalmers.gamma.repository.ApiKeyRepository;
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
 import it.chalmers.gamma.response.apikey.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;

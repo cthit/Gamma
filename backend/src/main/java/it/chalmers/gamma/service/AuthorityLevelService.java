@@ -1,7 +1,7 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.AuthorityLevel;
-import it.chalmers.gamma.db.repository.AuthorityLevelRepository;
+import it.chalmers.gamma.repository.AuthorityLevelRepository;
 
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.response.authority.AuthorityLevelDoesNotExistException;

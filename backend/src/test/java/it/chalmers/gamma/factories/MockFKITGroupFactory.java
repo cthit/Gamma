@@ -3,7 +3,7 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.user.request.requests.CreateGroupRequest;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;

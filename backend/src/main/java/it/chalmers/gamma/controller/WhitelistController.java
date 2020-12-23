@@ -2,7 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.user.request.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.activationcode.ActivationCodeAddedResonse;
 import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;

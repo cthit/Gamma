@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ActivationCode;
 import it.chalmers.gamma.db.entity.Whitelist;
-import it.chalmers.gamma.db.repository.ActivationCodeRepository;
+import it.chalmers.gamma.repository.ActivationCodeRepository;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
 

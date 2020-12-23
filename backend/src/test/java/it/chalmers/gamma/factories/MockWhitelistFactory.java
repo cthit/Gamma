@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.user.request.requests.WhitelistCodeRequest;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;

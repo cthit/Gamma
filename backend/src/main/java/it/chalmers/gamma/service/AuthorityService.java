@@ -5,7 +5,7 @@ import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.pk.AuthorityPK;
-import it.chalmers.gamma.db.repository.AuthorityRepository;
+import it.chalmers.gamma.repository.AuthorityRepository;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
@@ -67,7 +67,8 @@ public class AuthorityService {
         authority.setAuthorityLevel(authorityLevel);
         return this.authorityRepository.save(authority).toDTO();
     }
-    protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
+
+    public List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
         List<MembershipDTO> memberships = this.membershipService.getMembershipsByUser(details);
         //  for (MembershipDTO membership : memberships) {
         //      AuthorityLevel authorityLevel = this.authorityLevelService

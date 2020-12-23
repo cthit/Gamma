@@ -7,7 +7,7 @@ import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 
 import it.chalmers.gamma.service.PasswordResetService;
 import java.util.List;

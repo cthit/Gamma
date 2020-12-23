@@ -2,7 +2,7 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.requests.CreateGroupRequest;
+import it.chalmers.gamma.user.request.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
@@ -20,14 +20,12 @@ import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
-import it.chalmers.gamma.requests.CreateApiKeyRequest;
+import it.chalmers.gamma.user.request.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.service.ApiKeyService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;

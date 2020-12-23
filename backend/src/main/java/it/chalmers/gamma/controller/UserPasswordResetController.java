@@ -1,13 +1,13 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.requests.ResetPasswordFinishRequest;
-import it.chalmers.gamma.requests.ResetPasswordRequest;
+import it.chalmers.gamma.user.request.requests.ResetPasswordFinishRequest;
+import it.chalmers.gamma.user.request.requests.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.user.PasswordChangedResponse;
-import it.chalmers.gamma.response.user.PasswordResetResponse;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.response.PasswordChangedResponse;
+import it.chalmers.gamma.user.response.PasswordResetResponse;
+import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import it.chalmers.gamma.util.InputValidationUtils;
 

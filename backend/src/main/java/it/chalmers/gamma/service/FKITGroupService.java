@@ -1,7 +1,7 @@
 package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.repository.FKITGroupRepository;
+import it.chalmers.gamma.repository.FKITGroupRepository;
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;

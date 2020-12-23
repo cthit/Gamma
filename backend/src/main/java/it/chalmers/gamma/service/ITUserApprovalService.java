@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITUserApproval;
 import it.chalmers.gamma.db.entity.pk.ITUserApprovalPK;
-import it.chalmers.gamma.db.repository.ITUserApprovalRepository;
+import it.chalmers.gamma.repository.ITUserApprovalRepository;
 import it.chalmers.gamma.domain.dto.user.ITUserApprovalDTO;
 
 import java.util.Collection;
@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import it.chalmers.gamma.user.ITUserService;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;

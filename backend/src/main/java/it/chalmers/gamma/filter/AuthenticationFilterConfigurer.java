@@ -1,7 +1,7 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.service.ApiKeyService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 
 import it.chalmers.gamma.service.PasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;

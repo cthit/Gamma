@@ -1,6 +1,8 @@
 package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.domain.dto.user.PasswordResetTokenDTO;
+import it.chalmers.gamma.user.ITUser;
+
 import java.util.Objects;
 import java.util.UUID;
 

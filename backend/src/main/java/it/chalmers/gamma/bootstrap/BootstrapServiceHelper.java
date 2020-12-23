@@ -6,7 +6,7 @@ import it.chalmers.gamma.service.AuthorityService;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
 import it.chalmers.gamma.service.ITClientService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 
@@ -17,22 +17,13 @@ import org.springframework.stereotype.Component;
 public final class BootstrapServiceHelper {
 
     private final ITUserService userService;
-
     private final FKITGroupService groupService;
-
     private final AuthorityLevelService authorityLevelService;
-
     private final PostService postService;
-
     private final MembershipService membershipService;
-
     private final AuthorityService authorityService;
-
     private final ITClientService itClientService;
-
-
     private final ApiKeyService apiKeyService;
-
     private final FKITSuperGroupService superGroupService;
 
     public BootstrapServiceHelper(ITUserService userService,

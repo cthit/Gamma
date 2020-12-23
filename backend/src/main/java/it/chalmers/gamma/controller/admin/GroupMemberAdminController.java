@@ -4,8 +4,8 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.requests.AddUserGroupRequest;
-import it.chalmers.gamma.requests.EditMembershipRequest;
+import it.chalmers.gamma.user.request.requests.AddUserGroupRequest;
+import it.chalmers.gamma.user.request.requests.EditMembershipRequest;
 
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.membership.EditedMembershipResponse;
@@ -13,7 +13,7 @@ import it.chalmers.gamma.response.membership.MemberAddedToGroupResponse;
 import it.chalmers.gamma.response.membership.MemberRemovedFromGroupResponse;
 
 import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
 import it.chalmers.gamma.service.PostService;
 import it.chalmers.gamma.util.InputValidationUtils;

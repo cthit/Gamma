@@ -1,7 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.requests.CreateSuperGroupRequest;
+import it.chalmers.gamma.user.request.requests.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.group.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.response.group.GroupDeletedResponse;

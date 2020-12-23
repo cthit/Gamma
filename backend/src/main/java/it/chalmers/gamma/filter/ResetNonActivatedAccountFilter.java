@@ -1,8 +1,8 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.response.user.UserNotFoundResponse;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.response.UserNotFoundResponse;
+import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.service.PasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;

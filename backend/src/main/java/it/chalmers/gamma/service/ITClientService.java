@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.ITClient;
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.ITClientRepository;
+import it.chalmers.gamma.repository.ITClientRepository;
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
 import it.chalmers.gamma.response.client.ITClientDoesNotExistException;
 import it.chalmers.gamma.util.TokenUtils;

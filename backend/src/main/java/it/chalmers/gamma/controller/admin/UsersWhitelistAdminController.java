@@ -1,13 +1,13 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.requests.AddListOfWhitelistedRequest;
-import it.chalmers.gamma.requests.WhitelistCodeRequest;
+import it.chalmers.gamma.user.request.requests.AddListOfWhitelistedRequest;
+import it.chalmers.gamma.user.request.requests.WhitelistCodeRequest;
 
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.response.user.UserAlreadyExistsResponse;
-import it.chalmers.gamma.response.user.UserDeletedResponse;
-import it.chalmers.gamma.response.user.UserNotFoundResponse;
+import it.chalmers.gamma.user.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.user.response.UserDeletedResponse;
+import it.chalmers.gamma.user.response.UserNotFoundResponse;
 import it.chalmers.gamma.response.whitelist.EditedWhitelistResponse;
 import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse;
 import it.chalmers.gamma.response.whitelist.GetAllWhitelistResponse.GetAllWhitelistResponseObject;
@@ -18,7 +18,7 @@ import it.chalmers.gamma.response.whitelist.WhitelistAddedResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.response.whitelist.WhitelistIsValidResponse;
 import it.chalmers.gamma.response.whitelist.WhitelistIsValidResponse.WhitelistIsValidResponseObject;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 

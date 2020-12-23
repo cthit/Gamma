@@ -1,7 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.access.ITClientDTO;
-import it.chalmers.gamma.requests.AddITClientRequest;
+import it.chalmers.gamma.user.request.requests.AddITClientRequest;
 import it.chalmers.gamma.response.client.ClientAddedResponse;
 import it.chalmers.gamma.response.client.ClientAddedResponse.ClientAddedResponseObject;
 import it.chalmers.gamma.response.client.ClientEditedResponse;

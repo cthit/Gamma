@@ -7,7 +7,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
 import it.chalmers.gamma.response.InvalidJWTTokenResponse;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

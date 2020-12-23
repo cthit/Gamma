@@ -1,8 +1,8 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.db.entity.ITUser;
+import it.chalmers.gamma.user.ITUser;
 import it.chalmers.gamma.db.entity.PasswordResetToken;
-import it.chalmers.gamma.db.repository.PasswordResetTokenRepository;
+import it.chalmers.gamma.repository.PasswordResetTokenRepository;
 
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.PasswordResetTokenDTO;

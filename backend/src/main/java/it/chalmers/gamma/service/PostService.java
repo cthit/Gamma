@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import it.chalmers.gamma.db.entity.Post;
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.db.repository.PostRepository;
+import it.chalmers.gamma.repository.PostRepository;
 
 import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.response.post.PostDoesNotExistResponse;

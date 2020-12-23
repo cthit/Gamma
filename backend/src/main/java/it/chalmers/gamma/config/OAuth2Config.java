@@ -2,7 +2,7 @@ package it.chalmers.gamma.config;
 
 import it.chalmers.gamma.service.ITClientService;
 import it.chalmers.gamma.service.ITUserApprovalService;
-import it.chalmers.gamma.service.ITUserService;
+import it.chalmers.gamma.user.ITUserService;
 
 import java.net.MalformedURLException;
 import java.net.URL;

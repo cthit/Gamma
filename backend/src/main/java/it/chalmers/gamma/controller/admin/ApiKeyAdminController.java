@@ -1,7 +1,7 @@
 package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
-import it.chalmers.gamma.requests.CreateApiKeyRequest;
+import it.chalmers.gamma.user.request.requests.CreateApiKeyRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.response.apikey.ApiKeyDeletedResponse;
 import it.chalmers.gamma.response.apikey.ApiKeyDoesNotExistResponse;
