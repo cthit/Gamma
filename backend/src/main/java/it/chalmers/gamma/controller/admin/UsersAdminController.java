@@ -2,7 +2,6 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.requests.EditITUserRequest;
@@ -19,7 +18,6 @@ import it.chalmers.gamma.response.user.UserEditedResponse;
 import it.chalmers.gamma.response.user.UserNotFoundResponse;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
@@ -46,17 +44,12 @@ import org.springframework.web.bind.annotation.RestController;
 public final class UsersAdminController {
 
     private final ITUserService itUserService;
-    private final UserWebsiteService userWebsiteService;
-
-
     private final MembershipService membershipService;
 
     public UsersAdminController(
             ITUserService itUserService,
-            UserWebsiteService userWebsiteService,
             MembershipService membershipService) {
         this.itUserService = itUserService;
-        this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
     }
 
@@ -72,7 +65,6 @@ public final class UsersAdminController {
         return new PasswordChangedResponse();
     }
 
-    //TODO Make sure that the code to add websites to users actually works
     @PutMapping("/{id}")
     public UserEditedResponse editUser(@PathVariable("id") String id,
                                            @RequestBody EditITUserRequest request) {
@@ -89,17 +81,12 @@ public final class UsersAdminController {
                 request.getLanguage(),
                 request.getAcceptanceYear()
         );
-        // Below handles adding websites.
-        ITUserDTO user = this.itUserService.getITUser(id);
-        List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
-        this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
     @DeleteMapping("/{id}")
     public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
-        this.userWebsiteService.deleteWebsitesConnectedToUser(user);
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
         return new UserDeletedResponse();
@@ -108,10 +95,8 @@ public final class UsersAdminController {
     @GetMapping("/{id}")
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
-        // List<WebsiteUrlDTO> websites = this.userWebsiteService.getWebsitesOrdered(
-        //                 this.userWebsiteService.getWebsites(user));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
-        return new GetITUserResponse(user, groups, null).toResponseObject();
+        return new GetITUserResponse(user, groups).toResponseObject();
     }
 
     @GetMapping()
@@ -119,8 +104,7 @@ public final class UsersAdminController {
 
         List<ITUserDTO> users = this.itUserService.loadAllUsers();
         List<GetITUserResponse> userResponses = users.stream()
-                .map(u -> new GetITUserResponse(u, this.membershipService.getUsersGroupDTO(u),
-                        null))
+                .map(u -> new GetITUserResponse(u, this.membershipService.getUsersGroupDTO(u)))
                 .collect(Collectors.toList());
         return new GetAllITUsersResponse(userResponses).toResponseObject();
     }

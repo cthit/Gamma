@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserRestrictedDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 
 import java.util.List;
 
@@ -17,15 +16,12 @@ public class GetITUserRestrictedResponse {
     @JsonUnwrapped
     private final ITUserRestrictedDTO user;
     private final List<FKITGroupDTO> groups;
-    private final List<WebsiteUrlDTO> websiteURLs;
 
     public GetITUserRestrictedResponse(
             ITUserRestrictedDTO user,
-            List<FKITGroupDTO> groups,
-            List<WebsiteUrlDTO> websiteURLs) {
+            List<FKITGroupDTO> groups) {
         this.user = user;
         this.groups = groups;
-        this.websiteURLs = websiteURLs;
     }
 
     public ITUserRestrictedDTO getUser() {
@@ -34,10 +30,6 @@ public class GetITUserRestrictedResponse {
 
     public List<FKITGroupDTO> getGroups() {
         return this.groups;
-    }
-
-    public List<WebsiteUrlDTO> getWebsiteURLs() {
-        return this.websiteURLs;
     }
 
     @JsonIgnore

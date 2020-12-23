@@ -2,8 +2,6 @@ package it.chalmers.gamma.controller.admin;
 
 import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import it.chalmers.gamma.requests.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
@@ -16,15 +14,12 @@ import it.chalmers.gamma.response.group.GroupEditedResponse;
 import it.chalmers.gamma.service.AuthorityLevelService;
 import it.chalmers.gamma.service.FKITGroupService;
 import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.GroupWebsiteService;
 
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.WebsiteService;
 
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,8 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 public final class GroupAdminController {
 
     private final FKITGroupService fkitGroupService;
-    private final WebsiteService websiteService;
-    private final GroupWebsiteService groupWebsiteService;
     private final FKITSuperGroupService fkitSuperGroupService;
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final MembershipService membershipService;
@@ -59,14 +52,10 @@ public final class GroupAdminController {
 
     public GroupAdminController(
             FKITGroupService fkitGroupService,
-            WebsiteService websiteService,
-            GroupWebsiteService groupWebsiteService,
             FKITSuperGroupService fkitSuperGroupService,
             MembershipService membershipService,
             AuthorityLevelService authorityLevelService) {
         this.fkitGroupService = fkitGroupService;
-        this.websiteService = websiteService;
-        this.groupWebsiteService = groupWebsiteService;
         this.fkitSuperGroupService = fkitSuperGroupService;
         this.membershipService = membershipService;
         this.authorityLevelService = authorityLevelService;
@@ -85,21 +74,6 @@ public final class GroupAdminController {
 
         FKITGroupDTO group = this.fkitGroupService.createGroup(requestToDTO(createGroupRequest));
 
-        List<CreateGroupRequest.WebsiteInfo> websites = createGroupRequest.getWebsites();   // TODO move to service?
-        if (websites != null && !websites.isEmpty()) {
-            List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
-            for (CreateGroupRequest.WebsiteInfo websiteInfo : websites) {
-                WebsiteDTO website = this.websiteService.getWebsite(websiteInfo.getWebsite());
-                WebsiteUrlDTO websiteURL = new WebsiteUrlDTO(websiteInfo.getUrl(), website);
-                websiteURLs.add(websiteURL);
-            }
-            try {
-                this.groupWebsiteService.addGroupWebsites(group, websiteURLs);
-            } catch (DataIntegrityViolationException e) {
-                LOGGER.warn(e.getMessage());
-                LOGGER.warn("Warning was non-fatal, continuing without adding websites");
-            }
-        }
         if (createGroupRequest.getSuperGroup() != null) {   // TODO move to service?
             FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(createGroupRequest.getSuperGroup());
             if (superGroup == null) {
@@ -118,12 +92,6 @@ public final class GroupAdminController {
             throw new GroupDoesNotExistResponse();
         }
         this.fkitGroupService.editGroup(id, requestToDTO(request));
-        //FKITGroupDTO group = this.fkitGroupService.getDTOGroup(id);
-        /* List<WebsiteUrlDTO> websiteUrlDTOS = request.getWebsites()
-                .stream().map(w -> new WebsiteUrlDTO(
-                        w.getUrl(),
-                        this.websiteService.getWebsite(w.getWebsite()))).collect(Collectors.toList());
-        this.groupWebsiteService.addGroupWebsites(group, websiteUrlDTOS);*/
         return new GroupEditedResponse();
     }
 
@@ -132,9 +100,6 @@ public final class GroupAdminController {
         if (!this.fkitGroupService.groupExists(id)) {  // TODO Move to service?
             throw new GroupDoesNotExistResponse();
         }
-        this.groupWebsiteService.deleteWebsitesConnectedToGroup(
-                this.fkitGroupService.getGroup(id)
-        );
         this.membershipService.removeAllUsersFromGroup(this.fkitGroupService.getGroup(id));
         this.fkitGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();

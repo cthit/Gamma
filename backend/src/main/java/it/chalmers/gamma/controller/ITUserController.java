@@ -31,7 +31,6 @@ import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.service.ActivationCodeService;
 import it.chalmers.gamma.service.ITUserService;
 import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.UserWebsiteService;
 import it.chalmers.gamma.service.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -67,19 +66,16 @@ public final class ITUserController {
     private final ITUserService itUserService;
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
-    private final UserWebsiteService userWebsiteService;
     private final MembershipService membershipService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     public ITUserController(ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
-                            UserWebsiteService userWebsiteService,
                             MembershipService membershipService) {
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
-        this.userWebsiteService = userWebsiteService;
         this.membershipService = membershipService;
     }
 
@@ -129,13 +125,9 @@ public final class ITUserController {
     public GetITUserResponseObject getMe(Principal principal) {
         String cid = principal.getName();
         ITUserDTO user = this.itUserService.loadUser(cid);
-        //  List<WebsiteDTO> websites =
-        //          this.userWebsiteService.getWebsitesOrdered(
-        //                  this.userWebsiteService.getWebsites(user)
-        //          );
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
-        return new GetITUserResponse(user, groups, null).toResponseObject();
+        return new GetITUserResponse(user, groups).toResponseObject();
     }
 
     @GetMapping("/minified")
@@ -156,7 +148,7 @@ public final class ITUserController {
     public GetITUserRestrictedResponse.GetITUserRestrictedResponseObject getUser(@PathVariable("id") String id) {
         ITUserDTO user = this.itUserService.getITUser(id);
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
-        return new GetITUserRestrictedResponse(new ITUserRestrictedDTO(user), groups, null)
+        return new GetITUserRestrictedResponse(new ITUserRestrictedDTO(user), groups)
                 .toResponseObject();
     }
 
@@ -172,11 +164,6 @@ public final class ITUserController {
         ITUserDTO user = this.itUserService.loadUser(cid);
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
                 request.getEmail(), request.getPhone(), request.getLanguage(), request.getAcceptanceYear());
-        //  List<WebsiteUrlDTO> websiteURLs = new ArrayList<>();
-        //  List<WebsiteInterfaceDTO> userWebsite = new ArrayList<>(
-        //          this.userWebsiteService.getWebsites(user)
-        //  );
-        //  this.userWebsiteService.addWebsiteToUser(user, websiteURLs);
         return new UserEditedResponse();
     }
 
@@ -217,9 +204,6 @@ public final class ITUserController {
         if (!this.itUserService.passwordMatches(user, request.getPassword())) {
             throw new IncorrectCidOrPasswordResponse();
         }
-        this.userWebsiteService.deleteWebsitesConnectedToUser(
-                this.itUserService.getITUser(user.getId().toString())
-        );
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
         return new UserDeletedResponse();

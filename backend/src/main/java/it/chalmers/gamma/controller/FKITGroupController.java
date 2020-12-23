@@ -48,12 +48,10 @@ public final class FKITGroupController {
         final FKITGroupDTO group = this.fkitGroupService.getGroup(id);
         List<MembershipDTO> minifiedMembers = this.membershipService.getMembershipsInGroup(group);
         List<NoAccountMembershipDTO> noAccountMemberships = this.membershipService.getNoAccountMembership(group);
-        //List<WebsiteDTO> websites = this.getWebsiteDTO(group);
         return new GetFKITGroupResponse(
                 group,
                 toRestrictedMembershipDTO(minifiedMembers),
-                noAccountMemberships,
-                null)
+                noAccountMemberships)
             .toResponseObject();
     }
 
@@ -76,8 +74,7 @@ public final class FKITGroupController {
                 .stream().map(g -> new GetFKITGroupResponse(
                         g,
                         toRestrictedMembershipDTO(this.membershipService.getMembershipsInGroup(g)),
-                        this.membershipService.getNoAccountMembership(g),
-                        null
+                        this.membershipService.getNoAccountMembership(g)
                 )).collect(Collectors.toList());
 
         return new GetAllFKITGroupsResponse(responses);
@@ -91,8 +88,7 @@ public final class FKITGroupController {
         List<GetFKITGroupResponse> groupResponses = groups.stream().map(g -> new GetFKITGroupResponse(
                 g,
                 toRestrictedMembershipDTO(this.membershipService.getMembershipsInGroup(g)),
-                this.membershipService.getNoAccountMembership(g),
-                null
+                this.membershipService.getNoAccountMembership(g)
         )).collect(Collectors.toList());
         return new GetActiveFKITGroupsResponse(groupResponses).toResponseObject();
     }

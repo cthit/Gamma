@@ -24,7 +24,6 @@ public class CreateGroupRequest {
     @NotNull(message = "A_FUNCTION_MUST_BE_PROVIDED")
     private Text function;
     private String avatarURL;
-    private List<WebsiteInfo> websites;
 
     @NotNull(message = "BECOMES_ACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
     private Calendar becomesActive;
@@ -36,20 +35,12 @@ public class CreateGroupRequest {
 
     private String email;
 
-    public List<WebsiteInfo> getWebsites() {
-        return this.websites;
-    }
-
     public String getSuperGroup() {
         return this.superGroup;
     }
 
     public void setSuperGroup(String superGroup) {
         this.superGroup = superGroup;
-    }
-
-    public void setWebsites(List<WebsiteInfo> websites) {
-        this.websites = websites;
     }
 
     public void setDescription(Text description) {
@@ -130,7 +121,6 @@ public class CreateGroupRequest {
                 && Objects.equals(this.description, that.description)
                 && Objects.equals(this.function, that.function)
                 && Objects.equals(this.avatarURL, that.avatarURL)
-                && Objects.equals(this.websites, that.websites)
                 && Objects.equals(this.becomesActive, that.becomesActive)
                 && Objects.equals(this.becomesInactive, that.becomesInactive)
                 && Objects.equals(this.superGroup, that.superGroup)
@@ -144,7 +134,6 @@ public class CreateGroupRequest {
                 this.description,
                 this.function,
                 this.avatarURL,
-                this.websites,
                 this.becomesActive,
                 this.becomesInactive,
                 this.superGroup,
@@ -160,58 +149,10 @@ public class CreateGroupRequest {
                 + ", description=" + this.description
                 + ", function=" + this.function
                 + ", avatarURL='" + this.avatarURL + '\''
-                + ", websites=" + this.websites
                 + ", becomesActive=" + this.becomesActive
                 + ", becomesInactive=" + this.becomesInactive
                 + ", superGroup='" + this.superGroup + '\''
                 + ", email='" + this.email + '\''
                 + '}';
-    }
-
-    public static class WebsiteInfo {
-        String website;
-        String url;
-
-        public String getWebsite() {
-            return this.website;
-        }
-
-        public void setWebsite(String website) {
-            this.website = website;
-        }
-
-        public String getUrl() {
-            return this.url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            WebsiteInfo that = (WebsiteInfo) o;
-            return this.website.equals(that.website)
-                    && this.url.equals(that.url);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(this.website, this.url);
-        }
-
-        @Override
-        public String toString() {
-            return "WebsiteInfo{"
-                    + "website='" + this.website + '\''
-                    + ", url='" + this.url + '\''
-                    + '}';
-        }
     }
 }

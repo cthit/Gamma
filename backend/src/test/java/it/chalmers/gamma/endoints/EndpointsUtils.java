@@ -15,7 +15,6 @@ import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,12 +89,7 @@ public final class EndpointsUtils { // Doesn't return me endpoints.
                 new Endpoint("/admin/users/whitelist/%s/valid", GET, WhitelistDTO.class),
                 new Endpoint("/admin/users/whitelist/%s", GET, WhitelistDTO.class),
                 new Endpoint("/admin/users/whitelist/%s", PUT, WhitelistDTO.class),
-                new Endpoint("/admin/users/whitelist/%s", DELETE, WhitelistDTO.class),
-                new Endpoint("/admin/websites", POST),
-                new Endpoint("/admin/websites/%s", PUT, WebsiteDTO.class),
-                new Endpoint("/admin/websites/%s", DELETE, WebsiteDTO.class)
-
-
+                new Endpoint("/admin/users/whitelist/%s", DELETE, WhitelistDTO.class)
                 );
     }
 

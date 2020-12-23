@@ -6,7 +6,6 @@ import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
 
 import it.chalmers.gamma.domain.dto.membership.NoAccountMembershipDTO;
 import it.chalmers.gamma.domain.dto.membership.RestrictedMembershipDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteUrlDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +16,17 @@ public class GetFKITGroupResponse {
     private final FKITGroupDTO group;
     private final List<RestrictedMembershipDTO> groupMembers;
     private final List<NoAccountMembershipDTO> noAccountMembers;
-    private final List<WebsiteUrlDTO> websites;
 
     public GetFKITGroupResponse(FKITGroupDTO group,
                                 List<RestrictedMembershipDTO> groupMembers,
-                                List<NoAccountMembershipDTO> noAccountMembers,
-                                List<WebsiteUrlDTO> websites) {
+                                List<NoAccountMembershipDTO> noAccountMembers) {
         this.group = group;
         this.groupMembers = groupMembers;
         this.noAccountMembers = noAccountMembers;
-        this.websites = websites;
     }
 
     public GetFKITGroupResponse(FKITGroupDTO group, List<RestrictedMembershipDTO> groupMembers) {
-        this(group, groupMembers, null, null);
+        this(group, groupMembers, null);
     }
 
     public FKITGroupDTO getGroup() {
@@ -43,10 +39,6 @@ public class GetFKITGroupResponse {
 
     public List<NoAccountMembershipDTO> getNoAccountMembers() {
         return this.noAccountMembers;
-    }
-
-    public List<WebsiteUrlDTO> getWebsites() {
-        return this.websites;
     }
 
     public GetFKITGroupResponseObject toResponseObject() {

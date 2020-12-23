@@ -12,7 +12,6 @@ public class EditITUserRequest {
     private String phone;
     private Language language;
     private int acceptanceYear;
-    private List<CreateGroupRequest.WebsiteInfo> websites;
 
     public void setNick(String nick) {
         this.nick = nick;
@@ -36,14 +35,6 @@ public class EditITUserRequest {
 
     public void setLanguage(Language language) {
         this.language = language;
-    }
-
-    public List<CreateGroupRequest.WebsiteInfo> getWebsites() {
-        return this.websites;
-    }
-
-    public void setWebsites(List<CreateGroupRequest.WebsiteInfo> websites) {
-        this.websites = websites;
     }
 
     public void setAcceptanceYear(int acceptanceYear) {
@@ -92,14 +83,13 @@ public class EditITUserRequest {
             && this.lastName.equals(that.lastName)
             && this.email.equals(that.email)
             && this.phone.equals(that.phone)
-            && this.language == that.language
-            && this.websites.equals(that.websites);
+            && this.language == that.language;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.nick, this.firstName, this.lastName, this.email,
-            this.phone, this.language, this.websites);
+            this.phone, this.language);
     }
 
     @Override
@@ -111,7 +101,6 @@ public class EditITUserRequest {
             + ", email='" + this.email + '\''
             + ", phone='" + this.phone + '\''
             + ", language=" + this.language
-            + ", websites=" + this.websites
             + '}';
     }
 }

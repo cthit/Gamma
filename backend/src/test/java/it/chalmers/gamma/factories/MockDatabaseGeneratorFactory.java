@@ -10,7 +10,6 @@ import it.chalmers.gamma.domain.dto.post.PostDTO;
 import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.dto.user.ITUserDTO;
 import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.domain.dto.website.WebsiteDTO;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +36,6 @@ public class MockDatabaseGeneratorFactory {
     @Autowired
     private MockMembershipFactory mockMembershipFactory;
     @Autowired
-    private MockWebsiteFactory mockWebsiteFactory;
-    @Autowired
     private MockAuthorityFactory mockAuthorityFactory;
     @Autowired
     private MockPostFactory mockPostFactory;
@@ -57,7 +54,6 @@ public class MockDatabaseGeneratorFactory {
     private AuthorityDTO authority;
     private ITClientDTO client;
     private WhitelistDTO whitelist;
-    private WebsiteDTO website;
 
     private static boolean hasGeneratedMock;
 
@@ -87,7 +83,6 @@ public class MockDatabaseGeneratorFactory {
             this.client = this.mockITClientFactory.saveClient(this.mockITClientFactory.generateClient(
                     GenerationUtils.generateRandomString()
             ));
-            this.website = this.mockWebsiteFactory.saveWebsite(this.mockWebsiteFactory.generateWebsite());
             this.mockMembershipFactory.saveMembership(
                     this.mockMembershipFactory.generateMembership(
                             this.post,
@@ -122,9 +117,6 @@ public class MockDatabaseGeneratorFactory {
         }
         if (this.client.getClass() == c) {
             return this.client.getId();
-        }
-        if (this.website.getClass() == c) {
-            return this.website.getId();
         }
         if (this.authorityLevel.getClass() == c) {
             return this.authorityLevel.getId();
