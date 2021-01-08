@@ -1,14 +1,14 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.service.ApiKeyService;
-import it.chalmers.gamma.service.AuthorityLevelService;
-import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupService;
-import it.chalmers.gamma.service.FKITSuperGroupService;
-import it.chalmers.gamma.service.ITClientService;
+import it.chalmers.gamma.apikey.ApiKeyService;
+import it.chalmers.gamma.authority.AuthorityLevelService;
+import it.chalmers.gamma.authority.AuthorityService;
+import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.supergroup.FKITSuperGroupService;
+import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.user.ITUserService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.PostService;
+import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.post.PostService;
 
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public final class BootstrapServiceHelper {
 
     private final ITUserService userService;
-    private final FKITGroupService groupService;
+    private final GroupService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
@@ -27,14 +27,14 @@ public final class BootstrapServiceHelper {
     private final FKITSuperGroupService superGroupService;
 
     public BootstrapServiceHelper(ITUserService userService,
-                                   FKITGroupService groupService,
-                                   AuthorityLevelService authorityLevelService,
-                                   PostService postService,
-                                   MembershipService membershipService,
-                                   AuthorityService authorityService,
-                                   ITClientService itClientService,
-                                   ApiKeyService apiKeyService,
-                                   FKITSuperGroupService superGroupService) {
+                                  GroupService groupService,
+                                  AuthorityLevelService authorityLevelService,
+                                  PostService postService,
+                                  MembershipService membershipService,
+                                  AuthorityService authorityService,
+                                  ITClientService itClientService,
+                                  ApiKeyService apiKeyService,
+                                  FKITSuperGroupService superGroupService) {
         this.userService = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
@@ -50,7 +50,7 @@ public final class BootstrapServiceHelper {
         return this.userService;
     }
 
-    public FKITGroupService getGroupService() {
+    public GroupService getGroupService() {
         return this.groupService;
     }
 

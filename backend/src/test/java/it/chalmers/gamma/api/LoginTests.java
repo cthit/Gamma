@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.user.ITUserDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.utils.CharacterTypes;

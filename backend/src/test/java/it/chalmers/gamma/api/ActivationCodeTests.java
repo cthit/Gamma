@@ -4,10 +4,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.user.ActivationCodeDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
-import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.activationcode.ActivationCodeService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

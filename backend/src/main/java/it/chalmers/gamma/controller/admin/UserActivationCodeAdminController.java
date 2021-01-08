@@ -1,12 +1,12 @@
 package it.chalmers.gamma.controller.admin;
 
-import it.chalmers.gamma.response.activationcode.ActivationCodeDeletedResponse;
-import it.chalmers.gamma.response.activationcode.ActivationCodeDoesNotExistResponse;
-import it.chalmers.gamma.response.activationcode.GetActivationCodeResponse;
-import it.chalmers.gamma.response.activationcode.GetActivationCodeResponse.GetActivationCodeResponseObject;
-import it.chalmers.gamma.response.activationcode.GetAllActivationCodesResponse;
-import it.chalmers.gamma.response.activationcode.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
-import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.activationcode.response.ActivationCodeDeletedResponse;
+import it.chalmers.gamma.activationcode.response.ActivationCodeDoesNotExistResponse;
+import it.chalmers.gamma.activationcode.response.GetActivationCodeResponse;
+import it.chalmers.gamma.activationcode.response.GetActivationCodeResponse.GetActivationCodeResponseObject;
+import it.chalmers.gamma.activationcode.response.GetAllActivationCodesResponse;
+import it.chalmers.gamma.activationcode.response.GetAllActivationCodesResponse.GetAllActivationCodesResponseObject;
+import it.chalmers.gamma.activationcode.ActivationCodeService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.supergroup.FKITSuperGroup;
+import it.chalmers.gamma.post.Post;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Embeddable;

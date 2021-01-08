@@ -2,8 +2,8 @@ package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import it.chalmers.gamma.db.entity.FKITGroup;
-import it.chalmers.gamma.db.entity.FKITSuperGroup;
+import it.chalmers.gamma.group.Group;
+import it.chalmers.gamma.supergroup.FKITSuperGroup;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,9 +21,9 @@ public class FKITGroupToSuperGroupPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private FKITGroup group;
+    private Group group;
 
-    public FKITGroupToSuperGroupPK(FKITSuperGroup superGroup, FKITGroup group) {
+    public FKITGroupToSuperGroupPK(FKITSuperGroup superGroup, Group group) {
         this.superGroup = superGroup;
         this.group = group;
     }
@@ -40,11 +40,11 @@ public class FKITGroupToSuperGroupPK implements Serializable {
         this.superGroup = superGroup;
     }
 
-    public FKITGroup getGroup() {
+    public Group getGroup() {
         return this.group;
     }
 
-    public void setGroup(FKITGroup group) {
+    public void setGroup(Group group) {
         this.group = group;
     }
 

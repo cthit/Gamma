@@ -1,6 +1,6 @@
 package it.chalmers.gamma.gdpr;
 
-import it.chalmers.gamma.user.request.requests.ChangeGDPRStatusRequest;
+import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.user.response.GDPRStatusEditedResponse;
 import it.chalmers.gamma.user.response.GetAllITUsersResponse;

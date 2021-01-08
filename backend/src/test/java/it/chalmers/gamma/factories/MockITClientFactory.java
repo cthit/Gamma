@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.dto.access.ITClientDTO;
-import it.chalmers.gamma.service.ITClientService;
+import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import org.springframework.beans.factory.annotation.Autowired;

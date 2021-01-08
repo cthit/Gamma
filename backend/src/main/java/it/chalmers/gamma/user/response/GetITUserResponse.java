@@ -3,8 +3,8 @@ package it.chalmers.gamma.user.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.user.ITUserDTO;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;

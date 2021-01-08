@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.dto.post.PostDTO;
-import it.chalmers.gamma.service.PostService;
+import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.post.PostService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;

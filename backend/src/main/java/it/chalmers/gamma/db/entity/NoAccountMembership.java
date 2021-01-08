@@ -2,7 +2,9 @@ package it.chalmers.gamma.db.entity;
 
 import it.chalmers.gamma.db.entity.pk.NoAccountMembershipPK;
 
-import it.chalmers.gamma.domain.dto.membership.NoAccountMembershipDTO;
+import it.chalmers.gamma.domain.membership.NoAccountMembershipDTO;
+import it.chalmers.gamma.post.Post;
+
 import java.util.Objects;
 
 import javax.persistence.Column;

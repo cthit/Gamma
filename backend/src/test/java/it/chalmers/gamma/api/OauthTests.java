@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.domain.dto.access.ITClientDTO;
+import it.chalmers.gamma.domain.access.ITClientDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITClientFactory;
 import it.chalmers.gamma.factories.MockITUserApprovalFactory;

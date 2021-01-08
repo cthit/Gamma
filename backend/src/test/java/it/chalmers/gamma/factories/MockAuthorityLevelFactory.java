@@ -1,8 +1,8 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.user.request.requests.AddAuthorityLevelRequest;
-import it.chalmers.gamma.service.AuthorityLevelService;
+import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.authority.AddAuthorityLevelRequest;
+import it.chalmers.gamma.authority.AuthorityLevelService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;

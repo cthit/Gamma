@@ -4,7 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.domain.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class WhitelistTests {
     }
 
     /**
-     * Tests first to delete whitelist that has valid activation code using the id, then the cid.
+     * Tests first to delete whitelist that has valid activationcode code using the id, then the cid.
      * @throws Exception if mockMvc fails.
      */
     @WithUserDetails("admin")
@@ -70,7 +70,7 @@ public class WhitelistTests {
     }
 
     /**
-     * Tests first to delete whitelist that does not hav a activation code using the id, then the cid.
+     * Tests first to delete whitelist that does not hav a activationcode code using the id, then the cid.
      * @throws Exception if mockMvc fails.
      */
     @WithUserDetails("admin")

@@ -1,9 +1,9 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
-import it.chalmers.gamma.user.request.requests.WhitelistCodeRequest;
-import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.domain.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
+import it.chalmers.gamma.activationcode.ActivationCodeService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Instant;

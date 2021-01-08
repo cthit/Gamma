@@ -1,8 +1,8 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.domain.dto.access.ITClientUserAccessDTO;
-import it.chalmers.gamma.response.client.ApprovedITClientsResponse;
-import it.chalmers.gamma.service.ITUserApprovalService;
+import it.chalmers.gamma.domain.access.ITClientUserAccessDTO;
+import it.chalmers.gamma.client.response.ApprovedITClientsResponse;
+import it.chalmers.gamma.approval.ITUserApprovalService;
 
 import java.security.Principal;
 import java.util.stream.Collectors;

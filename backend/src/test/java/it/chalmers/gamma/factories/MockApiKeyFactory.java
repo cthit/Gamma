@@ -1,8 +1,8 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.dto.access.ApiKeyDTO;
-import it.chalmers.gamma.user.request.requests.CreateApiKeyRequest;
-import it.chalmers.gamma.service.ApiKeyService;
+import it.chalmers.gamma.domain.access.ApiKeyDTO;
+import it.chalmers.gamma.apikey.request.CreateApiKeyRequest;
+import it.chalmers.gamma.apikey.ApiKeyService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Instant;

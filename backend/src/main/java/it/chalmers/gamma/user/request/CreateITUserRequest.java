@@ -2,7 +2,7 @@ package it.chalmers.gamma.user.request;
 
 import it.chalmers.gamma.domain.Language;
 
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.domain.user.WhitelistDTO;
 import java.util.Objects;
 
 import javax.validation.constraints.AssertTrue;

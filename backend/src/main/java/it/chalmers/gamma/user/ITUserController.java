@@ -1,12 +1,12 @@
 package it.chalmers.gamma.user;
 
-import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.membership.MembershipDTO;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.domain.dto.user.ITUserRestrictedDTO;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.membership.MembershipDTO;
+import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.domain.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.domain.user.WhitelistDTO;
 import it.chalmers.gamma.filter.JwtAuthenticationFilter;
-import it.chalmers.gamma.user.request.requests.ChangeUserPassword;
+import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.user.request.CreateITUserRequest;
 import it.chalmers.gamma.user.request.DeleteMeRequest;
 import it.chalmers.gamma.user.request.EditITUserRequest;
@@ -27,10 +27,10 @@ import it.chalmers.gamma.user.response.UserCreatedResponse;
 import it.chalmers.gamma.user.response.UserDeletedResponse;
 import it.chalmers.gamma.user.response.UserEditedResponse;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
-import it.chalmers.gamma.response.whitelist.WhitelistDoesNotExistsException;
-import it.chalmers.gamma.service.ActivationCodeService;
-import it.chalmers.gamma.service.MembershipService;
-import it.chalmers.gamma.service.WhitelistService;
+import it.chalmers.gamma.whitelist.response.WhitelistDoesNotExistsException;
+import it.chalmers.gamma.activationcode.ActivationCodeService;
+import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.whitelist.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.IOException;
@@ -112,6 +112,7 @@ public final class ITUserController {
 
                         createITUserRequest.getPassword());
                 this.whitelistService.removeWhiteListedCID(createITUserRequest.getWhitelist().getCid());
+                this.activationCodeService.deleteCode(createITUserRequest.getWhitelist().getCid());
                 return new UserCreatedResponse();
             }
         } catch (WhitelistDoesNotExistsException e) {

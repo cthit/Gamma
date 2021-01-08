@@ -1,15 +1,15 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.group.FKITGroupDTO;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
-import it.chalmers.gamma.filter.OauthRedirectFilter;
+import it.chalmers.gamma.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.handlers.LoginRedirectHandler;
-import it.chalmers.gamma.service.ApiKeyService;
-import it.chalmers.gamma.service.AuthorityService;
-import it.chalmers.gamma.service.FKITGroupService;
+import it.chalmers.gamma.apikey.ApiKeyService;
+import it.chalmers.gamma.authority.AuthorityService;
+import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.user.ITUserService;
 
-import it.chalmers.gamma.service.PasswordResetService;
+import it.chalmers.gamma.passwordreset.PasswordResetService;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
-    private final FKITGroupService fkitGroupService;
+    private final GroupService groupService;
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
     private final LoginRedirectHandler loginRedirectHandler;
@@ -61,14 +61,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
-                             FKITGroupService fkitGroupService,
+                             GroupService groupService,
                              LoginRedirectHandler loginRedirectHandler) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
-        this.fkitGroupService = fkitGroupService;
+        this.groupService = groupService;
         this.loginRedirectHandler = loginRedirectHandler;
     }
 
@@ -118,7 +118,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addRedirectFilter(HttpSecurity http) {
         try {
-            OauthRedirectFilter oauthRedirectFilter = new OauthRedirectFilter();
+            OAuthRedirectFilter oauthRedirectFilter = new OAuthRedirectFilter();
             http.addFilterBefore(oauthRedirectFilter, BasicAuthenticationFilter.class);
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding redirects");
@@ -204,7 +204,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            List<FKITGroupDTO> groups = this.fkitGroupService.getGroups();
+            List<FKITGroupDTO> groups = this.groupService.getGroups();
             for (FKITGroupDTO group : groups) {
                 addPathRole(http, group);
             }

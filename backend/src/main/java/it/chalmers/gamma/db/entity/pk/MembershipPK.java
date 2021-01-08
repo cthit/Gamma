@@ -1,9 +1,9 @@
 package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.group.Group;
 import it.chalmers.gamma.user.ITUser;
-import it.chalmers.gamma.db.entity.Post;
+import it.chalmers.gamma.post.Post;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -21,7 +21,7 @@ public class MembershipPK implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private FKITGroup fkitGroup;
+    private Group group;
 
     @ManyToOne
     private Post post;
@@ -37,12 +37,12 @@ public class MembershipPK implements Serializable {
         this.itUser = ituserId;
     }
 
-    public FKITGroup getFKITGroup() {
-        return this.fkitGroup;
+    public Group getFKITGroup() {
+        return this.group;
     }
 
-    public void setFKITGroup(FKITGroup fkitGroupId) {
-        this.fkitGroup = fkitGroupId;
+    public void setFKITGroup(Group groupId) {
+        this.group = groupId;
     }
 
     public Post getPost() {
@@ -57,7 +57,7 @@ public class MembershipPK implements Serializable {
     public String toString() {
         return "MembershipPK{"
                 + "itUser=" + this.itUser
-                + ", fkitGroup=" + this.fkitGroup
+                + ", group=" + this.group
                 + ", post=" + this.post
                 + '}';
     }
@@ -72,13 +72,13 @@ public class MembershipPK implements Serializable {
         }
         MembershipPK that = (MembershipPK) o;
         return Objects.equals(this.itUser, that.itUser)
-                && Objects.equals(this.fkitGroup, that.fkitGroup)
+                && Objects.equals(this.group, that.group)
                 && Objects.equals(this.post, that.post);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.itUser, this.fkitGroup, this.post);
+        return Objects.hash(this.itUser, this.group, this.post);
     }
 
 

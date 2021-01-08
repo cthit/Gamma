@@ -1,7 +1,7 @@
 package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.db.entity.FKITGroup;
+import it.chalmers.gamma.group.Group;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -20,7 +20,7 @@ public class NoAccountMembershipPK implements Serializable {
     private String itUser;
     @ManyToOne
     @JoinColumn(name = "fkit_group_id")
-    private FKITGroup fkitGroup;
+    private Group group;
 
     public String getITUser() {
         return this.itUser;
@@ -30,12 +30,12 @@ public class NoAccountMembershipPK implements Serializable {
         this.itUser = ituserId;
     }
 
-    public FKITGroup getFKITGroup() {
-        return this.fkitGroup;
+    public Group getFKITGroup() {
+        return this.group;
     }
 
-    public void setFKITGroup(FKITGroup fkitGroupId) {
-        this.fkitGroup = fkitGroupId;
+    public void setFKITGroup(Group groupId) {
+        this.group = groupId;
     }
 
     @Override
@@ -48,20 +48,20 @@ public class NoAccountMembershipPK implements Serializable {
         }
         NoAccountMembershipPK that = (NoAccountMembershipPK) o;
         return Objects.equals(this.itUser, that.itUser)
-                && Objects.equals(this.fkitGroup, that.fkitGroup);
+                && Objects.equals(this.group, that.group);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(this.itUser, this.fkitGroup);
+        return Objects.hash(this.itUser, this.group);
     }
 
     @Override
     public String toString() {
         return "NoAccountMembershipPK{"
                 + "itUser='" + this.itUser + '\''
-                + ", fkitGroup=" + this.fkitGroup
+                + ", group=" + this.group
                 + '}';
     }
 }

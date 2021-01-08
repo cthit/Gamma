@@ -1,10 +1,10 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.user.request.requests.CreateGroupRequest;
-import it.chalmers.gamma.service.FKITGroupService;
+import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.group.request.CreateGroupRequest;
+import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.Calendar;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class MockFKITGroupFactory {
 
     @Autowired
-    private FKITGroupService groupService;
+    private GroupService groupService;
 
     public FKITGroupDTO generateActiveFKITGroup(String groupName, FKITSuperGroupDTO superGroupDTO) {
         Calendar current = Calendar.getInstance();

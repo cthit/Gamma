@@ -2,11 +2,11 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.db.entity.Text;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.dto.post.PostDTO;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.domain.user.ITUserDTO;
 
 import java.time.Year;
 import java.util.Calendar;

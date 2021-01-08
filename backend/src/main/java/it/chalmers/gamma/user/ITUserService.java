@@ -1,8 +1,8 @@
 package it.chalmers.gamma.user;
 
-import it.chalmers.gamma.service.AuthorityService;
+import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
+import it.chalmers.gamma.domain.user.ITUserDTO;
 
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
@@ -207,6 +207,11 @@ public class ITUserService implements UserDetailsService {
 
     public boolean passwordMatches(ITUserDTO user, String password) {
         return this.passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public ITUser fromDTO(ITUserDTO itUserDTO) {
+        return this.itUserRepository.findById(itUserDTO.getId())
+                .orElseThrow(UserNotFoundResponse::new);
     }
 
 }

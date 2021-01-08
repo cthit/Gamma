@@ -1,9 +1,9 @@
 package it.chalmers.gamma.user;
 
-import it.chalmers.gamma.domain.dto.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.dto.user.ITUserDTO;
-import it.chalmers.gamma.user.request.requests.AdminChangePasswordRequest;
-import it.chalmers.gamma.user.request.requests.AdminViewCreateITUserRequest;
+import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.requests.AdminChangePasswordRequest;
+import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.user.request.EditITUserRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.user.response.GetAllITUsersResponse;
@@ -16,7 +16,7 @@ import it.chalmers.gamma.user.response.UserCreatedResponse;
 import it.chalmers.gamma.user.response.UserDeletedResponse;
 import it.chalmers.gamma.user.response.UserEditedResponse;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
-import it.chalmers.gamma.service.MembershipService;
+import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;

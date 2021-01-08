@@ -2,7 +2,7 @@ package it.chalmers.gamma.db.entity.pk;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import it.chalmers.gamma.db.entity.ITClient;
+import it.chalmers.gamma.client.ITClient;
 import it.chalmers.gamma.user.ITUser;
 
 import java.io.Serializable;

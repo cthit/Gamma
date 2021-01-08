@@ -1,6 +1,6 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.service.ITUserApprovalService;
+import it.chalmers.gamma.approval.ITUserApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

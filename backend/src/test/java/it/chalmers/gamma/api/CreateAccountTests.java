@@ -4,11 +4,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.domain.dto.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.dto.user.WhitelistDTO;
+import it.chalmers.gamma.domain.user.ActivationCodeDTO;
+import it.chalmers.gamma.domain.user.WhitelistDTO;
 import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
-import it.chalmers.gamma.service.ActivationCodeService;
+import it.chalmers.gamma.activationcode.ActivationCodeService;
 import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.utils.JSONUtils;
 import java.util.Objects;

@@ -2,7 +2,7 @@ package it.chalmers.gamma.user.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.domain.dto.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.domain.user.ITUserRestrictedDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
