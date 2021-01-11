@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.Cid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -57,7 +58,7 @@ public class Bootstrap implements CommandLineRunner {
     }
 
     private boolean shouldRunBootstrap() {
-        return !this.helper.getUserService().userExists("admin");
+        return !this.helper.getUserFinder().userExists(new Cid("admin"));
     }
 
 }

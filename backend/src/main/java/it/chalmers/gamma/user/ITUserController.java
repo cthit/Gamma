@@ -1,5 +1,6 @@
 package it.chalmers.gamma.user;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.membership.MembershipDTO;
 import it.chalmers.gamma.domain.user.ITUserDTO;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -62,16 +64,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/users")
 public final class ITUserController {
 
+    private final ITUserFinder userFinder;
     private final ITUserService itUserService;
     private final ActivationCodeService activationCodeService;
     private final WhitelistService whitelistService;
     private final MembershipService membershipService;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public ITUserController(ITUserService itUserService,
+    public ITUserController(ITUserFinder userFinder,
+                            ITUserService itUserService,
                             ActivationCodeService activationCodeService,
                             WhitelistService whitelistService,
                             MembershipService membershipService) {
+        this.userFinder = userFinder;
         this.itUserService = itUserService;
         this.activationCodeService = activationCodeService;
         this.whitelistService = whitelistService;
@@ -90,7 +95,7 @@ public final class ITUserController {
             }
             WhitelistDTO user = this.whitelistService.getWhitelist(createITUserRequest.getWhitelist().getCid());
 
-            if (this.itUserService.userExists(user.getCid())) {
+            if (this.userFinder.userExists(new Cid(user.getCid()))) {
                 throw new UserAlreadyExistsResponse();
             }
             if (!this.activationCodeService.codeMatches(createITUserRequest.getCode(), user.getCid())) {
@@ -123,8 +128,7 @@ public final class ITUserController {
 
     @GetMapping("/me")
     public GetITUserResponseObject getMe(Principal principal) {
-        String cid = principal.getName();
-        ITUserDTO user = this.itUserService.loadUser(cid);
+        ITUserDTO user = extractUser(principal);
         List<FKITGroupDTO> groups = this.membershipService.getMembershipsByUser(user)
                 .stream().map(MembershipDTO::getFkitGroupDTO).collect(Collectors.toList());
         return new GetITUserResponse(user, groups).toResponseObject();
@@ -133,7 +137,7 @@ public final class ITUserController {
     @GetMapping("/minified")
     public GetAllITUsersMinifiedResponseObject getAllUserMini() {
         List<GetITUserMinifiedResponse> itUsers = this.itUserService
-                .loadAllUsers()
+                .getAllUsers()
                 .stream()
                 .map(ITUserRestrictedDTO::new)
                 .map(GetITUserMinifiedResponse::new)
@@ -146,7 +150,7 @@ public final class ITUserController {
      */
     @GetMapping("/{id}")
     public GetITUserRestrictedResponse.GetITUserRestrictedResponseObject getUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getITUser(id);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(id));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
         return new GetITUserRestrictedResponse(new ITUserRestrictedDTO(user), groups)
                 .toResponseObject();
@@ -154,14 +158,13 @@ public final class ITUserController {
 
     @GetMapping("/{id}/avatar")
     public void getUserAvatar(@PathVariable("id") String id, HttpServletResponse response) throws IOException {
-        ITUserDTO user = this.itUserService.getITUser(id);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(id));
         response.sendRedirect(user.getAvatarUrl());
     }
 
     @PutMapping("/me")
     public UserEditedResponse editMe(Principal principal, @RequestBody EditITUserRequest request) {
-        String cid = principal.getName();
-        ITUserDTO user = this.itUserService.loadUser(cid);
+        ITUserDTO user = extractUser(principal);
         this.itUserService.editUser(user.getId(), request.getNick(), request.getFirstName(), request.getLastName(),
                 request.getEmail(), request.getPhone(), request.getLanguage(), request.getAcceptanceYear());
         return new UserEditedResponse();
@@ -169,8 +172,7 @@ public final class ITUserController {
 
     @PutMapping("/me/avatar")
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
-        String cid = principal.getName();
-        ITUserDTO user = this.itUserService.loadUser(cid);
+        ITUserDTO user = extractUser(principal);
         if (user == null) {
             throw new UserNotFoundResponse();
         } else {
@@ -210,7 +212,7 @@ public final class ITUserController {
     }
 
     private ITUserDTO extractUser(Principal principal) {
-        return this.itUserService.loadUser(principal.getName());
+        return this.userFinder.getUser(new Cid(principal.getName()));
     }
 
 }

@@ -6,6 +6,7 @@ import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.supergroup.FKITSuperGroupService;
 import it.chalmers.gamma.client.ITClientService;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.post.PostService;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Component()
 public final class BootstrapServiceHelper {
 
+    private final ITUserFinder userFinder;
     private final ITUserService userService;
     private final GroupService groupService;
     private final AuthorityLevelService authorityLevelService;
@@ -26,7 +28,8 @@ public final class BootstrapServiceHelper {
     private final ApiKeyService apiKeyService;
     private final FKITSuperGroupService superGroupService;
 
-    public BootstrapServiceHelper(ITUserService userService,
+    public BootstrapServiceHelper(ITUserFinder userFinder,
+                                  ITUserService userService,
                                   GroupService groupService,
                                   AuthorityLevelService authorityLevelService,
                                   PostService postService,
@@ -35,6 +38,7 @@ public final class BootstrapServiceHelper {
                                   ITClientService itClientService,
                                   ApiKeyService apiKeyService,
                                   FKITSuperGroupService superGroupService) {
+        this.userFinder = userFinder;
         this.userService = userService;
         this.groupService = groupService;
         this.authorityLevelService = authorityLevelService;
@@ -80,5 +84,9 @@ public final class BootstrapServiceHelper {
 
     public FKITSuperGroupService getSuperGroupService() {
         return this.superGroupService;
+    }
+
+    public ITUserFinder getUserFinder() {
+        return userFinder;
     }
 }

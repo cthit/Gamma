@@ -1,9 +1,11 @@
 package it.chalmers.gamma.factories;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.user.ActivationCodeDTO;
 import it.chalmers.gamma.domain.user.ITUserDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.request.CreateITUserRequest;
 import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.utils.CharacterTypes;
@@ -18,6 +20,9 @@ public class MockITUserFactory {
 
     @Autowired
     private ITUserService userService;
+
+    @Autowired
+    private ITUserFinder userFinder;
 
     public ITUserDTO generateITUser(String cid, boolean activated) {
         return new ITUserDTO(
@@ -65,7 +70,7 @@ public class MockITUserFactory {
                 "password"
         );
         this.userService.setAccountActivated(user, userDTO.isActivated());
-        return this.userService.getITUser(user.getCid());
+        return this.userFinder.getUser(new Cid(user.getCid()));
     }
 
     public CreateITUserRequest createValidCreateRequest(ITUserDTO user, ActivationCodeDTO activationCode) {

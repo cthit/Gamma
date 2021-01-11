@@ -7,6 +7,7 @@ import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.apikey.ApiKeyService;
 import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.ITUserService;
 
 import it.chalmers.gamma.passwordreset.PasswordResetService;
@@ -42,9 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
-    //@Value("${application.production}")
-    //private boolean inProduction;
-
+    private final ITUserFinder userFinder;
     private final ITUserService itUserService;
     private final AuthorityService authorityService;
     private final ApiKeyService apiKeyService;
@@ -57,12 +56,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(ITUserService itUserService, AuthorityService authorityService,
+    public WebSecurityConfig(ITUserService itUserService,
+                             AuthorityService authorityService,
                              ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
                              GroupService groupService,
-                             LoginRedirectHandler loginRedirectHandler) {
+                             LoginRedirectHandler loginRedirectHandler,
+                             ITUserFinder userFinder) {
         this.itUserService = itUserService;
         this.authorityService = authorityService;
         this.apiKeyService = apiKeyService;
@@ -70,6 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.passwordEncoder = passwordEncoder;
         this.groupService = groupService;
         this.loginRedirectHandler = loginRedirectHandler;
+        this.userFinder = userFinder;
     }
 
     @Override
@@ -144,7 +146,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.issuer,
                             this.apiKeyService,
                             this.passwordResetService,
-                            this.baseFrontendUrl
+                            this.baseFrontendUrl,
+                            this.userFinder
                     )
             );
         } catch (Exception e) {

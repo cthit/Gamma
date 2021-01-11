@@ -14,6 +14,7 @@ import it.chalmers.gamma.membership.response.EditedMembershipResponse;
 import it.chalmers.gamma.membership.response.MemberAddedToGroupResponse;
 import it.chalmers.gamma.membership.response.MemberRemovedFromGroupResponse;
 
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -28,21 +29,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/groups")
 public final class MembershipAdminController {
-    private final ITUserService itUserService;
+
+    private final ITUserFinder userFinder;
     private final PostService postService;
     private final GroupService groupService;
     private final MembershipService membershipService;
 
-    public MembershipAdminController(
-            ITUserService itUserService,
-            PostService postService,
-            GroupService groupService,
-            MembershipService membershipService) {
-        this.itUserService = itUserService;
+    public MembershipAdminController(ITUserFinder userFinder,
+                                     PostService postService,
+                                     GroupService groupService,
+                                     MembershipService membershipService) {
+        this.userFinder = userFinder;
         this.postService = postService;
         this.groupService = groupService;
         this.membershipService = membershipService;
@@ -55,7 +58,7 @@ public final class MembershipAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUserDTO user = this.itUserService.getITUser(request.getUserId());
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(request.getUserId()));
         FKITGroupDTO fkitGroup = this.groupService.getGroup(id);
         PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
@@ -66,21 +69,21 @@ public final class MembershipAdminController {
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") String id,
                                                               @PathVariable("user") String userId) {
         FKITGroupDTO group = this.groupService.getGroup(id);
-        ITUserDTO user = this.itUserService.getITUser(userId);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(userId));
         this.membershipService.removeUserFromGroup(group, user);
         return new MemberRemovedFromGroupResponse();
     }
 
     @PutMapping("/{id}/members/{user}")
     public EditedMembershipResponse editUserInGroup(@PathVariable("id") String groupId,
-                                                  @PathVariable("user") String userId,
-                                                  @Valid @RequestBody EditMembershipRequest request,
-                                                  BindingResult result) {
+                                                    @PathVariable("user") String userId,
+                                                    @Valid @RequestBody EditMembershipRequest request,
+                                                    BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         FKITGroupDTO group = this.groupService.getGroup(groupId);
-        ITUserDTO user = this.itUserService.getITUser(userId);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(userId));
         MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, group);
         PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.editMembership(membership, request.getUnofficialName(), post);

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.user;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.group.FKITGroupDTO;
 import it.chalmers.gamma.domain.user.ITUserDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
@@ -41,12 +42,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/users")
 public final class ITUserAdminController {
 
+    private final ITUserFinder userFinder;
     private final ITUserService itUserService;
     private final MembershipService membershipService;
 
-    public ITUserAdminController(
-            ITUserService itUserService,
-            MembershipService membershipService) {
+    public ITUserAdminController(ITUserFinder userFinder, ITUserService itUserService, MembershipService membershipService) {
+        this.userFinder = userFinder;
         this.itUserService = itUserService;
         this.membershipService = membershipService;
     }
@@ -58,7 +59,7 @@ public final class ITUserAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUserDTO user = this.itUserService.getITUser(id);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(id));
         this.itUserService.setPassword(user, request.getPassword());
         return new PasswordChangedResponse();
     }
@@ -66,7 +67,7 @@ public final class ITUserAdminController {
     @PutMapping("/{id}")
     public UserEditedResponse editUser(@PathVariable("id") String id,
                                            @RequestBody EditITUserRequest request) {
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
+        if (!this.userFinder.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
         this.itUserService.editUser(
@@ -84,7 +85,7 @@ public final class ITUserAdminController {
 
     @DeleteMapping("/{id}")
     public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getITUser(id);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(id));
         this.membershipService.removeAllMemberships(user);
         this.itUserService.removeUser(user.getId());
         return new UserDeletedResponse();
@@ -92,7 +93,7 @@ public final class ITUserAdminController {
 
     @GetMapping("/{id}")
     public GetITUserResponseObject getUser(@PathVariable("id") String id) {
-        ITUserDTO user = this.itUserService.getITUser(id);
+        ITUserDTO user = this.userFinder.getUser(UUID.fromString(id));
         List<FKITGroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
         return new GetITUserResponse(user, groups).toResponseObject();
     }
@@ -100,7 +101,7 @@ public final class ITUserAdminController {
     @GetMapping()
     public GetAllITUsersResponseObject getAllUsers() {
 
-        List<ITUserDTO> users = this.itUserService.loadAllUsers();
+        List<ITUserDTO> users = this.itUserService.getAllUsers();
         List<GetITUserResponse> userResponses = users.stream()
                 .map(u -> new GetITUserResponse(u, this.membershipService.getUsersGroupDTO(u)))
                 .collect(Collectors.toList());
@@ -116,7 +117,7 @@ public final class ITUserAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (this.itUserService.userExists(createITUserRequest.getCid())) {
+        if (this.userFinder.userExists(new Cid(createITUserRequest.getCid()))) {
             throw new UserAlreadyExistsResponse();
         }
         this.itUserService.createUser(

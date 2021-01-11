@@ -1,6 +1,8 @@
 package it.chalmers.gamma.whitelist;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.whitelist.request.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
 
@@ -43,14 +45,13 @@ import org.springframework.web.bind.annotation.RestController;
 public final class UsersWhitelistAdminController {
 
     private final WhitelistService whitelistService;
-    private final ITUserService itUserService;
+    private final ITUserFinder userFinder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersWhitelistAdminController.class);
 
-    public UsersWhitelistAdminController(WhitelistService whitelistService,
-                                         ITUserService itUserService) {
+    public UsersWhitelistAdminController(WhitelistService whitelistService, ITUserFinder userFinder) {
         this.whitelistService = whitelistService;
-        this.itUserService = itUserService;
+        this.userFinder = userFinder;
     }
 
     @PostMapping()
@@ -67,7 +68,7 @@ public final class UsersWhitelistAdminController {
                 if (this.whitelistService.isCIDWhiteListed(cid)) {
                     throw new WhitelistAlreadyAddedException();
                 }
-                if (this.itUserService.userExists(cid)) {
+                if (this.userFinder.userExists(new Cid(cid))) {
                     throw new UserAlreadyExistsResponse();
                 }
                 this.whitelistService.addWhiteListedCID(cid);
@@ -92,7 +93,6 @@ public final class UsersWhitelistAdminController {
      */
     @GetMapping("/{id}/valid")      // Should this be changed to a Pathvar?
     public WhitelistIsValidResponseObject validCid(@PathVariable("id") String id) {
-
         return new WhitelistIsValidResponse(this.whitelistService.isCIDWhiteListed(id)).toResponseObject();
     }
 

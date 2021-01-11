@@ -5,6 +5,7 @@ import it.chalmers.gamma.user.ITUser;
 
 import it.chalmers.gamma.domain.user.ITUserDTO;
 import it.chalmers.gamma.domain.user.PasswordResetTokenDTO;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.util.TokenUtils;
 import java.util.Objects;
@@ -16,15 +17,17 @@ public class PasswordResetService {
     private final PasswordResetTokenRepository repository;
     private final MailSenderService mailSenderService;
     private final ITUserService itUserService;
+    private final ITUserFinder userFinder;
 
     public PasswordResetService(PasswordResetTokenRepository repository,
                                 MailSenderService mailSenderService,
-                                ITUserService itUserService) {
+                                ITUserService itUserService,
+                                ITUserFinder userFinder) {
         this.repository = repository;
         this.mailSenderService = mailSenderService;
         this.itUserService = itUserService;
+        this.userFinder = userFinder;
     }
-
 
     public void handlePasswordReset(ITUserDTO user) {
 
@@ -53,30 +56,30 @@ public class PasswordResetService {
      * @param token              the token word that is associated with the password reset
      */
     private void setToken(PasswordResetToken passwordResetToken, ITUserDTO userDTO, String token) {
-        ITUser user = this.itUserService.fromDTO(userDTO);
+        ITUser user = this.userFinder.getUserEntity(userDTO);
         passwordResetToken.setItUser(user);
         passwordResetToken.setToken(token);
         this.repository.save(passwordResetToken);
     }
 
     public void editToken(ITUserDTO userDTO, String token) {
-        ITUser user = this.itUserService.fromDTO(userDTO);
+        ITUser user = this.userFinder.getUserEntity(userDTO);
         setToken(Objects.requireNonNull(this.repository.findByItUser(user).orElse(null)), user.toDTO(), token);
     }
 
     public boolean userHasActiveReset(ITUserDTO user) {
-        return this.repository.existsByItUser(this.itUserService.fromDTO(user));
+        return this.repository.existsByItUser(this.userFinder.getUserEntity(user));
     }
 
     public boolean tokenMatchesUser(ITUserDTO user, String token) {
-        PasswordResetToken storedToken = this.repository.findByItUser(this.itUserService.fromDTO(user))
+        PasswordResetToken storedToken = this.repository.findByItUser(this.userFinder.getUserEntity(user))
                 .orElse(null);
         return storedToken != null && storedToken.getToken().equals(token);
     }
 
     public void removeToken(ITUserDTO user) {
         this.repository.delete(Objects.requireNonNull(
-                this.repository.findByItUser(this.itUserService.fromDTO(user)).orElse(null)));
+                this.repository.findByItUser(this.userFinder.getUserEntity(user)).orElse(null)));
     }
 
 

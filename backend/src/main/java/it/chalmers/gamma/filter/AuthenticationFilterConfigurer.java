@@ -1,6 +1,7 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.apikey.ApiKeyService;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.ITUserService;
 
 import it.chalmers.gamma.passwordreset.PasswordResetService;
@@ -19,6 +20,7 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
     private final ITUserService itUserService;
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
+    private final ITUserFinder userFinder;
 
     public AuthenticationFilterConfigurer(
             ITUserService itUserService,
@@ -26,13 +28,15 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
             String issuer,
             ApiKeyService apiKeyService,
             PasswordResetService passwordResetService,
-            String baseFrontendUrl) {
+            String baseFrontendUrl,
+            ITUserFinder userFinder) {
         this.itUserService = itUserService;
         this.secretKey = secretKey;
         this.issuer = issuer;
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.baseFrontendUrl = baseFrontendUrl;
+        this.userFinder = userFinder;
     }
 
     @Override
@@ -47,9 +51,10 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
                 this.itUserService
         );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
-                this.itUserService,
+                this.baseFrontendUrl,
                 this.passwordResetService,
-                this.baseFrontendUrl);
+                this.userFinder
+        );
         builder.addFilterBefore(c, UsernamePasswordAuthenticationFilter.class);
         builder.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
         builder.addFilterBefore(apiKeyAuthenticationFilter, BasicAuthenticationFilter.class);

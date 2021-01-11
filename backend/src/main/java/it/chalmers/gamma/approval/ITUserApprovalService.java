@@ -2,6 +2,7 @@ package it.chalmers.gamma.approval;
 
 import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.db.entity.pk.ITUserApprovalPK;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.user.ITUserApprovalDTO;
 
 import java.util.Collection;
@@ -11,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.domain.user.ITUserApprovalPKDTO;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.ITUserService;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
@@ -22,15 +23,15 @@ public class ITUserApprovalService implements ApprovalStore {
 
     private final ITUserApprovalRepository itUserApprovalRepository;
     private final ITClientService itClientService;
-    private final ITUserService userService;
+    private final ITUserFinder userFinder;
 
     public ITUserApprovalService(
             ITUserApprovalRepository itUserApprovalRepository,
             ITClientService itClientService,
-            ITUserService userService) {
+            ITUserFinder userFinder) {
         this.itUserApprovalRepository = itUserApprovalRepository;
         this.itClientService = itClientService;
-        this.userService = userService;
+        this.userFinder = userFinder;
     }
 
     @Override
@@ -70,7 +71,7 @@ public class ITUserApprovalService implements ApprovalStore {
 
     public void saveApproval(String cid, String clientId) {
         ITUserApprovalPK itUserApprovalPK = new ITUserApprovalPK();
-        itUserApprovalPK.setItUser(this.userService.getITUser(this.userService.getITUser(cid)));
+        itUserApprovalPK.setItUser(userFinder.getUserEntity(new Cid(cid)));
 
         itUserApprovalPK.setItClient(this.itClientService.getITClient(
                 Objects.requireNonNull(this.itClientService.getITClientById(clientId).orElse(null)))

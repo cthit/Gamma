@@ -2,6 +2,7 @@ package it.chalmers.gamma.gdpr;
 
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.response.GDPRStatusEditedResponse;
 import it.chalmers.gamma.user.response.GetAllITUsersResponse;
 import it.chalmers.gamma.user.response.GetITUserResponse;
@@ -28,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class GDPRAdminController {
 
     private final ITUserService itUserService;
+    private final ITUserFinder userFinder;
 
-    public GDPRAdminController(ITUserService itUserService) {
+    public GDPRAdminController(ITUserService itUserService, ITUserFinder userFinder) {
         this.itUserService = itUserService;
+        this.userFinder = userFinder;
     }
 
     @PutMapping("/{id}")
@@ -40,7 +43,7 @@ public class GDPRAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (!this.itUserService.userExists(UUID.fromString(id))) {
+        if (!this.userFinder.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
         this.itUserService.editGdpr(UUID.fromString(id), request.isGdpr());
@@ -49,7 +52,7 @@ public class GDPRAdminController {
 
     @GetMapping("/minified")
     public GetAllITUsersResponse getAllUserMini() {
-        List<GetITUserResponse> userResponses = this.itUserService.loadAllUsers()
+        List<GetITUserResponse> userResponses = this.itUserService.getAllUsers()
                 .stream().map(GetITUserResponse::new).collect(Collectors.toList());
         return new GetAllITUsersResponse(userResponses);
     }

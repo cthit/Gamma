@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.ITUserFinder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,20 +29,19 @@ public class MembershipService {
     private final GroupService groupService;
     private final PostService postService;
     private final NoAccountMembershipRepository noAccountMembershipRepository;
-    private final ITUserService itUserService;
+    private final ITUserFinder userFinder;
 
     public MembershipService(MembershipRepository membershipRepository,
                              GroupService groupService,
                              PostService postService,
                              NoAccountMembershipRepository noAccountMembershipRepository,
-                             ITUserService itUserService) {
+                             ITUserFinder userFinder) {
         this.membershipRepository = membershipRepository;
         this.groupService = groupService;
         this.postService = postService;
         this.noAccountMembershipRepository = noAccountMembershipRepository;
-        this.itUserService = itUserService;
+        this.userFinder = userFinder;
     }
-
 
     //TODO check which methods should be left in this class,
     // many are probably never going to be used.
@@ -58,7 +57,7 @@ public class MembershipService {
     public MembershipDTO addUserToGroup(FKITGroupDTO groupDTO, ITUserDTO userDTO, PostDTO postDTO, String postname) {
         MembershipPK pk = new MembershipPK();
         pk.setFKITGroup(this.groupService.fromDTO(groupDTO));
-        pk.setITUser(this.itUserService.fromDTO(userDTO));
+        pk.setITUser(this.userFinder.getUserEntity(userDTO));
         pk.setPost(this.postService.getPost(postDTO));
         Membership membership = new Membership();
         membership.setId(pk);
@@ -101,21 +100,10 @@ public class MembershipService {
      */
     public List<FKITGroupDTO> getUsersGroupDTO(ITUserDTO user) {
         List<Membership> memberships = this.membershipRepository.findAllById_ItUser(
-                this.itUserService.getITUser(user)
+                this.userFinder.getUserEntity(user)
         );
         return memberships.stream()
                 .map(m -> m.getId().getFKITGroup().toDTO()).collect(Collectors.toList());
-    }
-
-    /**
-     * finds which group the userDTO has a specific postDTO in.
-     */
-    public FKITGroupDTO getGroupDTOIdByUserAndPost(ITUserDTO userDTO, PostDTO postDTO) {
-        Membership membership = this.membershipRepository
-                .findById_ItUserAndId_Post(
-                        this.itUserService.fromDTO(userDTO),
-                        this.postService.getPost(postDTO)).orElseThrow(MembershipDoesNotExistResponse::new);
-        return membership.getId().getFKITGroup().toDTO();
     }
 
     public List<MembershipDTO> getUserDTOByGroupAndPost(FKITGroupDTO group, PostDTO post) {
@@ -138,14 +126,14 @@ public class MembershipService {
 
     public List<MembershipDTO> getMembershipsByUser(ITUserDTO userDTO) {
         List<Membership> memberships = this.membershipRepository
-                .findAllById_ItUser(this.itUserService.fromDTO(userDTO));
+                .findAllById_ItUser(this.userFinder.getUserEntity(userDTO));
         return memberships.stream().map(Membership::toDTO).collect(Collectors.toList());
     }
 
     public MembershipDTO getMembershipByUserAndGroup(ITUserDTO userDTO, FKITGroupDTO groupDTO) {
         return this.membershipRepository
                 .findById_ItUserAndId_Group(
-                        this.itUserService.fromDTO(userDTO),
+                        this.userFinder.getUserEntity(userDTO),
                         this.groupService.fromDTO(groupDTO)).orElseThrow(MembershipDoesNotExistResponse::new)
                 .toDTO();
     }
@@ -175,7 +163,7 @@ public class MembershipService {
 
     public void removeAllMemberships(ITUserDTO user) {
         List<Membership> memberships = this.membershipRepository
-                .findAllById_ItUser(this.itUserService.fromDTO(user));
+                .findAllById_ItUser(this.userFinder.getUserEntity(user));
         memberships.forEach(this.membershipRepository::delete);
     }
 
@@ -196,7 +184,7 @@ public class MembershipService {
 
     private Membership getMembership(MembershipDTO membershipDTO) {
         return this.membershipRepository.findById_ItUserAndId_Group(
-                this.itUserService.fromDTO(membershipDTO.getUser()),
+                this.userFinder.getUserEntity(membershipDTO.getUser()),
                 this.groupService.fromDTO(membershipDTO.getFkitGroupDTO())).orElse(null);
     }
 

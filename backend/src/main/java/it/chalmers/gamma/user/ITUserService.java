@@ -24,25 +24,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.UseObjectForClearerAPI"})
 @Service("userDetailsService")
 public class ITUserService implements UserDetailsService {
 
+    private final ITUserFinder userFinder;
     private final ITUserRepository itUserRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final AuthorityService authorityService;
 
-    private static final String USER_ERROR_MSG = "User could not be found";
-
-    /*
-     * These dependencies are needed for the authentication system to work,
-     * since that does not go through the controller layer.
-     * Can be fixed later, and probably should, to minimize dependencies between services.
-     */
-    public ITUserService(ITUserRepository itUserRepository, AuthorityService authorityService,
-                         PasswordEncoder passwordEncoder) {
+    public ITUserService(ITUserRepository itUserRepository,
+                         AuthorityService authorityService,
+                         PasswordEncoder passwordEncoder,
+                         ITUserFinder userFinder) {
+        this.userFinder = userFinder;
         this.itUserRepository = itUserRepository;
         this.authorityService = authorityService;
         this.passwordEncoder = passwordEncoder;
@@ -53,29 +47,13 @@ public class ITUserService implements UserDetailsService {
         String cidOrEmailLowerCase = cidOrEmail.toLowerCase();
         ITUser user = this.itUserRepository.findByEmail(cidOrEmailLowerCase)
                 .orElseGet(() -> this.itUserRepository.findByCid(cidOrEmailLowerCase)
-                        .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG)));
+                        .orElseThrow(() -> new UsernameNotFoundException("User could not be found")));
         return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
 
     }
 
-    public ITUserDTO loadUser(String cid) {
-        String cidLowerCase = cid.toLowerCase();
-        return this.itUserRepository.findByCid(cidLowerCase)
-                .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
-                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
-    }
-
-
-    public List<ITUserDTO> loadAllUsers() {
+    public List<ITUserDTO> getAllUsers() {
         return this.itUserRepository.findAll().stream().map(ITUser::toDTO).collect(Collectors.toList());
-    }
-
-    public boolean userExists(String cid) {
-        return this.itUserRepository.existsByCid(cid);
-    }
-
-    public boolean userExists(UUID id) {
-        return this.itUserRepository.existsById(id);
     }
 
     public ITUserDTO createUser(UUID id,
@@ -126,7 +104,7 @@ public class ITUserService implements UserDetailsService {
     public void editUser(UUID user, String nick, String firstName, String lastName,
                          String email, String phone, Language language, int acceptanceYear) {
         ITUser itUser = this.itUserRepository.findById(user)
-                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
+                .orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
 
         itUser.setNick(nick == null ? itUser.getNick() : nick);
         itUser.setFirstName(firstName == null ? itUser.getFirstName() : firstName);
@@ -139,47 +117,21 @@ public class ITUserService implements UserDetailsService {
         this.itUserRepository.save(itUser);
     }
 
-    public ITUserDTO getITUser(String idCidOrEmail) {
-        ITUser user;
-        String idCidOrEmailLowerCase = idCidOrEmail.toLowerCase();
-        if (UUIDUtil.validUUID(idCidOrEmail)) {
-            user = this.itUserRepository.findById(UUID.fromString(idCidOrEmail))
-                    .orElseThrow(UserNotFoundResponse::new);
-        } else {
-            user = this.itUserRepository.findByEmail(idCidOrEmailLowerCase)
-                    .orElseGet(() -> this.itUserRepository.findByCid(idCidOrEmailLowerCase)
-                            .orElseThrow(UserNotFoundResponse::new));
-        }
-        return user.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(user.toDTO()));
-    }
-
-    public ITUser getITUser(ITUserDTO userDTO) {
-        return this.itUserRepository.findById(userDTO.getId())
-                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
-    }
-
-    public ITUserDTO getUserByEmail(String email) {
-        return this.itUserRepository.findByCid(email)
-                .map(u -> u.toUserDetailsDTO(this.authorityService.getGrantedAuthorities(u.toDTO())))
-                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
-    }
-
     public void setPassword(ITUserDTO userDTO, String password) {
-        ITUser user = this.getITUser(userDTO);
+        ITUser user = userFinder.getUserEntity(userDTO);
         user.setPassword(this.passwordEncoder.encode(password));
         user.setActivated(true);
         this.itUserRepository.save(user);
     }
 
     public void editGdpr(UUID id, boolean gdpr) {
-        ITUser user = this.itUserRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(USER_ERROR_MSG));
+        ITUser user = userFinder.getUserEntity(id);
         user.setGdpr(gdpr);
         this.itUserRepository.save(user);
     }
 
-    public void editProfilePicture(ITUserDTO userDTO, MultipartFile file) {
-        ITUser user = this.getITUser(userDTO);
+    protected void editProfilePicture(ITUserDTO userDTO, MultipartFile file) {
+        ITUser user = userFinder.getUserEntity(userDTO);
         if (user == null) {
             throw new UserNotFoundResponse();
         }
@@ -200,18 +152,13 @@ public class ITUserService implements UserDetailsService {
     }
 
     public void setAccountActivated(ITUserDTO userDTO, boolean activated) {
-        ITUser user = this.getITUser(userDTO);
+        ITUser user = userFinder.getUserEntity(userDTO);
         user.setActivated(activated);
         this.itUserRepository.save(user).toDTO();
     }
 
     public boolean passwordMatches(ITUserDTO user, String password) {
         return this.passwordEncoder.matches(password, user.getPassword());
-    }
-
-    public ITUser fromDTO(ITUserDTO itUserDTO) {
-        return this.itUserRepository.findById(itUserDTO.getId())
-                .orElseThrow(UserNotFoundResponse::new);
     }
 
 }

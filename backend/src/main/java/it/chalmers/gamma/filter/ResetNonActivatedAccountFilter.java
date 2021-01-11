@@ -1,6 +1,8 @@
 package it.chalmers.gamma.filter;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
 import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.passwordreset.PasswordResetService;
@@ -17,16 +19,16 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
 
     private final String baseFrontendUrl;
     private static final String USERNAME_PARAMETER = "username";
-    private final ITUserService itUserService;
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetNonActivatedAccountFilter.class);
     private final PasswordResetService passwordResetService;
+    private final ITUserFinder userFinder;
 
-    public ResetNonActivatedAccountFilter(ITUserService itUserService,
+    public ResetNonActivatedAccountFilter(String baseFrontendUrl,
                                           PasswordResetService passwordResetService,
-                                          String baseFrontendUrl) {
-        this.itUserService = itUserService;
-        this.passwordResetService = passwordResetService;
+                                          ITUserFinder userFinder) {
         this.baseFrontendUrl = baseFrontendUrl;
+        this.passwordResetService = passwordResetService;
+        this.userFinder = userFinder;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                ITUserDTO userDTO = this.itUserService.getITUser(username);
+                ITUserDTO userDTO = this.userFinder.getUser(new Cid(username));
                 if (!userDTO.isActivated()) {
                     this.passwordResetService.handlePasswordReset(userDTO);
                     String params = "accountLocked=true";

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.domain.group.FKITGroupDTO;
@@ -32,7 +33,7 @@ public class AdminBootstrap {
 
     void runAdminBootstrap() {
         String admin = "admin";
-        if (!this.helper.getUserService().userExists(admin)) {
+        if (!this.helper.getUserFinder().userExists(new Cid(admin))) {
             LOGGER.info("Creating admin user, cid:admin, password: " + this.config.getPassword());
             Text description = new Text();
             String descriptionText = "Super admin group, do not add anything to this group,"
