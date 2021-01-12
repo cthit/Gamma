@@ -1,9 +1,9 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.authority.AuthorityDTO;
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.authority.AuthorityDTO;
+import it.chalmers.gamma.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.authority.AddAuthorityRequest;
 import it.chalmers.gamma.authority.AuthorityService;
 import java.util.UUID;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.oauth;
 
-import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.client.ITClientDTO;
 import it.chalmers.gamma.client.ITClientService;
 
 import org.springframework.security.oauth2.provider.AuthorizationRequest;

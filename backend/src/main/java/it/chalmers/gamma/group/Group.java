@@ -1,8 +1,7 @@
 package it.chalmers.gamma.group;
 
 import it.chalmers.gamma.supergroup.FKITSuperGroup;
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
 import java.util.UUID;

@@ -1,8 +1,6 @@
 package it.chalmers.gamma.membership;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
-import it.chalmers.gamma.domain.membership.RestrictedMembershipDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.group.response.GetMembershipResponse;
 import it.chalmers.gamma.group.response.GetMembershipResponse.GetMembershipResponseObject;

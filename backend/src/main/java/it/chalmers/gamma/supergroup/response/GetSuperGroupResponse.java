@@ -1,7 +1,7 @@
 package it.chalmers.gamma.supergroup.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

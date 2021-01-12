@@ -1,7 +1,7 @@
 package it.chalmers.gamma.post.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.post.PostDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

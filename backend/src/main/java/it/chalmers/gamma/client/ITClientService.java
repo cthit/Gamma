@@ -1,7 +1,6 @@
 package it.chalmers.gamma.client;
 
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.client.response.ITClientDoesNotExistException;
 import it.chalmers.gamma.util.TokenUtils;
 
@@ -63,13 +62,6 @@ public class ITClientService implements ClientDetailsService {
         return this.itClientRepository.findAll().stream().map(ITClient::toDTO).collect(Collectors.toList());
     }
 
-    public ITClientDTO getITClient(UUID id) {
-        return this.itClientRepository.findById(id).map(ITClient::toDTO).orElseThrow();
-    }
-
-    public ITClient getITClient(ITClientDTO clientDTO) {
-        return this.itClientRepository.findById(clientDTO.getId()).orElse(null);
-    }
 
     public void removeITClient(UUID id) {
         this.itClientRepository.deleteById(id);
@@ -95,7 +87,4 @@ public class ITClientService implements ClientDetailsService {
         this.itClientRepository.save(itClient);
     }
 
-    public Optional<ITClientDTO> getITClientById(String clientId) {
-        return this.itClientRepository.findByClientId(clientId).map(ITClient::toDTO);
-    }
 }

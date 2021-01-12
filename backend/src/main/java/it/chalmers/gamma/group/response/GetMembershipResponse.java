@@ -1,6 +1,6 @@
 package it.chalmers.gamma.group.response;
 
-import it.chalmers.gamma.domain.membership.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.apikey;
 
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.access.ApiKeyDTO;
+import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.apikey.response.ApiKeyDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;
 

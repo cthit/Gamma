@@ -1,7 +1,7 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.client.ITClient;
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.domain.text.Text;
 
 import java.time.Instant;
 

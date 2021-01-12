@@ -1,9 +1,7 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.domain.authority.AuthorityDTO;
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.authority.response.AuthorityAddedResponse;
 import it.chalmers.gamma.authority.response.AuthorityDoesNotExistResponse;

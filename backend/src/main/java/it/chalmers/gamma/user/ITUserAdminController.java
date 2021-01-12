@@ -1,8 +1,7 @@
 package it.chalmers.gamma.user;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.user.request.EditITUserRequest;

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
 import it.chalmers.gamma.supergroup.FKITSuperGroupService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import org.springframework.beans.factory.annotation.Autowired;

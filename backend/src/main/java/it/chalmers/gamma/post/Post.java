@@ -2,8 +2,8 @@ package it.chalmers.gamma.post;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.domain.text.Text;
+
 import java.util.Objects;
 import java.util.UUID;
 

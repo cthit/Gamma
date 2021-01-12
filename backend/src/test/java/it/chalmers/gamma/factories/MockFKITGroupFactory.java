@@ -1,8 +1,8 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
 import it.chalmers.gamma.group.request.CreateGroupRequest;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.utils.CharacterTypes;

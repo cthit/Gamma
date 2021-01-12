@@ -1,6 +1,6 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.authority.AddAuthorityLevelRequest;
 import it.chalmers.gamma.authority.AuthorityLevelService;
 import it.chalmers.gamma.utils.CharacterTypes;

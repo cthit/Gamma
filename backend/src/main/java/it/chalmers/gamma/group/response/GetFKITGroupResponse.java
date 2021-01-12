@@ -2,10 +2,10 @@ package it.chalmers.gamma.group.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
 
-import it.chalmers.gamma.domain.membership.NoAccountMembershipDTO;
-import it.chalmers.gamma.domain.membership.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.NoAccountMembershipDTO;
+import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

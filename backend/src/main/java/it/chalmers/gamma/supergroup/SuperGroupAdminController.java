@@ -1,6 +1,5 @@
 package it.chalmers.gamma.supergroup;
 
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
 import it.chalmers.gamma.supergroup.request.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.group.response.GroupAlreadyExistsResponse;

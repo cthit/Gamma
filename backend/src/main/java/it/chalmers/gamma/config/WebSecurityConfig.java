@@ -1,6 +1,6 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.handlers.LoginRedirectHandler;

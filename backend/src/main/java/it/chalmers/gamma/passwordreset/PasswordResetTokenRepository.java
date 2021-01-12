@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, UUID> {
-    Optional<PasswordResetToken> findByItUser(ITUser user);
-
-    boolean existsByItUser(ITUser user);
+    Optional<PasswordResetToken> findByUserId(UUID userId);
+    boolean existsByUserId(UUID userId);
 }

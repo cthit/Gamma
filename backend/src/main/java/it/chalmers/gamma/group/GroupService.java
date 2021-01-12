@@ -1,8 +1,6 @@
 package it.chalmers.gamma.group;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
 import it.chalmers.gamma.group.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.supergroup.FKITSuperGroupService;
 import it.chalmers.gamma.util.UUIDUtil;
@@ -17,11 +15,9 @@ import org.springframework.stereotype.Service;
 public class GroupService {
 
     private final GroupRepository repo;
-
     private final FKITSuperGroupService superGroupService;
 
     public GroupService(GroupRepository repo, FKITSuperGroupService superGroupService) {
-
         this.repo = repo;
         this.superGroupService = superGroupService;
     }
@@ -110,10 +106,13 @@ public class GroupService {
         return this.repo.findAll().stream().map(Group::toDTO).collect(Collectors.toList());
     }
 
+    public FKITGroupDTO getGroup(UUID id) {
+        return this.repo.findById(id).orElseThrow(GroupDoesNotExistResponse::new).toDTO();
+    }
+
     public FKITGroupDTO getGroup(String name) {
         if (UUIDUtil.validUUID(name)) {
-            return this.repo.findById(UUID.fromString(name))
-                    .orElseThrow(GroupDoesNotExistResponse::new).toDTO();
+            return getGroup(UUID.fromString(name));
         }
         return this.repo.findByName(name.toLowerCase())
                 .orElseThrow(GroupDoesNotExistResponse::new)

@@ -1,6 +1,5 @@
 package it.chalmers.gamma.whitelist;
 
-import it.chalmers.gamma.domain.user.WhitelistDTO;
 import it.chalmers.gamma.whitelist.response.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.whitelist.response.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.util.UUIDUtil;

@@ -2,10 +2,10 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;

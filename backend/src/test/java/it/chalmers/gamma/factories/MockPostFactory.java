@@ -1,6 +1,6 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.post.PostService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;

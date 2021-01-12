@@ -1,6 +1,5 @@
 package it.chalmers.gamma.post;
 
-import it.chalmers.gamma.domain.post.PostDTO;
 import it.chalmers.gamma.post.response.GetMultiplePostsResponse;
 import it.chalmers.gamma.post.response.GetMultiplePostsResponse.GetMultiplePostsResponseObject;
 import it.chalmers.gamma.post.response.GetPostResponse;

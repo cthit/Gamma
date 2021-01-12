@@ -1,6 +1,5 @@
 package it.chalmers.gamma.activationcode;
 
-import it.chalmers.gamma.domain.user.ActivationCodeDTO;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;

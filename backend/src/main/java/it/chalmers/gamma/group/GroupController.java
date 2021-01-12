@@ -1,10 +1,9 @@
 package it.chalmers.gamma.group;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
-import it.chalmers.gamma.domain.membership.NoAccountMembershipDTO;
-import it.chalmers.gamma.domain.membership.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.MembershipDTO;
+import it.chalmers.gamma.membership.NoAccountMembershipDTO;
+import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;

@@ -1,7 +1,5 @@
 package it.chalmers.gamma.whitelist;
 
-import it.chalmers.gamma.domain.user.WhitelistDTO;
-
 import java.util.Objects;
 import java.util.UUID;
 

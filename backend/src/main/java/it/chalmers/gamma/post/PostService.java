@@ -1,8 +1,7 @@
 package it.chalmers.gamma.post;
 
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.domain.text.Text;
 
-import it.chalmers.gamma.domain.post.PostDTO;
 import it.chalmers.gamma.post.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;

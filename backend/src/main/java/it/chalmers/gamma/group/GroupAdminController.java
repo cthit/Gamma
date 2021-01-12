@@ -1,7 +1,6 @@
 package it.chalmers.gamma.group;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.group.request.CreateGroupRequest;
 import it.chalmers.gamma.response.FileNotFoundResponse;

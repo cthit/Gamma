@@ -3,8 +3,8 @@ package it.chalmers.gamma.user.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.user.ITUserRestrictedDTO;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.supergroup;
 
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
 
 import it.chalmers.gamma.supergroup.response.SuperGroupDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;

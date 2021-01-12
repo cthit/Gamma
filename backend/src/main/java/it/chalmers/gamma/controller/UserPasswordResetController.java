@@ -2,7 +2,7 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.passwordreset.request.ResetPasswordFinishRequest;
 import it.chalmers.gamma.passwordreset.request.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;

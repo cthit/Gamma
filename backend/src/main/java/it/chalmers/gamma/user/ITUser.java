@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.user.ITUserDTO;
 
 import java.time.Instant;
 import java.time.Year;
@@ -89,7 +88,7 @@ public class ITUser {
     @ColumnDefault("current_timestamp")
     private Instant lastModifiedAt;
 
-    public ITUser() {
+    protected ITUser() {
         this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
         this.lastModifiedAt = Instant.now();
@@ -97,7 +96,7 @@ public class ITUser {
         this.avatarUrl = "default.jpg";
     }
 
-    public ITUserDTO toDTO() {
+    protected ITUserDTO toDTO() {
         return new ITUserDTO(
                 this.id,
                 this.cid,
@@ -116,7 +115,7 @@ public class ITUser {
         );
     }
 
-    public ITUserDTO toUserDetailsDTO(List<GrantedAuthority> authorities) {
+    protected ITUserDTO toUserDetailsDTO(List<GrantedAuthority> authorities) {
         return new ITUserDTO(
                 this.id,
                 this.cid,
@@ -137,39 +136,39 @@ public class ITUser {
         );
     }
 
-    public UUID getId() {
+    protected UUID getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    protected void setId(UUID id) {
         this.id = id;
     }
 
-    public String getCid() {
+    protected String getCid() {
         return this.cid;
     }
 
-    public void setCid(String cid) {
+    protected void setCid(String cid) {
         this.cid = cid.toLowerCase();
     }
 
-    public void setPassword(String password) {
+    protected void setPassword(String password) {
         this.password = password;
     }
 
-    public String getNick() {
+    protected String getNick() {
         return this.nick;
     }
 
-    public void setNick(String nick) {
+    protected void setNick(String nick) {
         this.nick = nick;
     }
 
-    public String getFirstName() {
+    protected String getFirstName() {
         return this.firstName;
     }
 
-    public void setFirstName(String firstName) {
+    protected void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
@@ -177,95 +176,95 @@ public class ITUser {
         return this.lastName;
     }
 
-    public void setLastName(String lastName) {
+    protected void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    protected String getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    protected void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPhone() {
+    protected String getPhone() {
         return this.phone;
     }
 
-    public void setPhone(String phone) {
+    protected void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public Language getLanguage() {
+    protected Language getLanguage() {
         return this.language;
     }
 
-    public void setLanguage(Language language) {
+    protected void setLanguage(Language language) {
         this.language = language;
     }
 
-    public String getAvatarUrl() {
+    protected String getAvatarUrl() {
         return this.avatarUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
+    protected void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 
-    public boolean isGdpr() {
+    protected boolean isGdpr() {
         return this.gdpr;
     }
 
-    public void setGdpr(boolean gdpr) {
+    protected void setGdpr(boolean gdpr) {
         this.gdpr = gdpr;
     }
 
-    public boolean isUserAgreement() {
+    protected boolean isUserAgreement() {
         return this.userAgreement;
     }
 
-    public void setUserAgreement(boolean userAgreement) {
+    protected void setUserAgreement(boolean userAgreement) {
         this.userAgreement = userAgreement;
     }
 
-    public Year getAcceptanceYear() {
+    protected Year getAcceptanceYear() {
         return Year.of(this.acceptanceYear);
     }
 
-    public void setAcceptanceYear(Year acceptanceYear) {
+    protected void setAcceptanceYear(Year acceptanceYear) {
         this.acceptanceYear = acceptanceYear.getValue();
     }
 
-    public Instant getCreatedAt() {
+    protected Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    protected void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Instant getLastModifiedAt() {
+    protected Instant getLastModifiedAt() {
         return this.lastModifiedAt;
     }
 
-    public void setLastModifiedAt(Instant lastModifiedAt) {
+    protected void setLastModifiedAt(Instant lastModifiedAt) {
         this.lastModifiedAt = lastModifiedAt;
     }
 
-    public boolean isAccountLocked() {
+    protected boolean isAccountLocked() {
         return this.accountLocked;
     }
 
-    public void setAccountLocked(boolean accountLocked) {
+    protected void setAccountLocked(boolean accountLocked) {
         this.accountLocked = accountLocked;
     }
 
-    public boolean isActivated() {
+    protected boolean isActivated() {
         return this.activated;
     }
 
-    public void setActivated(boolean activated) {
+    protected void setActivated(boolean activated) {
         this.activated = activated;
     }
 

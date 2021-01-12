@@ -1,6 +1,6 @@
 package it.chalmers.gamma.post.request;
 
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.domain.text.Text;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 

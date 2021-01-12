@@ -1,6 +1,5 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
 import java.util.Objects;
 import java.util.UUID;
 

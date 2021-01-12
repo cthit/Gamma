@@ -1,7 +1,7 @@
 package it.chalmers.gamma.client.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.client.ITClientDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

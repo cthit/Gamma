@@ -1,6 +1,5 @@
 package it.chalmers.gamma.apikey;
 
-import it.chalmers.gamma.domain.access.ApiKeyDTO;
 import it.chalmers.gamma.apikey.request.CreateApiKeyRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.apikey.response.ApiKeyDeletedResponse;

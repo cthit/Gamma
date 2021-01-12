@@ -1,6 +1,6 @@
 package it.chalmers.gamma.utils;
 
-import it.chalmers.gamma.db.entity.Text;
+import it.chalmers.gamma.domain.text.Text;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;

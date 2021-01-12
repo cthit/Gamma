@@ -5,16 +5,16 @@ import static it.chalmers.gamma.endoints.Method.GET;
 import static it.chalmers.gamma.endoints.Method.POST;
 import static it.chalmers.gamma.endoints.Method.PUT;
 
-import it.chalmers.gamma.domain.access.ApiKeyDTO;
-import it.chalmers.gamma.domain.access.ITClientDTO;
-import it.chalmers.gamma.domain.authority.AuthorityDTO;
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
-import it.chalmers.gamma.domain.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
-import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.apikey.ApiKeyDTO;
+import it.chalmers.gamma.client.ITClientDTO;
+import it.chalmers.gamma.authority.AuthorityDTO;
+import it.chalmers.gamma.authority.AuthorityLevelDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.activationcode.ActivationCodeDTO;
+import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.whitelist.WhitelistDTO;
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,8 +1,5 @@
 package it.chalmers.gamma.approval;
 
-import it.chalmers.gamma.db.entity.pk.ITUserApprovalPK;
-import it.chalmers.gamma.domain.user.ITUserApprovalDTO;
-
 import java.util.Objects;
 
 import javax.persistence.EmbeddedId;
@@ -25,7 +22,7 @@ public class ITUserApproval {
     }
 
     public ITUserApprovalDTO toDTO() {
-        return new ITUserApprovalDTO(this.id.getItUser().toDTO(), this.id.getItClient().toDTO());
+        return new ITUserApprovalDTO(this.id.getUser(), this.id.getClient());
     }
 
     @Override

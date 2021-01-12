@@ -2,8 +2,8 @@ package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.activationcode.ActivationCodeDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
 import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.user.request.CreateITUserRequest;

@@ -1,9 +1,9 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.membership.MembershipDTO;
+import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;

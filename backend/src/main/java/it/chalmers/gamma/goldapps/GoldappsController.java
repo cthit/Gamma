@@ -1,10 +1,10 @@
 package it.chalmers.gamma.goldapps;
 
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.response.GoldappsReponse;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.supergroup.FKITSuperGroupService;

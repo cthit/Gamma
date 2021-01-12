@@ -1,8 +1,7 @@
 package it.chalmers.gamma.post;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.membership.RestrictedMembershipDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.post.request.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.apikey;
 
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.access.ApiKeyDTO;
+import it.chalmers.gamma.domain.text.Text;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;

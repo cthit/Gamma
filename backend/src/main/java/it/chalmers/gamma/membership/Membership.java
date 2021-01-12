@@ -1,8 +1,5 @@
 package it.chalmers.gamma.membership;
 
-import it.chalmers.gamma.db.entity.pk.MembershipPK;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
-
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -38,10 +35,11 @@ public class Membership {
 
     public MembershipDTO toDTO() {
         return new MembershipDTO(
-                this.id.getPost().toDTO(),
-                this.id.getFKITGroup().toDTO(),
+                this.id.getPostId(),
+                this.id.getGroupId(),
                 this.unofficialPostName,
-                this.id.getITUser().toDTO());
+                this.id.getUserId()
+        );
     }
 
     @Override

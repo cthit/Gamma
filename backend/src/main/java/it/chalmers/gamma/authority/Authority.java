@@ -1,8 +1,5 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.db.entity.pk.AuthorityPK;
-
-import it.chalmers.gamma.domain.authority.AuthorityDTO;
 import java.util.Objects;
 import java.util.UUID;
 

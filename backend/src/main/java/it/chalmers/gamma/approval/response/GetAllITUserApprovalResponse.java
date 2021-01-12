@@ -2,7 +2,7 @@ package it.chalmers.gamma.approval.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import it.chalmers.gamma.domain.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.user.ITUserRestrictedDTO;
 
 import java.util.List;
 

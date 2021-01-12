@@ -1,7 +1,7 @@
 package it.chalmers.gamma.apikey.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.access.ApiKeyDTO;
+import it.chalmers.gamma.apikey.ApiKeyDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

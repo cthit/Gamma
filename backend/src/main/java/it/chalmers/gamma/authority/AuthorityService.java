@@ -2,16 +2,13 @@ package it.chalmers.gamma.authority;
 
 import it.chalmers.gamma.supergroup.FKITSuperGroup;
 import it.chalmers.gamma.post.Post;
-import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.post.PostService;
-import it.chalmers.gamma.domain.authority.AuthorityDTO;
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
+import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.membership.MembershipDTO;
 
-import it.chalmers.gamma.domain.post.PostDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.authority.response.AuthorityDoesNotExistResponse;
 import java.util.ArrayList;
 import java.util.Calendar;

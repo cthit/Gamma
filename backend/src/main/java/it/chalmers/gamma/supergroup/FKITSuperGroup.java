@@ -1,7 +1,6 @@
 package it.chalmers.gamma.supergroup;
 
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
 
 import java.util.UUID;
 

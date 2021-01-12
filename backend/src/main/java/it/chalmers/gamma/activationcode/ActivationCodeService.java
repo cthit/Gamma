@@ -1,8 +1,7 @@
 package it.chalmers.gamma.activationcode;
 
 import it.chalmers.gamma.whitelist.Whitelist;
-import it.chalmers.gamma.domain.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.whitelist.WhitelistDTO;
 
 import it.chalmers.gamma.activationcode.response.ActivationCodeDoesNotExistResponse;
 import it.chalmers.gamma.util.TokenUtils;

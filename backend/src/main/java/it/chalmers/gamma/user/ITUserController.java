@@ -1,11 +1,9 @@
 package it.chalmers.gamma.user;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
-import it.chalmers.gamma.domain.user.ITUserRestrictedDTO;
-import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.membership.MembershipDTO;
+import it.chalmers.gamma.whitelist.WhitelistDTO;
 import it.chalmers.gamma.filter.JwtAuthenticationFilter;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.user.request.CreateITUserRequest;

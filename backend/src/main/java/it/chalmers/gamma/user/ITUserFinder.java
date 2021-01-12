@@ -2,8 +2,6 @@ package it.chalmers.gamma.user;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.user.ITUserDTO;
-import it.chalmers.gamma.user.response.UserNotFoundResponse;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +29,7 @@ public class ITUserFinder {
     }
 
     public ITUserDTO getUser(Email email) {
-        return getUser(email);
+        return getUserEntity(email).toDTO();
     }
 
     public ITUserDTO getUser(Cid cid) {
@@ -42,22 +40,22 @@ public class ITUserFinder {
         return getUserEntity(id).toDTO();
     }
 
-    public ITUser getUserEntity(Cid cid) {
+    protected ITUser getUserEntity(Cid cid) {
         return this.userRepository.findByCid(cid.value)
                 .orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
     }
 
-    public ITUser getUserEntity(Email email) {
+    protected ITUser getUserEntity(Email email) {
         return this.userRepository.findByEmail(email.value)
                 .orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
     }
 
-    public ITUser getUserEntity(UUID id) {
+    protected ITUser getUserEntity(UUID id) {
         return this.userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User could not be found"));
     }
 
-    public ITUser getUserEntity(ITUserDTO user) {
+    protected ITUser getUserEntity(ITUserDTO user) {
         return getUserEntity(user.getId());
     }
 

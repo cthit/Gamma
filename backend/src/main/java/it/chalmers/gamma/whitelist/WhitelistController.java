@@ -1,7 +1,6 @@
 package it.chalmers.gamma.whitelist;
 
-import it.chalmers.gamma.domain.user.ActivationCodeDTO;
-import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.activationcode.ActivationCodeDTO;
 import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.activationcode.response.ActivationCodeAddedResonse;

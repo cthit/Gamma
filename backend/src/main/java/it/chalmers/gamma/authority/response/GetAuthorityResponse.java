@@ -1,6 +1,6 @@
 package it.chalmers.gamma.authority.response;
 
-import it.chalmers.gamma.domain.authority.AuthorityDTO;
+import it.chalmers.gamma.authority.AuthorityDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

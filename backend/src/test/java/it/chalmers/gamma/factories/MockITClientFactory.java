@@ -1,6 +1,6 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.client.ITClientDTO;
 import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;

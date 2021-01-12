@@ -1,6 +1,5 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.domain.authority.AuthorityLevelDTO;
 import it.chalmers.gamma.authority.response.AuthorityLevelDoesNotExistException;
 import it.chalmers.gamma.util.UUIDUtil;
 import java.util.List;

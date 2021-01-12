@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import it.chalmers.gamma.db.entity.Text;
-import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.domain.text.Text;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;

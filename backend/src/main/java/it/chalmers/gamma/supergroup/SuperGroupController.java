@@ -1,7 +1,6 @@
 package it.chalmers.gamma.supergroup;
 
-import it.chalmers.gamma.domain.group.FKITSuperGroupDTO;
-import it.chalmers.gamma.domain.membership.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse;
 import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
 import it.chalmers.gamma.group.response.GetAllFKITGroupsMinifiedResponse;

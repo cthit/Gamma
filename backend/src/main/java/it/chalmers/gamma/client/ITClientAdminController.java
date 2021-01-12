@@ -1,6 +1,6 @@
 package it.chalmers.gamma.client;
 
-import it.chalmers.gamma.domain.access.ITClientDTO;
+import it.chalmers.gamma.client.request.AddITClientRequest;
 import it.chalmers.gamma.client.response.ClientAddedResponse;
 import it.chalmers.gamma.client.response.ClientAddedResponse.ClientAddedResponseObject;
 import it.chalmers.gamma.client.response.ClientEditedResponse;

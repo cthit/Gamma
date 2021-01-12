@@ -1,6 +1,6 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.whitelist.WhitelistDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
 import it.chalmers.gamma.whitelist.WhitelistService;

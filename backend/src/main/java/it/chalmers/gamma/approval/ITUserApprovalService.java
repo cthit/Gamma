@@ -1,9 +1,9 @@
 package it.chalmers.gamma.approval;
 
+import it.chalmers.gamma.client.ITClientDTO;
+import it.chalmers.gamma.client.ITClientFinder;
 import it.chalmers.gamma.client.ITClientService;
-import it.chalmers.gamma.db.entity.pk.ITUserApprovalPK;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.user.ITUserApprovalDTO;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.user.ITUserFinder;
-import it.chalmers.gamma.user.ITUserService;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;
@@ -22,16 +22,13 @@ import org.springframework.stereotype.Service;
 public class ITUserApprovalService implements ApprovalStore {
 
     private final ITUserApprovalRepository itUserApprovalRepository;
-    private final ITClientService itClientService;
     private final ITUserFinder userFinder;
+    private final ITClientFinder clientFinder;
 
-    public ITUserApprovalService(
-            ITUserApprovalRepository itUserApprovalRepository,
-            ITClientService itClientService,
-            ITUserFinder userFinder) {
+    public ITUserApprovalService(ITUserApprovalRepository itUserApprovalRepository, ITUserFinder userFinder, ITClientFinder clientFinder) {
         this.itUserApprovalRepository = itUserApprovalRepository;
-        this.itClientService = itClientService;
         this.userFinder = userFinder;
+        this.clientFinder = clientFinder;
     }
 
     @Override
@@ -70,12 +67,13 @@ public class ITUserApprovalService implements ApprovalStore {
     }
 
     public void saveApproval(String cid, String clientId) {
-        ITUserApprovalPK itUserApprovalPK = new ITUserApprovalPK();
-        itUserApprovalPK.setItUser(userFinder.getUserEntity(new Cid(cid)));
+        ITUserDTO user = this.userFinder.getUser(new Cid(cid));
+        ITClientDTO client = this.clientFinder.getClient(clientId).orElseThrow();
 
-        itUserApprovalPK.setItClient(this.itClientService.getITClient(
-                Objects.requireNonNull(this.itClientService.getITClientById(clientId).orElse(null)))
-        );
+        ITUserApprovalPK itUserApprovalPK = new ITUserApprovalPK();
+        itUserApprovalPK.setUser(user.getId());
+        itUserApprovalPK.setClient(client.getId());
+
         ITUserApproval itUserApproval = new ITUserApproval();
         itUserApproval.setId(itUserApprovalPK);
 

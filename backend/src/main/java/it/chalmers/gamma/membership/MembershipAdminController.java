@@ -1,9 +1,8 @@
 package it.chalmers.gamma.membership;
 
-import it.chalmers.gamma.domain.group.FKITGroupDTO;
-import it.chalmers.gamma.domain.membership.MembershipDTO;
-import it.chalmers.gamma.domain.post.PostDTO;
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.post.PostService;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
@@ -15,7 +14,6 @@ import it.chalmers.gamma.membership.response.MemberAddedToGroupResponse;
 import it.chalmers.gamma.membership.response.MemberRemovedFromGroupResponse;
 
 import it.chalmers.gamma.user.ITUserFinder;
-import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;

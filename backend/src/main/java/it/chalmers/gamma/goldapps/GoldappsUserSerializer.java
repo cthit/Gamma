@@ -1,6 +1,6 @@
 package it.chalmers.gamma.goldapps;
 
-import it.chalmers.gamma.domain.user.ITUserDTO;
+import it.chalmers.gamma.user.ITUserDTO;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;

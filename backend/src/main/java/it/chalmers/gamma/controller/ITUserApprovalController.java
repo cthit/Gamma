@@ -1,6 +1,7 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.domain.access.ITClientUserAccessDTO;
+import it.chalmers.gamma.client.ITClientFinder;
+import it.chalmers.gamma.client.ITClientUserAccessDTO;
 import it.chalmers.gamma.client.response.ApprovedITClientsResponse;
 import it.chalmers.gamma.approval.ITUserApprovalService;
 
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ITUserApprovalController {
 
     private final ITUserApprovalService itUserApprovalService;
+    private final ITClientFinder clientFinder;
 
-    public ITUserApprovalController(ITUserApprovalService itUserApprovalService) {
+    public ITUserApprovalController(ITUserApprovalService itUserApprovalService, ITClientFinder clientFinder) {
         this.itUserApprovalService = itUserApprovalService;
+        this.clientFinder = clientFinder;
     }
 
     @GetMapping()
@@ -28,7 +31,11 @@ public class ITUserApprovalController {
         return new ApprovedITClientsResponse(
                 this.itUserApprovalService.getApprovalsByCid(cid)
                 .stream()
-                .map(itUserApprovalDTO -> new ITClientUserAccessDTO(itUserApprovalDTO.getClient()))
+                .map(userApproval ->
+                        new ITClientUserAccessDTO(
+                                clientFinder.getClient(userApproval.getClientId()).orElseThrow()
+                        )
+                )
                 .collect(Collectors.toList())
         );
     }

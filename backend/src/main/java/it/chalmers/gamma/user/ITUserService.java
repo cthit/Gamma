@@ -2,14 +2,12 @@ package it.chalmers.gamma.user;
 
 import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.user.ITUserDTO;
 
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InvalidFileTypeResponse;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
 import it.chalmers.gamma.util.ImageUtils;
-import it.chalmers.gamma.util.UUIDUtil;
 
 import java.time.Instant;
 import java.time.Year;

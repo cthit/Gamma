@@ -1,7 +1,7 @@
 package it.chalmers.gamma.whitelist.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.user.WhitelistDTO;
+import it.chalmers.gamma.whitelist.WhitelistDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

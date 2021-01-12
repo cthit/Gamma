@@ -1,8 +1,5 @@
 package it.chalmers.gamma.passwordreset;
 
-import it.chalmers.gamma.domain.user.PasswordResetTokenDTO;
-import it.chalmers.gamma.user.ITUser;
-
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,9 +20,7 @@ public class PasswordResetToken {
     private String token;
 
     @JoinColumn(name = "ituser")
-    @OneToOne
-    private ITUser itUser;
-
+    private UUID userId;
 
     public PasswordResetToken() {
         this.id = UUID.randomUUID();
@@ -48,12 +42,12 @@ public class PasswordResetToken {
         this.token = token;
     }
 
-    public ITUser getItUser() {
-        return this.itUser;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public void setItUser(ITUser itUser) {
-        this.itUser = itUser;
+    public void setUserId(UUID user) {
+        this.userId = user;
     }
 
     @Override
@@ -61,12 +55,12 @@ public class PasswordResetToken {
         return "PasswordResetToken{"
             + "id=" + this.id
             + ", token='" + this.token + '\''
-            + ", itUser=" + this.itUser
+            + ", itUser=" + this.userId
             + '}';
     }
 
     public PasswordResetTokenDTO toDTO() {
-        return new PasswordResetTokenDTO(this.id, this.token, this.itUser.toDTO());
+        return new PasswordResetTokenDTO(this.id, this.token, this.userId);
     }
 
     @Override
@@ -80,11 +74,11 @@ public class PasswordResetToken {
         PasswordResetToken that = (PasswordResetToken) o;
         return Objects.equals(this.id, that.id)
             && Objects.equals(this.token, that.token)
-            && Objects.equals(this.itUser, that.itUser);
+            && Objects.equals(this.userId, that.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.token, this.itUser);
+        return Objects.hash(this.id, this.token, this.userId);
     }
 }

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.whitelist;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.user.WhitelistDTO;
 import it.chalmers.gamma.user.ITUserFinder;
 import it.chalmers.gamma.whitelist.request.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
@@ -20,7 +19,6 @@ import it.chalmers.gamma.whitelist.response.WhitelistAddedResponse;
 import it.chalmers.gamma.whitelist.response.WhitelistAlreadyAddedException;
 import it.chalmers.gamma.whitelist.response.WhitelistIsValidResponse;
 import it.chalmers.gamma.whitelist.response.WhitelistIsValidResponse.WhitelistIsValidResponseObject;
-import it.chalmers.gamma.user.ITUserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
