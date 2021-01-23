@@ -1,8 +1,8 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupService;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupService;
 import it.chalmers.gamma.utils.GenerationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 public class MockSuperGroupFactory {
 
     @Autowired
-    private FKITSuperGroupService superGroupService;
+    private SuperGroupService superGroupService;
 
-    public FKITSuperGroupDTO generateSuperGroup(String groupName) {
-        return new FKITSuperGroupDTO(
+    public SuperGroupDTO generateSuperGroup(String groupName) {
+        return new SuperGroupDTO(
                 groupName,
                 groupName,
                 GroupType.COMMITTEE,
@@ -22,7 +22,7 @@ public class MockSuperGroupFactory {
         );
     }
 
-    public FKITSuperGroupDTO saveSuperGroup(FKITSuperGroupDTO superGroup) {
+    public SuperGroupDTO saveSuperGroup(SuperGroupDTO superGroup) {
         return this.superGroupService.createSuperGroup(superGroup);
     }
 }

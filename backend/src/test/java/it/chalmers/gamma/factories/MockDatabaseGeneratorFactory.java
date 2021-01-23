@@ -3,12 +3,12 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.apikey.ApiKeyDTO;
 import it.chalmers.gamma.client.ITClientDTO;
 import it.chalmers.gamma.authority.AuthorityDTO;
-import it.chalmers.gamma.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.group.FKITGroupDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.whitelist.WhitelistDTO;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
@@ -44,10 +44,10 @@ public class MockDatabaseGeneratorFactory {
 
 
 
-    private ITUserDTO user;
+    private UserDTO user;
     private PostDTO post;
-    private FKITGroupDTO group;
-    private FKITSuperGroupDTO superGroup;
+    private GroupDTO group;
+    private SuperGroupDTO superGroup;
     private ActivationCodeDTO activationCode;
     private ApiKeyDTO apiKey;
     private AuthorityLevelDTO authorityLevel;

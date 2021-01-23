@@ -1,17 +1,18 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import java.util.Objects;
 import java.util.UUID;
 
 public class AuthorityDTO {
-    private final FKITSuperGroupDTO superGroup;
+    private final SuperGroupDTO superGroup;
     private final PostDTO post;
     private final UUID id;
     private final AuthorityLevelDTO authorityLevel;
 
-    public AuthorityDTO(FKITSuperGroupDTO superGroup, PostDTO post,
+    public AuthorityDTO(SuperGroupDTO superGroup, PostDTO post,
                         UUID internalID, AuthorityLevelDTO authorityLevel) {
         this.superGroup = superGroup;
         this.post = post;
@@ -19,7 +20,7 @@ public class AuthorityDTO {
         this.authorityLevel = authorityLevel;
     }
 
-    public FKITSuperGroupDTO getSuperGroup() {
+    public SuperGroupDTO getSuperGroup() {
         return this.superGroup;
     }
 

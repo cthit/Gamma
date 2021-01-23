@@ -2,7 +2,7 @@ package it.chalmers.gamma.oauth;
 
 import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.approval.ITUserApprovalService;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,7 +38,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Qualifier("userDetailsService")
-    private final ITUserService userDetailsService;
+    private final UserService userDetailsService;
 
     @Qualifier("authenticationManagerBean")
     private final AuthenticationManager authenticationManager;
@@ -60,7 +60,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Value("${security.jwt.token.expire-length}")
     private long expiration;
 
-    public OAuth2Config(ITUserService userDetailsService, AuthenticationManager authenticationManager,
+    public OAuth2Config(UserService userDetailsService, AuthenticationManager authenticationManager,
                         ITClientService clientDetailsService, ITUserApprovalService itUserApprovalService) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;

@@ -10,84 +10,84 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import it.chalmers.gamma.authoritylevel.AuthorityLevel;
 import org.hibernate.annotations.Target;
 
 @Entity
 @Table(name = "authority")
 public class Authority {
 
-    @Target(AuthorityPK.class)
-    @EmbeddedId
-    private AuthorityPK id;
-
     @Column(name = "id")
-    private UUID internalId;
+    private UUID id;
+
+    @JoinColumn(name = "fkit_group_id")
+    private UUID superGroupId;
+
+    @JoinColumn(name = "post_id")
+    private UUID postId;
 
     @JoinColumn(name = "authority_level")
-    @ManyToOne
-    private AuthorityLevel authorityLevel;
+    private UUID authorityLevelId;
 
-    public AuthorityPK getId() {
-        return this.id;
+    public Authority(UUID id, UUID superGroupId, UUID postId, UUID authorityLevelId) {
+        this.id = id;
+        this.superGroupId = superGroupId;
+        this.postId = postId;
+        this.authorityLevelId = authorityLevelId;
     }
 
-    public void setId(AuthorityPK id) {
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public AuthorityLevel getAuthorityLevel() {
-        return this.authorityLevel;
+    public UUID getSuperGroupId() {
+        return superGroupId;
     }
 
-    public void setAuthorityLevel(AuthorityLevel authorityLevel) {
-        this.authorityLevel = authorityLevel;
+    public void setSuperGroupId(UUID superGroupId) {
+        this.superGroupId = superGroupId;
     }
 
-    public UUID getInternalID() {
-        return this.internalId;
+    public UUID getPostId() {
+        return postId;
     }
 
-    public void setInternalID(UUID internalID) {
-        this.internalId = internalID;
+    public void setPostId(UUID postId) {
+        this.postId = postId;
     }
 
-    public Authority() {
-        this.internalId = UUID.randomUUID();
+    public UUID getAuthorityLevelId() {
+        return authorityLevelId;
     }
 
-    public AuthorityDTO toDTO() {
-        return new AuthorityDTO(
-                this.id.getFkitSuperGroup().toDTO(),
-                this.id.getPost().toDTO(),
-                this.internalId,
-                this.authorityLevel.toDTO()
-                );
+    public void setAuthorityLevelId(UUID authorityLevelId) {
+        this.authorityLevelId = authorityLevelId;
     }
-
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Authority authority = (Authority) o;
-        return Objects.equals(this.id, authority.id)
-            && Objects.equals(this.authorityLevel, authority.authorityLevel);
+        return Objects.equals(id, authority.id) && Objects.equals(superGroupId, authority.superGroupId) && Objects.equals(postId, authority.postId) && Objects.equals(authorityLevelId, authority.authorityLevelId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.authorityLevel);
+        return Objects.hash(id, superGroupId, postId, authorityLevelId);
     }
 
     @Override
     public String toString() {
-        return "Authority{"
-            + "id=" + this.id
-            + ", authorityLevel=" + this.authorityLevel
-            + '}';
+        return "Authority{" +
+                "id=" + id +
+                ", superGroupId=" + superGroupId +
+                ", postId=" + postId +
+                ", authorityLevelId=" + authorityLevelId +
+                '}';
     }
 }

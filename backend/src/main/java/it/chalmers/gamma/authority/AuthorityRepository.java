@@ -1,9 +1,6 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.authority.Authority;
-import it.chalmers.gamma.authority.AuthorityLevel;
-import it.chalmers.gamma.supergroup.FKITSuperGroup;
-import it.chalmers.gamma.post.Post;
+import it.chalmers.gamma.authoritylevel.AuthorityLevel;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthorityRepository extends JpaRepository<Authority, UUID> {
-    Optional<Authority> findById_FkitSuperGroupAndId_Post(FKITSuperGroup superGroup, Post post);
+    Optional<Authority> findById_SuperGroupIdAndId_PostId(UUID superGroupId, UUID postId);
 
-    List<Authority> findAllByAuthorityLevel(AuthorityLevel authorityLevel);
+    List<Authority> findAllByAuthorityLevelId(UUID authorityLevelId);
 
     Optional<Authority> findByInternalId(UUID id);
 

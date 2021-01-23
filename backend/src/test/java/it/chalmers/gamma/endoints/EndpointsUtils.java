@@ -8,12 +8,12 @@ import static it.chalmers.gamma.endoints.Method.PUT;
 import it.chalmers.gamma.apikey.ApiKeyDTO;
 import it.chalmers.gamma.client.ITClientDTO;
 import it.chalmers.gamma.authority.AuthorityDTO;
-import it.chalmers.gamma.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.group.FKITGroupDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.whitelist.WhitelistDTO;
 import java.util.Arrays;
 import java.util.List;
@@ -31,15 +31,15 @@ public final class EndpointsUtils { // Doesn't return me endpoints.
                 new Endpoint("/groups/minified", GET),
                 new Endpoint("/groups/posts", GET),
                 new Endpoint("/groups/posts/%s", GET, PostDTO.class),
-                new Endpoint("/groups/%s", GET, FKITGroupDTO.class),
-                new Endpoint("/groups/%s/members", GET, FKITGroupDTO.class),
-                new Endpoint("/groups/%s/minified", GET, FKITGroupDTO.class),
+                new Endpoint("/groups/%s", GET, GroupDTO.class),
+                new Endpoint("/groups/%s/members", GET, GroupDTO.class),
+                new Endpoint("/groups/%s/minified", GET, GroupDTO.class),
                 new Endpoint("/superGroups", GET),
-                new Endpoint("/superGroups/%s", GET, FKITSuperGroupDTO.class),
-                new Endpoint("/superGroups/%s/active", GET, FKITSuperGroupDTO.class),
-                new Endpoint("/superGroups/%s/subgroups", GET, FKITSuperGroupDTO.class),
+                new Endpoint("/superGroups/%s", GET, SuperGroupDTO.class),
+                new Endpoint("/superGroups/%s/active", GET, SuperGroupDTO.class),
+                new Endpoint("/superGroups/%s/subgroups", GET, SuperGroupDTO.class),
                 new Endpoint("/users/minified", GET),
-                new Endpoint("/users/%s", GET, ITUserDTO.class)
+                new Endpoint("/users/%s", GET, UserDTO.class)
                 );
     }
     // TODO Members, to do that, we need to rework Endpoint class a bit. Also,
@@ -66,24 +66,24 @@ public final class EndpointsUtils { // Doesn't return me endpoints.
                 new Endpoint("/admin/clients/%s", PUT, ITClientDTO.class),
                 new Endpoint("/admin/clients/%s", DELETE, ITClientDTO.class),
                 new Endpoint("/admin/gdpr/minified", GET),
-                new Endpoint("/admin/gdpr/%s", PUT, ITUserDTO.class),
+                new Endpoint("/admin/gdpr/%s", PUT, UserDTO.class),
                 new Endpoint("/admin/groups", POST),
-                new Endpoint("/admin/groups/%s", PUT, FKITGroupDTO.class),
-                new Endpoint("/admin/groups/%s", DELETE, FKITGroupDTO.class),
-                new Endpoint("/admin/groups/%s/avatar", PUT, FKITGroupDTO.class),
+                new Endpoint("/admin/groups/%s", PUT, GroupDTO.class),
+                new Endpoint("/admin/groups/%s", DELETE, GroupDTO.class),
+                new Endpoint("/admin/groups/%s/avatar", PUT, GroupDTO.class),
                 new Endpoint("/admin/groups/posts", POST),
                 new Endpoint("/admin/groups/posts/%s", PUT, PostDTO.class),
                 new Endpoint("/admin/groups/posts/%s", DELETE, PostDTO.class),
                 new Endpoint("/admin/groups/posts/%s/usage", GET, PostDTO.class),
                 new Endpoint("/admin/superGroups", POST),
-                new Endpoint("/admin/superGroups/%s", PUT, FKITSuperGroupDTO.class),
-                new Endpoint("/admin/superGroups/%s", DELETE, FKITSuperGroupDTO.class),
+                new Endpoint("/admin/superGroups/%s", PUT, SuperGroupDTO.class),
+                new Endpoint("/admin/superGroups/%s", DELETE, SuperGroupDTO.class),
                 new Endpoint("/admin/users", GET),
                 new Endpoint("/admin/users", POST),
-                new Endpoint("/admin/users/%s", GET, ITUserDTO.class),
-                new Endpoint("/admin/users/%s", PUT, ITUserDTO.class),
-                new Endpoint("/admin/users/%s", DELETE, ITUserDTO.class),
-                new Endpoint("/admin/users/%s/change_password", PUT, ITUserDTO.class),
+                new Endpoint("/admin/users/%s", GET, UserDTO.class),
+                new Endpoint("/admin/users/%s", PUT, UserDTO.class),
+                new Endpoint("/admin/users/%s", DELETE, UserDTO.class),
+                new Endpoint("/admin/users/%s/change_password", PUT, UserDTO.class),
                 new Endpoint("/admin/users/whitelist", GET),
                 new Endpoint("/admin/users/whitelist", POST),
                 new Endpoint("/admin/users/whitelist/%s/valid", GET, WhitelistDTO.class),

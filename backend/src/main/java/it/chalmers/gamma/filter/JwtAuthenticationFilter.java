@@ -7,7 +7,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
 import it.chalmers.gamma.response.InvalidJWTTokenResponse;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,12 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final String secretKey;
     private final String issuer;
-    private final ITUserService itUserService;
+    private final UserService userService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public JwtAuthenticationFilter(ITUserService itUserService, String secretKey, String issuer) {
-        this.itUserService = itUserService;
+    public JwtAuthenticationFilter(UserService userService, String secretKey, String issuer) {
+        this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private Authentication getAuthentication(String cid) {
         UserDetails userDetails;
         try {
-            userDetails = this.itUserService.loadUserByUsername(cid);
+            userDetails = this.userService.loadUserByUsername(cid);
         } catch (UsernameNotFoundException e) {
             throw new InvalidJWTTokenResponse();
         }

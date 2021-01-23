@@ -1,7 +1,5 @@
 package it.chalmers.gamma.passwordreset;
 
-import it.chalmers.gamma.user.ITUserDTO;
-
 import java.util.Objects;
 import java.util.UUID;
 

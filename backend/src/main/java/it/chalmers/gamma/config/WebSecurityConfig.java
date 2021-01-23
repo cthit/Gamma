@@ -1,14 +1,14 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.apikey.ApiKeyService;
 import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.group.GroupService;
-import it.chalmers.gamma.user.ITUserFinder;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserFinder;
+import it.chalmers.gamma.user.UserService;
 
 import it.chalmers.gamma.passwordreset.PasswordResetService;
 import java.util.List;
@@ -43,8 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
-    private final ITUserFinder userFinder;
-    private final ITUserService itUserService;
+    private final UserFinder userFinder;
+    private final UserService userService;
     private final AuthorityService authorityService;
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
@@ -56,15 +56,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(ITUserService itUserService,
+    public WebSecurityConfig(UserService userService,
                              AuthorityService authorityService,
                              ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
                              GroupService groupService,
                              LoginRedirectHandler loginRedirectHandler,
-                             ITUserFinder userFinder) {
-        this.itUserService = itUserService;
+                             UserFinder userFinder) {
+        this.userService = userService;
         this.authorityService = authorityService;
         this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
@@ -103,7 +103,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(this.itUserService);
+        authProvider.setUserDetailsService(this.userService);
         authProvider.setPasswordEncoder(this.passwordEncoder);
         return authProvider;
     }
@@ -141,7 +141,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
             http.apply(
                     new AuthenticationFilterConfigurer(
-                            this.itUserService,
+                            this.userService,
                             this.secretKey,
                             this.issuer,
                             this.apiKeyService,
@@ -207,8 +207,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            List<FKITGroupDTO> groups = this.groupService.getGroups();
-            for (FKITGroupDTO group : groups) {
+            List<GroupDTO> groups = this.groupService.getGroups();
+            for (GroupDTO group : groups) {
                 addPathRole(http, group);
             }
             http.authorizeRequests().antMatchers("/admin/gdpr/**")
@@ -220,7 +220,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    private void addPathRole(HttpSecurity http, FKITGroupDTO group) {
+    private void addPathRole(HttpSecurity http, GroupDTO group) {
         this.authorityService.getAllAuthorities().forEach(a -> {
             if (a.getSuperGroup().getId().equals(group.getSuperGroup().getId())) {
                 try {

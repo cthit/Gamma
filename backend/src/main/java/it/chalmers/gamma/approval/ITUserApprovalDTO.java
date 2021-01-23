@@ -1,8 +1,5 @@
 package it.chalmers.gamma.approval;
 
-import it.chalmers.gamma.client.ITClientDTO;
-import it.chalmers.gamma.user.ITUserDTO;
-
 import java.util.Objects;
 import java.util.UUID;
 

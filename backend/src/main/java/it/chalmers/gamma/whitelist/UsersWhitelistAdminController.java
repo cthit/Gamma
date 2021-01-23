@@ -1,7 +1,7 @@
 package it.chalmers.gamma.whitelist;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.whitelist.request.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
 
@@ -43,11 +43,11 @@ import org.springframework.web.bind.annotation.RestController;
 public final class UsersWhitelistAdminController {
 
     private final WhitelistService whitelistService;
-    private final ITUserFinder userFinder;
+    private final UserFinder userFinder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersWhitelistAdminController.class);
 
-    public UsersWhitelistAdminController(WhitelistService whitelistService, ITUserFinder userFinder) {
+    public UsersWhitelistAdminController(WhitelistService whitelistService, UserFinder userFinder) {
         this.whitelistService = whitelistService;
         this.userFinder = userFinder;
     }

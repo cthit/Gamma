@@ -1,8 +1,8 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.user.ITUserFinder;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserFinder;
+import it.chalmers.gamma.user.UserService;
 
 import it.chalmers.gamma.passwordreset.PasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
@@ -17,20 +17,20 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
     private final String secretKey;
     private final String baseFrontendUrl;
     private final String issuer;
-    private final ITUserService itUserService;
+    private final UserService userService;
     private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
-    private final ITUserFinder userFinder;
+    private final UserFinder userFinder;
 
     public AuthenticationFilterConfigurer(
-            ITUserService itUserService,
+            UserService userService,
             String secretKey,
             String issuer,
             ApiKeyService apiKeyService,
             PasswordResetService passwordResetService,
             String baseFrontendUrl,
-            ITUserFinder userFinder) {
-        this.itUserService = itUserService;
+            UserFinder userFinder) {
+        this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;
         this.apiKeyService = apiKeyService;
@@ -42,13 +42,13 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
     @Override
     public void configure(HttpSecurity builder) {
         JwtAuthenticationFilter customFilter = new JwtAuthenticationFilter(
-                this.itUserService,
+                this.userService,
                 this.secretKey,
                 this.issuer
         );
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
                 this.apiKeyService,
-                this.itUserService
+                this.userService
         );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.baseFrontendUrl,

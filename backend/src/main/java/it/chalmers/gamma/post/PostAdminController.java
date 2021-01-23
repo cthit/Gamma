@@ -1,6 +1,6 @@
 package it.chalmers.gamma.post;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
 import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.post.request.AddPostRequest;
@@ -102,7 +102,7 @@ public final class PostAdminController {
     @GetMapping("/{id}/usage")
     public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") String id) {
         PostDTO post = this.postService.getPostDTO(id);
-        List<FKITGroupDTO> groups = this.membershipService.getGroupsWithPost(post);
+        List<GroupDTO> groups = this.membershipService.getGroupsWithPost(post);
         List<GetFKITGroupResponse> groupResponses = groups.stream()
                 .map(g -> new GetFKITGroupResponse(g,
                         this.membershipService.getUserDTOByGroupAndPost(g, post)

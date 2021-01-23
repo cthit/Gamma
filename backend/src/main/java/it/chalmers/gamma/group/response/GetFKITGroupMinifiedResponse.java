@@ -1,19 +1,19 @@
 package it.chalmers.gamma.group.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.group.FKITMinifiedGroupDTO;
+import it.chalmers.gamma.group.GroupMinifiedDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetFKITGroupMinifiedResponse {
     @JsonUnwrapped
-    private final FKITMinifiedGroupDTO group;
+    private final GroupMinifiedDTO group;
 
-    public GetFKITGroupMinifiedResponse(FKITMinifiedGroupDTO group) {
+    public GetFKITGroupMinifiedResponse(GroupMinifiedDTO group) {
         this.group = group;
     }
 
-    public FKITMinifiedGroupDTO getGroup() {
+    public GroupMinifiedDTO getGroup() {
         return this.group;
     }
 

@@ -1,9 +1,11 @@
 package it.chalmers.gamma.group;
 
-import it.chalmers.gamma.supergroup.FKITSuperGroup;
+import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -12,13 +14,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "fkit_group")
-public class Group {
+public class Group implements GEntity<GroupDTO> {
 
     @Id
     @Column(updatable = false)
@@ -27,10 +28,10 @@ public class Group {
     @Column(name = "avatar_url")
     private String avatarURL;
 
-    @Column(name = "name", length = 50, nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "pretty_name", length = 50, nullable = false)
+    @Column(name = "pretty_name")
     private String prettyName;
 
     @JoinColumn(name = "description")
@@ -50,26 +51,34 @@ public class Group {
     @Column(name = "email")
     private String email;
 
-    @JoinColumn(name = "fkit_super_group")
-    @ManyToOne(fetch = FetchType.EAGER)
-    private FKITSuperGroup superGroup;
+    @Column(name = "fkit_super_group")
+    private UUID superGroupId;
 
-    public Group() {
-        this.id = UUID.randomUUID();
+    public Group() {}
+
+    public Group(GroupDTO g) {
+        this.id = g.getId();
+        try {
+            apply(g);
+        } catch (IDsNotMatchingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public FKITGroupDTO toDTO() {
-        return new FKITGroupDTO(
-                this.id,
-                this.becomesActive,
-                this.becomesInactive,
-                this.description,
-                this.email,
-                this.function,
-                this.name,
-                this.prettyName,
-                this.avatarURL,
-                this.superGroup.toDTO());
+    public void apply(GroupDTO g) throws IDsNotMatchingException {
+        if(this.id != g.getId()) {
+            throw new IDsNotMatchingException();
+        }
+
+        this.avatarURL = g.getAvatarURL();
+        this.name = g.getName();
+        this.prettyName = g.getPrettyName();
+        this.description = g.getDescription();
+        this.function = g.getFunction();
+        this.becomesActive = g.getBecomesActive();
+        this.becomesInactive = g.getBecomesInactive();
+        this.email = g.getEmail();
+        this.superGroupId = g.getSuperGroup().getId();
     }
 
     public UUID getId() {
@@ -144,12 +153,25 @@ public class Group {
         this.email = email.toLowerCase();
     }
 
-    public FKITSuperGroup getSuperGroup() {
-        return this.superGroup;
+    public UUID getSuperGroupId() {
+        return superGroupId;
     }
 
-    public void setSuperGroup(FKITSuperGroup superGroup) {
-        this.superGroup = superGroup;
+    public void setSuperGroupId(UUID superGroupId) {
+        this.superGroupId = superGroupId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return Objects.equals(id, group.id) && Objects.equals(avatarURL, group.avatarURL) && Objects.equals(name, group.name) && Objects.equals(prettyName, group.prettyName) && Objects.equals(description, group.description) && Objects.equals(function, group.function) && Objects.equals(becomesActive, group.becomesActive) && Objects.equals(becomesInactive, group.becomesInactive) && Objects.equals(email, group.email) && Objects.equals(superGroupId, group.superGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, avatarURL, name, prettyName, description, function, becomesActive, becomesInactive, email, superGroupId);
     }
 
     @Override
@@ -164,7 +186,7 @@ public class Group {
                 + ", becomesActive=" + this.becomesActive
                 + ", becomesInactive=" + this.becomesInactive
                 + ", email=" + this.email + '\''
-                + ", superGroup='" + this.superGroup
+                + ", superGroup='" + this.superGroupId
                 + '}';
     }
 

@@ -68,16 +68,16 @@ public class Post {
         return this.postName.getEn();
     }
 
+    public Text getPostName() {
+        return postName;
+    }
+
     public String getEmailPrefix() {
         return this.emailPrefix;
     }
 
     public void setEmailPrefix(String emailPrefix) {
         this.emailPrefix = emailPrefix == null ? null : emailPrefix.toLowerCase();
-    }
-
-    public PostDTO toDTO() {
-        return new PostDTO(this.id, this.postName, this.emailPrefix);
     }
 
     @Override

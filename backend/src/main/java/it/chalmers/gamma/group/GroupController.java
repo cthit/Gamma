@@ -2,7 +2,7 @@ package it.chalmers.gamma.group;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.membership.MembershipDTO;
-import it.chalmers.gamma.membership.NoAccountMembershipDTO;
+import it.chalmers.gamma.noaccountmembership.NoAccountMembershipDTO;
 import it.chalmers.gamma.membership.RestrictedMembershipDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse;
@@ -43,7 +43,7 @@ public final class GroupController {
 
     @GetMapping("/{id}")
     public GetFKITGroupResponseObject getGroup(@PathVariable("id") String id) {
-        final FKITGroupDTO group = this.groupService.getGroup(id);
+        final GroupDTO group = this.groupService.getGroup(id);
         List<MembershipDTO> minifiedMembers = this.membershipService.getMembershipsInGroup(group);
         List<NoAccountMembershipDTO> noAccountMemberships = this.membershipService.getNoAccountMembership(group);
         return new GetFKITGroupResponse(
@@ -80,8 +80,8 @@ public final class GroupController {
 
     @GetMapping("/active")
     public GetActiveFKITGroupResponseObject getActiveGroups() {
-        List<FKITGroupDTO> groups = this.groupService.getGroups().stream()
-                .filter(FKITGroupDTO::isActive).collect(Collectors.toList());
+        List<GroupDTO> groups = this.groupService.getGroups().stream()
+                .filter(GroupDTO::isActive).collect(Collectors.toList());
 
         List<GetFKITGroupResponse> groupResponses = groups.stream().map(g -> new GetFKITGroupResponse(
                 g,

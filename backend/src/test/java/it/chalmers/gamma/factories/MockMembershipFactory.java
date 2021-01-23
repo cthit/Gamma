@@ -1,9 +1,9 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
 import it.chalmers.gamma.membership.MembershipDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
@@ -16,7 +16,7 @@ public class MockMembershipFactory {
     @Autowired
     private MembershipService membershipService;
 
-    public MembershipDTO generateMembership(PostDTO post, FKITGroupDTO group, ITUserDTO user) {
+    public MembershipDTO generateMembership(PostDTO post, GroupDTO group, UserDTO user) {
         return new MembershipDTO(
                 post,
                 group,

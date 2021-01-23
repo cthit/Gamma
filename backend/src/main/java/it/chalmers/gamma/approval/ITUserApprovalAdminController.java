@@ -1,6 +1,6 @@
 package it.chalmers.gamma.approval;
 
-import it.chalmers.gamma.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.user.UserRestrictedDTO;
 import it.chalmers.gamma.approval.response.GetAllITUserApprovalResponse;
 import it.chalmers.gamma.client.response.ITClientDoesNotExistException;
 import it.chalmers.gamma.client.ITClientService;
@@ -33,7 +33,7 @@ public class ITUserApprovalAdminController {
         return new GetAllITUserApprovalResponse(
                 this.itUserApprovalService.getApprovalsByClientId(clientId)
                         .stream()
-                        .map(itUserApprovalDTO -> new ITUserRestrictedDTO(itUserApprovalDTO.getUser()))
+                        .map(itUserApprovalDTO -> new UserRestrictedDTO(itUserApprovalDTO.getUser()))
                         .collect(Collectors.toList())
         );
     }

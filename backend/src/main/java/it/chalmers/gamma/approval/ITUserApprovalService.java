@@ -2,18 +2,16 @@ package it.chalmers.gamma.approval;
 
 import it.chalmers.gamma.client.ITClientDTO;
 import it.chalmers.gamma.client.ITClientFinder;
-import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.domain.Cid;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.user.ITUserDTO;
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.UserFinder;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;
@@ -22,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class ITUserApprovalService implements ApprovalStore {
 
     private final ITUserApprovalRepository itUserApprovalRepository;
-    private final ITUserFinder userFinder;
+    private final UserFinder userFinder;
     private final ITClientFinder clientFinder;
 
-    public ITUserApprovalService(ITUserApprovalRepository itUserApprovalRepository, ITUserFinder userFinder, ITClientFinder clientFinder) {
+    public ITUserApprovalService(ITUserApprovalRepository itUserApprovalRepository, UserFinder userFinder, ITClientFinder clientFinder) {
         this.itUserApprovalRepository = itUserApprovalRepository;
         this.userFinder = userFinder;
         this.clientFinder = clientFinder;
@@ -67,7 +65,7 @@ public class ITUserApprovalService implements ApprovalStore {
     }
 
     public void saveApproval(String cid, String clientId) {
-        ITUserDTO user = this.userFinder.getUser(new Cid(cid));
+        UserDTO user = this.userFinder.getUser(new Cid(cid));
         ITClientDTO client = this.clientFinder.getClient(clientId).orElseThrow();
 
         ITUserApprovalPK itUserApprovalPK = new ITUserApprovalPK();

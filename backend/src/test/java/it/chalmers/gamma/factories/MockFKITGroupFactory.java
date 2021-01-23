@@ -1,9 +1,9 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.text.Text;
-import it.chalmers.gamma.group.FKITGroupDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
-import it.chalmers.gamma.group.request.CreateGroupRequest;
+import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
+import it.chalmers.gamma.group.request.CreateOrEditGroupRequest;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
@@ -17,29 +17,19 @@ public class MockFKITGroupFactory {
     @Autowired
     private GroupService groupService;
 
-    public FKITGroupDTO generateActiveFKITGroup(String groupName, FKITSuperGroupDTO superGroupDTO) {
+    public GroupDTO generateActiveFKITGroup(String groupName, SuperGroupDTO superGroupDTO) {
         Calendar current = Calendar.getInstance();
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.YEAR, 1);
-        return new FKITGroupDTO(
-                current,
-                nextYear,
-                new Text(),
-                GenerationUtils.generateRandomString(),
-                new Text(),
-                groupName,
-                groupName,
-                GenerationUtils.generateRandomString(),
-                superGroupDTO
-                );
+        return new GroupDTO.GroupDTOBuilder().id(current).becomesActive(nextYear).becomesInactive(new Text()).description(GenerationUtils.generateRandomString()).email(new Text()).function(groupName).name(groupName).prettyName(GenerationUtils.generateRandomString()).avatarUrl(superGroupDTO).createGroupDTO();
     }
 
-    public FKITGroupDTO saveGroup(FKITGroupDTO group) {
+    public GroupDTO saveGroup(GroupDTO group) {
         return this.groupService.createGroup(group);
     }
 
-    public CreateGroupRequest createValidRequest() {
-        CreateGroupRequest request = new CreateGroupRequest();
+    public CreateOrEditGroupRequest createValidRequest() {
+        CreateOrEditGroupRequest request = new CreateOrEditGroupRequest();
         request.setName(GenerationUtils.generateRandomString(30, CharacterTypes.LOWERCASE));
         request.setPrettyName(GenerationUtils.generateRandomString(30, CharacterTypes.LOWERCASE));
         request.setFunction(GenerationUtils.generateText());

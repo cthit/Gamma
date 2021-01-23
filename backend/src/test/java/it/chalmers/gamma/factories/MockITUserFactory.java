@@ -3,11 +3,11 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.user.request.CreateITUserRequest;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Year;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 public class MockITUserFactory {
 
     @Autowired
-    private ITUserService userService;
+    private UserService userService;
 
     @Autowired
-    private ITUserFinder userFinder;
+    private UserFinder userFinder;
 
-    public ITUserDTO generateITUser(String cid, boolean activated) {
-        return new ITUserDTO(
+    public UserDTO generateITUser(String cid, boolean activated) {
+        return new UserDTO(
                 UUID.randomUUID(),
                 cid,
                 GenerationUtils.generateRandomString(),
@@ -57,8 +57,8 @@ public class MockITUserFactory {
         return request;
     }
 
-    public ITUserDTO saveUser(ITUserDTO userDTO) {
-        ITUserDTO user = this.userService.createUser(
+    public UserDTO saveUser(UserDTO userDTO) {
+        UserDTO user = this.userService.createUser(
                 userDTO.getId(),
                 userDTO.getNick(),
                 userDTO.getFirstName(),
@@ -73,7 +73,7 @@ public class MockITUserFactory {
         return this.userFinder.getUser(new Cid(user.getCid()));
     }
 
-    public CreateITUserRequest createValidCreateRequest(ITUserDTO user, ActivationCodeDTO activationCode) {
+    public CreateITUserRequest createValidCreateRequest(UserDTO user, ActivationCodeDTO activationCode) {
         CreateITUserRequest request = new CreateITUserRequest();
         request.setAcceptanceYear(user.getAcceptanceYear().getValue());
         request.setCode(activationCode.getCode());

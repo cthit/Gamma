@@ -2,15 +2,15 @@ package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.passwordreset.request.ResetPasswordFinishRequest;
 import it.chalmers.gamma.passwordreset.request.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.user.response.PasswordChangedResponse;
 import it.chalmers.gamma.user.response.PasswordResetResponse;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 import it.chalmers.gamma.passwordreset.PasswordResetService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -29,12 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users/reset_password")
 public class UserPasswordResetController {
 
-    private final ITUserFinder userFinder;
-    private final ITUserService userService;
+    private final UserFinder userFinder;
+    private final UserService userService;
     private final PasswordResetService passwordResetService;
 
-    public UserPasswordResetController(ITUserFinder userFinder,
-                                       ITUserService userService,
+    public UserPasswordResetController(UserFinder userFinder,
+                                       UserService userService,
                                        PasswordResetService passwordResetService) {
         this.userFinder = userFinder;
         this.userService = userService;
@@ -48,7 +48,7 @@ public class UserPasswordResetController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         String userCredentials = request.getCid(); // CID can either be CID or email.
-        ITUserDTO user = null;
+        UserDTO user = null;
         try {
             user = userFinder.getUser(new Cid(userCredentials));
         } catch(Exception e) {};
@@ -67,7 +67,7 @@ public class UserPasswordResetController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUserDTO user = this.userFinder.getUser(new Cid(request.getCid()));
+        UserDTO user = this.userFinder.getUser(new Cid(request.getCid()));
         if (!this.passwordResetService.userHasActiveReset(user)
                 || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
             throw new CodeOrCidIsWrongResponse();

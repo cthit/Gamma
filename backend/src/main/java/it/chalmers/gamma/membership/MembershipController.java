@@ -1,6 +1,6 @@
 package it.chalmers.gamma.membership;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.group.response.GetMembershipResponse;
 import it.chalmers.gamma.group.response.GetMembershipResponse.GetMembershipResponseObject;
@@ -27,7 +27,7 @@ public class MembershipController {
 
     @GetMapping("/{id}/members")
     public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") String id) {
-        FKITGroupDTO group = this.groupService.getGroup(id);
+        GroupDTO group = this.groupService.getGroup(id);
         List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group);
         return new GetMembershipResponse(
                 members

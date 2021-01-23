@@ -9,7 +9,7 @@ import it.chalmers.gamma.whitelist.WhitelistDTO;
 import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
 import it.chalmers.gamma.activationcode.ActivationCodeService;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 import it.chalmers.gamma.utils.JSONUtils;
 import java.util.Objects;
 import org.junit.Assert;
@@ -49,7 +49,7 @@ public class CreateAccountTests {
     private ActivationCodeService activationCodeService;
 
     @Autowired
-    private ITUserService userService;
+    private UserService userService;
 
     @Before
     public void setupTests() {

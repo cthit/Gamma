@@ -3,11 +3,11 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.group.FKITGroupDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 
 import java.time.Year;
 import java.util.Calendar;
@@ -44,8 +44,8 @@ public class AdminBootstrap {
             function.setEn(descriptionText);
             function.setSv(descriptionText);
             String adminMail = "admin@chalmers.it";
-            FKITSuperGroupDTO superGroupCreation =
-                    new FKITSuperGroupDTO(
+            SuperGroupDTO superGroupCreation =
+                    new SuperGroupDTO(
                             "superadmin",
                         "super admin",
                             GroupType.COMMITTEE,
@@ -55,18 +55,15 @@ public class AdminBootstrap {
             end.set(2099, Calendar.DECEMBER, 31);
             Calendar start = new GregorianCalendar();
             start.setTimeInMillis(System.currentTimeMillis());
-            FKITSuperGroupDTO superGroup =
+            SuperGroupDTO superGroup =
                     this.helper.getSuperGroupService().createSuperGroup(superGroupCreation);
-            FKITGroupDTO group = new FKITGroupDTO(
-                    start, end, description, adminMail, function,
-                    "superadmin", "superAdmin", null, superGroup
-            );
+            GroupDTO group = new GroupDTO.GroupDTOBuilder().id(start).becomesActive(end).becomesInactive(description).description(adminMail).email(function).function("superadmin").name("superAdmin").prettyName(null).avatarUrl(superGroup).createGroupDTO();
             group = this.helper.getGroupService().createGroup(group);
             Text p = new Text();
             p.setSv(admin);
             p.setEn(admin);
             PostDTO post = this.helper.getPostService().addPost(p);
-            ITUserDTO user = this.helper.getUserService().createUser(
+            UserDTO user = this.helper.getUserService().createUser(
                     admin,
                     admin,
                     admin,

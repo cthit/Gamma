@@ -3,8 +3,8 @@ package it.chalmers.gamma.user.response;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
-import it.chalmers.gamma.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.user.UserRestrictedDTO;
 
 import java.util.List;
 
@@ -14,21 +14,21 @@ import org.springframework.http.ResponseEntity;
 public class GetITUserRestrictedResponse {
 
     @JsonUnwrapped
-    private final ITUserRestrictedDTO user;
-    private final List<FKITGroupDTO> groups;
+    private final UserRestrictedDTO user;
+    private final List<GroupDTO> groups;
 
     public GetITUserRestrictedResponse(
-            ITUserRestrictedDTO user,
-            List<FKITGroupDTO> groups) {
+            UserRestrictedDTO user,
+            List<GroupDTO> groups) {
         this.user = user;
         this.groups = groups;
     }
 
-    public ITUserRestrictedDTO getUser() {
+    public UserRestrictedDTO getUser() {
         return this.user;
     }
 
-    public List<FKITGroupDTO> getGroups() {
+    public List<GroupDTO> getGroups() {
         return this.groups;
     }
 

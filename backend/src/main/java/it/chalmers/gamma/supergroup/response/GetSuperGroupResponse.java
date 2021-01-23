@@ -1,19 +1,19 @@
 package it.chalmers.gamma.supergroup.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetSuperGroupResponse {
     @JsonUnwrapped
-    private final FKITSuperGroupDTO fkitSuperGroup;
+    private final SuperGroupDTO fkitSuperGroup;
 
-    public GetSuperGroupResponse(FKITSuperGroupDTO fkitSuperGroup) {
+    public GetSuperGroupResponse(SuperGroupDTO fkitSuperGroup) {
         this.fkitSuperGroup = fkitSuperGroup;
     }
 
-    public FKITSuperGroupDTO getFkitSuperGroup() {
+    public SuperGroupDTO getFkitSuperGroup() {
         return this.fkitSuperGroup;
     }
 

@@ -2,12 +2,12 @@ package it.chalmers.gamma.gdpr;
 
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.user.response.GDPRStatusEditedResponse;
 import it.chalmers.gamma.user.response.GetAllITUsersResponse;
 import it.chalmers.gamma.user.response.GetITUserResponse;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.List;
@@ -28,11 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/gdpr")
 public class GDPRAdminController {
 
-    private final ITUserService itUserService;
-    private final ITUserFinder userFinder;
+    private final UserService userService;
+    private final UserFinder userFinder;
 
-    public GDPRAdminController(ITUserService itUserService, ITUserFinder userFinder) {
-        this.itUserService = itUserService;
+    public GDPRAdminController(UserService userService, UserFinder userFinder) {
+        this.userService = userService;
         this.userFinder = userFinder;
     }
 
@@ -46,13 +46,13 @@ public class GDPRAdminController {
         if (!this.userFinder.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
         }
-        this.itUserService.editGdpr(UUID.fromString(id), request.isGdpr());
+        this.userService.editGdpr(UUID.fromString(id), request.isGdpr());
         return new GDPRStatusEditedResponse();
     }
 
     @GetMapping("/minified")
     public GetAllITUsersResponse getAllUserMini() {
-        List<GetITUserResponse> userResponses = this.itUserService.getAllUsers()
+        List<GetITUserResponse> userResponses = this.userService.getAllUsers()
                 .stream().map(GetITUserResponse::new).collect(Collectors.toList());
         return new GetAllITUsersResponse(userResponses);
     }

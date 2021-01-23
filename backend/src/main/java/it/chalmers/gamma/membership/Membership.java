@@ -33,15 +33,6 @@ public class Membership {
         this.unofficialPostName = unofficialPostName;
     }
 
-    public MembershipDTO toDTO() {
-        return new MembershipDTO(
-                this.id.getPostId(),
-                this.id.getGroupId(),
-                this.unofficialPostName,
-                this.id.getUserId()
-        );
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -1,13 +1,11 @@
 package it.chalmers.gamma.group;
 
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.group.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.supergroup.FKITSuperGroupService;
-import it.chalmers.gamma.util.UUIDUtil;
+import it.chalmers.gamma.supergroup.SuperGroupService;
+
 import java.util.Calendar;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -15,83 +13,39 @@ import org.springframework.stereotype.Service;
 public class GroupService {
 
     private final GroupRepository repo;
-    private final FKITSuperGroupService superGroupService;
+    private final SuperGroupService superGroupService;
+    private final GroupFinder groupFinder;
 
-    public GroupService(GroupRepository repo, FKITSuperGroupService superGroupService) {
+    public GroupService(GroupRepository repo,
+                        SuperGroupService superGroupService,
+                        GroupFinder groupFinder) {
         this.repo = repo;
         this.superGroupService = superGroupService;
+        this.groupFinder = groupFinder;
     }
 
-
-    public FKITGroupDTO createGroup(FKITGroupDTO fkitGroupDTO) {
-        Group group = new Group();
-        UUID id = fkitGroupDTO.getId();
-        if (id == null) {
-            id = UUID.randomUUID();
-        }
-        group.setId(id);
-        group.setName(fkitGroupDTO.getName());
-        group.setFunction(fkitGroupDTO.getFunction());
-        group.setDescription(fkitGroupDTO.getDescription());
-        return saveGroup(group,
-                group.getPrettyName() == null ? fkitGroupDTO.getName() : fkitGroupDTO.getPrettyName(),
-                fkitGroupDTO.getBecomesActive(), fkitGroupDTO.getBecomesInactive(),
-                fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL(), fkitGroupDTO.getSuperGroup());
+    public void createGroup(GroupDTO group) {
+        this.repo.save(new Group(group));
     }
 
-    public FKITGroupDTO editGroup(String id, FKITGroupDTO fkitGroupDTO) {
-        Group group = this.fromDTO(this.getGroup(id));
+    public GroupDTO editGroup(UUID id, GroupDTO groupDTO) {
+        Group group = this.groupFinder.getGroup(id);
         if (group == null) {
             return null;
         }
-        group.getFunction().setSv(fkitGroupDTO.getFunction() == null
-                ? group.getFunction().getSv() : fkitGroupDTO.getFunction().getSv());
+        group.getFunction().setSv(groupDTO.getFunction() == null
+                ? group.getFunction().getSv() : groupDTO.getFunction().getSv());
 
-        group.getFunction().setEn(fkitGroupDTO.getFunction() == null
-                ? group.getFunction().getEn() : fkitGroupDTO.getFunction().getEn());
+        group.getFunction().setEn(groupDTO.getFunction() == null
+                ? group.getFunction().getEn() : groupDTO.getFunction().getEn());
 
-        if (fkitGroupDTO.getDescription() != null && group.getDescription() != null) {
-            group.getDescription().setSv(fkitGroupDTO.getDescription().getSv());
-            group.getDescription().setEn(fkitGroupDTO.getDescription().getEn());
+        if (groupDTO.getDescription() != null && group.getDescription() != null) {
+            group.getDescription().setSv(groupDTO.getDescription().getSv());
+            group.getDescription().setEn(groupDTO.getDescription().getEn());
         }
-        return saveGroup(group, fkitGroupDTO.getPrettyName(), fkitGroupDTO.getBecomesActive(),
-                fkitGroupDTO.getBecomesInactive(),
-                fkitGroupDTO.getEmail(), fkitGroupDTO.getAvatarURL(), fkitGroupDTO.getSuperGroup());
-    }
-
-    private FKITGroupDTO saveGroup(Group group, String prettyName,
-                                   Calendar becomesActive, Calendar becomesInactive,
-                                   String email, String avatarURL, FKITSuperGroupDTO superGroup) {
-        group.setPrettyName(prettyName == null ? group.getPrettyName() : prettyName);
-        group.setEmail(email == null ? group.getEmail() : email);
-        group.setAvatarURL(avatarURL == null ? group.getAvatarURL() : avatarURL);
-        group.setBecomesActive(becomesActive == null ? group.getBecomesActive() : becomesActive);
-        group.setBecomesInactive(becomesInactive == null ? group.getBecomesInactive() : becomesInactive);
-        group.setSuperGroup(superGroup == null ? group.getSuperGroup() : this.superGroupService.fromDTO(superGroup));
-        return this.repo.save(group).toDTO();
-    }
-
-    public List<FKITGroupDTO> getAllGroupsWithSuperGroup(FKITSuperGroupDTO superGroupDTO) {
-        return this.repo.findAllBySuperGroup(this.superGroupService.fromDTO(superGroupDTO)).stream()
-                .map(Group::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<FKITGroupDTO> getAllActiveGroups() {
-        return this.getGroups().stream().filter(FKITGroupDTO::isActive).collect(Collectors.toList());
-    }
-
-    public List<FKITGroupDTO> getActiveGroups(FKITSuperGroupDTO superGroup) {
-        return this.getAllGroupsWithSuperGroup(superGroup).stream()
-                .filter(FKITGroupDTO::isActive)
-                .collect(Collectors.toList());
-    }
-
-    public boolean groupExists(String name) {
-        if (UUIDUtil.validUUID(name)) {
-            return this.repo.existsById(UUID.fromString(name));
-        }
-        return this.repo.existsFKITGroupByName(name);
+        return saveGroup(group, groupDTO.getPrettyName(), groupDTO.getBecomesActive(),
+                groupDTO.getBecomesInactive(),
+                groupDTO.getEmail(), groupDTO.getAvatarURL(), groupDTO.getSuperGroup());
     }
 
     public void removeGroup(String name) {
@@ -102,34 +56,13 @@ public class GroupService {
         this.repo.deleteById(groupId);
     }
 
-    public List<FKITGroupDTO> getGroups() {
-        return this.repo.findAll().stream().map(Group::toDTO).collect(Collectors.toList());
-    }
-
-    public FKITGroupDTO getGroup(UUID id) {
-        return this.repo.findById(id).orElseThrow(GroupDoesNotExistResponse::new).toDTO();
-    }
-
-    public FKITGroupDTO getGroup(String name) {
-        if (UUIDUtil.validUUID(name)) {
-            return getGroup(UUID.fromString(name));
-        }
-        return this.repo.findByName(name.toLowerCase())
-                .orElseThrow(GroupDoesNotExistResponse::new)
-                .toDTO();
-    }
-
-    public void editGroupAvatar(FKITGroupDTO groupDTO, String url) {
+    public void editGroupAvatar(GroupDTO groupDTO, String url) {
         Group group = this.fromDTO(groupDTO);
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
         group.setAvatarURL(url);
         this.repo.save(group);
-    }
-
-    public Group fromDTO(FKITGroupDTO group) {
-        return this.repo.findById(group.getId()).orElse(null);
     }
 
 }

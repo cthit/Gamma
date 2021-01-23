@@ -1,10 +1,10 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.authority.AuthorityDTO;
-import it.chalmers.gamma.authority.AuthorityLevelDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.authority.AddAuthorityRequest;
+import it.chalmers.gamma.authority.request.AddAuthorityRequest;
 import it.chalmers.gamma.authority.AuthorityService;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class MockAuthorityFactory {
     @Autowired
     private AuthorityService authorityService;
 
-    public AuthorityDTO generateAuthority(FKITSuperGroupDTO superGroup,
+    public AuthorityDTO generateAuthority(SuperGroupDTO superGroup,
                                           PostDTO post,
                                           AuthorityLevelDTO authorityLevel) {
         return new AuthorityDTO(
@@ -34,7 +34,7 @@ public class MockAuthorityFactory {
                 authority.getAuthorityLevel());
     }
 
-    public AddAuthorityRequest createValidRequest(AuthorityDTO authority, PostDTO post, FKITSuperGroupDTO superGroup) {
+    public AddAuthorityRequest createValidRequest(AuthorityDTO authority, PostDTO post, SuperGroupDTO superGroup) {
         AddAuthorityRequest request = new AddAuthorityRequest();
         request.setAuthority(authority.getAuthorityLevel().getId().toString());
         request.setPost(post.getId().toString());

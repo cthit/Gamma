@@ -1,9 +1,5 @@
 package it.chalmers.gamma.membership;
 
-import it.chalmers.gamma.group.Group;
-import it.chalmers.gamma.post.Post;
-import it.chalmers.gamma.user.ITUser;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

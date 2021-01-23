@@ -2,7 +2,7 @@ package it.chalmers.gamma.approval.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import it.chalmers.gamma.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.user.UserRestrictedDTO;
 
 import java.util.List;
 
@@ -12,13 +12,13 @@ import org.springframework.http.ResponseEntity;
 public class GetAllITUserApprovalResponse {
 
     @JsonValue
-    private final List<ITUserRestrictedDTO> users;
+    private final List<UserRestrictedDTO> users;
 
-    public List<ITUserRestrictedDTO> getUsers() {
+    public List<UserRestrictedDTO> getUsers() {
         return this.users;
     }
 
-    public GetAllITUserApprovalResponse(List<ITUserRestrictedDTO> users) {
+    public GetAllITUserApprovalResponse(List<UserRestrictedDTO> users) {
         this.users = users;
     }
 

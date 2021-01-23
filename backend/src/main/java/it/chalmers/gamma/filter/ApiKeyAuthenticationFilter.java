@@ -1,7 +1,7 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -20,11 +20,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
     private final ApiKeyService apiKeyService;
-    private final ITUserService itUserService;
+    private final UserService userService;
 
-    public ApiKeyAuthenticationFilter(ApiKeyService apiKeyService, ITUserService itUserService) {
+    public ApiKeyAuthenticationFilter(ApiKeyService apiKeyService, UserService userService) {
         this.apiKeyService = apiKeyService;
-        this.itUserService = itUserService;
+        this.userService = userService;
     }
 
     /*
@@ -54,7 +54,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
     // THIS IS SOOOOOOO UGLY
     // Can't figure out another, less hacky way to do it...
     private Authentication getAdminAuthentication() {
-        UserDetails userDetails = this.itUserService.loadUserByUsername("admin");
+        UserDetails userDetails = this.userService.loadUserByUsername("admin");
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
     }
 

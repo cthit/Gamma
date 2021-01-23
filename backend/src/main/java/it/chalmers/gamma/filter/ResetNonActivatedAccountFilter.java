@@ -1,8 +1,8 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.user.ITUserDTO;
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
 import it.chalmers.gamma.passwordreset.PasswordResetService;
 import java.io.IOException;
@@ -20,11 +20,11 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
     private static final String USERNAME_PARAMETER = "username";
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetNonActivatedAccountFilter.class);
     private final PasswordResetService passwordResetService;
-    private final ITUserFinder userFinder;
+    private final UserFinder userFinder;
 
     public ResetNonActivatedAccountFilter(String baseFrontendUrl,
                                           PasswordResetService passwordResetService,
-                                          ITUserFinder userFinder) {
+                                          UserFinder userFinder) {
         this.baseFrontendUrl = baseFrontendUrl;
         this.passwordResetService = passwordResetService;
         this.userFinder = userFinder;
@@ -36,7 +36,7 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                ITUserDTO userDTO = this.userFinder.getUser(new Cid(username));
+                UserDTO userDTO = this.userFinder.getUser(new Cid(username));
                 if (!userDTO.isActivated()) {
                     this.passwordResetService.handlePasswordReset(userDTO);
                     String params = "accountLocked=true";

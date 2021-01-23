@@ -2,7 +2,7 @@ package it.chalmers.gamma.user.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.user.ITUserRestrictedDTO;
+import it.chalmers.gamma.user.UserRestrictedDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +10,14 @@ import org.springframework.http.ResponseEntity;
 public class GetITUserMinifiedResponse {
 
     @JsonUnwrapped
-    private final ITUserRestrictedDTO user;
+    private final UserRestrictedDTO user;
 
-    public GetITUserMinifiedResponse(ITUserRestrictedDTO user) {
+    public GetITUserMinifiedResponse(UserRestrictedDTO user) {
         this.user = user;
     }
 
     @JsonUnwrapped
-    public ITUserRestrictedDTO getUser() {
+    public UserRestrictedDTO getUser() {
         return this.user;
     }
 

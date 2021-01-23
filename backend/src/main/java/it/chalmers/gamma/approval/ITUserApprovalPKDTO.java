@@ -1,19 +1,19 @@
 package it.chalmers.gamma.approval;
 
 import it.chalmers.gamma.client.ITClient;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 
 public class ITUserApprovalPKDTO {
 
-    private final ITUserDTO user;
+    private final UserDTO user;
     private final ITClient client;
 
-    public ITUserApprovalPKDTO(ITUserDTO user, ITClient client) {
+    public ITUserApprovalPKDTO(UserDTO user, ITClient client) {
         this.user = user;
         this.client = client;
     }
 
-    public ITUserDTO getUser() {
+    public UserDTO getUser() {
         return user;
     }
 

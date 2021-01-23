@@ -1,8 +1,8 @@
 package it.chalmers.gamma.membership;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.group.GroupService;
 import it.chalmers.gamma.post.PostService;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
@@ -13,7 +13,7 @@ import it.chalmers.gamma.membership.response.EditedMembershipResponse;
 import it.chalmers.gamma.membership.response.MemberAddedToGroupResponse;
 import it.chalmers.gamma.membership.response.MemberRemovedFromGroupResponse;
 
-import it.chalmers.gamma.user.ITUserFinder;
+import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
@@ -34,12 +34,12 @@ import java.util.UUID;
 @RequestMapping("/admin/groups")
 public final class MembershipAdminController {
 
-    private final ITUserFinder userFinder;
+    private final UserFinder userFinder;
     private final PostService postService;
     private final GroupService groupService;
     private final MembershipService membershipService;
 
-    public MembershipAdminController(ITUserFinder userFinder,
+    public MembershipAdminController(UserFinder userFinder,
                                      PostService postService,
                                      GroupService groupService,
                                      MembershipService membershipService) {
@@ -56,8 +56,8 @@ public final class MembershipAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        ITUserDTO user = this.userFinder.getUser(UUID.fromString(request.getUserId()));
-        FKITGroupDTO fkitGroup = this.groupService.getGroup(id);
+        UserDTO user = this.userFinder.getUser(UUID.fromString(request.getUserId()));
+        GroupDTO fkitGroup = this.groupService.getGroup(id);
         PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.addUserToGroup(fkitGroup, user, post, request.getUnofficialName());
         return new MemberAddedToGroupResponse();
@@ -66,8 +66,8 @@ public final class MembershipAdminController {
     @DeleteMapping("/{id}/members/{user}")
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") String id,
                                                               @PathVariable("user") String userId) {
-        FKITGroupDTO group = this.groupService.getGroup(id);
-        ITUserDTO user = this.userFinder.getUser(UUID.fromString(userId));
+        GroupDTO group = this.groupService.getGroup(id);
+        UserDTO user = this.userFinder.getUser(UUID.fromString(userId));
         this.membershipService.removeUserFromGroup(group, user);
         return new MemberRemovedFromGroupResponse();
     }
@@ -80,8 +80,8 @@ public final class MembershipAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        FKITGroupDTO group = this.groupService.getGroup(groupId);
-        ITUserDTO user = this.userFinder.getUser(UUID.fromString(userId));
+        GroupDTO group = this.groupService.getGroup(groupId);
+        UserDTO user = this.userFinder.getUser(UUID.fromString(userId));
         MembershipDTO membership = this.membershipService.getMembershipByUserAndGroup(user, group);
         PostDTO post = this.postService.getPostDTO(request.getPost());
         this.membershipService.editMembership(membership, request.getUnofficialName(), post);

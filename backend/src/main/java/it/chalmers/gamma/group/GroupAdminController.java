@@ -1,18 +1,17 @@
 package it.chalmers.gamma.group;
 
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
 import it.chalmers.gamma.membership.MembershipService;
-import it.chalmers.gamma.group.request.CreateGroupRequest;
+import it.chalmers.gamma.group.request.CreateOrEditGroupRequest;
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.group.response.GroupAlreadyExistsResponse;
 import it.chalmers.gamma.group.response.GroupCreatedResponse;
 import it.chalmers.gamma.group.response.GroupDeletedResponse;
 import it.chalmers.gamma.group.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.group.response.GroupEditedResponse;
-import it.chalmers.gamma.authority.AuthorityLevelService;
-import it.chalmers.gamma.supergroup.FKITSuperGroupService;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelService;
+import it.chalmers.gamma.supergroup.SuperGroupFinder;
+import it.chalmers.gamma.supergroup.SuperGroupService;
 
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
@@ -39,54 +38,41 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/groups")
 public final class GroupAdminController {
 
-    private final GroupService groupService;
-    private final FKITSuperGroupService fkitSuperGroupService;
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
+    private final GroupService groupService;
+    private final SuperGroupService superGroupService;
     private final MembershipService membershipService;
     private final AuthorityLevelService authorityLevelService;
 
     public GroupAdminController(
             GroupService groupService,
-            FKITSuperGroupService fkitSuperGroupService,
+            SuperGroupService superGroupService,
             MembershipService membershipService,
-            AuthorityLevelService authorityLevelService) {
+            AuthorityLevelService authorityLevelService, SuperGroupFinder superGroupFinder) {
         this.groupService = groupService;
-        this.fkitSuperGroupService = fkitSuperGroupService;
+        this.superGroupService = superGroupService;
         this.membershipService = membershipService;
         this.authorityLevelService = authorityLevelService;
+        this.superGroupFinder = superGroupFinder;
     }
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     @PostMapping()
-    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateGroupRequest createGroupRequest,
+    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest createOrEditGroupRequest,
                                               BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (this.groupService.groupExists(createGroupRequest.getName())) {  // TODO Move check to service?
-            throw new GroupAlreadyExistsResponse();
-        }
 
-        FKITGroupDTO group = this.groupService.createGroup(requestToDTO(createGroupRequest));
+        this.groupService.createGroup(requestToDTO(createOrEditGroupRequest));
 
-        if (createGroupRequest.getSuperGroup() != null) {   // TODO move to service?
-            FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(createGroupRequest.getSuperGroup());
-            if (superGroup == null) {
-                throw new GroupDoesNotExistResponse();
-            }
-        }
-        this.authorityLevelService.addAuthorityLevel(group.getName());
         return new GroupCreatedResponse();
     }
 
     @PutMapping("/{id}")
     public GroupEditedResponse editGroup(
-            @RequestBody CreateGroupRequest request,
+            @RequestBody CreateOrEditGroupRequest request,
             @PathVariable("id") String id) {
-        if (!this.groupService.groupExists(id)) {      // TODO move to service?
-            throw new GroupDoesNotExistResponse();
-        }
-        this.groupService.editGroup(id, requestToDTO(request));
+        this.groupService.editGroup(requestToDTO(request));
         return new GroupEditedResponse();
     }
 
@@ -102,7 +88,7 @@ public final class GroupAdminController {
 
     @PutMapping("/{id}/avatar")
     public GroupEditedResponse editAvatar(@PathVariable("id") String id, @RequestParam MultipartFile file) {
-        FKITGroupDTO group = this.groupService.getGroup(id);
+        GroupDTO group = this.groupService.getGroup(id);
         if (group == null) {
             throw new GroupDoesNotExistResponse();
         }
@@ -115,18 +101,25 @@ public final class GroupAdminController {
         return new GroupEditedResponse();
     }
 
-    private FKITGroupDTO requestToDTO(CreateGroupRequest request) {
-        return new FKITGroupDTO(
-                request.getBecomesActive(),
-                request.getBecomesInactive(),
-                request.getDescription(),
-                request.getEmail(),
-                request.getFunction(),
-                request.getName(),
-                request.getPrettyName(),
-                request.getAvatarURL(),
-                this.fkitSuperGroupService.getGroupDTO(request.getSuperGroup())
-        );
+    private GroupDTO requestToDTO(CreateOrEditGroupRequest request) {
+        return new GroupDTO.GroupDTOBuilder();
+    }
+
+    private GroupDTO requestToDTO(UUID id, CreateOrEditGroupRequest request) {
+
+    }
+
+    private GroupDTO.GroupDTOBuilder baseGroupDTOBuilder(CreateOrEditGroupRequest request) {
+        return new GroupDTO.GroupDTOBuilder()
+                .avatarUrl(request.getAvatarURL())
+                .becomesActive(request.getBecomesActive())
+                .becomesInactive(request.getBecomesInactive())
+                .description(request.getDescription())
+                .email(request.getEmail())
+                .function(request.getFunction())
+                .prettyName(request.getPrettyName())
+                .name(request.getName())
+                .superGroup(superGroupFinder.getGroup(request.getSuperGroupId())); //orimligt?
     }
 
 }

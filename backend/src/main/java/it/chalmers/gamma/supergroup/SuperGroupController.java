@@ -27,20 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/superGroups")
 public class SuperGroupController {
 
-    private final FKITSuperGroupService fkitSuperGroupService;
+    private final SuperGroupService superGroupService;
     private final MembershipService membershipService;
     private final GroupService groupService;
 
-    public SuperGroupController(FKITSuperGroupService fkitSuperGroupService,
+    public SuperGroupController(SuperGroupService superGroupService,
                                 MembershipService membershipService, GroupService groupService) {
-        this.fkitSuperGroupService = fkitSuperGroupService;
+        this.superGroupService = superGroupService;
         this.membershipService = membershipService;
         this.groupService = groupService;
     }
 
     @GetMapping("/{id}/subgroups")
     public GetAllFKITGroupsMinifiedResponseObject getAllSubGroups(@PathVariable("id") String id) {
-        FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
+        SuperGroupDTO superGroup = this.superGroupService.getGroupDTO(id);
         return new GetAllFKITGroupsMinifiedResponse(
                 this.groupService.getAllGroupsWithSuperGroup(superGroup).stream()
                         .map(g -> new GetFKITGroupMinifiedResponse(g.toMinifiedDTO()))
@@ -49,21 +49,21 @@ public class SuperGroupController {
 
     @GetMapping()
     public GetAllSuperGroupsResponseObject getAllSuperGroups() {
-        return new GetAllSuperGroupsResponse(this.fkitSuperGroupService.getAllGroups()
+        return new GetAllSuperGroupsResponse(this.superGroupService.getAllGroups()
                 .stream().map(GetSuperGroupResponse::new).collect(Collectors.toList())).toResponseObject();
     }
 
     @GetMapping("/{id}")
     public GetSuperGroupResponse getSuperGroup(@PathVariable("id") String id) {
-        if (!this.fkitSuperGroupService.groupExists(id)) {
+        if (!this.superGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
-        return new GetSuperGroupResponse(this.fkitSuperGroupService.getGroupDTO(id));
+        return new GetSuperGroupResponse(this.superGroupService.getGroupDTO(id));
     }
 
     @GetMapping("/{id}/active")
     public GetActiveFKITGroupResponseObject getActiveGroup(@PathVariable("id") String id) {
-        FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
+        SuperGroupDTO superGroup = this.superGroupService.getGroupDTO(id);
         List<GetFKITGroupResponse> groups = this.groupService.getActiveGroups(superGroup)
                 .stream().map(g -> new GetFKITGroupResponse(
                         g,

@@ -28,12 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/superGroups")       // What should this URL be?
 public class SuperGroupAdminController {
-    private final FKITSuperGroupService fkitSuperGroupService;
+    private final SuperGroupService superGroupService;
     private final GroupService groupService;
 
 
-    public SuperGroupAdminController(FKITSuperGroupService fkitSuperGroupService, GroupService groupService) {
-        this.fkitSuperGroupService = fkitSuperGroupService;
+    public SuperGroupAdminController(SuperGroupService superGroupService, GroupService groupService) {
+        this.superGroupService = superGroupService;
         this.groupService = groupService;
     }
 
@@ -43,10 +43,10 @@ public class SuperGroupAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        if (this.fkitSuperGroupService.groupExists(request.getName())) {
+        if (this.superGroupService.groupExists(request.getName())) {
             throw new GroupAlreadyExistsResponse();
         }
-        FKITSuperGroupDTO group = this.fkitSuperGroupService.createSuperGroup(requestToDTO(request));
+        SuperGroupDTO group = this.superGroupService.createSuperGroup(requestToDTO(request));
         return new GetSuperGroupResponse(group).toResponseObject();
     }
 
@@ -54,29 +54,29 @@ public class SuperGroupAdminController {
 
     @DeleteMapping("/{id}")
     public GroupDeletedResponse removeSuperGroup(@PathVariable("id") String id) {
-        if (!this.fkitSuperGroupService.groupExists(id)) {
+        if (!this.superGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
-        FKITSuperGroupDTO superGroup = this.fkitSuperGroupService.getGroupDTO(id);
+        SuperGroupDTO superGroup = this.superGroupService.getGroupDTO(id);
         if (!this.groupService.getAllGroupsWithSuperGroup(superGroup).isEmpty()) {
             throw new RemoveSubGroupsBeforeRemovingSuperGroupResponse();
         }
-        this.fkitSuperGroupService.removeGroup(UUID.fromString(id));
+        this.superGroupService.removeGroup(UUID.fromString(id));
         return new GroupDeletedResponse();
     }
 
     @PutMapping("/{id}")
     public GroupEditedResponse updateSuperGroup(@PathVariable("id") String id,
                                                    @RequestBody CreateSuperGroupRequest request) {
-        if (!this.fkitSuperGroupService.groupExists(id)) {
+        if (!this.superGroupService.groupExists(id)) {
             throw new GroupDoesNotExistResponse();
         }
-        this.fkitSuperGroupService.updateSuperGroup(UUID.fromString(id), requestToDTO(request));
+        this.superGroupService.updateSuperGroup(UUID.fromString(id), requestToDTO(request));
         return new GroupEditedResponse();
     }
 
-    private FKITSuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {
-        return new FKITSuperGroupDTO(
+    private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {
+        return new SuperGroupDTO(
                 request.getName(),
                 request.getPrettyName(),
                 request.getType(),

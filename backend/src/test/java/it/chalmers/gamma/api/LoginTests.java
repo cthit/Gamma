@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITUserFactory;
 import it.chalmers.gamma.utils.CharacterTypes;
@@ -56,7 +56,7 @@ public class LoginTests {
 
     @Test
     public void testSuccessfulLogin() throws Exception {
-        ITUserDTO user = this.mockITUserFactory.saveUser(
+        UserDTO user = this.mockITUserFactory.saveUser(
                 this.mockITUserFactory.generateITUser(
                         GenerationUtils.generateRandomString(
                                 10,
@@ -89,8 +89,8 @@ public class LoginTests {
 
     @Test
     public void testNonActivatedRedirect() throws Exception {
-        ITUserDTO user = this.mockITUserFactory.generateITUser("nActUser", false);
-        ITUserDTO editedUser = this.mockITUserFactory.saveUser(user);
+        UserDTO user = this.mockITUserFactory.generateITUser("nActUser", false);
+        UserDTO editedUser = this.mockITUserFactory.saveUser(user);
         String nonActivatedPasswordRequest = JSONUtils.toFormUrlEncoded(
                 new JSONParameter(USERNAME, editedUser.getCid()),
                 new JSONParameter(PASSWORD, PASSWORD) // Does not do any difference
@@ -101,7 +101,7 @@ public class LoginTests {
 
     @Test
     public void testSuccessfulEmailLogin() throws Exception {
-        ITUserDTO user = this.mockITUserFactory.saveUser(
+        UserDTO user = this.mockITUserFactory.saveUser(
                 this.mockITUserFactory.generateITUser(
                         GenerationUtils.generateRandomString(
                                 10,

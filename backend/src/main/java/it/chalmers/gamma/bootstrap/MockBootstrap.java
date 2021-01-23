@@ -2,10 +2,10 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
-import it.chalmers.gamma.supergroup.FKITSuperGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;
@@ -53,13 +53,13 @@ public class MockBootstrap {
             return;
         }
 
-        final Map<UUID, ITUserDTO> users = createUsers(mockData);
+        final Map<UUID, UserDTO> users = createUsers(mockData);
         LOGGER.info("Users created");
 
         final Map<UUID, PostDTO> posts = createPosts(mockData);
         LOGGER.info("Posts created");
 
-        final Map<UUID, FKITSuperGroupDTO> superGroups = createSuperGroups(mockData);
+        final Map<UUID, SuperGroupDTO> superGroups = createSuperGroups(mockData);
         LOGGER.info("Super groups created");
 
         createGroups(mockData, users, posts, superGroups);
@@ -68,11 +68,11 @@ public class MockBootstrap {
         LOGGER.info("Mock finished");
     }
 
-    private Map<UUID, ITUserDTO> createUsers(MockData mockData) {
-        Map<UUID, ITUserDTO> users = new HashMap<>();
+    private Map<UUID, UserDTO> createUsers(MockData mockData) {
+        Map<UUID, UserDTO> users = new HashMap<>();
 
         mockData.getUsers().forEach(mockUser -> {
-            ITUserDTO user = this.helper.getUserService().createUser(
+            UserDTO user = this.helper.getUserService().createUser(
                     mockUser.getId(),
                     mockUser.getNick(),
                     mockUser.getFirstName(),
@@ -106,11 +106,11 @@ public class MockBootstrap {
         return posts;
     }
 
-    private Map<UUID, FKITGroupDTO> createGroups(
+    private Map<UUID, GroupDTO> createGroups(
             MockData mockData,
-            Map<UUID, ITUserDTO> users,
+            Map<UUID, UserDTO> users,
             Map<UUID, PostDTO> posts,
-            Map<UUID, FKITSuperGroupDTO> superGroups) {
+            Map<UUID, SuperGroupDTO> superGroups) {
 
         Calendar activeGroupBecomesActive = toCalendar(
                 Instant.now().minus(1, ChronoUnit.DAYS)
@@ -130,7 +130,7 @@ public class MockBootstrap {
         int activeYear = activeGroupBecomesActive.get(Calendar.YEAR);
         int inactiveYear = inactiveGroupBecomesActive.get(Calendar.YEAR);
 
-        Map<UUID, FKITGroupDTO> groups = new HashMap<>();
+        Map<UUID, GroupDTO> groups = new HashMap<>();
 
         mockData.getGroups().forEach(mockGroup -> {
             int year = mockGroup.isActive() ? activeYear : inactiveYear;
@@ -143,18 +143,7 @@ public class MockBootstrap {
                     ? activeGroupBecomesInactive
                     : inactiveGroupBecomesInactive;
 
-            FKITGroupDTO group = new FKITGroupDTO(
-                    mockGroup.getId(),
-                    active,
-                    inactive,
-                    mockGroup.getDescription(),
-                    name + "@chalmers.it",
-                    mockGroup.getFunction(),
-                    name,
-                    prettyName,
-                    null,
-                    superGroups.get(mockGroup.getSuperGroup())
-            );
+            GroupDTO group = new GroupDTO.GroupDTOBuilder().id(mockGroup.getId()).becomesActive(active).becomesInactive(inactive).description(mockGroup.getDescription()).email(name + "@chalmers.it").function(mockGroup.getFunction()).name(name).prettyName(prettyName).avatarUrl(null).superGroup(superGroups.get(mockGroup.getSuperGroup())).createGroupDTO();
 
             groups.put(group.getId(), group);
 
@@ -162,7 +151,7 @@ public class MockBootstrap {
 
             mockGroup.getMembers().forEach(mockMembership -> {
                 PostDTO post = posts.get(mockMembership.getPostId());
-                ITUserDTO user = users.get(mockMembership.getUserId());
+                UserDTO user = users.get(mockMembership.getUserId());
 
                 this.helper.getMembershipService().addUserToGroup(
                         group,
@@ -176,10 +165,10 @@ public class MockBootstrap {
         return groups;
     }
 
-    private Map<UUID, FKITSuperGroupDTO> createSuperGroups(MockData mockData) {
-        Map<UUID, FKITSuperGroupDTO> superGroupDTOMap = new HashMap<>();
+    private Map<UUID, SuperGroupDTO> createSuperGroups(MockData mockData) {
+        Map<UUID, SuperGroupDTO> superGroupDTOMap = new HashMap<>();
         mockData.getSuperGroups().forEach(mockSuperGroup -> {
-            FKITSuperGroupDTO superGroup = new FKITSuperGroupDTO(
+            SuperGroupDTO superGroup = new SuperGroupDTO(
                     mockSuperGroup.getId(),
                     mockSuperGroup.getName(),
                     mockSuperGroup.getPrettyName(),

@@ -2,25 +2,25 @@ package it.chalmers.gamma.membership;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import it.chalmers.gamma.group.FKITGroupDTO;
+import it.chalmers.gamma.group.GroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.ITUserDTO;
+import it.chalmers.gamma.user.UserDTO;
 import java.util.Objects;
 
 public class MembershipDTO {
     private final PostDTO post;
-    private final FKITGroupDTO fkitGroupDTO;
+    private final GroupDTO groupDTO;
     private final String unofficialPostName;
     @JsonUnwrapped
-    private final ITUserDTO user;
+    private final UserDTO user;
 
 
     public MembershipDTO(PostDTO post,
-                         FKITGroupDTO fkitGroupDTO,
+                         GroupDTO groupDTO,
                          String unofficialPostName,
-                         ITUserDTO user) {
+                         UserDTO user) {
         this.post = post;
-        this.fkitGroupDTO = fkitGroupDTO;
+        this.groupDTO = groupDTO;
         this.unofficialPostName = unofficialPostName;
         this.user = user;
     }
@@ -33,12 +33,12 @@ public class MembershipDTO {
         return this.unofficialPostName;
     }
 
-    public ITUserDTO getUser() {
+    public UserDTO getUser() {
         return this.user;
     }
 
-    public FKITGroupDTO getFkitGroupDTO() {
-        return this.fkitGroupDTO;
+    public GroupDTO getFkitGroupDTO() {
+        return this.groupDTO;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MembershipDTO {
         return Objects.equals(this.post, that.post)
                 && Objects.equals(this.unofficialPostName, that.unofficialPostName)
                 && Objects.equals(this.user, that.user)
-                && Objects.equals(this.fkitGroupDTO, that.fkitGroupDTO);
+                && Objects.equals(this.groupDTO, that.groupDTO);
     }
 
     @Override
@@ -61,14 +61,14 @@ public class MembershipDTO {
         return Objects.hash(this.post,
                 this.unofficialPostName,
                 this.user,
-                this.fkitGroupDTO);
+                this.groupDTO);
     }
 
     @Override
     public String toString() {
         return "MembershipDTO{"
                 + "post=" + this.post
-                + ", fkitGroupDTO='" + this.fkitGroupDTO + '\''
+                + ", fkitGroupDTO='" + this.groupDTO + '\''
                 + ", unofficialPostName='" + this.unofficialPostName + '\''
                 + ", user='" + this.user + '\''
                 + '}';

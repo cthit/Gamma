@@ -1,13 +1,13 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.authority.AuthorityLevelService;
+import it.chalmers.gamma.authoritylevel.AuthorityLevelService;
 import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.group.GroupService;
-import it.chalmers.gamma.supergroup.FKITSuperGroupService;
+import it.chalmers.gamma.supergroup.SuperGroupService;
 import it.chalmers.gamma.client.ITClientService;
-import it.chalmers.gamma.user.ITUserFinder;
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserFinder;
+import it.chalmers.gamma.user.UserService;
 import it.chalmers.gamma.membership.MembershipService;
 import it.chalmers.gamma.post.PostService;
 
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 @Component()
 public final class BootstrapServiceHelper {
 
-    private final ITUserFinder userFinder;
-    private final ITUserService userService;
+    private final UserFinder userFinder;
+    private final UserService userService;
     private final GroupService groupService;
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
@@ -26,10 +26,10 @@ public final class BootstrapServiceHelper {
     private final AuthorityService authorityService;
     private final ITClientService itClientService;
     private final ApiKeyService apiKeyService;
-    private final FKITSuperGroupService superGroupService;
+    private final SuperGroupService superGroupService;
 
-    public BootstrapServiceHelper(ITUserFinder userFinder,
-                                  ITUserService userService,
+    public BootstrapServiceHelper(UserFinder userFinder,
+                                  UserService userService,
                                   GroupService groupService,
                                   AuthorityLevelService authorityLevelService,
                                   PostService postService,
@@ -37,7 +37,7 @@ public final class BootstrapServiceHelper {
                                   AuthorityService authorityService,
                                   ITClientService itClientService,
                                   ApiKeyService apiKeyService,
-                                  FKITSuperGroupService superGroupService) {
+                                  SuperGroupService superGroupService) {
         this.userFinder = userFinder;
         this.userService = userService;
         this.groupService = groupService;
@@ -50,7 +50,7 @@ public final class BootstrapServiceHelper {
         this.superGroupService = superGroupService;
     }
 
-    public ITUserService getUserService() {
+    public UserService getUserService() {
         return this.userService;
     }
 
@@ -82,11 +82,11 @@ public final class BootstrapServiceHelper {
         return this.apiKeyService;
     }
 
-    public FKITSuperGroupService getSuperGroupService() {
+    public SuperGroupService getSuperGroupService() {
         return this.superGroupService;
     }
 
-    public ITUserFinder getUserFinder() {
+    public UserFinder getUserFinder() {
         return userFinder;
     }
 }

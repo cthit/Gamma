@@ -1,6 +1,6 @@
 package it.chalmers.gamma;
 
-import it.chalmers.gamma.user.ITUserService;
+import it.chalmers.gamma.user.UserService;
 
 import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.DirtiesContext;
@@ -13,9 +13,9 @@ public class TestUtils {
 
     private MockMvc mockMvc;
 
-    private ITUserService userService;
+    private UserService userService;
 
-    public void setMockMvc(MockMvc mockMvc, ITUserService userService) {
+    public void setMockMvc(MockMvc mockMvc, UserService userService) {
         this.mockMvc = mockMvc;
         this.userService = userService;
     }
@@ -24,7 +24,7 @@ public class TestUtils {
         return this.mockMvc;
     }
 
-    public ITUserService getUserService() {
+    public UserService getUserService() {
         return this.userService;
     }
 
