@@ -1,10 +1,10 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.domain.text.Text;
-import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
-import it.chalmers.gamma.group.request.CreateOrEditGroupRequest;
-import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.group.controller.request.CreateOrEditGroupRequest;
+import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.Calendar;
@@ -21,7 +21,7 @@ public class MockFKITGroupFactory {
         Calendar current = Calendar.getInstance();
         Calendar nextYear = Calendar.getInstance();
         nextYear.add(Calendar.YEAR, 1);
-        return new GroupDTO.GroupDTOBuilder().id(current).becomesActive(nextYear).becomesInactive(new Text()).description(GenerationUtils.generateRandomString()).email(new Text()).function(groupName).name(groupName).prettyName(GenerationUtils.generateRandomString()).avatarUrl(superGroupDTO).createGroupDTO();
+        return new GroupDTO.GroupDTOBuilder().id(current).becomesActive(nextYear).becomesInactive(new Text()).description(GenerationUtils.generateRandomString()).email(new Text()).function(groupName).name(groupName).prettyName(GenerationUtils.generateRandomString()).avatarUrl(superGroupDTO).build();
     }
 
     public GroupDTO saveGroup(GroupDTO group) {

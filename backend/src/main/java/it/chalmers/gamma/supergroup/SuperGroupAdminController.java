@@ -2,14 +2,14 @@ package it.chalmers.gamma.supergroup;
 
 import it.chalmers.gamma.supergroup.request.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.group.response.GroupAlreadyExistsResponse;
-import it.chalmers.gamma.group.response.GroupDeletedResponse;
-import it.chalmers.gamma.group.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.group.response.GroupEditedResponse;
+import it.chalmers.gamma.group.controller.response.GroupAlreadyExistsResponse;
+import it.chalmers.gamma.group.controller.response.GroupDeletedResponse;
+import it.chalmers.gamma.group.controller.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.group.controller.response.GroupEditedResponse;
 import it.chalmers.gamma.supergroup.response.GetSuperGroupResponse;
 import it.chalmers.gamma.supergroup.response.GetSuperGroupResponse.GetSuperGroupResponseObject;
 import it.chalmers.gamma.supergroup.response.RemoveSubGroupsBeforeRemovingSuperGroupResponse;
-import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.UUID;

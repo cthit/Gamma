@@ -4,7 +4,7 @@ import it.chalmers.gamma.apikey.ApiKeyDTO;
 import it.chalmers.gamma.client.ITClientDTO;
 import it.chalmers.gamma.authority.AuthorityDTO;
 import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
-import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;

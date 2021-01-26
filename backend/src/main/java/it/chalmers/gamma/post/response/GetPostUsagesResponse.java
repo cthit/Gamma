@@ -1,7 +1,7 @@
 package it.chalmers.gamma.post.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.group.response.GetFKITGroupResponse;
+import it.chalmers.gamma.group.controller.response.GetFKITGroupResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

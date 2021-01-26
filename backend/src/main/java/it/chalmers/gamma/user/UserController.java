@@ -1,8 +1,8 @@
 package it.chalmers.gamma.user;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.group.GroupDTO;
-import it.chalmers.gamma.membership.MembershipDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
+import it.chalmers.gamma.membership.dto.MembershipDTO;
 import it.chalmers.gamma.whitelist.WhitelistDTO;
 import it.chalmers.gamma.filter.JwtAuthenticationFilter;
 import it.chalmers.gamma.requests.ChangeUserPassword;
@@ -28,7 +28,7 @@ import it.chalmers.gamma.user.response.UserEditedResponse;
 import it.chalmers.gamma.user.response.UserNotFoundResponse;
 import it.chalmers.gamma.whitelist.response.WhitelistDoesNotExistsException;
 import it.chalmers.gamma.activationcode.ActivationCodeService;
-import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.whitelist.WhitelistService;
 import it.chalmers.gamma.util.InputValidationUtils;
 

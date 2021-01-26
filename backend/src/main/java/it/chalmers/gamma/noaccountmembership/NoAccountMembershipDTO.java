@@ -1,6 +1,6 @@
 package it.chalmers.gamma.noaccountmembership;
 
-import it.chalmers.gamma.group.Group;
+import it.chalmers.gamma.group.data.Group;
 import it.chalmers.gamma.post.Post;
 import java.util.Objects;
 

@@ -1,11 +1,11 @@
 package it.chalmers.gamma.post;
 
-import it.chalmers.gamma.group.GroupDTO;
-import it.chalmers.gamma.membership.RestrictedMembershipDTO;
-import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.group.dto.GroupDTO;
+import it.chalmers.gamma.membership.dto.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.post.request.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.group.response.GetFKITGroupResponse;
+import it.chalmers.gamma.group.controller.response.GetFKITGroupResponse;
 import it.chalmers.gamma.post.response.GetPostUsagesResponse;
 import it.chalmers.gamma.post.response.GetPostUsagesResponse.GetPostUsagesResponseObject;
 import it.chalmers.gamma.post.response.PostAlreadyExistsResponse;

@@ -2,7 +2,7 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.user.UserDTO;
@@ -143,7 +143,7 @@ public class MockBootstrap {
                     ? activeGroupBecomesInactive
                     : inactiveGroupBecomesInactive;
 
-            GroupDTO group = new GroupDTO.GroupDTOBuilder().id(mockGroup.getId()).becomesActive(active).becomesInactive(inactive).description(mockGroup.getDescription()).email(name + "@chalmers.it").function(mockGroup.getFunction()).name(name).prettyName(prettyName).avatarUrl(null).superGroup(superGroups.get(mockGroup.getSuperGroup())).createGroupDTO();
+            GroupDTO group = new GroupDTO.GroupDTOBuilder().id(mockGroup.getId()).becomesActive(active).becomesInactive(inactive).description(mockGroup.getDescription()).email(name + "@chalmers.it").function(mockGroup.getFunction()).name(name).prettyName(prettyName).avatarUrl(null).superGroup(superGroups.get(mockGroup.getSuperGroup())).build();
 
             groups.put(group.getId(), group);
 

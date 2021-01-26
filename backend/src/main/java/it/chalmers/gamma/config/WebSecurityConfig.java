@@ -1,12 +1,12 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.handlers.LoginRedirectHandler;
 import it.chalmers.gamma.apikey.ApiKeyService;
 import it.chalmers.gamma.authority.AuthorityService;
-import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.user.UserService;
 

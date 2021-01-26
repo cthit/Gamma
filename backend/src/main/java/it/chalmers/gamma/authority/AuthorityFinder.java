@@ -1,11 +1,10 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.authority.response.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
 import it.chalmers.gamma.authoritylevel.AuthorityLevelFinder;
 import it.chalmers.gamma.authoritylevel.AuthorityLevelRepository;
-import it.chalmers.gamma.membership.MembershipDTO;
-import it.chalmers.gamma.membership.MembershipFinder;
+import it.chalmers.gamma.membership.dto.MembershipDTO;
+import it.chalmers.gamma.membership.service.MembershipFinder;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.post.PostFinder;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;

@@ -4,7 +4,7 @@ import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
-import it.chalmers.gamma.group.GroupDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.user.UserDTO;
@@ -57,7 +57,7 @@ public class AdminBootstrap {
             start.setTimeInMillis(System.currentTimeMillis());
             SuperGroupDTO superGroup =
                     this.helper.getSuperGroupService().createSuperGroup(superGroupCreation);
-            GroupDTO group = new GroupDTO.GroupDTOBuilder().id(start).becomesActive(end).becomesInactive(description).description(adminMail).email(function).function("superadmin").name("superAdmin").prettyName(null).avatarUrl(superGroup).createGroupDTO();
+            GroupDTO group = new GroupDTO.GroupDTOBuilder().id(start).becomesActive(end).becomesInactive(description).description(adminMail).email(function).function("superadmin").name("superAdmin").prettyName(null).avatarUrl(superGroup).build();
             group = this.helper.getGroupService().createGroup(group);
             Text p = new Text();
             p.setSv(admin);

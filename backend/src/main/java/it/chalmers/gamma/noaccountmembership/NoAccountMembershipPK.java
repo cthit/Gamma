@@ -1,7 +1,6 @@
 package it.chalmers.gamma.noaccountmembership;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.group.Group;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -10,7 +9,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Embeddable
 @SuppressFBWarnings(justification = "Fields should be serializable", value = "SE_BAD_FIELD")

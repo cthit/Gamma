@@ -1,10 +1,10 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.group.GroupDTO;
-import it.chalmers.gamma.membership.MembershipDTO;
+import it.chalmers.gamma.group.dto.GroupDTO;
+import it.chalmers.gamma.membership.dto.MembershipDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.user.UserDTO;
-import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import org.springframework.beans.factory.annotation.Autowired;

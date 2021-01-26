@@ -2,7 +2,7 @@ package it.chalmers.gamma.service;
 
 import java.util.Calendar;
 
-import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.group.service.GroupService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

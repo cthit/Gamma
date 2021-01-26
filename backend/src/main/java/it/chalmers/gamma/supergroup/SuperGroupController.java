@@ -1,18 +1,18 @@
 package it.chalmers.gamma.supergroup;
 
-import it.chalmers.gamma.membership.RestrictedMembershipDTO;
-import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse;
-import it.chalmers.gamma.group.response.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
-import it.chalmers.gamma.group.response.GetAllFKITGroupsMinifiedResponse;
-import it.chalmers.gamma.group.response.GetAllFKITGroupsMinifiedResponse.GetAllFKITGroupsMinifiedResponseObject;
-import it.chalmers.gamma.group.response.GetFKITGroupMinifiedResponse;
-import it.chalmers.gamma.group.response.GetFKITGroupResponse;
-import it.chalmers.gamma.group.response.GroupDoesNotExistResponse;
+import it.chalmers.gamma.membership.dto.RestrictedMembershipDTO;
+import it.chalmers.gamma.group.controller.response.GetActiveFKITGroupsResponse;
+import it.chalmers.gamma.group.controller.response.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
+import it.chalmers.gamma.group.controller.response.GetAllFKITGroupsMinifiedResponse;
+import it.chalmers.gamma.group.controller.response.GetAllFKITGroupsMinifiedResponse.GetAllFKITGroupsMinifiedResponseObject;
+import it.chalmers.gamma.group.controller.response.GetFKITGroupMinifiedResponse;
+import it.chalmers.gamma.group.controller.response.GetFKITGroupResponse;
+import it.chalmers.gamma.group.controller.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.supergroup.response.GetAllSuperGroupsResponse;
 import it.chalmers.gamma.supergroup.response.GetAllSuperGroupsResponse.GetAllSuperGroupsResponseObject;
 import it.chalmers.gamma.supergroup.response.GetSuperGroupResponse;
-import it.chalmers.gamma.group.GroupService;
-import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.group.service.GroupService;
+import it.chalmers.gamma.membership.service.MembershipService;
 
 import java.util.List;
 

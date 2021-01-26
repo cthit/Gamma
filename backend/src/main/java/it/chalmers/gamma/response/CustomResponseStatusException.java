@@ -19,7 +19,6 @@ public class CustomResponseStatusException extends ResponseStatusException {
                 reason));
         LOGGER.debug(String.format("Stacktrace: \n %s:", Arrays.stream(super.fillInStackTrace().getStackTrace())
                 .map(StackTraceElement::toString).collect(Collectors.joining("\n    "))));
-        // Prints the stacktrace to debug
     }
 
     @Override

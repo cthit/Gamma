@@ -1,6 +1,6 @@
 package it.chalmers.gamma.noaccountmembership;
 
-import it.chalmers.gamma.group.Group;
+import it.chalmers.gamma.group.data.Group;
 
 import java.util.List;
 import java.util.UUID;

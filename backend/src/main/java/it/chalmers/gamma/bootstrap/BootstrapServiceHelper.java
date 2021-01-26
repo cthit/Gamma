@@ -3,12 +3,12 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.apikey.ApiKeyService;
 import it.chalmers.gamma.authoritylevel.AuthorityLevelService;
 import it.chalmers.gamma.authority.AuthorityService;
-import it.chalmers.gamma.group.GroupService;
+import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.supergroup.SuperGroupService;
 import it.chalmers.gamma.client.ITClientService;
 import it.chalmers.gamma.user.UserFinder;
 import it.chalmers.gamma.user.UserService;
-import it.chalmers.gamma.membership.MembershipService;
+import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.post.PostService;
 
 import org.springframework.stereotype.Component;
