@@ -1,6 +1,6 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import java.util.Objects;

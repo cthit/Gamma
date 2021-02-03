@@ -1,7 +1,7 @@
 package it.chalmers.gamma.approval;
 
 import it.chalmers.gamma.client.ITClient;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 
 public class ITUserApprovalPKDTO {
 

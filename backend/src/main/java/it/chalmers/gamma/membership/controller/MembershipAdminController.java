@@ -3,18 +3,18 @@ package it.chalmers.gamma.membership.controller;
 import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.post.PostService;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
 
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.membership.response.EditedMembershipResponse;
-import it.chalmers.gamma.membership.response.MemberAddedToGroupResponse;
-import it.chalmers.gamma.membership.response.MemberRemovedFromGroupResponse;
+import it.chalmers.gamma.membership.controller.response.EditedMembershipResponse;
+import it.chalmers.gamma.membership.controller.response.MemberAddedToGroupResponse;
+import it.chalmers.gamma.membership.controller.response.MemberRemovedFromGroupResponse;
 
-import it.chalmers.gamma.user.UserFinder;
+import it.chalmers.gamma.user.service.UserFinder;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;

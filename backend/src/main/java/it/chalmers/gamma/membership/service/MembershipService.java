@@ -1,13 +1,17 @@
 package it.chalmers.gamma.membership.service;
 
+import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.group.dto.GroupDTO;
+import it.chalmers.gamma.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.membership.data.Membership;
 import it.chalmers.gamma.membership.data.MembershipPK;
 import it.chalmers.gamma.membership.data.MembershipRepository;
 import it.chalmers.gamma.membership.dto.MembershipDTO;
+import it.chalmers.gamma.membership.dto.MembershipShallowDTO;
 import it.chalmers.gamma.membership.exception.MembershipNotFoundException;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.post.exception.PostNotFoundException;
+import it.chalmers.gamma.user.dto.UserDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import it.chalmers.gamma.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,24 +33,8 @@ public class MembershipService {
         this.membershipFinder = membershipFinder;
     }
 
-    /**
-     * adds a user to the group.
-     *
-     * @param group group the user should be added to
-     * @param user  which user is added
-     * @param post  what post the user has in group
-     * @param postname what the unoficial-post name is
-     */
-    public void addUserToGroup(GroupDTO group, UserDTO user, PostDTO post, String postname) {
-        MembershipPK pk = new MembershipPK(
-                user.getId(),
-                group.getId(),
-                post.getId()
-        );
-        Membership membership = new Membership();
-        membership.setId(pk);
-        membership.setUnofficialPostName(postname);
-        this.membershipRepository.save(membership);
+    public void addUserToGroup(MembershipShallowDTO membership) throws GroupNotFoundException, PostNotFoundException, UserNotFoundException {
+        this.membershipRepository.save(new Membership(membershipFinder.fromShallow(membership)));
     }
 
     public void removeUserFromGroup(UUID userId, UUID groupId) throws MembershipNotFoundException {
@@ -56,35 +45,17 @@ public class MembershipService {
         this.membershipRepository.deleteById_UserIdAndId_GroupId(userId, groupId);
     }
 
-    @Transactional
-    public void editMembership(UUID groupId, UUID userId, String unofficialName, UUID ) {
-        this.removeUserFromGroup(membershipDTO.getFkitGroupDTO(), membershipDTO.getUser());
-        this.addUserToGroup(membershipDTO.getFkitGroupDTO(),
-                membershipDTO.getUser(), post,
-                unofficialName);
-        this.membershipRepository.save(this.getMembership(membershipDTO));
-    }
-
-    public void removeAllUsersFromGroup(UUID groupId) {
-        List<UserDTO> users = this.getMembershipsInGroup(group).stream()
-                .map(MembershipDTO::getUser).collect(Collectors.toList());
-        for (UserDTO user : users) {
-            this.membershipRepository.delete(
-                    this.getMembership(this.getMembershipByUserAndGroup(user, group)));
-        }
-    }
-
-    public void removeAllMemberships(UserDTO user) {
-        List<Membership> memberships = this.membershipRepository
-                .findAllById_UserId(user.getId());
-        memberships.forEach(this.membershipRepository::delete);
+    public void editMembership(MembershipShallowDTO newEdit) throws MembershipNotFoundException, IDsNotMatchingException, GroupNotFoundException, PostNotFoundException, UserNotFoundException {
+        Membership membership = this.membershipFinder.getMembershipEntityByUserAndGroup(newEdit.getUserId(), newEdit.getGroupId());
+        membership.apply(this.membershipFinder.fromShallow(newEdit));
+        this.membershipRepository.save(membership);
     }
 
     public boolean groupIsActiveCommittee(GroupDTO group) {
         return group.isActive();
     }
 
-    public boolean isPostUsed(UUID id) {
-        return !this.membershipRepository.findAllById_PostId(id).isEmpty();
+    public boolean isPostUsed(UUID postId) {
+        return !this.membershipRepository.findAllById_PostId(postId).isEmpty();
     }
 }

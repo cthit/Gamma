@@ -1,6 +1,7 @@
 package it.chalmers.gamma.supergroup;
 
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.supergroup.exception.SuperGroupNotFoundException;
 import it.chalmers.gamma.supergroup.response.SuperGroupDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import org.springframework.stereotype.Component;
@@ -19,29 +20,16 @@ public class SuperGroupFinder {
         this.superGroupRepository = superGroupRepository;
     }
 
-    public Optional<SuperGroupDTO> getSuperGroup(UUID id) {
-        Optional<SuperGroup> superGroupEntity = getSuperGroupEntity(id);
-        Optional<SuperGroupDTO> superGroup = Optional.empty();
-
-        if(superGroupEntity.isPresent()) {
-            superGroup = superGroupEntity.map(this::toDTO);
-        }
-
-        return superGroup;
+    public SuperGroupDTO getSuperGroup(UUID id) throws SuperGroupNotFoundException {
+        return toDTO(getSuperGroupEntity(id));
     }
 
-    protected Optional<SuperGroup> getSuperGroupEntity(UUID id) {
-        return this.superGroupRepository.findById(id);
+    protected SuperGroup getSuperGroupEntity(UUID id) throws SuperGroupNotFoundException {
+        return this.superGroupRepository.findById(id).orElseThrow(SuperGroupNotFoundException::new);
     }
 
-    //TODO: Remove
-    public SuperGroupDTO getGroupDTO(String id) {
-        if (UUIDUtil.validUUID(id)) {
-            return this.superGroupRepository.findById(UUID.fromString(id))
-                    .orElseThrow(SuperGroupDoesNotExistResponse::new).toDTO();
-        }
-        return this.superGroupRepository.findByName(id.toLowerCase())
-                .orElseThrow(SuperGroupDoesNotExistResponse::new).toDTO();
+    public SuperGroup getSuperGroupEntity(SuperGroupDTO superGroup) throws SuperGroupNotFoundException {
+        return getSuperGroupEntity(superGroup.getId());
     }
 
     public List<SuperGroupDTO> getAllGroups() {

@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.user.UserDTO;
-import it.chalmers.gamma.user.UserFinder;
+import it.chalmers.gamma.user.dto.UserDTO;
+import it.chalmers.gamma.user.exception.UserNotFoundException;
+import it.chalmers.gamma.user.service.UserFinder;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;
 
-@Service("itUserApprovalService")
+@Service()
 public class ITUserApprovalService implements ApprovalStore {
 
     private final ITUserApprovalRepository itUserApprovalRepository;
@@ -36,7 +37,13 @@ public class ITUserApprovalService implements ApprovalStore {
                 .filter(approval -> approval.getScope().equals("access"))
                 .findFirst();
 
-        accessApproval.ifPresent(this::saveApproval);
+        accessApproval.ifPresent(approval -> {
+            try {
+                saveApproval(approval);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
         return true;
     }
@@ -64,7 +71,7 @@ public class ITUserApprovalService implements ApprovalStore {
         );
     }
 
-    public void saveApproval(String cid, String clientId) {
+    public void saveApproval(String cid, String clientId) throws UserNotFoundException {
         UserDTO user = this.userFinder.getUser(new Cid(cid));
         ITClientDTO client = this.clientFinder.getClient(clientId).orElseThrow();
 
@@ -78,7 +85,7 @@ public class ITUserApprovalService implements ApprovalStore {
         this.itUserApprovalRepository.save(itUserApproval);
     }
 
-    private void saveApproval(Approval approval) {
+    private void saveApproval(Approval approval) throws UserNotFoundException {
         String cid = approval.getUserId();
         String clientId = approval.getClientId();
 

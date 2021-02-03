@@ -1,12 +1,12 @@
 package it.chalmers.gamma.supergroup;
 
-import it.chalmers.gamma.membership.dto.RestrictedMembershipDTO;
-import it.chalmers.gamma.group.controller.response.GetActiveFKITGroupsResponse;
-import it.chalmers.gamma.group.controller.response.GetActiveFKITGroupsResponse.GetActiveFKITGroupResponseObject;
-import it.chalmers.gamma.group.controller.response.GetAllFKITGroupsMinifiedResponse;
-import it.chalmers.gamma.group.controller.response.GetAllFKITGroupsMinifiedResponse.GetAllFKITGroupsMinifiedResponseObject;
-import it.chalmers.gamma.group.controller.response.GetFKITGroupMinifiedResponse;
-import it.chalmers.gamma.group.controller.response.GetFKITGroupResponse;
+import it.chalmers.gamma.membership.dto.MembershipRestrictedDTO;
+import it.chalmers.gamma.group.controller.response.GetActiveGroupsResponse;
+import it.chalmers.gamma.group.controller.response.GetActiveGroupsResponse.GetActiveGroupResponseObject;
+import it.chalmers.gamma.group.controller.response.GetAllGroupsMinifiedResponse;
+import it.chalmers.gamma.group.controller.response.GetAllGroupsMinifiedResponse.GetAllGroupsMinifiedResponseObject;
+import it.chalmers.gamma.group.controller.response.GetGroupMinifiedResponse;
+import it.chalmers.gamma.group.controller.response.GetGroupResponse;
 import it.chalmers.gamma.group.controller.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.supergroup.response.GetAllSuperGroupsResponse;
 import it.chalmers.gamma.supergroup.response.GetAllSuperGroupsResponse.GetAllSuperGroupsResponseObject;
@@ -39,11 +39,11 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}/subgroups")
-    public GetAllFKITGroupsMinifiedResponseObject getAllSubGroups(@PathVariable("id") String id) {
+    public GetAllGroupsMinifiedResponseObject getAllSubGroups(@PathVariable("id") String id) {
         SuperGroupDTO superGroup = this.superGroupService.getGroupDTO(id);
-        return new GetAllFKITGroupsMinifiedResponse(
+        return new GetAllGroupsMinifiedResponse(
                 this.groupService.getAllGroupsWithSuperGroup(superGroup).stream()
-                        .map(g -> new GetFKITGroupMinifiedResponse(g.toMinifiedDTO()))
+                        .map(g -> new GetGroupMinifiedResponse(g.toMinifiedDTO()))
                         .collect(Collectors.toList())).toResponseObject();
     }
 
@@ -62,16 +62,16 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}/active")
-    public GetActiveFKITGroupResponseObject getActiveGroup(@PathVariable("id") String id) {
+    public GetActiveGroupResponseObject getActiveGroup(@PathVariable("id") String id) {
         SuperGroupDTO superGroup = this.superGroupService.getGroupDTO(id);
-        List<GetFKITGroupResponse> groups = this.groupService.getActiveGroups(superGroup)
-                .stream().map(g -> new GetFKITGroupResponse(
+        List<GetGroupResponse> groups = this.groupService.getActiveGroups(superGroup)
+                .stream().map(g -> new GetGroupResponse(
                         g,
                         this.membershipService.getMembershipsInGroup(g)
                                 .stream()
-                                .map(RestrictedMembershipDTO::new)
+                                .map(MembershipRestrictedDTO::new)
                                 .collect(Collectors.toList())
             )).collect(Collectors.toList());
-        return new GetActiveFKITGroupsResponse(groups).toResponseObject();
+        return new GetActiveGroupsResponse(groups).toResponseObject();
     }
 }

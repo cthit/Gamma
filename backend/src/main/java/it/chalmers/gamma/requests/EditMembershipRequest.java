@@ -28,7 +28,7 @@ public class EditMembershipRequest {
     public String toString() {
         return "EditMembershipRequest{"
             + "unofficialName='" + this.unofficialName + '\''
-            + "post='" + this.post + '\''
+            + "post='" + this.postId + '\''
             + '}';
     }
 
@@ -41,11 +41,11 @@ public class EditMembershipRequest {
             return false;
         }
         EditMembershipRequest that = (EditMembershipRequest) o;
-        return Objects.equals(this.unofficialName, that.unofficialName) && Objects.equals(this.post, that.post);
+        return Objects.equals(this.unofficialName, that.unofficialName) && Objects.equals(this.postId, that.postId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.unofficialName, this.post);
+        return Objects.hash(this.unofficialName, this.postId);
     }
 }

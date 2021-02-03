@@ -1,6 +1,6 @@
 package it.chalmers.gamma.approval;
 
-import it.chalmers.gamma.user.UserRestrictedDTO;
+import it.chalmers.gamma.user.dto.UserRestrictedDTO;
 import it.chalmers.gamma.approval.response.GetAllITUserApprovalResponse;
 import it.chalmers.gamma.client.response.ITClientDoesNotExistException;
 import it.chalmers.gamma.client.ITClientService;

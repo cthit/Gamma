@@ -18,13 +18,14 @@ public class MembershipPK implements Serializable {
     @JoinColumn(name = "fkit_group_id")
     private UUID groupId;
 
-    @JoinColumn(name = "post")
-    private UUID postId;
 
-    public MembershipPK(UUID userId, UUID groupId, UUID postId) {
+    public MembershipPK(UUID userId, UUID groupId) {
         this.userId = userId;
         this.groupId = groupId;
-        this.postId = postId;
+    }
+
+    public MembershipPK() {
+
     }
 
     public UUID getUserId() {
@@ -43,25 +44,17 @@ public class MembershipPK implements Serializable {
         this.groupId = groupId;
     }
 
-    public UUID getPostId() {
-        return postId;
-    }
-
-    public void setPostId(UUID postId) {
-        this.postId = postId;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MembershipPK that = (MembershipPK) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(groupId, that.groupId) && Objects.equals(postId, that.postId);
+        return Objects.equals(userId, that.userId) && Objects.equals(groupId, that.groupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, groupId, postId);
+        return Objects.hash(userId, groupId);
     }
 
     @Override
@@ -69,7 +62,6 @@ public class MembershipPK implements Serializable {
         return "MembershipPK{" +
                 "userId=" + userId +
                 ", groupId=" + groupId +
-                ", postId=" + postId +
                 '}';
     }
 }

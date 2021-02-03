@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.authority.AuthorityDTO;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.authority.request.AddAuthorityRequest;

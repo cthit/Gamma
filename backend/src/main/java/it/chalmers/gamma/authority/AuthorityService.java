@@ -2,9 +2,9 @@ package it.chalmers.gamma.authority;
 
 import it.chalmers.gamma.authority.exception.AuthorityAlreadyExists;
 import it.chalmers.gamma.authority.exception.AuthorityNotFoundException;
-import it.chalmers.gamma.authoritylevel.AuthorityLevel;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelService;
+import it.chalmers.gamma.authoritylevel.data.AuthorityLevel;
+import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
+import it.chalmers.gamma.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 
 import it.chalmers.gamma.post.PostDTO;

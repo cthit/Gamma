@@ -1,22 +1,12 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.authoritylevel.request.AddAuthorityLevelRequest;
 import it.chalmers.gamma.authority.request.AddAuthorityRequest;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelService;
-import it.chalmers.gamma.supergroup.SuperGroupDTO;
-import it.chalmers.gamma.post.PostDTO;
+import it.chalmers.gamma.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.authority.response.AuthorityAddedResponse;
 import it.chalmers.gamma.authority.response.AuthorityDoesNotExistResponse;
-import it.chalmers.gamma.authoritylevel.response.AuthorityLevelAddedResponse;
-import it.chalmers.gamma.authoritylevel.response.AuthorityLevelAlreadyExists;
-import it.chalmers.gamma.authoritylevel.response.AuthorityLevelRemovedResponse;
 import it.chalmers.gamma.authority.response.AuthorityRemovedResponse;
-import it.chalmers.gamma.authority.response.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.authority.response.GetAllAuthoritiesResponse;
-import it.chalmers.gamma.authoritylevel.response.GetAllAuthorityLevelsResponse;
-import it.chalmers.gamma.authoritylevel.response.GetAllAuthorityLevelsResponse.GetAllAuthorityLevelsResponseObject;
 import it.chalmers.gamma.authority.response.GetAuthorityResponse;
 import it.chalmers.gamma.authority.response.GetAuthorityResponse.GetAuthorityResponseObject;
 import it.chalmers.gamma.supergroup.SuperGroupService;

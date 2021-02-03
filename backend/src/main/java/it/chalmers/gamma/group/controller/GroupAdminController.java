@@ -1,6 +1,8 @@
 package it.chalmers.gamma.group.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.group.dto.GroupDTO;
+import it.chalmers.gamma.group.service.GroupFinder;
 import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.group.dto.GroupShallowDTO;
 import it.chalmers.gamma.group.exception.GroupNotFoundException;
@@ -41,10 +43,12 @@ public final class GroupAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final GroupService groupService;
+    private final GroupFinder groupFinder;
     private final MembershipService membershipService;
 
-    public GroupAdminController(GroupService groupService, MembershipService membershipService) {
+    public GroupAdminController(GroupService groupService, GroupFinder groupFinder, MembershipService membershipService) {
         this.groupService = groupService;
+        this.groupFinder = groupFinder;
         this.membershipService = membershipService;
     }
 
@@ -68,7 +72,8 @@ public final class GroupAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         try {
-            this.groupService.editGroup(requestToDTO(request, id));
+            GroupShallowDTO group = requestToDTO(request, id);
+            this.groupService.editGroup(group);
         } catch (GroupNotFoundException e) {
             throw new GroupDoesNotExistResponse();
         } catch (IDsNotMatchingException e) {
@@ -80,8 +85,11 @@ public final class GroupAdminController {
 
     @DeleteMapping("/{id}")
     public GroupDeletedResponse deleteGroup(@PathVariable("id") UUID id) {
-        this.membershipService.removeAllUsersFromGroup(id);
-        this.groupService.removeGroup(id);
+        try {
+            this.groupService.removeGroup(id);
+        } catch (GroupNotFoundException e) {
+            throw new GroupDoesNotExistResponse();
+        }
 
         return new GroupDeletedResponse();
     }
@@ -90,10 +98,16 @@ public final class GroupAdminController {
     public GroupEditedResponse editAvatar(@PathVariable("id") UUID id, @RequestParam MultipartFile file) {
         try {
             String url = ImageUtils.saveImage(file, file.getName());
-            this.groupService.editGroupAvatar(id, url);
+            GroupDTO group = this.groupFinder.getGroup(id);
+            this.groupService.editGroup(
+                    new GroupDTO.GroupDTOBuilder()
+                            .from(group)
+                            .avatarUrl(url)
+                            .build()
+            );
         } catch (FileNotFoundResponse e) {
             throw new FileNotSavedException();
-        } catch (GroupNotFoundException e) {
+        } catch (GroupNotFoundException | IDsNotMatchingException e) {
             throw new GroupDoesNotExistResponse();
         }
         return new GroupEditedResponse();

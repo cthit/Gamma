@@ -1,16 +1,17 @@
 package it.chalmers.gamma.controller;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 import it.chalmers.gamma.passwordreset.request.ResetPasswordFinishRequest;
 import it.chalmers.gamma.passwordreset.request.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.user.UserFinder;
-import it.chalmers.gamma.user.response.PasswordChangedResponse;
-import it.chalmers.gamma.user.response.PasswordResetResponse;
-import it.chalmers.gamma.user.UserService;
+import it.chalmers.gamma.user.exception.UserNotFoundException;
+import it.chalmers.gamma.user.controller.response.UserNotFoundResponse;
+import it.chalmers.gamma.user.service.UserFinder;
+import it.chalmers.gamma.user.controller.response.PasswordChangedResponse;
+import it.chalmers.gamma.user.controller.response.PasswordResetResponse;
+import it.chalmers.gamma.user.service.UserService;
 import it.chalmers.gamma.passwordreset.PasswordResetService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -47,33 +48,35 @@ public class UserPasswordResetController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        String userCredentials = request.getCid(); // CID can either be CID or email.
-        UserDTO user = null;
+        String cidOrEmail = request.getCid();
         try {
-            user = userFinder.getUser(new Cid(userCredentials));
-        } catch(Exception e) {};
-
-        if(user == null) {
-            user = userFinder.getUser(new Email(userCredentials));
+            this.passwordResetService.handlePasswordReset(cidOrEmail);
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundResponse();
         }
-
-        this.passwordResetService.handlePasswordReset(user);
         return new PasswordResetResponse();
     }
 
     @PutMapping("/finish")
-    public PasswordChangedResponse resetPassword(
-            @Valid @RequestBody ResetPasswordFinishRequest request, BindingResult result) {
+    public PasswordChangedResponse resetPassword(@Valid @RequestBody ResetPasswordFinishRequest request,
+                                                 BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        UserDTO user = this.userFinder.getUser(new Cid(request.getCid()));
-        if (!this.passwordResetService.userHasActiveReset(user)
-                || !this.passwordResetService.tokenMatchesUser(user, request.getToken())) {
+
+        try {
+            UserDTO user = this.userFinder.getUser(new Cid(request.getCid()));
+
+            if (!this.passwordResetService.tokenMatchesUser(user.getId(), request.getToken())) {
+                throw new CodeOrCidIsWrongResponse();
+            }
+
+            this.userService.setPassword(user.getId(), request.getPassword());
+            this.passwordResetService.removeToken(user);
+        } catch (UserNotFoundException e) {
             throw new CodeOrCidIsWrongResponse();
         }
-        this.userService.setPassword(user, request.getPassword());
-        this.passwordResetService.removeToken(user);
+
         return new PasswordChangedResponse();
     }
 

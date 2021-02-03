@@ -3,11 +3,11 @@ package it.chalmers.gamma.factories;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 import it.chalmers.gamma.requests.AdminViewCreateITUserRequest;
-import it.chalmers.gamma.user.UserFinder;
-import it.chalmers.gamma.user.request.CreateITUserRequest;
-import it.chalmers.gamma.user.UserService;
+import it.chalmers.gamma.user.service.UserFinder;
+import it.chalmers.gamma.user.controller.request.CreateITUserRequest;
+import it.chalmers.gamma.user.service.UserService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.time.Year;
@@ -25,21 +25,7 @@ public class MockITUserFactory {
     private UserFinder userFinder;
 
     public UserDTO generateITUser(String cid, boolean activated) {
-        return new UserDTO(
-                UUID.randomUUID(),
-                cid,
-                GenerationUtils.generateRandomString(),
-                GenerationUtils.generateRandomString(),
-                GenerationUtils.generateRandomString(),
-                GenerationUtils.generateEmail(),
-                GenerationUtils.generateRandomString(),
-                Language.sv,
-                "",
-                false,
-                true,
-                false,
-                Year.of(GenerationUtils.generateIntBetween(2001, 2020)),
-                activated);
+        return new UserDTO.UserDTOBuilder().id(UUID.randomUUID()).cid(cid).email(GenerationUtils.generateRandomString()).language(GenerationUtils.generateRandomString()).nick(GenerationUtils.generateRandomString()).firstName(GenerationUtils.generateEmail()).lastName(GenerationUtils.generateRandomString()).phone(Language.SV).avatarUrl("").gdpr(false).userAgreement(true).accountLocked(false).acceptanceYear(Year.of(GenerationUtils.generateIntBetween(2001, 2020))).authorities(activated).build();
     }
 
 
@@ -49,7 +35,7 @@ public class MockITUserFactory {
         request.setEmail(GenerationUtils.generateEmail());
         request.setFirstName(GenerationUtils.generateRandomString());
         request.setLastName(GenerationUtils.generateRandomString());
-        request.setLanguage(Language.sv);
+        request.setLanguage(Language.SV);
         request.setNick(GenerationUtils.generateRandomString());
         request.setPassword(GenerationUtils.generateRandomString());
         request.setUserAgreement(true);

@@ -1,22 +1,21 @@
 package it.chalmers.gamma.supergroup;
 
-import it.chalmers.gamma.domain.GroupType;
-
-import it.chalmers.gamma.supergroup.response.SuperGroupDoesNotExistResponse;
-import it.chalmers.gamma.util.UUIDUtil;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.supergroup.exception.SuperGroupNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SuperGroupService {
-    private final SuperGroupRepository repository;
 
-    public SuperGroupService(SuperGroupRepository repository) {
+    private final SuperGroupRepository repository;
+    private final SuperGroupFinder finder;
+
+    public SuperGroupService(SuperGroupRepository repository,
+                             SuperGroupFinder finder) {
         this.repository = repository;
+        this.finder = finder;
     }
 
     public SuperGroupDTO createSuperGroup(SuperGroupDTO superGroupDTO) {
@@ -36,16 +35,13 @@ public class SuperGroupService {
 
 
     public void removeGroup(UUID id) {
+
         this.repository.deleteById(id);
     }
 
-    public void updateSuperGroup(UUID id, SuperGroupDTO superGroupDTO) {
-        SuperGroup group = this.fromDTO(this.getGroupDTO(id.toString()));
-        group.setType(superGroupDTO.getType() == null ? group.getType() : superGroupDTO.getType());
-        group.setName(superGroupDTO.getName() == null ? group.getName() : superGroupDTO.getName());
-        group.setPrettyName(superGroupDTO.getPrettyName() == null
-                ? group.getPrettyName() : superGroupDTO.getPrettyName());
-        group.setEmail(superGroupDTO.getEmail() == null ? group.getEmail() : superGroupDTO.getEmail());
-        this.repository.save(group);
+    public void updateSuperGroup(SuperGroupDTO newSuperGroup) throws SuperGroupNotFoundException, IDsNotMatchingException {
+        SuperGroup superGroup = this.finder.getSuperGroupEntity(newSuperGroup);
+        superGroup.apply(newSuperGroup);
+        this.repository.save(superGroup);
     }
 }

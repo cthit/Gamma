@@ -1,20 +1,20 @@
 package it.chalmers.gamma.post.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.group.controller.response.GetFKITGroupResponse;
+import it.chalmers.gamma.group.controller.response.GetGroupResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetPostUsagesResponse {
     @JsonValue
-    private final List<GetFKITGroupResponse> fkitGroupResponses;
+    private final List<GetGroupResponse> fkitGroupResponses;
 
-    public GetPostUsagesResponse(List<GetFKITGroupResponse> fkitGroupResponses) {
+    public GetPostUsagesResponse(List<GetGroupResponse> fkitGroupResponses) {
         this.fkitGroupResponses = fkitGroupResponses;
     }
 
-    public List<GetFKITGroupResponse> getFkitGroupResponses() {
+    public List<GetGroupResponse> getFkitGroupResponses() {
         return this.fkitGroupResponses;
     }
 

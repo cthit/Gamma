@@ -1,21 +1,34 @@
 package it.chalmers.gamma.membership.data;
 
-import java.util.Objects;
+import it.chalmers.gamma.domain.GEntity;
+import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.membership.dto.MembershipDTO;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.util.Objects;
+import java.util.UUID;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "membership")
-public class Membership {
+public class Membership implements GEntity<MembershipDTO> {
 
     @EmbeddedId
     private MembershipPK id;
 
-    @Column(name = "unofficial_post_name", length = 100)
+    @Column(name = "post_id")
+    private UUID postId;
+
+    @Column(name = "unofficial_post_name")
     private String unofficialPostName;
+
+    public Membership(MembershipDTO membership) {
+        try {
+            apply(membership);
+        } catch (IDsNotMatchingException e) {
+            e.printStackTrace();
+        }
+    }
 
     public MembershipPK getId() {
         return this.id;
@@ -31,6 +44,14 @@ public class Membership {
 
     public void setUnofficialPostName(String unofficialPostName) {
         this.unofficialPostName = unofficialPostName;
+    }
+
+    public UUID getPostId() {
+        return postId;
+    }
+
+    public void setPostId(UUID postId) {
+        this.postId = postId;
     }
 
     @Override
@@ -59,4 +80,15 @@ public class Membership {
             + '}';
     }
 
+    @Override
+    public void apply(MembershipDTO m) throws IDsNotMatchingException {
+        if(this.id.getGroupId() != m.getGroup().getId()
+            || this.id.getUserId() != m.getUser().getId()) {
+            throw new IDsNotMatchingException();
+        }
+
+        this.unofficialPostName = m.getUnofficialPostName();
+        this.postId = m.getPost().getId();
+
+    }
 }

@@ -1,6 +1,8 @@
 package it.chalmers.gamma.supergroup;
 
+import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.IDsNotMatchingException;
 
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "fkit_super_group")
 
-public class SuperGroup {
+public class SuperGroup implements GEntity<SuperGroupDTO> {
 
     @Column(name = "id", updatable = false)
     @Id
@@ -97,5 +99,18 @@ public class SuperGroup {
                 + ", type=" + this.type
                 + ", email='" + this.email + '\''
                 + '}';
+    }
+
+    @Override
+    public void apply(SuperGroupDTO sg) throws IDsNotMatchingException {
+        if(this.id != sg.getId()) {
+            throw new IDsNotMatchingException();
+        }
+
+        this.id = sg.getId();
+        this.email = sg.getEmail();
+        this.name = sg.getName();
+        this.prettyName = sg.getPrettyName();
+        this.type = sg.getType();
     }
 }

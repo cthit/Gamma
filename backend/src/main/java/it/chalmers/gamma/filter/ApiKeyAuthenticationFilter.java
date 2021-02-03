@@ -1,7 +1,7 @@
 package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.user.UserService;
+import it.chalmers.gamma.user.service.UserService;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;

@@ -1,7 +1,5 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.authoritylevel.AuthorityLevel;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

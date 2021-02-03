@@ -13,14 +13,13 @@ public class GroupMinifiedDTO {
     private final UUID id;
     private final String prettyName;
 
-    public GroupMinifiedDTO(String name, Text function,
-                            String email, Text description, UUID id, String prettyName) {
-        this.name = name;
-        this.function = function;
-        this.email = email;
-        this.description = description;
-        this.id = id;
-        this.prettyName = prettyName;
+    public GroupMinifiedDTO(GroupDTO g) {
+        this.name = g.getName();
+        this.function = g.getFunction();
+        this.email = g.getEmail();
+        this.description = g.getDescription();
+        this.id = g.getId();
+        this.prettyName = g.getPrettyName();
     }
 
     public String getName() {

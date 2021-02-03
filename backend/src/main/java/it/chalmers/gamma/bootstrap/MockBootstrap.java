@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;

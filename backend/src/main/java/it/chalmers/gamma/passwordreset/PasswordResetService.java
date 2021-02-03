@@ -1,13 +1,18 @@
 package it.chalmers.gamma.passwordreset;
 
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.mail.MailSenderService;
 
-import it.chalmers.gamma.user.UserDTO;
-import it.chalmers.gamma.user.UserFinder;
-import it.chalmers.gamma.user.UserService;
+import it.chalmers.gamma.user.data.User;
+import it.chalmers.gamma.user.dto.UserDTO;
+import it.chalmers.gamma.user.exception.UserNotFoundException;
+import it.chalmers.gamma.user.service.UserFinder;
+import it.chalmers.gamma.user.service.UserService;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -29,7 +34,19 @@ public class PasswordResetService {
         this.userFinder = userFinder;
     }
 
-    public void handlePasswordReset(UserDTO user) {
+    public void handlePasswordReset(String cidOrEmail) throws UserNotFoundException {
+        UserDTO user = null;
+        try {
+            user = this.userFinder.getUser(new Cid(cidOrEmail));
+        } catch (UserNotFoundException ignored) { }
+
+        try {
+            user = this.userFinder.getUser(new Email(cidOrEmail));
+        } catch (UserNotFoundException ignored) { }
+
+        if(user == null) {
+            throw new UserNotFoundException();
+        }
 
         String token = TokenUtils.generateToken(
                 10,
@@ -37,9 +54,7 @@ public class PasswordResetService {
                 TokenUtils.CharacterTypes.NUMBERS
         );
 
-        if (this.userHasActiveReset(user)) {
-            this.removeToken(user);
-        }
+        this.removeToken(user);
 
         this.addToken(user, token);
         this.sendMail(user, token);
@@ -64,17 +79,13 @@ public class PasswordResetService {
         this.repository.save(passwordResetToken);
     }
 
-    public boolean userHasActiveReset(UserDTO user) {
-        return this.repository.existsByUserId(user.getId());
-    }
-
-    public boolean tokenMatchesUser(UserDTO user, String token) {
-        Optional<PasswordResetToken> storedToken = this.repository.findByUserId(user.getId());
+    public boolean tokenMatchesUser(UUID userId, String token) {
+        Optional<PasswordResetToken> storedToken = this.repository.findByUserId(userId);
         return storedToken.isPresent() && storedToken.get().getToken().equals(token);
     }
 
-    public void removeToken(UserDTO user) {
-        this.repository.delete(this.repository.findByUserId(user.getId()).orElseThrow());
+    public void removeToken(UserDTO user) throws UserNotFoundException {
+        this.repository.delete(this.repository.findByUserId(user.getId()).orElseThrow(UserNotFoundException::new));
     }
 
 
@@ -83,7 +94,7 @@ public class PasswordResetService {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
-        this.mailSenderService.trySendingMail(user.getEmail(), subject, message);
+        this.mailSenderService.trySendingMail(user.getEmail().value, subject, message);
     }
 
     protected PasswordResetToken getPasswordResetToken(PasswordResetTokenDTO passwordResetTokenDTO) {

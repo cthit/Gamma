@@ -1,28 +1,23 @@
 package it.chalmers.gamma.membership.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
 import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 import java.util.Objects;
 
 public class MembershipDTO {
 
     private final PostDTO post;
-    private final GroupDTO groupDTO;
+    private final GroupDTO group;
     private final String unofficialPostName;
-
-    @JsonUnwrapped
     private final UserDTO user;
 
-
-    public MembershipDTO(PostDTO post,
-                         GroupDTO groupDTO,
+    private MembershipDTO(PostDTO post,
+                         GroupDTO group,
                          String unofficialPostName,
                          UserDTO user) {
         this.post = post;
-        this.groupDTO = groupDTO;
+        this.group = group;
         this.unofficialPostName = unofficialPostName;
         this.user = user;
     }
@@ -39,8 +34,8 @@ public class MembershipDTO {
         return this.user;
     }
 
-    public GroupDTO getFkitGroupDTO() {
-        return this.groupDTO;
+    public GroupDTO getGroup() {
+        return this.group;
     }
 
     @Override
@@ -55,7 +50,7 @@ public class MembershipDTO {
         return Objects.equals(this.post, that.post)
                 && Objects.equals(this.unofficialPostName, that.unofficialPostName)
                 && Objects.equals(this.user, that.user)
-                && Objects.equals(this.groupDTO, that.groupDTO);
+                && Objects.equals(this.group, that.group);
     }
 
     @Override
@@ -63,16 +58,51 @@ public class MembershipDTO {
         return Objects.hash(this.post,
                 this.unofficialPostName,
                 this.user,
-                this.groupDTO);
+                this.group);
     }
 
     @Override
     public String toString() {
         return "MembershipDTO{"
                 + "post=" + this.post
-                + ", fkitGroupDTO='" + this.groupDTO + '\''
+                + ", group='" + this.group + '\''
                 + ", unofficialPostName='" + this.unofficialPostName + '\''
                 + ", user='" + this.user + '\''
                 + '}';
     }
+
+
+
+    public static class MembershipDTOBuilder {
+
+        private PostDTO post;
+        private GroupDTO group;
+        private String unofficialPostName;
+        private UserDTO user;
+
+        public MembershipDTOBuilder post(PostDTO post) {
+            this.post = post;
+            return this;
+        }
+
+        public MembershipDTOBuilder group(GroupDTO group) {
+            this.group = group;
+            return this;
+        }
+
+        public MembershipDTOBuilder unofficialPostName(String unofficialPostName) {
+            this.unofficialPostName = unofficialPostName;
+            return this;
+        }
+
+        public MembershipDTOBuilder user(UserDTO user) {
+            this.user = user;
+            return this;
+        }
+
+        public MembershipDTO build() {
+            return new MembershipDTO(post, group, unofficialPostName, user);
+        }
+    }
+
 }

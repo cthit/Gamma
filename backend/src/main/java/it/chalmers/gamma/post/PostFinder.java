@@ -1,5 +1,6 @@
 package it.chalmers.gamma.post;
 
+import it.chalmers.gamma.post.exception.PostNotFoundException;
 import it.chalmers.gamma.post.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.util.UUIDUtil;
 import org.springframework.stereotype.Component;
@@ -29,24 +30,17 @@ public class PostFinder {
         return this.postRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public Optional<PostDTO> getPost(UUID id) {
-        Optional<Post> postEntity = getPostEntity(id);
-        Optional<PostDTO> post = Optional.empty();
-
-        if(postEntity.isPresent()) {
-            post = postEntity.map(this::toDTO);
-        }
-
-        return post;
+    public PostDTO getPost(UUID id) throws PostNotFoundException {
+        return toDTO(getPostEntity(id));
     }
 
     //TODO make protected
-    public Optional<Post> getPostEntity(UUID id) {
-        return this.postRepository.findById(id);
+    public Post getPostEntity(UUID id) throws PostNotFoundException {
+        return this.postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 
     //TODO Make protected
-    public Optional<Post> getPostEntity(PostDTO postDTO) {
+    public Post getPostEntity(PostDTO postDTO) throws PostNotFoundException {
         return getPostEntity(postDTO.getId());
     }
 

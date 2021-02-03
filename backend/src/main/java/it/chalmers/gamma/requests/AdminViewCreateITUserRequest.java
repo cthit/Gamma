@@ -37,7 +37,7 @@ public class AdminViewCreateITUserRequest {
     @Min(value = 2001, message = "ACCEPTANCE_YEAR_MUST_BE_AFTER_2001")
     private int acceptanceYear;
 
-    private Language language = Language.sv;
+    private Language language = Language.SV;
 
     public String getCid() {
         return this.cid;

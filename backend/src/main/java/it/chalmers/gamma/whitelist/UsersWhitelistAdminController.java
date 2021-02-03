@@ -1,14 +1,14 @@
 package it.chalmers.gamma.whitelist;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.user.UserFinder;
+import it.chalmers.gamma.user.service.UserFinder;
 import it.chalmers.gamma.whitelist.request.AddListOfWhitelistedRequest;
 import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
 
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.user.response.UserAlreadyExistsResponse;
-import it.chalmers.gamma.user.response.UserDeletedResponse;
-import it.chalmers.gamma.user.response.UserNotFoundResponse;
+import it.chalmers.gamma.user.controller.response.UserAlreadyExistsResponse;
+import it.chalmers.gamma.user.controller.response.UserDeletedResponse;
+import it.chalmers.gamma.user.controller.response.UserNotFoundResponse;
 import it.chalmers.gamma.whitelist.response.EditedWhitelistResponse;
 import it.chalmers.gamma.whitelist.response.GetAllWhitelistResponse;
 import it.chalmers.gamma.whitelist.response.GetAllWhitelistResponse.GetAllWhitelistResponseObject;

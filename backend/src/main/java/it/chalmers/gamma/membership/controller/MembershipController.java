@@ -2,15 +2,15 @@ package it.chalmers.gamma.membership.controller;
 
 import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.group.service.GroupService;
-import it.chalmers.gamma.group.controller.response.GetMembershipResponse;
-import it.chalmers.gamma.group.controller.response.GetMembershipResponse.GetMembershipResponseObject;
+import it.chalmers.gamma.membership.controller.response.GetMembershipResponse;
+import it.chalmers.gamma.membership.controller.response.GetMembershipResponse.GetMembershipResponseObject;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import it.chalmers.gamma.membership.dto.MembershipDTO;
 import it.chalmers.gamma.membership.service.MembershipService;
-import it.chalmers.gamma.membership.dto.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.dto.MembershipRestrictedDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +35,7 @@ public class MembershipController {
         return new GetMembershipResponse(
                 members
                     .stream()
-                    .map(RestrictedMembershipDTO::new)
+                    .map(MembershipRestrictedDTO::new)
                     .collect(Collectors.toList())
         ).toResponseObject();
     }

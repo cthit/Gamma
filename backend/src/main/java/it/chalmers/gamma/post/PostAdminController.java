@@ -1,11 +1,11 @@
 package it.chalmers.gamma.post;
 
 import it.chalmers.gamma.group.dto.GroupDTO;
-import it.chalmers.gamma.membership.dto.RestrictedMembershipDTO;
+import it.chalmers.gamma.membership.dto.MembershipRestrictedDTO;
 import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.post.request.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.group.controller.response.GetFKITGroupResponse;
+import it.chalmers.gamma.group.controller.response.GetGroupResponse;
 import it.chalmers.gamma.post.response.GetPostUsagesResponse;
 import it.chalmers.gamma.post.response.GetPostUsagesResponse.GetPostUsagesResponseObject;
 import it.chalmers.gamma.post.response.PostAlreadyExistsResponse;
@@ -103,11 +103,11 @@ public final class PostAdminController {
     public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") String id) {
         PostDTO post = this.postService.getPostDTO(id);
         List<GroupDTO> groups = this.membershipService.getGroupsWithPost(post);
-        List<GetFKITGroupResponse> groupResponses = groups.stream()
-                .map(g -> new GetFKITGroupResponse(g,
+        List<GetGroupResponse> groupResponses = groups.stream()
+                .map(g -> new GetGroupResponse(g,
                         this.membershipService.getUserDTOByGroupAndPost(g, post)
                                 .stream()
-                                .map(RestrictedMembershipDTO::new)
+                                .map(MembershipRestrictedDTO::new)
                                 .collect(Collectors.toList())
                     ))
                 .collect(Collectors.toList());

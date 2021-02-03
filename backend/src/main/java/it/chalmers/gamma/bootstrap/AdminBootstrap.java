@@ -3,11 +3,11 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
+import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
 import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.user.dto.UserDTO;
 
 import java.time.Year;
 import java.util.Calendar;

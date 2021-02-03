@@ -17,29 +17,39 @@ create table website_url (
 );
 
 create table ituser (
-  id               uuid constraint ituser_pk primary key,
-  cid              varchar(10)  not null constraint ituser_cid_unique unique,
-  password         varchar(255) not null,
-  nick             varchar(50)  not null,
-  first_name       varchar(50)  null,
-  last_name        varchar(50)  null,
-  email            varchar(100) not null constraint ituser_email_unique unique,
-  phone            varchar(15)  null,
-  language         varchar(15)  null,
-  avatar_url       varchar(255) default 'default.jpg',
-  gdpr             boolean      not null default false,
-  user_agreement   boolean      not null default false,
-  account_locked   boolean      not null default false,
-  acceptance_year  integer constraint ituser_valid_year check (acceptance_year >= 2001),
-  created_at       timestamp    not null default current_timestamp,
-  last_modified_at timestamp    not null default current_timestamp
+  id                uuid            constraint ituser_pk primary key,
+  cid               varchar(10)     not null constraint ituser_cid_unique unique,
+  password          varchar(255)    not null,
+  nick              varchar(50)     not null,
+  first_name        varchar(50)     null,
+  last_name         varchar(50)     null,
+  email             varchar(100)    not null constraint ituser_email_unique unique,
+  phone             varchar(15)     null,
+  language          varchar(15)     null,
+  avatar_url        varchar(255)    default 'default.jpg',
+  gdpr              boolean         not null default false,
+  user_agreement    boolean         not null default false,
+  account_locked    boolean         not null default false,
+  acceptance_year   integer         constraint ituser_valid_year check (acceptance_year >= 2001),
+  created_at        timestamp       not null default current_timestamp,
+  last_modified_at  timestamp       not null default current_timestamp,
+  activated         boolean         DEFAULT FALSE
 );
+
+create table ituser_password (
+ id          uuid constraint ituser_password_pk primary key,
+ password    varchar(255)    not null
+)
 
 create table ituser_website (
   id          uuid constraint ituser_website_pk primary key,
   ituser      uuid not null references ituser,
   website     uuid not null references website_url
 );
+
+create table ituser_gdpr (
+
+)
 
 create table authority_level (
   id  uuid constraint authority_level_pk primary key,
@@ -75,8 +85,8 @@ create table fkit_group (
 
 create table post (
   id        uuid constraint post_pk primary key,
-  post_name uuid not null references internal_text
-
+  post_name uuid not null references internal_text,
+  email_prefix VARCHAR(20)
 );
 
 create table authority (
@@ -95,12 +105,12 @@ create table fkit_group_website(
 
 
 
-create table membership (   -- Should this be rebuilt to look like all other tables? probably
+create table membership (
   ituser_id            uuid         constraint membership_ituser_fk references ituser,
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (ituser_id, fkit_group_id, post_id)
+  constraint membership_pk primary key (ituser_id, fkit_group_id) on delete cascade
 );
 
 create table no_account_membership (
@@ -145,4 +155,10 @@ create table apikey (
     key              varchar(150) not null,
     created_at       timestamp    not null default current_timestamp,
     last_modified_at timestamp    not null default current_timestamp
-)
+);
+
+create table it_user_approval (
+                                  ituser_id UUID REFERENCES ituser(id),
+                                  itclient_id UUID REFERENCES itclient(id),
+                                  CONSTRAINT it_user_approval_pk PRIMARY KEY(ituser_id, itclient_id)
+);

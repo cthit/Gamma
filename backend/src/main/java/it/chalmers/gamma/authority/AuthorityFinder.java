@@ -1,15 +1,17 @@
 package it.chalmers.gamma.authority;
 
-import it.chalmers.gamma.authoritylevel.AuthorityLevelDTO;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelFinder;
-import it.chalmers.gamma.authoritylevel.AuthorityLevelRepository;
+import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
+import it.chalmers.gamma.authoritylevel.service.AuthorityLevelFinder;
+import it.chalmers.gamma.authoritylevel.data.AuthorityLevelRepository;
+import it.chalmers.gamma.authoritylevel.exception.AuthorityLevelNotFoundException;
 import it.chalmers.gamma.membership.dto.MembershipDTO;
 import it.chalmers.gamma.membership.service.MembershipFinder;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.post.PostFinder;
+import it.chalmers.gamma.post.exception.PostNotFoundException;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupFinder;
-import it.chalmers.gamma.user.UserDTO;
+import it.chalmers.gamma.supergroup.exception.SuperGroupNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -44,13 +46,13 @@ public class AuthorityFinder {
         List<AuthorityLevelDTO> authorityLevels = new ArrayList<>();
         for (MembershipDTO membership : memberships) {
             Optional<AuthorityDTO> authority = this.getAuthority(
-                    membership.getFkitGroupDTO().getSuperGroup(),
+                    membership.getGroup().getSuperGroup(),
                     membership.getPost()
             );
 
             if (authority.isPresent()) {
-                Calendar start = membership.getFkitGroupDTO().getBecomesActive();
-                Calendar end = membership.getFkitGroupDTO().getBecomesInactive();
+                Calendar start = membership.getGroup().getBecomesActive();
+                Calendar end = membership.getGroup().getBecomesInactive();
                 Calendar now = Calendar.getInstance();
                 if (now.after(start) && now.before(end)) {
                     authorityLevels.add(authority.get().getAuthorityLevel());
@@ -74,8 +76,8 @@ public class AuthorityFinder {
     }
 
 
-    public List<GrantedAuthority> getGrantedAuthorities(UserDTO user) {
-        List<MembershipDTO> memberships = this.membershipFinder.getMembershipsByUser(user);
+    public List<GrantedAuthority> getGrantedAuthorities(UUID userId) {
+        List<MembershipDTO> memberships = this.membershipFinder.getMembershipsByUserId(userId);
         //  for (MembershipDTO membership : memberships) {
         //      AuthorityLevel authorityLevel = this.authorityLevelService
         //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevel(
@@ -115,11 +117,17 @@ public class AuthorityFinder {
     }
 
     protected AuthorityDTO toDTO(Authority authority) {
-        return new AuthorityDTO(superGroupFinder.getSuperGroup(authority.getSuperGroupId()).orElseThrow(),
-                postFinder.getPost(authority.getPostId()).orElseThrow(),
-                authority.getId(),
-                authorityLevelFinder.getAuthorityLevel(authority.getAuthorityLevelId()).orElseThrow()
-        );
+        try {
+            return new AuthorityDTO(
+                    this.superGroupFinder.getSuperGroup(authority.getSuperGroupId()),
+                    this.postFinder.getPost(authority.getPostId()),
+                    authority.getId(),
+                    this.authorityLevelFinder.getAuthorityLevel(authority.getAuthorityLevelId())
+            );
+        } catch (SuperGroupNotFoundException | PostNotFoundException | AuthorityLevelNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
