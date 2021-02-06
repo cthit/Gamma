@@ -74,7 +74,7 @@ public final class PostAdminController {
     @PutMapping("/{id}")
     public PostEditedResponse editPost(
             @RequestBody AddPostRequest request,
-            @PathVariable("id") String id) {
+            @PathVariable("id") UUID id) {
         PostDTO post = this.postService.getPostDTO(id);
         this.postService.editPost(post, request.getPost(), request.getEmailPrefix());
         return new PostEditedResponse();
@@ -82,7 +82,7 @@ public final class PostAdminController {
 
 
     @DeleteMapping("/{id}")
-    public PostDeletedResponse deletePost(@PathVariable("id") String id) {
+    public PostDeletedResponse deletePost(@PathVariable("id") UUID id) {
         UUID uuid = UUID.fromString(id);
         if (this.membershipService.isPostUsed(uuid)) {
             throw new PostIsInUseResponse();
@@ -100,7 +100,7 @@ public final class PostAdminController {
      * @return a list of groups that has the post and who in the group currently is assigned that post
      */
     @GetMapping("/{id}/usage")
-    public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") String id) {
+    public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") UUID id) {
         PostDTO post = this.postService.getPostDTO(id);
         List<GroupDTO> groups = this.membershipService.getGroupsWithPost(post);
         List<GetGroupResponse> groupResponses = groups.stream()

@@ -4,19 +4,20 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.group.dto.GroupMinifiedDTO;
+import it.chalmers.gamma.group.dto.GroupWithMembersDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetActiveGroupsResponse {
 
     @JsonUnwrapped
-    private final List<GetGroupResponse> groups;
+    private final List<GroupWithMembersDTO> groups;
 
-    public GetActiveGroupsResponse(List<GetGroupResponse> groups) {
+    public GetActiveGroupsResponse(List<GroupWithMembersDTO> groups) {
         this.groups = groups;
     }
 
-    public List<GetGroupResponse> getGroups() {
+    public List<GroupWithMembersDTO> getGroups() {
         return groups;
     }
 

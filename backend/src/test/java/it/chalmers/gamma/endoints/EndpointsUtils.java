@@ -6,7 +6,7 @@ import static it.chalmers.gamma.endoints.Method.POST;
 import static it.chalmers.gamma.endoints.Method.PUT;
 
 import it.chalmers.gamma.apikey.ApiKeyDTO;
-import it.chalmers.gamma.client.ITClientDTO;
+import it.chalmers.gamma.client.dto.ClientDTO;
 import it.chalmers.gamma.authority.AuthorityDTO;
 import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
 import it.chalmers.gamma.group.dto.GroupDTO;
@@ -14,7 +14,7 @@ import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;
 import it.chalmers.gamma.user.dto.UserDTO;
-import it.chalmers.gamma.whitelist.WhitelistDTO;
+import it.chalmers.gamma.whitelist.dto.WhitelistDTO;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,9 +62,9 @@ public final class EndpointsUtils { // Doesn't return me endpoints.
                 new Endpoint("/admin/authority/%s", DELETE, AuthorityDTO.class),
                 new Endpoint("/admin/clients", GET),
                 new Endpoint("/admin/clients", POST),
-                new Endpoint("/admin/clients/%s", GET, ITClientDTO.class),
-                new Endpoint("/admin/clients/%s", PUT, ITClientDTO.class),
-                new Endpoint("/admin/clients/%s", DELETE, ITClientDTO.class),
+                new Endpoint("/admin/clients/%s", GET, ClientDTO.class),
+                new Endpoint("/admin/clients/%s", PUT, ClientDTO.class),
+                new Endpoint("/admin/clients/%s", DELETE, ClientDTO.class),
                 new Endpoint("/admin/gdpr/minified", GET),
                 new Endpoint("/admin/gdpr/%s", PUT, UserDTO.class),
                 new Endpoint("/admin/groups", POST),

@@ -4,14 +4,8 @@ import it.chalmers.gamma.group.controller.response.*;
 import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.group.service.GroupFinder;
-import it.chalmers.gamma.group.service.GroupService;
-import it.chalmers.gamma.membership.dto.MembershipDTO;
 import it.chalmers.gamma.membership.service.MembershipFinder;
-import it.chalmers.gamma.membership.dto.MembershipRestrictedDTO;
-import it.chalmers.gamma.membership.service.MembershipService;
 import it.chalmers.gamma.group.controller.response.GetActiveGroupsResponse.GetActiveGroupResponseObject;
-import it.chalmers.gamma.group.controller.response.GetAllGroupsMinifiedResponse.GetAllGroupsMinifiedResponseObject;
-import it.chalmers.gamma.group.controller.response.GetGroupMinifiedResponse.GetGroupMinifiedResponseObject;
 import it.chalmers.gamma.group.controller.response.GetGroupResponse.GetGroupResponseObject;
 
 import java.util.List;
@@ -48,7 +42,7 @@ public final class GroupController {
 
             return new GetGroupResponse(
                     group,
-                    this.membershipFinder.getRestrictedMembershipInGroup(group)
+                    this.membershipFinder.getRestrictedMembershipsInGroup(group)
             ).toResponseObject();
         } catch (GroupNotFoundException e) {
             throw new GroupDoesNotExistResponse();
@@ -62,7 +56,7 @@ public final class GroupController {
                 .stream()
                 .map(g -> new GetGroupResponse(
                         g,
-                        this.membershipFinder.getRestrictedMembershipInGroup(g))
+                        this.membershipFinder.getRestrictedMembershipsInGroup(g))
                 ).collect(Collectors.toList());
 
         return new GetAllGroupsResponse(responses);
@@ -79,7 +73,7 @@ public final class GroupController {
                 .stream()
                 .map(g -> new GetGroupResponse(
                         g,
-                        this.membershipFinder.getRestrictedMembershipInGroup(g))
+                        this.membershipFinder.getRestrictedMembershipsInGroup(g))
                 ).collect(Collectors.toList());
         return new GetActiveGroupsResponse(groupResponses).toResponseObject();
     }

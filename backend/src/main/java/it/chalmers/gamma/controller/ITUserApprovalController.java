@@ -1,9 +1,9 @@
 package it.chalmers.gamma.controller;
 
-import it.chalmers.gamma.client.ITClientFinder;
-import it.chalmers.gamma.client.ITClientUserAccessDTO;
-import it.chalmers.gamma.client.response.ApprovedITClientsResponse;
-import it.chalmers.gamma.approval.ITUserApprovalService;
+import it.chalmers.gamma.client.service.ClientFinder;
+import it.chalmers.gamma.client.dto.ClientUserAccessDTO;
+import it.chalmers.gamma.client.controller.response.ApprovedClientsResponse;
+import it.chalmers.gamma.approval.service.UserApprovalService;
 
 import java.security.Principal;
 import java.util.stream.Collectors;
@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users/approval")
 public class ITUserApprovalController {
 
-    private final ITUserApprovalService itUserApprovalService;
-    private final ITClientFinder clientFinder;
+    private final UserApprovalService userApprovalService;
+    private final ClientFinder clientFinder;
 
-    public ITUserApprovalController(ITUserApprovalService itUserApprovalService, ITClientFinder clientFinder) {
-        this.itUserApprovalService = itUserApprovalService;
+    public ITUserApprovalController(UserApprovalService userApprovalService, ClientFinder clientFinder) {
+        this.userApprovalService = userApprovalService;
         this.clientFinder = clientFinder;
     }
 
     @GetMapping()
-    public ApprovedITClientsResponse getApprovedClientsByUser(Principal principal) {
+    public ApprovedClientsResponse getApprovedClientsByUser(Principal principal) {
         String cid = principal.getName();
 
-        return new ApprovedITClientsResponse(
-                this.itUserApprovalService.getApprovalsByCid(cid)
+        return new ApprovedClientsResponse(
+                this.userApprovalService.getApprovalsByCid(cid)
                 .stream()
                 .map(userApproval ->
-                        new ITClientUserAccessDTO(
+                        new ClientUserAccessDTO(
                                 clientFinder.getClient(userApproval.getClientId()).orElseThrow()
                         )
                 )

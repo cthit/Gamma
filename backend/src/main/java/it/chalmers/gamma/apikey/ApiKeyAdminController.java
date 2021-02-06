@@ -51,13 +51,13 @@ public class ApiKeyAdminController {
     }
 
     @GetMapping("/{id}")
-    public GetApiKeyResponseObject getApiKey(@PathVariable("id") String id) {
+    public GetApiKeyResponseObject getApiKey(@PathVariable("id") UUID id) {
         ApiKeyDTO apiKey = this.apiKeyService.getApiKeyDetails(id);
         return new GetApiKeyResponse(apiKey).toResponseObject();
     }
 
     @DeleteMapping("/{id}")
-    public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") String idString) {
+    public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") UUID idString) {
         UUID id = UUID.fromString(idString);
         if (!this.apiKeyService.apiKeyExists(id)) {
             throw new ApiKeyDoesNotExistResponse();

@@ -122,14 +122,13 @@ create table no_account_membership (
 );
 
 create table whitelist (
-  id  uuid constraint whitelist_pk primary key,
-  cid varchar(10) not null constraint whitelist_cid_unique unique
+  cid varchar(10) primary key,
+  constraint check_lowercase_cid check (lower(cid) = cid)
 );
 
 create table activation_code (
-  id          uuid constraint activation_code_pk primary key,
-  cid         uuid unique     not null references whitelist,
-  code        varchar(30)     not null,
+  cid         varchar(10)     primary key references whitelist,
+  code        varchar(10)     not null,
   created_at  timestamp       not null default current_timestamp
 );
 
@@ -138,7 +137,6 @@ create table itclient (
     client_id varchar(256) not null,
     client_secret varchar(256) not null,
     web_server_redirect_uri varchar(256) not null,
-    --authorities varchar(256) not null,
     access_token_validity integer not null,
     refresh_token_validity integer not null,
     auto_approve boolean default false not null,
@@ -158,7 +156,7 @@ create table apikey (
 );
 
 create table it_user_approval (
-                                  ituser_id UUID REFERENCES ituser(id),
-                                  itclient_id UUID REFERENCES itclient(id),
-                                  CONSTRAINT it_user_approval_pk PRIMARY KEY(ituser_id, itclient_id)
+  ituser_id UUID REFERENCES ituser(id),
+  itclient_id UUID REFERENCES itclient(id),
+  CONSTRAINT it_user_approval_pk PRIMARY KEY(ituser_id, itclient_id)
 );

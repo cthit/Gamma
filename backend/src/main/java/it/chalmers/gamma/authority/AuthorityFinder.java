@@ -12,6 +12,7 @@ import it.chalmers.gamma.post.exception.PostNotFoundException;
 import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.supergroup.SuperGroupFinder;
 import it.chalmers.gamma.supergroup.exception.SuperGroupNotFoundException;
+import it.chalmers.gamma.user.exception.UserNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +43,7 @@ public class AuthorityFinder {
         this.authorityLevelFinder = authorityLevelFinder;
     }
 
-    public List<AuthorityLevelDTO> getAuthorities(List<MembershipDTO> memberships) {
+    public List<AuthorityLevelDTO> getAuthorityLevels(List<MembershipDTO> memberships) {
         List<AuthorityLevelDTO> authorityLevels = new ArrayList<>();
         for (MembershipDTO membership : memberships) {
             Optional<AuthorityDTO> authority = this.getAuthority(
@@ -62,31 +63,25 @@ public class AuthorityFinder {
         return authorityLevels;
     }
 
-    public List<AuthorityDTO> getAllAuthorities() {
+    public List<AuthorityDTO> getAuthorities() {
         return this.authorityRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public List<AuthorityDTO> getAllAuthoritiesWithAuthorityLevel(UUID authorityLevelId) {
+    public List<AuthorityDTO> getAuthoritiesWithAuthorityLevel(UUID authorityLevelId) {
         return this.authorityRepository.findAllByAuthorityLevelId(authorityLevelId)
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public List<AuthorityDTO> getAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevel) {
-        return getAllAuthoritiesWithAuthorityLevel(authorityLevel.getId());
+    public List<AuthorityDTO> getAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevel) {
+        return getAuthoritiesWithAuthorityLevel(authorityLevel.getId());
     }
 
 
-    public List<GrantedAuthority> getGrantedAuthorities(UUID userId) {
-        List<MembershipDTO> memberships = this.membershipFinder.getMembershipsByUserId(userId);
-        //  for (MembershipDTO membership : memberships) {
-        //      AuthorityLevel authorityLevel = this.authorityLevelService
-        //              .getAuthorityLevel(this.authorityLevelService.getAuthorityLevel(
-        //                      membership.getFkitGroupDTO().getId().toString()));
-        //      if (authorityLevel != null) {
-        //          authorities.add(authorityLevel);
-        //      }
-        //  }
-        return new ArrayList<>(this.getAuthorities(memberships));
+    public List<GrantedAuthority> getGrantedAuthorities(UUID userId) throws UserNotFoundException {
+        List<MembershipDTO> memberships = this.membershipFinder.getMembershipsByUser(userId);
+
+
+        return new ArrayList<>(this.getAuthorityLevels(memberships));
     }
 
     public Optional<AuthorityDTO> getAuthority(SuperGroupDTO groupDTO, PostDTO postDTO) {

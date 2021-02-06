@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.client.ITClient;
+import it.chalmers.gamma.client.data.Client;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.time.Instant;
@@ -26,7 +26,7 @@ class TestClientBootstrap {
     void runOauthClient() {
         if (!this.helper.getItClientService().clientExists(this.config.getOauth2ClientId())) {
             LOGGER.info("Creating test client...");
-            ITClient client = new ITClient();
+            Client client = new Client();
             client.setName(this.config.getOauth2ClientName());
             Text description = new Text();
             description.setEn("Client for mocking " + this.config.getOauth2ClientName());

@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.time.Year;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class UserFinder {
@@ -27,6 +29,10 @@ public class UserFinder {
 
     public boolean userExists(UUID id) {
         return this.userRepository.existsById(id);
+    }
+
+    public List<UserDTO> getUsers() {
+        return userRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public UserDTO getUser(UserDTO userDTO) throws UserNotFoundException {

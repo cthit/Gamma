@@ -2,18 +2,20 @@ package it.chalmers.gamma.supergroup.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
+
+import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllSuperGroupsResponse {
     @JsonValue
-    private final List<GetSuperGroupResponse> superGroups;
+    private final List<SuperGroupDTO> superGroups;
 
-    public GetAllSuperGroupsResponse(List<GetSuperGroupResponse> superGroups) {
+    public GetAllSuperGroupsResponse(List<SuperGroupDTO> superGroups) {
         this.superGroups = superGroups;
     }
 
-    public List<GetSuperGroupResponse> getSuperGroups() {
+    public List<SuperGroupDTO> getSuperGroups() {
         return this.superGroups;
     }
 

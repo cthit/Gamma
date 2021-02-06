@@ -3,19 +3,20 @@ package it.chalmers.gamma.post.response;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 
+import it.chalmers.gamma.post.PostDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetMultiplePostsResponse {
     @JsonValue
-    private final List<GetPostResponse> getPostResponse;
+    private final List<PostDTO> posts;
 
-    public GetMultiplePostsResponse(List<GetPostResponse> getPostResponses) {
-        this.getPostResponse = getPostResponses;
+    public GetMultiplePostsResponse(List<PostDTO> posts) {
+        this.posts = posts;
     }
 
-    public List<GetPostResponse> getGetPostResponse() {
-        return this.getPostResponse;
+    public List<PostDTO> getPosts() {
+        return posts;
     }
 
     public GetMultiplePostsResponseObject toResponseObject() {

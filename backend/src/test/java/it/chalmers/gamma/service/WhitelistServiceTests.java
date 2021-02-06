@@ -1,9 +1,9 @@
 package it.chalmers.gamma.service;
 
-import it.chalmers.gamma.whitelist.WhitelistDTO;
+import it.chalmers.gamma.whitelist.dto.WhitelistDTO;
 import it.chalmers.gamma.factories.MockActivationCodeFactory;
 import it.chalmers.gamma.factories.MockWhitelistFactory;
-import it.chalmers.gamma.whitelist.WhitelistService;
+import it.chalmers.gamma.whitelist.service.WhitelistService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,8 +34,8 @@ public class WhitelistServiceTests {
     @Test
     public void testWhiteList() {
         String cid = "cid3";
-        this.whitelistService.addWhiteListedCID(cid);
-        this.whitelistService.addWhiteListedCID("cid4");
+        this.whitelistService.addWhiteListedCid(cid);
+        this.whitelistService.addWhiteListedCid("cid4");
         Assert.assertTrue(this.whitelistService.isCIDWhiteListed(cid));
         Assert.assertFalse(this.whitelistService.isCIDWhiteListed("leif"));
     }
@@ -43,8 +43,8 @@ public class WhitelistServiceTests {
     @Test
     public void testDeleteActivationCode() {
         String cid = "cid5";
-        this.whitelistService.addWhiteListedCID(cid);
-        this.whitelistService.removeWhiteListedCID(cid);
+        this.whitelistService.addWhiteListedCid(cid);
+        this.whitelistService.removeWhiteListedCid(cid);
         Assert.assertFalse(this.whitelistService.isCIDWhiteListed(cid));
     }
 
@@ -56,8 +56,8 @@ public class WhitelistServiceTests {
     public void testAddWhitelistCIDMultipleTimes() {
         String cid = "cid1";
         try {
-            this.whitelistService.addWhiteListedCID(cid);
-            this.whitelistService.addWhiteListedCID(cid);
+            this.whitelistService.addWhiteListedCid(cid);
+            this.whitelistService.addWhiteListedCid(cid);
             Assert.fail();
         } catch (Exception ignored) {
             Assert.assertTrue(true);
@@ -68,7 +68,7 @@ public class WhitelistServiceTests {
     public void testRemoveWhitelistWithConnectedActivationCode() {
         WhitelistDTO whitelist = this.mockWhitelistFactory.saveWhitelist(this.mockWhitelistFactory.generateWhitelist());
         this.mockActivationCodeFactory.saveActivationCode(whitelist);
-        this.whitelistService.removeWhiteListedCID(whitelist.getCid());
+        this.whitelistService.removeWhiteListedCid(whitelist.getCid());
         Assert.assertFalse(this.whitelistService.isCIDWhiteListed(whitelist.getCid()));
     }
 

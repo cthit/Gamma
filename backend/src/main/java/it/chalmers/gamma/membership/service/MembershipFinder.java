@@ -15,6 +15,7 @@ import it.chalmers.gamma.post.exception.PostNotFoundException;
 import it.chalmers.gamma.user.dto.UserDTO;
 import it.chalmers.gamma.user.exception.UserNotFoundException;
 import it.chalmers.gamma.user.service.UserFinder;
+import org.hibernate.query.Query;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
@@ -46,19 +47,27 @@ public class MembershipFinder {
         this.postFinder = postFinder;
     }
 
-    public List<MembershipDTO> getMembershipsInGroup(GroupDTO group) {
+    public List<MembershipDTO> getMembershipsInGroup(UUID groupId) {
         return this.membershipRepository
-                .findAllById_GroupId(group.getId())
+                .findAllById_GroupId(groupId)
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipRestrictedDTO> getRestrictedMembershipInGroup(GroupDTO group) {
-        return getMembershipsInGroup(group)
+    public List<MembershipDTO> getMembershipsInGroup(GroupDTO group) {
+        return this.getMembershipsInGroup(group.getId());
+    }
+
+    public List<MembershipRestrictedDTO> getRestrictedMembershipsInGroup(UUID groupId) {
+        return getMembershipsInGroup(groupId)
                 .stream()
                 .map(MembershipRestrictedDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public List<MembershipRestrictedDTO> getRestrictedMembershipsInGroup(GroupDTO group) {
+        return getRestrictedMembershipsInGroup(group.getId());
     }
 
     public List<Membership> getMembershipsByPost(PostDTO post) {
@@ -115,7 +124,15 @@ public class MembershipFinder {
         return null;
     }
 
-    public List<MembershipDTO> getMembershipsByUserId(UUID userId) {
+    public List<MembershipDTO> getMembershipsByUser(UserDTO user) throws UserNotFoundException {
+        return this.getMembershipsByUser(user.getId());
+    }
+
+    public List<MembershipDTO> getMembershipsByUser(UUID userId) throws UserNotFoundException {
+        if(!this.userFinder.userExists(userId)) {
+            throw new UserNotFoundException();
+        }
+
         List<Membership> memberships = this.membershipRepository
                 .findAllById_UserId(userId);
         return memberships.stream().map(this::toDTO).collect(Collectors.toList());
@@ -152,5 +169,4 @@ public class MembershipFinder {
                 .unofficialPostName(membership.getUnofficialPostName())
                 .build();
     }
-
 }

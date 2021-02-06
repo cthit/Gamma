@@ -14,7 +14,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import it.chalmers.gamma.whitelist.Whitelist;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.whitelist.data.Whitelist;
 import org.springframework.beans.factory.annotation.Value;
 
 @Entity
@@ -22,12 +23,8 @@ import org.springframework.beans.factory.annotation.Value;
 public class ActivationCode {
 
     @Id
-    @Column(updatable = false)
-    private UUID id;
-
-    @JoinColumn(name = "cid", insertable = true, updatable = false, unique = true)
-    @OneToOne(fetch = FetchType.EAGER)
-    private Whitelist cid;    // Has a foreign key referencing the Whitelist GROUP_ID
+    @Column(name = "cid")
+    private String cid;
 
     @Column(name = "code", length = 30)
     private String code;
@@ -39,46 +36,32 @@ public class ActivationCode {
     @Value("${password-expiration-time}")
     private static final int PASSWORD_EXPIRATION_TIME = 3600;
 
+    protected ActivationCode() { }
+
     public Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    protected ActivationCode() {
-        this.id = UUID.randomUUID();
-    }
-
-    public ActivationCode(Whitelist cid) {
-        this.id = UUID.randomUUID();
+    public ActivationCode(Cid cid, String code) {
         this.createdAt = Instant.now();
-        this.cid = cid;
-    }
-
-    public UUID getId() {
-        return this.id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getCid() {
-        return this.cid.getCid();
-    }
-
-    public Whitelist getWhitelist() {
-        return this.cid;
+        this.cid = cid.value;
+        this.code = code;
     }
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public void setWhitelist(Whitelist cid) {
-        this.cid = cid;
+    public void setWhitelist(Cid cid) {
+        this.cid = cid.value;
     }
 
-    public void setCid(Whitelist cid) {
-        this.cid = cid;
+    public String getCid() {
+        return this.cid;
+    }
+
+    public void setCid(Cid cid) {
+        this.cid = cid.value;
     }
 
     public String getCode() {
@@ -91,41 +74,5 @@ public class ActivationCode {
 
     public boolean isValid() {
         return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(PASSWORD_EXPIRATION_TIME)));
-    }
-
-    public ActivationCodeDTO toDTO() {
-        return new ActivationCodeDTO(this.id,
-                this.cid.toDTO(),
-                this.code,
-                this.createdAt,
-                PASSWORD_EXPIRATION_TIME);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ActivationCode that = (ActivationCode) o;
-        return Objects.equals(this.id, that.id)
-            && Objects.equals(this.cid, that.cid)
-            && Objects.equals(this.code, that.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.cid, this.code);
-    }
-
-    @Override
-    public String toString() {
-        return "ActivationCode{"
-            + "id=" + this.id
-            + ", whitelistedCid=" + this.cid
-            + ", code='" + this.code + '\''
-            + '}';
     }
 }

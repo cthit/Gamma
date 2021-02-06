@@ -2,7 +2,6 @@ package it.chalmers.gamma.user.controller.request;
 
 import it.chalmers.gamma.domain.Language;
 
-import it.chalmers.gamma.whitelist.WhitelistDTO;
 import java.util.Objects;
 
 import javax.validation.constraints.AssertTrue;
@@ -13,10 +12,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-
 public class CreateITUserRequest {
+
     @NotEmpty(message = "CODE_MUST_BE_PROVIDED")
-    // TODO SPECIFY MINIMUM AND MAXIMUM LENGTH OF CODE
     private String code;
 
     @NotEmpty(message = "PASSWORD_MUST_BE_PROVIDED")
@@ -44,17 +42,9 @@ public class CreateITUserRequest {
     private int acceptanceYear;
 
     @NotNull(message = "WHITELIST_MUST_BE_PROVIDED")
-    private WhitelistDTO whitelist;
+    private String cid;
 
     private Language language = Language.SV;
-
-    public WhitelistDTO getWhitelist() {
-        return this.whitelist;
-    }
-
-    public void setWhitelist(WhitelistDTO whitelist) {
-        this.whitelist = whitelist;
-    }
 
     public String getCode() {
         return this.code;
@@ -128,53 +118,11 @@ public class CreateITUserRequest {
         this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "CreateITUserRequest{"
-                + "code='" + this.code + '\''
-                + ", password='" + this.password + '\''
-                + ", nick='" + this.nick + '\''
-                + ", firstName='" + this.firstName + '\''
-                + ", lastName='" + this.lastName + '\''
-                + ", userAgreement=" + this.userAgreement
-                + ", acceptanceYear=" + this.acceptanceYear
-                + ", whitelist=" + this.whitelist
-                + ", language=" + this.language
-                + '}';
+    public String getCid() {
+        return cid;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        CreateITUserRequest that = (CreateITUserRequest) o;
-        return this.userAgreement == that.userAgreement
-                && this.acceptanceYear == that.acceptanceYear
-                && Objects.equals(this.code, that.code)
-                && Objects.equals(this.password, that.password)
-                && Objects.equals(this.nick, that.nick)
-                && Objects.equals(this.firstName, that.firstName)
-                && Objects.equals(this.lastName, that.lastName)
-                && Objects.equals(this.whitelist, that.whitelist)
-                && this.language == that.language;
+    public void setCid(String cid) {
+        this.cid = cid;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.code,
-                this.password,
-                this.nick,
-                this.firstName,
-                this.lastName,
-                this.userAgreement,
-                this.acceptanceYear,
-                this.whitelist,
-                this.language);
-    }
-
-
 }

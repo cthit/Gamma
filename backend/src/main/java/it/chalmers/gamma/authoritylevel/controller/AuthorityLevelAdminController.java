@@ -2,7 +2,6 @@ package it.chalmers.gamma.authoritylevel.controller;
 
 import it.chalmers.gamma.authority.AuthorityDTO;
 import it.chalmers.gamma.authority.AuthorityFinder;
-import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.authority.response.AuthorityDoesNotExistResponse;
 import it.chalmers.gamma.authority.response.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.authoritylevel.controller.response.*;
@@ -80,7 +79,7 @@ public class AuthorityLevelAdminController {
     public GetAllAuthoritiesForLevelResponse.GetAllAuthoritiesForLevelResponseObject getAuthoritiesWithLevel(
             @PathVariable("id") UUID id) {
         try {
-            List<AuthorityDTO> authorities = this.authorityFinder.getAllAuthoritiesWithAuthorityLevel(id);
+            List<AuthorityDTO> authorities = this.authorityFinder.getAuthoritiesWithAuthorityLevel(id);
             AuthorityLevelDTO authorityLevel = this.authorityLevelFinder.getAuthorityLevel(id);
 
             return new GetAllAuthoritiesForLevelResponse(authorities, authorityLevel.getAuthority()).toResponseObject();

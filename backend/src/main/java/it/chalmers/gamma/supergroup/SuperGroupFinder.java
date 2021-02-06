@@ -20,6 +20,10 @@ public class SuperGroupFinder {
         this.superGroupRepository = superGroupRepository;
     }
 
+    public boolean superGroupExists(UUID id) {
+        return this.superGroupRepository.existsById(id);
+    }
+
     public SuperGroupDTO getSuperGroup(UUID id) throws SuperGroupNotFoundException {
         return toDTO(getSuperGroupEntity(id));
     }
@@ -32,7 +36,7 @@ public class SuperGroupFinder {
         return getSuperGroupEntity(superGroup.getId());
     }
 
-    public List<SuperGroupDTO> getAllGroups() {
+    public List<SuperGroupDTO> getSuperGroups() {
         return Optional.of(this.superGroupRepository.findAll().stream()
                 .filter(g -> !g.getType().equals(GroupType.ADMIN))
                 .map(SuperGroup::toDTO)

@@ -64,7 +64,7 @@ public class AuthorityService {
 
     @Transactional
     public void removeAllAuthoritiesWithAuthorityLevel(AuthorityLevelDTO authorityLevelDTO) {
-        List<AuthorityDTO> authorities = this.authorityFinder.getAllAuthoritiesWithAuthorityLevel(authorityLevelDTO);
+        List<AuthorityDTO> authorities = this.authorityFinder.getAuthoritiesWithAuthorityLevel(authorityLevelDTO);
         authorities.forEach(a -> this.removeAuthority(a.getId()));
     }
 }

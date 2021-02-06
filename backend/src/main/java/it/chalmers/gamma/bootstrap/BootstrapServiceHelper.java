@@ -5,7 +5,7 @@ import it.chalmers.gamma.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.authority.AuthorityService;
 import it.chalmers.gamma.group.service.GroupService;
 import it.chalmers.gamma.supergroup.SuperGroupService;
-import it.chalmers.gamma.client.ITClientService;
+import it.chalmers.gamma.client.service.ClientService;
 import it.chalmers.gamma.user.service.UserFinder;
 import it.chalmers.gamma.user.service.UserService;
 import it.chalmers.gamma.membership.service.MembershipService;
@@ -24,7 +24,7 @@ public final class BootstrapServiceHelper {
     private final PostService postService;
     private final MembershipService membershipService;
     private final AuthorityService authorityService;
-    private final ITClientService itClientService;
+    private final ClientService clientService;
     private final ApiKeyService apiKeyService;
     private final SuperGroupService superGroupService;
 
@@ -35,7 +35,7 @@ public final class BootstrapServiceHelper {
                                   PostService postService,
                                   MembershipService membershipService,
                                   AuthorityService authorityService,
-                                  ITClientService itClientService,
+                                  ClientService clientService,
                                   ApiKeyService apiKeyService,
                                   SuperGroupService superGroupService) {
         this.userFinder = userFinder;
@@ -45,7 +45,7 @@ public final class BootstrapServiceHelper {
         this.postService = postService;
         this.membershipService = membershipService;
         this.authorityService = authorityService;
-        this.itClientService = itClientService;
+        this.clientService = clientService;
         this.apiKeyService = apiKeyService;
         this.superGroupService = superGroupService;
     }
@@ -74,8 +74,8 @@ public final class BootstrapServiceHelper {
         return this.authorityService;
     }
 
-    public ITClientService getItClientService() {
-        return this.itClientService;
+    public ClientService getItClientService() {
+        return this.clientService;
     }
 
     public ApiKeyService getApiKeyService() {

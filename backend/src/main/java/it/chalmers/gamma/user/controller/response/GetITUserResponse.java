@@ -7,32 +7,21 @@ import it.chalmers.gamma.group.dto.GroupDTO;
 import it.chalmers.gamma.user.dto.UserDTO;
 import java.util.List;
 
+import it.chalmers.gamma.user.dto.UserWithMembershipsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetITUserResponse {
 
     @JsonUnwrapped
-    private final UserDTO user;
-    private final List<GroupDTO> groups;
+    private final UserWithMembershipsDTO user;
 
-    public GetITUserResponse(UserDTO user,
-                             List<GroupDTO> groups) {
+    public GetITUserResponse(UserWithMembershipsDTO user) {
         this.user = user;
-        this.groups = groups;
     }
 
-    public GetITUserResponse(UserDTO user) {
-        this(user, null);
-    }
-
-    @JsonUnwrapped
-    public UserDTO getUser() {
-        return this.user;
-    }
-
-    public List<GroupDTO> getGroups() {
-        return this.groups;
+    public UserWithMembershipsDTO getUser() {
+        return user;
     }
 
     @JsonIgnore

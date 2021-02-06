@@ -53,7 +53,7 @@ public final class MembershipAdminController {
     @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
             @Valid @RequestBody AddUserGroupRequest request, BindingResult result,
-            @PathVariable("id") String id) {
+            @PathVariable("id") UUID id) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -65,7 +65,7 @@ public final class MembershipAdminController {
     }
 
     @DeleteMapping("/{id}/members/{user}")
-    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") String id,
+    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") UUID id,
                                                               @PathVariable("user") String userId) {
         GroupDTO group = this.groupService.getGroup(id);
         UserDTO user = this.userFinder.getUser(UUID.fromString(userId));

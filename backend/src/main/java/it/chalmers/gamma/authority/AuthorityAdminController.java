@@ -56,7 +56,7 @@ public final class AuthorityAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public AuthorityRemovedResponse removeAuthority(@PathVariable("id") String id) {
+    public AuthorityRemovedResponse removeAuthority(@PathVariable("id") UUID id) {
         if (!this.authorityService.authorityExists(id)) {
             throw new AuthorityDoesNotExistResponse();
         }
@@ -72,7 +72,7 @@ public final class AuthorityAdminController {
 
 
     @GetMapping("/{id}")
-    public GetAuthorityResponseObject getAuthority(@PathVariable("id") String id) {
+    public GetAuthorityResponseObject getAuthority(@PathVariable("id") UUID id) {
         AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
         return new GetAuthorityResponse(authority).toResponseObject();
     }

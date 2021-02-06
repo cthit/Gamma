@@ -1,20 +1,24 @@
 package it.chalmers.gamma.whitelist.response;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
+
+import it.chalmers.gamma.domain.Cid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllWhitelistResponse {
-    @JsonValue
-    private final List<GetWhitelistResponse> whitelistResponses;
 
-    public GetAllWhitelistResponse(List<GetWhitelistResponse> whitelistResponses) {
-        this.whitelistResponses = whitelistResponses;
+    @JsonUnwrapped
+    private final List<Cid> whitelist;
+
+    public GetAllWhitelistResponse(List<Cid> whitelist) {
+        this.whitelist = whitelist;
     }
 
-    public List<GetWhitelistResponse> getWhitelistResponses() {
-        return this.whitelistResponses;
+    public List<Cid> getWhitelist() {
+        return whitelist;
     }
 
     public GetAllWhitelistResponseObject toResponseObject() {

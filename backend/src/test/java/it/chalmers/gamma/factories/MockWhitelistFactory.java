@@ -1,8 +1,8 @@
 package it.chalmers.gamma.factories;
 
-import it.chalmers.gamma.whitelist.WhitelistDTO;
+import it.chalmers.gamma.whitelist.dto.WhitelistDTO;
 import it.chalmers.gamma.whitelist.request.WhitelistCodeRequest;
-import it.chalmers.gamma.whitelist.WhitelistService;
+import it.chalmers.gamma.whitelist.service.WhitelistService;
 import it.chalmers.gamma.utils.CharacterTypes;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class MockWhitelistFactory {
     }
 
     public WhitelistDTO saveWhitelist(WhitelistDTO whitelist) {
-        return this.whitelistService.addWhiteListedCID(whitelist.getCid());
+        return this.whitelistService.addWhiteListedCid(whitelist.getCid());
     }
 
     public WhitelistCodeRequest createValidRequest(WhitelistDTO whitelist) {

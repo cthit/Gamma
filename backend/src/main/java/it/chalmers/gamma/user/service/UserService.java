@@ -18,6 +18,8 @@ import it.chalmers.gamma.util.ImageUtils;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,6 +36,8 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthorityFinder authorityFinder;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
     public UserService(UserFinder userFinder,
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
@@ -45,30 +49,24 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String cidOrEmail) {
-        cidOrEmail = cidOrEmail.toLowerCase();
-        User user = null;
-        try {
-            user = this.userFinder.getUserEntity(new Cid(cidOrEmail));
-        } catch (UserNotFoundException ignored) { }
+    public UserDetails loadUserByUsername(String cid) {
+        cid = cid.toLowerCase();
 
         try {
-            user = this.userFinder.getUserEntity(new Email(cidOrEmail));
-        } catch (UserNotFoundException ignored) { }
+            User user = this.userFinder.getUserEntity(new Cid(cid));
 
-        if(user == null) {
-            throw new UsernameNotFoundException("User not found");
+            List<GrantedAuthority> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
+
+            return new UserDetailsDTO(
+                    user.getCid(),
+                    user.getPassword(),
+                    authorities,
+                    user.isAccountLocked()
+            );
+        } catch (UserNotFoundException e) {
+            LOGGER.error("User not found", e);
+            throw new UsernameNotFoundException("User with: " + cid + " not found");
         }
-
-        List<GrantedAuthority> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
-
-        return new UserDetailsDTO(
-                user.getCid(),
-                user.getPassword(),
-                authorities,
-                user.isAccountLocked()
-        );
-
     }
 
     public void createUser(UserDTO newUser, String password) {

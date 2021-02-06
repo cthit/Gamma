@@ -3,6 +3,8 @@ package it.chalmers.gamma.supergroup;
 import java.util.UUID;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.group.service.GroupFinder;
+import it.chalmers.gamma.supergroup.exception.SuperGroupHasGroupsException;
 import it.chalmers.gamma.supergroup.exception.SuperGroupNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +13,14 @@ public class SuperGroupService {
 
     private final SuperGroupRepository repository;
     private final SuperGroupFinder finder;
+    private final GroupFinder groupFinder;
 
     public SuperGroupService(SuperGroupRepository repository,
-                             SuperGroupFinder finder) {
+                             SuperGroupFinder finder,
+                             GroupFinder groupFinder) {
         this.repository = repository;
         this.finder = finder;
+        this.groupFinder = groupFinder;
     }
 
     public SuperGroupDTO createSuperGroup(SuperGroupDTO superGroupDTO) {
@@ -34,7 +39,10 @@ public class SuperGroupService {
     }
 
 
-    public void removeGroup(UUID id) {
+    public void removeGroup(UUID id) throws SuperGroupNotFoundException, SuperGroupHasGroupsException {
+        if(this.groupFinder.getGroupsBySuperGroup(id).size() > 0) {
+            throw new SuperGroupHasGroupsException();
+        }
 
         this.repository.deleteById(id);
     }

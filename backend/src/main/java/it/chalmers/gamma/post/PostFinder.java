@@ -26,7 +26,7 @@ public class PostFinder {
         return this.postRepository.existsByPostName_Sv(id);
     }
 
-    public List<PostDTO> getAllPosts() {
+    public List<PostDTO> getPosts() {
         return this.postRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 

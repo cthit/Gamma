@@ -56,7 +56,7 @@ public final class UserAdminController {
 
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
-            @PathVariable("id") String id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -67,7 +67,7 @@ public final class UserAdminController {
     }
 
     @PutMapping("/{id}")
-    public UserEditedResponse editUser(@PathVariable("id") String id,
+    public UserEditedResponse editUser(@PathVariable("id") UUID id,
                                            @RequestBody EditITUserRequest request) {
         if (!this.userFinder.userExists(UUID.fromString(id))) {
             throw new UserNotFoundResponse();
@@ -86,7 +86,7 @@ public final class UserAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public UserDeletedResponse deleteUser(@PathVariable("id") String id) {
+    public UserDeletedResponse deleteUser(@PathVariable("id") UUID id) {
         UserDTO user = this.userFinder.getUser(UUID.fromString(id));
         this.membershipService.removeAllMemberships(user);
         this.userService.removeUser(user.getId());
@@ -94,7 +94,7 @@ public final class UserAdminController {
     }
 
     @GetMapping("/{id}")
-    public GetITUserResponseObject getUser(@PathVariable("id") String id) {
+    public GetITUserResponseObject getUser(@PathVariable("id") UUID id) {
         UserDTO user = this.userFinder.getUser(UUID.fromString(id));
         List<GroupDTO> groups = this.membershipService.getUsersGroupDTO(user);
         return new GetITUserResponse(user, groups).toResponseObject();

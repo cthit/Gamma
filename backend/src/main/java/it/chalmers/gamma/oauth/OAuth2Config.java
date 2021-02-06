@@ -1,7 +1,7 @@
 package it.chalmers.gamma.oauth;
 
-import it.chalmers.gamma.client.ITClientService;
-import it.chalmers.gamma.approval.ITUserApprovalService;
+import it.chalmers.gamma.client.service.ClientService;
+import it.chalmers.gamma.approval.service.UserApprovalService;
 import it.chalmers.gamma.user.service.UserService;
 
 import java.net.MalformedURLException;
@@ -44,9 +44,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private final AuthenticationManager authenticationManager;
 
     @Qualifier("clientDetailsService")
-    private final ITClientService clientDetailsService;
+    private final ClientService clientDetailsService;
 
-    private final ITUserApprovalService itUserApprovalService;
+    private final UserApprovalService userApprovalService;
 
     @Value("${security.jwt.token.secret-key}")
     private String signingKey;
@@ -61,11 +61,11 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private long expiration;
 
     public OAuth2Config(UserService userDetailsService, AuthenticationManager authenticationManager,
-                        ITClientService clientDetailsService, ITUserApprovalService itUserApprovalService) {
+                        ClientService clientDetailsService, UserApprovalService userApprovalService) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.clientDetailsService = clientDetailsService;
-        this.itUserApprovalService = itUserApprovalService;
+        this.userApprovalService = userApprovalService;
     }
 
 
@@ -77,7 +77,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .accessTokenConverter(accessTokenConverter())
                 .authenticationManager(this.authenticationManager)
                 .userDetailsService(this.userDetailsService)
-                .approvalStore(this.itUserApprovalService);
+                .approvalStore(this.userApprovalService);
     }
 
     @Override

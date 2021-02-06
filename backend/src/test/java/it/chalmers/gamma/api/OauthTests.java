@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import it.chalmers.gamma.GammaApplication;
-import it.chalmers.gamma.client.ITClientDTO;
+import it.chalmers.gamma.client.dto.ClientDTO;
 import it.chalmers.gamma.endoints.JSONParameter;
 import it.chalmers.gamma.factories.MockITClientFactory;
 import it.chalmers.gamma.factories.MockITUserApprovalFactory;
@@ -78,7 +78,7 @@ public class OauthTests {
     @WithMockUser
     @Test
     public void testAuthorizationRequestWithIncorrectId() throws Exception {
-        ITClientDTO clientDTO = this.mockITClientFactory
+        ClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory.generateClient(TEST_COM));
 
         String query = getTestAuthorizationQuery(GenerationUtils.generateRandomString(40, LOWERCASE),
@@ -91,7 +91,7 @@ public class OauthTests {
     @WithMockUser
     @Test
     public void testAuthorizationRequestWithIncorrectRedirect() throws Exception {
-        ITClientDTO clientDTO = this.mockITClientFactory
+        ClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory.generateClient(TEST_COM));
 
         String query = getTestAuthorizationQuery(clientDTO.getClientId(),
@@ -111,7 +111,7 @@ public class OauthTests {
     @Test
     public void testSuccessfulAuthorizationRequest() throws Exception {
         String redirect = TEST_COM;
-        ITClientDTO clientDTO = this.mockITClientFactory
+        ClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory
                         .generateClient(redirect));
 
@@ -123,7 +123,7 @@ public class OauthTests {
     @Test
     public void testSuccessfulAuthorizationRequestConfirm() throws Exception {
         String redirect = TEST_COM;
-        ITClientDTO clientDTO = this.mockITClientFactory
+        ClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory
                         .generateClientNonAutoApprove(redirect));
 
@@ -142,7 +142,7 @@ public class OauthTests {
     @Test
     public void testCorrectRedirectIfAlreadyApproved() throws Exception {
         String redirect = TEST_COM;
-        ITClientDTO clientDTO = this.mockITClientFactory
+        ClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory
                         .generateClientNonAutoApprove(redirect));
 
@@ -157,7 +157,7 @@ public class OauthTests {
     @Test
     public void testSuccessfulAuthorizationCode() throws Exception {
         String redirect = TEST_COM;
-        ITClientDTO clientDTO = this.mockITClientFactory
+        ClientDTO clientDTO = this.mockITClientFactory
                 .saveClient(this.mockITClientFactory
                         .generateClient(redirect));
         String query = getTestAuthorizationQuery(clientDTO.getClientId(), clientDTO.getWebServerRedirectUri());

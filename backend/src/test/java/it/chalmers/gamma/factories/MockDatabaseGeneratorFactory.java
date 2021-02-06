@@ -1,7 +1,7 @@
 package it.chalmers.gamma.factories;
 
 import it.chalmers.gamma.apikey.ApiKeyDTO;
-import it.chalmers.gamma.client.ITClientDTO;
+import it.chalmers.gamma.client.dto.ClientDTO;
 import it.chalmers.gamma.authority.AuthorityDTO;
 import it.chalmers.gamma.authoritylevel.dto.AuthorityLevelDTO;
 import it.chalmers.gamma.group.dto.GroupDTO;
@@ -9,7 +9,7 @@ import it.chalmers.gamma.supergroup.SuperGroupDTO;
 import it.chalmers.gamma.post.PostDTO;
 import it.chalmers.gamma.activationcode.ActivationCodeDTO;
 import it.chalmers.gamma.user.dto.UserDTO;
-import it.chalmers.gamma.whitelist.WhitelistDTO;
+import it.chalmers.gamma.whitelist.dto.WhitelistDTO;
 import it.chalmers.gamma.utils.GenerationUtils;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class MockDatabaseGeneratorFactory {
     private ApiKeyDTO apiKey;
     private AuthorityLevelDTO authorityLevel;
     private AuthorityDTO authority;
-    private ITClientDTO client;
+    private ClientDTO client;
     private WhitelistDTO whitelist;
 
     private static boolean hasGeneratedMock;
