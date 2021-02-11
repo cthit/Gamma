@@ -46,7 +46,12 @@ public class Bootstrap implements CommandLineRunner {
         this.miscBootstrap.runImageBootstrap();
         if (shouldRunBootstrap()) {
             LOGGER.info("No admin user, running Bootstrap...");
-            this.adminBootstrap.runAdminBootstrap();
+            try {
+                this.adminBootstrap.runAdminBootstrap();
+            } catch (AdminBootstrapFailedException e) {
+                LOGGER.error("FATAL ERROR; NO ADMIN USER EXISTS OR WAS CREATED", e);
+            }
+
             if (this.config.isMocking()) {
                 LOGGER.info("Mock enabled...");
                 this.mockBootstrap.runMockBootstrap();

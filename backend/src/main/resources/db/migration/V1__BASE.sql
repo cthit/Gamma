@@ -31,8 +31,6 @@ create table ituser (
   user_agreement    boolean         not null default false,
   account_locked    boolean         not null default false,
   acceptance_year   integer         constraint ituser_valid_year check (acceptance_year >= 2001),
-  created_at        timestamp       not null default current_timestamp,
-  last_modified_at  timestamp       not null default current_timestamp,
   activated         boolean         DEFAULT FALSE
 );
 
@@ -51,31 +49,25 @@ create table ituser_gdpr (
 
 )
 
-create table authority_level (
-  id  uuid constraint authority_level_pk primary key,
-  authority_level varchar(30)
-);
-
 create table password_reset_token(
-  id      uuid constraint password_reset_token_pk primary key,
   token   varchar(100) not null,
-  ituser  uuid references ituser
+  ituser  uuid references ituser,
+  constraint password_reset_token primary key (token, ituser)
 );
 
 create table fkit_super_group (
   id            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
-  pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
+  pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique,
   email         varchar(100)   not null,
-  type          varchar(30)    not null
+  type          varchar(30)    not null,
+  description   uuid           not null references internal_text
 );
 
 create table fkit_group (
   id                uuid                  constraint fkit_group_pk primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
   pretty_name       varchar(50)  not null,
-  description       uuid         null     references internal_text,
-  function          uuid         not null references internal_text,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
   fkit_super_group  uuid         not null references fkit_super_group,
@@ -90,11 +82,20 @@ create table post (
 );
 
 create table authority (
-  id              uuid  constraint authority_unique unique,
   fkit_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level uuid  constraint authority_authority_level          references authority_level,
-  constraint      authority_pk primary key (post_id, fkit_group_id)
+  constraint      authority_pk primary key (post_id, fkit_group_id, authority_level) on delete cascade
+);
+
+create table authority_all_posts (
+ fkit_group_id   uuid  constraint authority_all_posts_fkit_super_group_fk            references fkit_super_group,
+ authority_level uuid  constraint authority_all_posts_authority_level                references authority_level,
+ constraint      authority_all_posts_pk primary key (fkit_group_id, authority_level) on delete cascade
+);
+
+create table authority_level (
+    authority_level varchar(30) primary key
 );
 
 create table fkit_group_website(
@@ -102,7 +103,6 @@ create table fkit_group_website(
   fkit_group  uuid not null references fkit_group,
   website     uuid not null references website_url
 );
-
 
 
 create table membership (
@@ -141,18 +141,14 @@ create table itclient (
     refresh_token_validity integer not null,
     auto_approve boolean default false not null,
     name varchar(30) not null,
-    description uuid references internal_text,
-    created_at       timestamp    not null default current_timestamp,
-    last_modified_at timestamp    not null default current_timestamp
+    description uuid references internal_text
 );
 
 create table apikey (
     id               uuid constraint apikey_pk primary key,
     name             varchar(30) not null,
     description      uuid references internal_text,
-    key              varchar(150) not null,
-    created_at       timestamp    not null default current_timestamp,
-    last_modified_at timestamp    not null default current_timestamp
+    key              varchar(150) not null
 );
 
 create table it_user_approval (

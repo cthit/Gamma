@@ -28,7 +28,6 @@ public class MailSenderService {
     public boolean trySendingMail(String email, String subject, String body) {
         if (this.production) {
             return sendMail(email, subject, body);
-
         } else {
             LOGGER.warn("Not in production environment, printing mail: \n "
                     + "to: " + email + "\n"

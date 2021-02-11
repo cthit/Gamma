@@ -1,16 +1,18 @@
 package it.chalmers.gamma.config;
 
-import it.chalmers.gamma.group.dto.GroupDTO;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
+import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
+import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.filter.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.handlers.LoginRedirectHandler;
-import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.authority.AuthorityService;
-import it.chalmers.gamma.group.service.GroupService;
-import it.chalmers.gamma.user.service.UserFinder;
-import it.chalmers.gamma.user.service.UserService;
+import it.chalmers.gamma.domain.authority.service.AuthorityService;
+import it.chalmers.gamma.domain.group.service.GroupService;
+import it.chalmers.gamma.domain.user.service.UserFinder;
+import it.chalmers.gamma.domain.user.service.UserService;
 
-import it.chalmers.gamma.passwordreset.PasswordResetService;
+import it.chalmers.gamma.domain.passwordreset.service.PasswordResetService;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -46,10 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserFinder userFinder;
     private final UserService userService;
     private final AuthorityService authorityService;
-    private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
     private final GroupService groupService;
+    private final GroupFinder groupFinder;
+    private final ApiKeyFinder apiKeyFinder;
+    private final AuthorityFinder authorityFinder;
+
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
     private final LoginRedirectHandler loginRedirectHandler;
@@ -58,20 +63,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public WebSecurityConfig(UserService userService,
                              AuthorityService authorityService,
-                             ApiKeyService apiKeyService,
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
                              GroupService groupService,
                              LoginRedirectHandler loginRedirectHandler,
-                             UserFinder userFinder) {
+                             UserFinder userFinder,
+                             GroupFinder groupFinder,
+                             ApiKeyFinder apiKeyFinder,
+                             AuthorityFinder authorityFinder) {
         this.userService = userService;
         this.authorityService = authorityService;
-        this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
         this.groupService = groupService;
         this.loginRedirectHandler = loginRedirectHandler;
         this.userFinder = userFinder;
+        this.groupFinder = groupFinder;
+        this.apiKeyFinder = apiKeyFinder;
+        this.authorityFinder = authorityFinder;
     }
 
     @Override
@@ -113,8 +122,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .csrf().disable();
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when disabling csrf");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when disabling csrf", e);
         }
     }
 
@@ -123,8 +131,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             OAuthRedirectFilter oauthRedirectFilter = new OAuthRedirectFilter();
             http.addFilterBefore(oauthRedirectFilter, BasicAuthenticationFilter.class);
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when adding redirects");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when adding redirects", e);
         }
     }
 
@@ -132,8 +139,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         try {
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when setting SessionManagement to 'if required'");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when setting SessionManagement to 'if required'", e);
         }
     }
 
@@ -144,15 +150,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.userService,
                             this.secretKey,
                             this.issuer,
-                            this.apiKeyService,
                             this.passwordResetService,
                             this.baseFrontendUrl,
-                            this.userFinder
+                            this.userFinder,
+                            this.apiKeyFinder
                     )
             );
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when adding JwtAuthenticationFilter");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when adding JwtAuthenticationFilter", e);
         }
     }
 
@@ -172,8 +177,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when adding form login");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when adding form login", e);
         }
     }
 
@@ -200,39 +204,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers(permittedPaths).permitAll();
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when setting");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when setting", e);
         }
     }
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            List<GroupDTO> groups = this.groupService.getGroups();
+            List<GroupDTO> groups = this.groupFinder.getGroups();
             for (GroupDTO group : groups) {
-                addPathRole(http, group);
+                http.authorizeRequests()
+                        .antMatchers("/admin/groups/" + group.getId() + "/avatar")
+                        .hasAuthority(group.getName());
             }
             http.authorizeRequests().antMatchers("/admin/gdpr/**")
                     .hasAnyAuthority("gdpr", "admin").and().authorizeRequests().antMatchers("/admin/**")
                     .hasAuthority("admin");
         } catch (Exception e) {
-            LOGGER.error("something went wrong when setting admin paths");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("something went wrong when setting admin paths", e);
         }
-    }
-
-    private void addPathRole(HttpSecurity http, GroupDTO group) {
-        this.authorityService.getAllAuthorities().forEach(a -> {
-            if (a.getSuperGroup().getId().equals(group.getSuperGroup().getId())) {
-                try {
-                    http.authorizeRequests().antMatchers("/admin/groups/"
-                            + group.getId() + "/**")
-                            .hasAuthority(a.getAuthorityLevel().getAuthority());
-                } catch (Exception e) {
-                    LOGGER.error("Something went wrong when setting authorized paths");
-                    LOGGER.error(e.getMessage());
-                }
-            }
-        });
     }
 
     private void setTheRestOfPathsToAuthenticatedOnly(HttpSecurity http) {
@@ -246,8 +235,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             ;
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when setting paths to authenticated only.");
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Something went wrong when setting paths to authenticated only.", e);
         }
     }
 }

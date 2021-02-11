@@ -4,32 +4,32 @@ import java.util.List;
 
 public class MockData {
 
-    private List<MockITUser> users;
-    private List<MockFKITGroup> groups;
-    private List<MockFKITSuperGroup> superGroups;
+    private List<MockUser> users;
+    private List<MockGroup> groups;
+    private List<MockSuperGroup> superGroups;
     private List<MockPost> posts;
 
-    public List<MockITUser> getUsers() {
+    public List<MockUser> getUsers() {
         return this.users;
     }
 
-    public void setUsers(List<MockITUser> users) {
+    public void setUsers(List<MockUser> users) {
         this.users = users;
     }
 
-    public List<MockFKITGroup> getGroups() {
+    public List<MockGroup> getGroups() {
         return this.groups;
     }
 
-    public void setGroups(List<MockFKITGroup> groups) {
+    public void setGroups(List<MockGroup> groups) {
         this.groups = groups;
     }
 
-    public List<MockFKITSuperGroup> getSuperGroups() {
+    public List<MockSuperGroup> getSuperGroups() {
         return this.superGroups;
     }
 
-    public void setSuperGroups(List<MockFKITSuperGroup> superGroups) {
+    public void setSuperGroups(List<MockSuperGroup> superGroups) {
         this.superGroups = superGroups;
     }
 

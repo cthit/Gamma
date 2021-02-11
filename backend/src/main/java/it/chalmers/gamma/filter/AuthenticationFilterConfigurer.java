@@ -1,10 +1,10 @@
 package it.chalmers.gamma.filter;
 
-import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.user.service.UserFinder;
-import it.chalmers.gamma.user.service.UserService;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
+import it.chalmers.gamma.domain.user.service.UserFinder;
+import it.chalmers.gamma.domain.user.service.UserService;
 
-import it.chalmers.gamma.passwordreset.PasswordResetService;
+import it.chalmers.gamma.domain.passwordreset.service.PasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -18,25 +18,25 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
     private final String baseFrontendUrl;
     private final String issuer;
     private final UserService userService;
-    private final ApiKeyService apiKeyService;
     private final PasswordResetService passwordResetService;
     private final UserFinder userFinder;
+    private final ApiKeyFinder apiKeyFinder;
 
     public AuthenticationFilterConfigurer(
             UserService userService,
             String secretKey,
             String issuer,
-            ApiKeyService apiKeyService,
             PasswordResetService passwordResetService,
             String baseFrontendUrl,
-            UserFinder userFinder) {
+            UserFinder userFinder,
+            ApiKeyFinder apiKeyFinder) {
         this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;
-        this.apiKeyService = apiKeyService;
         this.passwordResetService = passwordResetService;
         this.baseFrontendUrl = baseFrontendUrl;
         this.userFinder = userFinder;
+        this.apiKeyFinder = apiKeyFinder;
     }
 
     @Override
@@ -47,9 +47,8 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
                 this.issuer
         );
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
-                this.apiKeyService,
-                this.userService
-        );
+                this.userService,
+                this.apiKeyFinder);
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.baseFrontendUrl,
                 this.passwordResetService,

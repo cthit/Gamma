@@ -1,0 +1,61 @@
+package it.chalmers.gamma.domain.user.data;
+
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
+
+public class UserDetailsDTO implements UserDetails {
+
+    private final String cid;
+    private final String password;
+    private final List<AuthorityLevelName> authorities;
+    private final boolean accountLocked;
+
+    public UserDetailsDTO(String cid,
+                          String password,
+                          List<AuthorityLevelName> authorities,
+                          boolean accountLocked) {
+        this.cid = cid;
+        this.password = password;
+        this.authorities = authorities;
+        this.accountLocked = accountLocked;
+    }
+
+    @Override
+    public Collection<AuthorityLevelName> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.cid;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !this.accountLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}

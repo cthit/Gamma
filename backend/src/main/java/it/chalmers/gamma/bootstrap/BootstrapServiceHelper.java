@@ -1,22 +1,27 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.apikey.ApiKeyService;
-import it.chalmers.gamma.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.authority.AuthorityService;
-import it.chalmers.gamma.group.service.GroupService;
-import it.chalmers.gamma.supergroup.SuperGroupService;
-import it.chalmers.gamma.client.service.ClientService;
-import it.chalmers.gamma.user.service.UserFinder;
-import it.chalmers.gamma.user.service.UserService;
-import it.chalmers.gamma.membership.service.MembershipService;
-import it.chalmers.gamma.post.PostService;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyService;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
+import it.chalmers.gamma.domain.authority.service.AuthorityService;
+import it.chalmers.gamma.domain.client.service.ClientFinder;
+import it.chalmers.gamma.domain.group.service.GroupFinder;
+import it.chalmers.gamma.domain.group.service.GroupService;
+import it.chalmers.gamma.domain.post.service.PostFinder;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
+import it.chalmers.gamma.domain.client.service.ClientService;
+import it.chalmers.gamma.domain.user.service.UserCreationService;
+import it.chalmers.gamma.domain.user.service.UserFinder;
+import it.chalmers.gamma.domain.user.service.UserService;
+import it.chalmers.gamma.domain.membership.service.MembershipService;
+import it.chalmers.gamma.domain.post.service.PostService;
 
 import org.springframework.stereotype.Component;
 
-@SuppressWarnings({"PMD.ExcessiveParameterList"})
 @Component()
 public final class BootstrapServiceHelper {
 
+    private final UserCreationService userCreationService;
     private final UserFinder userFinder;
     private final UserService userService;
     private final GroupService groupService;
@@ -27,8 +32,13 @@ public final class BootstrapServiceHelper {
     private final ClientService clientService;
     private final ApiKeyService apiKeyService;
     private final SuperGroupService superGroupService;
+    private final PostFinder postFinder;
+    private final GroupFinder groupFinder;
+    private final SuperGroupFinder superGroupFinder;
+    private final ClientFinder clientFinder;
 
-    public BootstrapServiceHelper(UserFinder userFinder,
+    public BootstrapServiceHelper(UserCreationService userCreationService,
+                                  UserFinder userFinder,
                                   UserService userService,
                                   GroupService groupService,
                                   AuthorityLevelService authorityLevelService,
@@ -37,7 +47,8 @@ public final class BootstrapServiceHelper {
                                   AuthorityService authorityService,
                                   ClientService clientService,
                                   ApiKeyService apiKeyService,
-                                  SuperGroupService superGroupService) {
+                                  SuperGroupService superGroupService, PostFinder postFinder, GroupFinder groupFinder, SuperGroupFinder superGroupFinder, ClientFinder clientFinder) {
+        this.userCreationService = userCreationService;
         this.userFinder = userFinder;
         this.userService = userService;
         this.groupService = groupService;
@@ -48,6 +59,18 @@ public final class BootstrapServiceHelper {
         this.clientService = clientService;
         this.apiKeyService = apiKeyService;
         this.superGroupService = superGroupService;
+        this.postFinder = postFinder;
+        this.groupFinder = groupFinder;
+        this.superGroupFinder = superGroupFinder;
+        this.clientFinder = clientFinder;
+    }
+
+    public SuperGroupFinder getSuperGroupFinder() {
+        return superGroupFinder;
+    }
+
+    public GroupFinder getGroupFinder() {
+        return groupFinder;
     }
 
     public UserService getUserService() {
@@ -74,7 +97,7 @@ public final class BootstrapServiceHelper {
         return this.authorityService;
     }
 
-    public ClientService getItClientService() {
+    public ClientService getClientService() {
         return this.clientService;
     }
 
@@ -88,5 +111,17 @@ public final class BootstrapServiceHelper {
 
     public UserFinder getUserFinder() {
         return userFinder;
+    }
+
+    public UserCreationService getUserCreationService() {
+        return userCreationService;
+    }
+
+    public PostFinder getPostFinder() {
+        return postFinder;
+    }
+
+    public ClientFinder getClientFinder() {
+        return clientFinder;
     }
 }
