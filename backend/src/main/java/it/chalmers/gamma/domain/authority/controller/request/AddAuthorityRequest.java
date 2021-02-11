@@ -1,45 +1,46 @@
 package it.chalmers.gamma.domain.authority.controller.request;
 
 import java.util.Objects;
+import java.util.UUID;
 import javax.validation.constraints.NotNull;
 
 public class AddAuthorityRequest {
     @NotNull(message = "POST_MUST_BE_PROVIDED")
-    private String post;
+    private UUID postId;
     @NotNull(message = "SUPER_GROUP_MUST_BE_PROVIDED")
-    private String superGroup;
+    private UUID superGroupId;
     @NotNull(message = "AUTHORITY_MUST_BE_PROVIDED")
     private String authority;
 
+    public UUID getPostId() {
+        return postId;
+    }
+
+    public void setPostId(UUID postId) {
+        this.postId = postId;
+    }
+
+    public UUID getSuperGroupId() {
+        return superGroupId;
+    }
+
+    public void setSuperGroupId(UUID superGroupId) {
+        this.superGroupId = superGroupId;
+    }
+
     public String getAuthority() {
-        return this.authority;
+        return authority;
     }
 
-    public void setAuthority(String authorization) {
-        this.authority = authorization;
-    }
-
-    public String getPost() {
-        return this.post;
-    }
-
-    public void setPost(String post) {
-        this.post = post;
-    }
-
-    public String getSuperGroup() {
-        return this.superGroup;
-    }
-
-    public void setSuperGroup(String superGroup) {
-        this.superGroup = superGroup;
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 
     @Override
     public String toString() {
         return "AuthorizationRequest{"
-            + "post='" + this.post + '\''
-            + ", superGroup='" + this.superGroup + '\''
+            + "post='" + this.postId + '\''
+            + ", superGroup='" + this.superGroupId + '\''
             + ", authority'" + this.authority + '\''
             + '}';
     }
@@ -53,13 +54,13 @@ public class AddAuthorityRequest {
             return false;
         }
         AddAuthorityRequest that = (AddAuthorityRequest) o;
-        return Objects.equals(this.post, that.post)
-            && Objects.equals(this.superGroup, that.superGroup)
+        return Objects.equals(this.postId, that.postId)
+            && Objects.equals(this.superGroupId, that.superGroupId)
             && Objects.equals(this.authority, that.authority);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.post, this.superGroup, this.authority);
+        return Objects.hash(this.postId, this.superGroupId, this.authority);
     }
 }

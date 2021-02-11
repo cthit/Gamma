@@ -1,7 +1,9 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.supergroup.controller.response.*;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
+import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupHasGroupsException;
@@ -10,11 +12,8 @@ import it.chalmers.gamma.domain.supergroup.controller.request.CreateSuperGroupRe
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupDeletedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupEditedResponse;
-import it.chalmers.gamma.domain.supergroup.controller.response.GetSuperGroupResponse;
 import it.chalmers.gamma.domain.supergroup.controller.response.GetSuperGroupResponse.GetSuperGroupResponseObject;
-import it.chalmers.gamma.domain.supergroup.controller.response.RemoveSubGroupsBeforeRemovingSuperGroupResponse;
 import it.chalmers.gamma.domain.group.service.GroupService;
-import it.chalmers.gamma.domain.supergroup.controller.response.SuperGroupDoesNotExistResponse;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.util.UUID;
@@ -51,13 +50,19 @@ public class SuperGroupAdminController {
     }
 
     @PostMapping()
-    public GetSuperGroupResponseObject createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
-                                                        BindingResult result) {
+    public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
+                                                      BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        SuperGroupDTO group = this.superGroupService.createSuperGroup(requestToDTO(request));
-        return new GetSuperGroupResponse(group).toResponseObject();
+
+        try {
+            this.superGroupService.createSuperGroup(requestToDTO(request));
+        } catch (SuperGroupAlreadyExistsException e) {
+            LOGGER.error("Super group already exists", e);
+            throw new SuperGroupAlreadyExistsResponse();
+        }
+        return new SuperGroupCreatedResponse();
     }
 
 
@@ -79,7 +84,7 @@ public class SuperGroupAdminController {
     public GroupEditedResponse updateSuperGroup(@PathVariable("id") UUID id,
                                                 @RequestBody CreateSuperGroupRequest request) {
         try {
-            this.superGroupService.updateSuperGroup(requestToDTO(request));
+            this.superGroupService.updateSuperGroup(requestToDTO(request, id));
         } catch (SuperGroupNotFoundException | IDsNotMatchingException e) {
             LOGGER.error("Super group not found", e);
             throw new SuperGroupDoesNotExistResponse();
@@ -98,13 +103,7 @@ public class SuperGroupAdminController {
     }
 
     private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {
-        return new SuperGroupDTO(
-                request.getName(),
-                request.getPrettyName(),
-                request.getType(),
-                request.getEmail(),
-                request.getDescription()
-        );
+        return this.requestToDTO(request, null);
     }
 
 }

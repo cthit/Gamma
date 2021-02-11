@@ -26,7 +26,7 @@ public class MembershipService {
     }
 
     public void addUserToGroup(MembershipShallowDTO membership) throws GroupNotFoundException, PostNotFoundException, UserNotFoundException {
-        this.membershipRepository.save(new Membership(membershipFinder.fromShallow(membership)));
+        this.membershipRepository.save(new Membership(membership));
     }
 
     public void removeUserFromGroup(UUID userId, UUID groupId) throws MembershipNotFoundException {
@@ -39,7 +39,7 @@ public class MembershipService {
 
     public void editMembership(MembershipShallowDTO newEdit) throws MembershipNotFoundException, IDsNotMatchingException, GroupNotFoundException, PostNotFoundException, UserNotFoundException {
         Membership membership = this.membershipFinder.getMembershipEntityByUserAndGroup(newEdit.getUserId(), newEdit.getGroupId());
-        membership.apply(this.membershipFinder.fromShallow(newEdit));
+        membership.apply(newEdit);
         this.membershipRepository.save(membership);
     }
 

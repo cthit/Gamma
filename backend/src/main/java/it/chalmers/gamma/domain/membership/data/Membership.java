@@ -10,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "membership")
-public class Membership implements GEntity<MembershipDTO> {
+public class Membership implements GEntity<MembershipShallowDTO> {
 
     @EmbeddedId
     private MembershipPK id;
@@ -21,7 +21,7 @@ public class Membership implements GEntity<MembershipDTO> {
     @Column(name = "unofficial_post_name")
     private String unofficialPostName;
 
-    public Membership(MembershipDTO membership) {
+    public Membership(MembershipShallowDTO membership) {
         try {
             apply(membership);
         } catch (IDsNotMatchingException e) {
@@ -80,14 +80,13 @@ public class Membership implements GEntity<MembershipDTO> {
     }
 
     @Override
-    public void apply(MembershipDTO m) throws IDsNotMatchingException {
-        if(this.id.getGroupId() != m.getGroup().getId()
-            || this.id.getUserId() != m.getUser().getId()) {
+    public void apply(MembershipShallowDTO m) throws IDsNotMatchingException {
+        if(this.id.getGroupId() != m.getGroupId()
+            || this.id.getUserId() != m.getUserId()) {
             throw new IDsNotMatchingException();
         }
 
         this.unofficialPostName = m.getUnofficialPostName();
-        this.postId = m.getPost().getId();
-
+        this.postId = m.getPostId();
     }
 }

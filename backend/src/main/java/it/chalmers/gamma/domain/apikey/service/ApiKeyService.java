@@ -24,26 +24,15 @@ public class ApiKeyService {
         this.apiKeyFinder = apiKeyFinder;
     }
 
-    public ApiKeyDTO createApiKey(ApiKeyDTO newApiKey) {
-        ApiKey apiKey = new ApiKey();
-        Text description = new Text();
-        description.setEn(newApiKey.getDescription().getEn());
-        description.setSv(newApiKey.getDescription().getSv());
-        apiKey.setName(newApiKey.getName());
-        apiKey.setDescription(description);
-        String key = TokenUtils.generateToken(50, TokenUtils.CharacterTypes.LOWERCASE,
-                TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS);
-        apiKey.setKey(key);
-        return this.apiKeyFinder.toDTO(this.apiKeyRepository.save(apiKey));
+    public void createApiKey(ApiKeyDTO newApiKey) {
+        this.apiKeyRepository.save(new ApiKey(newApiKey));
     }
 
-    public void addApiKey(String clientName, String clientApiKey, Text description) {
-        ApiKey apiKey = new ApiKey(clientName, clientApiKey, description);
-        this.apiKeyRepository.save(apiKey);
-    }
+    public void deleteApiKey(UUID id) throws ApiKeyNotFoundException {
+        if(!this.apiKeyFinder.apiKeyExists(id)) {
+            throw new ApiKeyNotFoundException();
+        }
 
-    public void deleteApiKey(UUID id) {
         this.apiKeyRepository.deleteById(id);
     }
 

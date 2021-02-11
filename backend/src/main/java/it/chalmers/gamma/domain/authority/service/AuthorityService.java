@@ -1,20 +1,14 @@
 package it.chalmers.gamma.domain.authority.service;
 
 import it.chalmers.gamma.domain.authority.data.Authority;
-import it.chalmers.gamma.domain.authority.data.AuthorityDTO;
 import it.chalmers.gamma.domain.authority.data.AuthorityPK;
 import it.chalmers.gamma.domain.authority.data.AuthorityRepository;
-import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExists;
+import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExistsException;
 import it.chalmers.gamma.domain.authority.exception.AuthorityNotFoundException;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
-
-import it.chalmers.gamma.domain.post.data.PostDTO;
 
 import java.util.*;
-
-import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -34,9 +28,9 @@ public class AuthorityService {
     }
 
     public void createAuthority(UUID superGroupId, UUID postId, AuthorityLevelName authorityLevelName)
-                throws AuthorityAlreadyExists {
+                throws AuthorityAlreadyExistsException {
         if(this.authorityFinder.authorityExists(superGroupId, postId, authorityLevelName)) {
-            throw new AuthorityAlreadyExists();
+            throw new AuthorityAlreadyExistsException();
         }
 
         this.authorityRepository.save(
@@ -46,4 +40,16 @@ public class AuthorityService {
         );
     }
 
+    public void removeAuthority(UUID superGroupId, UUID postId, AuthorityLevelName authorityLevelName) throws AuthorityNotFoundException {
+        if (!this.authorityFinder.authorityExists(superGroupId, postId, authorityLevelName)) {
+            throw new AuthorityNotFoundException();
+        }
+
+        this.authorityRepository.removeById_SuperGroupIdAndId_PostIdAndId_AuthorityLevelName(
+                superGroupId,
+                postId,
+                authorityLevelName.value
+        );
+
+    }
 }

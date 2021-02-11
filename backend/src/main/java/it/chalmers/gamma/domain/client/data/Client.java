@@ -60,7 +60,12 @@ public class Client implements GEntity<ClientDTO> {
     public Client() { }
 
     public Client(ClientDTO client) {
-
+        try {
+            apply(client);
+            if(id == null) {
+                this.id = client.getId();
+            }
+        } catch (IDsNotMatchingException ignored) { }
     }
 
     @Override

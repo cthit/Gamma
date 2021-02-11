@@ -2,7 +2,7 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExists;
+import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExistsException;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.exception.AuthorityLevelAlreadyExistsException;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
@@ -15,7 +15,6 @@ import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException
 import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.user.data.UserDTO;
@@ -83,7 +82,7 @@ public class AdminBootstrap {
                         adminPostId,
                         new AuthorityLevelName(admin)
                 );
-            } catch (AuthorityAlreadyExists e) {
+            } catch (AuthorityAlreadyExistsException e) {
                 LOGGER.error("Fatal error when creating admin user", e);
                 throw new AdminBootstrapFailedException();
             }

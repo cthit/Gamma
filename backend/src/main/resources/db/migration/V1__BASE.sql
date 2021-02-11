@@ -51,8 +51,7 @@ create table ituser_gdpr (
 
 create table password_reset_token(
   token   varchar(100) not null,
-  ituser  uuid references ituser,
-  constraint password_reset_token primary key (token, ituser)
+  ituser  uuid primary key references ituser,
 );
 
 create table fkit_super_group (

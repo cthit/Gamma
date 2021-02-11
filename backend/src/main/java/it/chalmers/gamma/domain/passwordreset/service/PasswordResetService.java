@@ -37,19 +37,22 @@ public class PasswordResetService {
     }
 
     public void handlePasswordReset(String cidOrEmail) throws UserNotFoundException {
-        UserDTO user = null;
-        try {
+        UserDTO user;
+
+        try{
             user = this.userFinder.getUser(new Cid(cidOrEmail));
-        } catch (UserNotFoundException ignored) { }
-
-        try {
-            user = this.userFinder.getUser(new Email(cidOrEmail));
-        } catch (UserNotFoundException ignored) { }
-
-        if(user == null) {
-            throw new UserNotFoundException();
+        }catch(UserNotFoundException e) {
+            try {
+                user = this.userFinder.getUser(new Email(cidOrEmail));
+            } catch(UserNotFoundException e2) {
+                throw new UserNotFoundException();
+            }
         }
 
+        this.handlePasswordReset(user);
+    }
+
+    public void handlePasswordReset(UserDTO user) {
         String token = TokenUtils.generateToken(
                 10,
                 TokenUtils.CharacterTypes.UPPERCASE,
@@ -86,8 +89,8 @@ public class PasswordResetService {
         return storedToken.isPresent() && storedToken.get().getToken().equals(token);
     }
 
-    public void removeToken(UserDTO user) throws UserNotFoundException {
-        this.repository.delete(this.repository.findByUserId(user.getId()).orElseThrow(UserNotFoundException::new));
+    public void removeToken(UserDTO user) {
+        this.repository.deleteById(user.getId());
     }
 
 

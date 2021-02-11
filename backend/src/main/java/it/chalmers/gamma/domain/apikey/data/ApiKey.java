@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.apikey.data;
 
+import it.chalmers.gamma.domain.GEntity;
+import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.time.Instant;
@@ -18,7 +20,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "apikey")
-public class ApiKey {
+public class ApiKey implements GEntity<ApiKeyDTO> {
     @Id
     @Column(updatable = false)
     private UUID id;
@@ -33,25 +35,15 @@ public class ApiKey {
     @Column(name = "key", length = 150, nullable = false)
     private String key;
 
-    @Column(name = "created_at", nullable = false)
-    @ColumnDefault("current_timestamp")
-    private Instant createdAt;
+    public ApiKey() { }
 
-    @Column(name = "last_modified_at", nullable = false)
-    @ColumnDefault("current_timestamp")
-    private Instant lastModifiedAt;
-
-    public ApiKey() {
-        this.id = UUID.randomUUID();
-        this.createdAt = Instant.now();
-        this.lastModifiedAt = Instant.now();
-    }
-
-    public ApiKey(String name, String key, Text description) {
-        this();
-        this.name = name;
-        this.key = key;
-        this.description = description;
+    public ApiKey(ApiKeyDTO apiKey) {
+        try {
+            apply(apiKey);
+            if(this.id == null) {
+                this.id = apiKey.getId();
+            }
+        } catch (IDsNotMatchingException ignored) { }
     }
 
     public UUID getId() {
@@ -86,22 +78,6 @@ public class ApiKey {
         this.key = key;
     }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Instant getLastModifiedAt() {
-        return this.lastModifiedAt;
-    }
-
-    public void setLastModifiedAt(Instant lastModifiedAt) {
-        this.lastModifiedAt = lastModifiedAt;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -114,9 +90,7 @@ public class ApiKey {
         return Objects.equals(this.id, apiKey.id)
                 && Objects.equals(this.name, apiKey.name)
                 && Objects.equals(this.description, apiKey.description)
-                && Objects.equals(this.key, apiKey.key)
-                && Objects.equals(this.createdAt, apiKey.createdAt)
-                && Objects.equals(this.lastModifiedAt, apiKey.lastModifiedAt);
+                && Objects.equals(this.key, apiKey.key);
     }
 
     @Override
@@ -125,9 +99,7 @@ public class ApiKey {
                 this.id,
                 this.name,
                 this.description,
-                this.key,
-                this.createdAt,
-                this.lastModifiedAt);
+                this.key);
     }
 
     @Override
@@ -137,8 +109,17 @@ public class ApiKey {
                 + ", name='" + this.name + '\''
                 + ", description=" + this.description
                 + ", key='" + this.key + '\''
-                + ", createdAt=" + this.createdAt
-                + ", lastModifiedAt=" + this.lastModifiedAt
                 + '}';
+    }
+
+    @Override
+    public void apply(ApiKeyDTO ak) throws IDsNotMatchingException {
+        if(this.id != ak.getId()) {
+            throw new IDsNotMatchingException();
+        }
+
+        this.name = ak.getName();
+        this.key = ak.getKey();
+        this.description = ak.getDescription();
     }
 }

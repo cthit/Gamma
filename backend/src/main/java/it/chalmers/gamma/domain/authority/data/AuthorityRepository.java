@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AuthorityRepository extends JpaRepository<Authority, UUID> {
 
+    void removeById_SuperGroupIdAndId_PostIdAndId_AuthorityLevelName(UUID superGroupId,
+                                                                     UUID postId,
+                                                                     String authorityLevelName);
+
     boolean existsById_SuperGroupIdAndId_PostIdAndId_AuthorityLevelName(UUID superGroupId,
                                                                         UUID postId,
                                                                         String authorityLevelName);

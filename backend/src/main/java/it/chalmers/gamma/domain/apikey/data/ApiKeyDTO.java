@@ -14,6 +14,10 @@ public class ApiKeyDTO {
     @JsonIgnore
     private final String key;
 
+    public ApiKeyDTO(String name, Text description, String key) {
+        this(null, name, description, key);
+    }
+
     public ApiKeyDTO(UUID id, String name, Text description, String key) {
         this.id = id;
         this.name = name;

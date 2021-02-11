@@ -1,16 +1,15 @@
 package it.chalmers.gamma.domain.authority.controller;
 
+import it.chalmers.gamma.domain.authority.controller.response.*;
 import it.chalmers.gamma.domain.authority.data.AuthorityDTO;
+import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExistsException;
+import it.chalmers.gamma.domain.authority.exception.AuthorityNotFoundException;
+import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.authority.service.AuthorityService;
 import it.chalmers.gamma.domain.authority.controller.request.AddAuthorityRequest;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.authority.controller.response.AuthorityAddedResponse;
-import it.chalmers.gamma.domain.authority.controller.response.AuthorityDoesNotExistResponse;
-import it.chalmers.gamma.domain.authority.controller.response.AuthorityRemovedResponse;
-import it.chalmers.gamma.domain.authority.controller.response.GetAllAuthoritiesResponse;
-import it.chalmers.gamma.domain.authority.controller.response.GetAuthorityResponse;
-import it.chalmers.gamma.domain.authority.controller.response.GetAuthorityResponse.GetAuthorityResponseObject;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.domain.post.service.PostService;
 import it.chalmers.gamma.util.InputValidationUtils;
@@ -33,15 +32,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/authority")
 public final class AuthorityAdminController {
 
+    private final AuthorityFinder authorityFinder;
     private final AuthorityService authorityService;
     private final PostService postService;
     private final AuthorityLevelService authorityLevelService;
     private final SuperGroupService superGroupService;
 
-    public AuthorityAdminController(AuthorityService authorityService,
+    public AuthorityAdminController(AuthorityFinder authorityFinder, AuthorityService authorityService,
                                     PostService postService,
                                     AuthorityLevelService authorityLevelService,
                                     SuperGroupService superGroupService) {
+        this.authorityFinder = authorityFinder;
         this.authorityService = authorityService;
         this.postService = postService;
         this.authorityLevelService = authorityLevelService;
@@ -53,30 +54,33 @@ public final class AuthorityAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        this.authorityService.createAuthority(request.getSuperGroup(), request.getPost(), request.getAuthority());
-        return new AuthorityAddedResponse();
+        try {
+            this.authorityService.createAuthority(
+                    request.getSuperGroupId(),
+                    request.getPostId(),
+                    new AuthorityLevelName(request.getAuthority())
+            );
+            return new AuthorityAddedResponse();
+        } catch (AuthorityAlreadyExistsException e) {
+            throw new AuthorityAlreadyExistsResponse();
+        }
     }
 
-    @DeleteMapping("/{id}")
-    public AuthorityRemovedResponse removeAuthority(@PathVariable("id") UUID id) {
-        if (!this.authorityService.authorityExists(id)) {
+    @DeleteMapping("/{superGroupId}/{postId}/{authorityLevelName}")
+    public AuthorityRemovedResponse removeAuthority(@PathVariable("superGroupId") UUID superGroupId,
+                                                    @PathVariable("postId") UUID postId,
+                                                    @PathVariable("authorityLevelName") String authorityLevelName) {
+        try {
+            this.authorityService.removeAuthority(superGroupId, postId, new AuthorityLevelName(authorityLevelName));
+            return new AuthorityRemovedResponse();
+        } catch (AuthorityNotFoundException e) {
             throw new AuthorityDoesNotExistResponse();
         }
-        this.authorityService.removeAuthority(UUID.fromString(id)); // TODO move check to service?
-        return new AuthorityRemovedResponse();
     }
 
     @GetMapping()
     public GetAllAuthoritiesResponse getAllAuthorities() {
-        List<AuthorityDTO> authorities = this.authorityService.getAllAuthorities();
-        return new GetAllAuthoritiesResponse(authorities);
-    }
-
-
-    @GetMapping("/{id}")
-    public GetAuthorityResponseObject getAuthority(@PathVariable("id") UUID id) {
-        AuthorityDTO authority = this.authorityService.getAuthority(UUID.fromString(id));
-        return new GetAuthorityResponse(authority).toResponseObject();
+        return new GetAllAuthoritiesResponse(this.authorityFinder.getAuthorities());
     }
 
 }

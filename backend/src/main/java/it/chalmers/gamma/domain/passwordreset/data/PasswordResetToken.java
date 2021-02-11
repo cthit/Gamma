@@ -11,28 +11,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset_token")
-@SuppressWarnings("PMD.ExcessiveParameterList")
 public class PasswordResetToken {
-    @Id
-    private UUID id;
-
     @Column(name = "token")
     private String token;
 
+    @Id
     @JoinColumn(name = "ituser")
     private UUID userId;
 
-    public PasswordResetToken() {
-        this.id = UUID.randomUUID();
-    }
-
-    public UUID getId() {
-        return this.id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    public PasswordResetToken() { }
 
     public String getToken() {
         return this.token;
@@ -53,14 +40,9 @@ public class PasswordResetToken {
     @Override
     public String toString() {
         return "PasswordResetToken{"
-            + "id=" + this.id
             + ", token='" + this.token + '\''
             + ", itUser=" + this.userId
             + '}';
-    }
-
-    public PasswordResetTokenDTO toDTO() {
-        return new PasswordResetTokenDTO(this.id, this.token, this.userId);
     }
 
     @Override
@@ -72,13 +54,12 @@ public class PasswordResetToken {
             return false;
         }
         PasswordResetToken that = (PasswordResetToken) o;
-        return Objects.equals(this.id, that.id)
-            && Objects.equals(this.token, that.token)
+        return Objects.equals(this.token, that.token)
             && Objects.equals(this.userId, that.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.token, this.userId);
+        return Objects.hash(this.token, this.userId);
     }
 }

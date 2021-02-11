@@ -2,6 +2,7 @@ package it.chalmers.gamma.filter;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
 import it.chalmers.gamma.domain.passwordreset.service.PasswordResetService;
@@ -36,14 +37,14 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                UserDTO userDTO = this.userFinder.getUser(new Cid(username));
-                if (!userDTO.isActivated()) {
-                    this.passwordResetService.handlePasswordReset(userDTO);
+                UserDTO user = this.userFinder.getUser(new Cid(username));
+                if (!user.isActivated()) {
+                    this.passwordResetService.handlePasswordReset(user);
                     String params = "accountLocked=true";
                     response.sendRedirect(String.format("%s/reset-password/finish?%s", this.baseFrontendUrl, params));
                     return;
                 }
-            } catch (UserNotFoundResponse e) {
+            } catch (UserNotFoundException e) {
                 LOGGER.info(String.format("User %s tried logging in, but no such user exists", username));
             }
         }

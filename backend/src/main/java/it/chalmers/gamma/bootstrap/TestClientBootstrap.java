@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
 import it.chalmers.gamma.domain.client.data.Client;
 import it.chalmers.gamma.domain.client.data.ClientDTO;
 import it.chalmers.gamma.domain.text.Text;
@@ -48,11 +49,15 @@ class TestClientBootstrap {
             Text apiDescription = new Text();
             apiDescription.setSv("API key");
             apiDescription.setEn("API key");
-            this.helper.getApiKeyService().addApiKey(
-                    this.config.getOauth2ClientName(),
-                    this.config.getOauth2ClientApiKey(),
-                    apiDescription
+
+            this.helper.getApiKeyService().createApiKey(
+                    new ApiKeyDTO(
+                            this.config.getOauth2ClientName(),
+                            apiDescription,
+                            this.config.getOauth2ClientApiKey()
+                    )
             );
+
             LOGGER.info("Test client created!");
         }
     }

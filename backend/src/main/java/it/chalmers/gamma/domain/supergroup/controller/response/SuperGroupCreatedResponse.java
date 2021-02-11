@@ -4,9 +4,9 @@ import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class SuperGroupCreatedResponse extends ResponseEntity<SuperGroup> {
+public class SuperGroupCreatedResponse extends ResponseEntity<String> {
 
-    public SuperGroupCreatedResponse(SuperGroup group) {
-        super(group, HttpStatus.ACCEPTED);
+    public SuperGroupCreatedResponse() {
+        super("SUPER_GROUP_CREATED", HttpStatus.ACCEPTED);
     }
 }
