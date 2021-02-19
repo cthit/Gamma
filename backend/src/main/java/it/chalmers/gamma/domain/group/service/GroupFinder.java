@@ -17,14 +17,11 @@ public class GroupFinder {
 
     private final GroupRepository groupRepository;
     private final SuperGroupFinder superGroupFinder;
-    private final MembershipFinder membershipFinder;
 
     public GroupFinder(GroupRepository groupRepository,
-                       SuperGroupFinder superGroupFinder,
-                       MembershipFinder membershipFinder) {
+                       SuperGroupFinder superGroupFinder) {
         this.groupRepository = groupRepository;
         this.superGroupFinder = superGroupFinder;
-        this.membershipFinder = membershipFinder;
     }
 
     public boolean groupExistsByName(String name) {
@@ -97,32 +94,6 @@ public class GroupFinder {
                 .filter(GroupBaseDTO::isActive)
                 .map(GroupMinifiedDTO::new)
                 .collect(Collectors.toList());
-    }
-
-    public List<GroupWithMembersDTO> getActiveGroupsWithMembers() {
-        return getGroups()
-                .stream()
-                .filter(GroupBaseDTO::isActive)
-                .map(this::withMembers)
-                .collect(Collectors.toList());
-    }
-
-    public List<GroupWithMembersDTO> getActiveGroupsWithMembersBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
-        return getGroupsWithMembersBySuperGroup(superGroupId)
-                .stream()
-                .filter(groupWithMembers -> groupWithMembers.getGroup().isActive())
-                .collect(Collectors.toList());
-    }
-
-    public List<GroupWithMembersDTO> getGroupsWithMembersBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
-        return getGroupsBySuperGroup(superGroupId)
-                .stream()
-                .map(this::withMembers)
-                .collect(Collectors.toList());
-    }
-
-    public GroupWithMembersDTO withMembers(GroupDTO group) {
-        return new GroupWithMembersDTO(group, membershipFinder.getRestrictedMembershipsInGroup(group));
     }
 
     protected GroupDTO toDTO(Group group) {

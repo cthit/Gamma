@@ -1,23 +1,25 @@
 package it.chalmers.gamma.domain.approval.data;
 
+import it.chalmers.gamma.domain.user.UserId;
+
 import java.util.Objects;
 import java.util.UUID;
 
 public class UserApprovalDTO {
 
-    private final UUID clientId;
-    private final UUID userId;
+    private final UserId userId;
+    private final String clientId;
 
-    public UserApprovalDTO(UUID clientId, UUID userId) {
-        this.clientId = clientId;
+    public UserApprovalDTO(UserId userId, String clientId) {
         this.userId = userId;
+        this.clientId = clientId;
     }
 
-    public UUID getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    public UUID getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 

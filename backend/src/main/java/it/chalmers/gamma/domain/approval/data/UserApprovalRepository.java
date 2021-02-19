@@ -1,14 +1,14 @@
 package it.chalmers.gamma.domain.approval.data;
 
+import it.chalmers.gamma.domain.user.UserId;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserApprovalRepository extends JpaRepository<UserApproval, UserApprovalPK> {
 
-public interface UserApprovalRepository extends JpaRepository<UserApproval, UUID> {
-
-    UserApproval findById_ItUserCidContainingAndId_ItClient_ClientIdContaining(String cid, String clientId);
-    List<UserApproval> findAllById_ItClient_ClientIdContaining(String clientId);
-    List<UserApproval> findAllById_ItUser_CidContaining(String cid);
+    public List<UserApproval> findAllById_UserId(UserId userId);
+    public List<UserApproval> findAllById_ClientId(String clientId);
 
 }

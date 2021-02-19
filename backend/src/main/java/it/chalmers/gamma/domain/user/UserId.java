@@ -1,34 +1,36 @@
-package it.chalmers.gamma.domain;
+package it.chalmers.gamma.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Embeddable
-public class Email {
+public class UserId implements Serializable {
 
     @JsonValue
-    @Column(name = "email")
-    private String value;
+    @Column(name = "user_id")
+    private UUID value;
 
-    protected Email() {}
+    protected UserId() { }
 
-    public Email(String value) {
+    public UserId(UUID value) {
         this.value = value;
     }
 
-    public String get() {
-        return this.value;
+    public static UserId valueOf(String value) {
+        return new UserId(UUID.fromString(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Email email = (Email) o;
-        return Objects.equals(value, email.value);
+        UserId userId = (UserId) o;
+        return Objects.equals(value, userId.value);
     }
 
     @Override

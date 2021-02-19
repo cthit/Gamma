@@ -17,6 +17,7 @@ import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 
 import java.time.Year;
@@ -54,10 +55,10 @@ public class AdminBootstrap {
             UUID adminSuperGroupId = createAdminSuperGroup(superGroupName, adminMail);
             UUID adminGroupId = createAdminGroup(admin, adminMail, adminSuperGroupId);
             UUID adminPostId = createAdminPost(admin);
-            UUID adminUserId = createAdminUser(admin, adminMail);
+            UserId adminUserId = createAdminUser(admin, adminMail);
 
             try {
-                this.helper.getMembershipService().addUserToGroup(
+                this.helper.getMembershipService().addMembership(
                     new MembershipShallowDTO(
                             adminPostId,
                             adminGroupId,
@@ -99,11 +100,9 @@ public class AdminBootstrap {
         } catch (SuperGroupNotFoundException ignored) {
             adminSuperGroupId = UUID.randomUUID();
 
-            Text description = new Text();
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
-            description.setEn(descriptionText);
-            description.setSv(descriptionText);
+            Text description = new Text(descriptionText, descriptionText);
 
             try {
                 this.helper.getSuperGroupService().createSuperGroup(
@@ -183,12 +182,13 @@ public class AdminBootstrap {
         return adminPostId;
     }
 
-    private UUID createAdminUser(String admin, String adminMail) {
-        UUID adminUserId = UUID.randomUUID();
+    private UserId createAdminUser(String admin, String adminMail) {
+        UserId adminUserId = new UserId(UUID.randomUUID());
 
         this.helper.getUserCreationService().createUser(
                 new UserDTO.UserDTOBuilder()
                         .id(adminUserId)
+                        .activated(true)
                         .userAgreement(true)
                         .acceptanceYear(Year.of(2018))
                         .cid(new Cid(admin))

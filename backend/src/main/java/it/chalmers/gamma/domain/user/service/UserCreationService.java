@@ -63,7 +63,7 @@ public class UserCreationService {
         User user = new User(newUser);
         user.setPassword(this.passwordEncoder.encode(password));
 
-        this.userFinder.toDTO(this.repository.save(user));
+        this.repository.save(user);
     }
 
 }

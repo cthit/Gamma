@@ -3,15 +3,15 @@ package it.chalmers.gamma.domain.user.controller.response;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 
-import it.chalmers.gamma.domain.user.data.UserRestrictedWithGroupsDTO;
+import it.chalmers.gamma.domain.membership.data.UserRestrictedWithGroupsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class GetAllITUsersResponse {
+public class GetAllUsersResponse {
     @JsonValue
     private final List<UserRestrictedWithGroupsDTO> users;
 
-    public GetAllITUsersResponse(List<UserRestrictedWithGroupsDTO> users) {
+    public GetAllUsersResponse(List<UserRestrictedWithGroupsDTO> users) {
         this.users = users;
     }
 
@@ -23,8 +23,8 @@ public class GetAllITUsersResponse {
         return new GetAllITUsersResponseObject(this);
     }
 
-    public static class GetAllITUsersResponseObject extends ResponseEntity<GetAllITUsersResponse> {
-        GetAllITUsersResponseObject(GetAllITUsersResponse body) {
+    public static class GetAllITUsersResponseObject extends ResponseEntity<GetAllUsersResponse> {
+        GetAllITUsersResponseObject(GetAllUsersResponse body) {
             super(body, HttpStatus.OK);
         }
     }

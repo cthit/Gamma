@@ -26,7 +26,7 @@ class TestClientBootstrap {
     }
 
     void runOauthClient() {
-        if (!this.helper.getClientFinder().clientExistsByClientId(this.config.getOauth2ClientId())) {
+        if (!this.helper.getClientFinder().clientExists(this.config.getOauth2ClientId())) {
             LOGGER.info("Creating test client...");
 
             Text description = new Text();

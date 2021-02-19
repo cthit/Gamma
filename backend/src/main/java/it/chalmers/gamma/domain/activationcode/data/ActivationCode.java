@@ -20,7 +20,7 @@ public class ActivationCode {
     @Column(name = "cid")
     private String cid;
 
-    @Column(name = "code", length = 30)
+    @Column(name = "code")
     private String code;
 
     @Column(name = "created_at")

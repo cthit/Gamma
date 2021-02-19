@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.passwordreset.controller;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.passwordreset.exception.PasswordResetTokenNotFoundException;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordFinishRequest;
 import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordRequest;
@@ -73,7 +74,7 @@ public class UserPasswordResetController {
 
             this.userService.setPassword(user.getId(), request.getPassword());
             this.passwordResetService.removeToken(user);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | PasswordResetTokenNotFoundException e) {
             throw new CodeOrCidIsWrongResponse();
         }
 

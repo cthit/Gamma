@@ -1,12 +1,15 @@
 package it.chalmers.gamma.domain.user.data;
 
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.user.UserId;
+
 import java.time.Year;
 import java.util.Objects;
 import java.util.UUID;
 
 public class UserRestrictedDTO {
-    private final UUID id;
-    private final String cid;
+    private final UserId id;
+    private final Cid cid;
     private final String nick;
     private final String firstName;
     private final String lastName;
@@ -15,7 +18,7 @@ public class UserRestrictedDTO {
 
     public UserRestrictedDTO(UserDTO userDTO) {
         this.id = userDTO.getId();
-        this.cid = userDTO.getCid().value;
+        this.cid = userDTO.getCid();
         this.nick = userDTO.getNick();
         this.firstName = userDTO.getFirstName();
         this.lastName = userDTO.getLastName();
@@ -23,11 +26,11 @@ public class UserRestrictedDTO {
         this.acceptanceYear = userDTO.getAcceptanceYear();
     }
 
-    public UUID getId() {
+    public UserId getId() {
         return this.id;
     }
 
-    public String getCid() {
+    public Cid getCid() {
         return this.cid;
     }
 

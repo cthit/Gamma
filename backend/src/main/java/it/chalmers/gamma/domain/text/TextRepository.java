@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TextRepository extends JpaRepository<Text, UUID> {
-    Text findBySv(String sv);
 }

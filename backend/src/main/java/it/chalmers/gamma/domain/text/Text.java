@@ -15,9 +15,8 @@ import javax.persistence.Table;
 public class Text {
 
     @Id
-    @Column(updatable = false)
-    @JsonIgnore
-    private final UUID id;
+    @Column(name = "id")
+    private UUID id;
 
     @Column(name = "sv")
     private String sv;
@@ -25,16 +24,14 @@ public class Text {
     @Column(name = "en")
     private String en;
 
-    public Text(String sv, String en) {
-        this.sv = sv;
-        this.en = en;
-        this.id = UUID.randomUUID();
+    public Text() {
+        this(null, null);
     }
 
-    public Text() {
-        this.sv = "";
-        this.en = "";
+    public Text(String sv, String en) {
         this.id = UUID.randomUUID();
+        this.sv = sv;
+        this.en = en;
     }
 
     public UUID getId() {

@@ -5,7 +5,6 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 
@@ -16,10 +15,10 @@ public class NoAccountMembership {
     @EmbeddedId
     private NoAccountMembershipPK id;
 
-    @JoinColumn(name = "post_id")
+    @Column(name = "post_id")
     private UUID postId;
 
-    @Column(name = "unofficial_post_name", length = 100)
+    @Column(name = "unofficial_post_name")
     private String unofficialPostName;
 
     public NoAccountMembershipPK getId() {

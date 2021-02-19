@@ -1,5 +1,7 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.domain.user.UserId;
+
 import java.util.Objects;
 import java.util.UUID;
 import javax.validation.constraints.NotEmpty;
@@ -7,17 +9,17 @@ import javax.validation.constraints.NotEmpty;
 public class AddUserGroupRequest {
 
     @NotEmpty(message = "USER_MUST_BE_PROVIDED")
-    private UUID userId;
+    private UserId userId;
 
     @NotEmpty(message = "POST_MUST_BE_PROVIDED")
     private UUID postId;
     private String unofficialName;
 
-    public UUID getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 

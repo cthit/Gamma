@@ -2,19 +2,14 @@ package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.GEntity;
-import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +17,7 @@ import javax.persistence.Table;
 public class Group implements GEntity<GroupDTO> {
 
     @Id
-    @Column(updatable = false)
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "avatar_url")
@@ -46,26 +41,32 @@ public class Group implements GEntity<GroupDTO> {
     @Column(name = "fkit_super_group")
     private UUID superGroupId;
 
-    public Group() {}
+    protected Group() {}
 
     public Group(GroupDTO g) {
         this.id = g.getId();
         try {
             apply(g);
         } catch (IDsNotMatchingException ignored) { }
+
+        if(this.id == null) {
+            this.id = UUID.randomUUID();
+        }
+
     }
 
     public void apply(GroupDTO g) throws IDsNotMatchingException {
-        if(this.id != g.getId()) {
+        if(this.id != null && this.id != g.getId()) {
             throw new IDsNotMatchingException();
         }
 
+        this.id = g.getId();
         this.avatarURL = g.getAvatarURL();
         this.name = g.getName();
         this.prettyName = g.getPrettyName();
         this.becomesActive = g.getBecomesActive();
         this.becomesInactive = g.getBecomesInactive();
-        this.email = g.getEmail().value;
+        this.email = g.getEmail().get();
         this.superGroupId = g.getSuperGroup().getId();
     }
 

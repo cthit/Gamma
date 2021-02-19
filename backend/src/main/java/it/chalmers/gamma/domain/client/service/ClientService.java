@@ -37,7 +37,7 @@ public class ClientService implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
-        return this.clientRepository.findByClientId(clientId)
+        return this.clientRepository.findById(clientId)
                 .map(this.clientFinder::toDTO)
                 .orElseThrow(ClientDoesNotExistResponse::new);
     }
@@ -46,12 +46,12 @@ public class ClientService implements ClientDetailsService {
         this.clientRepository.save(new Client(newClient));
     }
 
-    public void removeClient(UUID id) throws ClientNotFoundException {
-        if(!this.clientFinder.clientExists(id)) {
+    public void removeClient(String clientId) throws ClientNotFoundException {
+        if(!this.clientFinder.clientExists(clientId)) {
             throw new ClientNotFoundException();
         }
 
-        this.clientRepository.deleteById(id);
+        this.clientRepository.deleteById(clientId);
     }
 
     public void editClient(ClientDTO newEdit) throws IDsNotMatchingException, ClientNotFoundException {

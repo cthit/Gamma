@@ -16,26 +16,25 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.ColumnDefault;
-
 @Entity
 @Table(name = "apikey")
 public class ApiKey implements GEntity<ApiKeyDTO> {
+
     @Id
-    @Column(updatable = false)
+    @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name", length = 30, nullable = false)
+    @Column(name = "name")
     private String name;
 
     @JoinColumn(name = "description")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
-    @Column(name = "key", length = 150, nullable = false)
+    @Column(name = "key")
     private String key;
 
-    public ApiKey() { }
+    protected ApiKey() { }
 
     public ApiKey(ApiKeyDTO apiKey) {
         try {
@@ -44,6 +43,11 @@ public class ApiKey implements GEntity<ApiKeyDTO> {
                 this.id = apiKey.getId();
             }
         } catch (IDsNotMatchingException ignored) { }
+
+        if(this.id == null) {
+            this.id = UUID.randomUUID();
+        }
+
     }
 
     public UUID getId() {
@@ -114,10 +118,11 @@ public class ApiKey implements GEntity<ApiKeyDTO> {
 
     @Override
     public void apply(ApiKeyDTO ak) throws IDsNotMatchingException {
-        if(this.id != ak.getId()) {
+        if(this.id != null && this.id != ak.getId()) {
             throw new IDsNotMatchingException();
         }
 
+        this.id = ak.getId();
         this.name = ak.getName();
         this.key = ak.getKey();
         this.description = ak.getDescription();

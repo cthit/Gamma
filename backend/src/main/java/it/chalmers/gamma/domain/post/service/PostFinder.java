@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.post.service;
 
 import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.group.data.GroupWithMembersDTO;
+import it.chalmers.gamma.domain.membership.data.MembershipsPerGroupDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.post.data.Post;
 import it.chalmers.gamma.domain.post.data.PostDTO;
@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 public class PostFinder {
 
     private final PostRepository postRepository;
-    private final MembershipFinder membershipFinder;
 
-    public PostFinder(PostRepository postRepository, MembershipFinder membershipFinder) {
+    public PostFinder(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.membershipFinder = membershipFinder;
     }
 
     public boolean postExists(UUID id) {
@@ -55,13 +53,6 @@ public class PostFinder {
     protected Post getPostEntityBySvName(String svName) throws PostNotFoundException {
         return this.postRepository.findByPostName_Sv(svName)
                 .orElseThrow(PostNotFoundException::new);
-    }
-
-    public List<GroupWithMembersDTO> getPostUsages(UUID postId) {
-        List<GroupDTO> groups = this.membershipFinder.getGroupsWithPost(postId);
-        return groups.stream()
-                        .map(group -> new GroupWithMembersDTO(group, this.membershipFinder.getUserByGroupAndPost(group.getId(), postId)))
-                        .collect(Collectors.toList());
     }
 
     public PostDTO toDTO(Post post) {

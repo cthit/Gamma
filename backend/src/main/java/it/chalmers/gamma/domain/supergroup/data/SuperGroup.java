@@ -12,11 +12,10 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "fkit_super_group")
-
 public class SuperGroup implements GEntity<SuperGroupDTO> {
 
-    @Column(name = "id", updatable = false)
     @Id
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "name")
@@ -32,17 +31,22 @@ public class SuperGroup implements GEntity<SuperGroupDTO> {
     @Column(name = "email")
     private String email;
 
-    @JoinColumn(name = "description", nullable = false)
-    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "description")
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
-    public SuperGroup() {}
+    protected SuperGroup() {}
 
     public SuperGroup(SuperGroupDTO sg) {
         this.id = sg.getId();
         try {
             apply(sg);
         } catch (IDsNotMatchingException ignored) {}
+
+        if(this.id == null) {
+            this.id = UUID.randomUUID();
+        }
+
     }
 
     public void setId(UUID id) {
@@ -106,7 +110,7 @@ public class SuperGroup implements GEntity<SuperGroupDTO> {
 
     @Override
     public void apply(SuperGroupDTO sg) throws IDsNotMatchingException {
-        if(this.id != sg.getId()) {
+        if(this.id != null && this.id != sg.getId()) {
             throw new IDsNotMatchingException();
         }
 

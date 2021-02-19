@@ -44,6 +44,7 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) {
         this.miscBootstrap.runImageBootstrap();
+
         if (shouldRunBootstrap()) {
             LOGGER.info("No admin user, running Bootstrap...");
             try {

@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
 import it.chalmers.gamma.response.InvalidFileTypeResponse;
@@ -69,7 +70,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void removeUser(UUID id) throws UserNotFoundException {
+    public void removeUser(UserId id) throws UserNotFoundException {
         if(!this.userFinder.userExists(id)) {
             throw new UserNotFoundException();
         }
@@ -87,7 +88,7 @@ public class UserService implements UserDetailsService {
         this.setPassword(user.getId(), password);
     }
 
-    public void setPassword(UUID userId, String password) throws UserNotFoundException {
+    public void setPassword(UserId userId, String password) throws UserNotFoundException {
         User user = this.userFinder.getUserEntity(userId);
         user.setPassword(this.passwordEncoder.encode(password));
         this.userRepository.save(user);
@@ -125,7 +126,7 @@ public class UserService implements UserDetailsService {
         return this.passwordMatches(user.getId(), password);
     }
 
-    public boolean passwordMatches(UUID userId, String password) throws UserNotFoundException {
+    public boolean passwordMatches(UserId userId, String password) throws UserNotFoundException {
         User user = this.userFinder.getUserEntity(userId);
         return this.passwordEncoder.matches(password, user.getPassword());
     }

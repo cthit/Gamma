@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.usergdpr.service;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
@@ -35,7 +36,7 @@ public class UserGDPRService {
                 .collect(Collectors.toList());
     }
 
-    public void editGDPR(UUID userId, boolean gdprValue) throws UserNotFoundException {
+    public void editGDPR(UserId userId, boolean gdprValue) throws UserNotFoundException {
         UserDTO user = userFinder.getUser(userId);
 
         try {

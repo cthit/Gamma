@@ -2,6 +2,9 @@ package it.chalmers.gamma.domain.user.controller;
 
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.controller.response.*;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateUserRequest;
@@ -11,20 +14,10 @@ import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.user.controller.response.GetAllITUsersResponse;
-import it.chalmers.gamma.domain.user.controller.response.GetAllITUsersResponse.GetAllITUsersResponseObject;
-import it.chalmers.gamma.domain.user.controller.response.GetITUserResponse;
-import it.chalmers.gamma.domain.user.controller.response.GetITUserResponse.GetITUserResponseObject;
-import it.chalmers.gamma.domain.user.controller.response.PasswordChangedResponse;
-import it.chalmers.gamma.domain.user.controller.response.UserCreatedResponse;
-import it.chalmers.gamma.domain.user.controller.response.UserDeletedResponse;
-import it.chalmers.gamma.domain.user.controller.response.UserEditedResponse;
-import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
-import it.chalmers.gamma.domain.membership.service.MembershipService;
+import it.chalmers.gamma.domain.user.controller.response.GetAllUsersResponse.GetAllITUsersResponseObject;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -47,20 +40,23 @@ public final class UserAdminController {
     private final UserFinder userFinder;
     private final UserService userService;
     private final UserCreationService userCreationService;
-    private final MembershipService membershipService;
+    private final MembershipFinder membershipFinder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
-    public UserAdminController(UserFinder userFinder, UserService userService, UserCreationService userCreationService, MembershipService membershipService) {
+    public UserAdminController(UserFinder userFinder,
+                               UserService userService,
+                               UserCreationService userCreationService,
+                               MembershipFinder membershipFinder) {
         this.userFinder = userFinder;
         this.userService = userService;
         this.userCreationService = userCreationService;
-        this.membershipService = membershipService;
+        this.membershipFinder = membershipFinder;
     }
 
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
-            @PathVariable("id") UUID id,
+            @PathVariable("id") UserId id,
             @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -75,7 +71,7 @@ public final class UserAdminController {
     }
 
     @PutMapping("/{id}")
-    public UserEditedResponse editUser(@PathVariable("id") UUID id,
+    public UserEditedResponse editUser(@PathVariable("id") UserId id,
                                            @RequestBody EditITUserRequest request) {
         try {
             this.userService.editUser(requestToDTO(request, id));
@@ -87,7 +83,7 @@ public final class UserAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public UserDeletedResponse deleteUser(@PathVariable("id") UUID id) {
+    public UserDeletedResponse deleteUser(@PathVariable("id") UserId id) {
         try {
             this.userService.removeUser(id);
             return new UserDeletedResponse();
@@ -98,9 +94,9 @@ public final class UserAdminController {
     }
 
     @GetMapping("/{id}")
-    public GetITUserResponseObject getUser(@PathVariable("id") UUID id) {
+    public GetUserAdminResponse.GetUserAdminResponseObject getUser(@PathVariable("id") UserId id) {
         try {
-            return new GetITUserResponse(this.userFinder.getUserWithMemberships(id)).toResponseObject();
+            return new GetUserAdminResponse(this.membershipFinder.getUserWithMemberships(id)).toResponseObject();
         } catch (UserNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
@@ -109,12 +105,9 @@ public final class UserAdminController {
 
     @GetMapping()
     public GetAllITUsersResponseObject getAllUsers() {
-        return new GetAllITUsersResponse(this.userFinder.getUsersWithMembership()).toResponseObject();
+        return new GetAllUsersResponse(this.membershipFinder.getUsersWithMembership()).toResponseObject();
     }
 
-    /**
-     * Administrative function that can add user without need for user to add it personally.
-     */
     @PostMapping()
     public UserCreatedResponse addUser(
             @Valid @RequestBody AdminViewCreateUserRequest request, BindingResult result) {
@@ -137,7 +130,7 @@ public final class UserAdminController {
                 .build();
     }
 
-    protected UserDTO requestToDTO(EditITUserRequest request, UUID userId) {
+    protected UserDTO requestToDTO(EditITUserRequest request, UserId userId) {
         return new UserDTO.UserDTOBuilder()
                 .id(userId)
                 .nick(request.getNick())

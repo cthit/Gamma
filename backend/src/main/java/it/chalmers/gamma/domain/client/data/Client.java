@@ -24,36 +24,31 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "itclient")
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Client implements GEntity<ClientDTO> {
 
     @Id
-    @Column(updatable = false)
-    private UUID id;
-
-    @Column(name = "client_id", length = 256, nullable = false)
+    @Column(name = "client_id")
     private String clientId;
 
-    @Column(name = "client_secret", length = 256, nullable = false)
-    @JsonIgnore
+    @Column(name = "client_secret")
     private String clientSecret;
 
-    @Column(name = "web_server_redirect_uri", length = 256, nullable = false)
+    @Column(name = "web_server_redirect_uri")
     private String webServerRedirectUri;
 
-    @Column(name = "access_token_validity", nullable = false)
+    @Column(name = "access_token_validity")
     private int accessTokenValidity;
 
-    @Column(name = "refresh_token_validity", nullable = false)
+    @Column(name = "refresh_token_validity")
     private int refreshTokenValidity;
 
-    @Column(name = "auto_approve", nullable = false)
+    @Column(name = "auto_approve")
     private boolean autoApprove;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @JoinColumn(name = "description", nullable = false)
+    @JoinColumn(name = "description")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
@@ -62,15 +57,12 @@ public class Client implements GEntity<ClientDTO> {
     public Client(ClientDTO client) {
         try {
             apply(client);
-            if(id == null) {
-                this.id = client.getId();
-            }
         } catch (IDsNotMatchingException ignored) { }
     }
 
     @Override
     public void apply(ClientDTO c) throws IDsNotMatchingException {
-        if(this.id != c.getId()) {
+        if(this.clientId != null && !this.clientId.equals(c.getClientId())) {
             throw new IDsNotMatchingException();
         }
 
@@ -83,10 +75,6 @@ public class Client implements GEntity<ClientDTO> {
         this.name = c.getName();
         this.description = c.getDescription();
 
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public String getClientId() {
@@ -167,7 +155,6 @@ public class Client implements GEntity<ClientDTO> {
         return this.accessTokenValidity == client.accessTokenValidity
             && this.refreshTokenValidity == client.refreshTokenValidity
             && this.autoApprove == client.autoApprove
-            && Objects.equals(this.id, client.id)
             && Objects.equals(this.clientId, client.clientId)
             && Objects.equals(this.clientSecret, client.clientSecret)
             && Objects.equals(this.webServerRedirectUri, client.webServerRedirectUri)
@@ -178,7 +165,6 @@ public class Client implements GEntity<ClientDTO> {
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
                 this.clientId,
                 this.clientSecret,
                 this.webServerRedirectUri,
@@ -192,8 +178,7 @@ public class Client implements GEntity<ClientDTO> {
 
     @Override
     public String toString() {
-        return "ITClient{"
-                + "id=" + this.id
+        return "Client{"
                 + ", clientId='" + this.clientId + '\''
                 + ", clientSecret={redacted}'\''"
                 + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''

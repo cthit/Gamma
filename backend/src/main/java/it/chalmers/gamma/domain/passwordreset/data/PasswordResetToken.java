@@ -1,23 +1,25 @@
 package it.chalmers.gamma.domain.passwordreset.data;
 
+import it.chalmers.gamma.domain.user.UserId;
+
 import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset_token")
 public class PasswordResetToken {
+
     @Column(name = "token")
     private String token;
 
     @Id
-    @JoinColumn(name = "ituser")
-    private UUID userId;
+    @Column(name = "user_id")
+    private UserId userId;
 
     public PasswordResetToken() { }
 
@@ -29,11 +31,11 @@ public class PasswordResetToken {
         this.token = token;
     }
 
-    public UUID getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID user) {
+    public void setUserId(UserId user) {
         this.userId = user;
     }
 

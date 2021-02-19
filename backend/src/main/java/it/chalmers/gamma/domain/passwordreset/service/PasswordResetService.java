@@ -2,6 +2,8 @@ package it.chalmers.gamma.domain.passwordreset.service;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.passwordreset.exception.PasswordResetTokenNotFoundException;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.mail.MailSenderService;
 
 import it.chalmers.gamma.domain.passwordreset.data.PasswordResetToken;
@@ -14,8 +16,8 @@ import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.util.Optional;
-import java.util.UUID;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -59,7 +61,9 @@ public class PasswordResetService {
                 TokenUtils.CharacterTypes.NUMBERS
         );
 
-        this.removeToken(user);
+        try {
+            this.removeToken(user);
+        } catch (PasswordResetTokenNotFoundException ignored) { }
 
         this.addToken(user, token);
         this.sendMail(user, token);
@@ -84,13 +88,18 @@ public class PasswordResetService {
         this.repository.save(passwordResetToken);
     }
 
-    public boolean tokenMatchesUser(UUID userId, String token) {
-        Optional<PasswordResetToken> storedToken = this.repository.findByUserId(userId);
+    public boolean tokenMatchesUser(UserId userId, String token) {
+        Optional<PasswordResetToken> storedToken = this.repository.findById(userId);
         return storedToken.isPresent() && storedToken.get().getToken().equals(token);
     }
 
-    public void removeToken(UserDTO user) {
-        this.repository.deleteById(user.getId());
+    public void removeToken(UserDTO user) throws PasswordResetTokenNotFoundException {
+        try {
+
+            this.repository.deleteById(user.getId());
+        } catch(EmptyResultDataAccessException e) {
+            throw new PasswordResetTokenNotFoundException();
+        }
     }
 
 
@@ -99,11 +108,11 @@ public class PasswordResetService {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
-        this.mailSenderService.trySendingMail(user.getEmail().value, subject, message);
+        this.mailSenderService.trySendingMail(user.getEmail().get(), subject, message);
     }
 
     protected PasswordResetToken getPasswordResetToken(PasswordResetTokenDTO passwordResetTokenDTO) {
-        return this.repository.findById(passwordResetTokenDTO.getId()).orElse(null);
+        return this.repository.findById(passwordResetTokenDTO.getUserId()).orElse(null);
     }
 
 }

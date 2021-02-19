@@ -17,11 +17,15 @@ spring:
           use_jdbc_metadata_defaults: false
     hibernate:
       ddl-auto: none
+
   servlet:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
-
+  data:
+    redis:
+      repositories:
+        enabled: false
   thymeleaf:
     cache: false
     check-template: true
@@ -96,3 +100,4 @@ application:
   auth:
     accessTokenValidityTime: 3600
     refreshTokenValidityTime: 500000000
+

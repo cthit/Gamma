@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 
 public class ClientDTO implements ClientDetails {
 
-    private final UUID id;
     private final String clientId;
     @JsonIgnore
     private final String clientSecret;
@@ -32,8 +31,7 @@ public class ClientDTO implements ClientDetails {
     private final String name;
     private final Text description;
 
-    public ClientDTO(UUID id,
-                     String clientId,
+    public ClientDTO(String clientId,
                      String clientSecret,
                      String webServerRedirectUri,
                      int accessTokenValidity,
@@ -41,7 +39,6 @@ public class ClientDTO implements ClientDetails {
                      boolean autoApprove,
                      String name,
                      Text description) {
-        this.id = id;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.webServerRedirectUri = webServerRedirectUri;
@@ -50,10 +47,6 @@ public class ClientDTO implements ClientDetails {
         this.autoApprove = autoApprove;
         this.name = name;
         this.description = description;
-    }
-
-    public UUID getId() {
-        return this.id;
     }
 
     public String getWebServerRedirectUri() {
@@ -174,7 +167,6 @@ public class ClientDTO implements ClientDetails {
         return this.accessTokenValidity == itClient.accessTokenValidity
                 && this.refreshTokenValidity == itClient.refreshTokenValidity
                 && this.autoApprove == itClient.autoApprove
-                && Objects.equals(this.id, itClient.id)
                 && Objects.equals(this.clientId, itClient.clientId)
                 && Objects.equals(this.clientSecret, itClient.clientSecret)
                 && Objects.equals(this.webServerRedirectUri, itClient.webServerRedirectUri)
@@ -185,7 +177,6 @@ public class ClientDTO implements ClientDetails {
     @Override
     public int hashCode() {
         return Objects.hash(
-                this.id,
                 this.clientId,
                 this.clientSecret,
                 this.webServerRedirectUri,
@@ -200,7 +191,6 @@ public class ClientDTO implements ClientDetails {
     @Override
     public String toString() {
         return "ITClient{"
-                + "id=" + this.id
                 + ", clientId='" + this.clientId + '\''
                 + ", clientSecret={redacted}'\''"
                 + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''
@@ -214,7 +204,6 @@ public class ClientDTO implements ClientDetails {
 
     public static class ClientDTOBuilder {
 
-        private UUID id;
         private String clientId;
         private String clientSecret;
         private String webServerRedirectUri;
@@ -225,7 +214,6 @@ public class ClientDTO implements ClientDetails {
         private Text description;
 
         public ClientDTOBuilder from(ClientDTO c) {
-            this.id = c.getId();
             this.clientId = c.getClientId();
             this.clientSecret = c.getClientSecret();
             this.webServerRedirectUri = c.getWebServerRedirectUri();
@@ -234,11 +222,6 @@ public class ClientDTO implements ClientDetails {
             this.autoApprove = c.isAutoApprove();
             this.name = c.getName();
             this.description = c.getDescription();
-            return this;
-        }
-
-        public ClientDTOBuilder id(UUID id) {
-            this.id = id;
             return this;
         }
 
@@ -283,7 +266,7 @@ public class ClientDTO implements ClientDetails {
         }
 
         public ClientDTO build() {
-            return new ClientDTO(id,
+            return new ClientDTO(
                     clientId,
                     clientSecret,
                     webServerRedirectUri,

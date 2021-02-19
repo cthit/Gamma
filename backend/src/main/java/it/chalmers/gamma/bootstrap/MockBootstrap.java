@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.group.data.GroupDTO.GroupDTOBuilder;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
 import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
@@ -24,9 +22,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import org.slf4j.Logger;
@@ -154,15 +149,17 @@ public class MockBootstrap {
 
                 mockGroup.getMembers().forEach(mockMembership -> {
                     try {
-                        this.helper.getMembershipService().addUserToGroup(
+                        this.helper.getMembershipService().addMembership(
                                 new MembershipShallowDTO(
                                         mockMembership.getPostId(),
-                                        mockMembership.getUserId(),
+                                        mockGroup.getId(),
                                         mockMembership.getUnofficialPostName(),
-                                        mockGroup.getId()
+                                        mockMembership.getUserId()
                                 )
                         );
-                    } catch (GroupNotFoundException | PostNotFoundException | UserNotFoundException ignored) { }
+                    } catch (GroupNotFoundException | PostNotFoundException | UserNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 });
             } catch (GroupAlreadyExistsException e) {
                 LOGGER.error("Error creating group: " + group.getName() + "; Group already exists, skipping...");

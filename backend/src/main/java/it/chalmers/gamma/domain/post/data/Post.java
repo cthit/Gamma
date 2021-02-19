@@ -23,31 +23,37 @@ import javax.persistence.Table;
 public class Post implements GEntity<PostDTO> {
 
     @Id
-    @Column(updatable = false)
+    @Column(name = "id")
     private UUID id;
 
     @JoinColumn(name = "post_name")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text postName;
 
     @Column(name = "email_prefix")
     private String emailPrefix;
 
-    public Post() { }
+    protected Post() { }
 
     public Post(PostDTO p) {
         this.id = p.getId();
         try {
             apply(p);
         } catch (IDsNotMatchingException ignored) { }
+
+        if(this.id == null) {
+            this.id = UUID.randomUUID();
+        }
+
     }
 
     @Override
     public void apply(PostDTO p) throws IDsNotMatchingException {
-        if (this.id != p.getId()) {
+        if (this.id != null && this.id != p.getId()) {
             throw new IDsNotMatchingException();
         }
 
+        this.id = p.getId();
         this.postName = p.getPostName();
         this.emailPrefix = p.getEmailPrefix();
     }

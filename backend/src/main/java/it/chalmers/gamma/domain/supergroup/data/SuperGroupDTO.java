@@ -34,7 +34,7 @@ public class SuperGroupDTO {
                          GroupType type,
                          String email,
                          Text description) {
-        this(UUID.randomUUID(), name, prettyName, type, email, description);
+        this(null, name, prettyName, type, email, description);
     }
 
     public UUID getId() {

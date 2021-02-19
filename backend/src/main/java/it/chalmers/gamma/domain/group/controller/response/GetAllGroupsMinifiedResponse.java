@@ -2,6 +2,7 @@ package it.chalmers.gamma.domain.group.controller.response;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.group.data.GroupMinifiedDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

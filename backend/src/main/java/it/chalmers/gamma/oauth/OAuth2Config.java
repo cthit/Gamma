@@ -1,7 +1,7 @@
 package it.chalmers.gamma.oauth;
 
+import it.chalmers.gamma.domain.approval.service.UserApprovalStore;
 import it.chalmers.gamma.domain.client.service.ClientService;
-import it.chalmers.gamma.domain.approval.service.UserApprovalService;
 import it.chalmers.gamma.domain.user.service.UserService;
 
 import java.net.MalformedURLException;
@@ -46,7 +46,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Qualifier("clientDetailsService")
     private final ClientService clientDetailsService;
 
-    private final UserApprovalService userApprovalService;
+    private final UserApprovalStore userApprovalStore;
 
     @Value("${security.jwt.token.secret-key}")
     private String signingKey;
@@ -60,14 +60,15 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Value("${security.jwt.token.expire-length}")
     private long expiration;
 
-    public OAuth2Config(UserService userDetailsService, AuthenticationManager authenticationManager,
-                        ClientService clientDetailsService, UserApprovalService userApprovalService) {
+    public OAuth2Config(UserService userDetailsService,
+                        AuthenticationManager authenticationManager,
+                        ClientService clientDetailsService,
+                        UserApprovalStore userApprovalStore) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.clientDetailsService = clientDetailsService;
-        this.userApprovalService = userApprovalService;
+        this.userApprovalStore = userApprovalStore;
     }
-
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer configurer) {
@@ -77,7 +78,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .accessTokenConverter(accessTokenConverter())
                 .authenticationManager(this.authenticationManager)
                 .userDetailsService(this.userDetailsService)
-                .approvalStore(this.userApprovalService);
+                .approvalStore(this.userApprovalStore);
     }
 
     @Override

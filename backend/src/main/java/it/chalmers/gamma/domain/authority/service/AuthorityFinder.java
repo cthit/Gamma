@@ -17,6 +17,7 @@ import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -96,7 +97,7 @@ public class AuthorityFinder {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthorityLevelName> getGrantedAuthorities(UUID userId) throws UserNotFoundException {
+    public List<AuthorityLevelName> getGrantedAuthorities(UserId userId) throws UserNotFoundException {
         return this.getAuthorityLevels(this.membershipFinder.getMembershipsByUser(userId));
     }
 

@@ -64,7 +64,7 @@ public final class GroupController {
 
     @GetMapping("/active")
     public GetActiveGroupResponseObject getActiveGroups() {
-        return new GetActiveGroupsResponse(this.groupFinder.getActiveGroupsWithMembers()).toResponseObject();
+        return new GetActiveGroupsResponse(this.membershipFinder.getActiveGroupsWithMemberships()).toResponseObject();
     }
 
 }

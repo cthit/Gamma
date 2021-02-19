@@ -1,27 +1,29 @@
-package it.chalmers.gamma.domain.user.data;
+package it.chalmers.gamma.domain.membership.data;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
+import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
 
 import java.util.List;
 
-public class UserRestrictedWithGroupsDTO {
+public class UserWithGroupsDTO {
 
     @JsonUnwrapped
-    private final UserRestrictedDTO user;
-    private final List<UserGroup> groups;
+    private final UserDTO user;
+    private final List<UserWithGroupsDTO.UserGroup> groups;
 
-    public UserRestrictedWithGroupsDTO(UserRestrictedDTO user, List<UserGroup> groups) {
+    public UserWithGroupsDTO(UserDTO user, List<UserWithGroupsDTO.UserGroup> groups) {
         this.user = user;
         this.groups = groups;
     }
 
-    public UserRestrictedDTO getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public List<UserGroup> getGroups() {
+    public List<UserWithGroupsDTO.UserGroup> getGroups() {
         return groups;
     }
 
@@ -42,4 +44,5 @@ public class UserRestrictedWithGroupsDTO {
             return group;
         }
     }
+
 }

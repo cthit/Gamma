@@ -19,29 +19,16 @@ public class ClientFinder {
         this.clientRepository = clientRepository;
     }
 
-    public boolean clientExists(UUID id) {
-        return this.clientRepository.existsById(id);
-    }
-
-    public boolean clientExistsByClientId(String clientId) {
-        return this.clientRepository.existsByClientId(clientId);
+    public boolean clientExists(String clientId) {
+        return this.clientRepository.existsById(clientId);
     }
 
     public List<ClientDTO> getClients() {
         return this.clientRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public ClientDTO getClient(UUID id) throws ClientNotFoundException {
-        return this.toDTO(getClientEntity(id));
-    }
-
     public ClientDTO getClient(String clientId) throws ClientNotFoundException {
         return toDTO(getClientEntity(clientId));
-    }
-
-    protected Client getClientEntity(UUID id) throws ClientNotFoundException {
-        return this.clientRepository.findById(id)
-                .orElseThrow(ClientNotFoundException::new);
     }
 
     protected Client getClientEntity(ClientDTO client) throws ClientNotFoundException {
@@ -49,13 +36,12 @@ public class ClientFinder {
     }
 
     public Client getClientEntity(String clientId) throws ClientNotFoundException {
-        return this.clientRepository.findByClientId(clientId)
+        return this.clientRepository.findById(clientId)
                 .orElseThrow(ClientNotFoundException::new);
     }
 
     protected ClientDTO toDTO(Client client) {
         return new ClientDTO.ClientDTOBuilder()
-                .id(client.getId())
                 .clientId(client.getClientId())
                 .clientSecret(client.getClientSecret())
                 .webServerRedirectUri(client.getWebServerRedirectUri())

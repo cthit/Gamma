@@ -1,11 +1,7 @@
 package it.chalmers.gamma.domain.post.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.group.data.GroupWithMembersDTO;
-import it.chalmers.gamma.domain.membership.data.MembershipRestrictedDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.membership.service.MembershipService;
 import it.chalmers.gamma.domain.post.controller.response.*;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
@@ -13,14 +9,11 @@ import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.service.PostService;
 import it.chalmers.gamma.domain.post.controller.request.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.group.controller.response.GetGroupResponse;
 import it.chalmers.gamma.domain.post.controller.response.GetPostUsagesResponse.GetPostUsagesResponseObject;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.List;
 import java.util.UUID;
 
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -42,12 +35,14 @@ public final class PostAdminController {
 
     private final PostService postService;
     private final PostFinder postFinder;
+    private final MembershipFinder membershipFinder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostAdminController.class);
 
-    public PostAdminController(PostService postService, PostFinder postFinder) {
+    public PostAdminController(PostService postService, PostFinder postFinder, MembershipFinder membershipFinder) {
         this.postService = postService;
         this.postFinder = postFinder;
+        this.membershipFinder = membershipFinder;
     }
 
     /**
@@ -101,6 +96,6 @@ public final class PostAdminController {
 
     @GetMapping("/{id}/usage")
     public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") UUID postId) {
-        return new GetPostUsagesResponse(this.postFinder.getPostUsages(postId)).toResponseObject();
+        return new GetPostUsagesResponse(this.membershipFinder.getPostUsages(postId)).toResponseObject();
     }
 }

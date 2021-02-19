@@ -17,8 +17,10 @@ public class NoAccountMembershipPK implements Serializable {
     @Column(name = "user_name")
     private String user;
 
-    @JoinColumn(name = "fkit_group_id")
+    @Column(name = "fkit_group_id")
     private UUID groupId;
+
+    protected NoAccountMembershipPK() {}
 
     public NoAccountMembershipPK(String user, UUID groupId) {
         this.user = user;
@@ -42,6 +44,14 @@ public class NoAccountMembershipPK implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "NoAccountMembershipPK{" +
+                "user='" + user + '\'' +
+                ", groupId=" + groupId +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -52,13 +62,5 @@ public class NoAccountMembershipPK implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(user, groupId);
-    }
-
-    @Override
-    public String toString() {
-        return "NoAccountMembershipPK{" +
-                "user='" + user + '\'' +
-                ", groupId=" + groupId +
-                '}';
     }
 }

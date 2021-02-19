@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.persistence.*;
 
@@ -15,11 +14,10 @@ public class Membership implements GEntity<MembershipShallowDTO> {
     @EmbeddedId
     private MembershipPK id;
 
-    @Column(name = "post_id")
-    private UUID postId;
-
     @Column(name = "unofficial_post_name")
     private String unofficialPostName;
+
+    protected Membership() {}
 
     public Membership(MembershipShallowDTO membership) {
         try {
@@ -43,14 +41,6 @@ public class Membership implements GEntity<MembershipShallowDTO> {
 
     public void setUnofficialPostName(String unofficialPostName) {
         this.unofficialPostName = unofficialPostName;
-    }
-
-    public UUID getPostId() {
-        return postId;
-    }
-
-    public void setPostId(UUID postId) {
-        this.postId = postId;
     }
 
     @Override
@@ -81,12 +71,16 @@ public class Membership implements GEntity<MembershipShallowDTO> {
 
     @Override
     public void apply(MembershipShallowDTO m) throws IDsNotMatchingException {
-        if(this.id.getGroupId() != m.getGroupId()
-            || this.id.getUserId() != m.getUserId()) {
+        if(this.id != null
+                && (this.id.getGroupId() != m.getGroupId()
+                    || this.id.getUserId() != m.getUserId()
+                    || this.id.getPostId() != m.getPostId())
+        ) {
             throw new IDsNotMatchingException();
         }
 
+        this.id = new MembershipPK(m.getPostId(), m.getGroupId(), m.getUserId());
+
         this.unofficialPostName = m.getUnofficialPostName();
-        this.postId = m.getPostId();
     }
 }

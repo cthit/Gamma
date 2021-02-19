@@ -4,6 +4,7 @@ import it.chalmers.gamma.domain.group.data.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.controller.response.GetActiveGroupsResponse;
 import it.chalmers.gamma.domain.group.controller.response.GetActiveGroupsResponse.GetActiveGroupResponseObject;
+import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
@@ -34,19 +35,14 @@ public class SuperGroupController {
 
     private final SuperGroupFinder superGroupFinder;
     private final GroupFinder groupFinder;
-    private final SuperGroupService superGroupService;
-    private final MembershipService membershipService;
-    private final GroupService groupService;
+    private final MembershipFinder membershipFinder;
 
     public SuperGroupController(SuperGroupFinder superGroupFinder,
-                                GroupFinder groupFinder, SuperGroupService superGroupService,
-                                MembershipService membershipService,
-                                GroupService groupService) {
+                                GroupFinder groupFinder,
+                                MembershipFinder membershipFinder) {
         this.superGroupFinder = superGroupFinder;
         this.groupFinder = groupFinder;
-        this.superGroupService = superGroupService;
-        this.membershipService = membershipService;
-        this.groupService = groupService;
+        this.membershipFinder = membershipFinder;
     }
 
     @GetMapping("/{id}/subgroups")
@@ -82,7 +78,7 @@ public class SuperGroupController {
     public GetActiveGroupResponseObject getActiveGroup(@PathVariable("id") UUID superGroupId) {
         try {
             return new GetActiveGroupsResponse(
-                    this.groupFinder.getActiveGroupsWithMembersBySuperGroup(superGroupId)
+                    this.membershipFinder.getActiveGroupsWithMembershipsBySuperGroup(superGroupId)
             ).toResponseObject();
         } catch (SuperGroupNotFoundException e) {
             LOGGER.error("SUPER GROUP NOT FOUND", e);

@@ -23,10 +23,6 @@ public class UserApproval {
         return this.id;
     }
 
-    public UserApprovalDTO toDTO() {
-        return new UserApprovalDTO(this.id.getUser(), this.id.getClient());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

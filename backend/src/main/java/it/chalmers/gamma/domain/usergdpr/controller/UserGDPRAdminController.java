@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.usergdpr.controller;
 
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
@@ -34,7 +35,7 @@ public class UserGDPRAdminController {
     }
 
     @PutMapping("/{id}")
-    public GDPRStatusEditedResponse editGDPRStatus(@PathVariable("id") UUID id,
+    public GDPRStatusEditedResponse editGDPRStatus(@PathVariable("id") UserId id,
                                                    @Valid @RequestBody ChangeGDPRStatusRequest request,
                                                    BindingResult result) {
         if (result.hasErrors()) {

@@ -42,6 +42,7 @@ logging:
         web: ${WEB_DEBUG_LEVEL:WARN}
       hibernate: ${HIBERNATE_DEBUG_LEVEL:ERROR}
 
+
 security:
   jwt:
     token:

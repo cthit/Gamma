@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.approval.controller;
 
+import it.chalmers.gamma.domain.approval.service.UserApprovalFinder;
 import it.chalmers.gamma.domain.approval.service.UserApprovalService;
 import it.chalmers.gamma.domain.approval.response.GetUserApprovalsResponse;
 import it.chalmers.gamma.domain.client.service.ClientService;
@@ -22,17 +23,22 @@ public class UserApprovalAdminController {
     private final UserFinder userFinder;
     private final UserApprovalService userApprovalService;
     private final ClientService clientService;
+    private final UserApprovalFinder userApprovalFinder;
 
-    public UserApprovalAdminController(UserFinder userFinder, UserApprovalService userApprovalService, ClientService clientService) {
+    public UserApprovalAdminController(UserFinder userFinder,
+                                       UserApprovalService userApprovalService,
+                                       ClientService clientService,
+                                       UserApprovalFinder userApprovalFinder) {
         this.userFinder = userFinder;
         this.userApprovalService = userApprovalService;
         this.clientService = clientService;
+        this.userApprovalFinder = userApprovalFinder;
     }
 
     @GetMapping("/{clientId}")
     public GetUserApprovalsResponse getApprovalsByClientId(@PathVariable("clientId") String clientId) {
         return new GetUserApprovalsResponse(
-                this.userApprovalService.getApprovalsByClientId(clientId)
+                this.userApprovalFinder.getApprovalsByClientId(clientId)
                         .stream()
                         .map(userApproval -> {
                             try {

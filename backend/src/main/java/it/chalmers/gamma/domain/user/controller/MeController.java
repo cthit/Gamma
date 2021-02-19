@@ -3,9 +3,9 @@ package it.chalmers.gamma.domain.user.controller;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.membership.data.MembershipDTO;
+import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.requests.ChangeUserPassword;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.request.DeleteMeRequest;
@@ -24,8 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users/me")
@@ -36,20 +34,26 @@ public class MeController {
     private final UserService userService;
     private final UserFinder userFinder;
     private final MembershipFinder membershipFinder;
+    private final AuthorityFinder authorityFinder;
 
     public MeController(UserService userService,
                         UserFinder userFinder,
-                        MembershipFinder membershipFinder) {
+                        MembershipFinder membershipFinder,
+                        AuthorityFinder authorityFinder) {
         this.userService = userService;
         this.userFinder = userFinder;
         this.membershipFinder = membershipFinder;
+        this.authorityFinder = authorityFinder;
     }
 
     @GetMapping()
-    public GetITUserResponse.GetITUserResponseObject getMe(Principal principal) {
+    public GetMeResponse.GetMeResponseObject getMe(Principal principal) {
         try {
-            return new GetITUserResponse(
-                    this.userFinder.getUserWithMemberships(new Cid(principal.getName()))
+            UserId userId = this.userFinder.getUser(new Cid(principal.getName())).getId();
+
+            return new GetMeResponse(
+                    this.membershipFinder.getUserRestrictedWithMemberships(userId),
+                    this.authorityFinder.getGrantedAuthorities(userId)
             ).toResponseObject();
         } catch (UserNotFoundException e) {
             LOGGER.error("Signed in user doesn't exist, maybe deleted?", e);

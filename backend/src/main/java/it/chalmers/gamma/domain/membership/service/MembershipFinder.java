@@ -1,18 +1,19 @@
 package it.chalmers.gamma.domain.membership.service;
 
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.group.data.GroupBaseDTO;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
-import it.chalmers.gamma.domain.membership.data.Membership;
-import it.chalmers.gamma.domain.membership.data.MembershipRepository;
-import it.chalmers.gamma.domain.membership.data.MembershipDTO;
-import it.chalmers.gamma.domain.membership.data.MembershipRestrictedDTO;
-import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
+import it.chalmers.gamma.domain.membership.data.*;
 import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
-import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
+import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.domain.membership.data.UserRestrictedWithGroupsDTO;
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import org.slf4j.LoggerFactory;
@@ -54,10 +55,6 @@ public class MembershipFinder {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipDTO> getMembershipsInGroup(GroupDTO group) {
-        return this.getMembershipsInGroup(group.getId());
-    }
-
     public List<MembershipRestrictedDTO> getRestrictedMembershipsInGroup(UUID groupId) {
         return getMembershipsInGroup(groupId)
                 .stream()
@@ -67,28 +64,6 @@ public class MembershipFinder {
 
     public List<MembershipRestrictedDTO> getRestrictedMembershipsInGroup(GroupDTO group) {
         return getRestrictedMembershipsInGroup(group.getId());
-    }
-
-    public List<Membership> getMembershipsByPost(PostDTO post) {
-        return this.membershipRepository.findAllById_PostId(post.getId());
-    }
-
-
-    /**
-     * gets which groups a user is a part of.
-     *
-     * @param user which user which group memberships should be queried
-     * @return The UUIDs of the groups the user is a part of
-     */
-    public List<GroupDTO> getUsersGroupDTO(UserDTO user) {
-        List<Membership> memberships = this.membershipRepository.findAllById_UserId(
-                user.getId()
-        );
-
-        return memberships.stream()
-                .map(m -> this.getGroup(m.getId().getGroupId()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
     }
 
     public List<MembershipRestrictedDTO> getUserByGroupAndPost(UUID groupId, UUID postId) {
@@ -123,11 +98,7 @@ public class MembershipFinder {
         return null;
     }
 
-    public List<MembershipDTO> getMembershipsByUser(UserDTO user) throws UserNotFoundException {
-        return this.getMembershipsByUser(user.getId());
-    }
-
-    public List<MembershipDTO> getMembershipsByUser(UUID userId) throws UserNotFoundException {
+    public List<MembershipDTO> getMembershipsByUser(UserId userId) throws UserNotFoundException {
         if(!this.userFinder.userExists(userId)) {
             throw new UserNotFoundException();
         }
@@ -137,13 +108,79 @@ public class MembershipFinder {
         return memberships.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    public MembershipDTO getMembershipByUserAndGroup(UserDTO user, GroupDTO group) throws MembershipNotFoundException {
-        return toDTO(this.getMembershipEntityByUserAndGroup(user.getId(), group.getId()));
+    protected Membership getMembershipEntityByUserGroupPost(UserId userId, UUID groupId, UUID postId) throws MembershipNotFoundException {
+        return this.membershipRepository.findById(new MembershipPK(postId, groupId, userId))
+                .orElseThrow(MembershipNotFoundException::new);
     }
 
-    protected Membership getMembershipEntityByUserAndGroup(UUID userId, UUID groupId) throws MembershipNotFoundException {
-        return this.membershipRepository.findById_UserIdAndId_GroupId(userId, groupId)
-                .orElseThrow(MembershipNotFoundException::new);
+
+    public List<MembershipsPerGroupDTO> getActiveGroupsWithMemberships() {
+        return this.groupFinder.getGroups()
+                .stream()
+                .filter(GroupBaseDTO::isActive)
+                .map(this::withMembers)
+                .collect(Collectors.toList());
+    }
+
+    public List<MembershipsPerGroupDTO> getActiveGroupsWithMembershipsBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+        return this.getGroupsWithMembershipsBySuperGroup(superGroupId)
+                .stream()
+                .filter(groupWithMembers -> groupWithMembers.getGroup().isActive())
+                .collect(Collectors.toList());
+    }
+
+    public List<MembershipsPerGroupDTO> getGroupsWithMembershipsBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+        return this.groupFinder.getGroupsBySuperGroup(superGroupId)
+                .stream()
+                .map(this::withMembers)
+                .collect(Collectors.toList());
+    }
+
+    public MembershipsPerGroupDTO withMembers(GroupDTO group) {
+        return new MembershipsPerGroupDTO(group, this.getRestrictedMembershipsInGroup(group));
+    }
+
+
+    public List<UserRestrictedWithGroupsDTO> getUsersWithMembership() {
+        return this.userFinder.getUsers()
+                .stream()
+                .map(user -> {
+                    try {
+                        return this.toWithGroupsRestricted(new UserRestrictedDTO(user));
+                    } catch (UserNotFoundException ignored) {
+                        //ignored since we're going directly from every user
+                        return new UserRestrictedWithGroupsDTO(new UserRestrictedDTO(user), new ArrayList<>());
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    public UserRestrictedWithGroupsDTO getUserRestrictedWithMemberships(Cid cid) throws UserNotFoundException {
+        return this.toWithGroupsRestricted(new UserRestrictedDTO(this.userFinder.getUser(cid)));
+    }
+
+    public UserRestrictedWithGroupsDTO getUserRestrictedWithMemberships(UserId id) throws UserNotFoundException {
+        return this.toWithGroupsRestricted(new UserRestrictedDTO(this.userFinder.getUser(id)));
+    }
+
+    public UserWithGroupsDTO getUserWithMemberships(UserId id) throws UserNotFoundException {
+        return this.toWithGroups(this.userFinder.getUser(id));
+    }
+
+    private UserWithGroupsDTO toWithGroups(UserDTO user) throws UserNotFoundException {
+        return new UserWithGroupsDTO(user,
+                this.getMembershipsByUser(user.getId())
+                        .stream()
+                        .map(membership -> new UserWithGroupsDTO.UserGroup(membership.getPost(), membership.getGroup()))
+                        .collect(Collectors.toList()));
+    }
+
+    private UserRestrictedWithGroupsDTO toWithGroupsRestricted(UserRestrictedDTO user) throws UserNotFoundException {
+        return new UserRestrictedWithGroupsDTO(user,
+                this.getMembershipsByUser(user.getId())
+                        .stream()
+                        .map(membership -> new UserRestrictedWithGroupsDTO.UserGroup(membership.getPost(), membership.getGroup()))
+                        .collect(Collectors.toList()));
     }
 
     private MembershipDTO toDTO(Membership membership) {
@@ -151,7 +188,7 @@ public class MembershipFinder {
             return new MembershipDTO.MembershipDTOBuilder()
                     .group(this.groupFinder.getGroup(membership.getId().getGroupId()))
                     .user(this.userFinder.getUser(membership.getId().getUserId()))
-                    .post(this.postFinder.getPost(membership.getPostId()))
+                    .post(this.postFinder.getPost(membership.getId().getPostId()))
                     .unofficialPostName(membership.getUnofficialPostName())
                     .build();
         } catch (GroupNotFoundException | UserNotFoundException | PostNotFoundException e) {
@@ -160,16 +197,15 @@ public class MembershipFinder {
         }
     }
 
-    private MembershipRestrictedDTO toRestrictedDTO(Membership membership) {
-        return new MembershipRestrictedDTO(toDTO(membership));
+    public List<MembershipsPerGroupDTO> getPostUsages(UUID postId) {
+        List<GroupDTO> groups = this.getGroupsWithPost(postId);
+        return groups.stream()
+                .map(group -> new MembershipsPerGroupDTO(group, this.getUserByGroupAndPost(group.getId(), postId)))
+                .collect(Collectors.toList());
     }
 
-    public MembershipDTO fromShallow(MembershipShallowDTO membership) throws PostNotFoundException, GroupNotFoundException, UserNotFoundException {
-        return new MembershipDTO.MembershipDTOBuilder()
-                .post(postFinder.getPost(membership.getPostId()))
-                .group(groupFinder.getGroup(membership.getGroupId()))
-                .user(userFinder.getUser(membership.getUserId()))
-                .unofficialPostName(membership.getUnofficialPostName())
-                .build();
+    private MembershipRestrictedDTO toRestrictedDTO(Membership membership) {
+        return new MembershipRestrictedDTO(Objects.requireNonNull(toDTO(membership)));
     }
+
 }

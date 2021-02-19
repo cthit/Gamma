@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.group.data.GroupWithMembersDTO;
+import it.chalmers.gamma.domain.membership.data.MembershipsPerGroupDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -10,13 +10,13 @@ import java.util.List;
 public class GetActiveGroupsWithMembersResponse {
 
     @JsonUnwrapped
-    private final List<GroupWithMembersDTO> groups;
+    private final List<MembershipsPerGroupDTO> groups;
 
-    public GetActiveGroupsWithMembersResponse(List<GroupWithMembersDTO> groups) {
+    public GetActiveGroupsWithMembersResponse(List<MembershipsPerGroupDTO> groups) {
         this.groups = groups;
     }
 
-    public List<GroupWithMembersDTO> getGroups() {
+    public List<MembershipsPerGroupDTO> getGroups() {
         return groups;
     }
 

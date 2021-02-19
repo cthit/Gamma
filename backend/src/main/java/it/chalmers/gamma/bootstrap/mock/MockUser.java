@@ -1,22 +1,24 @@
 package it.chalmers.gamma.bootstrap.mock;
 
+import it.chalmers.gamma.domain.user.UserId;
+
 import java.time.Year;
 import java.util.UUID;
 
 public class MockUser {
 
-    private UUID id;
+    private UserId id;
     private String cid;
     private String nick;
     private String firstName;
     private String lastName;
     private Year acceptanceYear;
 
-    public UUID getId() {
+    public UserId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(UserId id) {
         this.id = id;
     }
 

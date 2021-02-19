@@ -2,24 +2,21 @@ package it.chalmers.gamma.domain.user.controller;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.controller.response.*;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.user.service.UserService;
-import it.chalmers.gamma.filter.JwtAuthenticationFilter;
 import it.chalmers.gamma.domain.user.controller.request.CreateITUserRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.user.controller.response.GetAllITUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject;
-import it.chalmers.gamma.domain.membership.service.MembershipService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.IOException;
 import java.time.Year;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -40,20 +37,17 @@ import org.springframework.web.bind.annotation.RestController;
 public final class UserController {
 
     private final UserFinder userFinder;
-    private final UserService userService;
     private final UserCreationService userCreationService;
-    private final MembershipService membershipService;
+    private final MembershipFinder membershipFinder;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserFinder userFinder,
-                          UserService userService,
                           UserCreationService userCreationService,
-                          MembershipService membershipService) {
+                          MembershipFinder membershipFinder) {
         this.userFinder = userFinder;
-        this.userService = userService;
+        this.membershipFinder = membershipFinder;
         this.userCreationService = userCreationService;
-        this.membershipService = membershipService;
     }
 
     @PostMapping("/create")
@@ -74,15 +68,10 @@ public final class UserController {
         return new UserCreatedResponse();
     }
 
-    @GetMapping("/minified")
-    public GetAllITUsersMinifiedResponseObject getAllUserMini() {
-        return new GetAllITUsersMinifiedResponse(this.userFinder.getUsersRestricted()).toResponseObject();
-    }
-
     @GetMapping("/{id}")
-    public GetITUserRestrictedResponse.GetITUserRestrictedResponseObject getUser(@PathVariable("id") UUID id) {
+    public GetUserRestrictedResponse.GetITUserRestrictedResponseObject getUser(@PathVariable("id") UserId id) {
         try {
-            return new GetITUserRestrictedResponse(this.userFinder.getUserWithMemberships(id))
+            return new GetUserRestrictedResponse(this.membershipFinder.getUserRestrictedWithMemberships(id))
                     .toResponseObject();
         } catch (UserNotFoundException e) {
             LOGGER.error("User not found", e);
@@ -91,7 +80,7 @@ public final class UserController {
     }
 
     @GetMapping("/{id}/avatar")
-    public void getUserAvatar(@PathVariable("id") UUID id, HttpServletResponse response) throws IOException {
+    public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {
         try {
             UserDTO user = this.userFinder.getUser(id);
             response.sendRedirect(user.getAvatarUrl());
@@ -103,6 +92,7 @@ public final class UserController {
 
     private UserDTO requestToDTO(CreateITUserRequest request) {
         return new UserDTO.UserDTOBuilder()
+                .activated(true)
                 .userAgreement(request.isUserAgreement())
                 .email(new Email(request.getEmail()))
                 .language(request.getLanguage())

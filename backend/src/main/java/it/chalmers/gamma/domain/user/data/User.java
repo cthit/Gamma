@@ -1,84 +1,67 @@
 package it.chalmers.gamma.domain.user.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.user.UserId;
 
-import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.ColumnDefault;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "ituser")
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User implements GEntity<UserDTO> {
 
-    @Id
-    @Column(updatable = false)
-    @JsonIgnore
-    private UUID id;
+    @EmbeddedId
+    private UserId id;
 
-    @Column(name = "cid", length = 10, nullable = false, unique = true)
+    @Column(name = "cid")
     private String cid;
 
-    @JsonIgnore
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "nick", length = 50)
+    @Column(name = "nick")
     private String nick;
 
-    @Column(name = "first_name", length = 50)
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name", length = 50)
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email", length = 100)
-    private String email;
+    @Embedded
+    private Email email;
 
-    @Column(name = "phone", length = 15)
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "language", length = 15, nullable = false)
+    @Column(name = "language")
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    @Column(name = "avatar_url", length = 255, nullable = false)
-    @ColumnDefault("default.jpg")
+    @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "gdpr", nullable = false)
-    @ColumnDefault("false")
+    @Column(name = "gdpr")
     private boolean gdpr;
 
-    @Column(name = "user_agreement", nullable = false)
-    @ColumnDefault("false")
+    @Column(name = "user_agreement")
     private boolean userAgreement;
 
-    @Column(name = "account_locked", nullable = false)
-    @ColumnDefault("false")
+    @Column(name = "account_locked")
     private boolean accountLocked;
 
-    @Column(name = "activated", nullable = false)
+    @Column(name = "activated")
     private boolean activated;
 
-    @Column(name = "acceptance_year", nullable = false)
+    @Column(name = "acceptance_year")
     private int acceptanceYear;
 
-    public User() { }
+    protected User() { }
 
     public User(UserDTO user) {
         try {
@@ -86,13 +69,17 @@ public class User implements GEntity<UserDTO> {
         } catch (IDsNotMatchingException e) {
             e.printStackTrace();
         }
+
+        if(this.id == null) {
+            this.id = new UserId(UUID.randomUUID());
+        }
     }
 
-    public UUID getId() {
+    public UserId getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(UserId id) {
         this.id = id;
     }
 
@@ -136,11 +123,11 @@ public class User implements GEntity<UserDTO> {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Email email) {
         this.email = email;
     }
 
@@ -250,38 +237,41 @@ public class User implements GEntity<UserDTO> {
                 this.acceptanceYear);
     }
 
+
     @Override
     public String toString() {
-        return "ITUser{"
-                + "id=" + id
-                + ", cid='" + cid + '\''
-                + ", password='" + "<redacted>" + '\''
-                + ", nick='" + nick + '\''
-                + ", firstName='" + firstName + '\''
-                + ", lastName='" + lastName + '\''
-                + ", email='" + email + '\''
-                + ", phone='" + phone + '\''
-                + ", language=" + language
-                + ", avatarUrl='" + avatarUrl + '\''
-                + ", gdpr=" + gdpr
-                + ", userAgreement=" + userAgreement
-                + ", accountLocked=" + accountLocked
-                + ", acceptanceYear=" + acceptanceYear
-                + '}';
+        return "User{" +
+                "id=" + id +
+                ", cid='" + cid + '\'' +
+                ", password='" + password + '\'' +
+                ", nick='" + nick + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", language=" + language +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", gdpr=" + gdpr +
+                ", userAgreement=" + userAgreement +
+                ", accountLocked=" + accountLocked +
+                ", activated=" + activated +
+                ", acceptanceYear=" + acceptanceYear +
+                '}';
     }
 
     @Override
     public void apply(UserDTO u) throws IDsNotMatchingException {
-        if(this.id != u.getId()) {
+        if(this.id != null && this.id != u.getId()) {
             throw new IDsNotMatchingException();
         }
 
+        this.id = u.getId();
         this.acceptanceYear = u.getAcceptanceYear().getValue();
         this.activated = u.isActivated();
         this.avatarUrl = u.getAvatarUrl();
         this.accountLocked = u.isAccountLocked();
         this.cid = u.getCid().value;
-        this.email = u.getEmail().value;
+        this.email = u.getEmail();
         this.firstName = u.getFirstName();
         this.lastName = u.getLastName();
         this.gdpr = u.isGdpr();

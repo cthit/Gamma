@@ -76,8 +76,8 @@ public class ClientAdminController {
         return new GetAllClientsResponse(this.clientFinder.getClients()).toResponseObject();
     }
 
-    @GetMapping("/{id}")
-    public GetClientResponseObject getClient(@PathVariable("id") UUID id) {
+    @GetMapping("/{clientId}")
+    public GetClientResponseObject getClient(@PathVariable("clientId") String id) {
         try {
             return new GetClientResponse(this.clientFinder.getClient(id)).toResponseObject();
         } catch (ClientNotFoundException e) {
@@ -86,8 +86,8 @@ public class ClientAdminController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ClientRemovedResponse removeClient(@PathVariable("id") UUID id) {
+    @DeleteMapping("/{clientId}")
+    public ClientRemovedResponse removeClient(@PathVariable("clientId") String id) {
         try {
             this.clientService.removeClient(id);
             return new ClientRemovedResponse();
@@ -97,10 +97,10 @@ public class ClientAdminController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ClientEditedResponse editClient(@PathVariable("id") UUID id, @RequestBody AddOrEditClientRequest request) {
+    @PutMapping("/{clientId}")
+    public ClientEditedResponse editClient(@PathVariable("clientId") String clientId, @RequestBody AddOrEditClientRequest request) {
         try {
-            this.clientService.editClient(requestToDTO(request, id));
+            this.clientService.editClient(requestToDTO(request, clientId));
             return new ClientEditedResponse();
         } catch (IDsNotMatchingException | ClientNotFoundException e) {
             LOGGER.error("Client not found", e);
@@ -112,13 +112,13 @@ public class ClientAdminController {
         return this.requestToDTO(request, null);
     }
 
-    private ClientDTO requestToDTO(AddOrEditClientRequest request, UUID id) {
+    private ClientDTO requestToDTO(AddOrEditClientRequest request, String clientId) {
         return new ClientDTO.ClientDTOBuilder()
+                .clientId(clientId)
                 .webServerRedirectUri(request.getWebServerRedirectUri())
                 .name(request.getName())
                 .autoApprove(request.isAutoApprove())
                 .description(request.getDescription())
-                .id(id)
                 .build();
     }
 

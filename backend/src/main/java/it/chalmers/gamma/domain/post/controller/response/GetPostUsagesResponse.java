@@ -1,23 +1,23 @@
 package it.chalmers.gamma.domain.post.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.group.controller.response.GetGroupResponse;
+
 import java.util.List;
 
-import it.chalmers.gamma.domain.group.data.GroupWithMembersDTO;
+import it.chalmers.gamma.domain.membership.data.MembershipsPerGroupDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetPostUsagesResponse {
 
     @JsonValue
-    private final List<GroupWithMembersDTO> groups;
+    private final List<MembershipsPerGroupDTO> groups;
 
-    public GetPostUsagesResponse(List<GroupWithMembersDTO> groups) {
+    public GetPostUsagesResponse(List<MembershipsPerGroupDTO> groups) {
         this.groups = groups;
     }
 
-    public List<GroupWithMembersDTO> getGroups() {
+    public List<MembershipsPerGroupDTO> getGroups() {
         return groups;
     }
 

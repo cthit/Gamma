@@ -1,18 +1,20 @@
 package it.chalmers.gamma.bootstrap.mock;
 
+import it.chalmers.gamma.domain.user.UserId;
+
 import java.util.UUID;
 
 public class MockMembership {
 
-    private UUID userId;
+    private UserId userId;
     private UUID postId;
     private String unofficialPostName;
 
-    public UUID getUserId() {
+    public UserId getUserId() {
         return this.userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 

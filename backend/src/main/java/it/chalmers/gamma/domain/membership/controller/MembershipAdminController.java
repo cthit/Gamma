@@ -2,17 +2,15 @@ package it.chalmers.gamma.domain.membership.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.group.controller.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.controller.response.MembershipNotFoundResponse;
 import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
 import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipService;
-import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
-import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.post.service.PostService;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
@@ -30,13 +28,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -70,7 +62,7 @@ public final class MembershipAdminController {
         }
 
         try {
-            this.membershipService.addUserToGroup(
+            this.membershipService.addMembership(
                     new MembershipShallowDTO(
                             request.getPostId(),
                             groupId,
@@ -90,11 +82,12 @@ public final class MembershipAdminController {
         return new MemberAddedToGroupResponse();
     }
 
-    @DeleteMapping("/{id}/members/{user}")
-    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("id") UUID groupId,
-                                                              @PathVariable("user") UUID userId) {
+    @DeleteMapping("/{groupId}/members")
+    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") UUID groupId,
+                                                              @RequestParam("userId") UserId userId,
+                                                              @RequestParam("postId") UUID postId) {
         try {
-            this.membershipService.removeUserFromGroup(groupId, userId);
+            this.membershipService.removeMembership(userId, groupId, postId);
             return new MemberRemovedFromGroupResponse();
         } catch (MembershipNotFoundException e) {
             LOGGER.error("Membership not found", e);
@@ -104,7 +97,7 @@ public final class MembershipAdminController {
 
     @PutMapping("/{groupId}/members/{userId}")
     public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") UUID groupId,
-                                                    @PathVariable("userId") UUID userId,
+                                                    @PathVariable("userId") UserId userId,
                                                     @Valid @RequestBody EditMembershipRequest request,
                                                     BindingResult result) {
         if (result.hasErrors()) {

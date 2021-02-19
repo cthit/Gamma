@@ -17,7 +17,7 @@ create table website_url (
 );
 
 create table ituser (
-  id                uuid            constraint ituser_pk primary key,
+  user_id           uuid            primary key,
   cid               varchar(10)     not null constraint ituser_cid_unique unique,
   password          varchar(255)    not null,
   nick              varchar(50)     not null,
@@ -34,33 +34,28 @@ create table ituser (
   activated         boolean         DEFAULT FALSE
 );
 
-create table ituser_password (
- id          uuid constraint ituser_password_pk primary key,
- password    varchar(255)    not null
-)
-
 create table ituser_website (
   id          uuid constraint ituser_website_pk primary key,
-  ituser      uuid not null references ituser,
+  user_id      uuid not null references ituser,
   website     uuid not null references website_url
 );
 
-create table ituser_gdpr (
+/*create table ituser_gdpr (
 
-)
+)*/
 
 create table password_reset_token(
   token   varchar(100) not null,
-  ituser  uuid primary key references ituser,
+  user_id  uuid primary key references ituser
 );
 
 create table fkit_super_group (
   id            uuid                    constraint fkit_super_group_pk                  primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
-  pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique,
+  pretty_name   varchar(50)    not null,
   email         varchar(100)   not null,
   type          varchar(30)    not null,
-  description   uuid           not null references internal_text
+  description   uuid           references internal_text
 );
 
 create table fkit_group (
@@ -80,22 +75,23 @@ create table post (
   email_prefix VARCHAR(20)
 );
 
+create table authority_level (
+    authority_level varchar(30) primary key
+);
+
 create table authority (
   fkit_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
-  authority_level uuid  constraint authority_authority_level          references authority_level,
-  constraint      authority_pk primary key (post_id, fkit_group_id, authority_level) on delete cascade
+  authority_level varchar(30)  constraint authority_authority_level            references authority_level,
+  constraint      authority_pk primary key (post_id, fkit_group_id, authority_level) --on delete cascade
 );
 
-create table authority_all_posts (
+/*create table authority_all_posts (
  fkit_group_id   uuid  constraint authority_all_posts_fkit_super_group_fk            references fkit_super_group,
  authority_level uuid  constraint authority_all_posts_authority_level                references authority_level,
  constraint      authority_all_posts_pk primary key (fkit_group_id, authority_level) on delete cascade
 );
-
-create table authority_level (
-    authority_level varchar(30) primary key
-);
+*/
 
 create table fkit_group_website(
   id          uuid constraint fkit_group_website_pk primary key,
@@ -105,11 +101,11 @@ create table fkit_group_website(
 
 
 create table membership (
-  ituser_id            uuid         constraint membership_ituser_fk references ituser,
+  user_id            uuid         constraint membership_ituser_fk references ituser,
   fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (ituser_id, fkit_group_id) on delete cascade
+  constraint membership_pk primary key (user_id, fkit_group_id, post_id) --on delete cascade
 );
 
 create table no_account_membership (
@@ -132,9 +128,8 @@ create table activation_code (
 );
 
 create table itclient (
-    id  uuid constraint itclient_pk primary key,
-    client_id varchar(256) not null,
-    client_secret varchar(256) not null,
+    client_id varchar(75) primary key,
+    client_secret varchar(75) not null,
     web_server_redirect_uri varchar(256) not null,
     access_token_validity integer not null,
     refresh_token_validity integer not null,
@@ -151,7 +146,7 @@ create table apikey (
 );
 
 create table it_user_approval (
-  ituser_id UUID REFERENCES ituser(id),
-  itclient_id UUID REFERENCES itclient(id),
-  CONSTRAINT it_user_approval_pk PRIMARY KEY(ituser_id, itclient_id)
+  user_id UUID REFERENCES ituser,
+  itclient_id varchar(75) REFERENCES itclient(client_id),
+  CONSTRAINT it_user_approval_pk PRIMARY KEY(user_id, itclient_id)
 );

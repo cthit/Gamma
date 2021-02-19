@@ -3,13 +3,13 @@ package it.chalmers.gamma.domain.user.data;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.user.UserId;
 
 import java.time.Year;
 import java.util.UUID;
 
-@SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.TooManyFields"})
 public class UserDTO {
-    private final UUID id;
+    private final UserId id;
     private final Cid cid;
     private final Email email;
     private final Language language;
@@ -24,7 +24,7 @@ public class UserDTO {
     private final Year acceptanceYear;
     private final boolean activated;
 
-    public UserDTO(UUID id,
+    public UserDTO(UserId id,
                    Cid cid,
                    Email email,
                    Language language,
@@ -54,7 +54,7 @@ public class UserDTO {
         this.activated = activated;
     }
 
-    public UUID getId() {
+    public UserId getId() {
         return id;
     }
 
@@ -112,7 +112,7 @@ public class UserDTO {
 
     public static class UserDTOBuilder {
 
-        private UUID id;
+        private UserId id;
         private Cid cid;
         private Email email;
         private Language language;
@@ -127,7 +127,7 @@ public class UserDTO {
         private Year acceptanceYear;
         private boolean activated;
 
-        public UserDTOBuilder id(UUID id) {
+        public UserDTOBuilder id(UserId id) {
             this.id = id;
             return this;
         }

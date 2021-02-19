@@ -7,12 +7,12 @@ import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class GetITUserMinifiedResponse {
+public class GetUserMinifiedResponse {
 
     @JsonUnwrapped
     private final UserRestrictedDTO user;
 
-    public GetITUserMinifiedResponse(UserRestrictedDTO user) {
+    public GetUserMinifiedResponse(UserRestrictedDTO user) {
         this.user = user;
     }
 
@@ -25,8 +25,8 @@ public class GetITUserMinifiedResponse {
         return new GetITUserMinifiedResponseObject(this);
     }
 
-    public static class GetITUserMinifiedResponseObject extends ResponseEntity<GetITUserMinifiedResponse> {
-        GetITUserMinifiedResponseObject(GetITUserMinifiedResponse body) {
+    public static class GetITUserMinifiedResponseObject extends ResponseEntity<GetUserMinifiedResponse> {
+        GetITUserMinifiedResponseObject(GetUserMinifiedResponse body) {
             super(body, HttpStatus.OK);
         }
     }
