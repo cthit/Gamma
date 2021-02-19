@@ -1,5 +1,6 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Language;
 
 import java.util.Objects;
@@ -39,11 +40,11 @@ public class AdminViewCreateUserRequest {
 
     private Language language = Language.SV;
 
-    public String getCid() {
+    public Cid getCid() {
         return this.cid;
     }
 
-    public void setCid(String cid) {
+    public void setCid(Cid cid) {
         this.cid = cid;
     }
 

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.user.controller;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
@@ -122,6 +123,7 @@ public final class UserAdminController {
     private UserDTO requestToDTO(AdminViewCreateUserRequest request) {
         return new UserDTO.UserDTOBuilder()
                 .nick(request.getNick())
+                .cid(request.getCid())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(new Email(request.getEmail()))
