@@ -18,8 +18,8 @@ public class ActivationCodeDTO {
         this.createdAt = createdAt;
     }
 
-    public String getCid() {
-        return this.cid.value;
+    public Cid getCid() {
+        return this.cid;
     }
 
     public String getCode() {

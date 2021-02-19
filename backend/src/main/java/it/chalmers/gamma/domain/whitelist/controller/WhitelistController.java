@@ -62,7 +62,7 @@ public final class WhitelistController {
             ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(cid);
             sendEmail(activationCode);
         } else {
-            LOGGER.warn(String.format("Non Whitelisted User: %s Tried to Create Account", cid.value));
+            LOGGER.warn(String.format("Non Whitelisted User: %s Tried to Create Account", cid));
         }
 
         //Gamma doesn't differentiate if activation of a cid was successful or not.

@@ -20,23 +20,23 @@ public class ActivationCodeFinder {
     }
 
     public boolean codeMatchesCid(Cid cid, String code) {
-        return this.repository.findActivationCodeByCidAndCode(cid.value, code).isPresent();
+        return this.repository.findActivationCodeByCidAndCode(cid, code).isPresent();
     }
 
     public boolean cidHasCode(Cid cid) {
-        return this.repository.existsById(cid.value);
+        return this.repository.existsById(cid);
     }
 
     public ActivationCodeDTO getActivationCodeByCid(Cid cid) throws ActivationCodeNotFoundException {
         return toDTO(
-                this.repository.findById(cid.value)
+                this.repository.findById(cid)
                         .orElseThrow(ActivationCodeNotFoundException::new)
         );
     }
 
     public ActivationCodeDTO getActivationCodeByCidAndCode(Cid cid, String code) throws ActivationCodeNotFoundException {
         return toDTO(
-                this.repository.findActivationCodeByCidAndCode(cid.value, code)
+                this.repository.findActivationCodeByCidAndCode(cid, code)
                         .orElseThrow(ActivationCodeNotFoundException::new)
         );
     }
@@ -50,7 +50,7 @@ public class ActivationCodeFinder {
 
     protected ActivationCodeDTO toDTO(ActivationCode activationCode) {
         return new ActivationCodeDTO(
-                new Cid(activationCode.getCid()),
+                activationCode.getCid(),
                 activationCode.getCode(),
                 activationCode.getCreatedAt()
         );

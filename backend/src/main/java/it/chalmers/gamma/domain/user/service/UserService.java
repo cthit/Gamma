@@ -51,15 +51,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cid) {
-        cid = cid.toLowerCase();
-
         try {
             User user = this.userFinder.getUserEntity(new Cid(cid));
 
             List<AuthorityLevelName> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
 
             return new UserDetailsDTO(
-                    user.getCid(),
+                    user.getCid().get(),
                     user.getPassword(),
                     authorities,
                     user.isAccountLocked()
@@ -104,7 +102,7 @@ public class UserService implements UserDetailsService {
                 if (!user.getAvatarUrl().equals("default.jpg")) {
                     ImageUtils.removeImage(user.getAvatarUrl());
                 }
-                String fileUrl = ImageUtils.saveImage(file, user.getCid().value);
+                String fileUrl = ImageUtils.saveImage(file, user.getCid().get());
                 UserDTO newUser = new UserDTO.UserDTOBuilder()
                         .from(user)
                         .avatarUrl(fileUrl)

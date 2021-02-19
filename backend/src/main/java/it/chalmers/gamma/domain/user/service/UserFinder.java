@@ -26,7 +26,7 @@ public class UserFinder {
     }
 
     public boolean userExists(Cid cid) {
-        return this.userRepository.existsByCid(cid.value);
+        return this.userRepository.existsByCid(cid);
     }
 
     public boolean userExists(UserId id) {
@@ -57,7 +57,7 @@ public class UserFinder {
     }
 
     protected User getUserEntity(Cid cid) throws UserNotFoundException {
-        return this.userRepository.findByCid(cid.value)
+        return this.userRepository.findByCid(cid)
                 .orElseThrow(UserNotFoundException::new);
     }
 
@@ -82,7 +82,7 @@ public class UserFinder {
                 .accountLocked(user.isAccountLocked())
                 .activated(user.isActivated())
                 .avatarUrl(user.getAvatarUrl())
-                .cid(new Cid(user.getCid()))
+                .cid(user.getCid())
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

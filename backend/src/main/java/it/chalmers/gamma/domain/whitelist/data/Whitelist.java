@@ -1,5 +1,8 @@
 package it.chalmers.gamma.domain.whitelist.data;
 
+import it.chalmers.gamma.domain.Cid;
+
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -8,21 +11,21 @@ import javax.persistence.Table;
 @Table(name = "whitelist")
 public class Whitelist {
 
-    @Id
-    private String cid;
+    @EmbeddedId
+    private Cid cid;
 
     protected Whitelist() {}
 
-    public Whitelist(String cid) {
+    public Whitelist(Cid cid) {
         this.cid = cid;
     }
 
-    public String getCid() {
+    public Cid getCid() {
         return this.cid;
     }
 
-    public void setCid(String cid) {
-        this.cid = cid.toLowerCase();
+    public void setCid(Cid cid) {
+        this.cid = cid;
     }
 
 }

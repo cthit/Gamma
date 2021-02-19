@@ -1,9 +1,6 @@
 package it.chalmers.gamma.domain.user.data;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.GEntity;
-import it.chalmers.gamma.domain.IDsNotMatchingException;
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.Objects;
@@ -18,8 +15,8 @@ public class User implements GEntity<UserDTO> {
     @EmbeddedId
     private UserId id;
 
-    @Column(name = "cid")
-    private String cid;
+    @Embedded
+    private Cid cid;
 
     @Column(name = "password")
     private String password;
@@ -83,11 +80,11 @@ public class User implements GEntity<UserDTO> {
         this.id = id;
     }
 
-    public String getCid() {
+    public Cid getCid() {
         return cid;
     }
 
-    public void setCid(String cid) {
+    public void setCid(Cid cid) {
         this.cid = cid;
     }
 
@@ -270,7 +267,7 @@ public class User implements GEntity<UserDTO> {
         this.activated = u.isActivated();
         this.avatarUrl = u.getAvatarUrl();
         this.accountLocked = u.isAccountLocked();
-        this.cid = u.getCid().value;
+        this.cid = u.getCid();
         this.email = u.getEmail();
         this.firstName = u.getFirstName();
         this.lastName = u.getLastName();

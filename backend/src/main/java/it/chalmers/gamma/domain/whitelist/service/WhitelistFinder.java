@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.whitelist.service;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.whitelist.data.Whitelist;
 import it.chalmers.gamma.domain.whitelist.data.WhitelistRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,13 @@ public class WhitelistFinder {
     }
 
     public boolean cidIsWhitelisted(Cid cid) {
-        return this.repository.existsById(cid.value);
+        return this.repository.existsById(cid);
     }
 
     public List<Cid> getWhitelist() {
         return this.repository.findAll()
                 .stream()
-                .map(whitelist -> new Cid(whitelist.getCid()))
+                .map(Whitelist::getCid)
                 .collect(Collectors.toList());
     }
 

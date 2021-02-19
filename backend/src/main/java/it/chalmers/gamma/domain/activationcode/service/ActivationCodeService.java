@@ -44,7 +44,7 @@ public class ActivationCodeService {
             throw new ActivationCodeNotFoundException();
         }
 
-        this.activationCodeRepository.deleteById(cid.value);
+        this.activationCodeRepository.deleteById(cid);
     }
 
 }

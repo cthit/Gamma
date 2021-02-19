@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.user.data;
 
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class UserDetailsDTO implements UserDetails {
 
-    private final String cid;
+    private final Cid cid;
     private final String password;
     private final List<AuthorityLevelName> authorities;
     private final boolean accountLocked;
@@ -18,7 +19,7 @@ public class UserDetailsDTO implements UserDetails {
                           String password,
                           List<AuthorityLevelName> authorities,
                           boolean accountLocked) {
-        this.cid = cid;
+        this.cid = new Cid(cid);
         this.password = password;
         this.authorities = authorities;
         this.accountLocked = accountLocked;
@@ -36,7 +37,7 @@ public class UserDetailsDTO implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.cid;
+        return this.cid.get();
     }
 
     @Override

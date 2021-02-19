@@ -2,12 +2,13 @@ package it.chalmers.gamma.domain.activationcode.data;
 
 import java.util.Optional;
 
+import it.chalmers.gamma.domain.Cid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ActivationCodeRepository extends JpaRepository<ActivationCode, String> {
+public interface ActivationCodeRepository extends JpaRepository<ActivationCode, Cid> {
 
-    Optional<ActivationCode> findActivationCodeByCidAndCode(String cid, String code);
+    Optional<ActivationCode> findActivationCodeByCidAndCode(Cid cid, String code);
 
 }

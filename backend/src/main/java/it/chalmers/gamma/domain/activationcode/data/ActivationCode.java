@@ -3,11 +3,7 @@ package it.chalmers.gamma.domain.activationcode.data;
 import java.time.Duration;
 import java.time.Instant;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import it.chalmers.gamma.domain.Cid;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 @Table(name = "activation_code")
 public class ActivationCode {
 
-    @Id
-    @Column(name = "cid")
-    private String cid;
+    @EmbeddedId
+    private Cid cid;
 
     @Column(name = "code")
     private String code;
@@ -38,7 +33,7 @@ public class ActivationCode {
 
     public ActivationCode(Cid cid, String code) {
         this.createdAt = Instant.now();
-        this.cid = cid.value;
+        this.cid = cid;
         this.code = code;
     }
 
@@ -46,16 +41,12 @@ public class ActivationCode {
         this.createdAt = createdAt;
     }
 
-    public void setWhitelist(Cid cid) {
-        this.cid = cid.value;
-    }
-
-    public String getCid() {
+    public Cid getCid() {
         return this.cid;
     }
 
     public void setCid(Cid cid) {
-        this.cid = cid.value;
+        this.cid = cid;
     }
 
     public String getCode() {

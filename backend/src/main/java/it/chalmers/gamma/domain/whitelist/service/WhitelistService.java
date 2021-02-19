@@ -34,7 +34,7 @@ public class WhitelistService {
             throw new CidAlreadyWhitelistedException();
         }
 
-        Whitelist whitelist = new Whitelist(cid.value);
+        Whitelist whitelist = new Whitelist(cid);
         this.whitelistRepository.save(whitelist);
     }
 
@@ -43,7 +43,7 @@ public class WhitelistService {
             throw new CidNotWhitelistedException();
         }
 
-        this.whitelistRepository.deleteById(cid.value);
+        this.whitelistRepository.deleteById(cid);
     }
 
 }
