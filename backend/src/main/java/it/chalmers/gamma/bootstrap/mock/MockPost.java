@@ -1,19 +1,20 @@
 package it.chalmers.gamma.bootstrap.mock;
 
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.UUID;
 
 public class MockPost {
 
-    private UUID id;
+    private PostId id;
     private Text postName;
 
-    public UUID getId() {
+    public PostId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(PostId id) {
         this.id = id;
     }
 

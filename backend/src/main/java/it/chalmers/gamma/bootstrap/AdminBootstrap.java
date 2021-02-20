@@ -9,6 +9,7 @@ import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
 import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
@@ -54,7 +55,7 @@ public class AdminBootstrap {
 
             UUID adminSuperGroupId = createAdminSuperGroup(superGroupName, adminMail);
             UUID adminGroupId = createAdminGroup(admin, adminMail, adminSuperGroupId);
-            UUID adminPostId = createAdminPost(admin);
+            PostId adminPostId = createAdminPost(admin);
             UserId adminUserId = createAdminUser(admin, adminMail);
 
             try {
@@ -158,8 +159,8 @@ public class AdminBootstrap {
         return adminGroupId;
     }
 
-    private UUID createAdminPost(String admin) {
-        UUID adminPostId;
+    private PostId createAdminPost(String admin) {
+        PostId adminPostId;
 
         try {
             adminPostId = this.helper.getPostFinder().getPostBySvName(admin).getId();
@@ -168,7 +169,7 @@ public class AdminBootstrap {
             p.setSv(admin);
             p.setEn(admin);
 
-            adminPostId = UUID.randomUUID();
+            adminPostId = new PostId(UUID.randomUUID());
 
             this.helper.getPostService().addPost(
                     new PostDTO(

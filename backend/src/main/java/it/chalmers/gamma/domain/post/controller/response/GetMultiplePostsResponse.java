@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetMultiplePostsResponse {
+
     @JsonValue
     private final List<PostDTO> posts;
 

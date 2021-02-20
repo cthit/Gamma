@@ -3,6 +3,7 @@ package it.chalmers.gamma.domain.post.service;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.membership.data.MembershipsPerGroupDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.data.Post;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.data.PostRepository;
@@ -22,7 +23,7 @@ public class PostFinder {
         this.postRepository = postRepository;
     }
 
-    public boolean postExists(UUID id) {
+    public boolean postExists(PostId id) {
         return this.postRepository.existsById(id);
     }
 
@@ -38,11 +39,11 @@ public class PostFinder {
         return toDTO(getPostEntityBySvName(svName));
     }
 
-    public PostDTO getPost(UUID id) throws PostNotFoundException {
+    public PostDTO getPost(PostId id) throws PostNotFoundException {
         return toDTO(getPostEntity(id));
     }
 
-    protected Post getPostEntity(UUID id) throws PostNotFoundException {
+    protected Post getPostEntity(PostId id) throws PostNotFoundException {
         return this.postRepository.findById(id).orElseThrow(PostNotFoundException::new);
     }
 

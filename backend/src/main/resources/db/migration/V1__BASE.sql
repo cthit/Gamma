@@ -70,7 +70,7 @@ create table fkit_group (
 );
 
 create table post (
-  id        uuid constraint post_pk primary key,
+  post_id        uuid primary key,
   post_name uuid not null references internal_text,
   email_prefix VARCHAR(20)
 );

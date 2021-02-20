@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.membership.controller.response.MembershipNotFoun
 import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
 import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipService;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.post.service.PostService;
@@ -85,7 +86,7 @@ public final class MembershipAdminController {
     @DeleteMapping("/{groupId}/members")
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") UUID groupId,
                                                               @RequestParam("userId") UserId userId,
-                                                              @RequestParam("postId") UUID postId) {
+                                                              @RequestParam("postId") PostId postId) {
         try {
             this.membershipService.removeMembership(userId, groupId, postId);
             return new MemberRemovedFromGroupResponse();

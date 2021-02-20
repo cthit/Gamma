@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.membership.data;
 
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.io.Serializable;
@@ -12,8 +13,8 @@ import javax.persistence.Embedded;
 @Embeddable
 public class MembershipPK implements Serializable {
 
-    @Column(name = "post_id")
-    private UUID postId;
+    @Embedded
+    private PostId postId;
 
     @Column(name = "fkit_group_id")
     private UUID groupId;
@@ -25,7 +26,7 @@ public class MembershipPK implements Serializable {
 
     }
 
-    public MembershipPK(UUID postId, UUID groupId, UserId userId) {
+    public MembershipPK(PostId postId, UUID groupId, UserId userId) {
         this.postId = postId;
         this.groupId = groupId;
         this.userId = userId;
@@ -47,11 +48,11 @@ public class MembershipPK implements Serializable {
         this.groupId = groupId;
     }
 
-    public UUID getPostId() {
+    public PostId getPostId() {
         return postId;
     }
 
-    public void setPostId(UUID postId) {
+    public void setPostId(PostId postId) {
         this.postId = postId;
     }
 

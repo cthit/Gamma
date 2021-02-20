@@ -2,6 +2,7 @@ package it.chalmers.gamma.domain.post.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.controller.response.*;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
@@ -72,7 +73,7 @@ public final class PostAdminController {
     @PutMapping("/{id}")
     public PostEditedResponse editPost(
             @RequestBody AddPostRequest request,
-            @PathVariable("id") UUID id) {
+            @PathVariable("id") PostId id) {
         try {
             this.postService.editPost(new PostDTO(id, request.getPost(), request.getEmailPrefix()));
             return new PostEditedResponse();
@@ -84,7 +85,7 @@ public final class PostAdminController {
 
 
     @DeleteMapping("/{id}")
-    public PostDeletedResponse deletePost(@PathVariable("id") UUID id) {
+    public PostDeletedResponse deletePost(@PathVariable("id") PostId id) {
         try {
             this.postService.deletePost(id);
             return new PostDeletedResponse();
@@ -95,7 +96,7 @@ public final class PostAdminController {
     }
 
     @GetMapping("/{id}/usage")
-    public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") UUID postId) {
+    public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") PostId postId) {
         return new GetPostUsagesResponse(this.membershipFinder.getPostUsages(postId)).toResponseObject();
     }
 }

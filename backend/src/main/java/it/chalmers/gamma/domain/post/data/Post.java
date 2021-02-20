@@ -4,27 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
 public class Post implements GEntity<PostDTO> {
 
-    @Id
-    @Column(name = "id")
-    private UUID id;
+    @EmbeddedId
+    private PostId id;
 
     @JoinColumn(name = "post_name")
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -42,7 +35,7 @@ public class Post implements GEntity<PostDTO> {
         } catch (IDsNotMatchingException ignored) { }
 
         if(this.id == null) {
-            this.id = UUID.randomUUID();
+            this.id = new PostId(UUID.randomUUID());
         }
 
     }
@@ -58,11 +51,11 @@ public class Post implements GEntity<PostDTO> {
         this.emailPrefix = p.getEmailPrefix();
     }
 
-    public UUID getId() {
+    public PostId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(PostId id) {
         this.id = id;
     }
 

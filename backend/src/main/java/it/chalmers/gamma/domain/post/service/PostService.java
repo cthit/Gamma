@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.post.service;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.text.Text;
 
@@ -34,7 +35,7 @@ public class PostService {
         this.repository.save(post);
     }
 
-    public void deletePost(UUID id) throws PostNotFoundException {
+    public void deletePost(PostId id) throws PostNotFoundException {
         if (!this.finder.postExists(id)) {
             throw new PostNotFoundException();
         }

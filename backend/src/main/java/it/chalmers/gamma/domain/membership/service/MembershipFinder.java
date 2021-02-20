@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.data.*;
 import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
@@ -66,13 +67,13 @@ public class MembershipFinder {
         return getRestrictedMembershipsInGroup(group.getId());
     }
 
-    public List<MembershipRestrictedDTO> getUserByGroupAndPost(UUID groupId, UUID postId) {
+    public List<MembershipRestrictedDTO> getUserByGroupAndPost(UUID groupId, PostId postId) {
         return this.membershipRepository
                 .findAllById_GroupIdAndId_PostId(groupId, postId)
                 .stream().map(this::toRestrictedDTO).collect(Collectors.toList());
     }
 
-    public List<GroupDTO> getGroupsWithPost(UUID postId) {
+    public List<GroupDTO> getGroupsWithPost(PostId postId) {
         List<Membership> memberships = this.membershipRepository.findAllById_PostId(postId);
         List<UUID> groups = new ArrayList<>();
         for (Membership membership : memberships) {
@@ -108,7 +109,7 @@ public class MembershipFinder {
         return memberships.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    protected Membership getMembershipEntityByUserGroupPost(UserId userId, UUID groupId, UUID postId) throws MembershipNotFoundException {
+    protected Membership getMembershipEntityByUserGroupPost(UserId userId, UUID groupId, PostId postId) throws MembershipNotFoundException {
         return this.membershipRepository.findById(new MembershipPK(postId, groupId, userId))
                 .orElseThrow(MembershipNotFoundException::new);
     }
@@ -197,7 +198,7 @@ public class MembershipFinder {
         }
     }
 
-    public List<MembershipsPerGroupDTO> getPostUsages(UUID postId) {
+    public List<MembershipsPerGroupDTO> getPostUsages(PostId postId) {
         List<GroupDTO> groups = this.getGroupsWithPost(postId);
         return groups.stream()
                 .map(group -> new MembershipsPerGroupDTO(group, this.getUserByGroupAndPost(group.getId(), postId)))

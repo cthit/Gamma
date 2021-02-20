@@ -10,6 +10,7 @@ import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
 
 import java.util.*;
 
+import it.chalmers.gamma.domain.post.PostId;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +28,7 @@ public class AuthorityService {
         this.authorityFinder = authorityFinder;
     }
 
-    public void createAuthority(UUID superGroupId, UUID postId, AuthorityLevelName authorityLevelName)
+    public void createAuthority(UUID superGroupId, PostId postId, AuthorityLevelName authorityLevelName)
                 throws AuthorityAlreadyExistsException {
         if(this.authorityFinder.authorityExists(superGroupId, postId, authorityLevelName)) {
             throw new AuthorityAlreadyExistsException();
@@ -40,7 +41,7 @@ public class AuthorityService {
         );
     }
 
-    public void removeAuthority(UUID superGroupId, UUID postId, AuthorityLevelName authorityLevelName) throws AuthorityNotFoundException {
+    public void removeAuthority(UUID superGroupId, PostId postId, AuthorityLevelName authorityLevelName) throws AuthorityNotFoundException {
         if (!this.authorityFinder.authorityExists(superGroupId, postId, authorityLevelName)) {
             throw new AuthorityNotFoundException();
         }

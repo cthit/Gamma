@@ -126,7 +126,7 @@ public final class UserAdminController {
                 .cid(request.getCid())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .email(new Email(request.getEmail()))
+                .email(request.getEmail())
                 .language(request.getLanguage())
                 .acceptanceYear(Year.of(request.getAcceptanceYear()))
                 .build();

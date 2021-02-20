@@ -1,34 +1,36 @@
-package it.chalmers.gamma.domain;
+package it.chalmers.gamma.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Embeddable
-public class Email {
+public class PostId implements Serializable {
 
     @JsonValue
-    @Column(name = "email")
-    private String value;
+    @Column(name = "post_id")
+    private UUID value;
 
-    protected Email() {}
+    protected PostId() { }
 
-    public Email(String value) {
+    public PostId(UUID value) {
         this.value = value;
     }
 
-    public String get() {
-        return this.value;
+    public static PostId valueOf(String value) {
+        return new PostId(UUID.fromString(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Email email = (Email) o;
-        return Objects.equals(value, email.value);
+        PostId postId = (PostId) o;
+        return Objects.equals(value, postId.value);
     }
 
     @Override
@@ -38,6 +40,6 @@ public class Email {
 
     @Override
     public String toString() {
-        return "Email: " + this.value;
+        return "PostId: " + this.value;
     }
 }

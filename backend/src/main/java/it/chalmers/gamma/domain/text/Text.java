@@ -16,6 +16,7 @@ public class Text {
 
     @Id
     @Column(name = "id")
+    @JsonIgnore
     private UUID id;
 
     @Column(name = "sv")

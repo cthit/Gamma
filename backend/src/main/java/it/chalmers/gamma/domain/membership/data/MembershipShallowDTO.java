@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.membership.data;
 
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.Objects;
@@ -7,12 +8,12 @@ import java.util.UUID;
 
 public class MembershipShallowDTO {
 
-    private final UUID postId;
+    private final PostId postId;
     private final UUID groupId;
     private final UserId userId;
     private final String unofficialPostName;
 
-    public MembershipShallowDTO(UUID postId,
+    public MembershipShallowDTO(PostId postId,
                                 UUID groupId,
                                 String unofficialPostName,
                                 UserId userId) {
@@ -22,7 +23,7 @@ public class MembershipShallowDTO {
         this.userId = userId;
     }
 
-    public UUID getPostId() {
+    public PostId getPostId() {
         return postId;
     }
 

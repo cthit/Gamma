@@ -11,6 +11,7 @@ import it.chalmers.gamma.domain.authoritylevel.data.AuthorityLevelRepository;
 import it.chalmers.gamma.domain.authoritylevel.exception.AuthorityLevelNotFoundException;
 import it.chalmers.gamma.domain.membership.data.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
@@ -49,7 +50,7 @@ public class AuthorityFinder {
         this.authorityLevelFinder = authorityLevelFinder;
     }
 
-    public boolean authorityExists(UUID superGroupId, UUID postId, AuthorityLevelName authorityLevelName) {
+    public boolean authorityExists(UUID superGroupId, PostId postId, AuthorityLevelName authorityLevelName) {
         return this.authorityRepository.existsById_SuperGroupIdAndId_PostIdAndId_AuthorityLevelName(
                 superGroupId,
                 postId,

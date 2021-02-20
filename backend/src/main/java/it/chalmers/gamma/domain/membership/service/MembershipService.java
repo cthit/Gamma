@@ -7,6 +7,7 @@ import it.chalmers.gamma.domain.membership.data.MembershipPK;
 import it.chalmers.gamma.domain.membership.data.MembershipRepository;
 import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
 import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class MembershipService {
         this.membershipRepository.save(new Membership(membership));
     }
 
-    public void removeMembership(UserId userId, UUID groupId, UUID postId) throws MembershipNotFoundException {
+    public void removeMembership(UserId userId, UUID groupId, PostId postId) throws MembershipNotFoundException {
         if(!this.membershipRepository.existsById(new MembershipPK(postId, groupId, userId))) {
             throw new MembershipNotFoundException();
         }

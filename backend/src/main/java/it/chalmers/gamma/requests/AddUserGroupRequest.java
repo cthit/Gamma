@@ -1,5 +1,6 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.Objects;
@@ -12,7 +13,7 @@ public class AddUserGroupRequest {
     private UserId userId;
 
     @NotEmpty(message = "POST_MUST_BE_PROVIDED")
-    private UUID postId;
+    private PostId postId;
     private String unofficialName;
 
     public UserId getUserId() {
@@ -23,11 +24,11 @@ public class AddUserGroupRequest {
         this.userId = userId;
     }
 
-    public UUID getPostId() {
+    public PostId getPostId() {
         return postId;
     }
 
-    public void setPostId(UUID postId) {
+    public void setPostId(PostId postId) {
         this.postId = postId;
     }
 

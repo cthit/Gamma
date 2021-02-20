@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.post.controller;
 
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.controller.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
@@ -30,7 +31,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public GetPostResponseObject getPost(@PathVariable("id") UUID id) {
+    public GetPostResponseObject getPost(@PathVariable("id") PostId id) {
         try {
             return new GetPostResponse(
                     this.postFinder.getPost(id)

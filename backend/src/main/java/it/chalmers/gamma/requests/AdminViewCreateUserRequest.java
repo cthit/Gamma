@@ -1,11 +1,11 @@
 package it.chalmers.gamma.requests;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 
 import java.util.Objects;
 import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -14,7 +14,7 @@ public class AdminViewCreateUserRequest {
 
     @NotEmpty(message = "CID_MUST_BE_PROVIDED")
     @Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS")
-    private String cid;
+    private Cid cid;
 
     @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
     private String password;
@@ -29,8 +29,8 @@ public class AdminViewCreateUserRequest {
     private String lastName;
 
     @NotEmpty(message = "EMAIL_NAME_MUST_BE_PROVIDED")
-    @Email(message = "NOT_A_VALID_EMAIL")
-    private String email;
+    //@Email(message = "NOT_A_VALID_EMAIL")
+    private Email email;
 
     @AssertTrue(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")
     private boolean userAgreement;
@@ -80,11 +80,11 @@ public class AdminViewCreateUserRequest {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Email email) {
         this.email = email;
     }
 

@@ -1,18 +1,20 @@
 package it.chalmers.gamma.requests;
 
+import it.chalmers.gamma.domain.post.PostId;
+
 import java.util.Objects;
 import java.util.UUID;
 
 public class EditMembershipRequest {
 
-    private UUID postId;
+    private PostId postId;
     private String unofficialName;
 
-    public UUID getPostId() {
+    public PostId getPostId() {
         return postId;
     }
 
-    public void setPostId(UUID postId) {
+    public void setPostId(PostId postId) {
         this.postId = postId;
     }
 
