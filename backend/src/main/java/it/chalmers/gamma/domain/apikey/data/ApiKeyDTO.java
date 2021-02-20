@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.apikey.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 public class ApiKeyDTO {
 
-    private final UUID id;
+    private final ApiKeyId id;
     private final String name;
     private final Text description;
     @JsonIgnore
@@ -18,14 +19,14 @@ public class ApiKeyDTO {
         this(null, name, description, key);
     }
 
-    public ApiKeyDTO(UUID id, String name, Text description, String key) {
+    public ApiKeyDTO(ApiKeyId id, String name, Text description, String key) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.key = key;
     }
 
-    public UUID getId() {
+    public ApiKeyId getId() {
         return id;
     }
 

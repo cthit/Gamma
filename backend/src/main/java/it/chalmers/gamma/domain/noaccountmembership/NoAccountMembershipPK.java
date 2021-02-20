@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.noaccountmembership;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import it.chalmers.gamma.domain.group.GroupId;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
 
 @Embeddable
@@ -17,12 +19,12 @@ public class NoAccountMembershipPK implements Serializable {
     @Column(name = "user_name")
     private String user;
 
-    @Column(name = "fkit_group_id")
-    private UUID groupId;
+    @Embedded
+    private GroupId groupId;
 
     protected NoAccountMembershipPK() {}
 
-    public NoAccountMembershipPK(String user, UUID groupId) {
+    public NoAccountMembershipPK(String user, GroupId groupId) {
         this.user = user;
         this.groupId = groupId;
     }
@@ -35,11 +37,11 @@ public class NoAccountMembershipPK implements Serializable {
         this.user = user;
     }
 
-    public UUID getGroupId() {
+    public GroupId getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(UUID groupId) {
+    public void setGroupId(GroupId groupId) {
         this.groupId = groupId;
     }
 

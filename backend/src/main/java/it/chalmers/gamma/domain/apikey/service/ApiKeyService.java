@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.apikey.service;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.data.ApiKey;
 import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
 import it.chalmers.gamma.domain.apikey.data.ApiKeyRepository;
@@ -28,7 +29,7 @@ public class ApiKeyService {
         this.apiKeyRepository.save(new ApiKey(newApiKey));
     }
 
-    public void deleteApiKey(UUID id) throws ApiKeyNotFoundException {
+    public void deleteApiKey(ApiKeyId id) throws ApiKeyNotFoundException {
         if(!this.apiKeyFinder.apiKeyExists(id)) {
             throw new ApiKeyNotFoundException();
         }

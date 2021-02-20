@@ -2,27 +2,20 @@ package it.chalmers.gamma.domain.apikey.data;
 
 import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "apikey")
 public class ApiKey implements GEntity<ApiKeyDTO> {
 
-    @Id
-    @Column(name = "id")
-    private UUID id;
+    @EmbeddedId
+    private ApiKeyId id;
 
     @Column(name = "name")
     private String name;
@@ -39,22 +32,19 @@ public class ApiKey implements GEntity<ApiKeyDTO> {
     public ApiKey(ApiKeyDTO apiKey) {
         try {
             apply(apiKey);
-            if(this.id == null) {
-                this.id = apiKey.getId();
-            }
         } catch (IDsNotMatchingException ignored) { }
 
         if(this.id == null) {
-            this.id = UUID.randomUUID();
+            this.id = new ApiKeyId();
         }
 
     }
 
-    public UUID getId() {
+    public ApiKeyId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(ApiKeyId id) {
         this.id = id;
     }
 

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.apikey.service;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.data.ApiKey;
 import it.chalmers.gamma.domain.apikey.data.ApiKeyRepository;
 import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
@@ -27,15 +28,15 @@ public class ApiKeyFinder {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
-    public boolean apiKeyExists(UUID id) {
+    public boolean apiKeyExists(ApiKeyId id) {
         return this.apiKeyRepository.existsById(id);
     }
 
-    public ApiKeyDTO getApiKey(UUID id) throws ApiKeyNotFoundException {
+    public ApiKeyDTO getApiKey(ApiKeyId id) throws ApiKeyNotFoundException {
         return toDTO(getApiKeyEntity(id));
     }
 
-    protected ApiKey getApiKeyEntity(UUID id) throws ApiKeyNotFoundException {
+    protected ApiKey getApiKeyEntity(ApiKeyId id) throws ApiKeyNotFoundException {
         return this.apiKeyRepository.findById(id)
                 .orElseThrow(ApiKeyNotFoundException::new);
     }

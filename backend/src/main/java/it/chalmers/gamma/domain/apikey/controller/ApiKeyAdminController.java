@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.apikey.controller;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
 import it.chalmers.gamma.domain.apikey.exception.ApiKeyNotFoundException;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
@@ -72,7 +73,7 @@ public class ApiKeyAdminController {
     }
 
     @GetMapping("/{id}")
-    public GetApiKeyResponseObject getApiKey(@PathVariable("id") UUID apiKeyId) {
+    public GetApiKeyResponseObject getApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
         try {
             return new GetApiKeyResponse(this.apiKeyFinder.getApiKey(apiKeyId)).toResponseObject();
         } catch (ApiKeyNotFoundException e) {
@@ -81,7 +82,7 @@ public class ApiKeyAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") UUID apiKeyId) {
+    public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") ApiKeyId apiKeyId) {
         try {
             this.apiKeyService.deleteApiKey(apiKeyId);
             return new ApiKeyDeletedResponse();

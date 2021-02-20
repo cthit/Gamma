@@ -1,6 +1,7 @@
 package it.chalmers.gamma.bootstrap.mock;
 
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class MockSuperGroup {
     private String name;
     private String prettyName;
     private GroupType type;
-    private List<UUID> groups;
+    private List<GroupId> groups;
 
     public SuperGroupId getId() {
         return this.id;
@@ -46,11 +47,11 @@ public class MockSuperGroup {
         this.type = type;
     }
 
-    public List<UUID> getGroups() {
+    public List<GroupId> getGroups() {
         return this.groups;
     }
 
-    public void setGroups(List<UUID> groups) {
+    public void setGroups(List<GroupId> groups) {
         this.groups = groups;
     }
 }

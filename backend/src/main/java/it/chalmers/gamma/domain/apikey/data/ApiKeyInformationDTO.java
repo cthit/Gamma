@@ -1,12 +1,13 @@
 package it.chalmers.gamma.domain.apikey.data;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.UUID;
 
 public class ApiKeyInformationDTO {
 
-    private final UUID id;
+    private final ApiKeyId id;
     private final String name;
     private final Text description;
 
@@ -16,7 +17,7 @@ public class ApiKeyInformationDTO {
         this.description = apiKey.getDescription();
     }
 
-    public UUID getId() {
+    public ApiKeyId getId() {
         return id;
     }
 

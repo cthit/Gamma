@@ -1,5 +1,5 @@
 create table internal_text (
-  id  uuid constraint text_pk primary key,
+  text_id  uuid constraint text_pk primary key,
   sv  text not null,
   en  text
 );
@@ -83,7 +83,7 @@ create table authority (
   super_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level varchar(30)  constraint authority_authority_level            references authority_level,
-  constraint      authority_pk primary key (post_id, group_id, authority_level) --on delete cascade
+  constraint      authority_pk primary key (post_id, super_group_id, authority_level) --on delete cascade
 );
 
 /*create table authority_all_posts (
@@ -139,7 +139,7 @@ create table itclient (
 );
 
 create table apikey (
-    id               uuid constraint apikey_pk primary key,
+    api_key_id               uuid primary key,
     name             varchar(30) not null,
     description      uuid references internal_text,
     key              varchar(150) not null

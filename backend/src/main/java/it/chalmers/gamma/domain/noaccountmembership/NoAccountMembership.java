@@ -1,11 +1,10 @@
 package it.chalmers.gamma.domain.noaccountmembership;
 
+import it.chalmers.gamma.domain.post.PostId;
+
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 @Entity
@@ -15,8 +14,8 @@ public class NoAccountMembership {
     @EmbeddedId
     private NoAccountMembershipPK id;
 
-    @Column(name = "post_id")
-    private UUID postId;
+    @Embedded
+    private PostId postId;
 
     @Column(name = "unofficial_post_name")
     private String unofficialPostName;

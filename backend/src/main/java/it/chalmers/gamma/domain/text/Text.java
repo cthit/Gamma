@@ -5,19 +5,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "internal_text")
 public class Text {
 
-    @Id
-    @Column(name = "id")
-    @JsonIgnore
-    private UUID id;
+    @EmbeddedId
+    private final TextId textId;
 
     @Column(name = "sv")
     private String sv;
@@ -30,13 +25,13 @@ public class Text {
     }
 
     public Text(String sv, String en) {
-        this.id = UUID.randomUUID();
+        this.textId = new TextId();
         this.sv = sv;
         this.en = en;
     }
 
-    public UUID getId() {
-        return this.id;
+    public TextId getId() {
+        return this.textId;
     }
 
     public String getSv() {
@@ -64,7 +59,7 @@ public class Text {
             return false;
         }
         Text text = (Text) o;
-        return Objects.equals(this.id, text.id)
+        return Objects.equals(this.textId, text.textId)
                 && Objects.equals(this.sv, text.sv)
                 && Objects.equals(this.en, text.en);
     }
@@ -72,7 +67,7 @@ public class Text {
     @Override
     public String toString() {
         return "Text{"
-                + "id=" + this.id
+                + "id=" + this.textId
                 + ", sv='" + this.sv + '\''
                 + ", en='" + this.en + '\''
                 + '}';
@@ -80,6 +75,6 @@ public class Text {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.sv, this.en);
+        return Objects.hash(this.textId, this.sv, this.en);
     }
 }
