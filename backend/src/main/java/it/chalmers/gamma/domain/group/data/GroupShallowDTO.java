@@ -1,6 +1,8 @@
 package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
@@ -9,21 +11,21 @@ import java.util.UUID;
 
 public class GroupShallowDTO extends GroupBaseDTO {
 
-    private final UUID superGroupId;
+    private final SuperGroupId superGroupId;
 
-    protected GroupShallowDTO(UUID id,
+    protected GroupShallowDTO(GroupId id,
                               Calendar becomesActive,
                               Calendar becomesInactive,
                               Email email,
                               String name,
                               String prettyName,
                               String avatarURL,
-                              UUID superGroupId) {
+                              SuperGroupId superGroupId) {
         super(id, becomesActive, becomesInactive, email, name, prettyName, avatarURL);
         this.superGroupId = superGroupId;
     }
 
-    public UUID getSuperGroupId() {
+    public SuperGroupId getSuperGroupId() {
         return superGroupId;
     }
 
@@ -50,7 +52,7 @@ public class GroupShallowDTO extends GroupBaseDTO {
 
     public static class GroupShallowDTOBuilder extends GroupBaseDTOBuilder<GroupShallowDTO, GroupShallowDTOBuilder> {
 
-        private UUID superGroupId;
+        private SuperGroupId superGroupId;
 
         @Override
         public GroupShallowDTO build() {
@@ -66,7 +68,7 @@ public class GroupShallowDTO extends GroupBaseDTO {
             );
         }
 
-        public GroupShallowDTOBuilder superGroupId(UUID id) {
+        public GroupShallowDTOBuilder superGroupId(SuperGroupId id) {
             this.superGroupId = id;
             return this;
         }

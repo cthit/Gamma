@@ -1,23 +1,24 @@
 package it.chalmers.gamma.bootstrap.mock;
 
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.List;
 import java.util.UUID;
 
 public class MockSuperGroup {
 
-    private UUID id;
+    private SuperGroupId id;
     private String name;
     private String prettyName;
     private GroupType type;
     private List<UUID> groups;
 
-    public UUID getId() {
+    public SuperGroupId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(SuperGroupId id) {
         this.id = id;
     }
 

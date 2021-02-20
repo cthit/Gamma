@@ -1,5 +1,8 @@
 package it.chalmers.gamma.bootstrap.mock;
 
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.group.data.Group;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.List;
@@ -8,13 +11,13 @@ import java.util.UUID;
 
 public class MockGroup {
 
-    private UUID id;
+    private GroupId id;
     private String name;
     private String prettyName;
     private Text description;
     private Text function;
     private List<MockMembership> members;
-    private UUID superGroup;
+    private SuperGroupId superGroup;
 
     /**
      * If true, then this group will be active from today until a year forward.
@@ -22,11 +25,11 @@ public class MockGroup {
      */
     private boolean active;
 
-    public UUID getId() {
+    public GroupId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(GroupId id) {
         this.id = id;
     }
 
@@ -78,11 +81,11 @@ public class MockGroup {
         this.active = active;
     }
 
-    public UUID getSuperGroup() {
+    public SuperGroupId getSuperGroup() {
         return this.superGroup;
     }
 
-    public void setSuperGroup(UUID superGroup) {
+    public void setSuperGroup(SuperGroupId superGroup) {
         this.superGroup = superGroup;
     }
 }

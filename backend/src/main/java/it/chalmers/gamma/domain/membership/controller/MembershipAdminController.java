@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.membership.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.GroupDoesNotExistResponse;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.controller.response.MembershipNotFoundResponse;
@@ -57,7 +58,7 @@ public final class MembershipAdminController {
     @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
             @Valid @RequestBody AddUserGroupRequest request, BindingResult result,
-            @PathVariable("id") UUID groupId) {
+            @PathVariable("id") GroupId groupId) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -84,7 +85,7 @@ public final class MembershipAdminController {
     }
 
     @DeleteMapping("/{groupId}/members")
-    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") UUID groupId,
+    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") GroupId groupId,
                                                               @RequestParam("userId") UserId userId,
                                                               @RequestParam("postId") PostId postId) {
         try {
@@ -97,7 +98,7 @@ public final class MembershipAdminController {
     }
 
     @PutMapping("/{groupId}/members/{userId}")
-    public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") UUID groupId,
+    public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") GroupId groupId,
                                                     @PathVariable("userId") UserId userId,
                                                     @Valid @RequestBody EditMembershipRequest request,
                                                     BindingResult result) {

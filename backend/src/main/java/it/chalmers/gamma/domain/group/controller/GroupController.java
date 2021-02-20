@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.group.controller;
 
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
@@ -36,7 +37,7 @@ public final class GroupController {
     }
 
     @GetMapping("/{id}")
-    public GetGroupResponseObject getGroup(@PathVariable("id") UUID id) {
+    public GetGroupResponseObject getGroup(@PathVariable("id") GroupId id) {
         try {
             GroupDTO group = this.groupFinder.getGroup(id);
 

@@ -15,6 +15,7 @@ import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
@@ -50,12 +51,12 @@ public class AuthorityFinder {
         this.authorityLevelFinder = authorityLevelFinder;
     }
 
-    public boolean authorityExists(UUID superGroupId, PostId postId, AuthorityLevelName authorityLevelName) {
-        return this.authorityRepository.existsById_SuperGroupIdAndId_PostIdAndId_AuthorityLevelName(
+    public boolean authorityExists(SuperGroupId superGroupId, PostId postId, AuthorityLevelName authorityLevelName) {
+        return this.authorityRepository.existsById(new AuthorityPK(
                 superGroupId,
                 postId,
                 authorityLevelName.value
-        );
+        ));
     }
 
     public List<AuthorityLevelName> getAuthorityLevels(List<MembershipDTO> memberships) {

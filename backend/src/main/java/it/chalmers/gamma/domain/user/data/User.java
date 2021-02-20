@@ -68,7 +68,7 @@ public class User implements GEntity<UserDTO> {
         }
 
         if(this.id == null) {
-            this.id = new UserId(UUID.randomUUID());
+            this.id = new UserId();
         }
     }
 

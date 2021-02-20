@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.group.controller;
 
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.GetAllGroupsMinifiedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GetGroupMinifiedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupDoesNotExistResponse;
@@ -34,7 +35,7 @@ public class GroupMinifiedController {
     }
 
     @GetMapping("/{id}")
-    public GetGroupMinifiedResponse.GetGroupMinifiedResponseObject getGroupMinified(@PathVariable("id") UUID id) {
+    public GetGroupMinifiedResponse.GetGroupMinifiedResponseObject getGroupMinified(@PathVariable("id") GroupId id) {
         try {
             return new GetGroupMinifiedResponse(this.groupFinder.getGroupMinified(id)).toResponseObject();
         } catch (GroupNotFoundException e) {

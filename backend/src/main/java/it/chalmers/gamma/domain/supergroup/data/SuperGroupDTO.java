@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.data;
 
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Objects;
@@ -8,14 +9,14 @@ import java.util.UUID;
 
 public class SuperGroupDTO {
 
-    private final UUID id;
+    private final SuperGroupId id;
     private final String name;
     private final String prettyName;
     private final GroupType type;
     private final String email;
     private final Text description;
 
-    public SuperGroupDTO(UUID id,
+    public SuperGroupDTO(SuperGroupId id,
                          String name,
                          String prettyName,
                          GroupType type,
@@ -37,7 +38,7 @@ public class SuperGroupDTO {
         this(null, name, prettyName, type, email, description);
     }
 
-    public UUID getId() {
+    public SuperGroupId getId() {
         return this.id;
     }
 

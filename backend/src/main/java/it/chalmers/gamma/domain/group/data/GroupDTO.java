@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.text.Text;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 
@@ -12,7 +13,7 @@ public class GroupDTO extends GroupBaseDTO {
 
     private final SuperGroupDTO superGroup;
 
-    protected GroupDTO(UUID id,
+    protected GroupDTO(GroupId id,
                        Calendar becomesActive,
                        Calendar becomesInactive,
                        Email email,

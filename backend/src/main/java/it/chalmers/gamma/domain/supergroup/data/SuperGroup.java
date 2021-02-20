@@ -3,6 +3,7 @@ package it.chalmers.gamma.domain.supergroup.data;
 import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.UUID;
@@ -14,9 +15,8 @@ import javax.persistence.*;
 @Table(name = "fkit_super_group")
 public class SuperGroup implements GEntity<SuperGroupDTO> {
 
-    @Id
-    @Column(name = "id")
-    private UUID id;
+    @EmbeddedId
+    private SuperGroupId id;
 
     @Column(name = "name")
     private String name;
@@ -44,16 +44,16 @@ public class SuperGroup implements GEntity<SuperGroupDTO> {
         } catch (IDsNotMatchingException ignored) {}
 
         if(this.id == null) {
-            this.id = UUID.randomUUID();
+            this.id = new SuperGroupId();
         }
 
     }
 
-    public void setId(UUID id) {
+    public void setId(SuperGroupId id) {
         this.id = id;
     }
 
-    public UUID getId() {
+    public SuperGroupId getId() {
         return this.id;
     }
 

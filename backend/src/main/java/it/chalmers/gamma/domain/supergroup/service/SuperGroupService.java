@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
@@ -35,7 +36,7 @@ public class SuperGroupService {
         this.repository.save(new SuperGroup(superGroupDTO));
     }
 
-    public void removeGroup(UUID id) throws SuperGroupNotFoundException, SuperGroupHasGroupsException {
+    public void removeGroup(SuperGroupId id) throws SuperGroupNotFoundException, SuperGroupHasGroupsException {
         if(this.groupFinder.getGroupsBySuperGroup(id).size() > 0) {
             throw new SuperGroupHasGroupsException();
         }

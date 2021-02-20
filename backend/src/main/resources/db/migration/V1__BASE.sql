@@ -50,7 +50,7 @@ create table password_reset_token(
 );
 
 create table fkit_super_group (
-  id            uuid                    constraint fkit_super_group_pk                  primary key,
+  super_group_id            uuid           primary key,
   name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null,
   email         varchar(100)   not null,
@@ -59,12 +59,12 @@ create table fkit_super_group (
 );
 
 create table fkit_group (
-  id                uuid                  constraint fkit_group_pk primary key,
+  group_id                uuid                   primary key,
   name              varchar(50)  not null constraint fkit_group_name_unique unique,
   pretty_name       varchar(50)  not null,
   becomes_active    date         not null,
   becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
-  fkit_super_group  uuid         not null references fkit_super_group,
+  super_group_id  uuid         not null references fkit_super_group,
   email             varchar(100) null,
   avatar_url        varchar(255) null
 );
@@ -80,14 +80,14 @@ create table authority_level (
 );
 
 create table authority (
-  fkit_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
+  super_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level varchar(30)  constraint authority_authority_level            references authority_level,
-  constraint      authority_pk primary key (post_id, fkit_group_id, authority_level) --on delete cascade
+  constraint      authority_pk primary key (post_id, group_id, authority_level) --on delete cascade
 );
 
 /*create table authority_all_posts (
- fkit_group_id   uuid  constraint authority_all_posts_fkit_super_group_fk            references fkit_super_group,
+ super_group_id   uuid  constraint authority_all_posts_fkit_super_group_fk            references fkit_super_group,
  authority_level uuid  constraint authority_all_posts_authority_level                references authority_level,
  constraint      authority_all_posts_pk primary key (fkit_group_id, authority_level) on delete cascade
 );
@@ -95,25 +95,25 @@ create table authority (
 
 create table fkit_group_website(
   id          uuid constraint fkit_group_website_pk primary key,
-  fkit_group  uuid not null references fkit_group,
+  group_id  uuid not null references fkit_group,
   website     uuid not null references website_url
 );
 
 
 create table membership (
   user_id            uuid         constraint membership_ituser_fk references ituser,
-  fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
+  group_id         uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (user_id, fkit_group_id, post_id) --on delete cascade
+  constraint membership_pk primary key (user_id, group_id, post_id) --on delete cascade
 );
 
 create table no_account_membership (
     user_name            varchar(20) not null,
-    fkit_group_id        uuid         constraint no_account_membership_fkit_group_fk references fkit_group,
+    group_id        uuid         constraint no_account_membership_fkit_group_fk references fkit_group,
     post_id              uuid         not null constraint no_account_membership_post_fk references post,
     unofficial_post_name varchar(100) null,
-    constraint no_account_membership_pk primary key (user_name, fkit_group_id)
+    constraint no_account_membership_pk primary key (user_name, group_id)
 );
 
 create table whitelist (

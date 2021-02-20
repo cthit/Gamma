@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.group.controller.request;
 
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
@@ -27,7 +28,7 @@ public class CreateOrEditGroupRequest {
     @NotNull(message = "BECOMES_INACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
     private Calendar becomesInactive;
 
-    private UUID superGroup;
+    private SuperGroupId superGroup;
 
     private String email;
 
@@ -71,11 +72,11 @@ public class CreateOrEditGroupRequest {
         this.becomesInactive = becomesInactive;
     }
 
-    public UUID getSuperGroupId() {
+    public SuperGroupId getSuperGroupId() {
         return superGroup;
     }
 
-    public void setSuperGroup(UUID superGroup) {
+    public void setSuperGroup(SuperGroupId superGroup) {
         this.superGroup = superGroup;
     }
 

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.authority.controller.request;
 
 import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -10,7 +11,7 @@ public class AddAuthorityRequest {
     @NotNull(message = "POST_MUST_BE_PROVIDED")
     private PostId postId;
     @NotNull(message = "SUPER_GROUP_MUST_BE_PROVIDED")
-    private UUID superGroupId;
+    private SuperGroupId superGroupId;
     @NotNull(message = "AUTHORITY_MUST_BE_PROVIDED")
     private String authority;
 
@@ -22,11 +23,11 @@ public class AddAuthorityRequest {
         this.postId = postId;
     }
 
-    public UUID getSuperGroupId() {
+    public SuperGroupId getSuperGroupId() {
         return superGroupId;
     }
 
-    public void setSuperGroupId(UUID superGroupId) {
+    public void setSuperGroupId(SuperGroupId superGroupId) {
         this.superGroupId = superGroupId;
     }
 

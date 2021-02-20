@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.post;
+package it.chalmers.gamma.domain.group;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -9,29 +9,29 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class PostId implements Serializable {
+public class GroupId implements Serializable {
 
     @JsonValue
-    @Column(name = "post_id")
+    @Column(name = "group_id")
     private final UUID value;
 
-    public PostId() {
+    public GroupId() {
         this.value = UUID.randomUUID();
     }
 
-    public PostId(UUID value) {
+    public GroupId(UUID value) {
         this.value = value;
     }
 
-    public static PostId valueOf(String value) {
-        return new PostId(UUID.fromString(value));
+    public static GroupId valueOf(String value) {
+        return new GroupId(UUID.fromString(value));
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PostId postId = (PostId) o;
+        GroupId postId = (GroupId) o;
         return Objects.equals(value, postId.value);
     }
 
@@ -42,6 +42,6 @@ public class PostId implements Serializable {
 
     @Override
     public String toString() {
-        return "PostId: " + this.value;
+        return "GroupId: " + this.value;
     }
 }

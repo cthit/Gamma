@@ -2,23 +2,21 @@ package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
 import it.chalmers.gamma.domain.GEntity;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "fkit_group")
 public class Group implements GEntity<GroupDTO> {
 
-    @Id
-    @Column(name = "id")
-    private UUID id;
+    @EmbeddedId
+    private GroupId id;
 
     @Column(name = "avatar_url")
     private String avatarURL;
@@ -38,8 +36,8 @@ public class Group implements GEntity<GroupDTO> {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "fkit_super_group")
-    private UUID superGroupId;
+    @Embedded
+    private SuperGroupId superGroupId;
 
     protected Group() {}
 
@@ -50,7 +48,7 @@ public class Group implements GEntity<GroupDTO> {
         } catch (IDsNotMatchingException ignored) { }
 
         if(this.id == null) {
-            this.id = UUID.randomUUID();
+            this.id = new GroupId();
         }
 
     }
@@ -70,11 +68,11 @@ public class Group implements GEntity<GroupDTO> {
         this.superGroupId = g.getSuperGroup().getId();
     }
 
-    public UUID getId() {
+    public GroupId getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(GroupId id) {
         this.id = id;
     }
 
@@ -126,11 +124,11 @@ public class Group implements GEntity<GroupDTO> {
         this.email = email.toLowerCase();
     }
 
-    public UUID getSuperGroupId() {
+    public SuperGroupId getSuperGroupId() {
         return superGroupId;
     }
 
-    public void setSuperGroupId(UUID superGroupId) {
+    public void setSuperGroupId(SuperGroupId superGroupId) {
         this.superGroupId = superGroupId;
     }
 

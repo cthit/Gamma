@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
@@ -12,7 +13,7 @@ import java.util.UUID;
  */
 public abstract class GroupBaseDTO {
 
-    private final UUID id;
+    private final GroupId id;
     private final Calendar becomesActive;
     private final Calendar becomesInactive;
     private final Email email;
@@ -20,7 +21,7 @@ public abstract class GroupBaseDTO {
     private final String prettyName;
     private final String avatarURL;
 
-    protected GroupBaseDTO(UUID id,
+    protected GroupBaseDTO(GroupId id,
                            Calendar becomesActive,
                            Calendar becomesInactive,
                            Email email,
@@ -36,7 +37,7 @@ public abstract class GroupBaseDTO {
         this.avatarURL = avatarURL;
     }
 
-    public UUID getId() {
+    public GroupId getId() {
         return id;
     }
 
@@ -71,7 +72,7 @@ public abstract class GroupBaseDTO {
 
     protected abstract static class GroupBaseDTOBuilder<T extends GroupBaseDTO, U extends GroupBaseDTOBuilder<T, U>> {
 
-        protected UUID id;
+        protected GroupId id;
         protected Calendar becomesActive;
         protected Calendar becomesInactive;
         protected Text description;
@@ -95,7 +96,7 @@ public abstract class GroupBaseDTO {
             return getThis();
         }
 
-        public U id(UUID id) {
+        public U id(GroupId id) {
             this.id = id;
             return getThis();
         }

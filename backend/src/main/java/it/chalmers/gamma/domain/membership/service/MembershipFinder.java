@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.membership.service;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.GroupBaseDTO;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
@@ -10,6 +11,7 @@ import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.UserDTO;
@@ -48,7 +50,7 @@ public class MembershipFinder {
         this.postFinder = postFinder;
     }
 
-    public List<MembershipDTO> getMembershipsInGroup(UUID groupId) {
+    public List<MembershipDTO> getMembershipsInGroup(GroupId groupId) {
         return this.membershipRepository
                 .findAllById_GroupId(groupId)
                 .stream()
@@ -56,7 +58,7 @@ public class MembershipFinder {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipRestrictedDTO> getRestrictedMembershipsInGroup(UUID groupId) {
+    public List<MembershipRestrictedDTO> getRestrictedMembershipsInGroup(GroupId groupId) {
         return getMembershipsInGroup(groupId)
                 .stream()
                 .map(MembershipRestrictedDTO::new)
@@ -67,7 +69,7 @@ public class MembershipFinder {
         return getRestrictedMembershipsInGroup(group.getId());
     }
 
-    public List<MembershipRestrictedDTO> getUserByGroupAndPost(UUID groupId, PostId postId) {
+    public List<MembershipRestrictedDTO> getUserByGroupAndPost(GroupId groupId, PostId postId) {
         return this.membershipRepository
                 .findAllById_GroupIdAndId_PostId(groupId, postId)
                 .stream().map(this::toRestrictedDTO).collect(Collectors.toList());
@@ -75,7 +77,7 @@ public class MembershipFinder {
 
     public List<GroupDTO> getGroupsWithPost(PostId postId) {
         List<Membership> memberships = this.membershipRepository.findAllById_PostId(postId);
-        List<UUID> groups = new ArrayList<>();
+        List<GroupId> groups = new ArrayList<>();
         for (Membership membership : memberships) {
             if (!groups.contains(membership.getId().getGroupId())) {
                 groups.add(membership.getId().getGroupId());
@@ -89,7 +91,7 @@ public class MembershipFinder {
                 .collect(Collectors.toList());
     }
 
-    private GroupDTO getGroup(UUID groupId) {
+    private GroupDTO getGroup(GroupId groupId) {
         try{
             return this.groupFinder.getGroup(groupId);
         } catch(GroupNotFoundException e) {
@@ -109,7 +111,7 @@ public class MembershipFinder {
         return memberships.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    protected Membership getMembershipEntityByUserGroupPost(UserId userId, UUID groupId, PostId postId) throws MembershipNotFoundException {
+    protected Membership getMembershipEntityByUserGroupPost(UserId userId, GroupId groupId, PostId postId) throws MembershipNotFoundException {
         return this.membershipRepository.findById(new MembershipPK(postId, groupId, userId))
                 .orElseThrow(MembershipNotFoundException::new);
     }
@@ -123,14 +125,14 @@ public class MembershipFinder {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipsPerGroupDTO> getActiveGroupsWithMembershipsBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+    public List<MembershipsPerGroupDTO> getActiveGroupsWithMembershipsBySuperGroup(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
         return this.getGroupsWithMembershipsBySuperGroup(superGroupId)
                 .stream()
                 .filter(groupWithMembers -> groupWithMembers.getGroup().isActive())
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipsPerGroupDTO> getGroupsWithMembershipsBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+    public List<MembershipsPerGroupDTO> getGroupsWithMembershipsBySuperGroup(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
         return this.groupFinder.getGroupsBySuperGroup(superGroupId)
                 .stream()
                 .map(this::withMembers)

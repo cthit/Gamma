@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.controller.response.*;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
@@ -67,7 +68,7 @@ public class SuperGroupAdminController {
 
 
     @DeleteMapping("/{id}")
-    public GroupDeletedResponse removeSuperGroup(@PathVariable("id") UUID id) {
+    public GroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
         try {
             this.superGroupService.removeGroup(id);
         } catch (SuperGroupNotFoundException e) {
@@ -81,7 +82,7 @@ public class SuperGroupAdminController {
     }
 
     @PutMapping("/{id}")
-    public GroupEditedResponse updateSuperGroup(@PathVariable("id") UUID id,
+    public GroupEditedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
                                                 @RequestBody CreateSuperGroupRequest request) {
         try {
             this.superGroupService.updateSuperGroup(requestToDTO(request, id));
@@ -92,7 +93,7 @@ public class SuperGroupAdminController {
         return new GroupEditedResponse();
     }
 
-    private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request, UUID id) {
+    private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request, SuperGroupId id) {
         return new SuperGroupDTO(
                 id,
                 request.getName(),

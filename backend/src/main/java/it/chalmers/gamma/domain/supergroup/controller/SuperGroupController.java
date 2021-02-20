@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.controller.response.GetActiveGroupsResponse;
 import it.chalmers.gamma.domain.group.controller.response.GetActiveGroupsResponse.GetActiveGroupResponseObject;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
@@ -46,7 +47,7 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}/subgroups")
-    public GetGroupsBySuperGroupResponse.GetGroupsBySuperGroupResponseObject getGroupsBySuperGroup(@PathVariable("id") UUID id) {
+    public GetGroupsBySuperGroupResponse.GetGroupsBySuperGroupResponseObject getGroupsBySuperGroup(@PathVariable("id") SuperGroupId id) {
         List<GroupMinifiedDTO> groups;
 
         try {
@@ -65,7 +66,7 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}")
-    public GetSuperGroupResponse getSuperGroup(@PathVariable("id") UUID id) {
+    public GetSuperGroupResponse getSuperGroup(@PathVariable("id") SuperGroupId id) {
         try {
             return new GetSuperGroupResponse(this.superGroupFinder.getSuperGroup(id));
         } catch (SuperGroupNotFoundException e) {
@@ -75,7 +76,7 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}/active")
-    public GetActiveGroupResponseObject getActiveGroup(@PathVariable("id") UUID superGroupId) {
+    public GetActiveGroupResponseObject getActiveGroup(@PathVariable("id") SuperGroupId superGroupId) {
         try {
             return new GetActiveGroupsResponse(
                     this.membershipFinder.getActiveGroupsWithMembershipsBySuperGroup(superGroupId)

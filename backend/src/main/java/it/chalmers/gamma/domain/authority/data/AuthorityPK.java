@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.authority.data;
 
 import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -12,8 +13,8 @@ import java.util.UUID;
 @Embeddable
 public class AuthorityPK implements Serializable {
 
-    @Column(name = "fkit_group_id")
-    private UUID superGroupId;
+    @Embedded
+    private SuperGroupId superGroupId;
 
     @Embedded
     private PostId postId;
@@ -23,13 +24,13 @@ public class AuthorityPK implements Serializable {
 
     protected AuthorityPK() {}
 
-    public AuthorityPK(UUID superGroupId, PostId postId, String authorityLevelName) {
+    public AuthorityPK(SuperGroupId superGroupId, PostId postId, String authorityLevelName) {
         this.superGroupId = superGroupId;
         this.postId = postId;
         this.authorityLevelName = authorityLevelName;
     }
 
-    public UUID getSuperGroupId() {
+    public SuperGroupId getSuperGroupId() {
         return superGroupId;
     }
 

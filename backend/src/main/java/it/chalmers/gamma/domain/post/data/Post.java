@@ -35,7 +35,7 @@ public class Post implements GEntity<PostDTO> {
         } catch (IDsNotMatchingException ignored) { }
 
         if(this.id == null) {
-            this.id = new PostId(UUID.randomUUID());
+            this.id = new PostId();
         }
 
     }

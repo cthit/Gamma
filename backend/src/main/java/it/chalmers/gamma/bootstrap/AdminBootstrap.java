@@ -5,12 +5,14 @@ import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExistsException;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.exception.AuthorityLevelAlreadyExistsException;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
 import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
 import it.chalmers.gamma.domain.text.Text;
@@ -53,8 +55,8 @@ public class AdminBootstrap {
             String adminMail = "admin@chalmers.it";
             String superGroupName = "superadmin";
 
-            UUID adminSuperGroupId = createAdminSuperGroup(superGroupName, adminMail);
-            UUID adminGroupId = createAdminGroup(admin, adminMail, adminSuperGroupId);
+            SuperGroupId adminSuperGroupId = createAdminSuperGroup(superGroupName, adminMail);
+            GroupId adminGroupId = createAdminGroup(admin, adminMail, adminSuperGroupId);
             PostId adminPostId = createAdminPost(admin);
             UserId adminUserId = createAdminUser(admin, adminMail);
 
@@ -93,13 +95,13 @@ public class AdminBootstrap {
         }
     }
 
-    private UUID createAdminSuperGroup(String superGroupName, String adminMail) throws AdminBootstrapFailedException {
-        UUID adminSuperGroupId;
+    private SuperGroupId createAdminSuperGroup(String superGroupName, String adminMail) throws AdminBootstrapFailedException {
+        SuperGroupId adminSuperGroupId;
 
         try {
             adminSuperGroupId = this.helper.getSuperGroupFinder().getSuperGroupByName(superGroupName).getId();
         } catch (SuperGroupNotFoundException ignored) {
-            adminSuperGroupId = UUID.randomUUID();
+            adminSuperGroupId = new SuperGroupId();
 
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
@@ -125,13 +127,13 @@ public class AdminBootstrap {
         return adminSuperGroupId;
     }
 
-    private UUID createAdminGroup(String admin, String adminMail, UUID adminSuperGroupId) throws AdminBootstrapFailedException {
-        UUID adminGroupId;
+    private GroupId createAdminGroup(String admin, String adminMail, SuperGroupId adminSuperGroupId) throws AdminBootstrapFailedException {
+        GroupId adminGroupId;
 
         try {
             adminGroupId = this.helper.getGroupFinder().getGroupByName(admin).getId();
         } catch (GroupNotFoundException ignored) {
-            adminGroupId = UUID.randomUUID();
+            adminGroupId = new GroupId();
 
             Calendar end = new GregorianCalendar();
             end.set(2099, Calendar.DECEMBER, 31);
@@ -169,7 +171,7 @@ public class AdminBootstrap {
             p.setSv(admin);
             p.setEn(admin);
 
-            adminPostId = new PostId(UUID.randomUUID());
+            adminPostId = new PostId();
 
             this.helper.getPostService().addPost(
                     new PostDTO(
@@ -184,7 +186,7 @@ public class AdminBootstrap {
     }
 
     private UserId createAdminUser(String admin, String adminMail) {
-        UserId adminUserId = new UserId(UUID.randomUUID());
+        UserId adminUserId = new UserId();
 
         this.helper.getUserCreationService().createUser(
                 new UserDTO.UserDTOBuilder()

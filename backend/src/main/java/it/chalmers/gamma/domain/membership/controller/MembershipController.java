@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.membership.controller;
 
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.membership.controller.response.GetMembershipResponse;
 import it.chalmers.gamma.domain.membership.controller.response.GetMembershipResponse.GetMembershipResponseObject;
@@ -30,7 +31,7 @@ public class MembershipController {
     }
 
     @GetMapping("/{id}/members")
-    public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") UUID id) {
+    public GetMembershipResponseObject getUsersInGroup(@PathVariable("id") GroupId id) {
         return new GetMembershipResponse(
                 this.membershipFinder.getRestrictedMembershipsInGroup(id)
         ).toResponseObject();

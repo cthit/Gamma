@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.service;
 
 import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
@@ -25,11 +26,11 @@ public class SuperGroupFinder {
         return this.superGroupRepository.existsByName(name);
     }
 
-    public boolean superGroupExists(UUID id) {
+    public boolean superGroupExists(SuperGroupId id) {
         return this.superGroupRepository.existsById(id);
     }
 
-    public SuperGroupDTO getSuperGroup(UUID id) throws SuperGroupNotFoundException {
+    public SuperGroupDTO getSuperGroup(SuperGroupId id) throws SuperGroupNotFoundException {
         return toDTO(getSuperGroupEntity(id));
     }
 
@@ -37,7 +38,7 @@ public class SuperGroupFinder {
         return toDTO(getSuperGroupEntityByName(name));
     }
 
-    protected SuperGroup getSuperGroupEntity(UUID id) throws SuperGroupNotFoundException {
+    protected SuperGroup getSuperGroupEntity(SuperGroupId id) throws SuperGroupNotFoundException {
         return this.superGroupRepository.findById(id).orElseThrow(SuperGroupNotFoundException::new);
     }
 

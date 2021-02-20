@@ -10,6 +10,7 @@ import it.chalmers.gamma.domain.authority.controller.request.AddAuthorityRequest
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.domain.post.service.PostService;
@@ -68,7 +69,7 @@ public final class AuthorityAdminController {
     }
 
     @DeleteMapping("/{superGroupId}/{postId}/{authorityLevelName}")
-    public AuthorityRemovedResponse removeAuthority(@PathVariable("superGroupId") UUID superGroupId,
+    public AuthorityRemovedResponse removeAuthority(@PathVariable("superGroupId") SuperGroupId superGroupId,
                                                     @PathVariable("postId") PostId postId,
                                                     @PathVariable("authorityLevelName") String authorityLevelName) {
         try {

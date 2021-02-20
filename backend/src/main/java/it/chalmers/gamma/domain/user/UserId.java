@@ -13,9 +13,11 @@ public class UserId implements Serializable {
 
     @JsonValue
     @Column(name = "user_id")
-    private UUID value;
+    private final UUID value;
 
-    protected UserId() { }
+    public UserId() {
+        this.value = UUID.randomUUID();
+    }
 
     public UserId(UUID value) {
         this.value = value;

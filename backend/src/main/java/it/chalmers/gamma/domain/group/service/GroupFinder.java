@@ -1,9 +1,11 @@
 package it.chalmers.gamma.domain.group.service;
 
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.*;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
 import org.springframework.stereotype.Component;
@@ -28,7 +30,7 @@ public class GroupFinder {
         return this.groupRepository.existsByName(name);
     }
 
-    public boolean groupExists(UUID groupId) {
+    public boolean groupExists(GroupId groupId) {
         return this.groupRepository.existsById(groupId);
     }
 
@@ -40,7 +42,7 @@ public class GroupFinder {
         return this.getGroups().stream().map(GroupMinifiedDTO::new).collect(Collectors.toList());
     }
 
-    public GroupDTO getGroup(UUID id) throws GroupNotFoundException {
+    public GroupDTO getGroup(GroupId id) throws GroupNotFoundException {
         return toDTO(getGroupEntity(id));
     }
 
@@ -48,11 +50,11 @@ public class GroupFinder {
         return toDTO(getGroupEntityByName(name));
     }
 
-    public GroupMinifiedDTO getGroupMinified(UUID id) throws GroupNotFoundException {
+    public GroupMinifiedDTO getGroupMinified(GroupId id) throws GroupNotFoundException {
         return new GroupMinifiedDTO(this.getGroup(id));
     }
 
-    protected Group getGroupEntity(UUID id) throws GroupNotFoundException {
+    protected Group getGroupEntity(GroupId id) throws GroupNotFoundException {
         return this.groupRepository.findById(id)
                 .orElseThrow(GroupNotFoundException::new);
     }
@@ -70,7 +72,7 @@ public class GroupFinder {
                 .orElseThrow(GroupNotFoundException::new);
     }
 
-    public List<GroupDTO> getGroupsBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+    public List<GroupDTO> getGroupsBySuperGroup(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
         if(superGroupFinder.superGroupExists(superGroupId)) {
             throw new SuperGroupNotFoundException();
         }
@@ -81,14 +83,14 @@ public class GroupFinder {
                 .collect(Collectors.toList());
     }
 
-    public List<GroupMinifiedDTO> getGroupsMinifiedBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+    public List<GroupMinifiedDTO> getGroupsMinifiedBySuperGroup(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
         return getGroupsBySuperGroup(superGroupId)
                 .stream()
                 .map(GroupMinifiedDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public List<GroupMinifiedDTO> getActiveGroupsMinifiedBySuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+    public List<GroupMinifiedDTO> getActiveGroupsMinifiedBySuperGroup(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
         return getGroupsBySuperGroup(superGroupId)
                 .stream()
                 .filter(GroupBaseDTO::isActive)

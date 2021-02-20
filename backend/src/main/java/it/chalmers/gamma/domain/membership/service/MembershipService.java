@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.membership.service;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.data.Membership;
 import it.chalmers.gamma.domain.membership.data.MembershipPK;
@@ -31,7 +32,7 @@ public class MembershipService {
         this.membershipRepository.save(new Membership(membership));
     }
 
-    public void removeMembership(UserId userId, UUID groupId, PostId postId) throws MembershipNotFoundException {
+    public void removeMembership(UserId userId, GroupId groupId, PostId postId) throws MembershipNotFoundException {
         if(!this.membershipRepository.existsById(new MembershipPK(postId, groupId, userId))) {
             throw new MembershipNotFoundException();
         }

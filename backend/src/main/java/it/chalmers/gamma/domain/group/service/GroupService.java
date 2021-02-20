@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.group.service;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.Group;
 import it.chalmers.gamma.domain.group.data.GroupRepository;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
@@ -51,7 +52,7 @@ public class GroupService {
         this.repo.save(group);
     }
 
-    public void removeGroup(UUID groupId) throws GroupNotFoundException {
+    public void removeGroup(GroupId groupId) throws GroupNotFoundException {
         if(!this.groupFinder.groupExists(groupId)) {
             throw new GroupNotFoundException();
         }

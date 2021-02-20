@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.text.Text;
 
 import java.util.UUID;
@@ -9,7 +10,7 @@ public class GroupMinifiedDTO {
 
     private final String name;
     private final Email email;
-    private final UUID id;
+    private final GroupId id;
     private final String prettyName;
 
     public GroupMinifiedDTO(GroupDTO g) {
@@ -27,7 +28,7 @@ public class GroupMinifiedDTO {
         return this.email;
     }
 
-    public UUID getId() {
+    public GroupId getId() {
         return this.id;
     }
 

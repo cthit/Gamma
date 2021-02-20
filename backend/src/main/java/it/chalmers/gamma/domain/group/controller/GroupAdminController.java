@@ -2,6 +2,7 @@ package it.chalmers.gamma.domain.group.controller;
 
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
@@ -70,7 +71,7 @@ public final class GroupAdminController {
 
     @PutMapping("/{id}")
     public GroupEditedResponse editGroup(@Valid @RequestBody CreateOrEditGroupRequest request,
-            @PathVariable("id") UUID id,
+            @PathVariable("id") GroupId id,
             BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
@@ -88,7 +89,7 @@ public final class GroupAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public GroupDeletedResponse deleteGroup(@PathVariable("id") UUID id) {
+    public GroupDeletedResponse deleteGroup(@PathVariable("id") GroupId id) {
         try {
             this.groupService.removeGroup(id);
         } catch (GroupNotFoundException e) {
@@ -102,7 +103,7 @@ public final class GroupAdminController {
      * This is the only thing a non-admin user that's part of the group can change
      */
     @PutMapping("/{id}/avatar")
-    public GroupEditedResponse editAvatar(@PathVariable("id") UUID id, @RequestParam MultipartFile file) {
+    public GroupEditedResponse editAvatar(@PathVariable("id") GroupId id, @RequestParam MultipartFile file) {
         try {
             String url = ImageUtils.saveImage(file, file.getName());
             GroupDTO group = this.groupFinder.getGroup(id);
@@ -121,10 +122,10 @@ public final class GroupAdminController {
     }
 
     private GroupShallowDTO requestToDTO(CreateOrEditGroupRequest request) {
-        return baseGroupDTOBuilder(request).id(UUID.randomUUID()).build();
+        return baseGroupDTOBuilder(request).build();
     }
 
-    private GroupShallowDTO requestToDTO(CreateOrEditGroupRequest request, UUID id) {
+    private GroupShallowDTO requestToDTO(CreateOrEditGroupRequest request, GroupId id) {
         return baseGroupDTOBuilder(request).id(id).build();
     }
 
