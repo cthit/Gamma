@@ -1,13 +1,8 @@
 package it.chalmers.gamma.domain.client.data;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import it.chalmers.gamma.domain.client.ClientId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/*
- *  String is the client id
- */
 @Repository
-public interface ClientRepository extends JpaRepository<Client, String> { }
+public interface ClientRepository extends JpaRepository<Client, ClientId> { }

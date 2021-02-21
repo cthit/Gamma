@@ -54,9 +54,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
-    //@Value("${security.jwt.token.audience}")
-    //private String audience;
-
     @Value("${security.jwt.token.expire-length}")
     private long expiration;
 
@@ -92,7 +89,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
             Map<String, Object> additionalInfo = new HashMap<>();
             additionalInfo.put("iss", this.issuer);
-            //  additionalInfo.put("aud", this.audience);
             ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             ((DefaultOAuth2AccessToken) accessToken).setExpiration(
                     new Date(System.currentTimeMillis() + this.expiration * 1000));

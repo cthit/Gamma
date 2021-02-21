@@ -19,7 +19,7 @@ public class PostId implements Serializable {
         this.value = UUID.randomUUID();
     }
 
-    public PostId(UUID value) {
+    private PostId(UUID value) {
         this.value = value;
     }
 

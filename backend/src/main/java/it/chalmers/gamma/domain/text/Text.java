@@ -1,9 +1,6 @@
 package it.chalmers.gamma.domain.text;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.persistence.*;
 
@@ -76,5 +73,10 @@ public class Text {
     @Override
     public int hashCode() {
         return Objects.hash(this.textId, this.sv, this.en);
+    }
+
+    public void apply(Text description) {
+        this.sv = description.getSv();
+        this.en = description.getEn();
     }
 }

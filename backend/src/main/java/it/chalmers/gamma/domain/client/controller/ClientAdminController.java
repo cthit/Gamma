@@ -1,11 +1,14 @@
 package it.chalmers.gamma.domain.client.controller;
 
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.client.ClientSecret;
+import it.chalmers.gamma.domain.client.controller.request.EditClientInformationRequest;
 import it.chalmers.gamma.domain.client.data.ClientDTO;
 import it.chalmers.gamma.domain.client.exception.ClientNotFoundException;
 import it.chalmers.gamma.domain.client.service.ClientFinder;
 import it.chalmers.gamma.domain.client.service.ClientService;
-import it.chalmers.gamma.domain.client.controller.request.AddOrEditClientRequest;
+import it.chalmers.gamma.domain.client.controller.request.AddClientRequest;
 import it.chalmers.gamma.domain.client.controller.response.ClientAddedResponse;
 import it.chalmers.gamma.domain.client.controller.response.ClientAddedResponse.ClientAddedResponseObject;
 import it.chalmers.gamma.domain.client.controller.response.ClientEditedResponse;
@@ -16,9 +19,6 @@ import it.chalmers.gamma.domain.client.controller.response.GetClientResponse.Get
 import it.chalmers.gamma.domain.client.controller.response.ClientDoesNotExistResponse;
 import it.chalmers.gamma.domain.client.controller.response.ClientRemovedResponse;
 
-import java.util.UUID;
-
-import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,26 +46,18 @@ public class ClientAdminController {
     }
 
     @PostMapping()
-    public ClientAddedResponseObject addITClient(@RequestBody AddOrEditClientRequest request) {
-        String clientSecret = "{noop}" + TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
-                TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS
-        );
-
-        String clientId = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
-                TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS
-        );
+    public ClientAddedResponseObject addITClient(@RequestBody AddClientRequest request) {
+        ClientSecret clientSecret = new ClientSecret();
 
         this.clientService.createClient(
-                new ClientDTO.ClientDTOBuilder()
-                        .name(request.getName())
-                        .webServerRedirectUri(request.getWebServerRedirectUri())
-                        .autoApprove(request.isAutoApprove())
-                        .description(request.getDescription())
-                        .clientId(clientId)
-                        .clientSecret(clientSecret)
-                        .build()
+                new ClientDTO(
+                        new ClientId(),
+                        clientSecret,
+                        request.getWebServerRedirectUri(),
+                        request.isAutoApprove(),
+                        request.getName(),
+                        request.getDescription()
+                )
         );
 
         return new ClientAddedResponse(clientSecret).toResponseObject();
@@ -77,7 +69,7 @@ public class ClientAdminController {
     }
 
     @GetMapping("/{clientId}")
-    public GetClientResponseObject getClient(@PathVariable("clientId") String id) {
+    public GetClientResponseObject getClient(@PathVariable("clientId") ClientId id) {
         try {
             return new GetClientResponse(this.clientFinder.getClient(id)).toResponseObject();
         } catch (ClientNotFoundException e) {
@@ -87,7 +79,7 @@ public class ClientAdminController {
     }
 
     @DeleteMapping("/{clientId}")
-    public ClientRemovedResponse removeClient(@PathVariable("clientId") String id) {
+    public ClientRemovedResponse removeClient(@PathVariable("clientId") ClientId id) {
         try {
             this.clientService.removeClient(id);
             return new ClientRemovedResponse();
@@ -98,28 +90,14 @@ public class ClientAdminController {
     }
 
     @PutMapping("/{clientId}")
-    public ClientEditedResponse editClient(@PathVariable("clientId") String clientId, @RequestBody AddOrEditClientRequest request) {
+    public ClientEditedResponse editClient(@PathVariable("clientId") ClientId clientId, @RequestBody EditClientInformationRequest request) {
         try {
-            this.clientService.editClient(requestToDTO(request, clientId));
+            this.clientService.editClient(clientId, request.getDescription());
             return new ClientEditedResponse();
-        } catch (IDsNotMatchingException | ClientNotFoundException e) {
+        } catch (ClientNotFoundException e) {
             LOGGER.error("Client not found", e);
             throw new ClientDoesNotExistResponse();
         }
-    }
-
-    private ClientDTO requestToDTO(AddOrEditClientRequest request) {
-        return this.requestToDTO(request, null);
-    }
-
-    private ClientDTO requestToDTO(AddOrEditClientRequest request, String clientId) {
-        return new ClientDTO.ClientDTOBuilder()
-                .clientId(clientId)
-                .webServerRedirectUri(request.getWebServerRedirectUri())
-                .name(request.getName())
-                .autoApprove(request.isAutoApprove())
-                .description(request.getDescription())
-                .build();
     }
 
 }

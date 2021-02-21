@@ -1,46 +1,27 @@
 package it.chalmers.gamma.domain.client.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import it.chalmers.gamma.domain.GEntity;
 import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.client.ClientSecret;
 import it.chalmers.gamma.domain.text.Text;
 
-import java.time.Instant;
 import java.util.Objects;
-import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "itclient")
 public class Client implements GEntity<ClientDTO> {
 
-    @Id
-    @Column(name = "client_id")
-    private String clientId;
+    @EmbeddedId
+    private ClientId clientId;
 
-    @Column(name = "client_secret")
-    private String clientSecret;
+    @Embedded
+    private ClientSecret clientSecret;
 
     @Column(name = "web_server_redirect_uri")
     private String webServerRedirectUri;
-
-    @Column(name = "access_token_validity")
-    private int accessTokenValidity;
-
-    @Column(name = "refresh_token_validity")
-    private int refreshTokenValidity;
 
     @Column(name = "auto_approve")
     private boolean autoApprove;
@@ -69,27 +50,25 @@ public class Client implements GEntity<ClientDTO> {
         this.clientId = c.getClientId();
         this.clientSecret = c.getClientSecret();
         this.webServerRedirectUri = c.getWebServerRedirectUri();
-        this.accessTokenValidity = c.getAccessTokenValidity();
-        this.refreshTokenValidity = c.getRefreshTokenValidity();
         this.autoApprove = c.isAutoApprove();
         this.name = c.getName();
         this.description = c.getDescription();
 
     }
 
-    public String getClientId() {
+    public ClientId getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    public void setClientId(ClientId clientId) {
         this.clientId = clientId;
     }
 
-    public String getClientSecret() {
+    public ClientSecret getClientSecret() {
         return clientSecret;
     }
 
-    public void setClientSecret(String clientSecret) {
+    public void setClientSecret(ClientSecret clientSecret) {
         this.clientSecret = clientSecret;
     }
 
@@ -99,22 +78,6 @@ public class Client implements GEntity<ClientDTO> {
 
     public void setWebServerRedirectUri(String webServerRedirectUri) {
         this.webServerRedirectUri = webServerRedirectUri;
-    }
-
-    public int getAccessTokenValidity() {
-        return accessTokenValidity;
-    }
-
-    public void setAccessTokenValidity(int accessTokenValidity) {
-        this.accessTokenValidity = accessTokenValidity;
-    }
-
-    public int getRefreshTokenValidity() {
-        return refreshTokenValidity;
-    }
-
-    public void setRefreshTokenValidity(int refreshTokenValidity) {
-        this.refreshTokenValidity = refreshTokenValidity;
     }
 
     public boolean isAutoApprove() {
@@ -152,9 +115,7 @@ public class Client implements GEntity<ClientDTO> {
         }
 
         Client client = (Client) o;
-        return this.accessTokenValidity == client.accessTokenValidity
-            && this.refreshTokenValidity == client.refreshTokenValidity
-            && this.autoApprove == client.autoApprove
+        return this.autoApprove == client.autoApprove
             && Objects.equals(this.clientId, client.clientId)
             && Objects.equals(this.clientSecret, client.clientSecret)
             && Objects.equals(this.webServerRedirectUri, client.webServerRedirectUri)
@@ -168,8 +129,6 @@ public class Client implements GEntity<ClientDTO> {
                 this.clientId,
                 this.clientSecret,
                 this.webServerRedirectUri,
-                this.accessTokenValidity,
-                this.refreshTokenValidity,
                 this.autoApprove,
                 this.name,
                 this.description
@@ -182,8 +141,6 @@ public class Client implements GEntity<ClientDTO> {
                 + ", clientId='" + this.clientId + '\''
                 + ", clientSecret={redacted}'\''"
                 + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''
-                + ", accessTokenValidity=" + this.accessTokenValidity
-                + ", refreshTokenValidity=" + this.refreshTokenValidity
                 + ", autoApprove=" + this.autoApprove
                 + ", name='" + this.name + '\''
                 + ", description='" + this.description + '\''

@@ -22,10 +22,10 @@ public class CreateOrEditGroupRequest {
 
     private String avatarURL;
 
-    @NotNull(message = "BECOMES_ACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
+    @NotNull(message = "BECOMES_ACTIVE_MUST_BE_PROVIDED")
     private Calendar becomesActive;
 
-    @NotNull(message = "BECOMES_INACTIVE_MUST_BE_PROVIDED")       // MORE SPECIFIC CHECK
+    @NotNull(message = "BECOMES_INACTIVE_MUST_BE_PROVIDED")
     private Calendar becomesInactive;
 
     private SuperGroupId superGroup;

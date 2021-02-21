@@ -27,10 +27,8 @@ create table ituser (
   phone             varchar(15)     null,
   language          varchar(15)     null,
   avatar_url        varchar(255)    default 'default.jpg',
-  gdpr              boolean         not null default false,
   user_agreement    boolean         not null default false,
-  account_locked    boolean         not null default false,
-  acceptance_year   integer         constraint ituser_valid_year check (acceptance_year >= 2001),
+  acceptance_year   integer,
   activated         boolean         DEFAULT FALSE
 );
 
@@ -40,9 +38,13 @@ create table ituser_website (
   website     uuid not null references website_url
 );
 
-/*create table ituser_gdpr (
+create table ituser_gdpr_training (
+ user_id    uuid    primary key
+);
 
-)*/
+create table ituser_account_locked (
+ user_id uuid primary key
+);
 
 create table password_reset_token(
   token   varchar(100) not null,
@@ -131,8 +133,6 @@ create table itclient (
     client_id varchar(75) primary key,
     client_secret varchar(75) not null,
     web_server_redirect_uri varchar(256) not null,
-    access_token_validity integer not null,
-    refresh_token_validity integer not null,
     auto_approve boolean default false not null,
     name varchar(30) not null,
     description uuid references internal_text
@@ -147,6 +147,6 @@ create table apikey (
 
 create table it_user_approval (
   user_id UUID REFERENCES ituser,
-  itclient_id varchar(75) REFERENCES itclient(client_id),
-  CONSTRAINT it_user_approval_pk PRIMARY KEY(user_id, itclient_id)
+  client_id varchar(75) REFERENCES itclient(client_id),
+  CONSTRAINT it_user_approval_pk PRIMARY KEY(user_id, client_id)
 );

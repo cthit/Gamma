@@ -19,10 +19,6 @@ public class MockGroup {
     private List<MockMembership> members;
     private SuperGroupId superGroup;
 
-    /**
-     * If true, then this group will be active from today until a year forward.
-     * If false, then this group was active a year ago to yesterday.
-     */
     private boolean active;
 
     public GroupId getId() {

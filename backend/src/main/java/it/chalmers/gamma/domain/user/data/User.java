@@ -43,14 +43,8 @@ public class User implements GEntity<UserDTO> {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @Column(name = "gdpr")
-    private boolean gdpr;
-
     @Column(name = "user_agreement")
     private boolean userAgreement;
-
-    @Column(name = "account_locked")
-    private boolean accountLocked;
 
     @Column(name = "activated")
     private boolean activated;
@@ -152,28 +146,12 @@ public class User implements GEntity<UserDTO> {
         this.avatarUrl = avatarUrl;
     }
 
-    public boolean isGdpr() {
-        return gdpr;
-    }
-
-    public void setGdpr(boolean gdpr) {
-        this.gdpr = gdpr;
-    }
-
     public boolean isUserAgreement() {
         return userAgreement;
     }
 
     public void setUserAgreement(boolean userAgreement) {
         this.userAgreement = userAgreement;
-    }
-
-    public boolean isAccountLocked() {
-        return accountLocked;
-    }
-
-    public void setAccountLocked(boolean accountLocked) {
-        this.accountLocked = accountLocked;
     }
 
     public boolean isActivated() {
@@ -201,8 +179,7 @@ public class User implements GEntity<UserDTO> {
             return false;
         }
         User user = (User) o;
-        return this.gdpr == user.gdpr
-                && this.userAgreement == user.userAgreement
+        return this.userAgreement == user.userAgreement
                 && Objects.equals(this.id, user.id)
                 && Objects.equals(this.cid, user.cid)
                 && Objects.equals(this.nick, user.nick)
@@ -229,7 +206,6 @@ public class User implements GEntity<UserDTO> {
                 this.phone,
                 this.language,
                 this.avatarUrl,
-                this.gdpr,
                 this.userAgreement,
                 this.acceptanceYear);
     }
@@ -248,9 +224,7 @@ public class User implements GEntity<UserDTO> {
                 ", phone='" + phone + '\'' +
                 ", language=" + language +
                 ", avatarUrl='" + avatarUrl + '\'' +
-                ", gdpr=" + gdpr +
                 ", userAgreement=" + userAgreement +
-                ", accountLocked=" + accountLocked +
                 ", activated=" + activated +
                 ", acceptanceYear=" + acceptanceYear +
                 '}';
@@ -266,12 +240,10 @@ public class User implements GEntity<UserDTO> {
         this.acceptanceYear = u.getAcceptanceYear().getValue();
         this.activated = u.isActivated();
         this.avatarUrl = u.getAvatarUrl();
-        this.accountLocked = u.isAccountLocked();
         this.cid = u.getCid();
         this.email = u.getEmail();
         this.firstName = u.getFirstName();
         this.lastName = u.getLastName();
-        this.gdpr = u.isGdpr();
         this.language = u.getLanguage();
         this.nick = u.getNick();
         this.userAgreement = u.isUserAgreement();

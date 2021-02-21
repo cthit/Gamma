@@ -19,7 +19,7 @@ public class GroupId implements Serializable {
         this.value = UUID.randomUUID();
     }
 
-    public GroupId(UUID value) {
+    private GroupId(UUID value) {
         this.value = value;
     }
 

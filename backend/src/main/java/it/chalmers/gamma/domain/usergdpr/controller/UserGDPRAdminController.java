@@ -8,10 +8,9 @@ import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.usergdpr.controller.response.GDPRStatusEditedResponse;
 import it.chalmers.gamma.domain.usergdpr.controller.response.UsersWithGDPRResponse;
-import it.chalmers.gamma.domain.usergdpr.service.UserGDPRService;
+import it.chalmers.gamma.domain.usergdpr.service.UserGDPRTrainingService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.validation.BindingResult;
@@ -26,11 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/gdpr")
 public class UserGDPRAdminController {
 
-    private final UserGDPRService userGDPRService;
+    private final UserGDPRTrainingService userGDPRTrainingService;
     private final UserFinder userFinder;
 
-    public UserGDPRAdminController(UserGDPRService userGDPRService, UserFinder userFinder) {
-        this.userGDPRService = userGDPRService;
+    public UserGDPRAdminController(UserGDPRTrainingService userGDPRTrainingService, UserFinder userFinder) {
+        this.userGDPRTrainingService = userGDPRTrainingService;
         this.userFinder = userFinder;
     }
 
@@ -43,7 +42,7 @@ public class UserGDPRAdminController {
         }
 
         try {
-            userGDPRService.editGDPR(id, request.isGdpr());
+            userGDPRTrainingService.editGDPR(id, request.isGdpr());
         } catch (UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
@@ -53,6 +52,6 @@ public class UserGDPRAdminController {
 
     @GetMapping("/minified")
     public UsersWithGDPRResponse.UsersWithGDPRResponseObject getAllUserMini() {
-        return new UsersWithGDPRResponse(userGDPRService.getUsersWithGDPR()).toResponseObject();
+        return new UsersWithGDPRResponse(userGDPRTrainingService.getUsersWithGDPR()).toResponseObject();
     }
 }

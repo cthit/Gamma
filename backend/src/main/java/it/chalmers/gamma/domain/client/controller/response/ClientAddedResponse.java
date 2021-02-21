@@ -1,16 +1,18 @@
 package it.chalmers.gamma.domain.client.controller.response;
 
+import it.chalmers.gamma.domain.client.ClientSecret;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class ClientAddedResponse {
-    private final String clientSecret;
 
-    public ClientAddedResponse(String secret) {
+    private final ClientSecret clientSecret;
+
+    public ClientAddedResponse(ClientSecret secret) {
         this.clientSecret = secret;
     }
 
-    public String getClientSecret() {
+    public ClientSecret getClientSecret() {
         return this.clientSecret;
     }
 

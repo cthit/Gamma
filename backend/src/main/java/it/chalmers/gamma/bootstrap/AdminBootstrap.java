@@ -196,15 +196,19 @@ public class AdminBootstrap {
                         .acceptanceYear(Year.of(2018))
                         .cid(new Cid(admin))
                         .email(new Email(adminMail))
-                        .accountLocked(false)
                         .firstName(admin)
                         .lastName(admin)
-                        .gdpr(true)
                         .nick(admin)
                         .language(Language.EN)
                         .build(),
                 config.getPassword()
         );
+
+        try {
+            this.helper.getUserGDPRService().editGDPR(adminUserId, true);
+        } catch (UserNotFoundException e) {
+            LOGGER.error("OH NO I KNEW IT", e);
+        }
 
         return adminUserId;
     }

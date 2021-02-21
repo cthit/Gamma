@@ -20,7 +20,7 @@ public class TextId implements Serializable {
         this.value = UUID.randomUUID();
     }
 
-    public TextId(UUID value) {
+    private TextId(UUID value) {
         this.value = value;
     }
 

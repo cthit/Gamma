@@ -7,10 +7,10 @@ import {
 import {
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_DESCRIPTION_SWEDISH,
-    CLIENT_OAUTH_ID,
     CLIENT_NAME,
     CLIENT_REDIRECT,
-    CLIENT_AUTO_APPROVE
+    CLIENT_AUTO_APPROVE,
+    CLIENT_ID
 } from "../../api/clients/props.clients.api";
 
 export const validationSchema = text => {
@@ -101,7 +101,7 @@ export const keysText = text => {
     keysText[CLIENT_REDIRECT] = text.RedirectURI;
     keysText[CLIENT_DESCRIPTION_SWEDISH] = text.SwedishDescription;
     keysText[CLIENT_DESCRIPTION_ENGLISH] = text.EnglishDescription;
-    keysText[CLIENT_OAUTH_ID] = text.ClientId;
+    keysText[CLIENT_ID] = text.ClientId;
     keysText[CLIENT_AUTO_APPROVE] = text.AutoApprove;
 
     return keysText;
@@ -109,7 +109,6 @@ export const keysText = text => {
 
 export const keysOrder = () => [
     CLIENT_NAME,
-    CLIENT_OAUTH_ID,
     CLIENT_REDIRECT,
     CLIENT_DESCRIPTION_SWEDISH,
     CLIENT_DESCRIPTION_ENGLISH,

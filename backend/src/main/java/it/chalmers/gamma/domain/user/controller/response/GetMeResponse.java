@@ -7,11 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GetMeResponse {
 
-    //TODO should be UserDTO
     private final UserRestrictedWithGroupsDTO user;
     private final List<AuthorityLevelName> authorities;
 

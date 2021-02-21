@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
                     user.getCid().get(),
                     user.getPassword(),
                     authorities,
-                    user.isAccountLocked()
+                    false
             );
         } catch (UserNotFoundException e) {
             LOGGER.error("User not found", e);

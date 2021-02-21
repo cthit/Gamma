@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.approval.data;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.io.Serializable;
@@ -18,12 +19,12 @@ public class UserApprovalPK implements Serializable {
     @Embedded
     private UserId userId;
 
-    @Column(name = "itclient_id")
-    private String clientId;
+    @Embedded
+    private ClientId clientId;
 
     protected UserApprovalPK() {}
 
-    public UserApprovalPK(UserId userId, String clientId) {
+    public UserApprovalPK(UserId userId, ClientId clientId) {
         this.userId = userId;
         this.clientId = clientId;
     }
@@ -32,7 +33,7 @@ public class UserApprovalPK implements Serializable {
         return userId;
     }
 
-    public String getClientId() {
+    public ClientId getClientId() {
         return clientId;
     }
 

@@ -75,13 +75,6 @@ public class PasswordResetService {
 
     }
 
-    /**
-     * adds or edits a token that associated with a user wanting to do a password reset.
-     *
-     * @param passwordResetToken the token object used to create a new association
-     * @param userDTO               the user that attempted a password reset
-     * @param token              the token word that is associated with the password reset
-     */
     private void setToken(PasswordResetToken passwordResetToken, UserDTO user, String token) {
         passwordResetToken.setUserId(user.getId());
         passwordResetToken.setToken(token);
@@ -102,8 +95,6 @@ public class PasswordResetService {
         }
     }
 
-
-    // TODO Make sure that an URL is added to the email
     private void sendMail(UserDTO user, String token) {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "

@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.issuer = issuer;
     }
 
-    //TODO This function might cause some problems if sent wrong info.
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,

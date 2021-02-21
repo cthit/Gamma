@@ -53,8 +53,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
-    // THIS IS SOOOOOOO UGLY
-    // Can't figure out another, less hacky way to do it...
+
     private Authentication getAdminAuthentication() {
         UserDetails userDetails = this.userService.loadUserByUsername("admin");
         return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());

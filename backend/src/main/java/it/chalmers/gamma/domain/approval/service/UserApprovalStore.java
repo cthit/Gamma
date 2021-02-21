@@ -3,6 +3,7 @@ package it.chalmers.gamma.domain.approval.service;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.approval.data.UserApproval;
 import it.chalmers.gamma.domain.approval.exception.UserApprovalNotFoundException;
+import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.client.exception.ClientNotFoundException;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
@@ -60,7 +61,7 @@ public class UserApprovalStore implements ApprovalStore {
         try {
             UserId userId = this.userFinder.getUser(new Cid(cid)).getId();
 
-            UserApproval userApproval = this.userApprovalFinder.getApproval(userId, clientId);
+            UserApproval userApproval = this.userApprovalFinder.getApproval(userId, new ClientId(clientId));
             return userApproval == null
                     ? Collections.emptyList()
                     : Collections.singleton(

@@ -19,7 +19,7 @@ public class ApiKeyId implements Serializable {
         this.value = UUID.randomUUID();
     }
 
-    public ApiKeyId(UUID value) {
+    private ApiKeyId(UUID value) {
         this.value = value;
     }
 

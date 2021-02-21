@@ -61,7 +61,6 @@ public final class UserController {
         try {
             this.userCreationService.createUserByCode(requestToDTO(request), request.getPassword(), request.getCode());
         } catch (CidOrCodeNotMatchException e) {
-
             // If anything is wrong, throw generic error
             throw new CodeOrCidIsWrongResponse();
         }

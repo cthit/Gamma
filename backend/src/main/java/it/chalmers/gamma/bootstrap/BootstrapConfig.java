@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.client.ClientId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +14,7 @@ public class BootstrapConfig {
     private String oauth2ClientName;
 
     @Value("${application.default-oauth2-client.client-id}")
-    private String oauth2ClientId;
+    private ClientId oauth2ClientId;
 
     @Value("${application.default-oauth2-client.client-secret}")
     private String oauth2ClientSecret;
@@ -27,7 +28,7 @@ public class BootstrapConfig {
     @Value("${application.mocking}")
     private boolean mocking;
 
-    @Value("${application.auth.accessTokenValidityTime}")       // TODO Fix this
+    @Value("${application.auth.accessTokenValidityTime}")
     private int accessTokenValidityTime;
 
     @Value("${application.auth.refreshTokenValidityTime}")
@@ -41,7 +42,7 @@ public class BootstrapConfig {
         return this.oauth2ClientName;
     }
 
-    public String getOauth2ClientId() {
+    public ClientId getOauth2ClientId() {
         return this.oauth2ClientId;
     }
 

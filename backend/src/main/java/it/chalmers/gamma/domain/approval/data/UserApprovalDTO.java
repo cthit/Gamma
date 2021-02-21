@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.approval.data;
 
+import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.Objects;
@@ -8,14 +9,14 @@ import java.util.UUID;
 public class UserApprovalDTO {
 
     private final UserId userId;
-    private final String clientId;
+    private final ClientId clientId;
 
-    public UserApprovalDTO(UserId userId, String clientId) {
+    public UserApprovalDTO(UserId userId, ClientId clientId) {
         this.userId = userId;
         this.clientId = clientId;
     }
 
-    public String getClientId() {
+    public ClientId getClientId() {
         return clientId;
     }
 
@@ -38,7 +39,7 @@ public class UserApprovalDTO {
 
     @Override
     public String toString() {
-        return "ITUserApprovalDTO{" +
+        return "UserApprovalDTO{" +
                 "clientId=" + clientId +
                 ", userId=" + userId +
                 '}';

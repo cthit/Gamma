@@ -1,20 +1,18 @@
 package it.chalmers.gamma.domain.client.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.domain.client.data.ClientDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetClientResponse {
-    @JsonUnwrapped
-    private final ClientDTO itClient;
 
-    public GetClientResponse(ClientDTO itClient) {
-        this.itClient = itClient;
-    }
+    @JsonValue
+    private final ClientDTO client;
 
-    public ClientDTO getItClient() {
-        return this.itClient;
+    public GetClientResponse(ClientDTO client) {
+        this.client = client;
     }
 
     public GetClientResponseObject toResponseObject() {

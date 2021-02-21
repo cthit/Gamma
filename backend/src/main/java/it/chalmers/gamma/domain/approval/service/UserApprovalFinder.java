@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.approval.data.UserApprovalDTO;
 import it.chalmers.gamma.domain.approval.data.UserApprovalPK;
 import it.chalmers.gamma.domain.approval.data.UserApprovalRepository;
 import it.chalmers.gamma.domain.approval.exception.UserApprovalNotFoundException;
+import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class UserApprovalFinder {
         this.userApprovalRepository = userApprovalRepository;
     }
 
-    public UserApproval getApproval(UserId userId, String clientId) throws UserApprovalNotFoundException {
+    public UserApproval getApproval(UserId userId, ClientId clientId) throws UserApprovalNotFoundException {
         return this.userApprovalRepository.findById(new UserApprovalPK(userId, clientId))
                 .orElseThrow(UserApprovalNotFoundException::new);
     }

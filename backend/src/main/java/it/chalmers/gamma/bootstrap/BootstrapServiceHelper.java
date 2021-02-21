@@ -16,6 +16,7 @@ import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.domain.membership.service.MembershipService;
 import it.chalmers.gamma.domain.post.service.PostService;
 
+import it.chalmers.gamma.domain.usergdpr.service.UserGDPRTrainingService;
 import org.springframework.stereotype.Component;
 
 @Component()
@@ -36,6 +37,7 @@ public final class BootstrapServiceHelper {
     private final GroupFinder groupFinder;
     private final SuperGroupFinder superGroupFinder;
     private final ClientFinder clientFinder;
+    private final UserGDPRTrainingService userGDPRTrainingService;
 
     public BootstrapServiceHelper(UserCreationService userCreationService,
                                   UserFinder userFinder,
@@ -47,7 +49,7 @@ public final class BootstrapServiceHelper {
                                   AuthorityService authorityService,
                                   ClientService clientService,
                                   ApiKeyService apiKeyService,
-                                  SuperGroupService superGroupService, PostFinder postFinder, GroupFinder groupFinder, SuperGroupFinder superGroupFinder, ClientFinder clientFinder) {
+                                  SuperGroupService superGroupService, PostFinder postFinder, GroupFinder groupFinder, SuperGroupFinder superGroupFinder, ClientFinder clientFinder, UserGDPRTrainingService userGDPRTrainingService) {
         this.userCreationService = userCreationService;
         this.userFinder = userFinder;
         this.userService = userService;
@@ -63,6 +65,11 @@ public final class BootstrapServiceHelper {
         this.groupFinder = groupFinder;
         this.superGroupFinder = superGroupFinder;
         this.clientFinder = clientFinder;
+        this.userGDPRTrainingService = userGDPRTrainingService;
+    }
+
+    public UserGDPRTrainingService getUserGDPRService() {
+        return userGDPRTrainingService;
     }
 
     public SuperGroupFinder getSuperGroupFinder() {

@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
-public class AddOrEditClientRequest {
+public class AddClientRequest {
 
     @NotNull
     private String webServerRedirectUri;
@@ -59,7 +59,7 @@ public class AddOrEditClientRequest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AddOrEditClientRequest that = (AddOrEditClientRequest) o;
+        AddClientRequest that = (AddClientRequest) o;
         return this.autoApprove == that.autoApprove
             && Objects.equals(this.webServerRedirectUri, that.webServerRedirectUri)
             && Objects.equals(this.name, that.name)

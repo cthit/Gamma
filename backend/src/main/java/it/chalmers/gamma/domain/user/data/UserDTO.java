@@ -18,9 +18,7 @@ public class UserDTO {
     private final String lastName;
     private final String phone;
     private final String avatarUrl;
-    private final boolean gdpr;
     private final boolean userAgreement;
-    private final boolean accountLocked;
     private final Year acceptanceYear;
     private final boolean activated;
 
@@ -33,9 +31,7 @@ public class UserDTO {
                    String lastName,
                    String phone,
                    String avatarUrl,
-                   boolean gdpr,
                    boolean userAgreement,
-                   boolean accountLocked,
                    Year acceptanceYear,
                    boolean activated) {
         this.id = id;
@@ -47,9 +43,7 @@ public class UserDTO {
         this.lastName = lastName;
         this.phone = phone;
         this.avatarUrl = avatarUrl;
-        this.gdpr = gdpr;
         this.userAgreement = userAgreement;
-        this.accountLocked = accountLocked;
         this.acceptanceYear = acceptanceYear;
         this.activated = activated;
     }
@@ -90,14 +84,6 @@ public class UserDTO {
         return avatarUrl;
     }
 
-    public boolean isGdpr() {
-        return gdpr;
-    }
-
-    public boolean isAccountLocked() {
-        return accountLocked;
-    }
-
     public boolean isUserAgreement() {
         return userAgreement;
     }
@@ -121,9 +107,7 @@ public class UserDTO {
         private String lastName;
         private String phone;
         private String avatarUrl;
-        private boolean gdpr;
         private boolean userAgreement;
-        private boolean accountLocked;
         private Year acceptanceYear;
         private boolean activated;
 
@@ -172,18 +156,8 @@ public class UserDTO {
             return this;
         }
 
-        public UserDTOBuilder gdpr(boolean gdpr) {
-            this.gdpr = gdpr;
-            return this;
-        }
-
         public UserDTOBuilder userAgreement(boolean userAgreement) {
             this.userAgreement = userAgreement;
-            return this;
-        }
-
-        public UserDTOBuilder accountLocked(boolean accountLocked) {
-            this.accountLocked = accountLocked;
             return this;
         }
 
@@ -208,9 +182,7 @@ public class UserDTO {
                     lastName,
                     phone,
                     avatarUrl,
-                    gdpr,
                     userAgreement,
-                    accountLocked,
                     acceptanceYear,
                     activated
             );
@@ -226,9 +198,7 @@ public class UserDTO {
             this.lastName = user.lastName;
             this.phone = user.phone;
             this.avatarUrl = user.avatarUrl;
-            this.gdpr = user.gdpr;
             this.userAgreement = user.userAgreement;
-            this.accountLocked = user.accountLocked;
             this.acceptanceYear = user.acceptanceYear;
             this.activated = user.activated;
             return this;

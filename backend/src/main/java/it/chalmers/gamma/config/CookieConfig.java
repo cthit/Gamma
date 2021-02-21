@@ -24,7 +24,6 @@ public class CookieConfig {
     @Value("${application.cookie.validity-time}")
     private int validityTime;
 
-    //Remember Me functionality is in WebSecurityConfig
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();

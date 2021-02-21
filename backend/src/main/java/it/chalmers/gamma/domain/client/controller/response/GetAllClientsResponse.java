@@ -2,11 +2,13 @@ package it.chalmers.gamma.domain.client.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.domain.client.data.ClientDTO;
+import it.chalmers.gamma.domain.client.data.ClientDetailsDTO;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class GetAllClientsResponse {
+
     @JsonValue
     private final List<ClientDTO> clients;
 

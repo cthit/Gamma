@@ -19,7 +19,7 @@ public class SuperGroupId implements Serializable {
         this.value = UUID.randomUUID();
     }
 
-    public SuperGroupId(UUID value) {
+    private SuperGroupId(UUID value) {
         this.value = value;
     }
 

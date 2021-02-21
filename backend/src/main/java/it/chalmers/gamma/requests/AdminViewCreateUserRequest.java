@@ -29,7 +29,6 @@ public class AdminViewCreateUserRequest {
     private String lastName;
 
     @NotEmpty(message = "EMAIL_NAME_MUST_BE_PROVIDED")
-    //@Email(message = "NOT_A_VALID_EMAIL")
     private Email email;
 
     @AssertTrue(message = "USER_AGREEMENT_MUST_BE_ACCEPTED")

@@ -3,7 +3,7 @@ package it.chalmers.gamma.domain.group.controller.request;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 
-public class DeleteGroupRequest {       // Unsure about this one
+public class DeleteGroupRequest {
 
     @NotNull(message = "GROUP_MUST_BE_PROVIDED")
     private String group;

@@ -24,8 +24,4 @@ public class Whitelist {
         return this.cid;
     }
 
-    public void setCid(Cid cid) {
-        this.cid = cid;
-    }
-
 }

@@ -150,3 +150,7 @@ footer {
     position: absolute;
     bottom: 16px;
 }
+
+.text-link {
+    color: #09cdda;
+}

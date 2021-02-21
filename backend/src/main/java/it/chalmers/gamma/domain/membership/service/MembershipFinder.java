@@ -151,7 +151,6 @@ public class MembershipFinder {
                     try {
                         return this.toWithGroupsRestricted(new UserRestrictedDTO(user));
                     } catch (UserNotFoundException ignored) {
-                        //ignored since we're going directly from every user
                         return new UserRestrictedWithGroupsDTO(new UserRestrictedDTO(user), new ArrayList<>());
                     }
                 })

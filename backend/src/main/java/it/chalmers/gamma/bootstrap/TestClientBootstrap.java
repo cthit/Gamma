@@ -1,11 +1,10 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
-import it.chalmers.gamma.domain.client.data.Client;
+import it.chalmers.gamma.domain.client.ClientSecret;
 import it.chalmers.gamma.domain.client.data.ClientDTO;
+import it.chalmers.gamma.domain.client.data.ClientDetailsDTO;
 import it.chalmers.gamma.domain.text.Text;
-
-import java.time.Instant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +33,14 @@ class TestClientBootstrap {
             description.setSv("Klient för att mocka " + this.config.getOauth2ClientName());
 
             this.helper.getClientService().createClient(
-                    new ClientDTO.ClientDTOBuilder()
-                            .name(this.config.getOauth2ClientName())
-                            .description(description)
-                            .webServerRedirectUri(this.config.getOauth2ClientRedirectUri())
-                            .accessTokenValidity(this.config.getAccessTokenValidityTime())
-                            .autoApprove(true)
-                            .refreshTokenValidity(this.config.getRefreshTokenValidityTime())
-                            .clientId(this.config.getOauth2ClientId())
-                            .clientSecret("{noop}" + this.config.getOauth2ClientSecret())
-                            .build()
+                    new ClientDTO(
+                            this.config.getOauth2ClientId(),
+                            new ClientSecret("{noop}" + this.config.getOauth2ClientSecret()),
+                            this.config.getOauth2ClientRedirectUri(),
+                            true,
+                            this.config.getOauth2ClientName(),
+                            description
+                    )
             );
 
             Text apiDescription = new Text();
