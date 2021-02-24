@@ -1,17 +1,16 @@
 package it.chalmers.gamma.domain.whitelist.service;
 
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.whitelist.data.Whitelist;
 import it.chalmers.gamma.domain.whitelist.data.WhitelistRepository;
 import it.chalmers.gamma.domain.whitelist.exception.CidNotWhitelistedException;
 import it.chalmers.gamma.domain.whitelist.exception.CidAlreadyWhitelistedException;
 
-import it.chalmers.gamma.domain.whitelist.exception.UserAlreadyExistsWithCidException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WhitelistService {
+public class WhitelistService implements CreateEntity<Cid>, DeleteEntity<Cid> {
 
     private final UserFinder userFinder;
     private final WhitelistFinder whitelistFinder;
@@ -25,24 +24,16 @@ public class WhitelistService {
         this.whitelistRepository = whitelistRepository;
     }
 
-    public void addWhiteListedCid(Cid cid) throws CidAlreadyWhitelistedException, UserAlreadyExistsWithCidException {
-        if(this.userFinder.userExists(cid)) {
-            throw new UserAlreadyExistsWithCidException();
-        }
-
+    public void create(Cid cid) throws EntityAlreadyExistsException {
         if (this.whitelistFinder.cidIsWhitelisted(cid)) {
-            throw new CidAlreadyWhitelistedException();
+            throw new EntityAlreadyExistsException();
         }
 
         Whitelist whitelist = new Whitelist(cid);
         this.whitelistRepository.save(whitelist);
     }
 
-    public void removeWhiteListedCid(Cid cid) throws CidNotWhitelistedException {
-        if (!this.whitelistFinder.cidIsWhitelisted(cid)) {
-            throw new CidNotWhitelistedException();
-        }
-
+    public void delete(Cid cid) throws EntityNotFoundException {
         this.whitelistRepository.deleteById(cid);
     }
 

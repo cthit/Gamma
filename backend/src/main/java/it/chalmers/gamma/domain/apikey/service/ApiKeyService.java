@@ -1,21 +1,17 @@
 package it.chalmers.gamma.domain.apikey.service;
 
-import it.chalmers.gamma.domain.apikey.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.data.ApiKey;
-import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
-import it.chalmers.gamma.domain.apikey.data.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.exception.ApiKeyNotFoundException;
-import it.chalmers.gamma.domain.text.Text;
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.gamma.domain.CreateEntity;
+import it.chalmers.gamma.domain.DeleteEntity;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.data.db.ApiKey;
+import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
+import it.chalmers.gamma.domain.apikey.data.db.ApiKeyRepository;
 
-import java.util.List;
-import java.util.UUID;
-
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ApiKeyService {
+public class ApiKeyService implements CreateEntity<ApiKeyDTO>, DeleteEntity<ApiKeyId> {
 
     private final ApiKeyRepository apiKeyRepository;
     private final ApiKeyFinder apiKeyFinder;
@@ -25,16 +21,17 @@ public class ApiKeyService {
         this.apiKeyFinder = apiKeyFinder;
     }
 
-    public void createApiKey(ApiKeyDTO newApiKey) {
+    @Override
+    public void create(ApiKeyDTO newApiKey) {
         this.apiKeyRepository.save(new ApiKey(newApiKey));
     }
 
-    public void deleteApiKey(ApiKeyId id) throws ApiKeyNotFoundException {
+    @Override
+    public void delete(ApiKeyId id) throws EntityNotFoundException {
         if(!this.apiKeyFinder.apiKeyExists(id)) {
-            throw new ApiKeyNotFoundException();
+            throw new EntityNotFoundException();
         }
 
         this.apiKeyRepository.deleteById(id);
     }
-
 }

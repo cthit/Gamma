@@ -1,12 +1,10 @@
 package it.chalmers.gamma.domain.group.data;
 
+import it.chalmers.gamma.domain.DTO;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.text.Text;
 
-import java.util.UUID;
-
-public class GroupMinifiedDTO {
+public class GroupMinifiedDTO implements DTO {
 
     private final String name;
     private final Email email;

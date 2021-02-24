@@ -1,11 +1,5 @@
 package it.chalmers.gamma.domain.apikey.controller.response;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import it.chalmers.gamma.response.SuccessResponse;
 
-public class ApiKeyDeletedResponse extends ResponseEntity<String> {
-
-    public ApiKeyDeletedResponse() {
-        super("API_KEY_DELETED", HttpStatus.ACCEPTED);
-    }
-}
+public class ApiKeyDeletedResponse extends SuccessResponse { }

@@ -1,10 +1,10 @@
 package it.chalmers.gamma.domain.authoritylevel.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class AuthorityLevelAlreadyExistsResponse extends CustomResponseStatusException {
+public class AuthorityLevelAlreadyExistsResponse extends ErrorResponse {
     public AuthorityLevelAlreadyExistsResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "AUTHORITY_LEVEL_ALREADY_EXISTS");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

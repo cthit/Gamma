@@ -1,23 +1,19 @@
 package it.chalmers.gamma.domain.user.service;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.User;
 import it.chalmers.gamma.domain.user.data.UserRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.time.Year;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class UserFinder {
+public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<UserDTO>, EntityExists<UserId> {
 
     private final UserRepository userRepository;
 
@@ -25,70 +21,54 @@ public class UserFinder {
         this.userRepository = userRepository;
     }
 
-    public boolean userExists(Cid cid) {
+    public boolean exists(Cid cid) {
         return this.userRepository.existsByCid(cid);
     }
 
-    public boolean userExists(UserId id) {
+    public boolean exists(UserId id) {
         return this.userRepository.existsById(id);
     }
 
-    public List<UserDTO> getUsers() {
-        return userRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    public List<UserDTO> getAll() {
+        return userRepository.findAll().stream().map(User::toDTO).collect(Collectors.toList());
     }
 
     public List<UserRestrictedDTO> getUsersRestricted() {
-        return getUsers()
+        return getAll()
                 .stream()
                 .map(UserRestrictedDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public UserDTO getUser(Email email) throws UserNotFoundException {
-        return this.toDTO(getUserEntity(email));
+    public UserDTO get(Email email) throws EntityNotFoundException {
+        return getEntity(email).toDTO();
     }
 
-    public UserDTO getUser(Cid cid) throws UserNotFoundException {
-        return this.toDTO(getUserEntity(cid));
+    public UserDTO get(Cid cid) throws EntityNotFoundException {
+        return getEntity(cid).toDTO();
     }
 
-    public UserDTO getUser(UserId id) throws UserNotFoundException {
-        return this.toDTO(getUserEntity(id));
+    public UserDTO get(UserId id) throws EntityNotFoundException {
+        return getEntity(id).toDTO();
     }
 
-    protected User getUserEntity(Cid cid) throws UserNotFoundException {
+    protected User getEntity(Cid cid) throws EntityNotFoundException {
         return this.userRepository.findByCid(cid)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected User getUserEntity(Email email) throws UserNotFoundException {
+    protected User getEntity(Email email) throws EntityNotFoundException {
         return this.userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected User getUserEntity(UserId id) throws UserNotFoundException {
+    protected User getEntity(UserId id) throws EntityNotFoundException {
         return this.userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected User getUserEntity(UserDTO user) throws UserNotFoundException {
-        return getUserEntity(user.getId());
+    protected User getEntity(UserDTO user) throws EntityNotFoundException {
+        return getEntity(user.getId());
     }
 
-    protected UserDTO toDTO(User user) {
-        return new UserDTO.UserDTOBuilder()
-                .phone(user.getPhone())
-                .acceptanceYear(Year.of(user.getAcceptanceYear()))
-                .activated(user.isActivated())
-                .avatarUrl(user.getAvatarUrl())
-                .cid(user.getCid())
-                .email(user.getEmail())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .id(user.getId())
-                .nick(user.getNick())
-                .userAgreement(user.isUserAgreement())
-                .language(user.getLanguage())
-                .build();
-    }
 }

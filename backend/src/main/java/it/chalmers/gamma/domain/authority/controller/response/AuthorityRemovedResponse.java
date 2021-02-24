@@ -1,11 +1,5 @@
 package it.chalmers.gamma.domain.authority.controller.response;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import it.chalmers.gamma.response.SuccessResponse;
 
-public class AuthorityRemovedResponse extends ResponseEntity<String> {
-
-    public AuthorityRemovedResponse() {
-        super("REMOVED_AUTHORITY", HttpStatus.ACCEPTED);
-    }
-}
+public class AuthorityRemovedResponse extends SuccessResponse { }

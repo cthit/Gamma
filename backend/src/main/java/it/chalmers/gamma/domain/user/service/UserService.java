@@ -1,10 +1,12 @@
 package it.chalmers.gamma.domain.user.service;
 
+import it.chalmers.gamma.domain.DeleteEntity;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.UpdateEntity;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.IDsNotMatchingException;
 
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.response.FileNotFoundResponse;
 import it.chalmers.gamma.response.FileNotSavedException;
@@ -13,15 +15,12 @@ import it.chalmers.gamma.domain.user.data.User;
 import it.chalmers.gamma.domain.user.data.UserRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.data.UserDetailsDTO;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.util.ImageUtils;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service("userDetailsService")
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, DeleteEntity<UserId>, UpdateEntity<UserDTO> {
 
     private final UserFinder userFinder;
     private final UserRepository userRepository;
@@ -52,7 +51,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String cid) {
         try {
-            User user = this.userFinder.getUserEntity(new Cid(cid));
+            User user = this.userFinder.getEntity(new Cid(cid));
 
             List<AuthorityLevelName> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
 
@@ -62,39 +61,31 @@ public class UserService implements UserDetailsService {
                     authorities,
                     false
             );
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UsernameNotFoundException("User with: " + cid + " not found");
         }
     }
 
-    public void removeUser(UserId id) throws UserNotFoundException {
-        if(!this.userFinder.userExists(id)) {
-            throw new UserNotFoundException();
-        }
-
+    public void delete(UserId id) {
         this.userRepository.deleteById(id);
     }
 
-    public void editUser(UserDTO newEdit) throws UserNotFoundException, IDsNotMatchingException {
-        User user = this.userFinder.getUserEntity(newEdit);
+    public void update(UserDTO newEdit) throws EntityNotFoundException {
+        User user = this.userFinder.getEntity(newEdit.getId());
         user.apply(newEdit);
         this.userRepository.save(user);
     }
 
-    public void setPassword(UserDTO user, String password) throws UserNotFoundException {
-        this.setPassword(user.getId(), password);
-    }
-
-    public void setPassword(UserId userId, String password) throws UserNotFoundException {
-        User user = this.userFinder.getUserEntity(userId);
+    public void setPassword(UserId userId, String password) throws EntityNotFoundException {
+        User user = this.userFinder.getEntity(userId);
         user.setPassword(this.passwordEncoder.encode(password));
         this.userRepository.save(user);
     }
 
-    public void editProfilePicture(UserDTO user, MultipartFile file) throws UserNotFoundException {
-        if(!this.userFinder.userExists(user.getId())) {
-            throw new UserNotFoundException();
+    public void editProfilePicture(UserDTO user, MultipartFile file) throws EntityNotFoundException {
+        if(!this.userFinder.exists(user.getId())) {
+            throw new EntityNotFoundException();
         }
 
         if (ImageUtils.isImageOrGif(file)) {
@@ -108,24 +99,22 @@ public class UserService implements UserDetailsService {
                         .avatarUrl(fileUrl)
                         .build();
 
-                editUser(newUser);
+                update(newUser);
 
             } catch (FileNotFoundResponse e) {
                 throw new FileNotSavedException();
-            } catch (IDsNotMatchingException e) {
-                e.printStackTrace();
             }
         } else {
             throw new InvalidFileTypeResponse();
         }
     }
 
-    public boolean passwordMatches(UserDTO user, String password) throws UserNotFoundException {
+    public boolean passwordMatches(UserDTO user, String password) throws EntityNotFoundException {
         return this.passwordMatches(user.getId(), password);
     }
 
-    public boolean passwordMatches(UserId userId, String password) throws UserNotFoundException {
-        User user = this.userFinder.getUserEntity(userId);
+    public boolean passwordMatches(UserId userId, String password) throws EntityNotFoundException {
+        User user = this.userFinder.getEntity(userId);
         return this.passwordEncoder.matches(password, user.getPassword());
     }
 

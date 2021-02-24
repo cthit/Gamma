@@ -1,10 +1,10 @@
 package it.chalmers.gamma.domain.post.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class PostIsInUseResponse extends CustomResponseStatusException {
+public class PostIsInUseResponse extends ErrorResponse {
     public PostIsInUseResponse() {
-        super(HttpStatus.NOT_ACCEPTABLE, "POST_IS_IN_USE");
+        super(HttpStatus.NOT_ACCEPTABLE);
     }
 }

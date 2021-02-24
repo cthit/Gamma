@@ -1,10 +1,11 @@
 package it.chalmers.gamma.domain.whitelist.controller;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.EntityAlreadyExistsException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.whitelist.exception.CidAlreadyWhitelistedException;
 import it.chalmers.gamma.domain.whitelist.exception.CidNotWhitelistedException;
-import it.chalmers.gamma.domain.whitelist.exception.UserAlreadyExistsWithCidException;
 import it.chalmers.gamma.domain.whitelist.controller.response.*;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
@@ -12,7 +13,6 @@ import it.chalmers.gamma.domain.whitelist.controller.request.AddListOfWhiteliste
 
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserDeletedResponse;
-import it.chalmers.gamma.domain.whitelist.controller.response.GetAllWhitelistResponse.GetAllWhitelistResponseObject;
 
 import it.chalmers.gamma.util.InputValidationUtils;
 
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -61,10 +62,9 @@ public final class WhitelistAdminController {
 
         for (String cid : request.getCids()) {
             try {
-                this.whitelistService.addWhiteListedCid(new Cid(cid));
+                this.whitelistService.create(new Cid(cid));
                 LOGGER.info("Added user " + cid + " to whitelist");
-            } catch (CidAlreadyWhitelistedException | UserAlreadyExistsWithCidException e) {
-                LOGGER.info("Did not add user " + cid + " message: " + e.getMessage());
+            } catch (EntityAlreadyExistsException e) {
                 failedToAdd.add(cid);
             }
         }
@@ -77,19 +77,20 @@ public final class WhitelistAdminController {
     }
 
     @DeleteMapping("/{cid}")
-    public UserDeletedResponse removeWhitelist(@PathVariable("cid") String cid) {
+    public UserDeletedResponse removeWhitelist(@PathVariable("cid") Cid cid) {
         try {
-            this.whitelistService.removeWhiteListedCid(new Cid(cid));
-        } catch (CidNotWhitelistedException e) {
-            LOGGER.error("Can't remove cid from whitelist that doesn't exist", e);
+            this.whitelistService.delete(cid);
+        } catch (EntityNotFoundException e) {
             throw new CidNotWhitelistedResponse();
         }
         return new UserDeletedResponse();
     }
 
     @GetMapping()
-    public GetAllWhitelistResponseObject getWhiteList() {
-        return new GetAllWhitelistResponse(this.whitelistFinder.getWhitelist()).toResponseObject();
+    public ResponseEntity<GetAllWhitelistResponse> getWhiteList() {
+        return Utils.toResponseObject(
+                new GetAllWhitelistResponse(this.whitelistFinder.getAll())
+        );
     }
 
 }

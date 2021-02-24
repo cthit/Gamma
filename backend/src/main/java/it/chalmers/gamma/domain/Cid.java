@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class Cid implements Serializable {
+public class Cid implements Serializable, DTO, Id {
 
     @JsonValue
     @Column(name = "cid")
@@ -18,6 +18,10 @@ public class Cid implements Serializable {
 
     public Cid(String value) {
         this.value = value.toLowerCase();
+    }
+
+    public static Cid valueOf(String cid) {
+        return new Cid(cid);
     }
 
     public String get(){

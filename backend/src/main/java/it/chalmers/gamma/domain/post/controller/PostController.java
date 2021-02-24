@@ -1,15 +1,13 @@
 package it.chalmers.gamma.domain.post.controller;
 
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.controller.response.PostDoesNotExistResponse;
 import it.chalmers.gamma.domain.post.service.PostFinder;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.post.controller.response.GetMultiplePostsResponse;
 import it.chalmers.gamma.domain.post.controller.response.GetMultiplePostsResponse.GetMultiplePostsResponseObject;
 import it.chalmers.gamma.domain.post.controller.response.GetPostResponse;
 import it.chalmers.gamma.domain.post.controller.response.GetPostResponse.GetPostResponseObject;
-
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +32,9 @@ public class PostController {
     public GetPostResponseObject getPost(@PathVariable("id") PostId id) {
         try {
             return new GetPostResponse(
-                    this.postFinder.getPost(id)
+                    this.postFinder.get(id)
             ).toResponseObject();
-        } catch (PostNotFoundException e) {
-            LOGGER.error("Post not found", e);
+        } catch (EntityNotFoundException e) {
             throw new PostDoesNotExistResponse();
         }
     }
@@ -45,7 +42,7 @@ public class PostController {
     @GetMapping()
     public GetMultiplePostsResponseObject getPosts() {
         return new GetMultiplePostsResponse(
-                this.postFinder.getPosts()
+                this.postFinder.getAll()
         ).toResponseObject();
     }
 }

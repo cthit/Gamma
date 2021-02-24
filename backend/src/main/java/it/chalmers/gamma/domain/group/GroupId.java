@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.group;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.domain.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class GroupId implements Serializable {
+public class GroupId implements Serializable, Id {
 
     @JsonValue
     @Column(name = "group_id")

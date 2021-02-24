@@ -1,8 +1,7 @@
 package it.chalmers.gamma.domain.user.controller;
 
-import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.controller.response.*;
@@ -10,7 +9,6 @@ import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.requests.AdminChangePasswordRequest;
 import it.chalmers.gamma.requests.AdminViewCreateUserRequest;
 import it.chalmers.gamma.domain.user.data.UserDTO;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
@@ -64,7 +62,7 @@ public final class UserAdminController {
         }
         try {
             this.userService.setPassword(id, request.getPassword());
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
         }
@@ -75,30 +73,24 @@ public final class UserAdminController {
     public UserEditedResponse editUser(@PathVariable("id") UserId id,
                                            @RequestBody EditITUserRequest request) {
         try {
-            this.userService.editUser(requestToDTO(request, id));
+            this.userService.update(requestToDTO(request, id));
             return new UserEditedResponse();
-        } catch (UserNotFoundException | IDsNotMatchingException e) {
-            LOGGER.error("Can't find user to edit", e);
+        } catch (EntityNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }
 
     @DeleteMapping("/{id}")
     public UserDeletedResponse deleteUser(@PathVariable("id") UserId id) {
-        try {
-            this.userService.removeUser(id);
-            return new UserDeletedResponse();
-        } catch (UserNotFoundException e) {
-            LOGGER.error("Can't find user to delete", e);
-            throw new UserNotFoundResponse();
-        }
+        this.userService.delete(id);
+        return new UserDeletedResponse();
     }
 
     @GetMapping("/{id}")
     public GetUserAdminResponse.GetUserAdminResponseObject getUser(@PathVariable("id") UserId id) {
         try {
             return new GetUserAdminResponse(this.membershipFinder.getUserWithMemberships(id)).toResponseObject();
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
         }

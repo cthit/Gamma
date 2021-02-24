@@ -1,19 +1,16 @@
 package it.chalmers.gamma.domain.post.controller;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.controller.response.*;
 import it.chalmers.gamma.domain.post.data.PostDTO;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.service.PostService;
 import it.chalmers.gamma.domain.post.controller.request.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.post.controller.response.GetPostUsagesResponse.GetPostUsagesResponseObject;
 import it.chalmers.gamma.util.InputValidationUtils;
-
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -57,8 +54,8 @@ public final class PostAdminController {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
-        this.postService.addPost(
-                new PostDTO(request.getPost(), request.getEmailPrefix())
+        this.postService.create(
+                new PostDTO(request.post, request.emailPrefix)
         );
         return new PostCreatedResponse();
     }
@@ -75,10 +72,9 @@ public final class PostAdminController {
             @RequestBody AddPostRequest request,
             @PathVariable("id") PostId id) {
         try {
-            this.postService.editPost(new PostDTO(id, request.getPost(), request.getEmailPrefix()));
+            this.postService.update(new PostDTO(id, request.post, request.emailPrefix));
             return new PostEditedResponse();
-        } catch (PostNotFoundException | IDsNotMatchingException e) {
-            LOGGER.error("Post not found", e);
+        } catch (EntityNotFoundException e) {
             throw new PostDoesNotExistResponse();
         }
     }
@@ -86,13 +82,8 @@ public final class PostAdminController {
 
     @DeleteMapping("/{id}")
     public PostDeletedResponse deletePost(@PathVariable("id") PostId id) {
-        try {
-            this.postService.deletePost(id);
-            return new PostDeletedResponse();
-        } catch (PostNotFoundException e) {
-            LOGGER.error("Post not found", e);
-            throw new PostDoesNotExistResponse();
-        }
+        this.postService.delete(id);
+        return new PostDeletedResponse();
     }
 
     @GetMapping("/{id}/usage")

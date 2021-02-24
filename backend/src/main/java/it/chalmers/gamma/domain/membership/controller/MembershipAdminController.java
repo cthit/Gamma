@@ -1,19 +1,16 @@
 package it.chalmers.gamma.domain.membership.controller;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.controller.response.GroupDoesNotExistResponse;
-import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
+import it.chalmers.gamma.domain.group.controller.response.GroupNotFoundResponse;
 import it.chalmers.gamma.domain.membership.controller.response.MembershipNotFoundResponse;
-import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
-import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
+import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipService;
 import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.post.service.PostService;
 import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.requests.AddUserGroupRequest;
 import it.chalmers.gamma.requests.EditMembershipRequest;
 
@@ -31,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin/groups")
@@ -63,23 +58,14 @@ public final class MembershipAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
 
-        try {
-            this.membershipService.addMembership(
-                    new MembershipShallowDTO(
-                            request.getPostId(),
-                            groupId,
-                            request.getUnofficialName(),
-                            request.getUserId()
-                    )
-            );
-        } catch (GroupNotFoundException e) {
-            LOGGER.error("Group not found when creating membership", e);
-            throw new GroupDoesNotExistResponse();
-        } catch (PostNotFoundException e) {
-            LOGGER.error("Post not found when creating membership", e);
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }
+        this.membershipService.create(
+                new MembershipShallowDTO(
+                        request.getPostId(),
+                        groupId,
+                        request.getUnofficialName(),
+                        request.getUserId()
+                )
+        );
 
         return new MemberAddedToGroupResponse();
     }
@@ -89,10 +75,9 @@ public final class MembershipAdminController {
                                                               @RequestParam("userId") UserId userId,
                                                               @RequestParam("postId") PostId postId) {
         try {
-            this.membershipService.removeMembership(userId, groupId, postId);
+            this.membershipService.delete(new MembershipPK(postId, groupId, userId));
             return new MemberRemovedFromGroupResponse();
-        } catch (MembershipNotFoundException e) {
-            LOGGER.error("Membership not found", e);
+        } catch (EntityNotFoundException e) {
             throw new MembershipNotFoundResponse();
         }
     }
@@ -107,7 +92,7 @@ public final class MembershipAdminController {
         }
 
         try {
-            this.membershipService.editMembership(
+            this.membershipService.update(
                     new MembershipShallowDTO(
                             request.getPostId(),
                             groupId,
@@ -115,15 +100,7 @@ public final class MembershipAdminController {
                             userId
                     )
             );
-        } catch (MembershipNotFoundException e) {
-            e.printStackTrace();
-        } catch (IDsNotMatchingException e) {
-            e.printStackTrace();
-        } catch (GroupNotFoundException e) {
-            e.printStackTrace();
-        } catch (PostNotFoundException e) {
-            e.printStackTrace();
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
 

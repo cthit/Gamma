@@ -1,11 +1,12 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
-import it.chalmers.gamma.domain.client.ClientSecret;
-import it.chalmers.gamma.domain.client.data.ClientDTO;
-import it.chalmers.gamma.domain.client.data.ClientDetailsDTO;
-import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
+import it.chalmers.gamma.domain.client.domain.ClientSecret;
+import it.chalmers.gamma.domain.client.data.dto.ClientDTO;
+import it.chalmers.gamma.domain.text.data.db.Text;
 
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,11 +29,12 @@ class TestClientBootstrap {
         if (!this.helper.getClientFinder().clientExists(this.config.getOauth2ClientId())) {
             LOGGER.info("Creating test client...");
 
-            Text description = new Text();
-            description.setEn("Client for mocking " + this.config.getOauth2ClientName());
-            description.setSv("Klient för att mocka " + this.config.getOauth2ClientName());
+            TextDTO description = new TextDTO(
+                    "Klient för att mocka " + this.config.getOauth2ClientName(),
+                    "Client for mocking " + this.config.getOauth2ClientName()
+            );
 
-            this.helper.getClientService().createClient(
+            this.helper.getClientService().create(
                     new ClientDTO(
                             this.config.getOauth2ClientId(),
                             new ClientSecret("{noop}" + this.config.getOauth2ClientSecret()),
@@ -43,15 +45,16 @@ class TestClientBootstrap {
                     )
             );
 
-            Text apiDescription = new Text();
-            apiDescription.setSv("API key");
-            apiDescription.setEn("API key");
+            TextDTO apiDescription = new TextDTO(
+                    "API key",
+                    "API key"
+            );
 
-            this.helper.getApiKeyService().createApiKey(
+            this.helper.getApiKeyService().create(
                     new ApiKeyDTO(
                             this.config.getOauth2ClientName(),
                             apiDescription,
-                            this.config.getOauth2ClientApiKey()
+                            new ApiKeyToken(this.config.getOauth2ClientApiKey())
                     )
             );
 

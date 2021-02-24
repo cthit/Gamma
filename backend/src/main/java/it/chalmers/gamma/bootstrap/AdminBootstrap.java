@@ -1,34 +1,24 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.authority.exception.AuthorityAlreadyExistsException;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.domain.authoritylevel.exception.AuthorityLevelAlreadyExistsException;
+import it.chalmers.gamma.domain.*;
+import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
+import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
-import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
-import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
-import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
-import it.chalmers.gamma.domain.text.Text;
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.text.data.db.Text;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 
 import java.time.Year;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.UUID;
 
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -49,10 +39,10 @@ public class AdminBootstrap {
 
     public void runAdminBootstrap() throws AdminBootstrapFailedException {
         String admin = "admin";
-        if (!this.helper.getUserFinder().userExists(new Cid(admin))) {
+        if (!this.helper.getUserFinder().exists(new Cid(admin))) {
             LOGGER.info("Creating admin user, cid:admin, password: " + this.config.getPassword());
 
-            String adminMail = "admin@chalmers.it";
+            Email adminMail = new Email("admin@chalmers.it");
             String superGroupName = "superadmin";
 
             SuperGroupId adminSuperGroupId = createAdminSuperGroup(superGroupName, adminMail);
@@ -60,33 +50,30 @@ public class AdminBootstrap {
             PostId adminPostId = createAdminPost(admin);
             UserId adminUserId = createAdminUser(admin, adminMail);
 
-            try {
-                this.helper.getMembershipService().addMembership(
-                    new MembershipShallowDTO(
-                            adminPostId,
-                            adminGroupId,
-                            null,
-                            adminUserId
-                    )
-                );
-            } catch (GroupNotFoundException | PostNotFoundException | UserNotFoundException e) {
-                LOGGER.error("Fatal error when creating admin user", e);
-                throw new AdminBootstrapFailedException();
-            }
+            this.helper.getMembershipService().create(
+                new MembershipShallowDTO(
+                        adminPostId,
+                        adminGroupId,
+                        null,
+                        adminUserId
+                )
+            );
 
             try {
-                this.helper.getAuthorityLevelService().addAuthorityLevel(new AuthorityLevelName(admin));
-            } catch (AuthorityLevelAlreadyExistsException e) {
+                this.helper.getAuthorityLevelService().create(new AuthorityLevelName(admin));
+            } catch (EntityAlreadyExistsException e) {
                 LOGGER.info("admin authority already exists, not creating a new one...");
             }
 
             try {
-                this.helper.getAuthorityService().createAuthority(
-                        adminSuperGroupId,
-                        adminPostId,
-                        new AuthorityLevelName(admin)
+                this.helper.getAuthorityService().create(
+                        new AuthorityShallowDTO(
+                            adminSuperGroupId,
+                            adminPostId,
+                            new AuthorityLevelName(admin)
+                        )
                 );
-            } catch (AuthorityAlreadyExistsException e) {
+            } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Fatal error when creating admin user", e);
                 throw new AdminBootstrapFailedException();
             }
@@ -95,20 +82,20 @@ public class AdminBootstrap {
         }
     }
 
-    private SuperGroupId createAdminSuperGroup(String superGroupName, String adminMail) throws AdminBootstrapFailedException {
+    private SuperGroupId createAdminSuperGroup(String superGroupName, Email adminMail) throws AdminBootstrapFailedException {
         SuperGroupId adminSuperGroupId;
 
         try {
-            adminSuperGroupId = this.helper.getSuperGroupFinder().getSuperGroupByName(superGroupName).getId();
-        } catch (SuperGroupNotFoundException ignored) {
+            adminSuperGroupId = this.helper.getSuperGroupFinder().getByName(superGroupName).getId();
+        } catch (EntityNotFoundException ignored) {
             adminSuperGroupId = new SuperGroupId();
 
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
-            Text description = new Text(descriptionText, descriptionText);
+            TextDTO description = new TextDTO(descriptionText, descriptionText);
 
             try {
-                this.helper.getSuperGroupService().createSuperGroup(
+                this.helper.getSuperGroupService().create(
                         new SuperGroupDTO(
                                 adminSuperGroupId,
                                 superGroupName,
@@ -118,8 +105,7 @@ public class AdminBootstrap {
                                 description
                         )
                 );
-            } catch (SuperGroupAlreadyExistsException e) {
-                LOGGER.error("Fatal error when creating admin user", e);
+            } catch (EntityAlreadyExistsException e) {
                 throw new AdminBootstrapFailedException();
             }
         }
@@ -127,12 +113,12 @@ public class AdminBootstrap {
         return adminSuperGroupId;
     }
 
-    private GroupId createAdminGroup(String admin, String adminMail, SuperGroupId adminSuperGroupId) throws AdminBootstrapFailedException {
+    private GroupId createAdminGroup(String admin, Email adminMail, SuperGroupId adminSuperGroupId) throws AdminBootstrapFailedException {
         GroupId adminGroupId;
 
         try {
-            adminGroupId = this.helper.getGroupFinder().getGroupByName(admin).getId();
-        } catch (GroupNotFoundException ignored) {
+            adminGroupId = this.helper.getGroupFinder().getByName(admin).getId();
+        } catch (EntityNotFoundException ignored) {
             adminGroupId = new GroupId();
 
             Calendar end = new GregorianCalendar();
@@ -141,18 +127,18 @@ public class AdminBootstrap {
             start.setTimeInMillis(System.currentTimeMillis());
 
             try {
-                this.helper.getGroupService().createGroup(
+                this.helper.getGroupService().create(
                         new GroupShallowDTO.GroupShallowDTOBuilder()
                                 .id(adminGroupId)
                                 .becomesActive(start)
                                 .becomesInactive(end)
-                                .email(new Email(adminMail))
+                                .email(adminMail)
                                 .name(admin)
                                 .prettyName(admin)
                                 .superGroupId(adminSuperGroupId)
                                 .build()
                 );
-            } catch (GroupAlreadyExistsException e) {
+            } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Fatal error when creating admin user", e);
                 throw new AdminBootstrapFailedException();
             }
@@ -165,15 +151,13 @@ public class AdminBootstrap {
         PostId adminPostId;
 
         try {
-            adminPostId = this.helper.getPostFinder().getPostBySvName(admin).getId();
-        } catch (PostNotFoundException e) {
-            Text p = new Text();
-            p.setSv(admin);
-            p.setEn(admin);
+            adminPostId = this.helper.getPostFinder().getBySvName(admin).getId();
+        } catch (EntityNotFoundException e) {
+            TextDTO p = new TextDTO(admin, admin);
 
             adminPostId = new PostId();
 
-            this.helper.getPostService().addPost(
+            this.helper.getPostService().create(
                     new PostDTO(
                             adminPostId,
                             p,
@@ -185,7 +169,7 @@ public class AdminBootstrap {
         return adminPostId;
     }
 
-    private UserId createAdminUser(String admin, String adminMail) {
+    private UserId createAdminUser(String admin, Email adminMail) {
         UserId adminUserId = new UserId();
 
         this.helper.getUserCreationService().createUser(
@@ -195,7 +179,7 @@ public class AdminBootstrap {
                         .userAgreement(true)
                         .acceptanceYear(Year.of(2018))
                         .cid(new Cid(admin))
-                        .email(new Email(adminMail))
+                        .email(adminMail)
                         .firstName(admin)
                         .lastName(admin)
                         .nick(admin)
@@ -204,11 +188,7 @@ public class AdminBootstrap {
                 config.getPassword()
         );
 
-        try {
-            this.helper.getUserGDPRService().editGDPR(adminUserId, true);
-        } catch (UserNotFoundException e) {
-            LOGGER.error("OH NO I KNEW IT", e);
-        }
+        this.helper.getUserGDPRService().editGDPR(adminUserId, true);
 
         return adminUserId;
     }

@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.requests.ChangeGDPRStatusRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.usergdpr.controller.response.GDPRStatusEditedResponse;
 import it.chalmers.gamma.domain.usergdpr.controller.response.UsersWithGDPRResponse;
@@ -41,11 +40,7 @@ public class UserGDPRAdminController {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
 
-        try {
-            userGDPRTrainingService.editGDPR(id, request.isGdpr());
-        } catch (UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+        userGDPRTrainingService.editGDPR(id, request.isGdpr());
 
         return new GDPRStatusEditedResponse();
     }

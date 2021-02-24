@@ -1,13 +1,12 @@
 package it.chalmers.gamma.domain.passwordreset.controller;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.passwordreset.exception.PasswordResetTokenNotFoundException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordFinishRequest;
 import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordRequest;
 import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.response.PasswordChangedResponse;
@@ -52,7 +51,7 @@ public class UserPasswordResetController {
         String cidOrEmail = request.getCid();
         try {
             this.passwordResetService.handlePasswordReset(cidOrEmail);
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new UserNotFoundResponse();
         }
         return new PasswordResetResponse();
@@ -66,7 +65,7 @@ public class UserPasswordResetController {
         }
 
         try {
-            UserDTO user = this.userFinder.getUser(new Cid(request.getCid()));
+            UserDTO user = this.userFinder.get(new Cid(request.getCid()));
 
             if (!this.passwordResetService.tokenMatchesUser(user.getId(), request.getToken())) {
                 throw new CodeOrCidIsWrongResponse();
@@ -74,7 +73,7 @@ public class UserPasswordResetController {
 
             this.userService.setPassword(user.getId(), request.getPassword());
             this.passwordResetService.removeToken(user);
-        } catch (UserNotFoundException | PasswordResetTokenNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             throw new CodeOrCidIsWrongResponse();
         }
 

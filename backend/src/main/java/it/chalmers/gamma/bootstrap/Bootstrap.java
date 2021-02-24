@@ -64,7 +64,7 @@ public class Bootstrap implements CommandLineRunner {
     }
 
     private boolean shouldRunBootstrap() {
-        return !this.helper.getUserFinder().userExists(new Cid("admin"));
+        return !this.helper.getUserFinder().exists(new Cid("admin"));
     }
 
 }

@@ -1,15 +1,13 @@
 package it.chalmers.gamma.domain.group.controller;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.EntityAlreadyExistsException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
-import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipService;
 import it.chalmers.gamma.domain.group.controller.request.CreateOrEditGroupRequest;
 import it.chalmers.gamma.response.FileNotFoundResponse;
@@ -19,11 +17,8 @@ import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import it.chalmers.gamma.util.InternalServerErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
@@ -44,12 +39,11 @@ public final class GroupAdminController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final GroupService groupService;
     private final GroupFinder groupFinder;
-    private final MembershipService membershipService;
 
-    public GroupAdminController(GroupService groupService, GroupFinder groupFinder, MembershipService membershipService) {
+    public GroupAdminController(GroupService groupService,
+                                GroupFinder groupFinder) {
         this.groupService = groupService;
         this.groupFinder = groupFinder;
-        this.membershipService = membershipService;
     }
 
     @PostMapping()
@@ -60,8 +54,8 @@ public final class GroupAdminController {
         }
 
         try {
-            this.groupService.createGroup(requestToDTO(createOrEditGroupRequest));
-        } catch (GroupAlreadyExistsException e) {
+            this.groupService.create(requestToDTO(createOrEditGroupRequest));
+        } catch (EntityAlreadyExistsException e) {
             LOGGER.error("Error when trying to create a group that already exists", e);
             throw new GroupAlreadyExistsResponse();
         }
@@ -70,30 +64,28 @@ public final class GroupAdminController {
     }
 
     @PutMapping("/{id}")
-    public GroupEditedResponse editGroup(@Valid @RequestBody CreateOrEditGroupRequest request,
-            @PathVariable("id") GroupId id,
-            BindingResult result) {
+    public GroupUpdatedResponse editGroup(@Valid @RequestBody CreateOrEditGroupRequest request,
+                                          @PathVariable("id") GroupId id,
+                                          BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
         try {
             GroupShallowDTO group = requestToDTO(request, id);
-            this.groupService.editGroup(group);
-        } catch (GroupNotFoundException e) {
-            throw new GroupDoesNotExistResponse();
-        } catch (IDsNotMatchingException e) {
-            throw new InternalServerErrorResponse();
+            this.groupService.update(group);
+        } catch (EntityNotFoundException e) {
+            throw new GroupNotFoundResponse();
         }
 
-        return new GroupEditedResponse();
+        return new GroupUpdatedResponse();
     }
 
     @DeleteMapping("/{id}")
     public GroupDeletedResponse deleteGroup(@PathVariable("id") GroupId id) {
         try {
-            this.groupService.removeGroup(id);
-        } catch (GroupNotFoundException e) {
-            throw new GroupDoesNotExistResponse();
+            this.groupService.delete(id);
+        } catch (EntityNotFoundException e) {
+            throw new GroupNotFoundResponse();
         }
 
         return new GroupDeletedResponse();
@@ -103,22 +95,24 @@ public final class GroupAdminController {
      * This is the only thing a non-admin user that's part of the group can change
      */
     @PutMapping("/{id}/avatar")
-    public GroupEditedResponse editAvatar(@PathVariable("id") GroupId id, @RequestParam MultipartFile file) {
+    public GroupUpdatedResponse editAvatar(@PathVariable("id") GroupId id, @RequestParam MultipartFile file) {
+/*
         try {
             String url = ImageUtils.saveImage(file, file.getName());
-            GroupDTO group = this.groupFinder.getGroup(id);
-            this.groupService.editGroup(
-                    new GroupDTO.GroupDTOBuilder()
+            GroupDTO group = this.groupFinder.get(id);
+            this.groupService.update(
+                    new GroupShallowDTO.GroupDTOBuilder()
                             .from(group)
                             .avatarUrl(url)
                             .build()
             );
         } catch (FileNotFoundResponse e) {
             throw new FileNotSavedException();
-        } catch (GroupNotFoundException | IDsNotMatchingException e) {
-            throw new GroupDoesNotExistResponse();
+        } catch (EntityNotFoundException e) {
+            throw new GroupNotFoundResponse();
         }
-        return new GroupEditedResponse();
+*/
+        return new GroupUpdatedResponse();
     }
 
     private GroupShallowDTO requestToDTO(CreateOrEditGroupRequest request) {
@@ -131,14 +125,13 @@ public final class GroupAdminController {
 
     private GroupShallowDTO.GroupShallowDTOBuilder baseGroupDTOBuilder(CreateOrEditGroupRequest request) {
         return new GroupShallowDTO.GroupShallowDTOBuilder()
-                .avatarUrl(request.getAvatarURL())
-                .becomesActive(request.getBecomesActive())
-                .becomesInactive(request.getBecomesInactive())
-                .email(new Email(request.getEmail()))
-                .prettyName(request.getPrettyName())
-                .name(request.getName())
-                .superGroupId(request.getSuperGroupId()
-        );
+                .avatarUrl(request.avatarURL)
+                .becomesActive(request.becomesActive)
+                .becomesInactive(request.becomesInactive)
+                .email(request.email)
+                .prettyName(request.prettyName)
+                .name(request.name)
+                .superGroupId(request.superGroup);
     }
 
 }

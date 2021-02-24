@@ -2,27 +2,26 @@ package it.chalmers.gamma.domain.post.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.DTO;
 import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.text.Text;
-import java.util.Objects;
-import java.util.UUID;
+import it.chalmers.gamma.domain.text.data.db.Text;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostDTO {
+import java.util.Objects;
+
+public class PostDTO implements DTO {
 
     private final PostId id;
 
     @JsonUnwrapped
-    private final Text postName;
+    private final TextDTO postName;
     private final String emailPrefix;
 
-    public PostDTO(Text postName, String emailPrefix) {
-        this.id = null;
-        this.postName = postName;
-        this.emailPrefix = emailPrefix;
+    public PostDTO(TextDTO postName, String emailPrefix) {
+        this(new PostId(), postName, emailPrefix);
     }
 
-    public PostDTO(PostId id, Text postName, String emailPrefix) {
+    public PostDTO(PostId id, TextDTO postName, String emailPrefix) {
         this.id = id;
         this.postName = postName;
         this.emailPrefix = emailPrefix;
@@ -32,7 +31,7 @@ public class PostDTO {
         return this.id;
     }
 
-    public Text getPostName() {
+    public TextDTO getPostName() {
         return this.postName;
     }
 

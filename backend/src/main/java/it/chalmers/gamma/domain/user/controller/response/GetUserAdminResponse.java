@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.user.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.membership.data.UserWithGroupsDTO;
+import it.chalmers.gamma.domain.membership.data.dto.UserWithGroupsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

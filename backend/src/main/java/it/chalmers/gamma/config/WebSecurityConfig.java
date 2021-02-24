@@ -208,7 +208,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            List<GroupDTO> groups = this.groupFinder.getGroups();
+            List<GroupDTO> groups = this.groupFinder.getAll();
             for (GroupDTO group : groups) {
                 http.authorizeRequests()
                         .antMatchers("/admin/groups/" + group.getId() + "/avatar")

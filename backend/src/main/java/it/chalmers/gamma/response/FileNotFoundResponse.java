@@ -2,8 +2,8 @@ package it.chalmers.gamma.response;
 
 import org.springframework.http.HttpStatus;
 
-public class FileNotFoundResponse extends CustomResponseStatusException {
+public class FileNotFoundResponse extends ErrorResponse {
     public FileNotFoundResponse() {
-        super(HttpStatus.NOT_FOUND, "FILE_NOT_FOUND");
+        super(HttpStatus.NOT_FOUND);
     }
 }

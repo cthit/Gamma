@@ -1,20 +1,16 @@
 package it.chalmers.gamma.domain.supergroup.service;
 
-import java.util.UUID;
-
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupHasGroupsException;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
+import it.chalmers.gamma.domain.supergroup.service.exception.SuperGroupHasGroupsException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SuperGroupService {
+public class SuperGroupService implements CreateEntity<SuperGroupDTO>, DeleteEntity<SuperGroupId>, UpdateEntity<SuperGroupDTO> {
 
     private final SuperGroupRepository repository;
     private final SuperGroupFinder finder;
@@ -28,24 +24,16 @@ public class SuperGroupService {
         this.groupFinder = groupFinder;
     }
 
-    public void createSuperGroup(SuperGroupDTO superGroupDTO) throws SuperGroupAlreadyExistsException {
-        if(this.finder.superGroupExistsByName(superGroupDTO.getName())) {
-            throw new SuperGroupAlreadyExistsException();
-        }
-
+    public void create(SuperGroupDTO superGroupDTO) throws EntityAlreadyExistsException {
         this.repository.save(new SuperGroup(superGroupDTO));
     }
 
-    public void removeGroup(SuperGroupId id) throws SuperGroupNotFoundException, SuperGroupHasGroupsException {
-        if(this.groupFinder.getGroupsBySuperGroup(id).size() > 0) {
-            throw new SuperGroupHasGroupsException();
-        }
-
+    public void delete(SuperGroupId id) {
         this.repository.deleteById(id);
     }
 
-    public void updateSuperGroup(SuperGroupDTO newSuperGroup) throws SuperGroupNotFoundException, IDsNotMatchingException {
-        SuperGroup superGroup = this.finder.getSuperGroupEntity(newSuperGroup);
+    public void update(SuperGroupDTO newSuperGroup) throws EntityNotFoundException {
+        SuperGroup superGroup = this.finder.getEntity(newSuperGroup);
         superGroup.apply(newSuperGroup);
         this.repository.save(superGroup);
     }

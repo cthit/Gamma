@@ -1,21 +1,19 @@
 package it.chalmers.gamma.domain.post.service;
 
-import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.membership.data.MembershipsPerGroupDTO;
-import it.chalmers.gamma.domain.membership.service.MembershipFinder;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.GetAllEntities;
+import it.chalmers.gamma.domain.GetEntity;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.data.Post;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.data.PostRepository;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class PostFinder {
+public class PostFinder implements GetEntity<PostId, PostDTO>, GetAllEntities<PostDTO> {
 
     private final PostRepository postRepository;
 
@@ -23,40 +21,24 @@ public class PostFinder {
         this.postRepository = postRepository;
     }
 
-    public boolean postExists(PostId id) {
-        return this.postRepository.existsById(id);
+    public List<PostDTO> getAll() {
+        return this.postRepository.findAll().stream().map(Post::toDTO).collect(Collectors.toList());
     }
 
-    public boolean postExistsBySvName(String svName) {
-        return this.postRepository.existsByPostName_Sv(svName);
-    }
-
-    public List<PostDTO> getPosts() {
-        return this.postRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    public PostDTO getPostBySvName(String svName) throws PostNotFoundException {
-        return toDTO(getPostEntityBySvName(svName));
-    }
-
-    public PostDTO getPost(PostId id) throws PostNotFoundException {
-        return toDTO(getPostEntity(id));
-    }
-
-    protected Post getPostEntity(PostId id) throws PostNotFoundException {
-        return this.postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-    }
-
-    protected Post getPostEntity(PostDTO postDTO) throws PostNotFoundException {
-        return getPostEntity(postDTO.getId());
-    }
-
-    protected Post getPostEntityBySvName(String svName) throws PostNotFoundException {
+    public PostDTO getBySvName(String svName) throws EntityNotFoundException {
         return this.postRepository.findByPostName_Sv(svName)
-                .orElseThrow(PostNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new).toDTO();
     }
 
-    public PostDTO toDTO(Post post) {
-        return new PostDTO(post.getId(), post.getPostName(), post.getEmailPrefix());
+    public PostDTO get(PostId id) throws EntityNotFoundException {
+        return getEntity(id).toDTO();
+    }
+
+    protected Post getEntity(PostId id) throws EntityNotFoundException {
+        return this.postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    protected Post getEntity(PostDTO postDTO) throws EntityNotFoundException {
+        return getEntity(postDTO.getId());
     }
 }

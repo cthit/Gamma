@@ -1,11 +1,7 @@
 package it.chalmers.gamma.domain.group.controller.response;
 
+import it.chalmers.gamma.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class GroupCreatedResponse extends ResponseEntity<String> {
-
-    public GroupCreatedResponse() {
-        super("GROUP_CREATED", HttpStatus.ACCEPTED);
-    }
-}
+public class GroupCreatedResponse extends SuccessResponse { }

@@ -1,11 +1,11 @@
 package it.chalmers.gamma.domain.post.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class PostAlreadyExistsResponse extends CustomResponseStatusException {
+public class PostAlreadyExistsResponse extends ErrorResponse {
 
     public PostAlreadyExistsResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "POST_ALREADY_EXISTS");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

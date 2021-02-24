@@ -1,5 +1,6 @@
 package it.chalmers.gamma.filter;
 
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.user.service.UserService;
@@ -38,7 +39,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        String token = resolveToken(request);
+        ApiKeyToken token = new ApiKeyToken(resolveToken(request));
         if (this.apiKeyFinder.isValidApiKey(token)) {
             Authentication auth = getAdminAuthentication();
             SecurityContextHolder.getContext().setAuthentication(auth);

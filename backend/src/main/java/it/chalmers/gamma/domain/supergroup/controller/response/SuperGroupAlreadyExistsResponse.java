@@ -1,10 +1,10 @@
 package it.chalmers.gamma.domain.supergroup.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class SuperGroupAlreadyExistsResponse extends CustomResponseStatusException {
+public class SuperGroupAlreadyExistsResponse extends ErrorResponse {
     public SuperGroupAlreadyExistsResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "SUPER_GROUP_ALREADY_EXISTS");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

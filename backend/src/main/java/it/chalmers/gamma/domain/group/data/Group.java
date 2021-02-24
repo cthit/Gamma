@@ -1,19 +1,21 @@
 package it.chalmers.gamma.domain.group.data;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
-import it.chalmers.gamma.domain.GEntity;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.BaseEntity;
 import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.membership.data.db.Membership;
+import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.Calendar;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "fkit_group")
-public class Group implements GEntity<GroupDTO> {
+public class Group implements BaseEntity<GroupShallowDTO> {
 
     @EmbeddedId
     private GroupId id;
@@ -34,115 +36,45 @@ public class Group implements GEntity<GroupDTO> {
     private Calendar becomesInactive;
 
     @Column(name = "email")
-    private String email;
+    private Email email;
 
     @Embedded
     private SuperGroupId superGroupId;
 
     protected Group() {}
 
-    public Group(GroupDTO g) {
+    public Group(GroupShallowDTO g) {
+        assert(g.getId() != null);
+
         this.id = g.getId();
-        try {
-            apply(g);
-        } catch (IDsNotMatchingException ignored) { }
 
-        if(this.id == null) {
-            this.id = new GroupId();
-        }
-
+        apply(g);
     }
 
-    public void apply(GroupDTO g) throws IDsNotMatchingException {
-        if(this.id != null && this.id != g.getId()) {
-            throw new IDsNotMatchingException();
-        }
+    public void apply(GroupShallowDTO g) {
+        assert(this.id == g.getId());
 
-        this.id = g.getId();
         this.avatarURL = g.getAvatarURL();
         this.name = g.getName();
         this.prettyName = g.getPrettyName();
         this.becomesActive = g.getBecomesActive();
         this.becomesInactive = g.getBecomesInactive();
-        this.email = g.getEmail().get();
-        this.superGroupId = g.getSuperGroup().getId();
-    }
-
-    public GroupId getId() {
-        return this.id;
-    }
-
-    public void setId(GroupId id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name.toLowerCase();
-    }
-
-    public String getAvatarURL() {
-        return this.avatarURL;
-    }
-
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
-    }
-
-    public String getPrettyName() {
-        return this.prettyName;
-    }
-
-    public void setPrettyName(String prettyName) {
-        this.prettyName = prettyName;
-    }
-
-    public Calendar getBecomesActive() {
-        return this.becomesActive;
-    }
-
-    public void setBecomesActive(Calendar becomesActive) {
-        this.becomesActive = becomesActive;
-    }
-
-    public Calendar getBecomesInactive() {
-        return this.becomesInactive;
-    }
-
-    public void setBecomesInactive(Calendar becomesInactive) {
-        this.becomesInactive = becomesInactive;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email.toLowerCase();
-    }
-
-    public SuperGroupId getSuperGroupId() {
-        return superGroupId;
-    }
-
-    public void setSuperGroupId(SuperGroupId superGroupId) {
-        this.superGroupId = superGroupId;
+        this.email = g.getEmail();
+        this.superGroupId = g.getSuperGroupId();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Group group = (Group) o;
-        return Objects.equals(id, group.id) && Objects.equals(avatarURL, group.avatarURL) && Objects.equals(name, group.name) && Objects.equals(prettyName, group.prettyName) && Objects.equals(becomesActive, group.becomesActive) && Objects.equals(becomesInactive, group.becomesInactive) && Objects.equals(email, group.email) && Objects.equals(superGroupId, group.superGroupId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, avatarURL, name, prettyName, becomesActive, becomesInactive, email, superGroupId);
+    public GroupShallowDTO toDTO() {
+        return new GroupShallowDTO(
+                this.id,
+                this.becomesActive,
+                this.becomesInactive,
+                this.email,
+                this.name,
+                this.prettyName,
+                this.avatarURL,
+                this.superGroupId
+        );
     }
 
     @Override

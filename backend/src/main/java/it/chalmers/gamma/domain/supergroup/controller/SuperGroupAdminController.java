@@ -1,23 +1,19 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.EntityAlreadyExistsException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.controller.response.*;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupHasGroupsException;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
+import it.chalmers.gamma.domain.supergroup.service.exception.SuperGroupHasGroupsException;
 import it.chalmers.gamma.domain.supergroup.controller.request.CreateSuperGroupRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupDeletedResponse;
-import it.chalmers.gamma.domain.group.controller.response.GroupEditedResponse;
-import it.chalmers.gamma.domain.supergroup.controller.response.GetSuperGroupResponse.GetSuperGroupResponseObject;
+import it.chalmers.gamma.domain.group.controller.response.GroupUpdatedResponse;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
-
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -58,9 +54,8 @@ public class SuperGroupAdminController {
         }
 
         try {
-            this.superGroupService.createSuperGroup(requestToDTO(request));
-        } catch (SuperGroupAlreadyExistsException e) {
-            LOGGER.error("Super group already exists", e);
+            this.superGroupService.create(requestToDTO(request));
+        } catch (EntityAlreadyExistsException e) {
             throw new SuperGroupAlreadyExistsResponse();
         }
         return new SuperGroupCreatedResponse();
@@ -69,28 +64,19 @@ public class SuperGroupAdminController {
 
     @DeleteMapping("/{id}")
     public GroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
-        try {
-            this.superGroupService.removeGroup(id);
-        } catch (SuperGroupNotFoundException e) {
-            LOGGER.error("Super group not found", e);
-            throw new SuperGroupDoesNotExistResponse();
-        } catch (SuperGroupHasGroupsException e) {
-            LOGGER.error("Can't delete super group when it has groups", e);
-            throw new RemoveSubGroupsBeforeRemovingSuperGroupResponse();
-        }
+        this.superGroupService.delete(id);
         return new GroupDeletedResponse();
     }
 
     @PutMapping("/{id}")
-    public GroupEditedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
-                                                @RequestBody CreateSuperGroupRequest request) {
+    public GroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
+                                                 @RequestBody CreateSuperGroupRequest request) {
         try {
-            this.superGroupService.updateSuperGroup(requestToDTO(request, id));
-        } catch (SuperGroupNotFoundException | IDsNotMatchingException e) {
-            LOGGER.error("Super group not found", e);
+            this.superGroupService.update(requestToDTO(request, id));
+        } catch (EntityNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }
-        return new GroupEditedResponse();
+        return new GroupUpdatedResponse();
     }
 
     private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request, SuperGroupId id) {
@@ -100,7 +86,8 @@ public class SuperGroupAdminController {
                 request.getPrettyName(),
                 request.getType(),
                 request.getEmail(),
-                request.getDescription());
+                request.getDescription()
+        );
     }
 
     private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {

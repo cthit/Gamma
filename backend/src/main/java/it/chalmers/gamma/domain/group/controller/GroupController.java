@@ -1,20 +1,16 @@
 package it.chalmers.gamma.domain.group.controller;
 
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.group.controller.response.GetActiveGroupsResponse.GetActiveGroupResponseObject;
-import it.chalmers.gamma.domain.group.controller.response.GetGroupResponse.GetGroupResponseObject;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import it.chalmers.gamma.domain.membership.service.MembershipRestrictedFinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,48 +20,49 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/groups")
 public final class GroupController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GroupController.class);
-
     private final GroupFinder groupFinder;
     private final MembershipFinder membershipFinder;
+    private final MembershipRestrictedFinder membershipRestrictedFinder;
 
     public GroupController(
             GroupFinder groupFinder,
-            MembershipFinder membershipFinder) {
+            MembershipFinder membershipFinder,
+            MembershipRestrictedFinder membershipRestrictedFinder) {
         this.groupFinder = groupFinder;
         this.membershipFinder = membershipFinder;
+        this.membershipRestrictedFinder = membershipRestrictedFinder;
     }
 
     @GetMapping("/{id}")
-    public GetGroupResponseObject getGroup(@PathVariable("id") GroupId id) {
+    public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
         try {
-            GroupDTO group = this.groupFinder.getGroup(id);
+            GroupDTO group = this.groupFinder.get(id);
 
             return new GetGroupResponse(
                     group,
-                    this.membershipFinder.getRestrictedMembershipsInGroup(group)
-            ).toResponseObject();
-        } catch (GroupNotFoundException e) {
-            throw new GroupDoesNotExistResponse();
+                    this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(group.getId())
+            );
+        } catch (EntityNotFoundException e) {
+            throw new GroupNotFoundResponse();
         }
     }
 
 
     @GetMapping()
-    public GetAllGroupsResponse getGroups() {
-        List<GetGroupResponse> responses = this.groupFinder.getGroups()
+    public GetAllGroupResponse getGroups() {
+        List<GetGroupResponse> responses = this.groupFinder.getAll()
                 .stream()
                 .map(g -> new GetGroupResponse(
                         g,
-                        this.membershipFinder.getRestrictedMembershipsInGroup(g))
+                        this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(g.getId()))
                 ).collect(Collectors.toList());
 
-        return new GetAllGroupsResponse(responses);
+        return new GetAllGroupResponse(responses);
     }
 
     @GetMapping("/active")
-    public GetActiveGroupResponseObject getActiveGroups() {
-        return new GetActiveGroupsResponse(this.membershipFinder.getActiveGroupsWithMemberships()).toResponseObject();
+    public GetActiveGroupResponse getActiveGroups() {
+        return new GetActiveGroupResponse(this.membershipFinder.getActiveGroupsWithMemberships());
     }
 
 }

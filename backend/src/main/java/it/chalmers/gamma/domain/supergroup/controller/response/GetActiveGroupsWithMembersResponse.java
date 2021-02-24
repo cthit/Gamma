@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.membership.data.MembershipsPerGroupDTO;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipsPerGroupDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

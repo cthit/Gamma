@@ -1,6 +1,6 @@
 package it.chalmers.gamma.oauth;
 
-import it.chalmers.gamma.domain.approval.service.UserApprovalStore;
+import it.chalmers.gamma.domain.userapproval.service.UserApprovalStore;
 import it.chalmers.gamma.domain.client.service.ClientService;
 import it.chalmers.gamma.domain.user.service.UserService;
 

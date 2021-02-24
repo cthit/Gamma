@@ -1,21 +1,18 @@
 package it.chalmers.gamma.bootstrap.mock;
 
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.Group;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.domain.text.data.db.Text;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class MockGroup {
 
     private GroupId id;
     private String name;
     private String prettyName;
-    private Text description;
-    private Text function;
     private List<MockMembership> members;
     private SuperGroupId superGroup;
 
@@ -43,22 +40,6 @@ public class MockGroup {
 
     public void setPrettyName(String prettyName) {
         this.prettyName = prettyName;
-    }
-
-    public Text getDescription() {
-        return Objects.requireNonNullElseGet(this.description, Text::new);
-    }
-
-    public void setDescription(Text description) {
-        this.description = description;
-    }
-
-    public Text getFunction() {
-        return Objects.requireNonNullElseGet(this.function, Text::new);
-    }
-
-    public void setFunction(Text function) {
-        this.function = function;
     }
 
     public List<MockMembership> getMembers() {

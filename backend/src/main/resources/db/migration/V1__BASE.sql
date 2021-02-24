@@ -85,7 +85,7 @@ create table authority (
   super_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
   post_id         uuid  constraint authority_post                     references post,
   authority_level varchar(30)  constraint authority_authority_level            references authority_level,
-  constraint      authority_pk primary key (post_id, super_group_id, authority_level) --on delete cascade
+  constraint      authority_pk primary key (post_id, super_group_id, authority_level)
 );
 
 /*create table authority_all_posts (
@@ -107,7 +107,7 @@ create table membership (
   group_id         uuid         constraint membership_fkit_group_fk references fkit_group,
   post_id              uuid         constraint membership_post_fk references post,
   unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (user_id, group_id, post_id) --on delete cascade
+  constraint membership_pk primary key (user_id, group_id, post_id)
 );
 
 create table no_account_membership (

@@ -1,23 +1,19 @@
 package it.chalmers.gamma.domain.client.controller;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
-import it.chalmers.gamma.domain.client.ClientId;
-import it.chalmers.gamma.domain.client.ClientSecret;
-import it.chalmers.gamma.domain.client.controller.request.EditClientInformationRequest;
-import it.chalmers.gamma.domain.client.data.ClientDTO;
-import it.chalmers.gamma.domain.client.exception.ClientNotFoundException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.client.domain.ClientId;
+import it.chalmers.gamma.domain.client.domain.ClientSecret;
+import it.chalmers.gamma.domain.client.controller.request.UpdateClientInformationRequest;
+import it.chalmers.gamma.domain.client.data.dto.ClientDTO;
 import it.chalmers.gamma.domain.client.service.ClientFinder;
 import it.chalmers.gamma.domain.client.service.ClientService;
-import it.chalmers.gamma.domain.client.controller.request.AddClientRequest;
-import it.chalmers.gamma.domain.client.controller.response.ClientAddedResponse;
-import it.chalmers.gamma.domain.client.controller.response.ClientAddedResponse.ClientAddedResponseObject;
-import it.chalmers.gamma.domain.client.controller.response.ClientEditedResponse;
-import it.chalmers.gamma.domain.client.controller.response.GetAllClientsResponse;
-import it.chalmers.gamma.domain.client.controller.response.GetAllClientsResponse.GetAllClientResponseObject;
+import it.chalmers.gamma.domain.client.controller.request.CreateClientRequest;
+import it.chalmers.gamma.domain.client.controller.response.ClientCreatedResponse;
+import it.chalmers.gamma.domain.client.controller.response.ClientUpdatedResponse;
+import it.chalmers.gamma.domain.client.controller.response.GetAllClientResponse;
 import it.chalmers.gamma.domain.client.controller.response.GetClientResponse;
-import it.chalmers.gamma.domain.client.controller.response.GetClientResponse.GetClientResponseObject;
-import it.chalmers.gamma.domain.client.controller.response.ClientDoesNotExistResponse;
-import it.chalmers.gamma.domain.client.controller.response.ClientRemovedResponse;
+import it.chalmers.gamma.domain.client.controller.response.ClientNotFoundResponse;
+import it.chalmers.gamma.domain.client.controller.response.ClientDeletedResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,58 +42,51 @@ public class ClientAdminController {
     }
 
     @PostMapping()
-    public ClientAddedResponseObject addITClient(@RequestBody AddClientRequest request) {
+    public ClientCreatedResponse addITClient(@RequestBody CreateClientRequest request) {
         ClientSecret clientSecret = new ClientSecret();
 
-        this.clientService.createClient(
+        this.clientService.create(
                 new ClientDTO(
                         new ClientId(),
                         clientSecret,
-                        request.getWebServerRedirectUri(),
-                        request.isAutoApprove(),
-                        request.getName(),
-                        request.getDescription()
+                        request.webServerRedirectUri,
+                        request.autoApprove,
+                        request.name,
+                        request.description
                 )
         );
 
-        return new ClientAddedResponse(clientSecret).toResponseObject();
+        return new ClientCreatedResponse(clientSecret);
     }
 
     @GetMapping()
-    public GetAllClientResponseObject getClients() {
-        return new GetAllClientsResponse(this.clientFinder.getClients()).toResponseObject();
+    public GetAllClientResponse getAllClient() {
+        return new GetAllClientResponse(this.clientFinder.getAll());
     }
 
     @GetMapping("/{clientId}")
-    public GetClientResponseObject getClient(@PathVariable("clientId") ClientId id) {
+    public GetClientResponse getClient(@PathVariable("clientId") ClientId id) {
         try {
-            return new GetClientResponse(this.clientFinder.getClient(id)).toResponseObject();
-        } catch (ClientNotFoundException e) {
-            LOGGER.error("Client not found", e);
-            throw new ClientDoesNotExistResponse();
+            return new GetClientResponse(this.clientFinder.get(id));
+        } catch (EntityNotFoundException e) {
+            throw new ClientNotFoundResponse();
         }
     }
 
     @DeleteMapping("/{clientId}")
-    public ClientRemovedResponse removeClient(@PathVariable("clientId") ClientId id) {
+    public ClientDeletedResponse deleteClient(@PathVariable("clientId") ClientId id) {
         try {
-            this.clientService.removeClient(id);
-            return new ClientRemovedResponse();
-        } catch (ClientNotFoundException e) {
-            LOGGER.error("Client not found", e);
-            throw new ClientDoesNotExistResponse();
+            this.clientService.delete(id);
+            return new ClientDeletedResponse();
+        } catch (EntityNotFoundException e) {
+            throw new ClientNotFoundResponse();
         }
     }
 
     @PutMapping("/{clientId}")
-    public ClientEditedResponse editClient(@PathVariable("clientId") ClientId clientId, @RequestBody EditClientInformationRequest request) {
-        try {
-            this.clientService.editClient(clientId, request.getDescription());
-            return new ClientEditedResponse();
-        } catch (ClientNotFoundException e) {
-            LOGGER.error("Client not found", e);
-            throw new ClientDoesNotExistResponse();
-        }
+    public ClientUpdatedResponse updateClient(@PathVariable("clientId") ClientId clientId, @RequestBody UpdateClientInformationRequest request) {
+        //this.clientService.update(clientId, request.description);
+        return new ClientUpdatedResponse();
     }
 
 }

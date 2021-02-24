@@ -1,49 +1,43 @@
 package it.chalmers.gamma.domain.activationcode.service;
 
-import it.chalmers.gamma.domain.activationcode.data.ActivationCode;
-import it.chalmers.gamma.domain.activationcode.data.ActivationCodeDTO;
-import it.chalmers.gamma.domain.activationcode.data.ActivationCodeRepository;
-import it.chalmers.gamma.domain.activationcode.exception.ActivationCodeNotFoundException;
+import it.chalmers.gamma.domain.CreateEntity;
+import it.chalmers.gamma.domain.DeleteEntity;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.activationcode.data.db.ActivationCode;
+import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
+import it.chalmers.gamma.domain.activationcode.data.db.ActivationCodeRepository;
 import it.chalmers.gamma.domain.Cid;
 
 import it.chalmers.gamma.util.TokenUtils;
 
-import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ActivationCodeService {
+public class ActivationCodeService implements DeleteEntity<Cid>  {
 
     private final ActivationCodeFinder activationCodeFinder;
-    private final WhitelistService whitelistService;
     private final ActivationCodeRepository activationCodeRepository;
 
     public ActivationCodeService(ActivationCodeFinder activationCodeFinder,
-                                 ActivationCodeRepository activationCodeRepository,
-                                 WhitelistService whitelistService) {
+                                 ActivationCodeRepository activationCodeRepository) {
         this.activationCodeFinder = activationCodeFinder;
         this.activationCodeRepository = activationCodeRepository;
-        this.whitelistService = whitelistService;
     }
 
     public ActivationCodeDTO saveActivationCode(Cid cid) {
-        tryDeleteCode(cid);
+        // Delete if there was a code previously saved
+        // TODO: Fix this so it's the correct exception
+        try {
+            delete(cid);
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+        }
 
         String code = TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS);
         return this.activationCodeFinder.toDTO(this.activationCodeRepository.save(new ActivationCode(cid, code)));
     }
 
-    public void tryDeleteCode(Cid cid) {
-        try {
-            deleteCode(cid);
-        } catch (ActivationCodeNotFoundException ignored) { }
-    }
-
-    public void deleteCode(Cid cid) throws ActivationCodeNotFoundException {
-        if(!this.activationCodeFinder.cidHasCode(cid)) {
-            throw new ActivationCodeNotFoundException();
-        }
-
+    public void delete(Cid cid) throws EntityNotFoundException {
         this.activationCodeRepository.deleteById(cid);
     }
 

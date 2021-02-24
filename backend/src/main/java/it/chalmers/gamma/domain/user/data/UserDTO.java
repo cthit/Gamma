@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.user.data;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.DTO;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.user.UserId;
@@ -8,7 +9,7 @@ import it.chalmers.gamma.domain.user.UserId;
 import java.time.Year;
 import java.util.UUID;
 
-public class UserDTO {
+public class UserDTO implements DTO {
     private final UserId id;
     private final Cid cid;
     private final Email email;

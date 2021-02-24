@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.domain.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class UserId implements Serializable {
+public class UserId implements Id, Serializable {
 
     @JsonValue
     @Column(name = "user_id")

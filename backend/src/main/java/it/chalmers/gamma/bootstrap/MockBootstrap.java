@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.EntityAlreadyExistsException;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
-import it.chalmers.gamma.domain.group.exception.GroupAlreadyExistsException;
-import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
-import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupAlreadyExistsException;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.bootstrap.mock.MockData;
 
@@ -23,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -91,7 +87,7 @@ public class MockBootstrap {
 
     private void createPosts(MockData mockData) {
         mockData.getPosts().forEach(mockPost ->
-                this.helper.getPostService().addPost(
+                this.helper.getPostService().create(
                         new PostDTO(
                                 mockPost.getId(),
                                 mockPost.getPostName(),
@@ -135,9 +131,7 @@ public class MockBootstrap {
                     .id(mockGroup.getId())
                     .becomesActive(active)
                     .becomesInactive(inactive)
-                    .description(mockGroup.getDescription())
                     .email(new Email(name + "@chalmers.it"))
-                    .function(mockGroup.getFunction())
                     .name(name)
                     .prettyName(prettyName)
                     .avatarUrl(null)
@@ -145,23 +139,19 @@ public class MockBootstrap {
                     .build();
 
             try {
-                this.helper.getGroupService().createGroup(group);
+                this.helper.getGroupService().create(group);
 
                 mockGroup.getMembers().forEach(mockMembership -> {
-                    try {
-                        this.helper.getMembershipService().addMembership(
-                                new MembershipShallowDTO(
-                                        mockMembership.getPostId(),
-                                        mockGroup.getId(),
-                                        mockMembership.getUnofficialPostName(),
-                                        mockMembership.getUserId()
-                                )
-                        );
-                    } catch (GroupNotFoundException | PostNotFoundException | UserNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    this.helper.getMembershipService().create(
+                            new MembershipShallowDTO(
+                                    mockMembership.getPostId(),
+                                    mockGroup.getId(),
+                                    mockMembership.getUnofficialPostName(),
+                                    mockMembership.getUserId()
+                            )
+                    );
                 });
-            } catch (GroupAlreadyExistsException e) {
+            } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Error creating group: " + group.getName() + "; Group already exists, skipping...");
             }
         });
@@ -171,14 +161,14 @@ public class MockBootstrap {
     private void createSuperGroups(MockData mockData) {
         mockData.getSuperGroups().forEach(mockSuperGroup -> {
             try {
-                this.helper.getSuperGroupService().createSuperGroup(new SuperGroupDTO(
+                this.helper.getSuperGroupService().create(new SuperGroupDTO(
                         mockSuperGroup.getId(),
                         mockSuperGroup.getName(),
                         mockSuperGroup.getPrettyName(),
                         mockSuperGroup.getType(),
-                        mockSuperGroup.getName() + "@chalmers.it",
+                        new Email(mockSuperGroup.getName() + "@chalmers.it"),
                         null));
-            } catch (SuperGroupAlreadyExistsException e) {
+            } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Error creating supergroup: " + mockSuperGroup.getName() + "; Super group already exists, skipping...");
             }
         });

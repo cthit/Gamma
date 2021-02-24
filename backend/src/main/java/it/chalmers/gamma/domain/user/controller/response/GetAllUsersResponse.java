@@ -3,7 +3,7 @@ package it.chalmers.gamma.domain.user.controller.response;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.List;
 
-import it.chalmers.gamma.domain.membership.data.UserRestrictedWithGroupsDTO;
+import it.chalmers.gamma.domain.membership.data.dto.UserRestrictedWithGroupsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

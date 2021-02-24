@@ -1,8 +1,8 @@
 package it.chalmers.gamma.domain.user.service;
 
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
-import it.chalmers.gamma.domain.activationcode.exception.ActivationCodeNotFoundException;
 import it.chalmers.gamma.domain.user.data.User;
 import it.chalmers.gamma.domain.user.data.UserRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
@@ -19,20 +19,17 @@ public class UserCreationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCreationService.class);
 
-    private final UserFinder userFinder;
     private final WhitelistService whitelistService;
     private final ActivationCodeService activationCodeService;
     private final ActivationCodeFinder activationCodeFinder;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
 
-    public UserCreationService(UserFinder userFinder,
-                               WhitelistService whitelistService,
+    public UserCreationService(WhitelistService whitelistService,
                                ActivationCodeService activationCodeService,
                                ActivationCodeFinder activationCodeFinder,
                                PasswordEncoder passwordEncoder,
                                UserRepository repository) {
-        this.userFinder = userFinder;
         this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.activationCodeFinder = activationCodeFinder;
@@ -46,11 +43,11 @@ public class UserCreationService {
         }
 
         try {
-            this.whitelistService.removeWhiteListedCid(newUser.getCid());
-            this.activationCodeService.deleteCode(newUser.getCid());
+            this.whitelistService.delete(newUser.getCid());
+            this.activationCodeService.delete(newUser.getCid());
 
             this.createUser(newUser, password);
-        } catch (CidNotWhitelistedException | ActivationCodeNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOGGER.error("Something went wrong when clearing whitelist and/or activation code", e);
 
             //Throwing generic error for security reasons

@@ -2,12 +2,12 @@ package it.chalmers.gamma.domain.user.controller;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.controller.response.*;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.request.CreateITUserRequest;
@@ -72,7 +72,7 @@ public final class UserController {
         try {
             return new GetUserRestrictedResponse(this.membershipFinder.getUserRestrictedWithMemberships(id))
                     .toResponseObject();
-        } catch (UserNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
         }
@@ -81,10 +81,9 @@ public final class UserController {
     @GetMapping("/{id}/avatar")
     public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {
         try {
-            UserDTO user = this.userFinder.getUser(id);
+            UserDTO user = this.userFinder.get(id);
             response.sendRedirect(user.getAvatarUrl());
-        } catch (UserNotFoundException e) {
-            LOGGER.error("User not found", e);
+        } catch (EntityNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }

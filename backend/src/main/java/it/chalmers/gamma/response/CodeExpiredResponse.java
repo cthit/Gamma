@@ -2,8 +2,8 @@ package it.chalmers.gamma.response;
 
 import org.springframework.http.HttpStatus;
 
-public class CodeExpiredResponse extends CustomResponseStatusException {
+public class CodeExpiredResponse extends ErrorResponse {
     public CodeExpiredResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "CODE_EXPIRED");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

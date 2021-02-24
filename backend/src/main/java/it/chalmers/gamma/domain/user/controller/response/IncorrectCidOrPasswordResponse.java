@@ -1,11 +1,11 @@
 package it.chalmers.gamma.domain.user.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class IncorrectCidOrPasswordResponse extends CustomResponseStatusException {
+public class IncorrectCidOrPasswordResponse extends ErrorResponse {
     public IncorrectCidOrPasswordResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "INCORRECT_CID_OR_PASSWORD");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 }

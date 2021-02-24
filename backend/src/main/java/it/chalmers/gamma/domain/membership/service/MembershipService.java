@@ -1,24 +1,18 @@
 package it.chalmers.gamma.domain.membership.service;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.exception.GroupNotFoundException;
-import it.chalmers.gamma.domain.membership.data.Membership;
-import it.chalmers.gamma.domain.membership.data.MembershipPK;
-import it.chalmers.gamma.domain.membership.data.MembershipRepository;
-import it.chalmers.gamma.domain.membership.data.MembershipShallowDTO;
-import it.chalmers.gamma.domain.membership.exception.MembershipNotFoundException;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
+import it.chalmers.gamma.domain.CreateEntity;
+import it.chalmers.gamma.domain.DeleteEntity;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.UpdateEntity;
+import it.chalmers.gamma.domain.membership.data.db.Membership;
+import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
+import it.chalmers.gamma.domain.membership.data.db.MembershipRepository;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 
-import java.util.UUID;
-
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MembershipService {
+public class MembershipService implements CreateEntity<MembershipShallowDTO>, DeleteEntity<MembershipPK>, UpdateEntity<MembershipShallowDTO> {
 
     private final MembershipRepository membershipRepository;
     private final MembershipFinder membershipFinder;
@@ -28,19 +22,15 @@ public class MembershipService {
         this.membershipFinder = membershipFinder;
     }
 
-    public void addMembership(MembershipShallowDTO membership) throws GroupNotFoundException, PostNotFoundException, UserNotFoundException {
+    public void create(MembershipShallowDTO membership) {
         this.membershipRepository.save(new Membership(membership));
     }
 
-    public void removeMembership(UserId userId, GroupId groupId, PostId postId) throws MembershipNotFoundException {
-        if(!this.membershipRepository.existsById(new MembershipPK(postId, groupId, userId))) {
-            throw new MembershipNotFoundException();
-        }
-
-        this.membershipRepository.deleteById(new MembershipPK(postId, groupId, userId));
+    public void delete(MembershipPK membershipPK) throws EntityNotFoundException {
+        this.membershipRepository.deleteById(membershipPK);
     }
 
-    public void editMembership(MembershipShallowDTO newEdit) throws MembershipNotFoundException, IDsNotMatchingException, GroupNotFoundException, PostNotFoundException, UserNotFoundException {
+    public void update(MembershipShallowDTO newEdit) throws EntityNotFoundException {
         Membership membership = this.membershipFinder.getMembershipEntityByUserGroupPost(newEdit.getUserId(), newEdit.getGroupId(), newEdit.getPostId());
         membership.apply(newEdit);
         this.membershipRepository.save(membership);

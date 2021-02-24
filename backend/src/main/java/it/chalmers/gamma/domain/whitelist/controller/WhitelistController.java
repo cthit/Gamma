@@ -1,12 +1,12 @@
 package it.chalmers.gamma.domain.whitelist.controller;
 
-import it.chalmers.gamma.domain.activationcode.data.ActivationCodeDTO;
+import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
 import it.chalmers.gamma.domain.whitelist.controller.request.WhitelistCodeRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.activationcode.controller.response.ActivationCodeAddedResonse;
+import it.chalmers.gamma.domain.whitelist.controller.response.WhitelistedCidActivatedResponse;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.mail.MailSenderService;
 
@@ -17,7 +17,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/whitelist", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/whitelist")
 public final class WhitelistController {
 
     private final WhitelistService whitelistService;
@@ -50,8 +49,8 @@ public final class WhitelistController {
     }
 
     @PostMapping("/activate_cid")
-    public ActivationCodeAddedResonse createActivationCode(@Valid @RequestBody WhitelistCodeRequest request,
-                                                       BindingResult result) {
+    public WhitelistedCidActivatedResponse createActivationCode(@Valid @RequestBody WhitelistCodeRequest request,
+                                                                BindingResult result) {
         if (result.hasErrors()) {
             throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
         }
@@ -66,7 +65,7 @@ public final class WhitelistController {
         }
 
         //Gamma doesn't differentiate if activation of a cid was successful or not.
-        return new ActivationCodeAddedResonse();
+        return new WhitelistedCidActivatedResponse();
     }
 
     private void sendEmail(ActivationCodeDTO activationCode) {

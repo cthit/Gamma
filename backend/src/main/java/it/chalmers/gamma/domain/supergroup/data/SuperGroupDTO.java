@@ -1,27 +1,29 @@
 package it.chalmers.gamma.domain.supergroup.data;
 
+import it.chalmers.gamma.domain.DTO;
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.GroupType;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.domain.text.data.db.Text;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.Objects;
-import java.util.UUID;
 
-public class SuperGroupDTO {
+public class SuperGroupDTO implements DTO {
 
     private final SuperGroupId id;
     private final String name;
     private final String prettyName;
     private final GroupType type;
-    private final String email;
-    private final Text description;
+    private final Email email;
+    private final TextDTO description;
 
     public SuperGroupDTO(SuperGroupId id,
                          String name,
                          String prettyName,
                          GroupType type,
-                         String email,
-                         Text description) {
+                         Email email,
+                         TextDTO description) {
         this.id = id;
         this.name = name;
         this.prettyName = prettyName;
@@ -33,9 +35,9 @@ public class SuperGroupDTO {
     public SuperGroupDTO(String name,
                          String prettyName,
                          GroupType type,
-                         String email,
-                         Text description) {
-        this(null, name, prettyName, type, email, description);
+                         Email email,
+                         TextDTO description) {
+        this(new SuperGroupId(), name, prettyName, type, email, description);
     }
 
     public SuperGroupId getId() {
@@ -54,11 +56,11 @@ public class SuperGroupDTO {
         return this.type;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return this.email;
     }
 
-    public Text getDescription() {
+    public TextDTO getDescription() {
         return description;
     }
 

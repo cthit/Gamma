@@ -2,11 +2,10 @@ package it.chalmers.gamma.domain.group.data;
 
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.domain.text.data.db.Text;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.UUID;
 
 /**
  * Note that this class doesn't implement supergroup. That's up to GroupDTO and GroupShallowDTO
@@ -75,9 +74,7 @@ public abstract class GroupBaseDTO {
         protected GroupId id;
         protected Calendar becomesActive;
         protected Calendar becomesInactive;
-        protected Text description;
         protected Email email;
-        protected Text function;
         protected String name;
         protected String prettyName;
         protected String avatarURL;
@@ -111,18 +108,8 @@ public abstract class GroupBaseDTO {
             return getThis();
         }
 
-        public U description(Text description) {
-            this.description = description;
-            return getThis();
-        }
-
         public U email(Email email) {
             this.email = email;
-            return getThis();
-        }
-
-        public U function(Text function) {
-            this.function = function;
             return getThis();
         }
 

@@ -1,18 +1,20 @@
 package it.chalmers.gamma.domain.apikey.service;
 
-import it.chalmers.gamma.domain.apikey.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.data.ApiKey;
-import it.chalmers.gamma.domain.apikey.data.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
-import it.chalmers.gamma.domain.apikey.exception.ApiKeyNotFoundException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.GetAllEntities;
+import it.chalmers.gamma.domain.GetEntity;
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.data.db.ApiKey;
+import it.chalmers.gamma.domain.apikey.data.db.ApiKeyRepository;
+import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyInformationDTO;
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ApiKeyFinder {
+public class ApiKeyFinder implements GetEntity<ApiKeyId, ApiKeyInformationDTO>, GetAllEntities<ApiKeyInformationDTO> {
 
     private final ApiKeyRepository apiKeyRepository;
 
@@ -20,11 +22,7 @@ public class ApiKeyFinder {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    public List<ApiKeyDTO> getApiKeys() {
-        return this.apiKeyRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    public boolean isValidApiKey(String apiKey) {
+    public boolean isValidApiKey(ApiKeyToken apiKey) {
         return this.apiKeyRepository.existsByKey(apiKey);
     }
 
@@ -32,22 +30,24 @@ public class ApiKeyFinder {
         return this.apiKeyRepository.existsById(id);
     }
 
-    public ApiKeyDTO getApiKey(ApiKeyId id) throws ApiKeyNotFoundException {
-        return toDTO(getApiKeyEntity(id));
+    @Override
+    public List<ApiKeyInformationDTO> getAll() {
+        return this.apiKeyRepository
+                .findAll()
+                .stream()
+                .map(ApiKey::toDTO)
+                .map(ApiKeyInformationDTO::new)
+                .collect(Collectors.toList());
     }
 
-    protected ApiKey getApiKeyEntity(ApiKeyId id) throws ApiKeyNotFoundException {
+    @Override
+    public ApiKeyInformationDTO get(ApiKeyId id) throws EntityNotFoundException {
+        return new ApiKeyInformationDTO(getApiKeyEntity(id).toDTO());
+    }
+
+    protected ApiKey getApiKeyEntity(ApiKeyId id) throws EntityNotFoundException {
         return this.apiKeyRepository.findById(id)
-                .orElseThrow(ApiKeyNotFoundException::new);
-    }
-
-    protected ApiKeyDTO toDTO(ApiKey apiKey) {
-        return new ApiKeyDTO(
-                apiKey.getId(),
-                apiKey.getName(),
-                apiKey.getDescription(),
-                apiKey.getKey()
-        );
+                .orElseThrow(EntityNotFoundException::new);
     }
 
 }

@@ -1,15 +1,14 @@
 package it.chalmers.gamma.domain.group.data;
 
+import it.chalmers.gamma.domain.DTO;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.text.Text;
 
 import java.util.Calendar;
 import java.util.Objects;
-import java.util.UUID;
 
-public class GroupShallowDTO extends GroupBaseDTO {
+public class GroupShallowDTO extends GroupBaseDTO implements DTO {
 
     private final SuperGroupId superGroupId;
 

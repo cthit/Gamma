@@ -1,20 +1,18 @@
 package it.chalmers.gamma.domain.supergroup.service;
 
-import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
-import it.chalmers.gamma.domain.supergroup.exception.SuperGroupNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class SuperGroupFinder {
+public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>, GetAllEntities<SuperGroupDTO>, EntityExists<SuperGroupId> {
 
     private final SuperGroupRepository superGroupRepository;
 
@@ -22,50 +20,36 @@ public class SuperGroupFinder {
         this.superGroupRepository = superGroupRepository;
     }
 
-    public boolean superGroupExistsByName(String name) {
-        return this.superGroupRepository.existsByName(name);
-    }
-
-    public boolean superGroupExists(SuperGroupId id) {
+    public boolean exists(SuperGroupId id) {
         return this.superGroupRepository.existsById(id);
     }
 
-    public SuperGroupDTO getSuperGroup(SuperGroupId id) throws SuperGroupNotFoundException {
-        return toDTO(getSuperGroupEntity(id));
+    public SuperGroupDTO getByName(String name) throws EntityNotFoundException {
+        return getEntityByName(name).toDTO();
     }
 
-    public SuperGroupDTO getSuperGroupByName(String name) throws SuperGroupNotFoundException {
-        return toDTO(getSuperGroupEntityByName(name));
+    public SuperGroupDTO get(SuperGroupId id) throws EntityNotFoundException {
+        return getEntity(id).toDTO();
     }
 
-    protected SuperGroup getSuperGroupEntity(SuperGroupId id) throws SuperGroupNotFoundException {
-        return this.superGroupRepository.findById(id).orElseThrow(SuperGroupNotFoundException::new);
+    protected SuperGroup getEntity(SuperGroupId id) throws EntityNotFoundException {
+        return this.superGroupRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    protected SuperGroup getSuperGroupEntity(SuperGroupDTO superGroup) throws SuperGroupNotFoundException {
-        return getSuperGroupEntity(superGroup.getId());
+    protected SuperGroup getEntity(SuperGroupDTO superGroup) throws EntityNotFoundException {
+        return getEntity(superGroup.getId());
     }
 
-    protected SuperGroup getSuperGroupEntityByName(String name) throws SuperGroupNotFoundException {
+    protected SuperGroup getEntityByName(String name) throws EntityNotFoundException {
         return this.superGroupRepository.findByName(name)
-                .orElseThrow(SuperGroupNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
     }
 
-    public List<SuperGroupDTO> getSuperGroups() {
+    public List<SuperGroupDTO> getAll() {
         return Optional.of(this.superGroupRepository.findAll().stream()
+                .map(SuperGroup::toDTO)
                 .filter(g -> !g.getType().equals(GroupType.ADMIN))
-                .map(this::toDTO)
                 .collect(Collectors.toList())).orElseThrow();
     }
 
-    protected SuperGroupDTO toDTO(SuperGroup superGroup) {
-        return new SuperGroupDTO(
-                superGroup.getId(),
-                superGroup.getName(),
-                superGroup.getPrettyName(),
-                superGroup.getType(),
-                superGroup.getEmail(),
-                superGroup.getDescription()
-        );
-    }
 }

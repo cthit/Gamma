@@ -1,21 +1,19 @@
 package it.chalmers.gamma.domain.post.service;
 
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.CreateEntity;
+import it.chalmers.gamma.domain.DeleteEntity;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.UpdateEntity;
 import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.post.exception.PostNotFoundException;
-import it.chalmers.gamma.domain.text.Text;
 
 import it.chalmers.gamma.domain.post.data.Post;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.post.data.PostRepository;
-import it.chalmers.gamma.domain.post.controller.response.PostDoesNotExistResponse;
-
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public class PostService {
+public class PostService implements CreateEntity<PostDTO>, DeleteEntity<PostId>, UpdateEntity<PostDTO> {
 
     private final PostRepository repository;
     private final PostFinder finder;
@@ -25,21 +23,17 @@ public class PostService {
         this.finder = finder;
     }
 
-    public void addPost(PostDTO newPost) {
+    public void create(PostDTO newPost) {
         this.repository.save(new Post(newPost));
     }
 
-    public void editPost(PostDTO newEdit) throws PostNotFoundException, IDsNotMatchingException {
-        Post post = this.finder.getPostEntity(newEdit);
+    public void update(PostDTO newEdit) throws EntityNotFoundException {
+        Post post = this.finder.getEntity(newEdit);
         post.apply(newEdit);
         this.repository.save(post);
     }
 
-    public void deletePost(PostId id) throws PostNotFoundException {
-        if (!this.finder.postExists(id)) {
-            throw new PostNotFoundException();
-        }
-
+    public void delete(PostId id) {
         this.repository.deleteById(id);
     }
 

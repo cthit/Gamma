@@ -1,10 +1,10 @@
 package it.chalmers.gamma.domain.user.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class PasswordTooShortResponse extends CustomResponseStatusException {
+public class PasswordTooShortResponse extends ErrorResponse {
     public PasswordTooShortResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "TOO_SHORT_PASSWORD");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

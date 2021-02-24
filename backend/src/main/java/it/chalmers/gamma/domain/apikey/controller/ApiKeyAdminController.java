@@ -1,28 +1,20 @@
 package it.chalmers.gamma.domain.apikey.controller;
 
-import it.chalmers.gamma.domain.apikey.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.data.ApiKeyDTO;
-import it.chalmers.gamma.domain.apikey.exception.ApiKeyNotFoundException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.apikey.controller.request.CreateApiKeyRequest;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyDeletedResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyDoesNotExistResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetAllAPIKeysResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetAllAPIKeysResponse.GetAllAPIKeysResponseObject;
-import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeyResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeyResponse.GetApiKeyResponseObject;
+import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyNotFoundResponse;
+import it.chalmers.gamma.domain.apikey.controller.response.GetAllApiKeyInformationResponse;
+import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeyInformationResponse;
 import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeySecretResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeySecretResponse.GetApiKeySecretResponseObject;
-import it.chalmers.gamma.util.InputValidationUtils;
 
-import java.util.List;
-import java.util.UUID;
-import javax.validation.Valid;
-
-import it.chalmers.gamma.util.TokenUtils;
-import org.springframework.validation.BindingResult;
+import it.chalmers.gamma.util.Utils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,50 +36,43 @@ public class ApiKeyAdminController {
     }
 
     @PostMapping()
-    public GetApiKeySecretResponseObject createApiKey(
-            @Valid @RequestBody CreateApiKeyRequest request,
-            BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+    public GetApiKeySecretResponse createApiKey(@RequestBody CreateApiKeyRequest request) {
+        ApiKeyToken key = new ApiKeyToken();
 
-        String key = TokenUtils.generateToken(50, TokenUtils.CharacterTypes.LOWERCASE,
-                TokenUtils.CharacterTypes.UPPERCASE,
-                TokenUtils.CharacterTypes.NUMBERS
-        );
-
-        this.apiKeyService.createApiKey(
+        this.apiKeyService.create(
             new ApiKeyDTO(
-                    request.getName(),
-                    request.getDescription(),
+                    request.name,
+                    request.description,
                     key
             )
         );
 
-        return new GetApiKeySecretResponse(key).toResponseObject();
+        return new GetApiKeySecretResponse(key);
     }
 
     @GetMapping()
-    public GetAllAPIKeysResponseObject getAllApiKeys() {
-        return new GetAllAPIKeysResponse(this.apiKeyFinder.getApiKeys()).toResponseObject();
+    public ResponseEntity<GetAllApiKeyInformationResponse> getAllApiKeys() {
+        return Utils.toResponseObject(new GetAllApiKeyInformationResponse(this.apiKeyFinder.getAll()));
     }
 
     @GetMapping("/{id}")
-    public GetApiKeyResponseObject getApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
+    public ResponseEntity<GetApiKeyInformationResponse> getApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
         try {
-            return new GetApiKeyResponse(this.apiKeyFinder.getApiKey(apiKeyId)).toResponseObject();
-        } catch (ApiKeyNotFoundException e) {
-            throw new ApiKeyDoesNotExistResponse();
+            return Utils.toResponseObject(
+                    new GetApiKeyInformationResponse(this.apiKeyFinder.get(apiKeyId))
+            );
+        } catch (EntityNotFoundException e) {
+            throw new ApiKeyNotFoundResponse();
         }
     }
 
     @DeleteMapping("/{id}")
     public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") ApiKeyId apiKeyId) {
         try {
-            this.apiKeyService.deleteApiKey(apiKeyId);
+            this.apiKeyService.delete(apiKeyId);
             return new ApiKeyDeletedResponse();
-        } catch (ApiKeyNotFoundException e) {
-            throw new ApiKeyDoesNotExistResponse();
+        } catch (EntityNotFoundException e) {
+            throw new ApiKeyNotFoundResponse();
         }
     }
 

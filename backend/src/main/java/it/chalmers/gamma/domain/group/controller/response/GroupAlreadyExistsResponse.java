@@ -1,10 +1,10 @@
 package it.chalmers.gamma.domain.group.controller.response;
 
-import it.chalmers.gamma.response.CustomResponseStatusException;
+import it.chalmers.gamma.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
-public class GroupAlreadyExistsResponse extends CustomResponseStatusException {
+public class GroupAlreadyExistsResponse extends ErrorResponse {
     public GroupAlreadyExistsResponse() {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "GROUP_ALREADY_EXISTS");
+        super(HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

@@ -1,22 +1,25 @@
 package it.chalmers.gamma.domain.supergroup.data;
 
-import it.chalmers.gamma.domain.GEntity;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.BaseEntity;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.MutableEntity;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.text.Text;
-
-import java.util.UUID;
+import it.chalmers.gamma.domain.text.data.db.Text;
 
 import javax.persistence.*;
 
 
 @Entity
 @Table(name = "fkit_super_group")
-public class SuperGroup implements GEntity<SuperGroupDTO> {
+public class SuperGroup implements MutableEntity<SuperGroupDTO> {
 
     @EmbeddedId
     private SuperGroupId id;
+
+    @JoinColumn(name = "description")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Text description;
 
     @Column(name = "name")
     private String name;
@@ -28,73 +31,18 @@ public class SuperGroup implements GEntity<SuperGroupDTO> {
     @Enumerated(EnumType.STRING)
     private GroupType type;
 
-    @Column(name = "email")
-    private String email;
-
-    @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Text description;
+    @Embedded
+    private Email email;
 
     protected SuperGroup() {}
 
     public SuperGroup(SuperGroupDTO sg) {
+        assert(sg.getId() != null);
+
         this.id = sg.getId();
-        try {
-            apply(sg);
-        } catch (IDsNotMatchingException ignored) {}
+        this.description = new Text();
 
-        if(this.id == null) {
-            this.id = new SuperGroupId();
-        }
-
-    }
-
-    public void setId(SuperGroupId id) {
-        this.id = id;
-    }
-
-    public SuperGroupId getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name.toLowerCase();
-    }
-
-    public String getPrettyName() {
-        return this.prettyName;
-    }
-
-    public void setPrettyName(String prettyName) {
-        this.prettyName = prettyName;
-    }
-
-    public GroupType getType() {
-        return this.type;
-    }
-
-    public void setType(GroupType type) {
-        this.type = type;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email.toLowerCase();
-    }
-
-    public Text getDescription() {
-        return description;
-    }
-
-    public void setDescription(Text description) {
-        this.description = description;
+        apply(sg);
     }
 
     @Override
@@ -109,16 +57,25 @@ public class SuperGroup implements GEntity<SuperGroupDTO> {
     }
 
     @Override
-    public void apply(SuperGroupDTO sg) throws IDsNotMatchingException {
-        if(this.id != null && this.id != sg.getId()) {
-            throw new IDsNotMatchingException();
-        }
+    public void apply(SuperGroupDTO sg)  {
+        assert(this.id == sg.getId());
 
-        this.id = sg.getId();
         this.email = sg.getEmail();
         this.name = sg.getName();
         this.prettyName = sg.getPrettyName();
         this.type = sg.getType();
-        this.description = sg.getDescription();
+        this.description.apply(sg.getDescription());
+    }
+
+    @Override
+    public SuperGroupDTO toDTO() {
+        return new SuperGroupDTO(
+                id,
+                name,
+                prettyName,
+                type,
+                email,
+                description.toDTO()
+        );
     }
 }

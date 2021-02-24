@@ -1,17 +1,16 @@
 package it.chalmers.gamma.domain.authoritylevel.service;
 
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.domain.authoritylevel.data.AuthorityLevel;
-import it.chalmers.gamma.domain.authoritylevel.data.AuthorityLevelRepository;
-import it.chalmers.gamma.domain.authoritylevel.exception.AuthorityLevelNotFoundException;
+import it.chalmers.gamma.domain.GetAllEntities;
+import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.data.db.AuthorityLevel;
+import it.chalmers.gamma.domain.authoritylevel.data.db.AuthorityLevelRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class AuthorityLevelFinder {
+public class AuthorityLevelFinder implements GetAllEntities<AuthorityLevelName> {
 
     private final AuthorityLevelRepository authorityLevelRepository;
 
@@ -23,7 +22,7 @@ public class AuthorityLevelFinder {
         return this.authorityLevelRepository.existsById(authorityLevel.value);
     }
 
-    public List<AuthorityLevelName> getAuthorityLevels() {
+    public List<AuthorityLevelName> getAll() {
         return this.authorityLevelRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 

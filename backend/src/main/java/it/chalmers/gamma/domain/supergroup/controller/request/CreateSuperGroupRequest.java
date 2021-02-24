@@ -1,11 +1,12 @@
 package it.chalmers.gamma.domain.supergroup.controller.request;
 
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.domain.text.data.db.Text;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.Objects;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,10 +24,9 @@ public class CreateSuperGroupRequest {
     private GroupType type;
 
     @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
-    @Email(message = "FIELD_EMAIL_DOES_NOT_MATCH_EMAIL_ADDRESS")
-    private String email;
+    private Email email;
 
-    private Text description;
+    private TextDTO description;
 
     public String getName() {
         return this.name;
@@ -52,19 +52,19 @@ public class CreateSuperGroupRequest {
         this.type = type;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(Email email) {
         this.email = email;
     }
 
-    public Text getDescription() {
+    public TextDTO getDescription() {
         return description;
     }
 
-    public void setDescription(Text description) {
+    public void setDescription(TextDTO description) {
         this.description = description;
     }
 

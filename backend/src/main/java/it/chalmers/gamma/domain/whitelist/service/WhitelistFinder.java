@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.whitelist.service;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.GetAllEntities;
 import it.chalmers.gamma.domain.whitelist.data.Whitelist;
 import it.chalmers.gamma.domain.whitelist.data.WhitelistRepository;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class WhitelistFinder {
+public class WhitelistFinder implements GetAllEntities<Cid> {
 
     private final WhitelistRepository repository;
 
@@ -21,7 +22,7 @@ public class WhitelistFinder {
         return this.repository.existsById(cid);
     }
 
-    public List<Cid> getWhitelist() {
+    public List<Cid> getAll() {
         return this.repository.findAll()
                 .stream()
                 .map(Whitelist::getCid)

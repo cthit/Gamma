@@ -2,6 +2,8 @@ package it.chalmers.gamma.domain.user.controller;
 
 import it.chalmers.gamma.domain.user.controller.response.GetAllUsersMinifiedResponse;
 import it.chalmers.gamma.domain.user.service.UserFinder;
+import it.chalmers.gamma.util.Utils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +19,8 @@ public class MinifiedUserController {
     }
 
     @GetMapping()
-    public GetAllUsersMinifiedResponse.GetAllITUsersMinifiedResponseObject getAllUserMini() {
-        return new GetAllUsersMinifiedResponse(this.userFinder.getUsersRestricted()).toResponseObject();
+    public ResponseEntity<GetAllUsersMinifiedResponse> getAllUserMini() {
+        return Utils.toResponseObject(new GetAllUsersMinifiedResponse(this.userFinder.getUsersRestricted()));
     }
-
 
 }

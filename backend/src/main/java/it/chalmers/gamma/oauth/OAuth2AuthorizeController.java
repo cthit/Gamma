@@ -1,9 +1,8 @@
 package it.chalmers.gamma.oauth;
 
-import it.chalmers.gamma.domain.client.ClientId;
-import it.chalmers.gamma.domain.client.data.ClientDTO;
-import it.chalmers.gamma.domain.client.data.ClientDetailsDTO;
-import it.chalmers.gamma.domain.client.exception.ClientNotFoundException;
+import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.domain.client.domain.ClientId;
+import it.chalmers.gamma.domain.client.data.dto.ClientDTO;
 import it.chalmers.gamma.domain.client.service.ClientFinder;
 
 import org.slf4j.Logger;
@@ -30,9 +29,9 @@ public class OAuth2AuthorizeController {
     @GetMapping("/oauth/confirm_access")
     public String getConfirmAccess(@ModelAttribute AuthorizationRequest clientAuth, Model model) {
         try {
-            ClientDTO client = this.clientFinder.getClient(new ClientId(clientAuth.getClientId()));
+            ClientDTO client = this.clientFinder.get(new ClientId(clientAuth.getClientId()));
             model.addAttribute("clientName", client.getName());
-        } catch (ClientNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             LOGGER.error("Cannot find provided client in authorize", e);
         }
 

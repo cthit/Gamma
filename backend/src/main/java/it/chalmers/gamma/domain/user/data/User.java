@@ -3,14 +3,14 @@ package it.chalmers.gamma.domain.user.data;
 import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.user.UserId;
 
+import java.time.Year;
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ituser")
-public class User implements GEntity<UserDTO> {
+public class User implements MutableEntity<UserDTO> {
 
     @EmbeddedId
     private UserId id;
@@ -55,119 +55,103 @@ public class User implements GEntity<UserDTO> {
     protected User() { }
 
     public User(UserDTO user) {
-        try {
-            this.apply(user);
-        } catch (IDsNotMatchingException e) {
-            e.printStackTrace();
-        }
+        assert(user.getId() != null);
+        assert(user.getCid() != null);
 
-        if(this.id == null) {
-            this.id = new UserId();
-        }
+        this.id = user.getId();
+        this.cid = user.getCid();
+
+        this.apply(user);
     }
 
-    public UserId getId() {
-        return id;
+    public UserDTO toDTO() {
+        return new UserDTO.UserDTOBuilder()
+                .phone(this.phone)
+                .acceptanceYear(Year.of(this.acceptanceYear))
+                .activated(this.activated)
+                .avatarUrl(this.avatarUrl)
+                .cid(this.cid)
+                .email(this.email)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .id(this.id)
+                .nick(this.nick)
+                .userAgreement(this.userAgreement)
+                .language(this.language)
+                .build();
     }
 
-    public void setId(UserId id) {
-        this.id = id;
-    }
+    @Override
+    public void apply(UserDTO u) {
+        assert(this.id == u.getId());
+        assert(this.cid == u.getCid());
 
-    public Cid getCid() {
-        return cid;
-    }
-
-    public void setCid(Cid cid) {
-        this.cid = cid;
-    }
-
-    public String getPassword() {
-        return password;
+        this.acceptanceYear = u.getAcceptanceYear().getValue();
+        this.activated = u.isActivated();
+        this.avatarUrl = u.getAvatarUrl();
+        this.email = u.getEmail();
+        this.firstName = u.getFirstName();
+        this.lastName = u.getLastName();
+        this.language = u.getLanguage();
+        this.nick = u.getNick();
+        this.userAgreement = u.isUserAgreement();
+        this.phone = u.getPhone();
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getNick() {
-        return nick;
+    public String getPassword() {
+        return password;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick;
+    public UserId getId() {
+        return id;
+    }
+
+    public Cid getCid() {
+        return cid;
+    }
+
+    public String getNick() {
+        return nick;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Email getEmail() {
         return email;
     }
 
-    public void setEmail(Email email) {
-        this.email = email;
-    }
-
     public String getPhone() {
         return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
     public String getAvatarUrl() {
         return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     public boolean isUserAgreement() {
         return userAgreement;
     }
 
-    public void setUserAgreement(boolean userAgreement) {
-        this.userAgreement = userAgreement;
-    }
-
     public boolean isActivated() {
         return activated;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
     public int getAcceptanceYear() {
         return acceptanceYear;
-    }
-
-    public void setAcceptanceYear(int acceptanceYear) {
-        this.acceptanceYear = acceptanceYear;
     }
 
     @Override
@@ -228,25 +212,5 @@ public class User implements GEntity<UserDTO> {
                 ", activated=" + activated +
                 ", acceptanceYear=" + acceptanceYear +
                 '}';
-    }
-
-    @Override
-    public void apply(UserDTO u) throws IDsNotMatchingException {
-        if(this.id != null && this.id != u.getId()) {
-            throw new IDsNotMatchingException();
-        }
-
-        this.id = u.getId();
-        this.acceptanceYear = u.getAcceptanceYear().getValue();
-        this.activated = u.isActivated();
-        this.avatarUrl = u.getAvatarUrl();
-        this.cid = u.getCid();
-        this.email = u.getEmail();
-        this.firstName = u.getFirstName();
-        this.lastName = u.getLastName();
-        this.language = u.getLanguage();
-        this.nick = u.getNick();
-        this.userAgreement = u.isUserAgreement();
-        this.phone = u.getPhone();
     }
 }

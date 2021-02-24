@@ -2,19 +2,18 @@ package it.chalmers.gamma.domain.post.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import it.chalmers.gamma.domain.GEntity;
-import it.chalmers.gamma.domain.IDsNotMatchingException;
+import it.chalmers.gamma.domain.BaseEntity;
+import it.chalmers.gamma.domain.MutableEntity;
 import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.text.Text;
+import it.chalmers.gamma.domain.text.data.db.Text;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
-public class Post implements GEntity<PostDTO> {
+public class Post implements MutableEntity<PostDTO> {
 
     @EmbeddedId
     private PostId id;
@@ -29,64 +28,24 @@ public class Post implements GEntity<PostDTO> {
     protected Post() { }
 
     public Post(PostDTO p) {
+        assert(p.getId() != null);
+
         this.id = p.getId();
-        try {
-            apply(p);
-        } catch (IDsNotMatchingException ignored) { }
 
-        if(this.id == null) {
-            this.id = new PostId();
-        }
-
+        apply(p);
     }
 
     @Override
-    public void apply(PostDTO p) throws IDsNotMatchingException {
-        if (this.id != null && this.id != p.getId()) {
-            throw new IDsNotMatchingException();
-        }
+    public void apply(PostDTO p) {
+        assert(this.id == p.getId());
 
-        this.id = p.getId();
-        this.postName = p.getPostName();
+        this.postName.apply(p.getPostName());
         this.emailPrefix = p.getEmailPrefix();
     }
 
-    public PostId getId() {
-        return this.id;
-    }
-
-    public void setId(PostId id) {
-        this.id = id;
-    }
-
-    @JsonProperty("sv")
-    public void setSVPostName(String postName) {
-        this.postName.setSv(postName);
-    }
-
-    @JsonProperty("en")
-    public void setENPostName(String postName) {
-        this.postName.setEn(postName);
-    }
-
-    public String getSVPostName() {
-        return this.postName.getSv();
-    }
-
-    public String getENPostName() {
-        return this.postName.getEn();
-    }
-
-    public Text getPostName() {
-        return postName;
-    }
-
-    public String getEmailPrefix() {
-        return this.emailPrefix;
-    }
-
-    public void setEmailPrefix(String emailPrefix) {
-        this.emailPrefix = emailPrefix == null ? null : emailPrefix.toLowerCase();
+    @Override
+    public PostDTO toDTO() {
+        return null;
     }
 
     @Override

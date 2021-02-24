@@ -1,8 +1,7 @@
 package it.chalmers.gamma.domain.user.data;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import org.springframework.security.core.GrantedAuthority;
+import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
