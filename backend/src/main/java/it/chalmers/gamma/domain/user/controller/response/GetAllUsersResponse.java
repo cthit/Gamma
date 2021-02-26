@@ -1,31 +1,17 @@
 package it.chalmers.gamma.domain.user.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.domain.UserWithGroups;
+
 import java.util.List;
 
-import it.chalmers.gamma.domain.membership.data.dto.UserRestrictedWithGroupsDTO;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 public class GetAllUsersResponse {
-    @JsonValue
-    private final List<UserRestrictedWithGroupsDTO> users;
 
-    public GetAllUsersResponse(List<UserRestrictedWithGroupsDTO> users) {
+    @JsonValue
+    private final List<UserWithGroups> users;
+
+    public GetAllUsersResponse(List<UserWithGroups> users) {
         this.users = users;
     }
 
-    public List<UserRestrictedWithGroupsDTO> getUsers() {
-        return this.users;
-    }
-
-    public GetAllITUsersResponseObject toResponseObject() {
-        return new GetAllITUsersResponseObject(this);
-    }
-
-    public static class GetAllITUsersResponseObject extends ResponseEntity<GetAllUsersResponse> {
-        GetAllITUsersResponseObject(GetAllUsersResponse body) {
-            super(body, HttpStatus.OK);
-        }
-    }
 }

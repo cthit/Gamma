@@ -3,7 +3,7 @@ package it.chalmers.gamma.domain.supergroup.controller;
 import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.data.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
-import it.chalmers.gamma.domain.group.controller.response.GetActiveGroupResponse;
+import it.chalmers.gamma.domain.group.controller.response.GetAllActiveGroupResponse;
 import it.chalmers.gamma.domain.group.service.GroupMinifiedFinder;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
@@ -73,9 +73,9 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}/active")
-    public GetActiveGroupResponse getActiveGroup(@PathVariable("id") SuperGroupId superGroupId) {
+    public GetAllActiveGroupResponse getActiveGroup(@PathVariable("id") SuperGroupId superGroupId) {
         try {
-            return new GetActiveGroupResponse(
+            return new GetAllActiveGroupResponse(
                     this.membershipFinder.getActiveGroupsWithMembershipsBySuperGroup(superGroupId)
             );
         } catch (EntityNotFoundException e) {

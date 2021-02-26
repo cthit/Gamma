@@ -1,26 +1,21 @@
 package it.chalmers.gamma.domain.user.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.membership.data.dto.UserWithGroupsDTO;
+import it.chalmers.gamma.domain.GroupPost;
+import it.chalmers.gamma.domain.user.data.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public class GetUserAdminResponse {
 
     @JsonUnwrapped
-    private final UserWithGroupsDTO user;
+    public final UserDTO user;
+    public final List<GroupPost> groups;
 
-    public GetUserAdminResponse(UserWithGroupsDTO user) {
+    public GetUserAdminResponse(UserDTO user, List<GroupPost> groups) {
         this.user = user;
-    }
-
-    public GetUserAdminResponseObject toResponseObject() {
-        return new GetUserAdminResponseObject(this);
-    }
-
-    public static class GetUserAdminResponseObject extends ResponseEntity<GetUserAdminResponse> {
-        GetUserAdminResponseObject(GetUserAdminResponse body) {
-            super(body, HttpStatus.OK);
-        }
+        this.groups = groups;
     }
 }

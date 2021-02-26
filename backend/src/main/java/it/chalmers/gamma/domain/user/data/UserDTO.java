@@ -10,6 +10,7 @@ import java.time.Year;
 import java.util.UUID;
 
 public class UserDTO implements DTO {
+
     private final UserId id;
     private final Cid cid;
     private final Email email;
@@ -205,5 +206,5 @@ public class UserDTO implements DTO {
             return this;
         }
     }
-    
+
 }

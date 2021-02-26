@@ -46,7 +46,7 @@ public class MeController {
     }
 
     @GetMapping()
-    public GetMeResponse.GetMeResponseObject getMe(Principal principal) {
+    public GetMeResponse getMe(Principal principal) {
         try {
             UserId userId = this.userFinder.get(new Cid(principal.getName())).getId();
 

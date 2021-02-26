@@ -13,7 +13,6 @@ import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.user.controller.response.GetAllUsersResponse.GetAllITUsersResponseObject;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
@@ -87,9 +86,9 @@ public final class UserAdminController {
     }
 
     @GetMapping("/{id}")
-    public GetUserAdminResponse.GetUserAdminResponseObject getUser(@PathVariable("id") UserId id) {
+    public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
         try {
-            return new GetUserAdminResponse(this.membershipFinder.getUserWithMemberships(id)).toResponseObject();
+            return new GetUserAdminResponse(this.membershipFinder.getUserWithMemberships(id));
         } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
@@ -97,8 +96,8 @@ public final class UserAdminController {
     }
 
     @GetMapping()
-    public GetAllITUsersResponseObject getAllUsers() {
-        return new GetAllUsersResponse(this.membershipFinder.getUsersWithMembership()).toResponseObject();
+    public GetAllUsersResponse getAllUsers() {
+        return new GetAllUsersResponse(this.membershipFinder.getUsersWithMembership());
     }
 
     @PostMapping()

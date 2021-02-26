@@ -9,7 +9,6 @@ import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.post.service.PostService;
 import it.chalmers.gamma.domain.post.controller.request.AddPostRequest;
 import it.chalmers.gamma.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.post.controller.response.GetPostUsagesResponse.GetPostUsagesResponseObject;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.AvoidDuplicateLiterals"})
 @RestController
 @RequestMapping("/admin/groups/posts")
 public final class PostAdminController {
@@ -87,7 +85,7 @@ public final class PostAdminController {
     }
 
     @GetMapping("/{id}/usage")
-    public GetPostUsagesResponseObject getPostUsages(@PathVariable("id") PostId postId) {
-        return new GetPostUsagesResponse(this.membershipFinder.getPostUsages(postId)).toResponseObject();
+    public GetPostUsagesResponse getPostUsages(@PathVariable("id") PostId postId) {
+        return new GetPostUsagesResponse(this.membershipFinder.getPostUsages(postId));
     }
 }

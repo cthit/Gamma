@@ -68,10 +68,9 @@ public final class UserController {
     }
 
     @GetMapping("/{id}")
-    public GetUserRestrictedResponse.GetITUserRestrictedResponseObject getUser(@PathVariable("id") UserId id) {
+    public GetUserRestrictedResponse getUser(@PathVariable("id") UserId id) {
         try {
-            return new GetUserRestrictedResponse(this.membershipFinder.getUserRestrictedWithMemberships(id))
-                    .toResponseObject();
+            return new GetUserRestrictedResponse(this.membershipFinder.getUserRestrictedWithMemberships(id));
         } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();

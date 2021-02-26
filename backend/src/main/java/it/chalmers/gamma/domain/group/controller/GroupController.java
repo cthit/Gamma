@@ -52,17 +52,18 @@ public final class GroupController {
     public GetAllGroupResponse getGroups() {
         List<GetGroupResponse> responses = this.groupFinder.getAll()
                 .stream()
-                .map(g -> new GetGroupResponse(
-                        g,
-                        this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(g.getId()))
+                .map(group -> new GetGroupResponse(
+                        group,
+                        this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(group.getId()))
                 ).collect(Collectors.toList());
 
         return new GetAllGroupResponse(responses);
     }
 
+    // JOIN
     @GetMapping("/active")
-    public GetActiveGroupResponse getActiveGroups() {
-        return new GetActiveGroupResponse(this.membershipFinder.getActiveGroupsWithMemberships());
+    public GetAllActiveGroupResponse getActiveGroups() {
+        return new GetAllActiveGroupResponse();
     }
 
 }
