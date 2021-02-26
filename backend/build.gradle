@@ -69,7 +69,7 @@ dependencies {
             "org.springframework.security:spring-security-config:${springVersion}",
             "org.springframework.security.oauth:spring-security-oauth2:${springBootVersion}",
             "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}",
-            "org.springframework.session:spring-session-core:${springBootVersion}",
+            "org.springframework.session:spring-session-data-redis:${springBootVersion}",
             "org.springframework.boot:spring-boot:${springBootVersion}",
             "org.hibernate:hibernate-core:5.4.14.Final",
             "javax.validation:validation-api:2.0.1.Final",
@@ -88,7 +88,8 @@ dependencies {
             "org.apache.httpcomponents:httpmime:4.5.12",
             "io.springfox:springfox-swagger-ui:2.9.2",
             "io.springfox:springfox-swagger2:2.9.2",
-            'io.lettuce:lettuce-core:5.2.2.RELEASE'
+            'io.lettuce:lettuce-core:5.2.2.RELEASE',
+            "org.springframework.data:spring-data-redis"
     )
 
     testCompile(
