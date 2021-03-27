@@ -1,12 +1,12 @@
 package it.chalmers.gamma.domain.passwordreset.controller;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordFinishRequest;
 import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordRequest;
-import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.domain.user.controller.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.response.PasswordChangedResponse;

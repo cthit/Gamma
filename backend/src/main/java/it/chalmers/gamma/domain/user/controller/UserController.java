@@ -1,28 +1,30 @@
 package it.chalmers.gamma.domain.user.controller;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.controller.response.*;
 import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.request.CreateITUserRequest;
-import it.chalmers.gamma.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.domain.user.controller.response.CodeOrCidIsWrongResponse;
+import it.chalmers.gamma.util.domain.*;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.IOException;
 import java.time.Year;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import it.chalmers.gamma.util.ResponseUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,14 +42,34 @@ public final class UserController {
     private final UserCreationService userCreationService;
     private final MembershipFinder membershipFinder;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
-
     public UserController(UserFinder userFinder,
                           UserCreationService userCreationService,
                           MembershipFinder membershipFinder) {
         this.userFinder = userFinder;
         this.membershipFinder = membershipFinder;
         this.userCreationService = userCreationService;
+    }
+
+
+    @GetMapping()
+    public ResponseEntity<GetAllUsersMinifiedResponse> getAllRestrictedUsers() {
+        return ResponseUtils.toResponseObject(new GetAllUsersMinifiedResponse(this.userFinder.getUsersRestricted()));
+    }
+
+    @GetMapping("/{id}")
+    public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
+        try {
+            UserRestrictedDTO user = new UserRestrictedDTO(this.userFinder.get(id));
+            List<GroupPost> groups = this.membershipFinder
+                    .getMembershipsByUser(id)
+                    .stream()
+                    .map(membership -> new GroupPost(membership.getPost(), membership.getGroup()))
+                    .collect(Collectors.toList());
+
+            return new GetUserRestrictedResponse(new UserWithGroups(user, groups));
+        } catch (EntityNotFoundException e) {
+            throw new UserNotFoundResponse();
+        }
     }
 
     @PostMapping("/create")
@@ -67,15 +89,6 @@ public final class UserController {
         return new UserCreatedResponse();
     }
 
-    @GetMapping("/{id}")
-    public GetUserRestrictedResponse getUser(@PathVariable("id") UserId id) {
-        try {
-            return new GetUserRestrictedResponse(this.membershipFinder.getUserRestrictedWithMemberships(id));
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("User not found", e);
-            throw new UserNotFoundResponse();
-        }
-    }
 
     @GetMapping("/{id}/avatar")
     public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {

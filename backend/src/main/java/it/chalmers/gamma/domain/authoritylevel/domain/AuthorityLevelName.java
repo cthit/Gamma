@@ -1,8 +1,8 @@
 package it.chalmers.gamma.domain.authoritylevel.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.DTO;
-import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;

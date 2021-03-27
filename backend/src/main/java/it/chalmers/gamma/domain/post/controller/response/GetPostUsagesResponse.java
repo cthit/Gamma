@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.List;
 
-import it.chalmers.gamma.domain.GroupWithMembers;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import it.chalmers.gamma.util.domain.GroupWithMembers;
 
 public class GetPostUsagesResponse {
 

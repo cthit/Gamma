@@ -1,9 +1,8 @@
 package it.chalmers.gamma.domain.userapproval.service;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.data.UserDTO;
-import it.chalmers.gamma.domain.userapproval.data.db.UserApproval;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.service.UserFinder;
@@ -14,8 +13,6 @@ import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static org.hibernate.bytecode.BytecodeLogger.LOGGER;
 
 @Service
 public class UserApprovalStore implements ApprovalStore {

@@ -1,13 +1,13 @@
 package it.chalmers.gamma.domain.user.controller;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.GroupPost;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
+import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.requests.ChangeUserPassword;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.domain.user.controller.request.ChangeUserPassword;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.request.DeleteMeRequest;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
 import it.chalmers.gamma.domain.user.controller.response.*;
@@ -23,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.time.Year;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users/me")
@@ -48,12 +51,14 @@ public class MeController {
     @GetMapping()
     public GetMeResponse getMe(Principal principal) {
         try {
-            UserId userId = this.userFinder.get(new Cid(principal.getName())).getId();
+            UserDTO user = extractUser(principal);
+            List<GroupPost> groups = this.membershipFinder.getMembershipsByUser(user.getId())
+                    .stream()
+                    .map(membership -> new GroupPost(membership.getPost(), membership.getGroup()))
+                    .collect(Collectors.toList());
+            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.getId());
 
-            return new GetMeResponse(
-                    this.membershipFinder.getUserRestrictedWithMemberships(userId),
-                    this.authorityFinder.getGrantedAuthorities(userId)
-            ).toResponseObject();
+            return new GetMeResponse(user, groups, authorityLevelNames);
         } catch (EntityNotFoundException e) {
             LOGGER.error("Signed in user doesn't exist, maybe deleted?", e);
             throw new UserNotFoundResponse();
@@ -68,13 +73,12 @@ public class MeController {
             this.userService.update(
                     new UserDTO.UserDTOBuilder()
                             .from(user)
-                            .nick(request.getNick())
-                            .firstName(request.getFirstName())
-                            .lastName(request.getLastName())
-                            .email(new Email(request.getEmail()))
-                            .phone(request.getPhone())
-                            .language(request.getLanguage())
-                            .acceptanceYear(request.getAcceptanceYear())
+                            .nick(request.nick)
+                            .firstName(request.firstName)
+                            .lastName(request.lastName)
+                            .email(request.email)
+                            .language(request.language)
+                            .acceptanceYear(Year.of(request.acceptanceYear))
                             .build()
             );
 

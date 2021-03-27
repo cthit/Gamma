@@ -16,7 +16,8 @@ public class ApiKeyToken implements Serializable {
     private final String value;
 
     public ApiKeyToken() {
-        value = TokenUtils.generateToken(50, TokenUtils.CharacterTypes.LOWERCASE,
+        value = TokenUtils.generateToken(50,
+                TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS
         );

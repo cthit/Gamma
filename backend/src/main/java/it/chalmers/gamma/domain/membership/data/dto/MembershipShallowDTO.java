@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.membership.data.dto;
 
-import it.chalmers.gamma.domain.DTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.user.UserId;

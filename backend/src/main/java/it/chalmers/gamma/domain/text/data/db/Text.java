@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.text.data.db;
 
-import it.chalmers.gamma.domain.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.text.TextId;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 

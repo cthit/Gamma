@@ -1,7 +1,6 @@
 package it.chalmers.gamma.domain.client.data.db;
 
-import it.chalmers.gamma.domain.BaseEntity;
-import it.chalmers.gamma.domain.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.client.data.dto.ClientDTO;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.client.domain.ClientSecret;

@@ -30,7 +30,8 @@ server:
     context-path: /api
     session:
       timeout: ${SESSION_TIMEOUT:-1}
-
+  error:
+    path: /error
 
 
 logging:

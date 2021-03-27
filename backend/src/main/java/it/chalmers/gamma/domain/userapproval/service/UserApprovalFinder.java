@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.userapproval.service;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
-import it.chalmers.gamma.domain.GetEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.GetEntity;
 import it.chalmers.gamma.domain.userapproval.data.db.UserApproval;
 import it.chalmers.gamma.domain.userapproval.data.dto.UserApprovalDTO;
 import it.chalmers.gamma.domain.userapproval.data.db.UserApprovalPK;

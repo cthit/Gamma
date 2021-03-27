@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.group.controller.request;
 
-import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.Calendar;

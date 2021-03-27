@@ -1,9 +1,6 @@
 package it.chalmers.gamma.domain.post.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import it.chalmers.gamma.domain.BaseEntity;
-import it.chalmers.gamma.domain.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.text.data.db.Text;
 
@@ -31,6 +28,7 @@ public class Post implements MutableEntity<PostDTO> {
         assert(p.getId() != null);
 
         this.id = p.getId();
+        this.postName = this.postName == null ? new Text() : this.postName;
 
         apply(p);
     }

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.authority.data.db;
 
-import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;

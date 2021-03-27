@@ -1,14 +1,14 @@
 package it.chalmers.gamma.domain.group.controller;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipRestrictedDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import it.chalmers.gamma.domain.membership.service.MembershipRestrictedFinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,33 +37,13 @@ public final class GroupController {
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
         try {
             GroupDTO group = this.groupFinder.get(id);
+            List<MembershipRestrictedDTO> members = this.membershipRestrictedFinder
+                    .getRestrictedMembershipsInGroup(group.getId());
 
-            return new GetGroupResponse(
-                    group,
-                    this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(group.getId())
-            );
+            return new GetGroupResponse(group, members);
         } catch (EntityNotFoundException e) {
             throw new GroupNotFoundResponse();
         }
-    }
-
-
-    @GetMapping()
-    public GetAllGroupResponse getGroups() {
-        List<GetGroupResponse> responses = this.groupFinder.getAll()
-                .stream()
-                .map(group -> new GetGroupResponse(
-                        group,
-                        this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(group.getId()))
-                ).collect(Collectors.toList());
-
-        return new GetAllGroupResponse(responses);
-    }
-
-    // JOIN
-    @GetMapping("/active")
-    public GetAllActiveGroupResponse getActiveGroups() {
-        return new GetAllActiveGroupResponse();
     }
 
 }

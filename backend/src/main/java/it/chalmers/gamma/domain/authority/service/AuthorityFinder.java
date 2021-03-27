@@ -1,11 +1,9 @@
 package it.chalmers.gamma.domain.authority.service;
 
-import it.chalmers.gamma.domain.EntityExists;
-import it.chalmers.gamma.domain.EntityNotFoundException;
-import it.chalmers.gamma.domain.GetAllEntities;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.domain.authority.data.db.Authority;
 import it.chalmers.gamma.domain.authority.data.dto.AuthorityDTO;
-import it.chalmers.gamma.domain.authority.data.db.AuthorityPK;
 import it.chalmers.gamma.domain.authority.data.db.AuthorityRepository;
 import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;

@@ -1,20 +1,21 @@
 package it.chalmers.gamma.domain.group.controller;
 
-import it.chalmers.gamma.domain.EntityAlreadyExistsException;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.GroupWithMembers;
+import it.chalmers.gamma.util.domain.UserPost;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.data.GroupBaseDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
-import it.chalmers.gamma.domain.membership.service.MembershipService;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipDTO;
+import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.group.controller.request.CreateOrEditGroupRequest;
-import it.chalmers.gamma.response.FileNotFoundResponse;
-import it.chalmers.gamma.response.FileNotSavedException;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 
-import it.chalmers.gamma.util.ImageUtils;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
@@ -22,15 +23,11 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/groups")
@@ -39,11 +36,52 @@ public final class GroupAdminController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final GroupService groupService;
     private final GroupFinder groupFinder;
+    private final MembershipFinder membershipFinder;
 
     public GroupAdminController(GroupService groupService,
-                                GroupFinder groupFinder) {
+                                GroupFinder groupFinder,
+                                MembershipFinder membershipFinder) {
         this.groupService = groupService;
         this.groupFinder = groupFinder;
+        this.membershipFinder = membershipFinder;
+    }
+
+
+    @GetMapping()
+    public GetAllGroupResponse getGroups() {
+        List<GroupWithMembers> groups = this.groupFinder.getAll()
+                .stream()
+                .map(group -> {
+                    try {
+                        return new GroupWithMembers(
+                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.getId()))
+                        );
+                    } catch (EntityNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return new GetAllGroupResponse(groups);
+    }
+
+    @GetMapping("/active")
+    public GetAllGroupResponse getActiveGroups() {
+        List<GroupWithMembers> groups = this.groupFinder.getAll()
+                .stream()
+                .filter(GroupBaseDTO::isActive)
+                .map(group -> {
+                    try {
+                        return new GroupWithMembers(
+                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.getId()))
+                        );
+                    } catch (EntityNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return new GetAllGroupResponse(groups);
     }
 
     @PostMapping()
@@ -132,6 +170,13 @@ public final class GroupAdminController {
                 .prettyName(request.prettyName)
                 .name(request.name)
                 .superGroupId(request.superGroup);
+    }
+
+    private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {
+        return memberships
+                .stream()
+                .map(membership -> new UserPost(new UserRestrictedDTO(membership.getUser()), membership.getPost()))
+                .collect(Collectors.toList());
     }
 
 }

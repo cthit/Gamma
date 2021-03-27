@@ -1,8 +1,9 @@
 package it.chalmers.gamma.domain.post.service;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
-import it.chalmers.gamma.domain.GetAllEntities;
-import it.chalmers.gamma.domain.GetEntity;
+import it.chalmers.gamma.util.domain.abstraction.EntityExists;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
+import it.chalmers.gamma.util.domain.abstraction.GetEntity;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.data.Post;
 import it.chalmers.gamma.domain.post.data.PostDTO;
@@ -13,12 +14,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class PostFinder implements GetEntity<PostId, PostDTO>, GetAllEntities<PostDTO> {
+public class PostFinder implements GetEntity<PostId, PostDTO>, GetAllEntities<PostDTO>, EntityExists<PostId> {
 
     private final PostRepository postRepository;
 
     public PostFinder(PostRepository postRepository) {
         this.postRepository = postRepository;
+    }
+
+    public boolean exists(PostId postId) {
+        return this.postRepository.existsById(postId);
     }
 
     public List<PostDTO> getAll() {

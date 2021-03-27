@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.authoritylevel.service;
 
-import it.chalmers.gamma.domain.GetAllEntities;
+import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.data.db.AuthorityLevel;
 import it.chalmers.gamma.domain.authoritylevel.data.db.AuthorityLevelRepository;

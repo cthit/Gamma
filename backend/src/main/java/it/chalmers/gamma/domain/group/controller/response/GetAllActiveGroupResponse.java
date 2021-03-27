@@ -3,7 +3,7 @@ package it.chalmers.gamma.domain.group.controller.response;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.GroupWithMembers;
+import it.chalmers.gamma.util.domain.GroupWithMembers;
 
 public class GetAllActiveGroupResponse {
 

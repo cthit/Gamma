@@ -1,14 +1,18 @@
 package it.chalmers.gamma.domain.user.service;
 
-import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.data.User;
 import it.chalmers.gamma.domain.user.data.UserRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.abstraction.EntityExists;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
+import it.chalmers.gamma.util.domain.abstraction.GetEntity;
 import org.springframework.stereotype.Component;
 
-import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
 

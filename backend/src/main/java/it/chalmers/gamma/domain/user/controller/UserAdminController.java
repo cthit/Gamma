@@ -1,21 +1,25 @@
 package it.chalmers.gamma.domain.user.controller;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.GroupPost;
+import it.chalmers.gamma.util.domain.UserWithGroups;
+import it.chalmers.gamma.domain.membership.data.dto.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.controller.response.*;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
-import it.chalmers.gamma.requests.AdminChangePasswordRequest;
-import it.chalmers.gamma.requests.AdminViewCreateUserRequest;
+import it.chalmers.gamma.domain.user.controller.request.AdminChangePasswordRequest;
+import it.chalmers.gamma.domain.user.controller.request.AdminViewCreateUserRequest;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -88,7 +92,10 @@ public final class UserAdminController {
     @GetMapping("/{id}")
     public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
         try {
-            return new GetUserAdminResponse(this.membershipFinder.getUserWithMemberships(id));
+            UserDTO user = this.userFinder.get(id);
+            List<GroupPost> groups = this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.getId()));
+
+            return new GetUserAdminResponse(user, groups);
         } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
@@ -97,7 +104,18 @@ public final class UserAdminController {
 
     @GetMapping()
     public GetAllUsersResponse getAllUsers() {
-        return new GetAllUsersResponse(this.membershipFinder.getUsersWithMembership());
+        List<UserWithGroups> users = this.userFinder.getUsersRestricted()
+                .stream()
+                .map(user -> {
+                    try {
+                        return new UserWithGroups(user, this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.getId())));
+                    } catch (EntityNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        return new GetAllUsersResponse(users);
     }
 
     @PostMapping()
@@ -126,14 +144,20 @@ public final class UserAdminController {
     protected UserDTO requestToDTO(EditITUserRequest request, UserId userId) {
         return new UserDTO.UserDTOBuilder()
                 .id(userId)
-                .nick(request.getNick())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(new Email(request.getEmail()))
-                .phone(request.getPhone())
-                .language(request.getLanguage())
-                .acceptanceYear(request.getAcceptanceYear())
+                .nick(request.nick)
+                .firstName(request.firstName)
+                .lastName(request.lastName)
+                .email(request.email)
+                .language(request.language)
+                .acceptanceYear(Year.of(request.acceptanceYear))
                 .build();
+    }
+
+    private List<GroupPost> toGroupPosts(List<MembershipDTO> memberships) {
+        return memberships
+                .stream()
+                .map(membership -> new GroupPost(membership.getPost(), membership.getGroup()))
+                .collect(Collectors.toList());
     }
 
 }

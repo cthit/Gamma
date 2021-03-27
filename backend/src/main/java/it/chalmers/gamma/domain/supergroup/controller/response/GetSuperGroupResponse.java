@@ -1,30 +1,22 @@
 package it.chalmers.gamma.domain.supergroup.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.data.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public class GetSuperGroupResponse {
+
     @JsonUnwrapped
-    private final SuperGroupDTO fkitSuperGroup;
+    public final SuperGroupDTO superGroup;
+    public final List<GroupMinifiedDTO> groups;
 
-    public GetSuperGroupResponse(SuperGroupDTO fkitSuperGroup) {
-        this.fkitSuperGroup = fkitSuperGroup;
+    public GetSuperGroupResponse(SuperGroupDTO superGroup, List<GroupMinifiedDTO> groups) {
+        this.superGroup = superGroup;
+        this.groups = groups;
     }
 
-    public SuperGroupDTO getFkitSuperGroup() {
-        return this.fkitSuperGroup;
-    }
-
-    public GetSuperGroupResponseObject toResponseObject() {
-        return new GetSuperGroupResponseObject(this);
-    }
-
-    public static class GetSuperGroupResponseObject extends ResponseEntity<GetSuperGroupResponse> {
-        GetSuperGroupResponseObject(GetSuperGroupResponse body) {
-            super(body, HttpStatus.OK);
-        }
-    }
 }
 

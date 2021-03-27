@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.user.controller.request;
 
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.util.domain.Language;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;

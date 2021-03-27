@@ -1,8 +1,7 @@
 package it.chalmers.gamma.domain.membership.controller;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.controller.response.GroupNotFoundResponse;
 import it.chalmers.gamma.domain.membership.controller.response.MembershipNotFoundResponse;
 import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
@@ -11,10 +10,10 @@ import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.post.service.PostService;
 import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.requests.AddUserGroupRequest;
-import it.chalmers.gamma.requests.EditMembershipRequest;
+import it.chalmers.gamma.domain.membership.controller.request.AddUserGroupRequest;
+import it.chalmers.gamma.domain.membership.controller.request.EditMembershipRequest;
 
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.membership.controller.response.EditedMembershipResponse;
 import it.chalmers.gamma.domain.membership.controller.response.MemberAddedToGroupResponse;
 import it.chalmers.gamma.domain.membership.controller.response.MemberRemovedFromGroupResponse;
@@ -82,9 +81,10 @@ public final class MembershipAdminController {
         }
     }
 
-    @PutMapping("/{groupId}/members/{userId}")
+    @PutMapping("/{groupId}/members")
     public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") GroupId groupId,
-                                                    @PathVariable("userId") UserId userId,
+                                                    @RequestParam("userId") UserId userId,
+                                                    @RequestParam("postId") PostId postId,
                                                     @Valid @RequestBody EditMembershipRequest request,
                                                     BindingResult result) {
         if (result.hasErrors()) {
@@ -94,9 +94,9 @@ public final class MembershipAdminController {
         try {
             this.membershipService.update(
                     new MembershipShallowDTO(
-                            request.getPostId(),
+                            postId,
                             groupId,
-                            request.getUnofficialName(),
+                            request.unofficialName,
                             userId
                     )
             );

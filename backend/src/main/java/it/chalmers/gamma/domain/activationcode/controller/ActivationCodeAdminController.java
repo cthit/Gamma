@@ -1,13 +1,13 @@
 package it.chalmers.gamma.domain.activationcode.controller;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.activationcode.controller.response.ActivationCodeDeletedResponse;
 import it.chalmers.gamma.domain.activationcode.controller.response.ActivationCodeNotFoundResponse;
 import it.chalmers.gamma.domain.activationcode.controller.response.GetAllActivationCodeResponse;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
 
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.util.domain.Cid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

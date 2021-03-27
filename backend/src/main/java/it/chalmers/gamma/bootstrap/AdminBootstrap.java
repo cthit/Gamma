@@ -1,14 +1,13 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.text.data.db.Text;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
@@ -19,6 +18,9 @@ import java.time.Year;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import it.chalmers.gamma.util.domain.*;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -100,7 +102,7 @@ public class AdminBootstrap {
                                 adminSuperGroupId,
                                 superGroupName,
                                 superGroupName,
-                                GroupType.COMMITTEE,
+                                SuperGroupType.COMMITTEE,
                                 adminMail,
                                 description
                         )

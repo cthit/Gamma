@@ -1,12 +1,14 @@
 package it.chalmers.gamma.domain.whitelist.service;
 
-import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.whitelist.data.Whitelist;
 import it.chalmers.gamma.domain.whitelist.data.WhitelistRepository;
-import it.chalmers.gamma.domain.whitelist.exception.CidNotWhitelistedException;
-import it.chalmers.gamma.domain.whitelist.exception.CidAlreadyWhitelistedException;
 
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
+import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

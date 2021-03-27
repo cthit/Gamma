@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

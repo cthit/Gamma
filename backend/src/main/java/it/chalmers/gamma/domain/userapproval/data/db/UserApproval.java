@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.userapproval.data.db;
 
-import it.chalmers.gamma.domain.BaseEntity;
+import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
 import it.chalmers.gamma.domain.userapproval.data.dto.UserApprovalDTO;
 
 import javax.persistence.EmbeddedId;

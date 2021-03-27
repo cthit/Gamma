@@ -2,9 +2,9 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;

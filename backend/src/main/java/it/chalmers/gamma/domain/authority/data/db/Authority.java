@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.authority.data.db;
 
-import it.chalmers.gamma.domain.BaseEntity;
+import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
 import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
 
 import javax.persistence.*;

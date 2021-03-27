@@ -5,7 +5,7 @@ import java.time.Instant;
 
 import javax.persistence.*;
 
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.util.domain.Cid;
 import org.springframework.beans.factory.annotation.Value;
 
 @Entity

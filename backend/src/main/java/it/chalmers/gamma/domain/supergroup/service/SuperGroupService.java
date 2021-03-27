@@ -1,12 +1,15 @@
 package it.chalmers.gamma.domain.supergroup.service;
 
-import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
-import it.chalmers.gamma.domain.supergroup.service.exception.SuperGroupHasGroupsException;
+import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
+import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
+import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

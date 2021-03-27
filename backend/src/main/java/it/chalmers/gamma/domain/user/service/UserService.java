@@ -1,16 +1,16 @@
 package it.chalmers.gamma.domain.user.service;
 
-import it.chalmers.gamma.domain.DeleteEntity;
-import it.chalmers.gamma.domain.EntityNotFoundException;
-import it.chalmers.gamma.domain.UpdateEntity;
+import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.util.domain.Cid;
 
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.response.FileNotFoundResponse;
-import it.chalmers.gamma.response.FileNotSavedException;
-import it.chalmers.gamma.response.InvalidFileTypeResponse;
+import it.chalmers.gamma.file.response.FileNotFoundResponse;
+import it.chalmers.gamma.file.response.FileNotSavedResponse;
+import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
 import it.chalmers.gamma.domain.user.data.User;
 import it.chalmers.gamma.domain.user.data.UserRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
                 update(newUser);
 
             } catch (FileNotFoundResponse e) {
-                throw new FileNotSavedException();
+                throw new FileNotSavedResponse();
             }
         } else {
             throw new InvalidFileTypeResponse();

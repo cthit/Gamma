@@ -2,7 +2,7 @@ package it.chalmers.gamma.util;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import it.chalmers.gamma.response.FileNotSavedException;
+import it.chalmers.gamma.file.response.FileNotSavedResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,9 +35,9 @@ public class ImageUtils {
             if (f != null) {
                 return f.getName();
             }
-            throw new FileNotSavedException();
+            throw new FileNotSavedResponse();
         } catch (IOException e) {
-            throw new FileNotSavedException();
+            throw new FileNotSavedResponse();
         }
     }
 

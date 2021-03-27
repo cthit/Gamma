@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.userapproval.data.dto;
 
-import it.chalmers.gamma.domain.DTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 

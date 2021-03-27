@@ -1,8 +1,6 @@
 package it.chalmers.gamma.domain.apikey.data.db;
 
-import it.chalmers.gamma.domain.BaseEntity;
-import it.chalmers.gamma.domain.MutableEntity;
-import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyInformationDTO;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;

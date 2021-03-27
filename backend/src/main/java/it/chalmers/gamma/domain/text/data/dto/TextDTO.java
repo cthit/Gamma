@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.text.data.dto;
 
-import it.chalmers.gamma.domain.DTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 
 public class TextDTO implements DTO {
 

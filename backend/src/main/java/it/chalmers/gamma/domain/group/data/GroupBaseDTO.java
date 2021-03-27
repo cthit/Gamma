@@ -1,8 +1,7 @@
 package it.chalmers.gamma.domain.group.data;
 
-import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.text.data.db.Text;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

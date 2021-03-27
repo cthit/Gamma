@@ -1,9 +1,9 @@
 package it.chalmers.gamma.domain.membership.service;
 
-import it.chalmers.gamma.domain.CreateEntity;
-import it.chalmers.gamma.domain.DeleteEntity;
-import it.chalmers.gamma.domain.EntityNotFoundException;
-import it.chalmers.gamma.domain.UpdateEntity;
+import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
+import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
 import it.chalmers.gamma.domain.membership.data.db.Membership;
 import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
 import it.chalmers.gamma.domain.membership.data.db.MembershipRepository;

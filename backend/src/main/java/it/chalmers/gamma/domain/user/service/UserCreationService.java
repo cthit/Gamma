@@ -1,13 +1,12 @@
 package it.chalmers.gamma.domain.user.service;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.domain.user.data.User;
 import it.chalmers.gamma.domain.user.data.UserRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
-import it.chalmers.gamma.domain.whitelist.exception.CidNotWhitelistedException;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

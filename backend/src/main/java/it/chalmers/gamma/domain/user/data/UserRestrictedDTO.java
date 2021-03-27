@@ -1,11 +1,10 @@
 package it.chalmers.gamma.domain.user.data;
 
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.time.Year;
 import java.util.Objects;
-import java.util.UUID;
 
 public class UserRestrictedDTO {
     private final UserId id;
@@ -13,7 +12,6 @@ public class UserRestrictedDTO {
     private final String nick;
     private final String firstName;
     private final String lastName;
-    private final String avatarUrl;
     private final Year acceptanceYear;
 
     public UserRestrictedDTO(UserDTO userDTO) {
@@ -22,7 +20,6 @@ public class UserRestrictedDTO {
         this.nick = userDTO.getNick();
         this.firstName = userDTO.getFirstName();
         this.lastName = userDTO.getLastName();
-        this.avatarUrl = userDTO.getAvatarUrl();
         this.acceptanceYear = userDTO.getAcceptanceYear();
     }
 
@@ -46,10 +43,6 @@ public class UserRestrictedDTO {
         return this.lastName;
     }
 
-    public String getAvatarUrl() {
-        return this.avatarUrl;
-    }
-
     public Year getAcceptanceYear() {
         return this.acceptanceYear;
     }
@@ -68,7 +61,6 @@ public class UserRestrictedDTO {
                 && Objects.equals(this.nick, that.nick)
                 && Objects.equals(this.firstName, that.firstName)
                 && Objects.equals(this.lastName, that.lastName)
-                && Objects.equals(this.avatarUrl, that.avatarUrl)
                 && Objects.equals(this.acceptanceYear, that.acceptanceYear);
     }
 
@@ -80,7 +72,6 @@ public class UserRestrictedDTO {
                 this.nick,
                 this.firstName,
                 this.lastName,
-                this.avatarUrl,
                 this.acceptanceYear
         );
     }
@@ -93,7 +84,6 @@ public class UserRestrictedDTO {
                 + ", nick='" + this.nick + '\''
                 + ", firstName='" + this.firstName + '\''
                 + ", lastName='" + this.lastName + '\''
-                + ", avatarUrl='" + this.avatarUrl + '\''
                 + ", acceptanceYear=" + this.acceptanceYear + '\''
                 + '}';
     }

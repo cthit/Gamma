@@ -1,9 +1,8 @@
 package it.chalmers.gamma.domain.client.data.dto;
 
-import it.chalmers.gamma.domain.DTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.client.domain.ClientSecret;
-import it.chalmers.gamma.domain.text.data.db.Text;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.Objects;

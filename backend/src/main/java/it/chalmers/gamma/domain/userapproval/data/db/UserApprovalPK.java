@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.userapproval.data.db;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 

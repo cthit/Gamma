@@ -1,8 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.controller.request;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.text.data.db.Text;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.Objects;
@@ -21,7 +20,7 @@ public class CreateSuperGroupRequest {
     private String prettyName;
 
     @NotNull(message = "TYPE_MUST_BE_PROVIDED")
-    private GroupType type;
+    private SuperGroupType type;
 
     @NotNull(message = "EMAIL_MUST_BE_PROVIDED")
     private Email email;
@@ -44,11 +43,11 @@ public class CreateSuperGroupRequest {
         this.prettyName = prettyName;
     }
 
-    public GroupType getType() {
+    public SuperGroupType getType() {
         return this.type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(SuperGroupType type) {
         this.type = type;
     }
 

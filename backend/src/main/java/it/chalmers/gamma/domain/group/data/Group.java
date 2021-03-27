@@ -1,15 +1,11 @@
 package it.chalmers.gamma.domain.group.data;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.BaseEntity;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.membership.data.db.Membership;
-import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
 
 import javax.persistence.*;
 

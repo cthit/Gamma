@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.apikey.controller;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
@@ -10,10 +10,9 @@ import it.chalmers.gamma.domain.apikey.controller.request.CreateApiKeyRequest;
 import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyDeletedResponse;
 import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyNotFoundResponse;
 import it.chalmers.gamma.domain.apikey.controller.response.GetAllApiKeyInformationResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeyInformationResponse;
 import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeySecretResponse;
 
-import it.chalmers.gamma.util.Utils;
+import it.chalmers.gamma.util.ResponseUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,22 +51,11 @@ public class ApiKeyAdminController {
 
     @GetMapping()
     public ResponseEntity<GetAllApiKeyInformationResponse> getAllApiKeys() {
-        return Utils.toResponseObject(new GetAllApiKeyInformationResponse(this.apiKeyFinder.getAll()));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<GetApiKeyInformationResponse> getApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
-        try {
-            return Utils.toResponseObject(
-                    new GetApiKeyInformationResponse(this.apiKeyFinder.get(apiKeyId))
-            );
-        } catch (EntityNotFoundException e) {
-            throw new ApiKeyNotFoundResponse();
-        }
+        return ResponseUtils.toResponseObject(new GetAllApiKeyInformationResponse(this.apiKeyFinder.getAll()));
     }
 
     @DeleteMapping("/{id}")
-    public ApiKeyDeletedResponse deleteApiKeyDetails(@PathVariable("id") ApiKeyId apiKeyId) {
+    public ApiKeyDeletedResponse deleteApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
         try {
             this.apiKeyService.delete(apiKeyId);
             return new ApiKeyDeletedResponse();

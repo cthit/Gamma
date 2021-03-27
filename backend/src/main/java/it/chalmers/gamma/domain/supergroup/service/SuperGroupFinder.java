@@ -1,10 +1,14 @@
 package it.chalmers.gamma.domain.supergroup.service;
 
-import it.chalmers.gamma.domain.*;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
+import it.chalmers.gamma.util.domain.abstraction.EntityExists;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
+import it.chalmers.gamma.util.domain.abstraction.GetEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -48,7 +52,7 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
     public List<SuperGroupDTO> getAll() {
         return Optional.of(this.superGroupRepository.findAll().stream()
                 .map(SuperGroup::toDTO)
-                .filter(g -> !g.getType().equals(GroupType.ADMIN))
+                .filter(g -> !g.getType().equals(SuperGroupType.ADMIN))
                 .collect(Collectors.toList())).orElseThrow();
     }
 

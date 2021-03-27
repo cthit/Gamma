@@ -1,10 +1,10 @@
 package it.chalmers.gamma.domain.activationcode.service;
 
-import it.chalmers.gamma.domain.GetAllEntities;
+import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.domain.activationcode.data.db.ActivationCode;
 import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
 import it.chalmers.gamma.domain.activationcode.data.db.ActivationCodeRepository;
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.util.domain.Cid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

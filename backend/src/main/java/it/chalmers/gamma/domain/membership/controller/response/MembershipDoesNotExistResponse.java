@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.membership.controller.response;
 
-import it.chalmers.gamma.response.ErrorResponse;
+import it.chalmers.gamma.util.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 
 public class MembershipDoesNotExistResponse extends ErrorResponse {

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.domain.passwordreset.service;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.mail.MailSenderService;
 
@@ -11,7 +11,6 @@ import it.chalmers.gamma.domain.passwordreset.data.PasswordResetTokenDTO;
 import it.chalmers.gamma.domain.passwordreset.data.PasswordResetTokenRepository;
 import it.chalmers.gamma.domain.user.data.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.util.Optional;

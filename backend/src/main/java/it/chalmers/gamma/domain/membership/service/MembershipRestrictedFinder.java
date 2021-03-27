@@ -1,10 +1,7 @@
 package it.chalmers.gamma.domain.membership.service;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.membership.data.db.Membership;
-import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
 import it.chalmers.gamma.domain.membership.data.db.MembershipRepository;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipRestrictedDTO;
 import it.chalmers.gamma.domain.post.PostId;

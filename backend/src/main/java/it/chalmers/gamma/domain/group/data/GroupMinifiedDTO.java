@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.group.data;
 
-import it.chalmers.gamma.domain.DTO;
-import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
+import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.domain.group.GroupId;
 
 public class GroupMinifiedDTO implements DTO {

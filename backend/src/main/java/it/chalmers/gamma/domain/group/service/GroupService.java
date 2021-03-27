@@ -1,11 +1,15 @@
 package it.chalmers.gamma.domain.group.service;
 
-import it.chalmers.gamma.domain.*;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.data.Group;
 import it.chalmers.gamma.domain.group.data.GroupRepository;
 import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
 
+import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
+import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
+import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

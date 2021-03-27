@@ -1,9 +1,8 @@
 package it.chalmers.gamma.domain.supergroup.data;
 
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.BaseEntity;
-import it.chalmers.gamma.domain.GroupType;
-import it.chalmers.gamma.domain.MutableEntity;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.text.data.db.Text;
 
@@ -29,7 +28,7 @@ public class SuperGroup implements MutableEntity<SuperGroupDTO> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private GroupType type;
+    private SuperGroupType type;
 
     @Embedded
     private Email email;

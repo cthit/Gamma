@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.userapproval.controller;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.userapproval.controller.response.ApprovedClientsResponse;
 import it.chalmers.gamma.domain.userapproval.service.UserApprovalFinder;
 import it.chalmers.gamma.domain.client.service.ClientFinder;
@@ -38,6 +38,8 @@ public class UserApprovalController {
         this.userApprovalFinder = userApprovalFinder;
         this.userFinder = userFinder;
     }
+
+    //TODO: Implement Delete
 
     @GetMapping()
     public ApprovedClientsResponse getApprovedClientsByUser(Principal principal) {

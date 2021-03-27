@@ -1,17 +1,15 @@
 package it.chalmers.gamma.domain.whitelist.controller;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.EntityAlreadyExistsException;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.whitelist.exception.CidAlreadyWhitelistedException;
-import it.chalmers.gamma.domain.whitelist.exception.CidNotWhitelistedException;
 import it.chalmers.gamma.domain.whitelist.controller.response.*;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
 import it.chalmers.gamma.domain.whitelist.controller.request.AddListOfWhitelistedRequest;
 
-import it.chalmers.gamma.response.InputValidationFailedResponse;
+import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserDeletedResponse;
 
 import it.chalmers.gamma.util.InputValidationUtils;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 
-import it.chalmers.gamma.util.Utils;
+import it.chalmers.gamma.util.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +47,13 @@ public final class WhitelistAdminController {
         this.whitelistFinder = whitelistFinder;
         this.whitelistService = whitelistService;
         this.userFinder = userFinder;
+    }
+
+    @GetMapping()
+    public ResponseEntity<GetAllWhitelistResponse> getWhiteList() {
+        return ResponseUtils.toResponseObject(
+                new GetAllWhitelistResponse(this.whitelistFinder.getAll())
+        );
     }
 
     @PostMapping()
@@ -84,13 +89,6 @@ public final class WhitelistAdminController {
             throw new CidNotWhitelistedResponse();
         }
         return new UserDeletedResponse();
-    }
-
-    @GetMapping()
-    public ResponseEntity<GetAllWhitelistResponse> getWhiteList() {
-        return Utils.toResponseObject(
-                new GetAllWhitelistResponse(this.whitelistFinder.getAll())
-        );
     }
 
 }

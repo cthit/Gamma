@@ -1,13 +1,12 @@
 package it.chalmers.gamma.domain.user.data;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.DTO;
-import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.time.Year;
-import java.util.UUID;
 
 public class UserDTO implements DTO {
 
@@ -18,7 +17,6 @@ public class UserDTO implements DTO {
     private final String nick;
     private final String firstName;
     private final String lastName;
-    private final String phone;
     private final String avatarUrl;
     private final boolean userAgreement;
     private final Year acceptanceYear;
@@ -31,7 +29,6 @@ public class UserDTO implements DTO {
                    String nick,
                    String firstName,
                    String lastName,
-                   String phone,
                    String avatarUrl,
                    boolean userAgreement,
                    Year acceptanceYear,
@@ -43,7 +40,6 @@ public class UserDTO implements DTO {
         this.nick = nick;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phone = phone;
         this.avatarUrl = avatarUrl;
         this.userAgreement = userAgreement;
         this.acceptanceYear = acceptanceYear;
@@ -78,10 +74,6 @@ public class UserDTO implements DTO {
         return lastName;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
     public String getAvatarUrl() {
         return avatarUrl;
     }
@@ -107,7 +99,6 @@ public class UserDTO implements DTO {
         private String nick;
         private String firstName;
         private String lastName;
-        private String phone;
         private String avatarUrl;
         private boolean userAgreement;
         private Year acceptanceYear;
@@ -148,11 +139,6 @@ public class UserDTO implements DTO {
             return this;
         }
 
-        public UserDTOBuilder phone(String phone) {
-            this.phone = phone;
-            return this;
-        }
-
         public UserDTOBuilder avatarUrl(String avatarUrl) {
             this.avatarUrl = avatarUrl;
             return this;
@@ -182,7 +168,6 @@ public class UserDTO implements DTO {
                     nick,
                     firstName,
                     lastName,
-                    phone,
                     avatarUrl,
                     userAgreement,
                     acceptanceYear,
@@ -198,7 +183,6 @@ public class UserDTO implements DTO {
             this.nick = user.nick;
             this.firstName = user.firstName;
             this.lastName = user.lastName;
-            this.phone = user.phone;
             this.avatarUrl = user.avatarUrl;
             this.userAgreement = user.userAgreement;
             this.acceptanceYear = user.acceptanceYear;

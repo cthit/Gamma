@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.user.data;
 
-import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import org.springframework.security.core.userdetails.UserDetails;
 

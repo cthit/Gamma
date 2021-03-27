@@ -1,9 +1,7 @@
 package it.chalmers.gamma.domain.membership.service;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.GroupBaseDTO;
 import it.chalmers.gamma.domain.group.data.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.membership.data.db.Membership;
@@ -12,15 +10,11 @@ import it.chalmers.gamma.domain.membership.data.db.MembershipRepository;
 import it.chalmers.gamma.domain.membership.data.dto.*;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.post.service.PostFinder;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.data.UserDTO;
-import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -63,16 +57,6 @@ public class MembershipFinder {
                 .collect(Collectors.toList());
     }
 
-    private GroupDTO getGroup(GroupId groupId) {
-        try{
-            return this.groupFinder.get(groupId);
-        } catch(EntityNotFoundException e) {
-            LOGGER.error("Group with id " + groupId + " not found", e);
-        }
-
-        return null;
-    }
-
     public List<MembershipDTO> getMembershipsByUser(UserId userId) throws EntityNotFoundException {
         if(!this.userFinder.exists(userId)) {
             throw new EntityNotFoundException();
@@ -85,6 +69,44 @@ public class MembershipFinder {
                 .map(Membership::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
+    }
+
+    public List<MembershipDTO> getMembershipsByGroup(GroupId groupId) throws EntityNotFoundException {
+        if(!this.groupFinder.exists(groupId)) {
+            throw new EntityNotFoundException();
+        }
+
+        List<Membership> memberships = this.membershipRepository.findAllById_GroupId(groupId);
+
+        return memberships
+                .stream()
+                .map(Membership::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    public List<MembershipDTO> getMembershipsByGroupAndPost(GroupId groupId, PostId postId) throws EntityNotFoundException {
+        if (!this.groupFinder.exists(groupId) || this.postFinder.exists(postId)) {
+            throw new EntityNotFoundException();
+        }
+
+        List<Membership> memberships = this.membershipRepository.findAllById_GroupIdAndId_PostId(groupId, postId);
+
+        return memberships
+                .stream()
+                .map(Membership::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    private GroupDTO getGroup(GroupId groupId) {
+        try{
+            return this.groupFinder.get(groupId);
+        } catch(EntityNotFoundException e) {
+            LOGGER.error("Group with id " + groupId + " not found", e);
+        }
+
+        return null;
     }
 
     protected Membership getMembershipEntityByUserGroupPost(UserId userId, GroupId groupId, PostId postId) throws EntityNotFoundException {

@@ -1,10 +1,7 @@
 package it.chalmers.gamma.domain.membership.data.db;
 
-import it.chalmers.gamma.domain.BaseEntity;
-import it.chalmers.gamma.domain.MutableEntity;
-import it.chalmers.gamma.domain.group.data.Group;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
-import it.chalmers.gamma.domain.user.data.User;
 
 import java.util.Objects;
 
@@ -16,9 +13,6 @@ public class Membership implements MutableEntity<MembershipShallowDTO> {
 
     @EmbeddedId
     private MembershipPK id;
-
-    @ManyToOne
-    private Group group;
 
     @Column(name = "unofficial_post_name")
     private String unofficialPostName;

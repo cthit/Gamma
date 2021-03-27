@@ -1,8 +1,8 @@
 package it.chalmers.gamma.domain.client.service;
 
-import it.chalmers.gamma.domain.CreateEntity;
-import it.chalmers.gamma.domain.DeleteEntity;
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
+import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.client.data.db.Client;
 import it.chalmers.gamma.domain.client.data.dto.ClientDTO;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.domain.client.controller;
 
-import it.chalmers.gamma.domain.EntityNotFoundException;
+import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.client.domain.ClientSecret;
 import it.chalmers.gamma.domain.client.controller.request.UpdateClientInformationRequest;
@@ -11,7 +11,6 @@ import it.chalmers.gamma.domain.client.controller.request.CreateClientRequest;
 import it.chalmers.gamma.domain.client.controller.response.ClientCreatedResponse;
 import it.chalmers.gamma.domain.client.controller.response.ClientUpdatedResponse;
 import it.chalmers.gamma.domain.client.controller.response.GetAllClientResponse;
-import it.chalmers.gamma.domain.client.controller.response.GetClientResponse;
 import it.chalmers.gamma.domain.client.controller.response.ClientNotFoundResponse;
 import it.chalmers.gamma.domain.client.controller.response.ClientDeletedResponse;
 
@@ -62,15 +61,6 @@ public class ClientAdminController {
     @GetMapping()
     public GetAllClientResponse getAllClient() {
         return new GetAllClientResponse(this.clientFinder.getAll());
-    }
-
-    @GetMapping("/{clientId}")
-    public GetClientResponse getClient(@PathVariable("clientId") ClientId id) {
-        try {
-            return new GetClientResponse(this.clientFinder.get(id));
-        } catch (EntityNotFoundException e) {
-            throw new ClientNotFoundResponse();
-        }
     }
 
     @DeleteMapping("/{clientId}")

@@ -1,18 +1,17 @@
 package it.chalmers.gamma.bootstrap.mock;
 
-import it.chalmers.gamma.domain.GroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.List;
-import java.util.UUID;
 
 public class MockSuperGroup {
 
     private SuperGroupId id;
     private String name;
     private String prettyName;
-    private GroupType type;
+    private SuperGroupType type;
     private List<GroupId> groups;
 
     public SuperGroupId getId() {
@@ -39,11 +38,11 @@ public class MockSuperGroup {
         this.prettyName = prettyName;
     }
 
-    public GroupType getType() {
+    public SuperGroupType getType() {
         return this.type;
     }
 
-    public void setType(GroupType type) {
+    public void setType(SuperGroupType type) {
         this.type = type;
     }
 

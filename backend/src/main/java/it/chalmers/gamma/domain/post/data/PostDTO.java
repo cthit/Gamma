@@ -1,10 +1,8 @@
 package it.chalmers.gamma.domain.post.data;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.DTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.text.data.db.Text;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.Objects;
