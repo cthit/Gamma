@@ -1,6 +1,7 @@
 package it.chalmers.gamma.util.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Arrays;
 
@@ -14,5 +15,10 @@ public enum Language {
                 .filter(exampleEnum -> exampleEnum.toString().equals(key.toUpperCase()))
                 .findAny()
                 .orElse(null);
+    }
+
+    @JsonValue
+    public String get() {
+        return this.name().toLowerCase();
     }
 }

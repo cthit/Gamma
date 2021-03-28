@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.post.data;
 
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.text.data.db.Text;
@@ -28,7 +29,10 @@ public class Post implements MutableEntity<PostDTO> {
         assert(p.getId() != null);
 
         this.id = p.getId();
-        this.postName = this.postName == null ? new Text() : this.postName;
+
+        if(this.postName == null) {
+            this.postName = new Text();
+        }
 
         apply(p);
     }
@@ -43,7 +47,11 @@ public class Post implements MutableEntity<PostDTO> {
 
     @Override
     public PostDTO toDTO() {
-        return null;
+        return new PostDTO(
+                this.id,
+                this.postName.toDTO(),
+                this.emailPrefix
+        );
     }
 
     @Override

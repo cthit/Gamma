@@ -5,12 +5,16 @@ import { on401 } from "../../common/utils/error-handling/error-handling";
 const path = "/api";
 
 const error401Redirect = error => {
-    if (
-        error != null &&
-        error.response !== null &&
-        error.response.status === 401
-    ) {
-        on401();
+    try {
+        if (
+            error != null &&
+            error.response !== null &&
+            error.response.status === 401
+        ) {
+            on401();
+        }
+    } catch (error2) {
+        console.log(error, error2);
     }
 };
 

@@ -39,6 +39,10 @@ public class Client implements MutableEntity<ClientDTO> {
         this.clientId = client.getClientId();
         this.clientSecret = client.getClientSecret();
 
+        if(this.description == null) {
+            this.description = new Text();
+        }
+
         apply(client);
     }
 

@@ -35,6 +35,10 @@ public class ApiKey implements MutableEntity<ApiKeyDTO> {
         this.id = apiKey.getId();
         this.key = apiKey.getKey();
 
+        if(this.description == null) {
+            this.description = new Text();
+        }
+
         apply(apiKey);
     }
 

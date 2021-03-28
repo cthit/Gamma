@@ -10,59 +10,11 @@ import java.util.Objects;
 
 public class MockGroup {
 
-    private GroupId id;
-    private String name;
-    private String prettyName;
-    private List<MockMembership> members;
-    private SuperGroupId superGroup;
+    public GroupId id;
+    public String name;
+    public String prettyName;
+    public List<MockMembership> members;
+    public SuperGroupId superGroup;
+    public boolean active;
 
-    private boolean active;
-
-    public GroupId getId() {
-        return this.id;
-    }
-
-    public void setId(GroupId id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPrettyName() {
-        return this.prettyName;
-    }
-
-    public void setPrettyName(String prettyName) {
-        this.prettyName = prettyName;
-    }
-
-    public List<MockMembership> getMembers() {
-        return this.members;
-    }
-
-    public void setMembers(List<MockMembership> members) {
-        this.members = members;
-    }
-
-    public boolean isActive() {
-        return this.active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public SuperGroupId getSuperGroup() {
-        return this.superGroup;
-    }
-
-    public void setSuperGroup(SuperGroupId superGroup) {
-        this.superGroup = superGroup;
-    }
 }

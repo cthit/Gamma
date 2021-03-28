@@ -31,6 +31,10 @@ public class Text implements MutableEntity<TextDTO> {
         this.en = en;
     }
 
+    public Text(TextDTO text) {
+        this(new TextId(), text.getSv(), text.getEn());
+    }
+
     @Override
     public String toString() {
         return "Text{"

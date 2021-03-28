@@ -70,27 +70,27 @@ public class MockBootstrap {
     }
 
     private void createUsers(MockData mockData) {
-        mockData.getUsers().forEach(mockUser -> this.helper.getUserCreationService().createUser(
+        mockData.users.forEach(mockUser -> this.helper.getUserCreationService().createUser(
             new UserDTO.UserDTOBuilder()
-                .id(mockUser.getId())
-                .nick(mockUser.getNick())
-                .firstName(mockUser.getFirstName())
-                .lastName(mockUser.getLastName())
-                .acceptanceYear(mockUser.getAcceptanceYear())
-                .cid(new Cid(mockUser.getCid()))
+                .id(mockUser.id)
+                .nick(mockUser.nick)
+                .firstName(mockUser.firstName)
+                .lastName(mockUser.lastName)
+                .acceptanceYear(mockUser.acceptanceYear)
+                .cid(mockUser.cid)
                 .userAgreement(true)
-                .email(new Email(mockUser.getCid() + "@student.chalmers.it"))
+                .email(new Email(mockUser.cid + "@student.chalmers.it"))
                 .build(),
                 "password"
         ));
     }
 
     private void createPosts(MockData mockData) {
-        mockData.getPosts().forEach(mockPost ->
+        mockData.posts.forEach(mockPost ->
                 this.helper.getPostService().create(
                         new PostDTO(
-                                mockPost.getId(),
-                                mockPost.getPostName(),
+                                mockPost.id,
+                                mockPost.postName,
                                 null
                         )
                 )
@@ -116,38 +116,38 @@ public class MockBootstrap {
         int activeYear = activeGroupBecomesActive.get(Calendar.YEAR);
         int inactiveYear = inactiveGroupBecomesActive.get(Calendar.YEAR);
 
-        mockData.getGroups().forEach(mockGroup -> {
-            int year = mockGroup.isActive() ? activeYear : inactiveYear;
-            String name = mockGroup.getName() + year;
-            String prettyName = mockGroup.getPrettyName() + year;
-            Calendar active = mockGroup.isActive()
+        mockData.groups.forEach(mockGroup -> {
+            int year = mockGroup.active ? activeYear : inactiveYear;
+            String name = mockGroup.name + year;
+            String prettyName = mockGroup.prettyName + year;
+            Calendar active = mockGroup.active
                     ? activeGroupBecomesActive
                     : inactiveGroupBecomesActive;
-            Calendar inactive = mockGroup.isActive()
+            Calendar inactive = mockGroup.active
                     ? activeGroupBecomesInactive
                     : inactiveGroupBecomesInactive;
 
             GroupShallowDTO group = new GroupShallowDTO.GroupShallowDTOBuilder()
-                    .id(mockGroup.getId())
+                    .id(mockGroup.id)
                     .becomesActive(active)
                     .becomesInactive(inactive)
                     .email(new Email(name + "@chalmers.it"))
                     .name(name)
                     .prettyName(prettyName)
                     .avatarUrl(null)
-                    .superGroupId(mockGroup.getSuperGroup())
+                    .superGroupId(mockGroup.superGroup)
                     .build();
 
             try {
                 this.helper.getGroupService().create(group);
 
-                mockGroup.getMembers().forEach(mockMembership -> {
+                mockGroup.members.forEach(mockMembership -> {
                     this.helper.getMembershipService().create(
                             new MembershipShallowDTO(
-                                    mockMembership.getPostId(),
-                                    mockGroup.getId(),
-                                    mockMembership.getUnofficialPostName(),
-                                    mockMembership.getUserId()
+                                    mockMembership.postId,
+                                    mockGroup.id,
+                                    mockMembership.unofficialPostName,
+                                    mockMembership.userId
                             )
                     );
                 });
@@ -159,17 +159,17 @@ public class MockBootstrap {
     }
 
     private void createSuperGroups(MockData mockData) {
-        mockData.getSuperGroups().forEach(mockSuperGroup -> {
+        mockData.superGroups.forEach(mockSuperGroup -> {
             try {
                 this.helper.getSuperGroupService().create(new SuperGroupDTO(
-                        mockSuperGroup.getId(),
-                        mockSuperGroup.getName(),
-                        mockSuperGroup.getPrettyName(),
-                        mockSuperGroup.getType(),
-                        new Email(mockSuperGroup.getName() + "@chalmers.it"),
+                        mockSuperGroup.id,
+                        mockSuperGroup.name,
+                        mockSuperGroup.prettyName,
+                        mockSuperGroup.type,
+                        new Email(mockSuperGroup.name + "@chalmers.it"),
                         null));
             } catch (EntityAlreadyExistsException e) {
-                LOGGER.error("Error creating supergroup: " + mockSuperGroup.getName() + "; Super group already exists, skipping...");
+                LOGGER.error("Error creating supergroup: " + mockSuperGroup.name + "; Super group already exists, skipping...");
             }
         });
     }

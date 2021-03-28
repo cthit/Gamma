@@ -7,31 +7,8 @@ import java.util.UUID;
 
 public class MockMembership {
 
-    private UserId userId;
-    private PostId postId;
-    private String unofficialPostName;
+    public UserId userId;
+    public PostId postId;
+    public String unofficialPostName;
 
-    public UserId getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public PostId getPostId() {
-        return this.postId;
-    }
-
-    public void setPostId(PostId postId) {
-        this.postId = postId;
-    }
-
-    public String getUnofficialPostName() {
-        return this.unofficialPostName;
-    }
-
-    public void setUnofficialPostName(String unofficialPostName) {
-        this.unofficialPostName = unofficialPostName;
-    }
 }
