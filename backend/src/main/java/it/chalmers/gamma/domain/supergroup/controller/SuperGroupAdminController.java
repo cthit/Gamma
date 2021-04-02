@@ -5,13 +5,11 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundExcepti
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.controller.response.*;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
-import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.domain.supergroup.controller.request.CreateSuperGroupRequest;
 import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupDeletedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupUpdatedResponse;
-import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
@@ -29,16 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/superGroups")
 public class SuperGroupAdminController {
 
-    private final SuperGroupFinder superGroupFinder;
     private final SuperGroupService superGroupService;
-    private final GroupService groupService;
 
-    public SuperGroupAdminController(SuperGroupFinder superGroupFinder,
-                                     SuperGroupService superGroupService,
-                                     GroupService groupService) {
-        this.superGroupFinder = superGroupFinder;
+    public SuperGroupAdminController(SuperGroupService superGroupService) {
         this.superGroupService = superGroupService;
-        this.groupService = groupService;
     }
 
     @PostMapping()

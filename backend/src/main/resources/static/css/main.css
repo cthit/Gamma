@@ -64,7 +64,7 @@ footer {
 .text{
     font-size: 16px;
     font-weight: normal;
-    margin: 0px;
+    margin: 0;
 }
 
 .center-vertical{
@@ -124,7 +124,7 @@ hr{
     height: 1px;
     border: 0;
     border-top: 1px solid #bbb;
-    margin: 0px;
+    margin: 0;
     margin-top: 8px;
     padding: 0;
 }

@@ -3,7 +3,7 @@ package it.chalmers.gamma.domain.group.controller;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.controller.response.*;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipRestrictedDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public final class GroupController {
 
     private final GroupFinder groupFinder;
-    private final MembershipFinder membershipFinder;
     private final MembershipRestrictedFinder membershipRestrictedFinder;
 
     public GroupController(
@@ -29,7 +28,6 @@ public final class GroupController {
             MembershipFinder membershipFinder,
             MembershipRestrictedFinder membershipRestrictedFinder) {
         this.groupFinder = groupFinder;
-        this.membershipFinder = membershipFinder;
         this.membershipRestrictedFinder = membershipRestrictedFinder;
     }
 

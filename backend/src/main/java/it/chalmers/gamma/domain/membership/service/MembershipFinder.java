@@ -2,7 +2,7 @@ package it.chalmers.gamma.domain.membership.service;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.membership.data.db.Membership;
 import it.chalmers.gamma.domain.membership.data.db.MembershipPK;

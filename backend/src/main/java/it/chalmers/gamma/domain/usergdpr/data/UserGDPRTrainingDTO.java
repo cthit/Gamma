@@ -6,8 +6,8 @@ import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
 public class UserGDPRTrainingDTO {
 
     @JsonUnwrapped
-    private UserRestrictedDTO user;
-    private boolean gdpr;
+    private final UserRestrictedDTO user;
+    private final boolean gdpr;
 
     public UserGDPRTrainingDTO(UserRestrictedDTO user, boolean gdpr) {
         this.user = user;

@@ -3,7 +3,6 @@ package it.chalmers.gamma.domain.passwordreset.data;
 import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class PasswordResetTokenDTO {
 

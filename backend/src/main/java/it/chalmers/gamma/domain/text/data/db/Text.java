@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Text implements MutableEntity<TextDTO> {
 
     @EmbeddedId
-    private TextId textId;
+    private final TextId textId;
 
     @Column(name = "sv")
     private String sv;

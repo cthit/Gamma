@@ -2,7 +2,7 @@ package it.chalmers.gamma.domain.group.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
 
 import it.chalmers.gamma.domain.membership.data.dto.MembershipRestrictedDTO;
 import java.util.List;

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.domain.post.data;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import it.chalmers.gamma.domain.post.PostId;
 import org.springframework.data.jpa.repository.JpaRepository;

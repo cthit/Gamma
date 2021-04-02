@@ -48,14 +48,8 @@ public class ImageUtils {
             LOGGER.info("no uploads directory exists, creating a new one");
         }
         if (f.createNewFile()) {
-            OutputStream fos = null;
-            try {
-                fos = Files.newOutputStream(Path.of(f.getPath()));
+            try (OutputStream fos = Files.newOutputStream(Path.of(f.getPath()))) {
                 fos.write(file.getBytes());
-            } finally {
-                if (fos != null) {
-                    fos.close();
-                }
             }
             return f;
         }

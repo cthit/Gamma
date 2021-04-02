@@ -9,7 +9,6 @@ import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.request.CreateITUserRequest;
-import it.chalmers.gamma.domain.user.controller.response.CodeOrCidIsWrongResponse;
 import it.chalmers.gamma.util.domain.*;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.InputValidationFailedResponse;

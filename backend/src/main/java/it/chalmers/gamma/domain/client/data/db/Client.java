@@ -72,7 +72,7 @@ public class Client implements MutableEntity<ClientDTO> {
     public String toString() {
         return "Client{"
                 + ", clientId='" + this.clientId + '\''
-                + ", clientSecret={redacted}'\''"
+                + ", clientSecret={redacted}'''"
                 + ", webServerRedirectUri='" + this.webServerRedirectUri + '\''
                 + ", autoApprove=" + this.autoApprove
                 + ", name='" + this.name + '\''

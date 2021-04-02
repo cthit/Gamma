@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/whitelist")
 public final class WhitelistController {
 
-    private final WhitelistService whitelistService;
     private final ActivationCodeService activationCodeService;
     private final MailSenderService mailSenderService;
     private final WhitelistFinder whitelistFinder;
@@ -42,7 +41,6 @@ public final class WhitelistController {
             ActivationCodeService activationCodeService,
             MailSenderService mailSenderService,
             WhitelistFinder whitelistFinder) {
-        this.whitelistService = whitelistService;
         this.activationCodeService = activationCodeService;
         this.mailSenderService = mailSenderService;
         this.whitelistFinder = whitelistFinder;

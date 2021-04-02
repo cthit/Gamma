@@ -36,14 +36,12 @@ import java.util.stream.Collectors;
 public final class PostAdminController {
 
     private final PostService postService;
-    private final PostFinder postFinder;
     private final MembershipFinder membershipFinder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostAdminController.class);
 
     public PostAdminController(PostService postService, PostFinder postFinder, MembershipFinder membershipFinder) {
         this.postService = postService;
-        this.postFinder = postFinder;
         this.membershipFinder = membershipFinder;
     }
 

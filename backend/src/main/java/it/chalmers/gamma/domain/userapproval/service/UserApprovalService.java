@@ -16,11 +16,9 @@ import org.springframework.stereotype.Service;
 public class UserApprovalService implements CreateEntity<UserApprovalDTO>, DeleteEntity<UserApprovalPK> {
 
     private final UserApprovalRepository userApprovalRepository;
-    private final UserFinder userFinder;
 
     public UserApprovalService(UserApprovalRepository userApprovalRepository, UserFinder userFinder) {
         this.userApprovalRepository = userApprovalRepository;
-        this.userFinder = userFinder;
     }
 
     public void create(UserApprovalDTO userApproval) {

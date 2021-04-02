@@ -1,6 +1,5 @@
 package it.chalmers.gamma.domain.client.data.dto;
 
-import it.chalmers.gamma.domain.text.data.db.Text;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 
 import java.util.Objects;

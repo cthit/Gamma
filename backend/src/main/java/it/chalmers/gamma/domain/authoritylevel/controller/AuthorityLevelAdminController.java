@@ -3,7 +3,6 @@ package it.chalmers.gamma.domain.authoritylevel.controller;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
-import it.chalmers.gamma.domain.authoritylevel.controller.response.GetAllAuthoritiesForLevelResponse;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.controller.response.*;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelFinder;

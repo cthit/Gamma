@@ -1,8 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.group.data.GroupDTO;
-import it.chalmers.gamma.domain.group.data.GroupMinifiedDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 
 import java.util.List;

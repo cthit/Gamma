@@ -1,5 +1,6 @@
-package it.chalmers.gamma.domain.group.data;
+package it.chalmers.gamma.domain.group.data.db;
 
+import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
 import it.chalmers.gamma.domain.group.GroupId;
@@ -61,16 +62,16 @@ public class Group implements BaseEntity<GroupShallowDTO> {
 
     @Override
     public GroupShallowDTO toDTO() {
-        return new GroupShallowDTO(
-                this.id,
-                this.becomesActive,
-                this.becomesInactive,
-                this.email,
-                this.name,
-                this.prettyName,
-                this.avatarURL,
-                this.superGroupId
-        );
+        return new GroupShallowDTO.GroupShallowDTOBuilder()
+                .id(this.id)
+                .becomesActive(this.becomesActive)
+                .becomesInactive(this.becomesInactive)
+                .email(this.email)
+                .name(this.name)
+                .prettyName(this.prettyName)
+                .avatarUrl(this.avatarURL)
+                .superGroupId(this.superGroupId)
+                .build();
     }
 
     @Override

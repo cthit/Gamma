@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.util.domain.Cid;
 
 import java.time.Year;
-import java.util.UUID;
 
 public class MockUser {
 

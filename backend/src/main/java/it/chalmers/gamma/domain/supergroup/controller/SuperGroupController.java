@@ -1,10 +1,8 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.group.data.GroupMinifiedDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
-import it.chalmers.gamma.domain.group.service.GroupMinifiedFinder;
-import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.domain.supergroup.controller.response.GetAllSuperGroupsResponse;
@@ -29,17 +27,11 @@ public class SuperGroupController {
 
     private final SuperGroupFinder superGroupFinder;
     private final GroupFinder groupFinder;
-    private final MembershipFinder membershipFinder;
-    private final GroupMinifiedFinder groupMinifiedFinder;
 
     public SuperGroupController(SuperGroupFinder superGroupFinder,
-                                GroupFinder groupFinder,
-                                MembershipFinder membershipFinder,
-                                GroupMinifiedFinder groupMinifiedFinder) {
+                                GroupFinder groupFinder) {
         this.superGroupFinder = superGroupFinder;
         this.groupFinder = groupFinder;
-        this.membershipFinder = membershipFinder;
-        this.groupMinifiedFinder = groupMinifiedFinder;
     }
 
     @GetMapping()

@@ -4,7 +4,6 @@ import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
 import it.chalmers.gamma.domain.client.domain.ClientSecret;
 import it.chalmers.gamma.domain.client.data.dto.ClientDTO;
-import it.chalmers.gamma.domain.text.data.db.Text;
 
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import org.slf4j.Logger;

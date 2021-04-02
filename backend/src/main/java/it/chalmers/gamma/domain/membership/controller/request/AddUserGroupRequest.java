@@ -3,8 +3,6 @@ package it.chalmers.gamma.domain.membership.controller.request;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.user.UserId;
 
-import java.util.Objects;
-import java.util.UUID;
 import javax.validation.constraints.NotEmpty;
 
 public class AddUserGroupRequest {

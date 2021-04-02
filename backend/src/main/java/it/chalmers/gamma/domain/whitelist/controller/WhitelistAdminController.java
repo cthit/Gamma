@@ -39,14 +39,12 @@ public final class WhitelistAdminController {
 
     private final WhitelistFinder whitelistFinder;
     private final WhitelistService whitelistService;
-    private final UserFinder userFinder;
 
     public WhitelistAdminController(WhitelistFinder whitelistFinder,
                                     WhitelistService whitelistService,
                                     UserFinder userFinder) {
         this.whitelistFinder = whitelistFinder;
         this.whitelistService = whitelistService;
-        this.userFinder = userFinder;
     }
 
     @GetMapping()

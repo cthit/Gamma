@@ -2,10 +2,9 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
@@ -141,16 +140,14 @@ public class MockBootstrap {
             try {
                 this.helper.getGroupService().create(group);
 
-                mockGroup.members.forEach(mockMembership -> {
-                    this.helper.getMembershipService().create(
-                            new MembershipShallowDTO(
-                                    mockMembership.postId,
-                                    mockGroup.id,
-                                    mockMembership.unofficialPostName,
-                                    mockMembership.userId
-                            )
-                    );
-                });
+                mockGroup.members.forEach(mockMembership -> this.helper.getMembershipService().create(
+                        new MembershipShallowDTO(
+                                mockMembership.postId,
+                                mockGroup.id,
+                                mockMembership.unofficialPostName,
+                                mockMembership.userId
+                        )
+                ));
             } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Error creating group: " + group.getName() + "; Group already exists, skipping...");
             }

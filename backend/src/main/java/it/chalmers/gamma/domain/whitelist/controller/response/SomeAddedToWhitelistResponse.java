@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SomeAddedToWhitelistResponse {
 
-    private List<String> failedToAdd;
+    private final List<String> failedToAdd;
 
     public SomeAddedToWhitelistResponse(List<String> failedToAdd) {
         this.failedToAdd = failedToAdd;

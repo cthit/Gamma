@@ -24,11 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserGDPRAdminController {
 
     private final UserGDPRTrainingService userGDPRTrainingService;
-    private final UserFinder userFinder;
 
     public UserGDPRAdminController(UserGDPRTrainingService userGDPRTrainingService, UserFinder userFinder) {
         this.userGDPRTrainingService = userGDPRTrainingService;
-        this.userFinder = userFinder;
     }
 
     @PutMapping("/{id}")

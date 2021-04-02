@@ -112,42 +112,6 @@ public class User implements MutableEntity<UserDTO> {
         return cid;
     }
 
-    public String getNick() {
-        return nick;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Email getEmail() {
-        return email;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public boolean isUserAgreement() {
-        return userAgreement;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public int getAcceptanceYear() {
-        return acceptanceYear;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

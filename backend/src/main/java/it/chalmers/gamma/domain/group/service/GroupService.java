@@ -1,9 +1,9 @@
 package it.chalmers.gamma.domain.group.service;
 
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.Group;
-import it.chalmers.gamma.domain.group.data.GroupRepository;
-import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
+import it.chalmers.gamma.domain.group.data.db.Group;
+import it.chalmers.gamma.domain.group.data.db.GroupRepository;
+import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;

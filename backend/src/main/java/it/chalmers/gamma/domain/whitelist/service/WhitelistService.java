@@ -14,14 +14,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class WhitelistService implements CreateEntity<Cid>, DeleteEntity<Cid> {
 
-    private final UserFinder userFinder;
     private final WhitelistFinder whitelistFinder;
     private final WhitelistRepository whitelistRepository;
 
     public WhitelistService(UserFinder userFinder,
                             WhitelistFinder whitelistFinder,
                             WhitelistRepository whitelistRepository) {
-        this.userFinder = userFinder;
         this.whitelistFinder = whitelistFinder;
         this.whitelistRepository = whitelistRepository;
     }

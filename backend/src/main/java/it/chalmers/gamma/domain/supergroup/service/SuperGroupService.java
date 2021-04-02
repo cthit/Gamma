@@ -17,14 +17,12 @@ public class SuperGroupService implements CreateEntity<SuperGroupDTO>, DeleteEnt
 
     private final SuperGroupRepository repository;
     private final SuperGroupFinder finder;
-    private final GroupFinder groupFinder;
 
     public SuperGroupService(SuperGroupRepository repository,
                              SuperGroupFinder finder,
                              GroupFinder groupFinder) {
         this.repository = repository;
         this.finder = finder;
-        this.groupFinder = groupFinder;
     }
 
     public void create(SuperGroupDTO superGroupDTO) throws EntityAlreadyExistsException {

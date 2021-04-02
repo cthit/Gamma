@@ -1,6 +1,5 @@
 package it.chalmers.gamma.domain.client.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.chalmers.gamma.util.TokenUtils;
 
 import javax.persistence.Column;

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserApprovalRepository extends JpaRepository<UserApproval, UserApprovalPK> {
 
-    public List<UserApproval> findAllById_UserId(UserId userId);
-    public List<UserApproval> findAllById_ClientId(ClientId clientId);
+    List<UserApproval> findAllById_UserId(UserId userId);
+    List<UserApproval> findAllById_ClientId(ClientId clientId);
 
 }

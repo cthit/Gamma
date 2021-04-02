@@ -3,7 +3,7 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.GroupShallowDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupType;

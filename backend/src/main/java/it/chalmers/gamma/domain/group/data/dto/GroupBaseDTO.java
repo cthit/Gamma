@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.group.data;
+package it.chalmers.gamma.domain.group.data.dto;
 
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.domain.group.GroupId;

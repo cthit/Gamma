@@ -34,18 +34,12 @@ public final class MembershipAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MembershipAdminController.class);
 
-    private final UserFinder userFinder;
-    private final PostService postService;
-    private final GroupService groupService;
     private final MembershipService membershipService;
 
     public MembershipAdminController(UserFinder userFinder,
                                      PostService postService,
                                      GroupService groupService,
                                      MembershipService membershipService) {
-        this.userFinder = userFinder;
-        this.postService = postService;
-        this.groupService = groupService;
         this.membershipService = membershipService;
     }
 

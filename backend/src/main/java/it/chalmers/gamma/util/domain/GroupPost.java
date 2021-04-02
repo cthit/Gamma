@@ -1,6 +1,6 @@
 package it.chalmers.gamma.util.domain;
 
-import it.chalmers.gamma.domain.group.data.GroupDTO;
+import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 
 public class GroupPost {
