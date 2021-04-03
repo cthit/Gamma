@@ -29,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -48,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final GroupFinder groupFinder;
     private final ApiKeyFinder apiKeyFinder;
+    private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
@@ -61,7 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              LoginRedirectHandler loginRedirectHandler,
                              UserFinder userFinder,
                              GroupFinder groupFinder,
-                             ApiKeyFinder apiKeyFinder) {
+                             ApiKeyFinder apiKeyFinder,
+                             CookieCsrfTokenRepository cookieCsrfTokenRepository) {
         this.userService = userService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
@@ -69,11 +72,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userFinder = userFinder;
         this.groupFinder = groupFinder;
         this.apiKeyFinder = apiKeyFinder;
+        this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
     }
 
     @Override
     protected void configure(HttpSecurity http) {
-        disableCsrf(http);
+        enableCsrf(http);
         setSessionManagementToIfRequired(http);
         addAuthenticationFilter(http);
         addFormLogin(http);
@@ -103,12 +107,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
 
-    private void disableCsrf(HttpSecurity http) {
+    private void enableCsrf(HttpSecurity http) {
         try {
-            http
-                    .csrf().disable();
+            System.out.println(cookieCsrfTokenRepository);
+            http.csrf().csrfTokenRepository(cookieCsrfTokenRepository);
         } catch (Exception e) {
-            LOGGER.error("Something went wrong when disabling csrf", e);
+            LOGGER.error("Something went wrong when enabling csrf", e);
         }
     }
 

@@ -1,7 +1,8 @@
-package it.chalmers.gamma.security;
+package it.chalmers.gamma.security.cookie;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,16 @@ public class CookieConfig {
         serializer.setCookiePath(this.path);
         serializer.setCookieMaxAge(this.validityTime);
         return serializer;
+    }
+
+    @Bean
+    public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
+        CookieCsrfTokenRepository repo = new CookieCsrfTokenRepository();
+        repo.setCookieDomain(this.domain);
+        repo.setCookiePath(this.path);
+        repo.setSecure(this.production);
+        repo.setCookieHttpOnly(true);
+        return repo;
     }
 
 }
