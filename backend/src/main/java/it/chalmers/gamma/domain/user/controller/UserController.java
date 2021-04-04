@@ -3,16 +3,14 @@ package it.chalmers.gamma.domain.user.controller;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.controller.response.*;
-import it.chalmers.gamma.domain.user.data.UserDTO;
-import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.user.controller.request.CreateITUserRequest;
+import it.chalmers.gamma.domain.user.controller.request.CreateUserRequest;
 import it.chalmers.gamma.util.domain.*;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.io.IOException;
 import java.time.Year;
@@ -24,7 +22,6 @@ import javax.validation.Valid;
 
 import it.chalmers.gamma.util.ResponseUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,12 +70,7 @@ public final class UserController {
 
     @PostMapping("/create")
     @ResponseBody
-    public UserCreatedResponse createUser(@Valid @RequestBody CreateITUserRequest request,
-                                          BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+    public UserCreatedResponse createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
             this.userCreationService.createUserByCode(requestToDTO(request), request.getPassword(), request.getCode());
         } catch (CidOrCodeNotMatchException e) {
@@ -99,7 +91,7 @@ public final class UserController {
         }
     }
 
-    private UserDTO requestToDTO(CreateITUserRequest request) {
+    private UserDTO requestToDTO(CreateUserRequest request) {
         return new UserDTO.UserDTOBuilder()
                 .activated(true)
                 .userAgreement(request.isUserAgreement())

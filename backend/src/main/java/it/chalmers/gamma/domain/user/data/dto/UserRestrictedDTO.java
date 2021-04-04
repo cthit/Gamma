@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.user.data;
+package it.chalmers.gamma.domain.user.data.dto;
 
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.domain.user.UserId;

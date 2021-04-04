@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.post.data;
 
+import it.chalmers.gamma.domain.post.EmailPrefix;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.text.data.db.Text;
@@ -20,7 +21,7 @@ public class Post implements MutableEntity<PostDTO> {
     private Text postName;
 
     @Column(name = "email_prefix")
-    private String emailPrefix;
+    private EmailPrefix emailPrefix;
 
     protected Post() { }
 

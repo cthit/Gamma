@@ -9,9 +9,7 @@ import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelFinder;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.domain.authoritylevel.controller.request.CreateAuthorityLevelRequest;
 import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.util.InputValidationUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,12 +31,7 @@ public class AuthorityLevelAdminController {
     }
 
     @PostMapping("/level")
-    public AuthorityLevelCreatedResponse addAuthorityLevel(@Valid @RequestBody CreateAuthorityLevelRequest request,
-                                                           BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+    public AuthorityLevelCreatedResponse addAuthorityLevel(@Valid @RequestBody CreateAuthorityLevelRequest request) {
         try {
             this.authorityLevelService.create(request.authorityLevel);
         } catch (EntityAlreadyExistsException e) {

@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.passwordreset.controller.request;
+package it.chalmers.gamma.domain.userpasswordreset.controller.request;
 
 import java.util.Objects;
 

@@ -10,11 +10,9 @@ import it.chalmers.gamma.domain.supergroup.controller.request.CreateSuperGroupRe
 import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupDeletedResponse;
 import it.chalmers.gamma.domain.group.controller.response.GroupUpdatedResponse;
-import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,12 +32,7 @@ public class SuperGroupAdminController {
     }
 
     @PostMapping()
-    public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request,
-                                                      BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+    public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request) {
         try {
             this.superGroupService.create(requestToDTO(request));
         } catch (EntityAlreadyExistsException e) {

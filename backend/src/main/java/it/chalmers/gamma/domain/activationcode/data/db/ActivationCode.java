@@ -5,18 +5,21 @@ import java.time.Instant;
 
 import javax.persistence.*;
 
+import it.chalmers.gamma.domain.activationcode.Code;
+import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
 import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
 import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 @Table(name = "activation_code")
-public class ActivationCode  {
+public class ActivationCode implements BaseEntity<ActivationCodeDTO> {
 
     @EmbeddedId
     private Cid cid;
 
     @Column(name = "code")
-    private String code;
+    private Code code;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -27,22 +30,19 @@ public class ActivationCode  {
 
     protected ActivationCode() { }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
+    @Override
+    public ActivationCodeDTO toDTO() {
+        return new ActivationCodeDTO(
+                this.cid,
+                this.code,
+                this.createdAt
+        );
     }
 
-    public ActivationCode(Cid cid, String code) {
+    public ActivationCode(Cid cid, Code code) {
         this.createdAt = Instant.now();
         this.cid = cid;
         this.code = code;
-    }
-
-    public Cid getCid() {
-        return this.cid;
-    }
-
-    public String getCode() {
-        return this.code;
     }
 
     public boolean isValid() {

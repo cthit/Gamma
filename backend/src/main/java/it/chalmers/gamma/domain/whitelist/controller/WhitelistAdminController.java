@@ -12,8 +12,6 @@ import it.chalmers.gamma.domain.whitelist.controller.request.AddListOfWhiteliste
 import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserDeletedResponse;
 
-import it.chalmers.gamma.util.InputValidationUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
@@ -21,8 +19,8 @@ import javax.validation.Valid;
 import it.chalmers.gamma.util.ResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,25 +53,21 @@ public final class WhitelistAdminController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addWhitelistedUsers(
-            @Valid @RequestBody AddListOfWhitelistedRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+    public ResponseEntity<?> addWhitelistedUsers(@Valid @RequestBody AddListOfWhitelistedRequest request) {
+        List<Cid> failedToAdd = new ArrayList<>();
 
-        List<String> failedToAdd = new ArrayList<>();
-
-        for (String cid : request.getCids()) {
+        for (Cid cid : request.cids) {
             try {
-                this.whitelistService.create(new Cid(cid));
+                this.whitelistService.create(cid);
                 LOGGER.info("Added user " + cid + " to whitelist");
             } catch (EntityAlreadyExistsException e) {
+                LOGGER.info("Failed to add " + cid + " to whitelist");
                 failedToAdd.add(cid);
             }
         }
 
         if (!failedToAdd.isEmpty()) {
-            return new SomeAddedToWhitelistResponse(failedToAdd).toResponseObject();
+            return new ResponseEntity<>(new SomeAddedToWhitelistResponse(failedToAdd), HttpStatus.PARTIAL_CONTENT);
         }
 
         return new WhitelistAddedResponse();

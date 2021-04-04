@@ -7,11 +7,9 @@ import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.usergdpr.controller.response.GDPRStatusEditedResponse;
 import it.chalmers.gamma.domain.usergdpr.controller.response.UsersWithGDPRResponse;
 import it.chalmers.gamma.domain.usergdpr.service.UserGDPRTrainingService;
-import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,12 +29,7 @@ public class UserGDPRAdminController {
 
     @PutMapping("/{id}")
     public GDPRStatusEditedResponse editGDPRStatus(@PathVariable("id") UserId id,
-                                                   @Valid @RequestBody ChangeGDPRStatusRequest request,
-                                                   BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+                                                   @Valid @RequestBody ChangeGDPRStatusRequest request) {
         userGDPRTrainingService.editGDPR(id, request.isGdpr());
 
         return new GDPRStatusEditedResponse();

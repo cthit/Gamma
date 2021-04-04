@@ -12,7 +12,7 @@ import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 
 import java.time.Year;
 import java.util.Calendar;

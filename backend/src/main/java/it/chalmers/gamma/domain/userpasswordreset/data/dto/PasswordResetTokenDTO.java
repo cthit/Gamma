@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.passwordreset.data;
+package it.chalmers.gamma.domain.userpasswordreset.data.dto;
 
 import it.chalmers.gamma.domain.user.UserId;
 

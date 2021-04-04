@@ -1,6 +1,7 @@
 package it.chalmers.gamma.domain.post.data;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.post.EmailPrefix;
 import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
@@ -13,13 +14,13 @@ public class PostDTO implements DTO {
 
     @JsonUnwrapped
     private final TextDTO postName;
-    private final String emailPrefix;
+    private final EmailPrefix emailPrefix;
 
-    public PostDTO(TextDTO postName, String emailPrefix) {
+    public PostDTO(TextDTO postName, EmailPrefix emailPrefix) {
         this(new PostId(), postName, emailPrefix);
     }
 
-    public PostDTO(PostId id, TextDTO postName, String emailPrefix) {
+    public PostDTO(PostId id, TextDTO postName, EmailPrefix emailPrefix) {
         this.id = id;
         this.postName = postName;
         this.emailPrefix = emailPrefix;
@@ -33,7 +34,7 @@ public class PostDTO implements DTO {
         return this.postName;
     }
 
-    public String getEmailPrefix() {
+    public EmailPrefix getEmailPrefix() {
         return this.emailPrefix;
     }
 

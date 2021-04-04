@@ -13,16 +13,12 @@ import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.group.controller.request.CreateOrEditGroupRequest;
-import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -85,12 +81,7 @@ public final class GroupAdminController {
     }
 
     @PostMapping()
-    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest createOrEditGroupRequest,
-                                            BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest createOrEditGroupRequest) {
         try {
             this.groupService.create(requestToDTO(createOrEditGroupRequest));
         } catch (EntityAlreadyExistsException e) {
@@ -103,11 +94,7 @@ public final class GroupAdminController {
 
     @PutMapping("/{id}")
     public GroupUpdatedResponse editGroup(@Valid @RequestBody CreateOrEditGroupRequest request,
-                                          @PathVariable("id") GroupId id,
-                                          BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+                                          @PathVariable("id") GroupId id) {
         try {
             GroupShallowDTO group = requestToDTO(request, id);
             this.groupService.update(group);

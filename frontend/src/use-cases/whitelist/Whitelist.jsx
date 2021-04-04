@@ -19,10 +19,7 @@ import {
     keysText,
     validationSchema
 } from "./Whitelist.options";
-import {
-    WHITELIST_CID,
-    WHITELIST_ID
-} from "../../api/whitelist/props.whitelist.api";
+import { WHITELIST_CID } from "../../api/whitelist/props.whitelist.api";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);
@@ -38,17 +35,15 @@ const Whitelist = () => {
             name={"whitelist"}
             path={"/whitelist"}
             readAllRequest={getWhitelist}
-            readOneRequest={getWhitelistItem}
             createRequest={data =>
                 addUsersToWhitelist({ cids: [data[WHITELIST_CID]] })
             }
-            updateRequest={editWhitelistItem}
             deleteRequest={deleteWhitelistItem}
             keysOrder={keysOrder()}
             formComponentData={keysComponentData()}
             formValidationSchema={validationSchema(text)}
             formInitialValues={initialValues()}
-            idProp={WHITELIST_ID}
+            idProp={WHITELIST_CID}
             tableProps={{
                 titleText: text.Whitelist,
                 startOrderBy: WHITELIST_CID,
@@ -69,20 +64,8 @@ const Whitelist = () => {
             toastDeleteFailed={data =>
                 text.FailedDeleting + " " + data[WHITELIST_CID]
             }
-            toastUpdateSuccessful={data =>
-                data[WHITELIST_CID] + " " + text.WasUpdatedSuccessfully
-            }
-            toastUpdateFailed={data =>
-                text.WhitelistUpdateFailed1 +
-                " " +
-                data[WHITELIST_CID] +
-                " " +
-                text.WhitelistUpdateFailed2
-            }
             createTitle={text.SaveCidToWhitelist}
             createButtonText={text.AddWhitelist}
-            updateTitle={data => text.Update + " " + data[WHITELIST_CID]}
-            updateButtonText={data => text.Update + " " + data[WHITELIST_CID]}
             backButtonText={text.Back}
             dialogDeleteTitle={() => text.AreYouSure}
             dialogDeleteCancel={() => text.Cancel}

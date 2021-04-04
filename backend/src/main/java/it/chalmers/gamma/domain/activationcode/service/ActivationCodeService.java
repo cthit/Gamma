@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.activationcode.service;
 
+import it.chalmers.gamma.domain.activationcode.Code;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.activationcode.data.db.ActivationCode;
@@ -32,8 +33,7 @@ public class ActivationCodeService implements DeleteEntity<Cid>  {
             e.printStackTrace();
         }
 
-        String code = TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS);
-        return this.activationCodeFinder.toDTO(this.activationCodeRepository.save(new ActivationCode(cid, code)));
+        return this.activationCodeRepository.save(new ActivationCode(cid, Code.generate())).toDTO();
     }
 
     public void delete(Cid cid) throws EntityNotFoundException {

@@ -1,4 +1,4 @@
-package it.chalmers.gamma.security;
+package it.chalmers.gamma.security.cors;
 
 import java.io.IOException;
 

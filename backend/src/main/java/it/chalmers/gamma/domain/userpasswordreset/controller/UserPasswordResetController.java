@@ -1,23 +1,20 @@
-package it.chalmers.gamma.domain.passwordreset.controller;
+package it.chalmers.gamma.domain.userpasswordreset.controller;
 
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.user.data.UserDTO;
-import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordFinishRequest;
-import it.chalmers.gamma.domain.passwordreset.controller.request.ResetPasswordRequest;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.userpasswordreset.controller.request.ResetPasswordFinishRequest;
+import it.chalmers.gamma.domain.userpasswordreset.controller.request.ResetPasswordRequest;
 import it.chalmers.gamma.domain.user.controller.response.CodeOrCidIsWrongResponse;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.controller.response.PasswordChangedResponse;
 import it.chalmers.gamma.domain.user.controller.response.PasswordResetResponse;
 import it.chalmers.gamma.domain.user.service.UserService;
-import it.chalmers.gamma.domain.passwordreset.service.PasswordResetService;
-import it.chalmers.gamma.util.InputValidationUtils;
+import it.chalmers.gamma.domain.userpasswordreset.service.PasswordResetService;
 
 import javax.validation.Valid;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,11 +40,7 @@ public class UserPasswordResetController {
     }
 
     @PostMapping()
-    public PasswordResetResponse resetPasswordRequest(
-            @Valid @RequestBody ResetPasswordRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+    public PasswordResetResponse resetPasswordRequest(@Valid @RequestBody ResetPasswordRequest request) {
         String cidOrEmail = request.getCid();
         try {
             this.passwordResetService.handlePasswordReset(cidOrEmail);
@@ -58,12 +51,7 @@ public class UserPasswordResetController {
     }
 
     @PutMapping("/finish")
-    public PasswordChangedResponse resetPassword(@Valid @RequestBody ResetPasswordFinishRequest request,
-                                                 BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+    public PasswordChangedResponse resetPassword(@Valid @RequestBody ResetPasswordFinishRequest request) {
         try {
             UserDTO user = this.userFinder.get(new Cid(request.getCid()));
 

@@ -8,7 +8,7 @@ import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;

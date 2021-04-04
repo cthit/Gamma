@@ -44,7 +44,7 @@ public class CookieConfig {
         repo.setCookieDomain(this.domain);
         repo.setCookiePath(this.path);
         repo.setSecure(this.production);
-        repo.setCookieHttpOnly(true);
+        repo.setCookieHttpOnly(false);
         return repo;
     }
 

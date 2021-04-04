@@ -7,17 +7,14 @@ import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.controller.request.ChangeUserPassword;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import it.chalmers.gamma.domain.user.controller.request.DeleteMeRequest;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
 import it.chalmers.gamma.domain.user.controller.response.*;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
-import it.chalmers.gamma.util.InputValidationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -102,11 +99,7 @@ public class MeController {
     }
 
     @PutMapping("/change_password")
-    public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request,
-                                                  BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+    public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request) {
         UserDTO user = null;
         try {
             user = this.extractUser(principal);
@@ -124,11 +117,7 @@ public class MeController {
     }
 
     @DeleteMapping()
-    public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request,
-                                        BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+    public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request) {
         try {
             UserDTO user = this.extractUser(principal);
 

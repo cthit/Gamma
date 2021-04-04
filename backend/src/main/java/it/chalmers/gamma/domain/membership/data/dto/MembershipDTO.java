@@ -2,7 +2,7 @@ package it.chalmers.gamma.domain.membership.data.dto;
 
 import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
 import it.chalmers.gamma.domain.post.data.PostDTO;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 import java.util.Objects;
 
 public class MembershipDTO {

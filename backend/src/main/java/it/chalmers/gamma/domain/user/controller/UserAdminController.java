@@ -10,12 +10,10 @@ import it.chalmers.gamma.domain.user.controller.response.*;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.controller.request.AdminChangePasswordRequest;
 import it.chalmers.gamma.domain.user.controller.request.AdminViewCreateUserRequest;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.util.InputValidationUtils;
 
 import java.time.Year;
 import java.util.List;
@@ -25,7 +23,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,10 +56,7 @@ public final class UserAdminController {
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
             @PathVariable("id") UserId id,
-            @Valid @RequestBody AdminChangePasswordRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
+            @Valid @RequestBody AdminChangePasswordRequest request) {
         try {
             this.userService.setPassword(id, request.getPassword());
         } catch (EntityNotFoundException e) {
@@ -119,12 +113,7 @@ public final class UserAdminController {
     }
 
     @PostMapping()
-    public UserCreatedResponse addUser(
-            @Valid @RequestBody AdminViewCreateUserRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+    public UserCreatedResponse addUser(@Valid @RequestBody AdminViewCreateUserRequest request) {
         this.userCreationService.createUser(requestToDTO(request), request.getPassword());
         return new UserCreatedResponse();
     }

@@ -75,7 +75,7 @@ dependencies {
             "org.springframework.session:spring-session-core:${springBootVersion}",
             "org.springframework.boot:spring-boot:${springBootVersion}",
             "org.hibernate:hibernate-core:5.4.14.Final",
-            "javax.validation:validation-api:2.0.1.Final",
+            "org.springframework.boot:spring-boot-starter-validation:${springBootVersion}",
             "org.apache.tomcat.embed:tomcat-embed-core:9.0.34",
             "org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final",
             "org.apache.httpcomponents:httpcore:4.4.13",

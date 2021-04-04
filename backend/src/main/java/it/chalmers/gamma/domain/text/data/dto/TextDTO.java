@@ -2,10 +2,14 @@ package it.chalmers.gamma.domain.text.data.dto;
 
 import it.chalmers.gamma.util.domain.abstraction.DTO;
 
+import javax.validation.constraints.NotEmpty;
+
 public class TextDTO implements DTO {
 
-    private final String sv;
-    private final String en;
+    private String sv;
+    private String en;
+
+    protected TextDTO() {}
 
     public TextDTO(String sv, String en) {
         this.sv = sv;

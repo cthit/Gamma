@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.passwordreset.controller.request;
+package it.chalmers.gamma.domain.userpasswordreset.controller.request;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

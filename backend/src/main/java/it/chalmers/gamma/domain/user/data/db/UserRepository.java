@@ -1,4 +1,4 @@
-package it.chalmers.gamma.domain.user.data;
+package it.chalmers.gamma.domain.user.data.db;
 
 import java.util.Optional;
 

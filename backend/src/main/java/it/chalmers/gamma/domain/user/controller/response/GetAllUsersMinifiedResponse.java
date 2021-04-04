@@ -3,7 +3,7 @@ package it.chalmers.gamma.domain.user.controller.response;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
 
 public class GetAllUsersMinifiedResponse {
 

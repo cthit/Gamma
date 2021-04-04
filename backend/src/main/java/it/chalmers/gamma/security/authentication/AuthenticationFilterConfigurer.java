@@ -4,7 +4,7 @@ import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 
-import it.chalmers.gamma.domain.passwordreset.service.PasswordResetService;
+import it.chalmers.gamma.domain.userpasswordreset.service.PasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;

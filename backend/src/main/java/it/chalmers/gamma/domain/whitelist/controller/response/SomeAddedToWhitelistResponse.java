@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.whitelist.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.util.domain.Cid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -7,25 +9,11 @@ import java.util.List;
 
 public class SomeAddedToWhitelistResponse {
 
-    private final List<String> failedToAdd;
+    @JsonValue
+    public final List<Cid> failedToAdd;
 
-    public SomeAddedToWhitelistResponse(List<String> failedToAdd) {
+    public SomeAddedToWhitelistResponse(List<Cid> failedToAdd) {
         this.failedToAdd = failedToAdd;
-    }
-
-    public List<String> getFailedToAdd() {
-        return failedToAdd;
-    }
-
-    public SomeAddedToWhitelistResponseObject toResponseObject() {
-        return new SomeAddedToWhitelistResponseObject(this);
-    }
-
-    public static class SomeAddedToWhitelistResponseObject extends ResponseEntity<SomeAddedToWhitelistResponse> {
-
-        public SomeAddedToWhitelistResponseObject(SomeAddedToWhitelistResponse body) {
-            super(body, HttpStatus.PARTIAL_CONTENT);
-        }
     }
 
 }

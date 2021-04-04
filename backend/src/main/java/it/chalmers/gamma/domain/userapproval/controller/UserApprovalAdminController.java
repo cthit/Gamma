@@ -8,7 +8,7 @@ import it.chalmers.gamma.domain.client.domain.ClientId;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

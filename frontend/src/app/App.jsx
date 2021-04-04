@@ -49,7 +49,9 @@ export const App = () => {
                 !pathname.startsWith("/create-account") &&
                     (!pathname.startsWith("/reset-password") ||
                         pathname.startsWith("/reset-password/admin"))
-            );
+            ).catch(error => {
+                console.log("Not signed in");
+            });
         } else if (
             pathname.startsWith("/create-account") ||
             pathname.startsWith("/reset-password")

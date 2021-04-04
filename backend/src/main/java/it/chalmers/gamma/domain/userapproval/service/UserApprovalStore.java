@@ -2,7 +2,7 @@ package it.chalmers.gamma.domain.userapproval.service;
 
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 import it.chalmers.gamma.domain.client.domain.ClientId;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.service.UserFinder;

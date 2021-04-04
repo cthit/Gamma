@@ -1,6 +1,7 @@
-package it.chalmers.gamma.domain.user.data;
+package it.chalmers.gamma.domain.user.data.db;
 
 import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.Language;

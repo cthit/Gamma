@@ -2,7 +2,7 @@ package it.chalmers.gamma.domain.user.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.util.domain.GroupPost;
-import it.chalmers.gamma.domain.user.data.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
 
 import java.util.List;
 

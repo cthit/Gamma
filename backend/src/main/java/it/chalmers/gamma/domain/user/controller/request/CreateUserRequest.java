@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-public class CreateITUserRequest {
+public class CreateUserRequest {
 
     @NotEmpty(message = "CODE_MUST_BE_PROVIDED")
     private String code;

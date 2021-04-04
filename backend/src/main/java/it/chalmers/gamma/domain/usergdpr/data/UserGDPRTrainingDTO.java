@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain.usergdpr.data;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.user.data.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
 
 public class UserGDPRTrainingDTO {
 

@@ -11,10 +11,10 @@ import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.file.response.FileNotFoundResponse;
 import it.chalmers.gamma.file.response.FileNotSavedResponse;
 import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
-import it.chalmers.gamma.domain.user.data.User;
-import it.chalmers.gamma.domain.user.data.UserRepository;
-import it.chalmers.gamma.domain.user.data.UserDTO;
-import it.chalmers.gamma.domain.user.data.UserDetailsDTO;
+import it.chalmers.gamma.domain.user.data.db.User;
+import it.chalmers.gamma.domain.user.data.db.UserRepository;
+import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.user.data.dto.UserDetailsDTO;
 import it.chalmers.gamma.util.ImageUtils;
 
 import java.util.List;

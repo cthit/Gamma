@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.activationcode.data.dto;
 
+import it.chalmers.gamma.domain.activationcode.Code;
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.DTO;
 
@@ -8,11 +9,11 @@ import java.time.Instant;
 public class ActivationCodeDTO implements DTO {
 
     private final Cid cid;
-    private final String code;
+    private final Code code;
     private final Instant createdAt;
 
     public ActivationCodeDTO(Cid cid,
-                             String code,
+                             Code code,
                              Instant createdAt) {
         this.cid = cid;
         this.code = code;
@@ -23,7 +24,7 @@ public class ActivationCodeDTO implements DTO {
         return this.cid;
     }
 
-    public String getCode() {
+    public Code getCode() {
         return this.code;
     }
 

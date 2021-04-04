@@ -23,7 +23,7 @@ public class ActivationCodeFinder implements GetAllEntities<ActivationCodeDTO> {
     public List<ActivationCodeDTO> getAll() {
         return this.repository.findAll()
                 .stream()
-                .map(this::toDTO)
+                .map(ActivationCode::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -31,11 +31,4 @@ public class ActivationCodeFinder implements GetAllEntities<ActivationCodeDTO> {
         return this.repository.findActivationCodeByCidAndCode(cid, code).isPresent();
     }
 
-    protected ActivationCodeDTO toDTO(ActivationCode activationCode) {
-        return new ActivationCodeDTO(
-                activationCode.getCid(),
-                activationCode.getCode(),
-                activationCode.getCreatedAt()
-        );
-    }
 }

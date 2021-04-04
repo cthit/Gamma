@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class Email {
+public class Email implements Serializable {
 
     @JsonValue
     @Column(name = "email")

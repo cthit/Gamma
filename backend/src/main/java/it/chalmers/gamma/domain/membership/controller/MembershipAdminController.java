@@ -19,13 +19,11 @@ import it.chalmers.gamma.domain.membership.controller.response.MemberAddedToGrou
 import it.chalmers.gamma.domain.membership.controller.response.MemberRemovedFromGroupResponse;
 
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.util.InputValidationUtils;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,12 +43,8 @@ public final class MembershipAdminController {
 
     @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
-            @Valid @RequestBody AddUserGroupRequest request, BindingResult result,
+            @Valid @RequestBody AddUserGroupRequest request,
             @PathVariable("id") GroupId groupId) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
         this.membershipService.create(
                 new MembershipShallowDTO(
                         request.getPostId(),
@@ -79,12 +73,7 @@ public final class MembershipAdminController {
     public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") GroupId groupId,
                                                     @RequestParam("userId") UserId userId,
                                                     @RequestParam("postId") PostId postId,
-                                                    @Valid @RequestBody EditMembershipRequest request,
-                                                    BindingResult result) {
-        if (result.hasErrors()) {
-            throw new InputValidationFailedResponse(InputValidationUtils.getErrorMessages(result.getAllErrors()));
-        }
-
+                                                    @Valid @RequestBody EditMembershipRequest request) {
         try {
             this.membershipService.update(
                     new MembershipShallowDTO(
