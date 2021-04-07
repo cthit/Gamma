@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.activationcode.service;
 
+import it.chalmers.gamma.domain.activationcode.Code;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.domain.activationcode.data.db.ActivationCode;
 import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
@@ -27,7 +28,7 @@ public class ActivationCodeFinder implements GetAllEntities<ActivationCodeDTO> {
                 .collect(Collectors.toList());
     }
 
-    public boolean codeMatchesCid(Cid cid, String code) {
+    public boolean codeMatchesCid(Cid cid, Code code) {
         return this.repository.findActivationCodeByCidAndCode(cid, code).isPresent();
     }
 

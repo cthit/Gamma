@@ -23,4 +23,12 @@ public class TextDTO implements DTO {
     public String getEn() {
         return en;
     }
+
+    @Override
+    public String toString() {
+        return "TextDTO{" +
+                "sv='" + sv + '\'' +
+                ", en='" + en + '\'' +
+                '}';
+    }
 }

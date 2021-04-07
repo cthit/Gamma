@@ -14,11 +14,9 @@ import org.springframework.stereotype.Service;
 public class ApiKeyService implements CreateEntity<ApiKeyDTO>, DeleteEntity<ApiKeyId> {
 
     private final ApiKeyRepository apiKeyRepository;
-    private final ApiKeyFinder apiKeyFinder;
 
-    public ApiKeyService(ApiKeyRepository apiKeyRepository, ApiKeyFinder apiKeyFinder) {
+    public ApiKeyService(ApiKeyRepository apiKeyRepository) {
         this.apiKeyRepository = apiKeyRepository;
-        this.apiKeyFinder = apiKeyFinder;
     }
 
     @Override
@@ -28,10 +26,10 @@ public class ApiKeyService implements CreateEntity<ApiKeyDTO>, DeleteEntity<ApiK
 
     @Override
     public void delete(ApiKeyId id) throws EntityNotFoundException {
-        if(!this.apiKeyFinder.apiKeyExists(id)) {
+        try{
+            this.apiKeyRepository.deleteById(id);
+        } catch(IllegalArgumentException e){
             throw new EntityNotFoundException();
         }
-
-        this.apiKeyRepository.deleteById(id);
     }
 }

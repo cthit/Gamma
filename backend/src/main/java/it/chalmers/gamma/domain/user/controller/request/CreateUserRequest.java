@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.user.controller.request;
 
+import it.chalmers.gamma.domain.activationcode.Code;
 import it.chalmers.gamma.util.domain.Language;
 
 import javax.validation.constraints.AssertTrue;
@@ -12,8 +13,7 @@ import javax.validation.constraints.Size;
 
 public class CreateUserRequest {
 
-    @NotEmpty(message = "CODE_MUST_BE_PROVIDED")
-    private String code;
+    private Code code;
 
     @NotEmpty(message = "PASSWORD_MUST_BE_PROVIDED")
     @Size(min = 8, message = "PASSWORD_MUST_BE_MORE_THAN_8_CHARACTERS")
@@ -44,11 +44,11 @@ public class CreateUserRequest {
 
     private Language language = Language.SV;
 
-    public String getCode() {
+    public Code getCode() {
         return this.code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Code code) {
         this.code = code;
     }
 

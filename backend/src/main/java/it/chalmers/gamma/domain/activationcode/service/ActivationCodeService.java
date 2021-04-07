@@ -8,36 +8,32 @@ import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
 import it.chalmers.gamma.domain.activationcode.data.db.ActivationCodeRepository;
 import it.chalmers.gamma.util.domain.Cid;
 
-import it.chalmers.gamma.util.TokenUtils;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class ActivationCodeService implements DeleteEntity<Cid>  {
 
-    private final ActivationCodeFinder activationCodeFinder;
     private final ActivationCodeRepository activationCodeRepository;
 
-    public ActivationCodeService(ActivationCodeFinder activationCodeFinder,
-                                 ActivationCodeRepository activationCodeRepository) {
-        this.activationCodeFinder = activationCodeFinder;
+    public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
         this.activationCodeRepository = activationCodeRepository;
     }
 
     public ActivationCodeDTO saveActivationCode(Cid cid) {
         // Delete if there was a code previously saved
-        // TODO: Fix this so it's the correct exception
         try {
             delete(cid);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (EntityNotFoundException ignored) {}
 
         return this.activationCodeRepository.save(new ActivationCode(cid, Code.generate())).toDTO();
     }
 
     public void delete(Cid cid) throws EntityNotFoundException {
-        this.activationCodeRepository.deleteById(cid);
+        try{
+            this.activationCodeRepository.deleteById(cid);
+        } catch(IllegalArgumentException e) {
+            throw new EntityNotFoundException();
+        }
     }
 
 }

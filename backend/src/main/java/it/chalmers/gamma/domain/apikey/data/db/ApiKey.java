@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.apikey.data.db;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyName;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
@@ -23,8 +24,8 @@ public class ApiKey implements MutableEntity<ApiKeyDTO> {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Text description;
 
-    @Column(name = "name")
-    private String name;
+    @Embedded
+    private ApiKeyName name;
 
     protected ApiKey() { }
 
@@ -40,22 +41,6 @@ public class ApiKey implements MutableEntity<ApiKeyDTO> {
         }
 
         apply(apiKey);
-    }
-
-    public ApiKeyId getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Text getDescription() {
-        return this.description;
-    }
-
-    public ApiKeyToken getKey() {
-        return this.key;
     }
 
     @Override

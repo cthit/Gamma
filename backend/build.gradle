@@ -17,7 +17,7 @@ plugins {
     id "application"
     id "checkstyle"
     id "pmd"
-    id "jacoco"
+//    id "jacoco"
     id "nebula.lint" version "16.7.0"
 }
 
@@ -42,7 +42,7 @@ jar {
 
 dependencies {
 
-    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    implementation 'org.junit.jupiter:junit-jupiter:5.6.2'
     compileOnly(
             "com.github.spotbugs:spotbugs-annotations:3.1.8"
     )
@@ -98,8 +98,9 @@ dependencies {
             "org.springframework.security:spring-security-test:${springVersion}",
             "org.springframework.boot:spring-boot-test-autoconfigure:${springBootVersion}",
             "org.springframework.boot:spring-boot-test:${springBootVersion}",
-            "junit:junit:4.13.1",
-            "org.mockito:mockito-all:1.10.19",
+            'org.springframework.boot:spring-boot-starter-test',
+            'org.junit.jupiter:junit-jupiter-engine:5.6.2',
+            'org.mockito:mockito-junit-jupiter:2.23.0'
     )
 
 
@@ -107,6 +108,10 @@ dependencies {
             "com.h2database:h2:1.4.200",
             "org.springframework.restdocs:spring-restdocs-mockmvc",
     )
+}
+
+test {
+    useJUnitPlatform()
 }
 
 repositories {
@@ -129,16 +134,17 @@ pmd {
     ruleSets = []
     ruleSetConfig = resources.text.fromFile("./config/pmd/ruleset.xml")
 }
+//
+//jacoco {
+//    toolVersion = "0.8.5"
+//}
+//
+//jacocoTestReport {
+//    reports {
+//        html.enabled = true
+//    }
+//}
 
-jacoco {
-    toolVersion = "0.8.5"
-}
-
-jacocoTestReport {
-    reports {
-        html.enabled = true
-    }
-}
 // Is not perfect, but gives you an idea of what needs to be changed
 gradleLint {
     rules = ["dependency-parentheses", "archaic-wrapper"]

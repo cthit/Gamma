@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.user.service;
 
+import it.chalmers.gamma.domain.activationcode.Code;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
@@ -36,7 +37,7 @@ public class UserCreationService {
         this.repository = repository;
     }
 
-    public void createUserByCode(UserDTO newUser, String password, String code) throws CidOrCodeNotMatchException {
+    public void createUserByCode(UserDTO newUser, String password, Code code) throws CidOrCodeNotMatchException {
         if(!activationCodeFinder.codeMatchesCid(newUser.getCid(), code)) {
             throw new CidOrCodeNotMatchException();
         }

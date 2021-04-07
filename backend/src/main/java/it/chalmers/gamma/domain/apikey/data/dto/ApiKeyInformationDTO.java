@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.apikey.data.dto;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyName;
 import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
@@ -7,10 +8,10 @@ import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 public class ApiKeyInformationDTO implements DTO {
 
     private final ApiKeyId id;
-    private final String name;
+    private final ApiKeyName name;
     private final TextDTO description;
 
-    public ApiKeyInformationDTO(ApiKeyId id, String name, TextDTO description) {
+    public ApiKeyInformationDTO(ApiKeyId id, ApiKeyName name, TextDTO description) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,7 +27,7 @@ public class ApiKeyInformationDTO implements DTO {
         return id;
     }
 
-    public String getName() {
+    public ApiKeyName getName() {
         return name;
     }
 
