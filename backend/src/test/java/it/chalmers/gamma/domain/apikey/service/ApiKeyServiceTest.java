@@ -1,11 +1,5 @@
 package it.chalmers.gamma.domain.apikey.service;
 
-import it.chalmers.gamma.domain.apikey.ApiKeyName;
-import it.chalmers.gamma.domain.apikey.data.db.ApiKey;
-import it.chalmers.gamma.domain.apikey.data.db.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;

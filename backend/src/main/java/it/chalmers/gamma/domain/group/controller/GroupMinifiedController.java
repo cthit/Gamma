@@ -1,6 +1,5 @@
 package it.chalmers.gamma.domain.group.controller;
 
-import it.chalmers.gamma.domain.group.controller.response.GetAllGroupMinifiedResponse;
 import it.chalmers.gamma.domain.group.service.GroupMinifiedFinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

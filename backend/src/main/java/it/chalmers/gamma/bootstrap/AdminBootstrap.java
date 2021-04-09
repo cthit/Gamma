@@ -1,18 +1,18 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.supergroup.SuperGroupType;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
-import it.chalmers.gamma.domain.post.data.PostDTO;
+import it.chalmers.gamma.domain.authority.service.AuthorityShallowDTO;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.group.service.GroupId;
+import it.chalmers.gamma.domain.group.service.GroupShallowDTO;
+import it.chalmers.gamma.domain.membership.service.MembershipShallowDTO;
+import it.chalmers.gamma.domain.post.service.PostId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupType;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupDTO;
+import it.chalmers.gamma.domain.post.service.PostDTO;
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.user.service.UserId;
+import it.chalmers.gamma.domain.user.service.UserDTO;
 
 import java.time.Year;
 import java.util.Calendar;

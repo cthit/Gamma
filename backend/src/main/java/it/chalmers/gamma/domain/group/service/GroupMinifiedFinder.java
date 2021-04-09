@@ -3,8 +3,6 @@ package it.chalmers.gamma.domain.group.service;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.dto.GroupMinifiedDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

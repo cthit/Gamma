@@ -4,13 +4,9 @@ import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupPost;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.user.controller.request.ChangeUserPassword;
-import it.chalmers.gamma.domain.user.controller.request.DeleteMeRequest;
-import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
-import it.chalmers.gamma.domain.user.controller.response.*;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.user.service.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 import org.slf4j.Logger;
@@ -104,7 +100,7 @@ public class MeController {
         try {
             user = this.extractUser(principal);
 
-            if (!this.userService.passwordMatches(user, request.getOldPassword())) {
+            if (!this.userService.passwordMatches(user.getId(), request.getOldPassword())) {
                 throw new IncorrectCidOrPasswordResponse();
             }
 
@@ -121,7 +117,7 @@ public class MeController {
         try {
             UserDTO user = this.extractUser(principal);
 
-            if (!this.userService.passwordMatches(user, request.getPassword())) {
+            if (!this.userService.passwordMatches(user.getId(), request.getPassword())) {
                 throw new IncorrectCidOrPasswordResponse();
             }
 

@@ -1,8 +1,6 @@
 package it.chalmers.gamma.domain.whitelist.service;
 
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.whitelist.data.Whitelist;
-import it.chalmers.gamma.domain.whitelist.data.WhitelistRepository;
 
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
@@ -17,8 +15,7 @@ public class WhitelistService implements CreateEntity<Cid>, DeleteEntity<Cid> {
     private final WhitelistFinder whitelistFinder;
     private final WhitelistRepository whitelistRepository;
 
-    public WhitelistService(UserFinder userFinder,
-                            WhitelistFinder whitelistFinder,
+    public WhitelistService(WhitelistFinder whitelistFinder,
                             WhitelistRepository whitelistRepository) {
         this.whitelistFinder = whitelistFinder;
         this.whitelistRepository = whitelistRepository;
@@ -34,7 +31,11 @@ public class WhitelistService implements CreateEntity<Cid>, DeleteEntity<Cid> {
     }
 
     public void delete(Cid cid) throws EntityNotFoundException {
-        this.whitelistRepository.deleteById(cid);
+        try{
+            this.whitelistRepository.deleteById(cid);
+        } catch(IllegalArgumentException e) {
+            throw new EntityNotFoundException();
+        }
     }
 
 }

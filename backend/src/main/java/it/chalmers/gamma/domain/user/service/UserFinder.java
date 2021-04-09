@@ -1,10 +1,5 @@
 package it.chalmers.gamma.domain.user.service;
 
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.data.db.User;
-import it.chalmers.gamma.domain.user.data.db.UserRepository;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
-import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;

@@ -1,9 +1,6 @@
 package it.chalmers.gamma.domain.authoritylevel.service;
 
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.domain.authoritylevel.data.db.AuthorityLevel;
-import it.chalmers.gamma.domain.authoritylevel.data.db.AuthorityLevelRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,10 +20,7 @@ public class AuthorityLevelFinder implements GetAllEntities<AuthorityLevelName> 
     }
 
     public List<AuthorityLevelName> getAll() {
-        return this.authorityLevelRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return this.authorityLevelRepository.findAll().stream().map(AuthorityLevel::toDTO).collect(Collectors.toList());
     }
 
-    protected AuthorityLevelName toDTO(AuthorityLevel authorityLevel) {
-        return new AuthorityLevelName(authorityLevel.getAuthorityLevel());
-    }
 }

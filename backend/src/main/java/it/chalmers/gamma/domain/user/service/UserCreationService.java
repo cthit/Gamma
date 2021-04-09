@@ -1,13 +1,9 @@
 package it.chalmers.gamma.domain.user.service;
 
-import it.chalmers.gamma.domain.activationcode.Code;
+import it.chalmers.gamma.domain.activationcode.service.Code;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
-import it.chalmers.gamma.domain.user.data.db.User;
-import it.chalmers.gamma.domain.user.data.db.UserRepository;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
-import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +38,8 @@ public class UserCreationService {
             throw new CidOrCodeNotMatchException();
         }
 
+        //TODO: Check if code is still valid.
+
         try {
             this.whitelistService.delete(newUser.getCid());
             this.activationCodeService.delete(newUser.getCid());
@@ -58,7 +56,7 @@ public class UserCreationService {
 
     public void createUser(UserDTO newUser, String password) {
         User user = new User(newUser);
-        user.setPassword(this.passwordEncoder.encode(password));
+        user.setPassword(new Password(this.passwordEncoder.encode(password)));
 
         this.repository.save(user);
     }

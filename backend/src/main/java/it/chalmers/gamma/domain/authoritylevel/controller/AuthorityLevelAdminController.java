@@ -3,12 +3,9 @@ package it.chalmers.gamma.domain.authoritylevel.controller;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.domain.authoritylevel.controller.response.*;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelFinder;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.domain.authoritylevel.controller.request.CreateAuthorityLevelRequest;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +34,7 @@ public class AuthorityLevelAdminController {
         } catch (EntityAlreadyExistsException e) {
             throw new AuthorityLevelAlreadyExistsResponse();
         }
+
         return new AuthorityLevelCreatedResponse();
     }
 

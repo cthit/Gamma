@@ -1,17 +1,10 @@
 package it.chalmers.gamma.domain.group.service;
 
-import it.chalmers.gamma.domain.group.data.db.Group;
-import it.chalmers.gamma.domain.group.data.db.GroupRepository;
-import it.chalmers.gamma.domain.group.data.dto.GroupBaseDTO;
-import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
-import it.chalmers.gamma.domain.group.data.dto.GroupMinifiedDTO;
-import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 import org.springframework.stereotype.Component;
 

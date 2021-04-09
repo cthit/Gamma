@@ -2,8 +2,6 @@ package it.chalmers.gamma.domain.whitelist.service;
 
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
-import it.chalmers.gamma.domain.whitelist.data.Whitelist;
-import it.chalmers.gamma.domain.whitelist.data.WhitelistRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap.mock;
 
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.util.domain.Cid;
 
 import java.time.Year;

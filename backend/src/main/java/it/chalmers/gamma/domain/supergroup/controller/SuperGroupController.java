@@ -1,17 +1,13 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.group.data.dto.GroupMinifiedDTO;
+import it.chalmers.gamma.domain.group.service.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
-import it.chalmers.gamma.domain.supergroup.controller.response.GetAllSuperGroupsResponse;
-import it.chalmers.gamma.domain.supergroup.controller.response.GetAllSuperGroupsResponse.GetAllSuperGroupsResponseObject;
-import it.chalmers.gamma.domain.supergroup.controller.response.GetSuperGroupResponse;
 
 import java.util.List;
 
-import it.chalmers.gamma.domain.supergroup.controller.response.SuperGroupDoesNotExistResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +31,8 @@ public class SuperGroupController {
     }
 
     @GetMapping()
-    public GetAllSuperGroupsResponseObject getAllSuperGroups() {
-        return new GetAllSuperGroupsResponse(this.superGroupFinder.getAll()).toResponseObject();
+    public GetAllSuperGroupResponse getAllSuperGroups() {
+        return new GetAllSuperGroupResponse(this.superGroupFinder.getAll());
     }
 
     @GetMapping("/{id}")

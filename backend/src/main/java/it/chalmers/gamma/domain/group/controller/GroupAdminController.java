@@ -4,16 +4,14 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsEx
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupWithMembers;
 import it.chalmers.gamma.util.domain.UserPost;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.controller.response.*;
-import it.chalmers.gamma.domain.group.data.dto.GroupBaseDTO;
+import it.chalmers.gamma.domain.group.service.GroupId;
+import it.chalmers.gamma.domain.group.service.GroupBaseDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.service.GroupService;
-import it.chalmers.gamma.domain.group.data.dto.GroupShallowDTO;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipDTO;
+import it.chalmers.gamma.domain.group.service.GroupShallowDTO;
+import it.chalmers.gamma.domain.membership.service.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.group.controller.request.CreateOrEditGroupRequest;
-import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
 

@@ -1,16 +1,11 @@
 package it.chalmers.gamma.domain.apikey.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyDTO;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyService;
-import it.chalmers.gamma.domain.apikey.controller.request.CreateApiKeyRequest;
-import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyDeletedResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.ApiKeyNotFoundResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetAllApiKeyInformationResponse;
-import it.chalmers.gamma.domain.apikey.controller.response.GetApiKeySecretResponse;
 
 import it.chalmers.gamma.util.ResponseUtils;
 import org.springframework.http.ResponseEntity;

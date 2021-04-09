@@ -1,11 +1,7 @@
 package it.chalmers.gamma.domain.activationcode.service;
 
-import it.chalmers.gamma.domain.activationcode.Code;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.activationcode.data.db.ActivationCode;
-import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
-import it.chalmers.gamma.domain.activationcode.data.db.ActivationCodeRepository;
 import it.chalmers.gamma.util.domain.Cid;
 
 import org.springframework.stereotype.Service;

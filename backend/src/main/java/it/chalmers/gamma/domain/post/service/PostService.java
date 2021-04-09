@@ -4,11 +4,6 @@ import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
-import it.chalmers.gamma.domain.post.PostId;
-
-import it.chalmers.gamma.domain.post.data.Post;
-import it.chalmers.gamma.domain.post.data.PostDTO;
-import it.chalmers.gamma.domain.post.data.PostRepository;
 
 import org.springframework.stereotype.Service;
 

@@ -4,10 +4,6 @@ import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.authority.data.db.Authority;
-import it.chalmers.gamma.domain.authority.data.db.AuthorityPK;
-import it.chalmers.gamma.domain.authority.data.db.AuthorityRepository;
-import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
 
 import org.springframework.stereotype.Service;
 
@@ -21,18 +17,20 @@ public class AuthorityService implements CreateEntity<AuthorityShallowDTO>, Dele
     }
 
     public void create(AuthorityShallowDTO authority) throws EntityAlreadyExistsException {
-        this.authorityRepository.save(
-                new Authority(
-                        new AuthorityPK(
-                                authority.getSuperGroupId(),
-                                authority.getPostId(),
-                                authority.getAuthorityLevelName()
-                        )
-                )
-        );
+        try {
+            this.authorityRepository.save(
+                    new Authority(authority)
+            );
+        } catch(IllegalArgumentException e) {
+            throw new EntityAlreadyExistsException();
+        }
     }
 
     public void delete(AuthorityPK id) throws EntityNotFoundException {
-        this.authorityRepository.deleteById(id);
+        try{
+            this.authorityRepository.deleteById(id);
+        } catch(IllegalArgumentException e){
+            throw new EntityNotFoundException();
+        }
     }
 }

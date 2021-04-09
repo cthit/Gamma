@@ -3,17 +3,13 @@ package it.chalmers.gamma.domain.user.controller;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupPost;
 import it.chalmers.gamma.util.domain.UserWithGroups;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipDTO;
+import it.chalmers.gamma.domain.membership.service.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.controller.response.*;
+import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
-import it.chalmers.gamma.domain.user.controller.request.AdminChangePasswordRequest;
-import it.chalmers.gamma.domain.user.controller.request.AdminViewCreateUserRequest;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.user.service.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
-import it.chalmers.gamma.domain.user.controller.request.EditITUserRequest;
 
 import java.time.Year;
 import java.util.List;
@@ -58,7 +54,7 @@ public final class UserAdminController {
             @PathVariable("id") UserId id,
             @Valid @RequestBody AdminChangePasswordRequest request) {
         try {
-            this.userService.setPassword(id, request.getPassword());
+            this.userService.setPassword(id, request.password);
         } catch (EntityNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();

@@ -2,18 +2,16 @@ package it.chalmers.gamma.domain.userapproval.controller;
 
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.userapproval.controller.response.ApprovedClientsResponse;
 import it.chalmers.gamma.domain.userapproval.service.UserApprovalFinder;
 import it.chalmers.gamma.domain.client.service.ClientFinder;
-import it.chalmers.gamma.domain.client.data.dto.ClientUserAccessDTO;
+import it.chalmers.gamma.domain.client.service.ClientUserAccessDTO;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.controller.response.UserNotFoundResponse;
+import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +63,8 @@ public class UserApprovalController {
                     .collect(Collectors.toList());
             return new ApprovedClientsResponse(userAccesses);
         } catch (EntityNotFoundException e) {
-            throw new UserNotFoundResponse();
+            //TODO fix
+            return null;
         }
     }
 }

@@ -1,8 +1,6 @@
 package it.chalmers.gamma.domain.post.controller;
 
 import it.chalmers.gamma.domain.post.service.PostFinder;
-import it.chalmers.gamma.domain.post.controller.response.GetMultiplePostsResponse;
-import it.chalmers.gamma.domain.post.controller.response.GetMultiplePostsResponse.GetMultiplePostsResponseObject;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +17,9 @@ public class PostController {
     }
 
     @GetMapping()
-    public GetMultiplePostsResponseObject getPosts() {
-        return new GetMultiplePostsResponse(
+    public GetAllPostResponse getPosts() {
+        return new GetAllPostResponse(
                 this.postFinder.getAll()
-        ).toResponseObject();
+        );
     }
 }

@@ -1,10 +1,10 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.apikey.ApiKeyName;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyDTO;
-import it.chalmers.gamma.domain.client.domain.ClientSecret;
-import it.chalmers.gamma.domain.client.data.dto.ClientDTO;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyName;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyDTO;
+import it.chalmers.gamma.domain.client.service.ClientSecret;
+import it.chalmers.gamma.domain.client.service.ClientDTO;
 
 import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import org.slf4j.Logger;

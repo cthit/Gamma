@@ -1,11 +1,6 @@
 package it.chalmers.gamma.domain.userapproval.service;
 
-import it.chalmers.gamma.domain.userapproval.data.db.UserApproval;
-import it.chalmers.gamma.domain.userapproval.data.db.UserApprovalPK;
-import it.chalmers.gamma.domain.userapproval.data.db.UserApprovalRepository;
-
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.userapproval.data.dto.UserApprovalDTO;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityHasUsagesException;

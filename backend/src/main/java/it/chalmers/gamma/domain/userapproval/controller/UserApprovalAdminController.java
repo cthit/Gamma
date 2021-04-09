@@ -2,13 +2,12 @@ package it.chalmers.gamma.domain.userapproval.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.userapproval.service.UserApprovalFinder;
-import it.chalmers.gamma.domain.userapproval.response.GetUserApprovalsResponse;
-import it.chalmers.gamma.domain.client.domain.ClientId;
+import it.chalmers.gamma.domain.client.service.ClientId;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

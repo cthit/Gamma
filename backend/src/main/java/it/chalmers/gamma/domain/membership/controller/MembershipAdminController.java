@@ -1,43 +1,24 @@
 package it.chalmers.gamma.domain.membership.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.membership.controller.response.MembershipNotFoundResponse;
-import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
+import it.chalmers.gamma.domain.group.service.GroupId;
+import it.chalmers.gamma.domain.membership.service.MembershipPK;
+import it.chalmers.gamma.domain.membership.service.MembershipShallowDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipService;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.group.service.GroupService;
-import it.chalmers.gamma.domain.post.service.PostService;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.membership.controller.request.AddUserGroupRequest;
-import it.chalmers.gamma.domain.membership.controller.request.EditMembershipRequest;
-
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.membership.controller.response.EditedMembershipResponse;
-import it.chalmers.gamma.domain.membership.controller.response.MemberAddedToGroupResponse;
-import it.chalmers.gamma.domain.membership.controller.response.MemberRemovedFromGroupResponse;
-
-import it.chalmers.gamma.domain.user.service.UserFinder;
+import it.chalmers.gamma.domain.post.service.PostId;
+import it.chalmers.gamma.domain.user.service.UserId;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/groups")
 public final class MembershipAdminController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MembershipAdminController.class);
-
     private final MembershipService membershipService;
 
-    public MembershipAdminController(UserFinder userFinder,
-                                     PostService postService,
-                                     GroupService groupService,
-                                     MembershipService membershipService) {
+    public MembershipAdminController(MembershipService membershipService) {
         this.membershipService = membershipService;
     }
 
@@ -47,10 +28,10 @@ public final class MembershipAdminController {
             @PathVariable("id") GroupId groupId) {
         this.membershipService.create(
                 new MembershipShallowDTO(
-                        request.getPostId(),
+                        request.postId,
                         groupId,
-                        request.getUnofficialName(),
-                        request.getUserId()
+                        request.unofficialName,
+                        request.userId
                 )
         );
 

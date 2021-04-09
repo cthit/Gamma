@@ -1,11 +1,8 @@
 package it.chalmers.gamma.domain.usergdpr.service;
 
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.service.UserId;
+import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.usergdpr.data.UserGDPRTraining;
-import it.chalmers.gamma.domain.usergdpr.data.UserGDPRTrainingDTO;
-import it.chalmers.gamma.domain.usergdpr.data.UserGDPRTrainingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

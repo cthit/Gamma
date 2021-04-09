@@ -3,11 +3,6 @@ package it.chalmers.gamma.domain.apikey.service;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.data.db.ApiKey;
-import it.chalmers.gamma.domain.apikey.data.db.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.data.dto.ApiKeyInformationDTO;
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

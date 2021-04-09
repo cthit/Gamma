@@ -4,12 +4,10 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundExcepti
 import it.chalmers.gamma.util.domain.GroupWithMembers;
 import it.chalmers.gamma.util.domain.UserPost;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.post.controller.response.*;
-import it.chalmers.gamma.domain.post.data.PostDTO;
+import it.chalmers.gamma.domain.post.service.PostId;
+import it.chalmers.gamma.domain.post.service.PostDTO;
 import it.chalmers.gamma.domain.post.service.PostService;
-import it.chalmers.gamma.domain.post.controller.request.AddPostRequest;
-import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
 

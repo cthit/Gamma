@@ -2,17 +2,13 @@ package it.chalmers.gamma.domain.authority.service;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
-import it.chalmers.gamma.domain.authority.data.db.Authority;
-import it.chalmers.gamma.domain.authority.data.dto.AuthorityDTO;
-import it.chalmers.gamma.domain.authority.data.db.AuthorityRepository;
-import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelFinder;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipDTO;
+import it.chalmers.gamma.domain.membership.service.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.post.service.PostFinder;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.service.UserId;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

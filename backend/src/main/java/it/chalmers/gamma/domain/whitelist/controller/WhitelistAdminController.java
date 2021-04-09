@@ -4,13 +4,8 @@ import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.whitelist.controller.response.*;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
-import it.chalmers.gamma.domain.whitelist.controller.request.AddListOfWhitelistedRequest;
-
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.user.controller.response.UserDeletedResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +34,14 @@ public final class WhitelistAdminController {
     private final WhitelistService whitelistService;
 
     public WhitelistAdminController(WhitelistFinder whitelistFinder,
-                                    WhitelistService whitelistService,
-                                    UserFinder userFinder) {
+                                    WhitelistService whitelistService) {
         this.whitelistFinder = whitelistFinder;
         this.whitelistService = whitelistService;
     }
 
     @GetMapping()
-    public ResponseEntity<GetAllWhitelistResponse> getWhiteList() {
-        return ResponseUtils.toResponseObject(
-                new GetAllWhitelistResponse(this.whitelistFinder.getAll())
-        );
+    public GetAllWhitelistResponse getWhiteList() {
+        return  new GetAllWhitelistResponse(this.whitelistFinder.getAll());
     }
 
     @PostMapping()
@@ -74,13 +66,13 @@ public final class WhitelistAdminController {
     }
 
     @DeleteMapping("/{cid}")
-    public UserDeletedResponse removeWhitelist(@PathVariable("cid") Cid cid) {
+    public CidRemovedFromWhitelistResponse removeWhitelist(@PathVariable("cid") Cid cid) {
         try {
             this.whitelistService.delete(cid);
         } catch (EntityNotFoundException e) {
             throw new CidNotWhitelistedResponse();
         }
-        return new UserDeletedResponse();
+        return new CidRemovedFromWhitelistResponse();
     }
 
 }

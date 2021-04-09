@@ -6,15 +6,10 @@ import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.util.domain.Cid;
 
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.file.response.FileNotFoundResponse;
 import it.chalmers.gamma.file.response.FileNotSavedResponse;
 import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
-import it.chalmers.gamma.domain.user.data.db.User;
-import it.chalmers.gamma.domain.user.data.db.UserRepository;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
-import it.chalmers.gamma.domain.user.data.dto.UserDetailsDTO;
 import it.chalmers.gamma.util.ImageUtils;
 
 import java.util.List;
@@ -57,7 +52,7 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
 
             return new UserDetailsDTO(
                     user.getCid().get(),
-                    user.getPassword(),
+                    user.getPassword().get(),
                     authorities,
                     false
             );
@@ -79,7 +74,7 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
 
     public void setPassword(UserId userId, String password) throws EntityNotFoundException {
         User user = this.userFinder.getEntity(userId);
-        user.setPassword(this.passwordEncoder.encode(password));
+        user.setPassword(new Password(this.passwordEncoder.encode(password)));
         this.userRepository.save(user);
     }
 
@@ -109,13 +104,9 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
         }
     }
 
-    public boolean passwordMatches(UserDTO user, String password) throws EntityNotFoundException {
-        return this.passwordMatches(user.getId(), password);
-    }
-
     public boolean passwordMatches(UserId userId, String password) throws EntityNotFoundException {
         User user = this.userFinder.getEntity(userId);
-        return this.passwordEncoder.matches(password, user.getPassword());
+        return this.passwordEncoder.matches(password, user.getPassword().get());
     }
 
 }

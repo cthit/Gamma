@@ -2,14 +2,11 @@ package it.chalmers.gamma.domain.supergroup.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.supergroup.controller.response.*;
-import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
-import it.chalmers.gamma.domain.supergroup.controller.request.CreateSuperGroupRequest;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.group.controller.response.GroupDeletedResponse;
-import it.chalmers.gamma.domain.group.controller.response.GroupUpdatedResponse;
+import it.chalmers.gamma.domain.group.controller.GroupDeletedResponse;
+import it.chalmers.gamma.domain.group.controller.GroupUpdatedResponse;
 
 import javax.validation.Valid;
 
@@ -43,30 +40,30 @@ public class SuperGroupAdminController {
 
 
     @DeleteMapping("/{id}")
-    public GroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
+    public SuperGroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
         this.superGroupService.delete(id);
-        return new GroupDeletedResponse();
+        return new SuperGroupDeletedResponse();
     }
 
     @PutMapping("/{id}")
-    public GroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
+    public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
                                                  @RequestBody CreateSuperGroupRequest request) {
         try {
             this.superGroupService.update(requestToDTO(request, id));
         } catch (EntityNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }
-        return new GroupUpdatedResponse();
+        return new SuperGroupUpdatedResponse();
     }
 
     private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request, SuperGroupId id) {
         return new SuperGroupDTO(
                 id,
-                request.getName(),
-                request.getPrettyName(),
-                request.getType(),
-                request.getEmail(),
-                request.getDescription()
+                request.name,
+                request.prettyName,
+                request.type,
+                request.email,
+                request.description
         );
     }
 

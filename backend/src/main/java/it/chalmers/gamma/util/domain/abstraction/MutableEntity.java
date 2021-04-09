@@ -1,7 +1,7 @@
 package it.chalmers.gamma.util.domain.abstraction;
 
-public interface MutableEntity<D extends DTO> extends BaseEntity<D> {
+public abstract class MutableEntity<D extends DTO> extends BaseEntity<D> {
 
-    void apply(D d);
+    protected abstract void apply(D d);
 
 }

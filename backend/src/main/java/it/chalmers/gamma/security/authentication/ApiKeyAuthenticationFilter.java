@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.domain.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.user.service.UserService;
 

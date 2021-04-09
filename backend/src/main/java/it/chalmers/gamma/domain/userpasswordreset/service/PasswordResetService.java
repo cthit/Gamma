@@ -3,13 +3,10 @@ package it.chalmers.gamma.domain.userpasswordreset.service;
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.mail.MailSenderService;
 
-import it.chalmers.gamma.domain.userpasswordreset.data.db.PasswordResetToken;
-import it.chalmers.gamma.domain.userpasswordreset.data.dto.PasswordResetTokenDTO;
-import it.chalmers.gamma.domain.userpasswordreset.data.db.PasswordResetTokenRepository;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
+import it.chalmers.gamma.domain.user.service.UserDTO;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import it.chalmers.gamma.util.TokenUtils;
 
@@ -58,9 +55,7 @@ public class PasswordResetService {
 
         try {
             this.removeToken(user);
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (EntityNotFoundException ignored) { }
 
         this.addToken(user, token);
         this.sendMail(user, token);
@@ -87,7 +82,7 @@ public class PasswordResetService {
         try {
 
             this.repository.deleteById(user.getId());
-        } catch(EmptyResultDataAccessException e) {
+        } catch(IllegalArgumentException e) {
             throw new EntityNotFoundException();
         }
     }

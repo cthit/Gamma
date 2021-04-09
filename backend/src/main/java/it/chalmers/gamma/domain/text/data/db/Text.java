@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "internal_text")
-public class Text implements MutableEntity<TextDTO> {
+public class Text extends MutableEntity<TextDTO> {
 
     @EmbeddedId
     private final TextId textId;

@@ -4,10 +4,6 @@ import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
-import it.chalmers.gamma.domain.membership.data.db.Membership;
-import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
-import it.chalmers.gamma.domain.membership.data.db.MembershipRepository;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipShallowDTO;
 
 import org.springframework.stereotype.Service;
 

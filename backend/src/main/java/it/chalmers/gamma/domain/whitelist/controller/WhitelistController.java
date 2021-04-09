@@ -1,12 +1,8 @@
 package it.chalmers.gamma.domain.whitelist.controller;
 
-import it.chalmers.gamma.domain.activationcode.data.dto.ActivationCodeDTO;
+import it.chalmers.gamma.domain.activationcode.service.ActivationCodeDTO;
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.domain.whitelist.service.WhitelistFinder;
-import it.chalmers.gamma.domain.whitelist.service.WhitelistService;
-import it.chalmers.gamma.domain.whitelist.controller.request.WhitelistCodeRequest;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
-import it.chalmers.gamma.domain.whitelist.controller.response.WhitelistedCidActivatedResponse;
 import it.chalmers.gamma.domain.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.mail.MailSenderService;
 
@@ -33,9 +29,7 @@ public final class WhitelistController {
     @Value("${mail.receiver.standard-postfix}")
     private static final String MAIL_POSTFIX = "student.chalmers.se";
 
-    public WhitelistController(
-            WhitelistService whitelistService,
-            ActivationCodeService activationCodeService,
+    public WhitelistController(ActivationCodeService activationCodeService,
             MailSenderService mailSenderService,
             WhitelistFinder whitelistFinder) {
         this.activationCodeService = activationCodeService;

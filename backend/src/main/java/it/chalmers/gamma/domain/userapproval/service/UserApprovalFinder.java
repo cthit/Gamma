@@ -2,12 +2,8 @@ package it.chalmers.gamma.domain.userapproval.service;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
-import it.chalmers.gamma.domain.userapproval.data.db.UserApproval;
-import it.chalmers.gamma.domain.userapproval.data.dto.UserApprovalDTO;
-import it.chalmers.gamma.domain.userapproval.data.db.UserApprovalPK;
-import it.chalmers.gamma.domain.userapproval.data.db.UserApprovalRepository;
-import it.chalmers.gamma.domain.client.domain.ClientId;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.client.service.ClientId;
+import it.chalmers.gamma.domain.user.service.UserId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

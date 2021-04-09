@@ -1,11 +1,10 @@
 package it.chalmers.gamma.domain.group.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.controller.response.*;
-import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
+import it.chalmers.gamma.domain.group.service.GroupId;
+import it.chalmers.gamma.domain.group.service.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
-import it.chalmers.gamma.domain.membership.data.dto.MembershipRestrictedDTO;
+import it.chalmers.gamma.domain.membership.service.MembershipRestrictedDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 
 import java.util.List;

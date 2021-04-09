@@ -1,7 +1,7 @@
 package it.chalmers.gamma.bootstrap.mock;
 
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.group.service.GroupId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 
 import java.util.List;
 

@@ -1,14 +1,12 @@
 package it.chalmers.gamma.domain.user.controller;
 
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.controller.response.*;
-import it.chalmers.gamma.domain.user.data.dto.UserDTO;
-import it.chalmers.gamma.domain.user.data.dto.UserRestrictedDTO;
-import it.chalmers.gamma.domain.user.exception.CidOrCodeNotMatchException;
+import it.chalmers.gamma.domain.user.service.UserId;
+import it.chalmers.gamma.domain.user.service.UserDTO;
+import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.user.service.CidOrCodeNotMatchException;
 import it.chalmers.gamma.domain.user.service.UserCreationService;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.user.controller.request.CreateUserRequest;
 import it.chalmers.gamma.util.domain.*;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 

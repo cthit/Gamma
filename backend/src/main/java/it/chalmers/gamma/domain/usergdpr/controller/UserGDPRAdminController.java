@@ -1,11 +1,7 @@
 package it.chalmers.gamma.domain.usergdpr.controller;
 
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.usergdpr.controller.request.ChangeGDPRStatusRequest;
-import it.chalmers.gamma.util.response.InputValidationFailedResponse;
+import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.usergdpr.controller.response.GDPRStatusEditedResponse;
-import it.chalmers.gamma.domain.usergdpr.controller.response.UsersWithGDPRResponse;
 import it.chalmers.gamma.domain.usergdpr.service.UserGDPRTrainingService;
 
 import javax.validation.Valid;

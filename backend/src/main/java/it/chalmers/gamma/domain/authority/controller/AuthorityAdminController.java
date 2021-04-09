@@ -2,20 +2,18 @@ package it.chalmers.gamma.domain.authority.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.authority.controller.response.*;
-import it.chalmers.gamma.domain.authority.data.db.AuthorityPK;
-import it.chalmers.gamma.domain.authority.data.dto.AuthorityShallowDTO;
+import it.chalmers.gamma.domain.authority.service.AuthorityPK;
+import it.chalmers.gamma.domain.authority.service.AuthorityShallowDTO;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.authority.service.AuthorityService;
-import it.chalmers.gamma.domain.authority.controller.request.CreateAuthorityRequest;
-import it.chalmers.gamma.domain.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.post.service.PostId;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/authority")
+@RequestMapping("/v1/admin/authority")
 public final class AuthorityAdminController {
 
     private final AuthorityFinder authorityFinder;

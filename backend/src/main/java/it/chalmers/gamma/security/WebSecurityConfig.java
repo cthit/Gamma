@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
-import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
+import it.chalmers.gamma.domain.group.service.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;

@@ -1,16 +1,12 @@
 package it.chalmers.gamma.domain.membership.service;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.data.dto.GroupDTO;
+import it.chalmers.gamma.domain.group.service.GroupId;
+import it.chalmers.gamma.domain.group.service.GroupDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
-import it.chalmers.gamma.domain.membership.data.db.Membership;
-import it.chalmers.gamma.domain.membership.data.db.MembershipPK;
-import it.chalmers.gamma.domain.membership.data.db.MembershipRepository;
-import it.chalmers.gamma.domain.membership.data.dto.*;
-import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.post.service.PostId;
 import it.chalmers.gamma.domain.post.service.PostFinder;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.domain.user.service.UserFinder;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

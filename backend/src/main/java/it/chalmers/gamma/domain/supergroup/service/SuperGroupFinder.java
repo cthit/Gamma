@@ -1,10 +1,5 @@
 package it.chalmers.gamma.domain.supergroup.service;
 
-import it.chalmers.gamma.domain.supergroup.SuperGroupType;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.supergroup.data.SuperGroup;
-import it.chalmers.gamma.domain.supergroup.data.SuperGroupDTO;
-import it.chalmers.gamma.domain.supergroup.data.SuperGroupRepository;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
