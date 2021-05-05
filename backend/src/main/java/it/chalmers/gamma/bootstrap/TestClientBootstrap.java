@@ -1,13 +1,13 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.apikey.service.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.service.ApiKeyName;
-import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
-import it.chalmers.gamma.domain.apikey.service.ApiKeyDTO;
-import it.chalmers.gamma.domain.client.service.ClientSecret;
-import it.chalmers.gamma.domain.client.service.ClientDTO;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyId;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyName;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
+import it.chalmers.gamma.internal.client.service.ClientSecret;
+import it.chalmers.gamma.internal.client.service.ClientDTO;
 
-import it.chalmers.gamma.domain.text.data.dto.TextDTO;
+import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

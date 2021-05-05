@@ -1,9 +1,9 @@
 package it.chalmers.gamma.security.oauth;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.domain.client.service.ClientId;
-import it.chalmers.gamma.domain.client.service.ClientDTO;
-import it.chalmers.gamma.domain.client.service.ClientFinder;
+import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.internal.client.service.ClientDTO;
+import it.chalmers.gamma.internal.client.service.ClientFinder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

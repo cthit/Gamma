@@ -2,15 +2,15 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.domain.text.data.dto.TextDTO;
+import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.domain.group.service.GroupShallowDTO;
-import it.chalmers.gamma.domain.membership.service.MembershipShallowDTO;
-import it.chalmers.gamma.domain.supergroup.service.SuperGroupDTO;
-import it.chalmers.gamma.domain.post.service.PostDTO;
-import it.chalmers.gamma.domain.user.service.UserDTO;
+import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
+import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
+import it.chalmers.gamma.internal.post.service.PostDTO;
+import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;

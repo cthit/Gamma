@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.client.service.ClientId;
+import it.chalmers.gamma.internal.client.service.ClientId;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 

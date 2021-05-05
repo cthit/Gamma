@@ -1,22 +1,22 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.apikey.service.ApiKeyService;
-import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.domain.authority.service.AuthorityService;
-import it.chalmers.gamma.domain.client.service.ClientFinder;
-import it.chalmers.gamma.domain.group.service.GroupFinder;
-import it.chalmers.gamma.domain.group.service.GroupService;
-import it.chalmers.gamma.domain.post.service.PostFinder;
-import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
-import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
-import it.chalmers.gamma.domain.client.service.ClientService;
-import it.chalmers.gamma.domain.user.service.UserCreationService;
-import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.user.service.UserService;
-import it.chalmers.gamma.domain.membership.service.MembershipService;
-import it.chalmers.gamma.domain.post.service.PostService;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
+import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelService;
+import it.chalmers.gamma.internal.authority.service.AuthorityService;
+import it.chalmers.gamma.internal.client.service.ClientFinder;
+import it.chalmers.gamma.internal.group.service.GroupFinder;
+import it.chalmers.gamma.internal.group.service.GroupService;
+import it.chalmers.gamma.internal.post.service.PostFinder;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
+import it.chalmers.gamma.internal.client.service.ClientService;
+import it.chalmers.gamma.internal.user.service.UserCreationService;
+import it.chalmers.gamma.internal.user.service.UserFinder;
+import it.chalmers.gamma.internal.user.service.UserService;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
+import it.chalmers.gamma.internal.post.service.PostService;
 
-import it.chalmers.gamma.domain.usergdpr.service.UserGDPRTrainingService;
+import it.chalmers.gamma.internal.usergdpr.service.UserGDPRTrainingService;
 import org.springframework.stereotype.Component;
 
 @Component()

@@ -1,10 +1,10 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
-import it.chalmers.gamma.domain.user.service.UserFinder;
-import it.chalmers.gamma.domain.user.service.UserService;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
+import it.chalmers.gamma.internal.user.service.UserFinder;
+import it.chalmers.gamma.internal.user.service.UserService;
 
-import it.chalmers.gamma.domain.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
-import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
-import it.chalmers.gamma.domain.user.service.UserService;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
+import it.chalmers.gamma.internal.user.service.UserService;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
