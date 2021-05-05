@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.user.controller;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.activationcode.service.Code;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.domain.user.service.UserDTO;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static it.chalmers.gamma.domain.user.controller.UserStatusResponses.*;
+
 @RestController
 @RequestMapping("/users")
 public final class UserController {
@@ -44,11 +48,12 @@ public final class UserController {
         this.userCreationService = userCreationService;
     }
 
-
     @GetMapping()
-    public ResponseEntity<GetAllUsersMinifiedResponse> getAllRestrictedUsers() {
-        return ResponseUtils.toResponseObject(new GetAllUsersMinifiedResponse(this.userFinder.getUsersRestricted()));
+    public GetAllUsersMinifiedResponse getAllRestrictedUsers() {
+        return new GetAllUsersMinifiedResponse(this.userFinder.getAll());
     }
+
+    public record GetUserRestrictedResponse(@JsonUnwrapped UserRestrictedDTO user, List<GroupPost> groups) { }
 
     @GetMapping("/{id}")
     public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
@@ -57,20 +62,45 @@ public final class UserController {
             List<GroupPost> groups = this.membershipFinder
                     .getMembershipsByUser(id)
                     .stream()
-                    .map(membership -> new GroupPost(membership.getPost(), membership.getGroup()))
+                    .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
 
-            return new GetUserRestrictedResponse(new UserWithGroups(user, groups));
+            return new GetUserRestrictedResponse(user, groups);
         } catch (EntityNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }
 
+    record CreateUserRequest (Code code,
+                              String password,
+                              String nick,
+                              String firstName,
+                              Email email,
+                              String lastName,
+                              boolean userAgreement,
+                              int acceptanceYear,
+                              Cid cid,
+                              Language language) {}
+
     @PostMapping("/create")
     @ResponseBody
     public UserCreatedResponse createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
-            this.userCreationService.createUserByCode(requestToDTO(request), request.getPassword(), request.getCode());
+            this.userCreationService.createUserByCode(new UserDTO(
+                            new UserId(),
+                            request.cid,
+                            request.email,
+                            request.language,
+                            request.nick,
+                            request.firstName,
+                            request.lastName,
+                            request.userAgreement,
+                            Year.of(request.acceptanceYear),
+                            true
+                    ),
+                    request.password,
+                    request.code
+            );
         } catch (CidOrCodeNotMatchException e) {
             // If anything is wrong, throw generic error
             throw new CodeOrCidIsWrongResponse();
@@ -81,26 +111,13 @@ public final class UserController {
 
     @GetMapping("/{id}/avatar")
     public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {
-        try {
-            UserDTO user = this.userFinder.get(id);
-            response.sendRedirect(user.getAvatarUrl());
-        } catch (EntityNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
-    }
-
-    private UserDTO requestToDTO(CreateUserRequest request) {
-        return new UserDTO.UserDTOBuilder()
-                .activated(true)
-                .userAgreement(request.isUserAgreement())
-                .email(new Email(request.getEmail()))
-                .language(request.getLanguage())
-                .nick(request.getNick())
-                .cid(new Cid(request.getCid()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .acceptanceYear(Year.of(request.getAcceptanceYear()))
-                .build();
+            ///todo fix
+        //        tvcry {
+//            UserDTO user = this.userFinder.get(id);
+//            response.sendRedirect(user.avatarUrl());
+//        } catch (EntityNotFoundException e) {
+//            throw new UserNotFoundResponse();
+//        }
     }
 
 }

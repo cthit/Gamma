@@ -27,7 +27,7 @@ public class MembershipService implements CreateEntity<MembershipShallowDTO>, De
     }
 
     public void update(MembershipShallowDTO newEdit) throws EntityNotFoundException {
-        Membership membership = this.membershipFinder.getMembershipEntityByUserGroupPost(newEdit.getUserId(), newEdit.getGroupId(), newEdit.getPostId());
+        Membership membership = this.membershipFinder.getMembershipEntityByUserGroupPost(newEdit.userId(), newEdit.groupId(), newEdit.postId());
         membership.apply(newEdit);
         this.membershipRepository.save(membership);
     }

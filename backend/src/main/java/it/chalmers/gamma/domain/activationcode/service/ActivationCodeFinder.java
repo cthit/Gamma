@@ -25,6 +25,8 @@ public class ActivationCodeFinder implements GetAllEntities<ActivationCodeDTO> {
     }
 
     public boolean codeMatchesCid(Cid cid, Code code) {
+        //TODO: check if activationcode is valid
+        //    @Value("${password-expiration-time}")
         return this.repository.findActivationCodeByCidAndCode(cid, code).isPresent();
     }
 

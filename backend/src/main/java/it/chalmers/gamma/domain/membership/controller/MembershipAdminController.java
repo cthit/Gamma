@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.membership.controller;
 
+import it.chalmers.gamma.domain.membership.service.MembershipRestrictedDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.service.GroupId;
 import it.chalmers.gamma.domain.membership.service.MembershipPK;
@@ -10,7 +11,12 @@ import it.chalmers.gamma.domain.user.service.UserId;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/groups")
@@ -21,6 +27,8 @@ public final class MembershipAdminController {
     public MembershipAdminController(MembershipService membershipService) {
         this.membershipService = membershipService;
     }
+
+    private record AddUserGroupRequest(UserId userId, PostId postId, String unofficialName) { }
 
     @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
@@ -50,6 +58,8 @@ public final class MembershipAdminController {
         }
     }
 
+    private record EditMembershipRequest(String unofficialName) { }
+
     @PutMapping("/{groupId}/members")
     public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") GroupId groupId,
                                                     @RequestParam("userId") UserId userId,
@@ -69,5 +79,17 @@ public final class MembershipAdminController {
         }
 
         return new EditedMembershipResponse();
+    }
+
+    private static class EditedMembershipResponse extends SuccessResponse { }
+
+    private static class MemberAddedToGroupResponse extends SuccessResponse { }
+
+    private static class MemberRemovedFromGroupResponse extends SuccessResponse { }
+
+    private static class MembershipNotFoundResponse extends ErrorResponse {
+        private MembershipNotFoundResponse() {
+            super(HttpStatus.NOT_FOUND);
+        }
     }
 }

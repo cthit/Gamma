@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
+import it.chalmers.gamma.domain.group.service.GroupDTO;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.group.service.GroupMinifiedDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
@@ -8,8 +10,10 @@ import it.chalmers.gamma.domain.supergroup.service.SuperGroupFinder;
 
 import java.util.List;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/superGroups")
 public class SuperGroupController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SuperGroupController.class);
 
     private final SuperGroupFinder superGroupFinder;
     private final GroupFinder groupFinder;
@@ -31,20 +33,32 @@ public class SuperGroupController {
     }
 
     @GetMapping()
-    public GetAllSuperGroupResponse getAllSuperGroups() {
-        return new GetAllSuperGroupResponse(this.superGroupFinder.getAll());
+    public List<SuperGroupDTO> getAllSuperGroups() {
+        return this.superGroupFinder.getAll();
     }
 
     @GetMapping("/{id}")
-    public GetSuperGroupResponse getSuperGroup(@PathVariable("id") SuperGroupId id) {
-        List<GroupMinifiedDTO> groups;
-
+    public SuperGroupDTO getSuperGroup(@PathVariable("id") SuperGroupId id) {
         try {
-            groups = groupFinder.getGroupsMinifiedBySuperGroup(id);
-            return new GetSuperGroupResponse(this.superGroupFinder.get(id), groups);
+            return this.superGroupFinder.get(id);
         } catch (EntityNotFoundException e) {
-            LOGGER.error("SUPER GROUP NOT FOUND", e);
             throw new SuperGroupDoesNotExistResponse();
         }
     }
+
+    @GetMapping("/{id}/subgroups")
+    public List<GroupMinifiedDTO> getSuperGroupSubGroups(@PathVariable("id") SuperGroupId id) {
+        try {
+            return groupFinder.getGroupsMinifiedBySuperGroup(id);
+        } catch (EntityNotFoundException e) {
+            throw new SuperGroupDoesNotExistResponse();
+        }
+    }
+
+    private static class SuperGroupDoesNotExistResponse extends ErrorResponse {
+        private SuperGroupDoesNotExistResponse() {
+            super(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

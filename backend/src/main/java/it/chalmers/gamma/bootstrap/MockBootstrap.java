@@ -2,7 +2,9 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.domain.group.service.GroupShallowDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipShallowDTO;
@@ -13,6 +15,7 @@ import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.Year;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -70,17 +73,18 @@ public class MockBootstrap {
 
     private void createUsers(MockData mockData) {
         mockData.users.forEach(mockUser -> this.helper.getUserCreationService().createUser(
-            new UserDTO.UserDTOBuilder()
-                .id(mockUser.id)
-                .nick(mockUser.nick)
-                .firstName(mockUser.firstName)
-                .lastName(mockUser.lastName)
-                .acceptanceYear(mockUser.acceptanceYear)
-                .cid(mockUser.cid)
-                .userAgreement(true)
-                .email(new Email(mockUser.cid + "@student.chalmers.it"))
-                .build(),
-                "password"
+                new UserDTO(
+                        mockUser.id(),
+                        mockUser.cid(),
+                        new Email(mockUser.cid() + "@student.chalmers.it"),
+                        Language.EN,
+                        mockUser.nick(),
+                        mockUser.firstName(),
+                        mockUser.lastName(),
+                        true,
+                        Year.of(mockUser.acceptanceYear()),
+                        true
+                ), "password"
         ));
     }
 
@@ -126,16 +130,15 @@ public class MockBootstrap {
                     ? activeGroupBecomesInactive
                     : inactiveGroupBecomesInactive;
 
-            GroupShallowDTO group = new GroupShallowDTO.GroupShallowDTOBuilder()
-                    .id(mockGroup.id)
-                    .becomesActive(active)
-                    .becomesInactive(inactive)
-                    .email(new Email(name + "@chalmers.it"))
-                    .name(name)
-                    .prettyName(prettyName)
-                    .avatarUrl(null)
-                    .superGroupId(mockGroup.superGroup)
-                    .build();
+            GroupShallowDTO group = new GroupShallowDTO(
+                    mockGroup.id,
+                    active,
+                    inactive,
+                    new Email(name + "@chalmers.lol"),
+                    name,
+                    prettyName,
+                    mockGroup.superGroup
+            );
 
             try {
                 this.helper.getGroupService().create(group);
@@ -149,7 +152,7 @@ public class MockBootstrap {
                         )
                 ));
             } catch (EntityAlreadyExistsException e) {
-                LOGGER.error("Error creating group: " + group.getName() + "; Group already exists, skipping...");
+                LOGGER.error("Error creating group: " + group.name() + "; Group already exists, skipping...");
             }
         });
 
@@ -164,7 +167,7 @@ public class MockBootstrap {
                         mockSuperGroup.prettyName,
                         mockSuperGroup.type,
                         new Email(mockSuperGroup.name + "@chalmers.it"),
-                        null));
+                        new TextDTO("", "")));
             } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Error creating supergroup: " + mockSuperGroup.name + "; Super group already exists, skipping...");
             }

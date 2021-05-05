@@ -68,7 +68,7 @@ public class PasswordResetService {
     }
 
     private void setToken(PasswordResetToken passwordResetToken, UserDTO user, String token) {
-        passwordResetToken.setUserId(user.getId());
+        passwordResetToken.setUserId(user.id());
         passwordResetToken.setToken(token);
         this.repository.save(passwordResetToken);
     }
@@ -80,8 +80,7 @@ public class PasswordResetService {
 
     public void removeToken(UserDTO user) throws EntityNotFoundException {
         try {
-
-            this.repository.deleteById(user.getId());
+            this.repository.deleteById(user.id());
         } catch(IllegalArgumentException e) {
             throw new EntityNotFoundException();
         }
@@ -91,11 +90,11 @@ public class PasswordResetService {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
-        this.mailSenderService.trySendingMail(user.getEmail().get(), subject, message);
+        this.mailSenderService.trySendingMail(user.email().get(), subject, message);
     }
 
     protected PasswordResetToken getPasswordResetToken(PasswordResetTokenDTO passwordResetTokenDTO) {
-        return this.repository.findById(passwordResetTokenDTO.getUserId()).orElse(null);
+        return this.repository.findById(passwordResetTokenDTO.userId()).orElse(null);
     }
 
 }

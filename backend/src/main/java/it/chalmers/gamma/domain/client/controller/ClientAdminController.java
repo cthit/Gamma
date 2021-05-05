@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.client.controller;
 
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.client.service.ClientId;
 import it.chalmers.gamma.domain.client.service.ClientSecret;
@@ -7,6 +8,9 @@ import it.chalmers.gamma.domain.client.service.ClientDTO;
 import it.chalmers.gamma.domain.client.service.ClientFinder;
 import it.chalmers.gamma.domain.client.service.ClientService;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/clients")
@@ -29,8 +35,10 @@ public class ClientAdminController {
         this.clientService = clientService;
     }
 
+    private record CreateClientRequest(String webServerRedirectUri, String name, boolean autoApprove, TextDTO description) { }
+
     @PostMapping()
-    public ClientCreatedResponse addITClient(@RequestBody CreateClientRequest request) {
+    public ClientSecret addITClient(@RequestBody CreateClientRequest request) {
         ClientSecret clientSecret = new ClientSecret();
 
         this.clientService.create(
@@ -44,12 +52,12 @@ public class ClientAdminController {
                 )
         );
 
-        return new ClientCreatedResponse(clientSecret);
+        return clientSecret;
     }
 
     @GetMapping()
-    public GetAllClientResponse getAllClient() {
-        return new GetAllClientResponse(this.clientFinder.getAll());
+    public List<ClientDTO> getAllClient() {
+        return this.clientFinder.getAll();
     }
 
     @DeleteMapping("/{clientId}")
@@ -62,10 +70,23 @@ public class ClientAdminController {
         }
     }
 
+    private record UpdateClientInformationRequest(TextDTO description) { }
+
     @PutMapping("/{clientId}")
     public ClientUpdatedResponse updateClient(@PathVariable("clientId") ClientId clientId, @RequestBody UpdateClientInformationRequest request) {
         //this.clientService.update(clientId, request.description);
         return new ClientUpdatedResponse();
     }
+
+    private static class ClientDeletedResponse extends SuccessResponse { }
+
+    private static class ClientUpdatedResponse extends SuccessResponse { }
+
+    public static class ClientNotFoundResponse extends ErrorResponse {
+        public ClientNotFoundResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
 
 }

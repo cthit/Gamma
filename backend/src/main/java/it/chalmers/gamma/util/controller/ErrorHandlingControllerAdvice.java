@@ -40,25 +40,10 @@ public class ErrorHandlingControllerAdvice {
         return new ValidationErrorResponse(errors);
     }
 
-    public static class ValidationErrorResponse {
+    public record ValidationErrorResponse(
+            List<Violation> violations) { }
 
-        public final List<Violation> violations;
-
-        public ValidationErrorResponse(List<Violation> violations) {
-            this.violations = violations;
-        }
-    }
-
-    public static class Violation {
-
-        public final String fieldName;
-        public final String message;
-
-        public Violation(String fieldName, String message) {
-            this.fieldName = fieldName;
-            this.message = message;
-        }
-    }
+    public record Violation(String fieldName, String message) { }
 
 
 }

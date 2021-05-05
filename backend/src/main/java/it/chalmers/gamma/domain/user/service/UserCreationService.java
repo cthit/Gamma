@@ -34,15 +34,15 @@ public class UserCreationService {
     }
 
     public void createUserByCode(UserDTO newUser, String password, Code code) throws CidOrCodeNotMatchException {
-        if(!activationCodeFinder.codeMatchesCid(newUser.getCid(), code)) {
+        if(!activationCodeFinder.codeMatchesCid(newUser.cid(), code)) {
             throw new CidOrCodeNotMatchException();
         }
 
         //TODO: Check if code is still valid.
 
         try {
-            this.whitelistService.delete(newUser.getCid());
-            this.activationCodeService.delete(newUser.getCid());
+            this.whitelistService.delete(newUser.cid());
+            this.activationCodeService.delete(newUser.cid());
 
             this.createUser(newUser, password);
         } catch (EntityNotFoundException e) {

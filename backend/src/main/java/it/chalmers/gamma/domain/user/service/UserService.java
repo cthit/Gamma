@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
     }
 
     public void update(UserDTO newEdit) throws EntityNotFoundException {
-        User user = this.userFinder.getEntity(newEdit.getId());
+        User user = this.userFinder.getEntity(newEdit.id());
         user.apply(newEdit);
         this.userRepository.save(user);
     }
@@ -79,26 +79,34 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
     }
 
     public void editProfilePicture(UserDTO user, MultipartFile file) throws EntityNotFoundException {
-        if(!this.userFinder.exists(user.getId())) {
+        if(!this.userFinder.exists(user.id())) {
             throw new EntityNotFoundException();
         }
 
         if (ImageUtils.isImageOrGif(file)) {
-            try {
-                if (!user.getAvatarUrl().equals("default.jpg")) {
-                    ImageUtils.removeImage(user.getAvatarUrl());
-                }
-                String fileUrl = ImageUtils.saveImage(file, user.getCid().get());
-                UserDTO newUser = new UserDTO.UserDTOBuilder()
-                        .from(user)
-                        .avatarUrl(fileUrl)
-                        .build();
-
-                update(newUser);
-
-            } catch (FileNotFoundResponse e) {
-                throw new FileNotSavedResponse();
-            }
+//            try {
+//                if (!user.avatarUrl().equals("default.jpg")) {
+//                    ImageUtils.removeImage(user.avatarUrl());
+//                }
+//                String fileUrl = ImageUtils.saveImage(file, user.cid().get());
+//                UserDTO newUser = new UserDTO(
+//                        user.id(),
+//                        user.cid(),
+//                        user.email(),
+//                        user.language(),
+//                        user.nick(),
+//                        user.firstName(),
+//                        user.lastName(),
+//                        fileUrl,
+//                        user.userAgreement(),
+//                        user.acceptanceYear(),
+//                        user.activated()
+//                );
+//
+//                update(newUser);
+//            } catch (FileNotFoundResponse e) {
+//                throw new FileNotSavedResponse();
+//            }
         } else {
             throw new InvalidFileTypeResponse();
         }

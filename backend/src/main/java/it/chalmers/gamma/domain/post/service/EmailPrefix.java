@@ -20,10 +20,14 @@ public class EmailPrefix implements Serializable {
     @Pattern(regexp = "^$|^(?:\\w+|\\w+\\.\\w+)+$")
     private String value;
 
-    protected EmailPrefix() {}
+    protected EmailPrefix() { }
 
-    public EmailPrefix(@Pattern(regexp = "^$|^(?:\\w+|\\w+\\.\\w+)+$") String value) {
+    protected EmailPrefix(String value) {
         this.value = value;
+    }
+
+    public static EmailPrefix valueOf(String s) {
+        return new EmailPrefix(s);
     }
 
     @Override

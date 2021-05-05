@@ -1,7 +1,5 @@
 package it.chalmers.gamma.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import it.chalmers.gamma.file.response.FileNotSavedResponse;
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @Component
-@SuppressFBWarnings(justification = "Needed for Spring to inject value, This is not in issue, FB is projecting",
-        value = {"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
+//@SuppressFBWarnings(justification = "Needed for Spring to inject value, This is not in issue, FB is projecting",
+//        value = {"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"})
 @SuppressWarnings("PMD.CyclomaticComplexity")
 public class ImageUtils {
 

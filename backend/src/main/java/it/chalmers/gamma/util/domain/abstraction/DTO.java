@@ -1,4 +1,6 @@
 package it.chalmers.gamma.util.domain.abstraction;
 
-public interface DTO {
+import java.io.Serializable;
+
+public interface DTO extends Serializable {
 }

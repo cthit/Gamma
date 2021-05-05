@@ -15,9 +15,6 @@ public class Group extends BaseEntity<GroupShallowDTO> {
     @EmbeddedId
     private GroupId id;
 
-    @Column(name = "avatar_url")
-    private String avatarURL;
-
     @Column(name = "name")
     private String name;
 
@@ -39,44 +36,41 @@ public class Group extends BaseEntity<GroupShallowDTO> {
     protected Group() {}
 
     protected Group(GroupShallowDTO g) {
-        assert(g.getId() != null);
+        assert(g.id() != null);
 
-        this.id = g.getId();
+        this.id = g.id();
 
         apply(g);
     }
 
     protected void apply(GroupShallowDTO g) {
-        assert(this.id == g.getId());
+        assert(this.id == g.id());
 
-        this.avatarURL = g.getAvatarURL();
-        this.name = g.getName();
-        this.prettyName = g.getPrettyName();
-        this.becomesActive = g.getBecomesActive();
-        this.becomesInactive = g.getBecomesInactive();
-        this.email = g.getEmail();
-        this.superGroupId = g.getSuperGroupId();
+        this.name = g.name();
+        this.prettyName = g.prettyName();
+        this.becomesActive = g.becomesActive();
+        this.becomesInactive = g.becomesInactive();
+        this.email = g.email();
+        this.superGroupId = g.superGroupId();
     }
 
     @Override
     protected GroupShallowDTO toDTO() {
-        return new GroupShallowDTO.GroupShallowDTOBuilder()
-                .id(this.id)
-                .becomesActive(this.becomesActive)
-                .becomesInactive(this.becomesInactive)
-                .email(this.email)
-                .name(this.name)
-                .prettyName(this.prettyName)
-                .avatarUrl(this.avatarURL)
-                .superGroupId(this.superGroupId)
-                .build();
+        return new GroupShallowDTO(
+                this.id,
+                this.becomesActive,
+                this.becomesInactive,
+                this.email,
+                this.name,
+                this.prettyName,
+                this.superGroupId
+        );
     }
 
     @Override
     public String toString() {
         return "Group{"
                 + "id=" + this.id
-                + ", avatarURL='" + this.avatarURL + '\''
                 + ", name='" + this.name + '\''
                 + ", prettyName='" + this.prettyName + '\''
                 + ", becomesActive=" + this.becomesActive

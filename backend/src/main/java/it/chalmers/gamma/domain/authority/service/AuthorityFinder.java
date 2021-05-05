@@ -47,14 +47,14 @@ public class AuthorityFinder implements GetAllEntities<AuthorityDTO> {
     public List<AuthorityLevelName> getAuthorityLevels(List<MembershipDTO> memberships) {
         List<AuthorityLevelName> authorityLevels = new ArrayList<>();
         for (MembershipDTO membership : memberships) {
-            Calendar start = membership.getGroup().getBecomesActive();
-            Calendar end = membership.getGroup().getBecomesInactive();
+            Calendar start = membership.group().becomesActive();
+            Calendar end = membership.group().becomesInactive();
             Calendar now = Calendar.getInstance();
             if (now.after(start) && now.before(end)) {
                 authorityLevels.addAll(
                         getByMembership(membership)
                                 .stream()
-                                .map(AuthorityDTO::getAuthorityLevelName)
+                                .map(AuthorityDTO::authorityLevelName)
                                 .collect(Collectors.toList())
                 );
             }
@@ -82,9 +82,9 @@ public class AuthorityFinder implements GetAllEntities<AuthorityDTO> {
     protected AuthorityDTO fromShallow(AuthorityShallowDTO authority) {
         try {
             return new AuthorityDTO(
-                    this.superGroupFinder.get(authority.getSuperGroupId()),
-                    this.postFinder.get(authority.getPostId()),
-                    authority.getAuthorityLevelName()
+                    this.superGroupFinder.get(authority.superGroupId()),
+                    this.postFinder.get(authority.postId()),
+                    authority.authorityLevelName()
             );
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
@@ -94,7 +94,7 @@ public class AuthorityFinder implements GetAllEntities<AuthorityDTO> {
 
     private List<AuthorityDTO> getByMembership(MembershipDTO membership) {
         return this.authorityRepository.findAuthoritiesById_SuperGroupIdAndId_PostId(
-                membership.getGroup().getSuperGroup().getId(), membership.getPost().getId()
+                membership.group().superGroup().id(), membership.post().id()
         )
                 .stream()
                 .map(Authority::toDTO)

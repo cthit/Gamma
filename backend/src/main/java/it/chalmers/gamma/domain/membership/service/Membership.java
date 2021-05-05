@@ -19,14 +19,14 @@ public class Membership extends MutableEntity<MembershipShallowDTO> {
     protected Membership() {}
 
     protected Membership(MembershipShallowDTO membership) {
-        assert(membership.getPostId() != null);
-        assert(membership.getGroupId() != null);
-        assert(membership.getUserId() != null);
+        assert(membership.postId() != null);
+        assert(membership.groupId() != null);
+        assert(membership.userId() != null);
 
         this.id = new MembershipPK(
-                membership.getPostId(),
-                membership.getGroupId(),
-                membership.getUserId()
+                membership.postId(),
+                membership.groupId(),
+                membership.userId()
         );
 
         apply(membership);
@@ -34,9 +34,9 @@ public class Membership extends MutableEntity<MembershipShallowDTO> {
 
     @Override
     protected void apply(MembershipShallowDTO m) {
-        assert(this.id.equals(new MembershipPK(m.getPostId(), m.getGroupId(), m.getUserId())));
+        assert(this.id.equals(new MembershipPK(m.postId(), m.groupId(), m.userId())));
 
-        this.unofficialPostName = m.getUnofficialPostName();
+        this.unofficialPostName = m.unofficialPostName();
     }
 
     @Override

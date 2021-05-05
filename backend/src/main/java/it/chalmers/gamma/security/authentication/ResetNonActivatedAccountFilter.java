@@ -37,7 +37,7 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         if (username != null) {
             try {
                 UserDTO user = this.userFinder.get(new Cid(username));
-                if (!user.isActivated()) {
+                if (!user.activated()) {
                     this.passwordResetService.handlePasswordReset(user);
                     String params = "accountLocked=true";
                     response.sendRedirect(String.format("%s/reset-password/finish?%s", this.baseFrontendUrl, params));

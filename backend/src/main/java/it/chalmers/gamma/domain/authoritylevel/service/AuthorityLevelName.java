@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,19 +16,20 @@ import java.util.Objects;
 public class AuthorityLevelName implements GrantedAuthority, Serializable, DTO, Id {
 
     @Column(name = "authority_level")
+    @JsonValue
+    @Pattern(regexp = "^([a-z]{30})$")
     public String value;
 
     protected AuthorityLevelName() {}
 
-    public AuthorityLevelName(String name) {
-        this.value = name;
+    public AuthorityLevelName(String value) {
+        this.value = value;
     }
 
     public static AuthorityLevelName valueOf(String name) {
         return new AuthorityLevelName(name);
     }
 
-    @JsonValue
     @Override
     public String getAuthority() {
         return value;

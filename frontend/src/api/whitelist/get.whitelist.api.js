@@ -8,6 +8,5 @@ export function getWhitelistItem(whitelistItemId) {
 // Gets returned as an array of cids.
 // DigitCrud likes
 export function getWhitelist() {
-    return getRequest(ADMIN_WHITELIST_ENDPOINT, response => response.data.map(cid => ({ cid }));
-    );
+    return getRequest(ADMIN_WHITELIST_ENDPOINT, response => response.data.map(cid => ({ cid })));
 }

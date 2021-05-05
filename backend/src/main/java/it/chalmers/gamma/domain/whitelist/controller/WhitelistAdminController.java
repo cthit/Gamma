@@ -12,6 +12,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import it.chalmers.gamma.util.ResponseUtils;
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,9 +42,11 @@ public final class WhitelistAdminController {
     }
 
     @GetMapping()
-    public GetAllWhitelistResponse getWhiteList() {
-        return  new GetAllWhitelistResponse(this.whitelistFinder.getAll());
+    public List<Cid> getWhiteList() {
+        return this.whitelistFinder.getAll();
     }
+
+    private record AddListOfWhitelistedRequest(List<Cid> cids) { }
 
     @PostMapping()
     public ResponseEntity<?> addWhitelistedUsers(@Valid @RequestBody AddListOfWhitelistedRequest request) {
@@ -59,7 +63,7 @@ public final class WhitelistAdminController {
         }
 
         if (!failedToAdd.isEmpty()) {
-            return new ResponseEntity<>(new SomeAddedToWhitelistResponse(failedToAdd), HttpStatus.PARTIAL_CONTENT);
+            return new ResponseEntity<>(failedToAdd, HttpStatus.PARTIAL_CONTENT);
         }
 
         return new WhitelistAddedResponse();
@@ -73,6 +77,16 @@ public final class WhitelistAdminController {
             throw new CidNotWhitelistedResponse();
         }
         return new CidRemovedFromWhitelistResponse();
+    }
+
+    private static class CidRemovedFromWhitelistResponse extends SuccessResponse { }
+
+    private static class WhitelistAddedResponse extends SuccessResponse { }
+
+    private static class CidNotWhitelistedResponse extends ErrorResponse {
+        public CidNotWhitelistedResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
 }

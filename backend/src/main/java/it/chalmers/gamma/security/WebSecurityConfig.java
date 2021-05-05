@@ -203,8 +203,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             List<GroupDTO> groups = this.groupFinder.getAll();
             for (GroupDTO group : groups) {
                 http.authorizeRequests()
-                        .antMatchers("/admin/groups/" + group.getId() + "/avatar")
-                        .hasAuthority(group.getName());
+                        .antMatchers("/admin/groups/" + group.id() + "/avatar")
+                        .hasAuthority(group.name());
             }
             http.authorizeRequests().antMatchers("/admin/gdpr/**")
                     .hasAnyAuthority("gdpr", "admin").and().authorizeRequests().antMatchers("/admin/**")

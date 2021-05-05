@@ -1,11 +1,13 @@
 package it.chalmers.gamma.domain.group.controller;
 
+import it.chalmers.gamma.domain.group.service.GroupDTO;
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupWithMembers;
 import it.chalmers.gamma.util.domain.UserPost;
 import it.chalmers.gamma.domain.group.service.GroupId;
-import it.chalmers.gamma.domain.group.service.GroupBaseDTO;
 import it.chalmers.gamma.domain.group.service.GroupFinder;
 import it.chalmers.gamma.domain.group.service.GroupService;
 import it.chalmers.gamma.domain.group.service.GroupShallowDTO;
@@ -15,11 +17,15 @@ import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,48 +48,58 @@ public final class GroupAdminController {
 
 
     @GetMapping()
-    public GetAllGroupResponse getGroups() {
-        List<GroupWithMembers> groups = this.groupFinder.getAll()
+    public List<GroupWithMembers> getGroups() {
+        return this.groupFinder.getAll()
                 .stream()
                 .map(group -> {
                     try {
                         return new GroupWithMembers(
-                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.getId()))
+                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
                         );
                     } catch (EntityNotFoundException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .collect(Collectors.toList());
-
-        return new GetAllGroupResponse(groups);
     }
 
     @GetMapping("/active")
-    public GetAllGroupResponse getActiveGroups() {
-        List<GroupWithMembers> groups = this.groupFinder.getAll()
+    public List<GroupWithMembers> getActiveGroups() {
+        return this.groupFinder.getAll()
                 .stream()
-                .filter(GroupBaseDTO::isActive)
+                .filter(GroupDTO::isActive)
                 .map(group -> {
                     try {
                         return new GroupWithMembers(
-                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.getId()))
+                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
                         );
                     } catch (EntityNotFoundException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .collect(Collectors.toList());
-
-        return new GetAllGroupResponse(groups);
     }
 
+    private record CreateOrEditGroupRequest(String name,
+                                            String prettyName,
+                                            Calendar becomesActive,
+                                            Calendar becomesInactive,
+                                            SuperGroupId superGroup,
+                                            Email email) { }
+
     @PostMapping()
-    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest createOrEditGroupRequest) {
+    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest request) {
         try {
-            this.groupService.create(requestToDTO(createOrEditGroupRequest));
+            this.groupService.create(new GroupShallowDTO(
+                    null,
+                    request.becomesActive,
+                    request.becomesInactive,
+                    request.email,
+                    request.name,
+                    request.prettyName,
+                    request.superGroup
+            ));
         } catch (EntityAlreadyExistsException e) {
-            LOGGER.error("Error when trying to create a group that already exists", e);
             throw new GroupAlreadyExistsResponse();
         }
 
@@ -94,7 +110,15 @@ public final class GroupAdminController {
     public GroupUpdatedResponse editGroup(@Valid @RequestBody CreateOrEditGroupRequest request,
                                           @PathVariable("id") GroupId id) {
         try {
-            GroupShallowDTO group = requestToDTO(request, id);
+            GroupShallowDTO group = new GroupShallowDTO(
+                    id,
+                    request.becomesActive,
+                    request.becomesInactive,
+                    request.email,
+                    request.name,
+                    request.prettyName,
+                    request.superGroup
+            );
             this.groupService.update(group);
         } catch (EntityNotFoundException e) {
             throw new GroupNotFoundResponse();
@@ -138,30 +162,37 @@ public final class GroupAdminController {
         return new GroupUpdatedResponse();
     }
 
-    private GroupShallowDTO requestToDTO(CreateOrEditGroupRequest request) {
-        return baseGroupDTOBuilder(request).build();
-    }
-
-    private GroupShallowDTO requestToDTO(CreateOrEditGroupRequest request, GroupId id) {
-        return baseGroupDTOBuilder(request).id(id).build();
-    }
-
-    private GroupShallowDTO.GroupShallowDTOBuilder baseGroupDTOBuilder(CreateOrEditGroupRequest request) {
-        return new GroupShallowDTO.GroupShallowDTOBuilder()
-                .avatarUrl(request.avatarURL)
-                .becomesActive(request.becomesActive)
-                .becomesInactive(request.becomesInactive)
-                .email(request.email)
-                .prettyName(request.prettyName)
-                .name(request.name)
-                .superGroupId(request.superGroup);
-    }
-
     private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {
         return memberships
                 .stream()
-                .map(membership -> new UserPost(new UserRestrictedDTO(membership.getUser()), membership.getPost()))
+                .map(membership -> new UserPost(new UserRestrictedDTO(membership.user()), membership.post()))
                 .collect(Collectors.toList());
     }
+
+    private static class GroupAlreadyExistsResponse extends ErrorResponse {
+        private GroupAlreadyExistsResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private static class GroupCreatedResponse extends SuccessResponse {
+
+    }
+
+    private static class GroupDeletedResponse extends SuccessResponse {
+
+    }
+
+    private static class GroupNotFoundResponse extends ErrorResponse {
+        private GroupNotFoundResponse() {
+            super(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private static class GroupUpdatedResponse extends SuccessResponse {
+
+    }
+
+
 
 }

@@ -39,9 +39,6 @@ public class User extends MutableEntity<UserDTO> {
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
-
     @Column(name = "user_agreement")
     private boolean userAgreement;
 
@@ -54,45 +51,43 @@ public class User extends MutableEntity<UserDTO> {
     protected User() { }
 
     protected User(UserDTO user) {
-        assert(user.getId() != null);
-        assert(user.getCid() != null);
+        assert(user.id() != null);
+        assert(user.cid() != null);
 
-        this.id = user.getId();
-        this.cid = user.getCid();
+        this.id = user.id();
+        this.cid = user.cid();
 
         this.apply(user);
     }
 
     protected UserDTO toDTO() {
-        return new UserDTO.UserDTOBuilder()
-                .acceptanceYear(Year.of(this.acceptanceYear))
-                .activated(this.activated)
-                .avatarUrl(this.avatarUrl)
-                .cid(this.cid)
-                .email(this.email)
-                .firstName(this.firstName)
-                .lastName(this.lastName)
-                .id(this.id)
-                .nick(this.nick)
-                .userAgreement(this.userAgreement)
-                .language(this.language)
-                .build();
+        return new UserDTO(
+                this.id,
+                this.cid,
+                this.email,
+                this.language,
+                this.nick,
+                this.firstName,
+                this.lastName,
+                this.userAgreement,
+                Year.of(this.acceptanceYear),
+                this.activated
+        );
     }
 
     @Override
     protected void apply(UserDTO u) {
-        assert(this.id == u.getId());
-        assert(this.cid == u.getCid());
+        assert(this.id == u.id());
+        assert(this.cid == u.cid());
 
-        this.acceptanceYear = u.getAcceptanceYear().getValue();
-        this.activated = u.isActivated();
-        this.avatarUrl = u.getAvatarUrl();
-        this.email = u.getEmail();
-        this.firstName = u.getFirstName();
-        this.lastName = u.getLastName();
-        this.language = u.getLanguage();
-        this.nick = u.getNick();
-        this.userAgreement = u.isUserAgreement();
+        this.acceptanceYear = u.acceptanceYear().getValue();
+        this.activated = u.activated();
+        this.email = u.email();
+        this.firstName = u.firstName();
+        this.lastName = u.lastName();
+        this.language = u.language();
+        this.nick = u.nick();
+        this.userAgreement = u.userAgreement();
     }
 
     protected void setPassword(Password password) {
@@ -129,7 +124,6 @@ public class User extends MutableEntity<UserDTO> {
                 && Objects.equals(this.lastName, user.lastName)
                 && Objects.equals(this.email, user.email)
                 && Objects.equals(this.language, user.language)
-                && Objects.equals(this.avatarUrl, user.avatarUrl)
                 && Objects.equals(this.acceptanceYear, user.acceptanceYear);
     }
 
@@ -144,7 +138,6 @@ public class User extends MutableEntity<UserDTO> {
                 this.lastName,
                 this.email,
                 this.language,
-                this.avatarUrl,
                 this.userAgreement,
                 this.acceptanceYear);
     }
@@ -161,7 +154,6 @@ public class User extends MutableEntity<UserDTO> {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", language=" + language +
-                ", avatarUrl='" + avatarUrl + '\'' +
                 ", userAgreement=" + userAgreement +
                 ", activated=" + activated +
                 ", acceptanceYear=" + acceptanceYear +

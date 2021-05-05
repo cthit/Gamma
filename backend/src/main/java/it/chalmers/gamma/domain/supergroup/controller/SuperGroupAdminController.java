@@ -1,15 +1,19 @@
 package it.chalmers.gamma.domain.supergroup.controller;
 
+import it.chalmers.gamma.domain.supergroup.service.SuperGroupType;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
+import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupService;
-import it.chalmers.gamma.domain.group.controller.GroupDeletedResponse;
-import it.chalmers.gamma.domain.group.controller.GroupUpdatedResponse;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,16 +32,28 @@ public class SuperGroupAdminController {
         this.superGroupService = superGroupService;
     }
 
+    private record CreateOrEditSuperGroupRequest(String name,
+                                                 String prettyName,
+                                                 SuperGroupType type,
+                                                 Email email,
+                                                 TextDTO description) { }
+
     @PostMapping()
-    public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateSuperGroupRequest request) {
+    public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupService.create(requestToDTO(request));
+            this.superGroupService.create(new SuperGroupDTO(
+                    null,
+                    request.name,
+                    request.prettyName,
+                    request.type,
+                    request.email,
+                    request.description
+            ));
         } catch (EntityAlreadyExistsException e) {
             throw new SuperGroupAlreadyExistsResponse();
         }
         return new SuperGroupCreatedResponse();
     }
-
 
     @DeleteMapping("/{id}")
     public SuperGroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
@@ -47,28 +63,37 @@ public class SuperGroupAdminController {
 
     @PutMapping("/{id}")
     public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
-                                                 @RequestBody CreateSuperGroupRequest request) {
+                                                 @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupService.update(requestToDTO(request, id));
+            this.superGroupService.update(new SuperGroupDTO(
+                    id,
+                    request.name,
+                    request.prettyName,
+                    request.type,
+                    request.email,
+                    request.description
+            ));
         } catch (EntityNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }
         return new SuperGroupUpdatedResponse();
     }
 
-    private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request, SuperGroupId id) {
-        return new SuperGroupDTO(
-                id,
-                request.name,
-                request.prettyName,
-                request.type,
-                request.email,
-                request.description
-        );
+    private static class SuperGroupUpdatedResponse extends SuccessResponse { }
+
+    private static class SuperGroupDeletedResponse extends SuccessResponse {}
+
+    private static class SuperGroupCreatedResponse extends SuccessResponse { }
+
+    private static class SuperGroupAlreadyExistsResponse extends ErrorResponse {
+        private SuperGroupAlreadyExistsResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
-    private SuperGroupDTO requestToDTO(CreateSuperGroupRequest request) {
-        return this.requestToDTO(request, null);
+    private static class SuperGroupDoesNotExistResponse extends ErrorResponse {
+        private SuperGroupDoesNotExistResponse() {
+            super(HttpStatus.NOT_FOUND);
+        }
     }
-
 }

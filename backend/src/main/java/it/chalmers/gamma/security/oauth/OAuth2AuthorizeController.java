@@ -30,7 +30,7 @@ public class OAuth2AuthorizeController {
     public String getConfirmAccess(@ModelAttribute AuthorizationRequest clientAuth, Model model) {
         try {
             ClientDTO client = this.clientFinder.get(new ClientId(clientAuth.getClientId()));
-            model.addAttribute("clientName", client.getName());
+            model.addAttribute("clientName", client.name());
         } catch (EntityNotFoundException e) {
             LOGGER.error("Cannot find provided client in authorize", e);
         }

@@ -40,18 +40,18 @@ public class UserApprovalController {
     //TODO: Implement Delete
 
     @GetMapping()
-    public ApprovedClientsResponse getApprovedClientsByUser(Principal principal) {
+    public List<ClientUserAccessDTO> getApprovedClientsByUser(Principal principal) {
         String cid = principal.getName();
         try {
-            UserId userId = this.userFinder.get(new Cid(cid)).getId();
+            UserId userId = this.userFinder.get(new Cid(cid)).id();
 
-            List<ClientUserAccessDTO> userAccesses = this.userApprovalFinder.getApprovalsByUser(userId)
+            return this.userApprovalFinder.getApprovalsByUser(userId)
                     .stream()
                     .map(userApproval ->
                             {
                                 try {
                                     return new ClientUserAccessDTO(
-                                            clientFinder.get(userApproval.getClientId())
+                                            clientFinder.get(userApproval.clientId())
                                     );
                                 } catch (EntityNotFoundException e) {
                                     LOGGER.error("Client from user approvals not found", e);
@@ -61,7 +61,6 @@ public class UserApprovalController {
                     )
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
-            return new ApprovedClientsResponse(userAccesses);
         } catch (EntityNotFoundException e) {
             //TODO fix
             return null;

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<UserDTO>, EntityExists<UserId> {
+public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<UserRestrictedDTO>, EntityExists<UserId> {
 
     private final UserRepository userRepository;
 
@@ -28,12 +28,8 @@ public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<Us
         return this.userRepository.existsById(id);
     }
 
-    public List<UserDTO> getAll() {
-        return userRepository.findAll().stream().map(User::toDTO).collect(Collectors.toList());
-    }
-
-    public List<UserRestrictedDTO> getUsersRestricted() {
-        return getAll()
+    public List<UserRestrictedDTO> getAll() {
+        return getAllFull()
                 .stream()
                 .map(UserRestrictedDTO::new)
                 .collect(Collectors.toList());
@@ -67,7 +63,10 @@ public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<Us
     }
 
     protected User getEntity(UserDTO user) throws EntityNotFoundException {
-        return getEntity(user.getId());
+        return getEntity(user.id());
     }
 
+    private List<UserDTO> getAllFull() {
+        return userRepository.findAll().stream().map(User::toDTO).collect(Collectors.toList());
+    }
 }

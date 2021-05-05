@@ -8,6 +8,7 @@ import it.chalmers.gamma.mail.MailSenderService;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,9 +38,11 @@ public final class WhitelistController {
         this.whitelistFinder = whitelistFinder;
     }
 
+    private record WhitelistCodeRequest(Cid cid) { }
+
     @PostMapping("/activate_cid")
     public WhitelistedCidActivatedResponse createActivationCode(@Valid @RequestBody WhitelistCodeRequest request) {
-        Cid cid = new Cid(request.getCid());
+        Cid cid = request.cid;
 
         if (this.whitelistFinder.cidIsWhitelisted(cid)) {
             ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(cid);
@@ -53,10 +56,14 @@ public final class WhitelistController {
     }
 
     private void sendEmail(ActivationCodeDTO activationCode) {
-        String code = activationCode.getCode().get();
-        String to = activationCode.getCid() + "@" + MAIL_POSTFIX;
+        String code = activationCode.code().get();
+        String to = activationCode.cid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
         this.mailSenderService.trySendingMail(to, "Chalmers activationcode code", message);
     }
+
+    // This will be thrown even if there was an error for security reasons.
+    private static class WhitelistedCidActivatedResponse extends SuccessResponse { }
+
 }
 

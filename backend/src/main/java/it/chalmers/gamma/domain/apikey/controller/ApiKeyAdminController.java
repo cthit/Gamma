@@ -1,5 +1,8 @@
 package it.chalmers.gamma.domain.apikey.controller;
 
+import it.chalmers.gamma.domain.apikey.service.ApiKeyInformationDTO;
+import it.chalmers.gamma.domain.apikey.service.ApiKeyName;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
@@ -8,6 +11,9 @@ import it.chalmers.gamma.domain.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyService;
 
 import it.chalmers.gamma.util.ResponseUtils;
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/api_keys")
@@ -29,24 +37,27 @@ public class ApiKeyAdminController {
         this.apiKeyService = apiKeyService;
     }
 
+    private record CreateApiKeyRequest(ApiKeyName name, TextDTO description) { }
+
     @PostMapping()
-    public GetApiKeySecretResponse createApiKey(@RequestBody CreateApiKeyRequest request) {
+    public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {
         ApiKeyToken key = new ApiKeyToken();
 
         this.apiKeyService.create(
             new ApiKeyDTO(
+                    new ApiKeyId(),
                     request.name,
                     request.description,
                     key
             )
         );
 
-        return new GetApiKeySecretResponse(key);
+        return key;
     }
 
     @GetMapping()
-    public ResponseEntity<GetAllApiKeyInformationResponse> getAllApiKeys() {
-        return ResponseUtils.toResponseObject(new GetAllApiKeyInformationResponse(this.apiKeyFinder.getAll()));
+    public List<ApiKeyInformationDTO> getAllApiKeys() {
+        return this.apiKeyFinder.getAll();
     }
 
     @DeleteMapping("/{id}")
@@ -56,6 +67,14 @@ public class ApiKeyAdminController {
             return new ApiKeyDeletedResponse();
         } catch (EntityNotFoundException e) {
             throw new ApiKeyNotFoundResponse();
+        }
+    }
+
+    private static class ApiKeyDeletedResponse extends SuccessResponse { }
+
+    private static class ApiKeyNotFoundResponse extends ErrorResponse {
+        private ApiKeyNotFoundResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 

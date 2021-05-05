@@ -31,7 +31,7 @@ public class GroupService implements CreateEntity<GroupShallowDTO>, DeleteEntity
 
     @Override
     public void update(GroupShallowDTO newEdit) throws EntityNotFoundException {
-        Group group = this.groupFinder.getGroupEntity(newEdit.getId());
+        Group group = this.groupFinder.getGroupEntity(newEdit.id());
         group.apply(newEdit);
         this.groupRepository.save(group);
     }

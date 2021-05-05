@@ -5,28 +5,10 @@ import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.post.service.PostId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 
-public class AuthorityShallowDTO implements DTO {
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
-    private final SuperGroupId superGroupId;
-    private final PostId postId;
-    private final AuthorityLevelName authorityLevelName;
-
-    public AuthorityShallowDTO(SuperGroupId superGroupId, PostId postId, AuthorityLevelName authorityLevelName) {
-        this.superGroupId = superGroupId;
-        this.postId = postId;
-        this.authorityLevelName = authorityLevelName;
-    }
-
-    public SuperGroupId getSuperGroupId() {
-        return superGroupId;
-    }
-
-    public PostId getPostId() {
-        return postId;
-    }
-
-    public AuthorityLevelName getAuthorityLevelName() {
-        return authorityLevelName;
-    }
-
-}
+public record AuthorityShallowDTO(@NotNull SuperGroupId superGroupId,
+                                  @NotNull PostId postId,
+                                  @Valid AuthorityLevelName authorityLevelName)
+        implements DTO { }

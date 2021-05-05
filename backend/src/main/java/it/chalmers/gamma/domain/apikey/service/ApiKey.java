@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.apikey.service;
 
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.text.data.db.Text;
 
@@ -26,25 +27,28 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
     protected ApiKey() { }
 
     protected ApiKey(ApiKeyDTO apiKey) {
-        assert(apiKey.getId() != null);
-        assert(apiKey.getKey() != null);
+        assert(apiKey.id() != null);
+        assert(apiKey.key() != null);
 
-        this.id = apiKey.getId();
-        this.key = apiKey.getKey();
+        this.id = apiKey.id();
+        this.key = apiKey.key();
 
-        if(this.description == null) {
-            this.description = new Text();
-        }
+        this.description = new Text();
 
         apply(apiKey);
     }
 
     @Override
     protected void apply(ApiKeyDTO ak){
-        assert(this.id == ak.getId());
+        assert(this.id == ak.id());
 
-        this.name = ak.getName();
-        this.description.apply(ak.getDescription());
+        this.name = ak.name();
+
+        if(this.description == null) {
+            this.description = new Text();
+        }
+
+        this.description.apply(ak.description());
     }
 
     @Override

@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.authority.controller;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.domain.authority.service.AuthorityDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.authority.service.AuthorityPK;
@@ -10,7 +12,12 @@ import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.post.service.PostId;
 import it.chalmers.gamma.domain.supergroup.service.SuperGroupId;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/admin/authority")
@@ -25,9 +32,11 @@ public final class AuthorityAdminController {
     }
 
     @GetMapping()
-    public GetAllAuthoritiesResponse getAllAuthorities() {
-        return new GetAllAuthoritiesResponse(this.authorityFinder.getAll());
+    public List<AuthorityDTO> getAllAuthorities() {
+        return this.authorityFinder.getAll();
     }
+
+    private record CreateAuthorityRequest(PostId postId, SuperGroupId superGroupId, AuthorityLevelName authority) { }
 
     @PostMapping
     public AuthorityCreatedResponse addAuthority(@RequestBody CreateAuthorityRequest request) {
@@ -36,7 +45,7 @@ public final class AuthorityAdminController {
                     new AuthorityShallowDTO(
                         request.superGroupId,
                         request.postId,
-                        new AuthorityLevelName(request.authority)
+                        request.authority
                     )
             );
             return new AuthorityCreatedResponse();
@@ -45,7 +54,7 @@ public final class AuthorityAdminController {
         }
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public AuthorityRemovedResponse removeAuthority(@RequestParam("superGroupId") SuperGroupId superGroupId,
                                                     @RequestParam("postId") PostId postId,
                                                     @RequestParam("authorityLevelName") String authorityLevelName) {
@@ -56,6 +65,22 @@ public final class AuthorityAdminController {
             return new AuthorityRemovedResponse();
         } catch (EntityNotFoundException e) {
             throw new AuthorityNotFoundResponse();
+        }
+    }
+
+    private static class AuthorityRemovedResponse extends SuccessResponse { }
+
+    private static class AuthorityCreatedResponse extends SuccessResponse { }
+
+    private static class AuthorityNotFoundResponse extends ErrorResponse {
+        private AuthorityNotFoundResponse() {
+            super(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private static class AuthorityAlreadyExistsResponse extends ErrorResponse {
+        private AuthorityAlreadyExistsResponse() {
+            super(HttpStatus.CONFLICT);
         }
     }
 

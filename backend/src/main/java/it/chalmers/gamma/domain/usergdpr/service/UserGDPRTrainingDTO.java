@@ -2,23 +2,6 @@ package it.chalmers.gamma.domain.usergdpr.service;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 
-public class UserGDPRTrainingDTO {
-
-    @JsonUnwrapped
-    private final UserRestrictedDTO user;
-    private final boolean gdpr;
-
-    public UserGDPRTrainingDTO(UserRestrictedDTO user, boolean gdpr) {
-        this.user = user;
-        this.gdpr = gdpr;
-    }
-
-    public UserRestrictedDTO getUser() {
-        return user;
-    }
-
-    public boolean isGdpr() {
-        return gdpr;
-    }
-}
+public record UserGDPRTrainingDTO(UserRestrictedDTO user, boolean gdpr) implements DTO { }

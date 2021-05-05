@@ -36,7 +36,7 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
     }
 
     protected SuperGroup getEntity(SuperGroupDTO superGroup) throws EntityNotFoundException {
-        return getEntity(superGroup.getId());
+        return getEntity(superGroup.id());
     }
 
     protected SuperGroup getEntityByName(String name) throws EntityNotFoundException {
@@ -47,7 +47,7 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
     public List<SuperGroupDTO> getAll() {
         return Optional.of(this.superGroupRepository.findAll().stream()
                 .map(SuperGroup::toDTO)
-                .filter(g -> !g.getType().equals(SuperGroupType.ADMIN))
+                .filter(g -> !g.type().equals(SuperGroupType.ADMIN))
                 .collect(Collectors.toList())).orElseThrow();
     }
 

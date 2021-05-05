@@ -23,8 +23,7 @@ public class UserGDPRTrainingService {
     public List<UserGDPRTrainingDTO> getUsersWithGDPR() {
         return this.userFinder.getAll()
                 .stream()
-                .map(user -> new UserGDPRTrainingDTO(new UserRestrictedDTO(user), false))
-
+                .map(user -> new UserGDPRTrainingDTO(user, false))
                 .collect(Collectors.toList());
     }
 

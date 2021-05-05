@@ -51,11 +51,11 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
     }
 
     protected Group getGroupEntity(GroupShallowDTO group) throws EntityNotFoundException {
-        return getGroupEntity(group.getId());
+        return getGroupEntity(group.id());
     }
 
     protected Group getGroupEntity(GroupDTO group) throws EntityNotFoundException {
-        return getGroupEntity(group.getId());
+        return getGroupEntity(group.id());
     }
 
     protected Group getGroupEntityByName(String name) throws EntityNotFoundException {
@@ -85,23 +85,22 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
     public List<GroupMinifiedDTO> getActiveGroupsMinifiedBySuperGroup(SuperGroupId superGroupId) throws EntityNotFoundException {
         return getGroupsBySuperGroup(superGroupId)
                 .stream()
-                .filter(GroupBaseDTO::isActive)
+                .filter(GroupDTO::isActive)
                 .map(GroupMinifiedDTO::new)
                 .collect(Collectors.toList());
     }
 
     protected GroupDTO fromShallow(GroupShallowDTO group) {
         try {
-            return new GroupDTO.GroupDTOBuilder()
-                    .id(group.getId())
-                    .becomesActive(group.getBecomesActive())
-                    .becomesInactive(group.getBecomesInactive())
-                    .email(group.getEmail())
-                    .name(group.getName())
-                    .prettyName(group.getPrettyName())
-                    .avatarUrl(group.getAvatarURL())
-                    .superGroup(superGroupFinder.get(group.getSuperGroupId()))
-                    .build();
+            return new GroupDTO(
+                    group.id(),
+                    group.becomesActive(),
+                    group.becomesInactive(),
+                    group.email(),
+                    group.name(),
+                    group.prettyName(),
+                    superGroupFinder.get(group.superGroupId())
+            );
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return null;

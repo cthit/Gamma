@@ -29,6 +29,7 @@ class ApiKeyServiceTest {
     @Test
     void create() {
         ApiKeyDTO apiKeyDTO = new ApiKeyDTO(
+                new ApiKeyId(),
                 new ApiKeyName("myapikey"),
                 new TextDTO(
                         "Min API nyckel",

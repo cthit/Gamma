@@ -1,5 +1,7 @@
 package it.chalmers.gamma.domain.post.controller;
 
+import it.chalmers.gamma.domain.post.service.EmailPrefix;
+import it.chalmers.gamma.domain.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupWithMembers;
 import it.chalmers.gamma.util.domain.UserPost;
@@ -11,6 +13,9 @@ import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,20 +40,23 @@ public final class PostAdminController {
         this.membershipFinder = membershipFinder;
     }
 
+    private record CreateOrEditPost(@Valid TextDTO post,
+                                   @Valid EmailPrefix emailPrefix) { }
+
     @PostMapping()
-    public PostCreatedResponse addOfficialPost(@Valid @RequestBody AddPostRequest request) {
+    public PostCreatedResponse addPost(@Valid @RequestBody CreateOrEditPost request) {
         this.postService.create(
-                new PostDTO(request.post, request.emailPrefix)
+                new PostDTO(new PostId(), request.post(), request.emailPrefix())
         );
         return new PostCreatedResponse();
     }
 
     @PutMapping("/{id}")
     public PostEditedResponse editPost(
-            @RequestBody AddPostRequest request,
+            @RequestBody CreateOrEditPost request,
             @PathVariable("id") PostId id) {
         try {
-            this.postService.update(new PostDTO(id, request.post, request.emailPrefix));
+            this.postService.update(new PostDTO(id, request.post(), request.emailPrefix()));
             return new PostEditedResponse();
         } catch (EntityNotFoundException e) {
             throw new PostDoesNotExistResponse();
@@ -62,18 +70,18 @@ public final class PostAdminController {
     }
 
     @GetMapping("/{id}/usage")
-    public GetPostUsagesResponse getPostUsages(@PathVariable("id") PostId postId) {
-        List<GroupWithMembers> groups = this.membershipFinder.getGroupsWithPost(postId)
+    public List<GroupWithMembers> getPostUsages(@PathVariable("id") PostId postId) {
+        return this.membershipFinder.getGroupsWithPost(postId)
                 .stream()
                 .map(group -> {
                     try {
                         return new GroupWithMembers(
                                 group,
-                                this.membershipFinder.getMembershipsByGroupAndPost(group.getId(), postId)
+                                this.membershipFinder.getMembershipsByGroupAndPost(group.id(), postId)
                                         .stream()
                                         .map(membership -> new UserPost(
-                                                new UserRestrictedDTO(membership.getUser()),
-                                                membership.getPost()
+                                                new UserRestrictedDTO(membership.user()),
+                                                membership.post()
                                         ))
                                         .collect(Collectors.toList())
                         );
@@ -82,7 +90,18 @@ public final class PostAdminController {
                     }
                 })
                 .collect(Collectors.toList());
-
-        return new GetPostUsagesResponse(groups);
     }
+
+    private static class PostEditedResponse extends SuccessResponse { }
+
+    private static class PostDeletedResponse extends SuccessResponse { }
+
+    private static class PostCreatedResponse extends SuccessResponse {}
+
+    private static class PostDoesNotExistResponse extends ErrorResponse {
+        private PostDoesNotExistResponse() {
+            super(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

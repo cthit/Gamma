@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.apikey.service.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyName;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyToken;
 import it.chalmers.gamma.domain.apikey.service.ApiKeyDTO;
@@ -52,6 +53,7 @@ class TestClientBootstrap {
 
             this.helper.getApiKeyService().create(
                     new ApiKeyDTO(
+                            new ApiKeyId(),
                             new ApiKeyName(this.config.getOauth2ClientName()),
                             apiDescription,
                             new ApiKeyToken(this.config.getOauth2ClientApiKey())

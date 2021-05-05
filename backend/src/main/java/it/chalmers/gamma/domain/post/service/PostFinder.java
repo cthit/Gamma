@@ -40,6 +40,6 @@ public class PostFinder implements GetEntity<PostId, PostDTO>, GetAllEntities<Po
     }
 
     protected Post getEntity(PostDTO postDTO) throws EntityNotFoundException {
-        return getEntity(postDTO.getId());
+        return getEntity(postDTO.id());
     }
 }

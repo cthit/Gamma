@@ -16,9 +16,9 @@ public class Authority extends BaseEntity<AuthorityShallowDTO> {
 
     protected Authority(AuthorityShallowDTO authority) {
         this.id = new AuthorityPK(
-                authority.getSuperGroupId(),
-                authority.getPostId(),
-                authority.getAuthorityLevelName()
+                authority.superGroupId(),
+                authority.postId(),
+                authority.authorityLevelName()
         );
     }
 

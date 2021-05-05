@@ -88,7 +88,7 @@ public class AdminBootstrap {
         SuperGroupId adminSuperGroupId;
 
         try {
-            adminSuperGroupId = this.helper.getSuperGroupFinder().getByName(superGroupName).getId();
+            adminSuperGroupId = this.helper.getSuperGroupFinder().getByName(superGroupName).id();
         } catch (EntityNotFoundException ignored) {
             adminSuperGroupId = new SuperGroupId();
 
@@ -119,7 +119,7 @@ public class AdminBootstrap {
         GroupId adminGroupId;
 
         try {
-            adminGroupId = this.helper.getGroupFinder().getByName(admin).getId();
+            adminGroupId = this.helper.getGroupFinder().getByName(admin).id();
         } catch (EntityNotFoundException ignored) {
             adminGroupId = new GroupId();
 
@@ -130,15 +130,15 @@ public class AdminBootstrap {
 
             try {
                 this.helper.getGroupService().create(
-                        new GroupShallowDTO.GroupShallowDTOBuilder()
-                                .id(adminGroupId)
-                                .becomesActive(start)
-                                .becomesInactive(end)
-                                .email(adminMail)
-                                .name(admin)
-                                .prettyName(admin)
-                                .superGroupId(adminSuperGroupId)
-                                .build()
+                        new GroupShallowDTO(
+                                adminGroupId,
+                                start,
+                                end,
+                                adminMail,
+                                admin,
+                                admin,
+                                adminSuperGroupId
+                        )
                 );
             } catch (EntityAlreadyExistsException e) {
                 LOGGER.error("Fatal error when creating admin user", e);
@@ -153,7 +153,7 @@ public class AdminBootstrap {
         PostId adminPostId;
 
         try {
-            adminPostId = this.helper.getPostFinder().getBySvName(admin).getId();
+            adminPostId = this.helper.getPostFinder().getBySvName(admin).id();
         } catch (EntityNotFoundException e) {
             TextDTO p = new TextDTO(admin, admin);
 
@@ -175,19 +175,18 @@ public class AdminBootstrap {
         UserId adminUserId = new UserId();
 
         this.helper.getUserCreationService().createUser(
-                new UserDTO.UserDTOBuilder()
-                        .id(adminUserId)
-                        .activated(true)
-                        .userAgreement(true)
-                        .acceptanceYear(Year.of(2018))
-                        .cid(new Cid(admin))
-                        .email(adminMail)
-                        .firstName(admin)
-                        .lastName(admin)
-                        .nick(admin)
-                        .language(Language.EN)
-                        .build(),
-                config.getPassword()
+                new UserDTO(
+                        adminUserId,
+                        new Cid(admin),
+                        adminMail,
+                        Language.EN,
+                        admin,
+                        admin,
+                        admin,
+                        true,
+                        Year.of(2018),
+                        true
+                ), config.getPassword()
         );
 
         this.helper.getUserGDPRService().editGDPR(adminUserId, true);

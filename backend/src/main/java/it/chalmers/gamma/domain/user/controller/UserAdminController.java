@@ -1,8 +1,13 @@
 package it.chalmers.gamma.domain.user.controller;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.user.controller.UserStatusResponses.PasswordChangedResponse;
+import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupPost;
-import it.chalmers.gamma.util.domain.UserWithGroups;
 import it.chalmers.gamma.domain.membership.service.MembershipDTO;
 import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.user.service.UserId;
@@ -28,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static it.chalmers.gamma.domain.user.controller.UserStatusResponses.*;
+
 @RestController
 @RequestMapping("/admin/users")
 public final class UserAdminController {
@@ -49,6 +56,8 @@ public final class UserAdminController {
         this.membershipFinder = membershipFinder;
     }
 
+    record AdminChangePasswordRequest(String password) {}
+
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
             @PathVariable("id") UserId id,
@@ -62,17 +71,6 @@ public final class UserAdminController {
         return new PasswordChangedResponse();
     }
 
-    @PutMapping("/{id}")
-    public UserEditedResponse editUser(@PathVariable("id") UserId id,
-                                           @RequestBody EditITUserRequest request) {
-        try {
-            this.userService.update(requestToDTO(request, id));
-            return new UserEditedResponse();
-        } catch (EntityNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
-    }
-
     @DeleteMapping("/{id}")
     public UserDeletedResponse deleteUser(@PathVariable("id") UserId id) {
         this.userService.delete(id);
@@ -83,7 +81,7 @@ public final class UserAdminController {
     public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
         try {
             UserDTO user = this.userFinder.get(id);
-            List<GroupPost> groups = this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.getId()));
+            List<GroupPost> groups = this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.id()));
 
             return new GetUserAdminResponse(user, groups);
         } catch (EntityNotFoundException e) {
@@ -92,13 +90,17 @@ public final class UserAdminController {
         }
     }
 
+    record UserWithGroups(@JsonUnwrapped UserRestrictedDTO user, List<GroupPost> groups) { }
+
+    record GetAllUsersResponse(List<UserWithGroups> users) { }
+
     @GetMapping()
     public GetAllUsersResponse getAllUsers() {
-        List<UserWithGroups> users = this.userFinder.getUsersRestricted()
+        List<UserWithGroups> users = this.userFinder.getAll()
                 .stream()
                 .map(user -> {
                     try {
-                        return new UserWithGroups(user, this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.getId())));
+                        return new UserWithGroups(user, this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.id())));
                     } catch (EntityNotFoundException e) {
                         throw new RuntimeException(e);
                     }
@@ -108,40 +110,64 @@ public final class UserAdminController {
         return new GetAllUsersResponse(users);
     }
 
+    record AdminViewCreateUserRequest(@Valid Cid cid,
+                                         String password,
+                                         String nick,
+                                         String firstName,
+                                         String lastName,
+                                         Email email,
+                                         boolean userAgreement,
+                                         int acceptanceYear,
+                                         Language language) { }
+
     @PostMapping()
     public UserCreatedResponse addUser(@Valid @RequestBody AdminViewCreateUserRequest request) {
-        this.userCreationService.createUser(requestToDTO(request), request.getPassword());
+        this.userCreationService.createUser(new UserDTO(
+                new UserId(),
+                request.cid,
+                request.email,
+                request.language,
+                request.nick,
+                request.firstName,
+                request.lastName,
+                request.userAgreement,
+                Year.of(request.acceptanceYear),
+                true
+        ), request.password);
         return new UserCreatedResponse();
     }
 
-    private UserDTO requestToDTO(AdminViewCreateUserRequest request) {
-        return new UserDTO.UserDTOBuilder()
-                .nick(request.getNick())
-                .cid(request.getCid())
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .language(request.getLanguage())
-                .acceptanceYear(Year.of(request.getAcceptanceYear()))
-                .build();
-    }
+    record EditUserRequest (String nick,
+                            String firstName,
+                            String lastName,
+                            Email email,
+                            Language language,
+                            int acceptanceYear) { }
 
-    protected UserDTO requestToDTO(EditITUserRequest request, UserId userId) {
-        return new UserDTO.UserDTOBuilder()
-                .id(userId)
-                .nick(request.nick)
-                .firstName(request.firstName)
-                .lastName(request.lastName)
-                .email(request.email)
-                .language(request.language)
-                .acceptanceYear(Year.of(request.acceptanceYear))
-                .build();
+    @PutMapping("/{id}")
+    public UserEditedResponse editUser(@PathVariable("id") UserId id,
+                                       @RequestBody EditUserRequest request) {
+        try {
+            UserDTO user = this.userFinder.get(id);
+            this.userService.update(user.with()
+                    .nick(request.nick)
+                    .firstName(request.firstName)
+                    .lastName(request.lastName)
+                    .email(request.email)
+                    .language(request.language)
+                    .acceptanceYear(Year.of(request.acceptanceYear))
+                    .build()
+            );
+            return new UserEditedResponse();
+        } catch (EntityNotFoundException e) {
+            throw new UserNotFoundResponse();
+        }
     }
 
     private List<GroupPost> toGroupPosts(List<MembershipDTO> memberships) {
         return memberships
                 .stream()
-                .map(membership -> new GroupPost(membership.getPost(), membership.getGroup()))
+                .map(membership -> new GroupPost(membership.post(), membership.group()))
                 .collect(Collectors.toList());
     }
 

@@ -31,10 +31,10 @@ public class Client extends MutableEntity<ClientDTO> {
     protected Client() { }
 
     protected Client(ClientDTO client) {
-        assert(client.getClientId() != null);
+        assert(client.clientId() != null);
 
-        this.clientId = client.getClientId();
-        this.clientSecret = client.getClientSecret();
+        this.clientId = client.clientId();
+        this.clientSecret = client.clientSecret();
 
         if(this.description == null) {
             this.description = new Text();
@@ -45,12 +45,12 @@ public class Client extends MutableEntity<ClientDTO> {
 
     @Override
     protected void apply(ClientDTO c) {
-        assert(this.clientId == c.getClientId());
+        assert(this.clientId == c.clientId());
 
-        this.webServerRedirectUri = c.getWebServerRedirectUri();
-        this.autoApprove = c.isAutoApprove();
-        this.name = c.getName();
-        this.description.apply(c.getDescription());
+        this.webServerRedirectUri = c.webServerRedirectUri();
+        this.autoApprove = c.autoApprove();
+        this.name = c.name();
+        this.description.apply(c.description());
     }
 
     @Override

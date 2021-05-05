@@ -22,10 +22,6 @@ public class ActivationCode extends BaseEntity<ActivationCodeDTO> {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @Transient
-    @Value("${password-expiration-time}")
-    private static final int PASSWORD_EXPIRATION_TIME = 3600;
-
     protected ActivationCode() { }
 
     protected ActivationCode(Cid cid, Code code) {
@@ -41,9 +37,5 @@ public class ActivationCode extends BaseEntity<ActivationCodeDTO> {
                 this.code,
                 this.createdAt
         );
-    }
-
-    public boolean isValid() {
-        return Instant.now().isBefore(this.createdAt.plus(Duration.ofSeconds(PASSWORD_EXPIRATION_TIME)));
     }
 }

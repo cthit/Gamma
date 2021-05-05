@@ -5,67 +5,19 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.domain.group.service.GroupDTO;
 import it.chalmers.gamma.domain.post.service.PostDTO;
 import it.chalmers.gamma.domain.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 
 import java.util.Objects;
 
-public class MembershipRestrictedDTO {
+public record MembershipRestrictedDTO(PostDTO post,
+                                      GroupDTO group,
+                                      String unofficialPostName,
+                                      UserRestrictedDTO user)
+        implements DTO {
 
-    private final PostDTO post;
-    private final GroupDTO group;
-    private final String unofficialPostName;
-    @JsonUnwrapped
-    private final UserRestrictedDTO user;
-
-    public MembershipRestrictedDTO(MembershipDTO membership) {
-        this.post = membership.getPost();
-        this.group = membership.getGroup();
-        this.unofficialPostName = membership.getUnofficialPostName();
-        this.user = new UserRestrictedDTO(membership.getUser());
+    public MembershipRestrictedDTO(MembershipDTO m) {
+        this(m.post(), m.group(), m.unofficialPostName(), new UserRestrictedDTO(m.user()));
     }
 
-    public PostDTO getPost() {
-        return this.post;
-    }
-
-    public GroupDTO getGroup() {
-        return this.group;
-    }
-
-    public String getUnofficialPostName() {
-        return this.unofficialPostName;
-    }
-
-    public UserRestrictedDTO getUser() {
-        return this.user;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        MembershipRestrictedDTO that = (MembershipRestrictedDTO) o;
-        return Objects.equals(this.post, that.post)
-            && Objects.equals(this.group, that.group)
-            && Objects.equals(this.unofficialPostName, that.unofficialPostName)
-            && Objects.equals(this.user, that.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.post, this.group, this.unofficialPostName, this.user);
-    }
-
-    @Override
-    public String toString() {
-        return "RestrictedMembershipDTO{"
-            + "post=" + this.post
-            + ", fkitGroupDTO=" + this.group
-            + ", unofficialPostName='" + this.unofficialPostName + '\''
-            + ", user=" + this.user
-            + '}';
-    }
 }
+

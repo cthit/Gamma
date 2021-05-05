@@ -43,7 +43,7 @@ public class MembershipFinder {
         List<GroupId> groups = this.membershipRepository.findAllById_PostId(postId)
                 .stream()
                 .map(Membership::toDTO)
-                .map(MembershipShallowDTO::getGroupId)
+                .map(MembershipShallowDTO::groupId)
                 .collect(Collectors.toList());
 
         return new HashSet<>(groups)
@@ -112,12 +112,12 @@ public class MembershipFinder {
 
     protected MembershipDTO fromShallow(MembershipShallowDTO membership) {
         try {
-            return new MembershipDTO.MembershipDTOBuilder()
-                    .group(this.groupFinder.get(membership.getGroupId()))
-                    .user(this.userFinder.get(membership.getUserId()))
-                    .post(this.postFinder.get(membership.getPostId()))
-                    .unofficialPostName(membership.getUnofficialPostName())
-                    .build();
+            return new MembershipDTO(
+                    this.postFinder.get(membership.postId()),
+                    this.groupFinder.get(membership.groupId()),
+                    membership.unofficialPostName(),
+                    this.userFinder.get(membership.userId())
+            );
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
             return null;

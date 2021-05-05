@@ -3,15 +3,10 @@ package it.chalmers.gamma.bootstrap.mock;
 import it.chalmers.gamma.domain.user.service.UserId;
 import it.chalmers.gamma.util.domain.Cid;
 
-import java.time.Year;
-
-public class MockUser {
-
-    public UserId id;
-    public Cid cid;
-    public String nick;
-    public String firstName;
-    public String lastName;
-    public Year acceptanceYear;
-
-}
+public record MockUser(
+        UserId id,
+        Cid cid,
+        String nick,
+        String firstName,
+        String lastName,
+        int acceptanceYear) { }

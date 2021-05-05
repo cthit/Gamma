@@ -32,7 +32,7 @@ public class Text extends MutableEntity<TextDTO> {
     }
 
     public Text(TextDTO text) {
-        this(new TextId(), text.getSv(), text.getEn());
+        this(new TextId(), text.sv(), text.en());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Text extends MutableEntity<TextDTO> {
 
     @Override
     public void apply(TextDTO newText) {
-        this.sv = newText.getSv();
-        this.en = newText.getEn();
+        this.sv = newText.sv();
+        this.en = newText.en();
     }
 }

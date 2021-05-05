@@ -16,7 +16,7 @@ public class UserApproval extends BaseEntity<UserApprovalDTO> {
     protected UserApproval() {}
 
     public UserApproval(UserApprovalDTO userApproval) {
-        this.id = new UserApprovalPK(userApproval.getUserId(), userApproval.getClientId());
+        this.id = new UserApprovalPK(userApproval.userId(), userApproval.clientId());
     }
 
     public UserApprovalPK getId() {

@@ -1,15 +1,21 @@
 package it.chalmers.gamma.domain.authoritylevel.controller;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.domain.authority.service.AuthorityDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelFinder;
 import it.chalmers.gamma.domain.authoritylevel.service.AuthorityLevelService;
+import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/level")
@@ -38,9 +44,11 @@ public class AuthorityLevelAdminController {
         return new AuthorityLevelCreatedResponse();
     }
 
+    private record CreateAuthorityLevelRequest(@Valid AuthorityLevelName authorityLevel) { }
+
     @GetMapping
-    public GetAllAuthorityLevelsResponse getAllAuthorityLevels() {
-        return new GetAllAuthorityLevelsResponse(this.authorityLevelFinder.getAll());
+    public List<AuthorityLevelName> getAllAuthorityLevels() {
+        return this.authorityLevelFinder.getAll();
     }
 
     @DeleteMapping("/{name}")
@@ -50,13 +58,27 @@ public class AuthorityLevelAdminController {
     }
 
     @GetMapping("/{name}")
-    public GetAllAuthoritiesForLevelResponse getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
+    public List<AuthorityDTO> getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
         try {
-            return new GetAllAuthoritiesForLevelResponse(
-                    this.authorityFinder.getByAuthorityLevel(name)
-            );
+            return this.authorityFinder.getByAuthorityLevel(name);
         } catch (EntityNotFoundException e) {
             throw new AuthorityLevelNotFoundResponse();
+        }
+    }
+
+    private static class AuthorityLevelDeletedResponse extends SuccessResponse { }
+
+    private static class AuthorityLevelCreatedResponse extends SuccessResponse { }
+
+    private static class AuthorityLevelNotFoundResponse extends ErrorResponse {
+        private AuthorityLevelNotFoundResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private static class AuthorityLevelAlreadyExistsResponse extends ErrorResponse {
+        private AuthorityLevelAlreadyExistsResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 

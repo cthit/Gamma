@@ -10,6 +10,8 @@ import it.chalmers.gamma.domain.membership.service.MembershipFinder;
 import java.util.List;
 
 import it.chalmers.gamma.domain.membership.service.MembershipRestrictedFinder;
+import it.chalmers.gamma.util.response.ErrorResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,22 +26,29 @@ public final class GroupController {
 
     public GroupController(
             GroupFinder groupFinder,
-            MembershipFinder membershipFinder,
             MembershipRestrictedFinder membershipRestrictedFinder) {
         this.groupFinder = groupFinder;
         this.membershipRestrictedFinder = membershipRestrictedFinder;
     }
+
+    private record GetGroupResponse(GroupDTO group, List<MembershipRestrictedDTO> groupMembers) {}
 
     @GetMapping("/{id}")
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
         try {
             GroupDTO group = this.groupFinder.get(id);
             List<MembershipRestrictedDTO> members = this.membershipRestrictedFinder
-                    .getRestrictedMembershipsInGroup(group.getId());
+                    .getRestrictedMembershipsInGroup(group.id());
 
             return new GetGroupResponse(group, members);
         } catch (EntityNotFoundException e) {
             throw new GroupNotFoundResponse();
+        }
+    }
+
+    private static class GroupNotFoundResponse extends ErrorResponse {
+        private GroupNotFoundResponse() {
+            super(HttpStatus.NOT_FOUND);
         }
     }
 

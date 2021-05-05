@@ -41,7 +41,7 @@ public class UserApprovalStore implements ApprovalStore {
 
                 ClientId clientId = new ClientId(approval.getClientId());
 
-                this.userApprovalService.create(new UserApprovalDTO(user.getId(), clientId));
+                this.userApprovalService.create(new UserApprovalDTO(user.id(), clientId));
             } catch (EntityNotFoundException e) {
                 e.printStackTrace();
             }
@@ -58,7 +58,7 @@ public class UserApprovalStore implements ApprovalStore {
     @Override
     public Collection<Approval> getApprovals(String cid, String clientId) {
         try {
-            UserId userId = this.userFinder.get(new Cid(cid)).getId();
+            UserId userId = this.userFinder.get(new Cid(cid)).id();
 
             UserApprovalDTO userApproval = this.userApprovalFinder.get(new UserApprovalPK(userId, new ClientId(clientId)));
             return userApproval == null

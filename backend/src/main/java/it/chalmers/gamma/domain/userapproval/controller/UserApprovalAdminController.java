@@ -4,6 +4,7 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundExcepti
 import it.chalmers.gamma.domain.userapproval.service.UserApprovalFinder;
 import it.chalmers.gamma.domain.client.service.ClientId;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -28,20 +29,18 @@ public class UserApprovalAdminController {
     }
 
     @GetMapping("/{clientId}")
-    public GetUserApprovalsResponse getApprovalsByClientId(@PathVariable("clientId") ClientId clientId) {
-        return new GetUserApprovalsResponse(
-                this.userApprovalFinder.getApprovalsByClientId(clientId)
-                        .stream()
-                        .map(userApproval -> {
-                            try {
-                                return new UserRestrictedDTO(this.userFinder.get(userApproval.getUserId()));
-                            } catch (EntityNotFoundException ignored) {
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList())
-        );
+    public List<UserRestrictedDTO> getApprovalsByClientId(@PathVariable("clientId") ClientId clientId) {
+        return this.userApprovalFinder.getApprovalsByClientId(clientId)
+                    .stream()
+                    .map(userApproval -> {
+                        try {
+                            return new UserRestrictedDTO(this.userFinder.get(userApproval.userId()));
+                        } catch (EntityNotFoundException ignored) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
     }
 
 }

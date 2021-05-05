@@ -29,12 +29,12 @@ public class ClientDetailsDTO implements ClientDetails {
 
     @Override
     public String getClientId() {
-        return this.client.getClientId().get();
+        return this.client.clientId().get();
     }
     
     @Override
     public boolean isAutoApprove(String scope) {
-        return this.client.isAutoApprove();
+        return this.client.autoApprove();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ClientDetailsDTO implements ClientDetails {
     @Override
     @JsonIgnore
     public String getClientSecret() {
-        return this.client.getClientSecret().get();
+        return this.client.clientSecret().get();
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ClientDetailsDTO implements ClientDetails {
     @Override
     public Set<String> getRegisteredRedirectUri() {
         Set<String> authorized = new HashSet<>();
-        authorized.add(this.client.getWebServerRedirectUri());
+        authorized.add(this.client.webServerRedirectUri());
         return authorized;
     }
 
@@ -101,8 +101,8 @@ public class ClientDetailsDTO implements ClientDetails {
     @Override
     public Map<String, Object> getAdditionalInformation() {
         Map<String, Object> additionalInformation = new HashMap<>();
-        additionalInformation.put("name", this.client.getName());
-        additionalInformation.put("description", this.client.getDescription());
+        additionalInformation.put("name", this.client.name());
+        additionalInformation.put("description", this.client.description());
         return additionalInformation;
     }
 

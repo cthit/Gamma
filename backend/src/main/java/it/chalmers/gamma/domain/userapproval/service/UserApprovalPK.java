@@ -1,6 +1,5 @@
 package it.chalmers.gamma.domain.userapproval.service;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import it.chalmers.gamma.util.domain.abstraction.Id;
 import it.chalmers.gamma.domain.client.service.ClientId;
 import it.chalmers.gamma.domain.user.service.UserId;
@@ -12,7 +11,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
 @Embeddable
-@SuppressFBWarnings(justification = "Fields should be serializable", value = "SE_BAD_FIELD")
 public class UserApprovalPK implements Id, Serializable {
 
     @Embedded

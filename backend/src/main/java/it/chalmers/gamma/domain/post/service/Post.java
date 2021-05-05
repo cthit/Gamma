@@ -24,23 +24,20 @@ public class Post extends MutableEntity<PostDTO> {
     protected Post() { }
 
     protected Post(PostDTO p) {
-        assert(p.getId() != null);
+        assert(p.id() != null);
 
-        this.id = p.getId();
-
-        if(this.postName == null) {
-            this.postName = new Text();
-        }
+        this.id = p.id();
+        this.postName = new Text();
 
         apply(p);
     }
 
     @Override
     protected void apply(PostDTO p) {
-        assert(this.id == p.getId());
+        assert(this.id == p.id());
 
-        this.postName.apply(p.getPostName());
-        this.emailPrefix = p.getEmailPrefix();
+        this.postName.apply(p.name());
+        this.emailPrefix = p.emailPrefix();
     }
 
     @Override
@@ -75,7 +72,7 @@ public class Post extends MutableEntity<PostDTO> {
     public String toString() {
         return "Post{"
             + "id=" + this.id
-            + ", postName=" + this.postName
+            + ", name=" + this.postName
             + ", emailPrefix='" + this.emailPrefix + '\''
             + '}';
     }

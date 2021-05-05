@@ -6,6 +6,7 @@ import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ public class Cid implements Serializable, DTO, Id {
 
     @JsonValue
     @Column(name = "cid")
+    @Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS")
     private String value;
 
     protected Cid() {}
