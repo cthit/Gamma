@@ -35,7 +35,8 @@ class ApiKeyServiceTest {
                         "Min API nyckel",
                         "My API key"
                 ),
-                new ApiKeyToken()
+                new ApiKeyToken(),
+                ApiKeyType.CLIENT
         );
 
         apiKeyService.create(apiKeyDTO);

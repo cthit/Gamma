@@ -18,8 +18,6 @@ class AuthorityLevelServiceTest {
     @Test
     void successfulCreate() {
 
-
-
     }
 
 }

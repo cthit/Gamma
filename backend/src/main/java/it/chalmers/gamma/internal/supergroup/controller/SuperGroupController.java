@@ -46,7 +46,7 @@ public class SuperGroupController {
     @GetMapping("/{id}/subgroups")
     public List<GroupMinifiedDTO> getSuperGroupSubGroups(@PathVariable("id") SuperGroupId id) {
         try {
-            return groupFinder.getGroupsMinifiedBySuperGroup(id);
+            return this.groupFinder.getGroupsMinifiedBySuperGroup(id);
         } catch (EntityNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }

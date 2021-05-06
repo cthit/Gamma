@@ -22,7 +22,6 @@ public class AuthorityLevelService implements CreateEntity<AuthorityLevelName>, 
         }
     }
 
-
     public void delete(AuthorityLevelName name) {
         this.authorityLevelRepository.deleteById(name.value);
     }

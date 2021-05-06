@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/groups")
 public final class GroupAdminController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GroupAdminController.class);
     private final GroupService groupService;
     private final GroupFinder groupFinder;
     private final MembershipFinder membershipFinder;
@@ -51,32 +50,15 @@ public final class GroupAdminController {
     public List<GroupWithMembers> getGroups() {
         return this.groupFinder.getAll()
                 .stream()
-                .map(group -> {
-                    try {
-                        return new GroupWithMembers(
-                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
-                        );
-                    } catch (EntityNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(this::toGroupWithMembers)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/active")
     public List<GroupWithMembers> getActiveGroups() {
-        return this.groupFinder.getAll()
+        return this.groupFinder.getAllActive()
                 .stream()
-                .filter(GroupDTO::isActive)
-                .map(group -> {
-                    try {
-                        return new GroupWithMembers(
-                                group, toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
-                        );
-                    } catch (EntityNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(this::toGroupWithMembers)
                 .collect(Collectors.toList());
     }
 
@@ -160,6 +142,17 @@ public final class GroupAdminController {
         }
 */
         return new GroupUpdatedResponse();
+    }
+
+    private GroupWithMembers toGroupWithMembers(GroupDTO group) {
+        try {
+            return new GroupWithMembers(
+                    group,
+                    toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
+            );
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
     private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {

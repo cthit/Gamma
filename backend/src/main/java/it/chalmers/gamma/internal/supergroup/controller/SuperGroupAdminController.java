@@ -63,7 +63,7 @@ public class SuperGroupAdminController {
 
     @PutMapping("/{id}")
     public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
-                                                 @RequestBody CreateOrEditSuperGroupRequest request) {
+                                                @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
             this.superGroupService.update(new SuperGroupDTO(
                     id,

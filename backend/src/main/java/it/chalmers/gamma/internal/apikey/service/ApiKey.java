@@ -23,6 +23,9 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
     @Embedded
     private ApiKeyName name;
 
+    @Enumerated(EnumType.STRING)
+    private ApiKeyType keyType;
+
     protected ApiKey() { }
 
     protected ApiKey(ApiKeyDTO apiKey) {
@@ -42,6 +45,7 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
         assert(this.id == ak.id());
 
         this.name = ak.name();
+        this.keyType = ak.keyType();
 
         if(this.description == null) {
             this.description = new Text();
@@ -56,7 +60,8 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
                 this.id,
                 this.name,
                 this.description.toDTO(),
-                this.key
+                this.key,
+                this.keyType
         );
     }
 
@@ -72,7 +77,8 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
         return Objects.equals(this.id, apiKey.id)
                 && Objects.equals(this.name, apiKey.name)
                 && Objects.equals(this.description, apiKey.description)
-                && Objects.equals(this.key, apiKey.key);
+                && Objects.equals(this.key, apiKey.key)
+                && Objects.equals(this.keyType, apiKey.keyType);
     }
 
     @Override
@@ -81,7 +87,8 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
                 this.id,
                 this.name,
                 this.description,
-                this.key
+                this.key,
+                this.keyType
         );
     }
 
@@ -92,6 +99,7 @@ public class ApiKey extends MutableEntity<ApiKeyDTO> {
                 + ", name='" + this.name + '\''
                 + ", description=" + this.description
                 + ", key='" + this.key + '\''
+                + ", keyType='" + this.keyType + '\''
                 + '}';
     }
 }

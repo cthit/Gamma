@@ -83,7 +83,7 @@ public class ApiV1Controller {
 
     }
 
-    public record GetMeResponse(@JsonUnwrapped UserRestrictedDTO user,
+    private record GetMeResponse(@JsonUnwrapped UserRestrictedDTO user,
                                 List<GroupPost> groups,
                                 List<AuthorityLevelName> authorities) { }
 

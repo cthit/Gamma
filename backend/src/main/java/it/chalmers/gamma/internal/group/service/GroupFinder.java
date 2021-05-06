@@ -33,8 +33,13 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
                 .stream()
                 .map(Group::toDTO)
                 .map(this::fromShallow)
-                .collect(Collectors.toList()
-                );
+                .collect(Collectors.toList());
+    }
+
+    public List<GroupDTO> getAllActive() {
+        return this.getAll().stream()
+                .filter(GroupDTO::isActive)
+                .collect(Collectors.toList());
     }
 
     public GroupDTO get(GroupId id) throws EntityNotFoundException {

@@ -4,6 +4,7 @@ import it.chalmers.gamma.internal.apikey.service.ApiKeyId;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyType;
 import it.chalmers.gamma.internal.client.service.ClientSecret;
 import it.chalmers.gamma.internal.client.service.ClientDTO;
 
@@ -56,7 +57,8 @@ class TestClientBootstrap {
                             new ApiKeyId(),
                             new ApiKeyName(this.config.getOauth2ClientName()),
                             apiDescription,
-                            new ApiKeyToken(this.config.getOauth2ClientApiKey())
+                            new ApiKeyToken(this.config.getOauth2ClientApiKey()),
+                            ApiKeyType.CLIENT
                     )
             );
 

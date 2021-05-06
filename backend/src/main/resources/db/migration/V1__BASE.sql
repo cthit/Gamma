@@ -141,7 +141,8 @@ create table apikey (
     api_key_id               uuid primary key,
     name             varchar(30) not null,
     description      uuid references internal_text,
-    key              varchar(150) not null
+    key              varchar(150) not null,
+    key_type         varchar(30) not null
 );
 
 create table it_user_approval (
