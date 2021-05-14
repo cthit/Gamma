@@ -1,6 +1,9 @@
 package it.chalmers.gamma.internal.usergdpr.service;
 
 import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -8,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ituser_gdpr_training")
-public class UserGDPRTraining {
+public class UserGDPRTraining extends ImmutableEntity<UserId, UserId> {
 
     @EmbeddedId
     private UserId userId;
@@ -19,4 +22,13 @@ public class UserGDPRTraining {
         this.userId = userId;
     }
 
+    @Override
+    protected UserId id() {
+        return userId;
+    }
+
+    @Override
+    protected UserId toDTO() {
+        return this.userId;
+    }
 }

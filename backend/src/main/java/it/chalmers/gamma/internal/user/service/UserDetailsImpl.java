@@ -1,23 +1,25 @@
 package it.chalmers.gamma.internal.user.service;
 
+import it.chalmers.gamma.internal.authoritylevel.service.GrantedAuthorityImpl;
 import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class UserDetailsDTO implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private final Cid cid;
     private final String password;
     private final List<AuthorityLevelName> authorities;
     private final boolean accountLocked;
 
-    public UserDetailsDTO(String cid,
-                          String password,
-                          List<AuthorityLevelName> authorities,
-                          boolean accountLocked) {
+    public UserDetailsImpl(String cid,
+                           String password,
+                           List<AuthorityLevelName> authorities,
+                           boolean accountLocked) {
         this.cid = new Cid(cid);
         this.password = password;
         this.authorities = authorities;
@@ -25,8 +27,10 @@ public class UserDetailsDTO implements UserDetails {
     }
 
     @Override
-    public Collection<AuthorityLevelName> getAuthorities() {
-        return authorities;
+    public Collection<GrantedAuthorityImpl> getAuthorities() {
+        return authorities.stream()
+                .map(GrantedAuthorityImpl::new)
+                .collect(Collectors.toList());
     }
 
     @Override

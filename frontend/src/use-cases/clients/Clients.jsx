@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
     DigitCRUD,
     useDigitTranslations,
@@ -5,12 +7,10 @@ import {
     DigitButton,
     useDigitCustomDialog
 } from "@cthit/react-digit-components";
-import React from "react";
-import { getClient, getClients } from "../../api/clients/get.clients.api";
-import { addClient } from "../../api/clients/post.clients.api";
-import translations from "./Clients.translations";
-import { deleteClient } from "../../api/clients/delete.clients.api";
-import InsufficientAccess from "../../common/views/insufficient-access";
+
+import { deleteClient } from "api/clients/delete.clients.api";
+import { getClient, getClients } from "api/clients/get.clients.api";
+import { addClient } from "api/clients/post.clients.api";
 import {
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_DESCRIPTION_SWEDISH,
@@ -18,10 +18,13 @@ import {
     CLIENT_REDIRECT,
     CLIENT_SECRET,
     CLIENT_ID
-} from "../../api/clients/props.clients.api";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
+} from "api/clients/props.clients.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
 import {
     initialValues,
     keysComponentData,
@@ -30,6 +33,7 @@ import {
     keysText,
     validationSchema
 } from "./Clients.options";
+import translations from "./Clients.translations";
 import UserClientApprovals from "./views/user-client-approvals";
 
 const Clients = () => {

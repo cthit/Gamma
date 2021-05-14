@@ -1,6 +1,8 @@
 import * as yup from "yup";
+
 import { DigitTextField } from "@cthit/react-digit-components";
-import { WHITELIST_CID } from "../../api/whitelist/props.whitelist.api";
+
+import { WHITELIST_CID } from "api/whitelist/props.whitelist.api";
 
 export const validationSchema = text => {
     const schema = {};

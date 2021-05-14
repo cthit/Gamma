@@ -1,8 +1,9 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import ViewAuthorities from "./screens/view-authorities";
+
 import CreateAuthorityLevel from "./screens/create-authority-level";
 import AddToAuthorityLevel from "./screens/edit-authority";
+import ViewAuthorities from "./screens/view-authorities";
 
 const Authorities = () => {
     return (

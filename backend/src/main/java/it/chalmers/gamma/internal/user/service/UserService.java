@@ -3,7 +3,7 @@ package it.chalmers.gamma.internal.user.service;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
-import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
 import it.chalmers.gamma.util.domain.Cid;
 
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
@@ -27,18 +27,18 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
     private final UserFinder userFinder;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthorityFinder authorityFinder;
+    private final AuthorityPostFinder authorityPostFinder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserFinder userFinder,
                        UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       AuthorityFinder authorityFinder) {
+                       AuthorityPostFinder authorityPostFinder) {
         this.userFinder = userFinder;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authorityFinder = authorityFinder;
+        this.authorityPostFinder = authorityPostFinder;
     }
 
     @Override
@@ -46,9 +46,9 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
         try {
             User user = this.userFinder.getEntity(new Cid(cid));
 
-            List<AuthorityLevelName> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
+            List<AuthorityLevelName> authorities = this.authorityPostFinder.getGrantedAuthorities(user.getId());
 
-            return new UserDetailsDTO(
+            return new UserDetailsImpl(
                     user.getCid().get(),
                     user.getPassword().get(),
                     authorities,

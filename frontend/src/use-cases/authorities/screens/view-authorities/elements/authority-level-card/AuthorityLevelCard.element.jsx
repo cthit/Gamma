@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
     DigitButton,
     DigitDesign,
@@ -8,7 +9,9 @@ import {
     useDigitToast,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { deleteAuthorityLevel } from "../../../../../../api/authorities/delete.authoritites";
+
+import { deleteAuthorityLevel } from "api/authorities/delete.authoritites";
+
 import translations from "./AuthorityLevelCard.element.translations";
 
 const AuthorityLevelCard = ({

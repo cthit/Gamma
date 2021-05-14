@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class Cid implements Serializable, DTO, Id {
+public class Cid extends Id<String> implements DTO {
 
     @JsonValue
     @Column(name = "cid")
@@ -32,21 +32,4 @@ public class Cid implements Serializable, DTO, Id {
         return this.value;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cid cid = (Cid) o;
-        return Objects.equals(value, cid.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "Cid: " + value;
-    }
 }

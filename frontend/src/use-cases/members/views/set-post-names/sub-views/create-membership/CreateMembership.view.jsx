@@ -1,17 +1,20 @@
 import React from "react";
+import styled from "styled-components";
+
 import {
     DigitTextField,
     DigitText,
     DigitSelect,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import translations from "./CreateMembership.view.translations";
+
 import {
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../../../../api/users/props.users.api";
-import styled from "styled-components";
+} from "api/users/props.users.api";
+
+import translations from "./CreateMembership.view.translations";
 
 const CustomRow = styled.div`
     display: flex;

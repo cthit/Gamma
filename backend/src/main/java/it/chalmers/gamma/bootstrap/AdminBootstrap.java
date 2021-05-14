@@ -1,22 +1,20 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.internal.authority.service.AuthorityShallowDTO;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostShallowDTO;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.group.service.GroupId;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
 import it.chalmers.gamma.internal.post.service.PostId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupType;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.internal.post.service.PostDTO;
+import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeName;
 import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import it.chalmers.gamma.internal.user.service.UserId;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 
 import java.time.Year;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import it.chalmers.gamma.util.domain.*;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
@@ -69,7 +67,7 @@ public class AdminBootstrap {
 
             try {
                 this.helper.getAuthorityService().create(
-                        new AuthorityShallowDTO(
+                        new AuthorityPostShallowDTO(
                             adminSuperGroupId,
                             adminPostId,
                             new AuthorityLevelName(admin)
@@ -95,6 +93,7 @@ public class AdminBootstrap {
             String descriptionText = "Super admin group, do not add anything to this group,"
                     + " as it is a way to always keep a privileged user on startup";
             TextDTO description = new TextDTO(descriptionText, descriptionText);
+            SuperGroupTypeName adminType = SuperGroupTypeName.valueOf("admin");
 
             try {
                 this.helper.getSuperGroupService().create(
@@ -102,7 +101,7 @@ public class AdminBootstrap {
                                 adminSuperGroupId,
                                 superGroupName,
                                 superGroupName,
-                                SuperGroupType.COMMITTEE,
+                                adminType,
                                 adminMail,
                                 description
                         )
@@ -123,17 +122,10 @@ public class AdminBootstrap {
         } catch (EntityNotFoundException ignored) {
             adminGroupId = new GroupId();
 
-            Calendar end = new GregorianCalendar();
-            end.set(2099, Calendar.DECEMBER, 31);
-            Calendar start = new GregorianCalendar();
-            start.setTimeInMillis(System.currentTimeMillis());
-
             try {
                 this.helper.getGroupService().create(
                         new GroupShallowDTO(
                                 adminGroupId,
-                                start,
-                                end,
                                 adminMail,
                                 admin,
                                 admin,

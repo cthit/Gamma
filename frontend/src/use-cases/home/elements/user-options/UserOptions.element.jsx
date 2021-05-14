@@ -7,7 +7,6 @@ import {
 } from "@cthit/react-digit-components";
 
 import HomeLink from "../../elements/home-link";
-
 import translations from "./UserOptions.element.translations.json";
 
 const UserOptions = ({ hasGroups }) => {

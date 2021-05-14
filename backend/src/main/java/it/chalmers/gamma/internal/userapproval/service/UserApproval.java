@@ -1,6 +1,8 @@
 package it.chalmers.gamma.internal.userapproval.service;
 
-import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
+import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -8,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "it_user_approval")
-public class UserApproval extends BaseEntity<UserApprovalDTO> {
+public class UserApproval extends ImmutableEntity<UserApprovalPK, UserApprovalDTO> {
 
     @EmbeddedId
     private UserApprovalPK id;
@@ -19,16 +21,17 @@ public class UserApproval extends BaseEntity<UserApprovalDTO> {
         this.id = new UserApprovalPK(userApproval.userId(), userApproval.clientId());
     }
 
-    public UserApprovalPK getId() {
-        return this.id;
+    @Override
+    protected UserApprovalDTO toDTO() {
+        return new UserApprovalDTO(
+                this.id.get().userId(),
+                this.id.get().clientId()
+        );
     }
 
     @Override
-    public UserApprovalDTO toDTO() {
-        return new UserApprovalDTO(
-                this.id.getUserId(),
-                this.id.getClientId()
-        );
+    protected UserApprovalPK id() {
+        return this.id;
     }
 }
 

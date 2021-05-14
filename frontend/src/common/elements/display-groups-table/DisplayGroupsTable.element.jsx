@@ -1,9 +1,10 @@
 import React from "react";
-import translations from "./DisplayGroupsTable.element.translations";
+
 import {
     DigitTable,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
 import {
     GROUP_DESCRIPTION,
     GROUP_EMAIL,
@@ -11,7 +12,9 @@ import {
     GROUP_ID,
     GROUP_NAME,
     GROUP_PRETTY_NAME
-} from "../../../api/groups/props.groups.api";
+} from "api/groups/props.groups.api";
+
+import translations from "./DisplayGroupsTable.element.translations";
 
 function generateHeaderTexts(text) {
     const output = {};

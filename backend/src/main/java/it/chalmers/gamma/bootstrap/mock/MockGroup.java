@@ -5,13 +5,8 @@ import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
 
 import java.util.List;
 
-public class MockGroup {
-
-    public GroupId id;
-    public String name;
-    public String prettyName;
-    public List<MockMembership> members;
-    public SuperGroupId superGroup;
-    public boolean active;
-
-}
+public record MockGroup(GroupId id,
+                        String name,
+                        String prettyName,
+                        List<MockMembership> members,
+                        SuperGroupId superGroupId) { }

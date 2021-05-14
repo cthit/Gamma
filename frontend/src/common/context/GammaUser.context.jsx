@@ -1,6 +1,9 @@
 import React, { createContext, useCallback, useState } from "react";
-import { getRequest } from "../../api/utils/api";
+
+import { getRequest } from "api/utils/api";
+
 import { on401 } from "../utils/error-handling/error-handling";
+
 const GammaUserContext = createContext(null);
 
 const GammaUserSingletonProvider = ({ children }) => {

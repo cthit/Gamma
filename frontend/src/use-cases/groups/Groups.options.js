@@ -1,10 +1,12 @@
 import * as yup from "yup";
+
 import {
     DigitDatePicker,
     DigitSelect,
     DigitTextArea,
     DigitTextField
 } from "@cthit/react-digit-components";
+
 import {
     GROUP_BECOMES_ACTIVE,
     GROUP_BECOMES_INACTIVE,
@@ -18,7 +20,7 @@ import {
     GROUP_PRETTY_NAME,
     GROUP_SUPER_GROUP,
     GROUP_SUPER_GROUP_PRETTY_NAME
-} from "../../api/groups/props.groups.api";
+} from "api/groups/props.groups.api";
 
 export const validationSchema = text => {
     const schema = {};

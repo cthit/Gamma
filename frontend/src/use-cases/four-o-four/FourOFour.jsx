@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 import {
     DigitButton,
@@ -6,7 +7,6 @@ import {
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { useHistory } from "react-router-dom";
 
 import translations from "./FourOFour.translations.json";
 

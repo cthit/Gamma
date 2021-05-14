@@ -1,6 +1,9 @@
+import DeleteIcon from "@material-ui/icons/Delete";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getAuthorityLevel } from "../../../../api/authorities/get.authorities";
+import { useHistory } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitButton,
     DigitDesign,
@@ -13,20 +16,17 @@ import {
     DigitList,
     useDigitDialog
 } from "@cthit/react-digit-components";
-import translations from "./EditAuthority.screen.translations";
-import { useHistory } from "react-router-dom";
-import { getSuperGroups } from "../../../../api/super-groups/get.super-groups.api";
-import { getPosts } from "../../../../api/posts/get.posts.api";
-import {
-    SG_ID,
-    SG_PRETTY_NAME
-} from "../../../../api/super-groups/props.super-groups.api";
-import { POST_ID } from "../../../../api/posts/props.posts.api";
-import { addToAuthorityLevel } from "../../../../api/authorities/post.authoritites";
+
+import { deleteAuthority } from "api/authorities/delete.authoritites";
+import { getAuthorityLevel } from "api/authorities/get.authorities";
+import { addToAuthorityLevel } from "api/authorities/post.authoritites";
+import { getPosts } from "api/posts/get.posts.api";
+import { POST_ID } from "api/posts/props.posts.api";
+import { getSuperGroups } from "api/super-groups/get.super-groups.api";
+import { SG_ID, SG_PRETTY_NAME } from "api/super-groups/props.super-groups.api";
+
 import FiveZeroZero from "../../../../app/elements/five-zero-zero";
-import * as yup from "yup";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteAuthority } from "../../../../api/authorities/delete.authoritites";
+import translations from "./EditAuthority.screen.translations";
 
 const EditAuthority = () => {
     const [text, activeLanguage] = useDigitTranslations(translations);
@@ -124,14 +124,12 @@ const EditAuthority = () => {
                                                     .then(() => {
                                                         setRead(true);
                                                         queueToast({
-                                                            text:
-                                                                text.AuthorityDeleted
+                                                            text: text.AuthorityDeleted
                                                         });
                                                     })
                                                     .catch(() => {
                                                         queueToast({
-                                                            text:
-                                                                text.FailedAuthorityDeleted
+                                                            text: text.FailedAuthorityDeleted
                                                         });
                                                     });
                                             }

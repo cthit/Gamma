@@ -54,18 +54,8 @@ public final class GroupAdminController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/active")
-    public List<GroupWithMembers> getActiveGroups() {
-        return this.groupFinder.getAllActive()
-                .stream()
-                .map(this::toGroupWithMembers)
-                .collect(Collectors.toList());
-    }
-
     private record CreateOrEditGroupRequest(String name,
                                             String prettyName,
-                                            Calendar becomesActive,
-                                            Calendar becomesInactive,
                                             SuperGroupId superGroup,
                                             Email email) { }
 
@@ -74,8 +64,6 @@ public final class GroupAdminController {
         try {
             this.groupService.create(new GroupShallowDTO(
                     null,
-                    request.becomesActive,
-                    request.becomesInactive,
                     request.email,
                     request.name,
                     request.prettyName,
@@ -94,8 +82,6 @@ public final class GroupAdminController {
         try {
             GroupShallowDTO group = new GroupShallowDTO(
                     id,
-                    request.becomesActive,
-                    request.becomesInactive,
                     request.email,
                     request.name,
                     request.prettyName,

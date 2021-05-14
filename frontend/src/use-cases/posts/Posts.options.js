@@ -1,14 +1,13 @@
 import * as yup from "yup";
+
 import { DigitTextField } from "@cthit/react-digit-components";
-import {
-    ENGLISH_LANGUAGE,
-    SWEDISH_LANGUAGE
-} from "../../api/utils/commonProps";
+
 import {
     EMAIL_PREFIX,
     POST_ENGLISH,
     POST_SWEDISH
-} from "../../api/posts/props.posts.api";
+} from "api/posts/props.posts.api";
+import { ENGLISH_LANGUAGE, SWEDISH_LANGUAGE } from "api/utils/commonProps";
 
 export const validationSchema = text => {
     const schema = {};

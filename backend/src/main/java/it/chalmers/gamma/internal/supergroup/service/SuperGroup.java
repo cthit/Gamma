@@ -1,15 +1,17 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
+import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeName;
 import it.chalmers.gamma.util.domain.Email;
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.internal.text.data.db.Text;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.*;
 
 
 @Entity
 @Table(name = "fkit_super_group")
-public class SuperGroup extends MutableEntity<SuperGroupDTO> {
+public class SuperGroup extends MutableEntity<SuperGroupId, SuperGroupDTO> {
 
     @EmbeddedId
     private SuperGroupId id;
@@ -26,7 +28,7 @@ public class SuperGroup extends MutableEntity<SuperGroupDTO> {
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
-    private SuperGroupType type;
+    private SuperGroupTypeName type;
 
     @Embedded
     private Email email;
@@ -37,10 +39,7 @@ public class SuperGroup extends MutableEntity<SuperGroupDTO> {
         assert(sg.id() != null);
 
         this.id = sg.id();
-
-        if(this.description == null) {
-            this.description = new Text();
-        }
+        this.description = new Text();
 
         apply(sg);
     }
@@ -57,13 +56,15 @@ public class SuperGroup extends MutableEntity<SuperGroupDTO> {
     }
 
     @Override
-    protected void apply(SuperGroupDTO sg)  {
+    public void apply(SuperGroupDTO sg)  {
         assert(this.id == sg.id());
 
         this.email = sg.email();
         this.name = sg.name();
         this.prettyName = sg.prettyName();
         this.type = sg.type();
+
+
         this.description.apply(sg.description());
     }
 
@@ -77,5 +78,10 @@ public class SuperGroup extends MutableEntity<SuperGroupDTO> {
                 email,
                 description.toDTO()
         );
+    }
+
+    @Override
+    protected SuperGroupId id() {
+        return this.id;
     }
 }

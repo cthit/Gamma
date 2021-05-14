@@ -1,9 +1,9 @@
 package it.chalmers.gamma.internal.authoritylevel.controller;
 
-import it.chalmers.gamma.internal.authority.service.AuthorityDTO;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelFinder;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelService;
@@ -20,14 +20,14 @@ import java.util.List;
 @RequestMapping("/admin/level")
 public class AuthorityLevelAdminController {
 
-    private final AuthorityFinder authorityFinder;
+    private final AuthorityPostFinder authorityPostFinder;
     private final AuthorityLevelService authorityLevelService;
     private final AuthorityLevelFinder authorityLevelFinder;
 
-    public AuthorityLevelAdminController(AuthorityFinder authorityFinder,
+    public AuthorityLevelAdminController(AuthorityPostFinder authorityPostFinder,
                                          AuthorityLevelService authorityLevelService,
                                          AuthorityLevelFinder authorityLevelFinder) {
-        this.authorityFinder = authorityFinder;
+        this.authorityPostFinder = authorityPostFinder;
         this.authorityLevelService = authorityLevelService;
         this.authorityLevelFinder = authorityLevelFinder;
     }
@@ -57,9 +57,9 @@ public class AuthorityLevelAdminController {
     }
 
     @GetMapping("/{name}")
-    public List<AuthorityDTO> getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
+    public List<AuthorityPostDTO> getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
         try {
-            return this.authorityFinder.getByAuthorityLevel(name);
+            return this.authorityPostFinder.getByAuthorityLevel(name);
         } catch (EntityNotFoundException e) {
             throw new AuthorityLevelNotFoundResponse();
         }

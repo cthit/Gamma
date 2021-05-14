@@ -1,14 +1,15 @@
 package it.chalmers.gamma.internal.whitelist.service;
 
 import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.util.domain.abstraction.SingleImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "whitelist")
-public class Whitelist {
+@Table(name = "whitelist_cid")
+public class Whitelist extends SingleImmutableEntity<Cid> {
 
     @EmbeddedId
     private Cid cid;
@@ -19,7 +20,8 @@ public class Whitelist {
         this.cid = cid;
     }
 
-    public Cid getCid() {
-        return cid;
+    @Override
+    protected Cid get() {
+        return this.cid;
     }
 }

@@ -1,4 +1,12 @@
 import React from "react";
+
+import {
+    DigitSelect,
+    DigitSwitch,
+    DigitTextField
+} from "@cthit/react-digit-components";
+
+import { GROUP_PRETTY_NAME } from "api/groups/props.groups.api";
 import {
     USER_ACCEPTANCE_YEAR,
     USER_CID,
@@ -11,18 +19,10 @@ import {
     USER_PASSWORD,
     USER_PHONE,
     USER_AGREEMENT
-} from "../../../api/users/props.users.api";
-import {
-    DigitSelect,
-    DigitSwitch,
-    DigitTextField
-} from "@cthit/react-digit-components";
-import {
-    ENGLISH_LANGUAGE,
-    SWEDISH_LANGUAGE
-} from "../../../api/utils/commonProps";
+} from "api/users/props.users.api";
+import { ENGLISH_LANGUAGE, SWEDISH_LANGUAGE } from "api/utils/commonProps";
+
 import DisplayGroupsTable from "../../elements/display-groups-table/DisplayGroupsTable.element";
-import { GROUP_PRETTY_NAME } from "../../../api/groups/props.groups.api";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";

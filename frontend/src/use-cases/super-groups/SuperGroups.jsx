@@ -1,19 +1,22 @@
 import React from "react";
-import { SG_ID, SG_NAME } from "../../api/super-groups/props.super-groups.api";
+
 import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
-import translations from "./SuperGroups.translations";
+
+import { deleteSuperGroup } from "api/super-groups/delete.super-groups.api";
 import {
     getSuperGroup,
     getSuperGroups,
     getSuperGroupSubGroups
-} from "../../api/super-groups/get.super-groups.api";
-import { addSuperGroup } from "../../api/super-groups/post.super-groups.api";
-import { deleteSuperGroup } from "../../api/super-groups/delete.super-groups.api";
-import { editSuperGroup } from "../../api/super-groups/put.super-groups.api";
-import ShowSubGroups from "./elements/show-sub-groups";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
+} from "api/super-groups/get.super-groups.api";
+import { addSuperGroup } from "api/super-groups/post.super-groups.api";
+import { SG_ID, SG_NAME } from "api/super-groups/props.super-groups.api";
+import { editSuperGroup } from "api/super-groups/put.super-groups.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
 import {
     initialValues,
     keysComponentData,
@@ -21,7 +24,8 @@ import {
     keysText,
     validationSchema
 } from "./SuperGroups.options";
-import InsufficientAccess from "../../common/views/insufficient-access";
+import translations from "./SuperGroups.translations";
+import ShowSubGroups from "./elements/show-sub-groups";
 
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);

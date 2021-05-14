@@ -1,4 +1,7 @@
+import * as _ from "lodash";
 import React, { useMemo, useState } from "react";
+import styled from "styled-components";
+
 import {
     DigitButton,
     DigitSelectMultipleTable,
@@ -7,17 +10,17 @@ import {
     DigitDesign,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import translations from "./SelectMembers.view.translations";
-import UsersInGroupChanges from "./elements/users-in-group-changes";
-import * as _ from "lodash";
-import { GROUP_PRETTY_NAME } from "../../../../api/groups/props.groups.api";
+
+import { GROUP_PRETTY_NAME } from "api/groups/props.groups.api";
 import {
     USER_FIRST_NAME,
     USER_ID,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../../api/users/props.users.api";
-import styled from "styled-components";
+} from "api/users/props.users.api";
+
+import translations from "./SelectMembers.view.translations";
+import UsersInGroupChanges from "./elements/users-in-group-changes";
 
 const Table = styled.div`
     display: grid;

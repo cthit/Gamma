@@ -1,4 +1,6 @@
 import React, { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import {
     DigitButton,
     DigitDesign,
@@ -8,11 +10,13 @@ import {
     useDigitTranslations,
     useDigitToast
 } from "@cthit/react-digit-components";
+
+import { uploadUserAvatar } from "api/image/put.image.api";
+
+import GammaUserContext from "common/context/GammaUser.context";
+import statusCode from "common/utils/formatters/statusCode.formatter";
+
 import translations from "./MeAvatar.screen.translations";
-import { uploadUserAvatar } from "../../../../api/image/put.image.api";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import { useHistory } from "react-router-dom";
-import GammaUserContext from "../../../../common/context/GammaUser.context";
 
 const MeAvatar = () => {
     const history = useHistory();

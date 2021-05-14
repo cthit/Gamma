@@ -1,10 +1,12 @@
 import React from "react";
+
 import {
     DigitButton,
     DigitDesign,
     DigitDisplayData,
     DigitTranslations
 } from "@cthit/react-digit-components";
+
 import {
     USER_ACCEPTANCE_YEAR,
     USER_CID,
@@ -12,7 +14,7 @@ import {
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../api/users/props.users.api";
+} from "api/users/props.users.api";
 
 import translations from "./DisplayUserDetails.element.translations";
 

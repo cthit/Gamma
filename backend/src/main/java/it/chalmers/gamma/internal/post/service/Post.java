@@ -1,15 +1,14 @@
 package it.chalmers.gamma.internal.post.service;
 
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.internal.text.data.db.Text;
-
-import java.util.Objects;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
-public class Post extends MutableEntity<PostDTO> {
+public class Post extends MutableEntity<PostId, PostDTO> {
 
     @EmbeddedId
     private PostId id;
@@ -33,7 +32,7 @@ public class Post extends MutableEntity<PostDTO> {
     }
 
     @Override
-    protected void apply(PostDTO p) {
+    public void apply(PostDTO p) {
         assert(this.id == p.id());
 
         this.postName.apply(p.name());
@@ -50,22 +49,8 @@ public class Post extends MutableEntity<PostDTO> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Post post = (Post) o;
-        return Objects.equals(this.id, post.id)
-            && Objects.equals(this.postName, post.postName)
-            && Objects.equals(this.emailPrefix, post.emailPrefix);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.postName, this.emailPrefix);
+    protected PostId id() {
+        return this.id;
     }
 
     @Override

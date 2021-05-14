@@ -40,8 +40,8 @@ public class UserApprovalFinder implements GetEntity<UserApprovalPK, UserApprova
 
     protected UserApprovalDTO toDTO(UserApproval userApproval) {
         return new UserApprovalDTO(
-                userApproval.getId().getUserId(),
-                userApproval.getId().getClientId()
+                userApproval.id().get().userId(),
+                userApproval.id().get().clientId()
         );
     }
 

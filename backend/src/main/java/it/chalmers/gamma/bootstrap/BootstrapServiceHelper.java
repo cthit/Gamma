@@ -2,7 +2,7 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.internal.authority.service.AuthorityService;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostService;
 import it.chalmers.gamma.internal.client.service.ClientFinder;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.internal.group.service.GroupService;
@@ -10,6 +10,7 @@ import it.chalmers.gamma.internal.post.service.PostFinder;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.internal.client.service.ClientService;
+import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeService;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
@@ -29,7 +30,7 @@ public final class BootstrapServiceHelper {
     private final AuthorityLevelService authorityLevelService;
     private final PostService postService;
     private final MembershipService membershipService;
-    private final AuthorityService authorityService;
+    private final AuthorityPostService authorityPostService;
     private final ClientService clientService;
     private final ApiKeyService apiKeyService;
     private final SuperGroupService superGroupService;
@@ -38,6 +39,7 @@ public final class BootstrapServiceHelper {
     private final SuperGroupFinder superGroupFinder;
     private final ClientFinder clientFinder;
     private final UserGDPRTrainingService userGDPRTrainingService;
+    private final SuperGroupTypeService superGroupTypeService;
 
     public BootstrapServiceHelper(UserCreationService userCreationService,
                                   UserFinder userFinder,
@@ -46,10 +48,10 @@ public final class BootstrapServiceHelper {
                                   AuthorityLevelService authorityLevelService,
                                   PostService postService,
                                   MembershipService membershipService,
-                                  AuthorityService authorityService,
+                                  AuthorityPostService authorityPostService,
                                   ClientService clientService,
                                   ApiKeyService apiKeyService,
-                                  SuperGroupService superGroupService, PostFinder postFinder, GroupFinder groupFinder, SuperGroupFinder superGroupFinder, ClientFinder clientFinder, UserGDPRTrainingService userGDPRTrainingService) {
+                                  SuperGroupService superGroupService, PostFinder postFinder, GroupFinder groupFinder, SuperGroupFinder superGroupFinder, ClientFinder clientFinder, UserGDPRTrainingService userGDPRTrainingService, SuperGroupTypeService superGroupTypeService) {
         this.userCreationService = userCreationService;
         this.userFinder = userFinder;
         this.userService = userService;
@@ -57,7 +59,7 @@ public final class BootstrapServiceHelper {
         this.authorityLevelService = authorityLevelService;
         this.postService = postService;
         this.membershipService = membershipService;
-        this.authorityService = authorityService;
+        this.authorityPostService = authorityPostService;
         this.clientService = clientService;
         this.apiKeyService = apiKeyService;
         this.superGroupService = superGroupService;
@@ -66,6 +68,7 @@ public final class BootstrapServiceHelper {
         this.superGroupFinder = superGroupFinder;
         this.clientFinder = clientFinder;
         this.userGDPRTrainingService = userGDPRTrainingService;
+        this.superGroupTypeService = superGroupTypeService;
     }
 
     public UserGDPRTrainingService getUserGDPRService() {
@@ -100,8 +103,8 @@ public final class BootstrapServiceHelper {
         return this.membershipService;
     }
 
-    public AuthorityService getAuthorityService() {
-        return this.authorityService;
+    public AuthorityPostService getAuthorityService() {
+        return this.authorityPostService;
     }
 
     public ClientService getClientService() {
@@ -130,5 +133,9 @@ public final class BootstrapServiceHelper {
 
     public ClientFinder getClientFinder() {
         return clientFinder;
+    }
+
+    public SuperGroupTypeService getSuperGroupTypeService() {
+        return superGroupTypeService;
     }
 }

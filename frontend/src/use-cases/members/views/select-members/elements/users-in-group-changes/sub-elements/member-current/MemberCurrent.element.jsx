@@ -1,11 +1,12 @@
 import React from "react";
 
 import { DigitLayout, DigitText } from "@cthit/react-digit-components";
+
 import {
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../../../../../../api/users/props.users.api";
+} from "api/users/props.users.api";
 
 const MemberCurrent = ({ member }) => (
     <DigitLayout.Column>

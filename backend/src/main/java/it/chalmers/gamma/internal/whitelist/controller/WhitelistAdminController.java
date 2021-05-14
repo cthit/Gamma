@@ -6,7 +6,6 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundExcepti
 import it.chalmers.gamma.internal.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -44,25 +43,14 @@ public final class WhitelistAdminController {
         return this.whitelistFinder.getAll();
     }
 
-    private record AddListOfWhitelistedRequest(List<Cid> cids) { }
+    private record AddToWhitelist(Cid cid) { }
 
-    //todo add one whitelist
     @PostMapping()
-    public ResponseEntity<?> addWhitelistedUsers(@Valid @RequestBody AddListOfWhitelistedRequest request) {
-        List<Cid> failedToAdd = new ArrayList<>();
-
-        for (Cid cid : request.cids) {
-            try {
-                this.whitelistService.create(cid);
-                LOGGER.info("Added user " + cid + " to whitelist");
-            } catch (EntityAlreadyExistsException e) {
-                LOGGER.info("Failed to add " + cid + " to whitelist");
-                failedToAdd.add(cid);
-            }
-        }
-
-        if (!failedToAdd.isEmpty()) {
-            return new ResponseEntity<>(failedToAdd, HttpStatus.PARTIAL_CONTENT);
+    public WhitelistAddedResponse addWhitelistedUsers(@Valid @RequestBody AddToWhitelist request) {
+        try {
+            this.whitelistService.create(request.cid);
+        } catch (EntityAlreadyExistsException e) {
+            throw new CidAlreadyWhitelistedResponse();
         }
 
         return new WhitelistAddedResponse();
@@ -83,9 +71,16 @@ public final class WhitelistAdminController {
     private static class WhitelistAddedResponse extends SuccessResponse { }
 
     private static class CidNotWhitelistedResponse extends ErrorResponse {
-        public CidNotWhitelistedResponse() {
+        private CidNotWhitelistedResponse() {
             super(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
+
+    private static class CidAlreadyWhitelistedResponse extends ErrorResponse {
+        private CidAlreadyWhitelistedResponse() {
+            super(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
 
 }

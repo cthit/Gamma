@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import React from "react";
 
 import {
@@ -5,11 +6,11 @@ import {
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import MemberCurrent from "./sub-elements/member-current";
-import * as _ from "lodash";
-import MemberAddition from "./sub-elements/member-addition";
-import MemberDeletion from "./sub-elements/member-deletion";
+
 import translations from "./UsersInGroupChanges.element.translations";
+import MemberAddition from "./sub-elements/member-addition";
+import MemberCurrent from "./sub-elements/member-current";
+import MemberDeletion from "./sub-elements/member-deletion";
 
 function findAdditions(currentMembers, selectedMembers) {
     return selectedMembers.filter(

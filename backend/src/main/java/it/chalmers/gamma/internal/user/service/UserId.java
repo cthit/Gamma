@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.user.service;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import it.chalmers.gamma.util.domain.abstraction.DTO;
 import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.Column;
@@ -10,7 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class UserId implements Id, Serializable {
+public class UserId extends Id<UUID> implements DTO {
 
     @JsonValue
     @Column(name = "user_id")
@@ -28,16 +29,7 @@ public class UserId implements Id, Serializable {
         return new UserId(UUID.fromString(value));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserId userId = (UserId) o;
-        return Objects.equals(value, userId.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+    protected UUID get() {
+        return value;
     }
 }

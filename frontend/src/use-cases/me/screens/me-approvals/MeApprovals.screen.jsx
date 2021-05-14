@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getApprovals } from "../../../../api/approval/get.approval.api";
+
 import {
     DigitLoading,
     DigitTable,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
+import { getApprovals } from "api/approval/get.approval.api";
+
 import translations from "./MeApprovals.translations.screen";
 
 const MeApprovals = () => {

@@ -1,17 +1,21 @@
 import React from "react";
+
 import { DigitCRUD, useDigitTranslations } from "@cthit/react-digit-components";
+
+import { deleteWhitelistItem } from "api/whitelist/delete.whitelist.api";
 import {
     getWhitelist,
     getWhitelistItem
-} from "../../api/whitelist/get.whitelist.api";
-import { addUsersToWhitelist } from "../../api/whitelist/post.whitelist.api";
-import { editWhitelistItem } from "../../api/whitelist/put.whitelist.api";
-import translations from "./Whitelist.translations";
-import { deleteWhitelistItem } from "../../api/whitelist/delete.whitelist.api";
-import InsufficientAccess from "../../common/views/insufficient-access";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
+} from "api/whitelist/get.whitelist.api";
+import { addUsersToWhitelist } from "api/whitelist/post.whitelist.api";
+import { WHITELIST_CID } from "api/whitelist/props.whitelist.api";
+import { editWhitelistItem } from "api/whitelist/put.whitelist.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
 import {
     initialValues,
     keysComponentData,
@@ -19,7 +23,7 @@ import {
     keysText,
     validationSchema
 } from "./Whitelist.options";
-import { WHITELIST_CID } from "../../api/whitelist/props.whitelist.api";
+import translations from "./Whitelist.translations";
 
 const Whitelist = () => {
     const [text] = useDigitTranslations(translations);

@@ -1,15 +1,16 @@
 import React from "react";
-import translations from "./ChangeLanguageLocally.view.translations";
+
 import {
     DigitDesign,
     DigitSelect,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
+import translations from "./ChangeLanguageLocally.view.translations";
+
 const ChangeLanguageLocally = () => {
-    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
-        translations
-    );
+    const [text, activeLanguage, setActiveLanguage] =
+        useDigitTranslations(translations);
 
     return (
         <DigitDesign.Card margin={{ bottom: "16px" }}>

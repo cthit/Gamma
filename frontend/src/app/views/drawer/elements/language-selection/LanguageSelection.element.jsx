@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
-import useGammaUser from "../../../../../common/hooks/use-gamma-user/useGammaUser";
-import { editMe } from "../../../../../api/me/put.me.api";
+
 import {
     DigitSelect,
     useDigitToast,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
+import { editMe } from "api/me/put.me.api";
+
+import useGammaUser from "common/hooks/use-gamma-user/useGammaUser";
+
 import translations from "./LanguageSelection.element.translations";
 
 const LanguageSelection = () => {
     const user = useGammaUser();
-    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
-        translations
-    );
+    const [text, activeLanguage, setActiveLanguage] =
+        useDigitTranslations(translations);
     const [queueToast] = useDigitToast();
     const [language, setLanguage] = useState(user.language);
     const [firstRender, setFirstRender] = useState(true);

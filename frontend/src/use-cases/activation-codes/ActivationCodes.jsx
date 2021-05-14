@@ -1,20 +1,24 @@
 import React from "react";
+
+import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
+
+import { deleteActivationCode } from "api/activation-codes/delete.activationCodes.api";
 import {
     getActivationCode,
     getActivationCodes
-} from "../../api/activation-codes/get.activationCodes.api";
-import { deleteActivationCode } from "../../api/activation-codes/delete.activationCodes.api";
-import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
-import translations from "./ActivationCodes.translations";
-import InsufficientAccess from "../../common/views/insufficient-access";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
-import FiveZeroZero from "../../app/elements/five-zero-zero";
-import { keysOrder, keysText } from "./ActivationCodes.options";
+} from "api/activation-codes/get.activationCodes.api";
 import {
     AC_CID,
     AC_NAME
-} from "../../api/activation-codes/props.activationCodes.api";
+} from "api/activation-codes/props.activationCodes.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
+import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
+import { keysOrder, keysText } from "./ActivationCodes.options";
+import translations from "./ActivationCodes.translations";
 
 const ActivationCodes = () => {
     const [text] = useDigitTranslations(translations);

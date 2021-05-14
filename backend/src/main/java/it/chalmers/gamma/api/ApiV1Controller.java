@@ -1,7 +1,7 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
@@ -38,18 +38,18 @@ public class ApiV1Controller {
 
     private final UserFinder userFinder;
     private final MembershipFinder membershipFinder;
-    private final AuthorityFinder authorityFinder;
+    private final AuthorityPostFinder authorityPostFinder;
     private final GroupFinder groupFinder;
     private final SuperGroupFinder superGroupFinder;
 
     public ApiV1Controller(UserFinder userFinder,
                            MembershipFinder membershipFinder,
-                           AuthorityFinder authorityFinder,
+                           AuthorityPostFinder authorityPostFinder,
                            GroupFinder groupFinder,
                            SuperGroupFinder superGroupFinder) {
         this.userFinder = userFinder;
         this.membershipFinder = membershipFinder;
-        this.authorityFinder = authorityFinder;
+        this.authorityPostFinder = authorityPostFinder;
         this.groupFinder = groupFinder;
         this.superGroupFinder = superGroupFinder;
     }
@@ -95,7 +95,7 @@ public class ApiV1Controller {
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
-            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
+            List<AuthorityLevelName> authorityLevelNames = this.authorityPostFinder.getGrantedAuthorities(user.id());
 
             return new GetMeResponse(new UserRestrictedDTO(user), groups, authorityLevelNames);
         } catch (EntityNotFoundException e) {

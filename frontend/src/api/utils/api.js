@@ -1,6 +1,7 @@
 import axios from "axios";
 import _ from "lodash";
-import { on401 } from "../../common/utils/error-handling/error-handling";
+
+import { on401 } from "common/utils/error-handling/error-handling";
 
 const path = "/api";
 
@@ -43,11 +44,7 @@ export function getRequest(endpoint, convert, redirect = true) {
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2)
-        return parts
-            .pop()
-            .split(";")
-            .shift();
+    if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
 export function postRequest(endpoint, data, redirect = true) {

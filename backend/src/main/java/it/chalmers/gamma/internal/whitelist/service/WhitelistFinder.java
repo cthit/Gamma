@@ -23,7 +23,7 @@ public class WhitelistFinder implements GetAllEntities<Cid> {
     public List<Cid> getAll() {
         return this.repository.findAll()
                 .stream()
-                .map(Whitelist::getCid)
+                .map(Whitelist::get)
                 .collect(Collectors.toList());
     }
 

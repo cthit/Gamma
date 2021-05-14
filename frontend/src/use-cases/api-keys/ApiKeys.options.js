@@ -1,10 +1,12 @@
 import * as yup from "yup";
+
 import { DigitTextArea, DigitTextField } from "@cthit/react-digit-components";
+
 import {
     API_DESCRIPTION_ENGLISH,
     API_DESCRIPTION_SWEDISH,
     API_NAME
-} from "../../api/api-keys/props.api-keys.api";
+} from "api/api-keys/props.api-keys.api";
 
 export const validationSchema = text => {
     const schema = {};

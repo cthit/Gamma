@@ -1,37 +1,39 @@
+import React, { useContext, useEffect } from "react";
+import { Route, Switch, useLocation } from "react-router-dom";
+
 import {
     DigitHeader,
     DigitHeaderDrawer,
     DigitLoading,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import React, { useContext, useEffect } from "react";
-import { Route, Switch, useLocation } from "react-router-dom";
+
+import GammaUserContext from "common/context/GammaUser.context";
+import translations from "common/utils/translations/CommonTranslations";
+
+import About from "../use-cases/about";
 import ActivationCodes from "../use-cases/activation-codes";
+import ApiKeys from "../use-cases/api-keys";
+import Authorities from "../use-cases/authorities/Authorities";
+import Clients from "../use-cases/clients";
 import CreateAccount from "../use-cases/create-account";
 import FourOFour from "../use-cases/four-o-four";
 import Gdpr from "../use-cases/gdpr";
 import Groups from "../use-cases/groups";
 import Home from "../use-cases/home";
-import Posts from "../use-cases/posts";
-import Users from "../use-cases/users";
-import Clients from "../use-cases/clients";
-import ApiKeys from "../use-cases/api-keys";
-import Whitelist from "../use-cases/whitelist";
-import translations from "../common/utils/translations/CommonTranslations";
-import SuperGroups from "../use-cases/super-groups";
 import Me from "../use-cases/me";
-import ResetPassword from "../use-cases/reset-password";
-import Drawer from "./views/drawer";
 import Members from "../use-cases/members";
-import GammaUserContext from "../common/context/GammaUser.context";
+import Posts from "../use-cases/posts";
+import ResetPassword from "../use-cases/reset-password";
+import SuperGroups from "../use-cases/super-groups";
+import Users from "../use-cases/users";
+import Whitelist from "../use-cases/whitelist";
 import FiveZeroZero from "./elements/five-zero-zero";
-import About from "../use-cases/about";
-import Authorities from "../use-cases/authorities/Authorities";
+import Drawer from "./views/drawer";
 
 export const App = () => {
-    const [user, update, [loading, error], ignore] = useContext(
-        GammaUserContext
-    );
+    const [user, update, [loading, error], ignore] =
+        useContext(GammaUserContext);
     const [, , , setCommonTranslations] = useDigitTranslations(translations);
     const { pathname } = useLocation();
 

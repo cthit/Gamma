@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class ApiKeyId implements Id, Serializable {
+public class ApiKeyId extends Id<UUID> {
 
     @JsonValue
     @Column(name = "api_key_id")
@@ -29,20 +29,8 @@ public class ApiKeyId implements Id, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ApiKeyId postId = (ApiKeyId) o;
-        return Objects.equals(value, postId.value);
+    protected UUID get() {
+        return this.value;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "ApiKeyId: " + this.value;
-    }
 }

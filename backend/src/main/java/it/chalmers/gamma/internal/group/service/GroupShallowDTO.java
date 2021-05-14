@@ -7,8 +7,6 @@ import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
 import java.util.Calendar;
 
 public record GroupShallowDTO(GroupId id,
-                          Calendar becomesActive,
-                          Calendar becomesInactive,
                           Email email,
                           String name,
                           String prettyName,

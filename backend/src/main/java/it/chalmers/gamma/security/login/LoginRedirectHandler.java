@@ -18,6 +18,7 @@ public class LoginRedirectHandler implements AuthenticationSuccessHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginRedirectHandler.class);
 
+    //TODO remove this to instead use ?redirect_to
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,

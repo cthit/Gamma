@@ -1,14 +1,14 @@
 package it.chalmers.gamma.internal.membership.service;
 
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
-import java.util.Objects;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "membership")
-public class Membership extends MutableEntity<MembershipShallowDTO> {
+public class Membership extends MutableEntity<MembershipPK, MembershipShallowDTO> {
 
     @EmbeddedId
     private MembershipPK id;
@@ -33,7 +33,7 @@ public class Membership extends MutableEntity<MembershipShallowDTO> {
     }
 
     @Override
-    protected void apply(MembershipShallowDTO m) {
+    public void apply(MembershipShallowDTO m) {
         assert(this.id.equals(new MembershipPK(m.postId(), m.groupId(), m.userId())));
 
         this.unofficialPostName = m.unofficialPostName();
@@ -42,29 +42,16 @@ public class Membership extends MutableEntity<MembershipShallowDTO> {
     @Override
     protected MembershipShallowDTO toDTO() {
         return new MembershipShallowDTO(
-                this.id.getPostId(),
-                this.id.getGroupId(),
+                this.id.get().postId(),
+                this.id.get().groupId(),
                 this.unofficialPostName,
-                this.id.getUserId()
+                this.id.get().userId()
         );
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Membership that = (Membership) o;
-        return Objects.equals(this.id, that.id)
-            && Objects.equals(this.unofficialPostName, that.unofficialPostName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id, this.unofficialPostName);
+    protected MembershipPK id() {
+        return this.id;
     }
 
     @Override

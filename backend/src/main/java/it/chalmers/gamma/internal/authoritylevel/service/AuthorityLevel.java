@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.authoritylevel.service;
 
-import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.domain.abstraction.SingleImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -8,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "authority_level")
-public class AuthorityLevel extends BaseEntity<AuthorityLevelName> {
+public class AuthorityLevel extends SingleImmutableEntity<AuthorityLevelName> {
 
     @EmbeddedId
     private AuthorityLevelName authorityLevel;
@@ -20,7 +21,7 @@ public class AuthorityLevel extends BaseEntity<AuthorityLevelName> {
     }
 
     @Override
-    protected AuthorityLevelName toDTO() {
+    protected AuthorityLevelName get() {
         return authorityLevel;
     }
 }

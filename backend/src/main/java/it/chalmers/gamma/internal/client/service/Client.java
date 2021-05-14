@@ -1,13 +1,15 @@
 package it.chalmers.gamma.internal.client.service;
 
+import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 import it.chalmers.gamma.internal.text.data.db.Text;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "itclient")
-public class Client extends MutableEntity<ClientDTO> {
+public class Client extends ImmutableEntity<ClientId, ClientDTO> {
 
     @EmbeddedId
     private ClientId clientId;
@@ -35,22 +37,16 @@ public class Client extends MutableEntity<ClientDTO> {
 
         this.clientId = client.clientId();
         this.clientSecret = client.clientSecret();
-
-        if(this.description == null) {
-            this.description = new Text();
-        }
-
-        apply(client);
+        this.description = new Text(client.description());
+        this.webServerRedirectUri = client.webServerRedirectUri();
+        this.autoApprove = client.autoApprove();
+        this.name = client.name();
+        this.description.apply(client.description());
     }
 
     @Override
-    protected void apply(ClientDTO c) {
-        assert(this.clientId == c.clientId());
-
-        this.webServerRedirectUri = c.webServerRedirectUri();
-        this.autoApprove = c.autoApprove();
-        this.name = c.name();
-        this.description.apply(c.description());
+    protected ClientId id() {
+        return this.clientId;
     }
 
     @Override

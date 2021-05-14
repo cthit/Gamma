@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
 import { addDays } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import {
     DigitCRUD,
     useDigitTranslations,
     DigitButton,
     DigitLayout
 } from "@cthit/react-digit-components";
-import translations from "./Groups.translations";
-import { getGroup, getGroupsMinified } from "../../api/groups/get.groups.api";
+
+import { deleteGroup } from "api/groups/delete.groups.api";
+import { getGroup, getGroupsMinified } from "api/groups/get.groups.api";
+import { addGroup } from "api/groups/post.groups.api";
 import {
     GROUP_BECOMES_ACTIVE,
     GROUP_BECOMES_INACTIVE,
@@ -22,16 +26,16 @@ import {
     GROUP_FUNCTION_EN,
     GROUP_FUNCTION_SV,
     GROUP_NO_ACCOUNT_MEMBERS
-} from "../../api/groups/props.groups.api";
-import { editGroup } from "../../api/groups/put.groups.api";
-import { getSuperGroups } from "../../api/super-groups/get.super-groups.api";
-import { addGroup } from "../../api/groups/post.groups.api";
-import DisplayMembersTable from "../../common/elements/display-members-table";
-import { useHistory } from "react-router-dom";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import { deleteGroup } from "../../api/groups/delete.groups.api";
-import FourOFour from "../four-o-four";
+} from "api/groups/props.groups.api";
+import { editGroup } from "api/groups/put.groups.api";
+import { getSuperGroups } from "api/super-groups/get.super-groups.api";
+
+import DisplayMembersTable from "common/elements/display-members-table";
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
 import {
     initialValues,
     keysOrder,
@@ -42,7 +46,7 @@ import {
     validationSchema,
     updateKeysOrder
 } from "./Groups.options";
-import InsufficientAccess from "../../common/views/insufficient-access";
+import translations from "./Groups.translations";
 
 const Groups = () => {
     const [text] = useDigitTranslations(translations);

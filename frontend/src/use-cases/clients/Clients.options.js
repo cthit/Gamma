@@ -1,9 +1,11 @@
 import * as yup from "yup";
+
 import {
     DigitCheckbox,
     DigitTextArea,
     DigitTextField
 } from "@cthit/react-digit-components";
+
 import {
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_DESCRIPTION_SWEDISH,
@@ -11,7 +13,7 @@ import {
     CLIENT_REDIRECT,
     CLIENT_AUTO_APPROVE,
     CLIENT_ID
-} from "../../api/clients/props.clients.api";
+} from "api/clients/props.clients.api";
 
 export const validationSchema = text => {
     const schema = {};

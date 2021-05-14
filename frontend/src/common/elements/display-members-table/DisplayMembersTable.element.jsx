@@ -1,10 +1,9 @@
 import React from "react";
+
 import {
     DigitTable,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-
-import translations from "./DisplayMembersTable.element.translations";
 
 import {
     USER_ACCEPTANCE_YEAR,
@@ -12,7 +11,9 @@ import {
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../api/users/props.users.api";
+} from "api/users/props.users.api";
+
+import translations from "./DisplayMembersTable.element.translations";
 
 function generateHeaderTexts(text) {
     const headerTexts = {};

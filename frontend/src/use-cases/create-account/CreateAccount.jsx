@@ -1,3 +1,7 @@
+import PropTypes from "prop-types";
+import React from "react";
+import { useHistory, useLocation } from "react-router-dom";
+
 import {
     DigitLayout,
     DigitStepper,
@@ -6,16 +10,15 @@ import {
     useDigitTranslations,
     DigitButton
 } from "@cthit/react-digit-components";
-import PropTypes from "prop-types";
-import React from "react";
-import MapPathToStep from "../../common/declaratives/map-path-to-step";
+
+import MapPathToStep from "common/declaratives/map-path-to-step";
+import useGammaUser from "common/hooks/use-gamma-user/useGammaUser";
+
 import translations from "./CreateAccount.translations.json";
 import CreationOfAccountFinished from "./views/creation-of-account-finished";
 import EmailHasBeenSent from "./views/email-has-been-sent";
 import InputCid from "./views/input-cid";
 import InputDataAndCode from "./views/input-data-and-code";
-import { useHistory, useLocation } from "react-router-dom";
-import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 
 const CreateAccount = () => {
     const [text] = useDigitTranslations(translations);

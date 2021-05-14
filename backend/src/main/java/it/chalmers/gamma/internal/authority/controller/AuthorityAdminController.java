@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.authority.controller;
 
-import it.chalmers.gamma.internal.authority.service.AuthorityDTO;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.authority.service.AuthorityPK;
-import it.chalmers.gamma.internal.authority.service.AuthorityShallowDTO;
-import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
-import it.chalmers.gamma.internal.authority.service.AuthorityService;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostPK;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostShallowDTO;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostService;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.post.service.PostId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
@@ -22,17 +22,17 @@ import java.util.List;
 @RequestMapping("/admin/authority")
 public final class AuthorityAdminController {
 
-    private final AuthorityFinder authorityFinder;
-    private final AuthorityService authorityService;
+    private final AuthorityPostFinder authorityPostFinder;
+    private final AuthorityPostService authorityPostService;
 
-    public AuthorityAdminController(AuthorityFinder authorityFinder, AuthorityService authorityService) {
-        this.authorityFinder = authorityFinder;
-        this.authorityService = authorityService;
+    public AuthorityAdminController(AuthorityPostFinder authorityPostFinder, AuthorityPostService authorityPostService) {
+        this.authorityPostFinder = authorityPostFinder;
+        this.authorityPostService = authorityPostService;
     }
 
     @GetMapping()
-    public List<AuthorityDTO> getAllAuthorities() {
-        return this.authorityFinder.getAll();
+    public List<AuthorityPostDTO> getAllAuthorities() {
+        return this.authorityPostFinder.getAll();
     }
 
     private record CreateAuthorityRequest(PostId postId, SuperGroupId superGroupId, AuthorityLevelName authority) { }
@@ -40,8 +40,8 @@ public final class AuthorityAdminController {
     @PostMapping
     public AuthorityCreatedResponse addAuthority(@RequestBody CreateAuthorityRequest request) {
         try {
-            this.authorityService.create(
-                    new AuthorityShallowDTO(
+            this.authorityPostService.create(
+                    new AuthorityPostShallowDTO(
                         request.superGroupId,
                         request.postId,
                         request.authority
@@ -58,8 +58,8 @@ public final class AuthorityAdminController {
                                                     @RequestParam("postId") PostId postId,
                                                     @RequestParam("authorityLevelName") String authorityLevelName) {
         try {
-            this.authorityService.delete(
-                    new AuthorityPK(superGroupId, postId, new AuthorityLevelName(authorityLevelName))
+            this.authorityPostService.delete(
+                    new AuthorityPostPK(superGroupId, postId, new AuthorityLevelName(authorityLevelName))
             );
             return new AuthorityRemovedResponse();
         } catch (EntityNotFoundException e) {

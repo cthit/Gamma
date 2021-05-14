@@ -8,15 +8,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public record GroupDTO(GroupId id,
-                   Calendar becomesActive,
-                   Calendar becomesInactive,
                    Email email,
                    String name,
                    String prettyName,
                    SuperGroupDTO superGroup)
-        implements DTO {
-    public boolean isActive() {
-        Calendar now = new GregorianCalendar();
-        return now.after(this.becomesActive) && now.before(this.becomesInactive);
-    }
-}
+        implements DTO { }

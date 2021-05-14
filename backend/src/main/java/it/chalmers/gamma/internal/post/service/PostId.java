@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class PostId implements Serializable, Id {
+public class PostId extends Id<UUID> {
 
     @JsonValue
     @Column(name = "post_id")
@@ -29,20 +29,7 @@ public class PostId implements Serializable, Id {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PostId postId = (PostId) o;
-        return Objects.equals(value, postId.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "PostId: " + this.value;
+    protected UUID get() {
+        return this.value;
     }
 }

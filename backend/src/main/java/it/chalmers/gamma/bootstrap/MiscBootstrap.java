@@ -12,14 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class MiscBootstrap {
 
-    @Value("classpath:image/default.jpg")
+    @Value("classpath:/image/default.jpg")
     private Resource defaultResourceFile;
 
     @Value("${application.files.path}")
     private String targetDir;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MiscBootstrap.class);
-
 
     public void runImageBootstrap() {
         File targetFile = new File(String.format("%s/%s", this.targetDir, "default.jpg"));

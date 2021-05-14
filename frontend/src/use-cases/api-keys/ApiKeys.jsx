@@ -1,19 +1,3 @@
-import React from "react";
-import {
-    DigitButton,
-    DigitCRUD,
-    DigitText,
-    useDigitCustomDialog,
-    useDigitTranslations
-} from "@cthit/react-digit-components";
-import { getApiKey, getApiKeys } from "../../api/api-keys/get.api-keys.api";
-import { addApiKey } from "../../api/api-keys/post.api-keys.api";
-import { deleteApiKey } from "../../api/api-keys/delete.api-keys.api";
-import translations from "./ApiKeys.translations";
-import InsufficientAccess from "../../common/views/insufficient-access";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
-import FiveZeroZero from "../../app/elements/five-zero-zero";
 import {
     initialValues,
     keysComponentData,
@@ -21,11 +5,27 @@ import {
     keysText,
     validationSchema
 } from "./ApiKeys.options";
+import React from "react";
+
 import {
-    API_ID,
-    API_NAME,
-    API_SECRET
-} from "../../api/api-keys/props.api-keys.api";
+    DigitButton,
+    DigitCRUD,
+    DigitText,
+    useDigitCustomDialog,
+    useDigitTranslations
+} from "@cthit/react-digit-components";
+
+import { deleteApiKey } from "api/api-keys/delete.api-keys.api";
+import { getApiKey, getApiKeys } from "api/api-keys/get.api-keys.api";
+import { addApiKey } from "api/api-keys/post.api-keys.api";
+import { API_ID, API_NAME, API_SECRET } from "api/api-keys/props.api-keys.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
+import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
+import translations from "./ApiKeys.translations.json";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);

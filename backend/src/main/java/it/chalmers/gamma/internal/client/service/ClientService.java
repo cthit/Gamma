@@ -25,7 +25,7 @@ public class ClientService implements ClientDetailsService, CreateEntity<ClientD
     public ClientDetails loadClientByClientId(String clientId) {
         return this.clientRepository.findById(new ClientId(clientId))
                 .map(Client::toDTO)
-                .map(ClientDetailsDTO::new)
+                .map(ClientDetailsImpl::new)
                 .orElseThrow(ClientAdminController.ClientNotFoundResponse::new);
     }
 

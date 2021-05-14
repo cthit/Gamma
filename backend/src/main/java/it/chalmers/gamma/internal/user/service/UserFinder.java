@@ -28,6 +28,7 @@ public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<Us
         return this.userRepository.existsById(id);
     }
 
+    //todo filter out non activated accounts
     public List<UserRestrictedDTO> getAll() {
         return getAllFull()
                 .stream()

@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitLayout,
     DigitEditDataCard,
@@ -6,13 +9,14 @@ import {
     useDigitTranslations,
     useDigitToast
 } from "@cthit/react-digit-components";
+
+import { getUser } from "api/users/get.users.api";
+import { editPasswordAdmin } from "api/users/put.users.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import translations from "./ResetPasswordAdmin.screen.translations";
-import useGammaIsAdmin from "../../../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import InsufficientAccess from "../../../../common/views/insufficient-access";
-import { useHistory, useParams } from "react-router-dom";
-import { getUser } from "../../../../api/users/get.users.api";
-import * as yup from "yup";
-import { editPasswordAdmin } from "../../../../api/users/put.users.api";
 
 const ResetPasswordAdmin = () => {
     const [text] = useDigitTranslations(translations);

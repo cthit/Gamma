@@ -4,15 +4,15 @@ import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import java.time.Year;
-import java.util.Objects;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ituser")
-public class User extends MutableEntity<UserDTO> {
+public class User extends MutableEntity<UserId, UserDTO> {
 
     @EmbeddedId
     private UserId id;
@@ -76,7 +76,12 @@ public class User extends MutableEntity<UserDTO> {
     }
 
     @Override
-    protected void apply(UserDTO u) {
+    protected UserId id() {
+        return this.id;
+    }
+
+    @Override
+    public void apply(UserDTO u) {
         assert(this.id == u.id());
         assert(this.cid == u.cid());
 
@@ -105,43 +110,6 @@ public class User extends MutableEntity<UserDTO> {
     protected Cid getCid() {
         return cid;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        User user = (User) o;
-        return this.userAgreement == user.userAgreement
-                && Objects.equals(this.id, user.id)
-                && Objects.equals(this.cid, user.cid)
-                && Objects.equals(this.nick, user.nick)
-                && Objects.equals(this.password, user.password)
-                && Objects.equals(this.firstName, user.firstName)
-                && Objects.equals(this.lastName, user.lastName)
-                && Objects.equals(this.email, user.email)
-                && Objects.equals(this.language, user.language)
-                && Objects.equals(this.acceptanceYear, user.acceptanceYear);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                this.id,
-                this.cid,
-                this.password,
-                this.nick,
-                this.firstName,
-                this.lastName,
-                this.email,
-                this.language,
-                this.userAgreement,
-                this.acceptanceYear);
-    }
-
 
     @Override
     public String toString() {

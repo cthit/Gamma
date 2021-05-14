@@ -1,4 +1,5 @@
 import * as yup from "yup";
+
 import {
     USER_ACCEPTANCE_YEAR,
     USER_CID,
@@ -13,7 +14,7 @@ import {
     USER_RELATIONSHIPS,
     USER_AGREEMENT,
     USER_ID
-} from "../../api/users/props.users.api";
+} from "api/users/props.users.api";
 
 export const createValidationSchema = text => {
     const schema = {};

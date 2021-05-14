@@ -1,15 +1,18 @@
+import React from "react";
+
 import {
     DigitLayout,
     DigitNavLink,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import React from "react";
+
+import useGammaHasAuthority from "common/hooks/use-gamma-has-authority/use-gamma-has-authority";
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import useGammaUser from "common/hooks/use-gamma-user/useGammaUser";
+
 import translations from "./Drawer.view.translations";
-import useGammaUser from "../../../common/hooks/use-gamma-user/useGammaUser";
-import useGammaHasAuthority from "../../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
-import useGammaIsAdmin from "../../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import LanguageSelection from "./elements/language-selection";
 import GammaActions from "./elements/gamma-actions/GammaActions.element";
+import LanguageSelection from "./elements/language-selection";
 
 const Drawer = ({ closeDrawer }) => {
     const user = useGammaUser();

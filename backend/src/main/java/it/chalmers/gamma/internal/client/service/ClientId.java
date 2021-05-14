@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class ClientId implements Serializable, Id {
+public class ClientId extends Id<String> implements Serializable {
 
     @JsonValue
     @Column(name = "client_id")
@@ -35,16 +35,4 @@ public class ClientId implements Serializable, Id {
         return this.value;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ClientId clientId = (ClientId) o;
-        return Objects.equals(value, clientId.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
 }

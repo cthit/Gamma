@@ -1,7 +1,7 @@
 package it.chalmers.gamma.util.domain.abstraction.exception;
 
 import it.chalmers.gamma.util.ClassNameGeneratorUtils;
-import it.chalmers.gamma.util.domain.abstraction.BaseEntity;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
 public class EntityAlreadyExistsException extends Exception {
 
@@ -9,7 +9,7 @@ public class EntityAlreadyExistsException extends Exception {
         super();
     }
 
-    public EntityAlreadyExistsException(Class<? extends BaseEntity<?>> entity) {
+    public EntityAlreadyExistsException(Class<? extends MutableEntity<?, ?>> entity) {
         super(ClassNameGeneratorUtils.classToScreamingSnakeCase(entity) + "_ALREADY_EXISTS");
     }
 }

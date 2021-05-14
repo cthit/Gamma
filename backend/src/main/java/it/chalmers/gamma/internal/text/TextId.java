@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.text;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -9,7 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
-public class TextId implements Serializable {
+public class TextId extends Id<UUID> {
 
     @JsonIgnore
     @Column(name = "text_id")
@@ -28,15 +29,7 @@ public class TextId implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TextId userId = (TextId) o;
-        return Objects.equals(value, userId.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+    protected UUID get() {
+        return this.value;
     }
 }

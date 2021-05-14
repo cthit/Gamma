@@ -36,12 +36,6 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
                 .collect(Collectors.toList());
     }
 
-    public List<GroupDTO> getAllActive() {
-        return this.getAll().stream()
-                .filter(GroupDTO::isActive)
-                .collect(Collectors.toList());
-    }
-
     public GroupDTO get(GroupId id) throws EntityNotFoundException {
         return fromShallow(getGroupEntity(id).toDTO());
     }
@@ -87,20 +81,10 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
                 .collect(Collectors.toList());
     }
 
-    public List<GroupMinifiedDTO> getActiveGroupsMinifiedBySuperGroup(SuperGroupId superGroupId) throws EntityNotFoundException {
-        return getGroupsBySuperGroup(superGroupId)
-                .stream()
-                .filter(GroupDTO::isActive)
-                .map(GroupMinifiedDTO::new)
-                .collect(Collectors.toList());
-    }
-
     protected GroupDTO fromShallow(GroupShallowDTO group) {
         try {
             return new GroupDTO(
                     group.id(),
-                    group.becomesActive(),
-                    group.becomesInactive(),
                     group.email(),
                     group.name(),
                     group.prettyName(),

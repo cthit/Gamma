@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getAllApprovalsbyClientId } from "../../../../api/approval/get.approval.api";
+
 import {
     DigitTable,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
+import { getAllApprovalsbyClientId } from "api/approval/get.approval.api";
+
 import translations from "./UserClientApprovals.translations.view";
 
 const UserClientApprovals = ({ client }) => {

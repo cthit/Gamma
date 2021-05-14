@@ -7,7 +7,7 @@ import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.GroupPost;
-import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.internal.user.service.UserDTO;
@@ -18,7 +18,6 @@ import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,18 +37,18 @@ public class MeController {
     private final UserService userService;
     private final UserFinder userFinder;
     private final MembershipFinder membershipFinder;
-    private final AuthorityFinder authorityFinder;
+    private final AuthorityPostFinder authorityPostFinder;
 
     public MeController(MeService meService,
                         UserService userService,
                         UserFinder userFinder,
                         MembershipFinder membershipFinder,
-                        AuthorityFinder authorityFinder) {
+                        AuthorityPostFinder authorityPostFinder) {
         this.meService = meService;
         this.userService = userService;
         this.userFinder = userFinder;
         this.membershipFinder = membershipFinder;
-        this.authorityFinder = authorityFinder;
+        this.authorityPostFinder = authorityPostFinder;
     }
 
     public record GetMeResponse(@JsonUnwrapped UserDTO user,
@@ -64,7 +63,7 @@ public class MeController {
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
-            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
+            List<AuthorityLevelName> authorityLevelNames = this.authorityPostFinder.getGrantedAuthorities(user.id());
 
             return new GetMeResponse(user, groups, authorityLevelNames);
         } catch (EntityNotFoundException e) {

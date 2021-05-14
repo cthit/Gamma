@@ -11,7 +11,10 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
 @Embeddable
-public class UserApprovalPK implements Id, Serializable {
+public class UserApprovalPK extends Id<UserApprovalPK.UserApprovalPKDTO> {
+
+    protected record UserApprovalPKDTO(UserId userId, ClientId clientId) {
+    }
 
     @Embedded
     private UserId userId;
@@ -26,24 +29,11 @@ public class UserApprovalPK implements Id, Serializable {
         this.clientId = clientId;
     }
 
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public ClientId getClientId() {
-        return clientId;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserApprovalPK that = (UserApprovalPK) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(clientId, that.clientId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, clientId);
+    protected UserApprovalPKDTO get() {
+        return new UserApprovalPKDTO(
+                this.userId,
+                this.clientId
+        );
     }
 }

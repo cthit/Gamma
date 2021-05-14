@@ -1,4 +1,5 @@
 import * as yup from "yup";
+
 import { DigitSelect, DigitTextField } from "@cthit/react-digit-components";
 
 import {
@@ -12,7 +13,7 @@ import {
     SG_TYPE_COMMITTEE,
     SG_TYPE_FUNCTIONARIES,
     SG_TYPE_SOCIETY
-} from "../../api/super-groups/props.super-groups.api";
+} from "api/super-groups/props.super-groups.api";
 
 export const validationSchema = text => {
     const schema = {};

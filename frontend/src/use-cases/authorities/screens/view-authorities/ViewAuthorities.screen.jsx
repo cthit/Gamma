@@ -1,18 +1,21 @@
+import Add from "@material-ui/icons/Add";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+
 import {
     DigitFAB,
     DigitLayout,
     DigitDesign,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import Add from "@material-ui/icons/Add";
-import React, { useEffect, useState } from "react";
-import translations from "../../Authorities.translations";
+
 import {
     getAuthorities,
     getAuthorityLevels
-} from "../../../../api/authorities/get.authorities";
+} from "api/authorities/get.authorities";
+
+import translations from "../../Authorities.translations";
 import AuthorityLevelCard from "./elements/authority-level-card";
-import styled from "styled-components";
 
 const Grid = styled.div`
     flex: 1;

@@ -70,14 +70,6 @@ public class ClientAdminController {
         }
     }
 
-    private record UpdateClientInformationRequest(TextDTO description) { }
-
-    @PutMapping("/{clientId}")
-    public ClientUpdatedResponse updateClient(@PathVariable("clientId") ClientId clientId, @RequestBody UpdateClientInformationRequest request) {
-        //this.clientService.update(clientId, request.description);
-        return new ClientUpdatedResponse();
-    }
-
     private static class ClientDeletedResponse extends SuccessResponse { }
 
     private static class ClientUpdatedResponse extends SuccessResponse { }

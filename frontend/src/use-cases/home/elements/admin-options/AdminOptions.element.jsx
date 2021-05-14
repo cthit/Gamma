@@ -6,8 +6,8 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
-import translations from "./AdminOptions.element.translations.json";
 import HomeLink from "../../elements/home-link";
+import translations from "./AdminOptions.element.translations.json";
 
 const AdminOptions = () => {
     const [text] = useDigitTranslations(translations);

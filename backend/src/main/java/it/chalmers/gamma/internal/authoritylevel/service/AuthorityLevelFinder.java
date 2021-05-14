@@ -20,7 +20,7 @@ public class AuthorityLevelFinder implements GetAllEntities<AuthorityLevelName> 
     }
 
     public List<AuthorityLevelName> getAll() {
-        return this.authorityLevelRepository.findAll().stream().map(AuthorityLevel::toDTO).collect(Collectors.toList());
+        return this.authorityLevelRepository.findAll().stream().map(AuthorityLevel::get).collect(Collectors.toList());
     }
 
 }

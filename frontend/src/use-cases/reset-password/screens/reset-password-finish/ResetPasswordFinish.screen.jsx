@@ -1,4 +1,7 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitTextField,
     useDigitTranslations,
@@ -8,14 +11,15 @@ import {
     DigitText,
     DigitLayout
 } from "@cthit/react-digit-components";
-import * as yup from "yup";
+
+import { resetPasswordFinalize } from "api/reset-password/put.reset-password";
+
+import { getBackendUrl } from "common/utils/configs/envVariablesLoader";
+import statusCode from "common/utils/formatters/statusCode.formatter";
+import statusMessage from "common/utils/formatters/statusMessage.formatter";
+import ChangeLanguageLocally from "common/views/change-language-locally";
+
 import translations from "./ResetPasswordFinish.screen.translations";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-import { resetPasswordFinalize } from "../../../../api/reset-password/put.reset-password";
-import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
-import { useLocation } from "react-router-dom";
-import ChangeLanguageLocally from "../../../../common/views/change-language-locally";
 
 const ResetPasswordFinish = () => {
     const [text] = useDigitTranslations(translations);

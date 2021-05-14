@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.userapproval.controller;
 
+import it.chalmers.gamma.internal.userapproval.service.UserApprovalDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.userapproval.service.UserApprovalFinder;
 import it.chalmers.gamma.internal.client.service.ClientId;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
+import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,15 +34,17 @@ public class UserApprovalAdminController {
     public List<UserRestrictedDTO> getApprovalsByClientId(@PathVariable("clientId") ClientId clientId) {
         return this.userApprovalFinder.getApprovalsByClientId(clientId)
                     .stream()
-                    .map(userApproval -> {
-                        try {
-                            return new UserRestrictedDTO(this.userFinder.get(userApproval.userId()));
-                        } catch (EntityNotFoundException ignored) {
-                            return null;
-                        }
-                    })
+                    .map(this::toUserRestricted)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
+    }
+
+    private UserRestrictedDTO toUserRestricted(UserApprovalDTO userApproval) {
+        try {
+            return new UserRestrictedDTO(this.userFinder.get(userApproval.userId()));
+        } catch (EntityNotFoundException ignored) {
+            return null;
+        }
     }
 
 }

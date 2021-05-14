@@ -2,6 +2,8 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.chalmers.gamma.bootstrap.mock.MockSuperGroup;
+import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeName;
 import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.Language;
@@ -72,7 +74,7 @@ public class MockBootstrap {
     }
 
     private void createUsers(MockData mockData) {
-        mockData.users.forEach(mockUser -> this.helper.getUserCreationService().createUser(
+        mockData.users().forEach(mockUser -> this.helper.getUserCreationService().createUser(
                 new UserDTO(
                         mockUser.id(),
                         mockUser.cid(),
@@ -89,11 +91,11 @@ public class MockBootstrap {
     }
 
     private void createPosts(MockData mockData) {
-        mockData.posts.forEach(mockPost ->
+        mockData.posts().forEach(mockPost ->
                 this.helper.getPostService().create(
                         new PostDTO(
-                                mockPost.id,
-                                mockPost.postName,
+                                mockPost.id(),
+                                mockPost.postName(),
                                 null
                         )
                 )
@@ -104,51 +106,40 @@ public class MockBootstrap {
         Calendar activeGroupBecomesActive = toCalendar(
                 Instant.now().minus(1, ChronoUnit.DAYS)
         );
-        Calendar activeGroupBecomesInactive = toCalendar(
-                Instant.now().plus(365, ChronoUnit.DAYS)
-        );
-
         Calendar inactiveGroupBecomesActive = toCalendar(
                 Instant.now()
                    .minus(366, ChronoUnit.DAYS)
         );
-        Calendar inactiveGroupBecomesInactive = toCalendar(
-                Instant.now().minus(1, ChronoUnit.DAYS)
-        );
-
         int activeYear = activeGroupBecomesActive.get(Calendar.YEAR);
         int inactiveYear = inactiveGroupBecomesActive.get(Calendar.YEAR);
 
-        mockData.groups.forEach(mockGroup -> {
-            int year = mockGroup.active ? activeYear : inactiveYear;
-            String name = mockGroup.name + year;
-            String prettyName = mockGroup.prettyName + year;
-            Calendar active = mockGroup.active
-                    ? activeGroupBecomesActive
-                    : inactiveGroupBecomesActive;
-            Calendar inactive = mockGroup.active
-                    ? activeGroupBecomesInactive
-                    : inactiveGroupBecomesInactive;
+        mockData.groups().forEach(mockGroup -> {
+            SuperGroupTypeName type = mockData.superGroups()
+                    .stream()
+                    .filter(sg -> sg.id().equals(mockGroup.superGroupId()))
+                    .findFirst().orElseThrow().type();
+            boolean active = !type.equals(SuperGroupTypeName.valueOf("alumni"));
+            int year = active ? activeYear : inactiveYear;
+            String name = mockGroup.name() + year;
+            String prettyName = mockGroup.prettyName() + year;
 
             GroupShallowDTO group = new GroupShallowDTO(
-                    mockGroup.id,
-                    active,
-                    inactive,
+                    mockGroup.id(),
                     new Email(name + "@chalmers.lol"),
                     name,
                     prettyName,
-                    mockGroup.superGroup
+                    mockGroup.superGroupId()
             );
 
             try {
                 this.helper.getGroupService().create(group);
 
-                mockGroup.members.forEach(mockMembership -> this.helper.getMembershipService().create(
+                mockGroup.members().forEach(mockMembership -> this.helper.getMembershipService().create(
                         new MembershipShallowDTO(
-                                mockMembership.postId,
-                                mockGroup.id,
-                                mockMembership.unofficialPostName,
-                                mockMembership.userId
+                                mockMembership.postId(),
+                                mockGroup.id(),
+                                mockMembership.unofficialPostName(),
+                                mockMembership.userId()
                         )
                 ));
             } catch (EntityAlreadyExistsException e) {
@@ -159,17 +150,23 @@ public class MockBootstrap {
     }
 
     private void createSuperGroups(MockData mockData) {
-        mockData.superGroups.forEach(mockSuperGroup -> {
+        mockData.superGroups().stream().map(MockSuperGroup::type).forEach(type -> {
+            try {
+                this.helper.getSuperGroupTypeService().create(type);
+            } catch (EntityAlreadyExistsException ignored) { }
+        });
+
+        mockData.superGroups().forEach(mockSuperGroup -> {
             try {
                 this.helper.getSuperGroupService().create(new SuperGroupDTO(
-                        mockSuperGroup.id,
-                        mockSuperGroup.name,
-                        mockSuperGroup.prettyName,
-                        mockSuperGroup.type,
-                        new Email(mockSuperGroup.name + "@chalmers.it"),
+                        mockSuperGroup.id(),
+                        mockSuperGroup.name(),
+                        mockSuperGroup.prettyName(),
+                        mockSuperGroup.type(),
+                        new Email(mockSuperGroup.name() + "@chalmers.it"),
                         new TextDTO("", "")));
             } catch (EntityAlreadyExistsException e) {
-                LOGGER.error("Error creating supergroup: " + mockSuperGroup.name + "; Super group already exists, skipping...");
+                LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
             }
         });
     }

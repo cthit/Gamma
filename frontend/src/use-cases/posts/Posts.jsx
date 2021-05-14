@@ -1,27 +1,30 @@
 import React from "react";
+
 import {
     DigitCRUD,
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import translations from "./Posts.translations";
-import { getPost, getPosts, getPostUsage } from "../../api/posts/get.posts.api";
-import { addPost } from "../../api/posts/post.posts.api";
-import { deletePost } from "../../api/posts/delete.posts.api";
+
+import { GROUP_NAME, GROUP_PRETTY_NAME } from "api/groups/props.groups.api";
+import { deletePost } from "api/posts/delete.posts.api";
+import { getPost, getPosts, getPostUsage } from "api/posts/get.posts.api";
+import { addPost } from "api/posts/post.posts.api";
 import {
-    ENGLISH_LANGUAGE,
-    SWEDISH_LANGUAGE
-} from "../../api/utils/commonProps";
-import { editPost } from "../../api/posts/put.posts.api";
-import InsufficientAccess from "../../common/views/insufficient-access";
-import DisplayGroupsTable from "../../common/elements/display-groups-table/DisplayGroupsTable.element";
-import {
-    GROUP_NAME,
-    GROUP_PRETTY_NAME
-} from "../../api/groups/props.groups.api";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
+    POST_ENGLISH,
+    POST_ID,
+    POST_SWEDISH,
+    EMAIL_PREFIX
+} from "api/posts/props.posts.api";
+import { editPost } from "api/posts/put.posts.api";
+import { ENGLISH_LANGUAGE, SWEDISH_LANGUAGE } from "api/utils/commonProps";
+
+import DisplayGroupsTable from "common/elements/display-groups-table/DisplayGroupsTable.element";
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
 import {
     initialValues,
     keysComponentData,
@@ -29,12 +32,7 @@ import {
     keysText,
     validationSchema
 } from "./Posts.options";
-import {
-    POST_ENGLISH,
-    POST_ID,
-    POST_SWEDISH,
-    EMAIL_PREFIX
-} from "../../api/posts/props.posts.api";
+import translations from "./Posts.translations";
 
 const Posts = () => {
     const [text] = useDigitTranslations(translations);

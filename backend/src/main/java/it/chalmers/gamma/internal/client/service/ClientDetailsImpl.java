@@ -13,7 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
-public class ClientDetailsDTO implements ClientDetails {
+public class ClientDetailsImpl implements ClientDetails {
 
     @Value("${application.auth.accessTokenValidityTime}")
     private static int accessTokenValidityTime;
@@ -23,7 +23,7 @@ public class ClientDetailsDTO implements ClientDetails {
 
     private final ClientDTO client;
 
-    public ClientDetailsDTO(ClientDTO client) {
+    public ClientDetailsImpl(ClientDTO client) {
         this.client = client;
     }
 

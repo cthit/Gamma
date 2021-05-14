@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class AuthorityLevelName implements GrantedAuthority, Serializable, DTO, Id {
+public class AuthorityLevelName extends Id<String> implements DTO {
 
     @Column(name = "authority_level")
     @JsonValue
@@ -30,20 +30,7 @@ public class AuthorityLevelName implements GrantedAuthority, Serializable, DTO, 
     }
 
     @Override
-    public String getAuthority() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AuthorityLevelName that = (AuthorityLevelName) o;
-        return Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+    protected String get() {
+        return this.value;
     }
 }

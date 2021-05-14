@@ -47,7 +47,6 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
     public List<SuperGroupDTO> getAll() {
         return Optional.of(this.superGroupRepository.findAll().stream()
                 .map(SuperGroup::toDTO)
-                .filter(g -> !g.type().equals(SuperGroupType.ADMIN))
                 .collect(Collectors.toList())).orElseThrow();
     }
 

@@ -1,14 +1,15 @@
 package it.chalmers.gamma.internal.text.data.db;
 
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.internal.text.TextId;
 import it.chalmers.gamma.internal.text.data.dto.TextDTO;
+import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "internal_text")
-public class Text extends MutableEntity<TextDTO> {
+public class Text extends MutableEntity<TextId, TextDTO> {
 
     @EmbeddedId
     private final TextId textId;
@@ -50,6 +51,11 @@ public class Text extends MutableEntity<TextDTO> {
                 this.sv,
                 this.en
         );
+    }
+
+    @Override
+    protected TextId id() {
+        return this.textId;
     }
 
     @Override

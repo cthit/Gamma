@@ -2,11 +2,12 @@ import React from "react";
 
 import { DigitLayout } from "@cthit/react-digit-components";
 
-import UserOptions from "./elements/user-options";
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import useGammaUser from "common/hooks/use-gamma-user/useGammaUser";
+
 import AdminOptions from "./elements/admin-options";
+import UserOptions from "./elements/user-options";
 import WelcomeUser from "./elements/welcome-user";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import useGammaUser from "../../common/hooks/use-gamma-user/useGammaUser";
 
 const Home = () => {
     const admin = useGammaIsAdmin();

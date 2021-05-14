@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.controller;
 
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupType;
+import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeName;
 import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
@@ -34,7 +34,7 @@ public class SuperGroupAdminController {
 
     private record CreateOrEditSuperGroupRequest(String name,
                                                  String prettyName,
-                                                 SuperGroupType type,
+                                                 SuperGroupTypeName type,
                                                  Email email,
                                                  TextDTO description) { }
 

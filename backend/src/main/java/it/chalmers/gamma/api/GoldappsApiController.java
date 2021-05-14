@@ -30,16 +30,12 @@ public class GoldappsApiController {
         this.groupFinder = groupFinder;
     }
 
-    private record Goldapps(List<GroupWithMembers> allGroups, List<GroupWithMembers> activeGroups) { }
+    private record Goldapps(List<GroupWithMembers> allGroups) { }
 
     @GetMapping
     public Goldapps get() {
         return new Goldapps(
                 this.groupFinder.getAll()
-                        .stream()
-                        .map(this::toGroupWithMembers)
-                        .collect(Collectors.toList()),
-                this.groupFinder.getAllActive()
                         .stream()
                         .map(this::toGroupWithMembers)
                         .collect(Collectors.toList())

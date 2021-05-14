@@ -11,7 +11,18 @@ import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 
 @Embeddable
-public class MembershipPK implements Serializable, Id {
+public class MembershipPK extends Id<MembershipPK.MembershipPKDTO> {
+
+    @Override
+    protected MembershipPKDTO get() {
+        return new MembershipPKDTO(
+                this.postId,
+                this.groupId,
+                this.userId
+        );
+    }
+
+    protected record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) { }
 
     @Embedded
     private PostId postId;
@@ -32,40 +43,4 @@ public class MembershipPK implements Serializable, Id {
         this.userId = userId;
     }
 
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public GroupId getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(GroupId groupId) {
-        this.groupId = groupId;
-    }
-
-    public PostId getPostId() {
-        return postId;
-    }
-
-    public void setPostId(PostId postId) {
-        this.postId = postId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MembershipPK that = (MembershipPK) o;
-        return Objects.equals(postId, that.postId) && Objects.equals(groupId, that.groupId) && Objects.equals(userId, that.userId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(postId, groupId, userId);
-    }
 }
