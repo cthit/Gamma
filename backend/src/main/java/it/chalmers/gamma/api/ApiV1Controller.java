@@ -1,8 +1,8 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
-import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;

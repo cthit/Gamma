@@ -1,8 +1,8 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
-import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.internal.authority.service.post.AuthorityPostService;
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelService;
+import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
 import it.chalmers.gamma.internal.client.service.ClientFinder;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.internal.group.service.GroupService;

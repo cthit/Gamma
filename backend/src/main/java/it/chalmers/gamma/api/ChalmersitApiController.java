@@ -1,18 +1,10 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
-import it.chalmers.gamma.internal.group.service.GroupId;
-import it.chalmers.gamma.internal.membership.service.MembershipDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupHasGroupsException;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
-import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserId;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.GroupPost;
 import it.chalmers.gamma.util.domain.GroupWithMembers;
 import it.chalmers.gamma.util.domain.UserPost;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;

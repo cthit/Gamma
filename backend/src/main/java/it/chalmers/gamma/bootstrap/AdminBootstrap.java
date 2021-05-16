@@ -1,7 +1,7 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.internal.authority.service.post.AuthorityPostShallowDTO;
-import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.authority.post.service.AuthorityPostShallowDTO;
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.group.service.GroupId;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;

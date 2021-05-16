@@ -3,10 +3,10 @@ package it.chalmers.gamma.internal.user.service;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
-import it.chalmers.gamma.internal.authority.service.post.AuthorityPostFinder;
+import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
 import it.chalmers.gamma.util.domain.Cid;
 
-import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
 import it.chalmers.gamma.util.ImageUtils;
 
