@@ -28,6 +28,6 @@ public abstract class AbstractEntity<I extends Id<?>, D extends DTO> {
             return false;
         }
 
-        return this.id().equals(o);
+        return this.id().equals(((AbstractEntity<?, ?>) o).id());
     }
 }
