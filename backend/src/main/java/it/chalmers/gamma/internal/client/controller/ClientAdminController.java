@@ -1,5 +1,13 @@
 package it.chalmers.gamma.internal.client.controller;
 
+import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyId;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyName;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyType;
+import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyDTO;
+import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.client.service.ClientId;
@@ -15,7 +23,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,20 +35,29 @@ public class ClientAdminController {
 
     private final ClientFinder clientFinder;
     private final ClientService clientService;
+    private final ClientApiKeyService clientApiKeyService;
+    private final ApiKeyService apiKeyService;
 
     public ClientAdminController(ClientFinder clientFinder,
-                                 ClientService clientService) {
+                                 ClientService clientService,
+                                 ClientApiKeyService clientApiKeyService,
+                                 ApiKeyService apiKeyService) {
         this.clientFinder = clientFinder;
         this.clientService = clientService;
+        this.clientApiKeyService = clientApiKeyService;
+        this.apiKeyService = apiKeyService;
     }
 
-    private record CreateClientRequest(String webServerRedirectUri, String name, boolean autoApprove, TextDTO description) { }
+    private record CreateClientRequest(String webServerRedirectUri, String name, boolean autoApprove, TextDTO description, boolean generateApiKey) { }
+
+    private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
 
     @PostMapping()
     public ClientSecret addITClient(@RequestBody CreateClientRequest request) {
         ClientSecret clientSecret = new ClientSecret();
+        ApiKeyToken apiKeyToken = null;
 
-        this.clientService.create(
+        ClientDTO newClient =
                 new ClientDTO(
                         new ClientId(),
                         clientSecret,
@@ -49,8 +65,13 @@ public class ClientAdminController {
                         request.autoApprove,
                         request.name,
                         request.description
-                )
-        );
+                );
+        if (request.generateApiKey) {
+            apiKeyToken = new ApiKeyToken();
+            this.clientService.createWithApiKey(newClient, apiKeyToken);
+        } else {
+            this.clientService.create(newClient);
+        }
 
         return clientSecret;
     }
@@ -71,8 +92,6 @@ public class ClientAdminController {
     }
 
     private static class ClientDeletedResponse extends SuccessResponse { }
-
-    private static class ClientUpdatedResponse extends SuccessResponse { }
 
     public static class ClientNotFoundResponse extends ErrorResponse {
         public ClientNotFoundResponse() {

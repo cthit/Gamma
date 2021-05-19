@@ -12,4 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface AuthorityPostRepository extends JpaRepository<AuthorityPost, AuthorityPostPK> {
     List<AuthorityPost> findAuthoritiesById_AuthorityLevelName(AuthorityLevelName authorityLevelName);
     List<AuthorityPost> findAuthoritiesById_SuperGroupIdAndId_PostId(SuperGroupId superGroupId, PostId postId);
+
+    boolean existsById_AuthorityLevelName(AuthorityLevelName authorityLevelName);
+
 }

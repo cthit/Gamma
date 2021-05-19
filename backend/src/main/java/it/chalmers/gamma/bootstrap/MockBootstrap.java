@@ -2,22 +2,17 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.bootstrap.mock.MockSuperGroup;
-import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeName;
+import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeName;
 import it.chalmers.gamma.internal.text.data.dto.TextDTO;
 import it.chalmers.gamma.util.domain.Email;
-import it.chalmers.gamma.util.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.internal.post.service.PostDTO;
-import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.bootstrap.mock.MockData;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.Year;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -26,9 +21,12 @@ import java.util.GregorianCalendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class MockBootstrap {
@@ -44,7 +42,24 @@ public class MockBootstrap {
         this.resourceLoader = resourceLoader;
     }
 
-    void runMockBootstrap()  {
+    //TODO: Only load if mocking
+    @Bean
+    public MockData mockData() {
+        Resource resource = this.resourceLoader.getResource("classpath:/mock/mock.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(resource.getInputStream(), MockData.class);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage());
+            LOGGER.error("Error when trying to read mock.json");
+            return null;
+        }
+    }
+
+    //TODO: add mocking boolean as beanj
+
+    @PostConstruct
+    public void runMockBootstrap()  {
         LOGGER.info("Running mock...");
 
         Resource resource = this.resourceLoader.getResource("classpath:/mock/mock.json");
@@ -74,20 +89,6 @@ public class MockBootstrap {
     }
 
     private void createUsers(MockData mockData) {
-        mockData.users().forEach(mockUser -> this.helper.getUserCreationService().createUser(
-                new UserDTO(
-                        mockUser.id(),
-                        mockUser.cid(),
-                        new Email(mockUser.cid() + "@student.chalmers.it"),
-                        Language.EN,
-                        mockUser.nick(),
-                        mockUser.firstName(),
-                        mockUser.lastName(),
-                        true,
-                        Year.of(mockUser.acceptanceYear()),
-                        true
-                ), "password"
-        ));
     }
 
     private void createPosts(MockData mockData) {
@@ -150,7 +151,7 @@ public class MockBootstrap {
     }
 
     private void createSuperGroups(MockData mockData) {
-        mockData.superGroups().stream().map(MockSuperGroup::type).forEach(type -> {
+        mockData.superGroups().stream().map(MockData.MockSuperGroup::type).forEach(type -> {
             try {
                 this.helper.getSuperGroupTypeService().create(type);
             } catch (EntityAlreadyExistsException ignored) { }

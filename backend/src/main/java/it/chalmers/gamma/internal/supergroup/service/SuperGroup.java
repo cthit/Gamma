@@ -1,10 +1,9 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
-import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeName;
+import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeName;
 import it.chalmers.gamma.util.domain.Email;
 import it.chalmers.gamma.internal.text.data.db.Text;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
-import it.chalmers.gamma.util.domain.abstraction.Id;
 
 import javax.persistence.*;
 

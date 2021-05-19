@@ -132,7 +132,7 @@ create table apikey (
     api_key_id               uuid primary key,
     name             varchar(30) not null,
     description      uuid references internal_text,
-    key              varchar(150) not null,
+    key              varchar(150) unique,
     key_type         varchar(30) not null,
     version int
 );
@@ -158,9 +158,4 @@ create table user_avatar_uri (
     user_id UUID REFERENCES ituser,
     avatar_uri varchar(255),
     version int
-);
-
-create table christmas_nick (
-    user_id uuid references ituser,
-    nick varchar(50) not null
 );

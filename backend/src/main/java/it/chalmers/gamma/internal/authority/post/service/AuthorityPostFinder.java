@@ -96,4 +96,8 @@ public class AuthorityPostFinder implements GetAllEntities<AuthorityPostDTO> {
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
+
+    public boolean existsBy(AuthorityLevelName name) {
+        return this.authorityPostRepository.existsById_AuthorityLevelName(name);
+    }
 }

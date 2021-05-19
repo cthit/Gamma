@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.authority.supergroup.service;
 
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
@@ -42,4 +43,7 @@ public class AuthoritySuperGroupFinder implements GetAllEntities<AuthoritySuperG
         }
     }
 
+    public boolean existsBy(AuthorityLevelName name) {
+        return this.authoritySuperGroupRepository.existsById_AuthorityLevelName(name);
+    }
 }

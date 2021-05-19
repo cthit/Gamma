@@ -4,7 +4,7 @@ import it.chalmers.gamma.util.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
-import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

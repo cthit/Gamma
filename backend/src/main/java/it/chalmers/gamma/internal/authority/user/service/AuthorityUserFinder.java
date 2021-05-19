@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.authority.user.service;
 
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
@@ -41,5 +42,9 @@ public class AuthorityUserFinder implements GetAllEntities<AuthorityUserDTO> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean existsBy(AuthorityLevelName name) {
+        return this.authorityUserRepository.existsById_AuthorityLevelName(name);
     }
 }

@@ -10,14 +10,14 @@ import it.chalmers.gamma.internal.post.service.PostFinder;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.internal.client.service.ClientService;
-import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeService;
+import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeService;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.post.service.PostService;
 
-import it.chalmers.gamma.internal.usergdpr.service.UserGDPRTrainingService;
+import it.chalmers.gamma.internal.user.gdpr.service.UserGDPRTrainingService;
 import org.springframework.stereotype.Component;
 
 @Component()

@@ -54,6 +54,8 @@ public class UserCreationService {
 
     }
 
+    //TODO throw exception if something goes wrong e.g. same name
+    //I will because of this fix things in HaveUserThatIsAdminBootstrap
     public void createUser(UserDTO newUser, String password) {
         User user = new User(newUser);
         user.setPassword(new Password(this.passwordEncoder.encode(password)));

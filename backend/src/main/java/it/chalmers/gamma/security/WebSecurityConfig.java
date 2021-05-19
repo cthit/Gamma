@@ -9,7 +9,7 @@ import it.chalmers.gamma.security.login.LoginRedirectHandler;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
 
-import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
 import java.util.List;
 
 import org.slf4j.Logger;
