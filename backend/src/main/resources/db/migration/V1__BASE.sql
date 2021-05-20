@@ -134,6 +134,7 @@ create table apikey (
     description      uuid references internal_text,
     key              varchar(150) unique,
     key_type         varchar(30) not null,
+    origin           varchar(256) not null,
     version int
 );
 
