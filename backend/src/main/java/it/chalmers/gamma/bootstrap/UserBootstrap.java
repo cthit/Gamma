@@ -9,6 +9,7 @@ import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +26,7 @@ public class UserBootstrap {
     private final UserFinder userFinder;
     private final UserCreationService userCreationService;
 
-    public UserBootstrap(boolean mocking,
+    public UserBootstrap(@Value("${application.mocking}") boolean mocking,
                          MockData mockData,
                          UserFinder userFinder,
                          UserCreationService userCreationService) {

@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import org.slf4j.Logger;
@@ -54,7 +55,12 @@ public class MockBootstrap {
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             LOGGER.error("Error when trying to read mock.json");
-            return null;
+            return new MockData(
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    Collections.emptyList()
+            );
         }
     }
 

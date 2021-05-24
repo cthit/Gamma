@@ -109,7 +109,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void enableCsrf(HttpSecurity http) {
         try {
-            System.out.println(cookieCsrfTokenRepository);
             http.csrf().csrfTokenRepository(cookieCsrfTokenRepository);
         } catch (Exception e) {
             LOGGER.error("Something went wrong when enabling csrf", e);

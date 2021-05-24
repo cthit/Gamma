@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Max;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class PrettyName {
+public class PrettyName implements Serializable {
 
     @JsonValue
     @Column(name = "pretty_name")

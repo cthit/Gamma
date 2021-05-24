@@ -184,8 +184,7 @@
       "id": "834651d1-34c1-4bac-b148-6546368a8454",
       "name": "styrit",
       "prettyName": "styrIT",
-      "active": true,
-      "superGroup": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
+      "superGroupId": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
       "members": [
         {
           "userId": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
@@ -213,8 +212,7 @@
       "id": "672db849-8afb-4160-9f12-7f8c1d379fcc",
       "name": "drawit",
       "prettyName": "DrawIT",
-      "active": false,
-      "superGroup": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
+      "superGroupId": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
@@ -237,8 +235,7 @@
       "id": "9b239de9-88a3-4992-96d1-b8dea2a637ec",
       "name": "drawit",
       "prettyName": "DrawIT",
-      "active": true,
-      "superGroup": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
+      "superGroupId": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
       "members": [
         {
           "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
@@ -261,8 +258,7 @@
       "id": "5f26a10c-e668-4ec1-b072-a7dd8f11735c",
       "name": "prit",
       "prettyName": "P.R.I.T.",
-      "active": false,
-      "superGroup": "326807b4-ae68-4626-8382-919a15a8e23c",
+      "superGroupId": "326807b4-ae68-4626-8382-919a15a8e23c",
       "members": [
         {
           "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
@@ -285,8 +281,7 @@
       "id": "1ed91274-13c8-4d6d-ab75-37c9d732b51b",
       "name": "prit",
       "prettyName": "P.R.I.T.",
-      "active": true,
-      "superGroup": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
+      "superGroupId": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
       "members": [
         {
           "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -309,8 +304,7 @@
       "id": "ee4153d5-830d-445f-acb3-ec09c53e7c0c",
       "name": "kandidatmiddagen",
       "prettyName": "Kandidatmiddagen",
-      "active": true,
-      "superGroup": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
+      "superGroupId": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",

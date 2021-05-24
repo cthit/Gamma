@@ -57,21 +57,25 @@ public class EnsureAnAdminUserBootstrap {
                 adminId = new UserId();
 
                 //TODO logg out information about the new admin
-                this.userCreationService.createUser(
-                        new UserDTO(
-                                adminId,
-                                new Cid(name),
-                                new Email(name + "@chalmers.it"),
-                                Language.EN,
-                                Nick.valueOf(name),
-                                FirstName.valueOf(name),
-                                LastName.valueOf(name),
-                                true,
-                                Year.of(2018),
-                                true
-                        ),
-                        UnencryptedPassword.valueOf(password)
-                );
+                try {
+                    this.userCreationService.createUser(
+                            new UserDTO(
+                                    adminId,
+                                    new Cid(name),
+                                    new Email(name + "@chalmers.it"),
+                                    Language.EN,
+                                    Nick.valueOf(name),
+                                    FirstName.valueOf(name),
+                                    LastName.valueOf(name),
+                                    true,
+                                    Year.of(2018),
+                                    true
+                            ),
+                            UnencryptedPassword.valueOf(password)
+                    );
+                    break;
+                } catch (Exception ignored) {
+                }
                 i++;
             }
 

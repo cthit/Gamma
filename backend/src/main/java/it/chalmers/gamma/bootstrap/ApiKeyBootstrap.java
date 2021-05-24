@@ -46,7 +46,7 @@ public class ApiKeyBootstrap {
                 this.apiKeyService.create(
                         new ApiKeyDTO(
                                 new ApiKeyId(),
-                                Name.valueOf(apiKeyToken.get() + "-mock"),
+                                Name.valueOf(apiKeyType.name() + "-mock"),
                                 new TextDTO("", ""),
                                 apiKeyToken,
                                 apiKeyType
