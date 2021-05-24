@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ class ActivationCodeServiceTest {
 
     @Test
     void savedActivationCode() {
-        given(activationCodeRepository.save(any(ActivationCode.class)))
+        given(activationCodeRepository.save(any(ActivationCodeEntity.class)))
                 .willAnswer(returnsFirstArg());
 
         Cid cid = new Cid("mycid");
@@ -55,6 +55,11 @@ class ActivationCodeServiceTest {
                 .isThrownBy(() -> activationCodeService.delete(cid));
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> activationCodeService.delete(cid2));
+    }
+
+    @Test
+    void invalidCodeShouldNotWork() {
+        assert (false);
     }
 
 }

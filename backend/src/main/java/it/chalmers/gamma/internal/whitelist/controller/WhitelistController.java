@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.whitelist.controller;
 
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeDTO;
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.mail.MailSenderService;

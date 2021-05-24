@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.user.service;
 
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 

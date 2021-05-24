@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.apikey.controller;
 
+import it.chalmers.gamma.domain.Name;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyInformationDTO;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyName;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyType;
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
+import it.chalmers.gamma.domain.ApiKeyType;
+import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyId;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.domain.ApiKeyId;
+import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
@@ -36,7 +36,7 @@ public class ApiKeyAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateApiKeyRequest(ApiKeyName name, TextDTO description, ApiKeyType keyType) { }
+    private record CreateApiKeyRequest(Name name, TextDTO description, ApiKeyType keyType) { }
 
     @PostMapping()
     public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {

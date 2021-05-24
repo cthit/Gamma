@@ -17,7 +17,7 @@ public class UserApprovalService implements CreateEntity<UserApprovalDTO>, Delet
     }
 
     public void create(UserApprovalDTO userApproval) {
-        this.userApprovalRepository.save(new UserApproval(userApproval));
+        this.userApprovalRepository.save(new UserApprovalEntity(userApproval));
     }
 
     @Override

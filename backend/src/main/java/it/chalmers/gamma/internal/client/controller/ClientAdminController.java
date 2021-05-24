@@ -1,17 +1,13 @@
 package it.chalmers.gamma.internal.client.controller;
 
-import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyId;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyName;
+import it.chalmers.gamma.domain.Name;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyType;
-import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyDTO;
+import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
+import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.client.service.ClientId;
-import it.chalmers.gamma.internal.client.service.ClientSecret;
+import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.internal.client.service.ClientDTO;
 import it.chalmers.gamma.internal.client.service.ClientFinder;
 import it.chalmers.gamma.internal.client.service.ClientService;
@@ -48,7 +44,7 @@ public class ClientAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateClientRequest(String webServerRedirectUri, String name, boolean autoApprove, TextDTO description, boolean generateApiKey) { }
+    private record CreateClientRequest(String webServerRedirectUri, Name name, boolean autoApprove, TextDTO description, boolean generateApiKey) { }
 
     private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
 

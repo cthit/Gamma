@@ -3,7 +3,6 @@ package it.chalmers.gamma.internal.authority.user.service;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityHasUsagesException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class AuthorityUserService implements CreateEntity<AuthorityUserShallowDT
     public void create(AuthorityUserShallowDTO authority) throws EntityAlreadyExistsException {
         try {
             this.authorityUserRepository.save(
-                    new AuthorityUser(authority)
+                    new AuthorityUserEntity(authority)
             );
         } catch (IllegalArgumentException e) {
             throw new EntityAlreadyExistsException();

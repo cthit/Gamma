@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.membership.service;
 
-import it.chalmers.gamma.internal.group.service.GroupId;
-import it.chalmers.gamma.internal.post.service.PostId;
+import it.chalmers.gamma.domain.GroupId;
+import it.chalmers.gamma.domain.PostId;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class MembershipRestrictedFinder {
                 .collect(Collectors.toList());
     }
 
-    private MembershipRestrictedDTO toMembershipRestrictedDTO(Membership membership) {
+    private MembershipRestrictedDTO toMembershipRestrictedDTO(MembershipEntity membership) {
         return new MembershipRestrictedDTO(this.membershipFinder.fromShallow(membership.toDTO()));
     }
 

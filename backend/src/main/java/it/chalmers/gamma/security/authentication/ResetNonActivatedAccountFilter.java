@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;

@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.client.restriction.service;
 
-import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.domain.ClientId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ClientRestrictionRepository extends JpaRepository<ClientRestriction, ClientRestrictionPK> {
+public interface ClientRestrictionRepository extends JpaRepository<ClientRestrictionEntity, ClientRestrictionPK> {
 
-    public List<ClientRestriction> findClientRestrictionsById_ClientId(ClientId clientId);
+    public List<ClientRestrictionEntity> findClientRestrictionsById_ClientId(ClientId clientId);
 
 }

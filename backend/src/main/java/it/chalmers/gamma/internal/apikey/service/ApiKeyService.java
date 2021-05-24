@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.apikey.service;
 
+import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
@@ -17,7 +18,7 @@ public class ApiKeyService implements CreateEntity<ApiKeyDTO>, DeleteEntity<ApiK
 
     @Override
     public void create(ApiKeyDTO newApiKey) {
-        this.apiKeyRepository.save(new ApiKey(newApiKey));
+        this.apiKeyRepository.save(new ApiKeyEntity(newApiKey));
     }
 
     @Override

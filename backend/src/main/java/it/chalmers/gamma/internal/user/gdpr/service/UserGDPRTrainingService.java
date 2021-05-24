@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.user.gdpr.service;
 
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class UserGDPRTrainingService {
 
     public void editGDPR(UserId userId, boolean gdprValue) {
         if(gdprValue) {
-            this.repository.save(new UserGDPRTraining(userId));
+            this.repository.save(new UserGDPRTrainingEntity(userId));
         } else {
             this.repository.deleteById(userId);
         }

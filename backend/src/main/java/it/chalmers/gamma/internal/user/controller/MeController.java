@@ -1,12 +1,16 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.FirstName;
+import it.chalmers.gamma.domain.LastName;
+import it.chalmers.gamma.domain.Nick;
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.internal.user.service.MeService;
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.Email;
-import it.chalmers.gamma.util.domain.Language;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.util.domain.GroupPost;
+import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
@@ -72,12 +76,12 @@ public class MeController {
         }
     }
 
-    public record EditMeRequest (String nick,
-                                   String firstName,
-                                   String lastName,
-                                   Email email,
-                                   Language language,
-                                   int acceptanceYear) { }
+    public record EditMeRequest (Nick nick,
+                                 FirstName firstName,
+                                 LastName lastName,
+                                 Email email,
+                                 Language language,
+                                 int acceptanceYear) { }
 
     @PutMapping()
     public UserEditedResponse editMe(Principal principal, @RequestBody EditMeRequest request) {
@@ -113,14 +117,14 @@ public class MeController {
         }
     }
 
-    record ChangeUserPassword(String oldPassword, String password) { }
+    record ChangeUserPassword(String oldPassword, UnencryptedPassword password) { }
 
     @PutMapping("/change_password")
     public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request) {
         try {
             UserDTO user = this.extractUser(principal);
 
-            if (!this.userService.passwordMatches(user.id(), request.oldPassword())) {
+            if (!this.userService.passwordMatches(user.id(), request.oldPassword)) {
                 throw new IncorrectCidOrPasswordResponse();
             }
 

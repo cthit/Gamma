@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.user.gdpr.controller;
 
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.gdpr.service.UserGDPRTrainingDTO;
 import it.chalmers.gamma.internal.user.gdpr.service.UserGDPRTrainingService;
 

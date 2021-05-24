@@ -1,11 +1,12 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.Email;
-import it.chalmers.gamma.util.domain.Language;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -53,7 +54,7 @@ public class UserBootstrap {
                         Year.of(mockUser.acceptanceYear()),
                         true
                 ),
-                "password"
+                UnencryptedPassword.valueOf("password")
         ));
 
         LOGGER.info("Generated the users: "

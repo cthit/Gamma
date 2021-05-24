@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.user.service;
 
-import it.chalmers.gamma.internal.activationcode.service.Code;
+import it.chalmers.gamma.domain.Code;
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
@@ -33,7 +34,7 @@ public class UserCreationService {
         this.repository = repository;
     }
 
-    public void createUserByCode(UserDTO newUser, String password, Code code) throws CidOrCodeNotMatchException {
+    public void createUserByCode(UserDTO newUser, UnencryptedPassword password, Code code) throws CidOrCodeNotMatchException {
         if(!activationCodeFinder.codeMatchesCid(newUser.cid(), code)) {
             throw new CidOrCodeNotMatchException();
         }
@@ -56,9 +57,9 @@ public class UserCreationService {
 
     //TODO throw exception if something goes wrong e.g. same name
     //I will because of this fix things in HaveUserThatIsAdminBootstrap
-    public void createUser(UserDTO newUser, String password) {
-        User user = new User(newUser);
-        user.setPassword(new Password(this.passwordEncoder.encode(password)));
+    public void createUser(UserDTO newUser, UnencryptedPassword password) {
+        UserEntity user = new UserEntity(newUser);
+        user.setPassword(password.encrypt(this.passwordEncoder));
 
         this.repository.save(user);
     }

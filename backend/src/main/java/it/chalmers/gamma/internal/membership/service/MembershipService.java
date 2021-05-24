@@ -19,7 +19,7 @@ public class MembershipService implements CreateEntity<MembershipShallowDTO>, De
     }
 
     public void create(MembershipShallowDTO membership) {
-        this.membershipRepository.save(new Membership(membership));
+        this.membershipRepository.save(new MembershipEntity(membership));
     }
 
     public void delete(MembershipPK membershipPK) throws EntityNotFoundException {
@@ -27,7 +27,7 @@ public class MembershipService implements CreateEntity<MembershipShallowDTO>, De
     }
 
     public void update(MembershipShallowDTO newEdit) throws EntityNotFoundException {
-        Membership membership = this.membershipFinder.getMembershipEntityByUserGroupPost(newEdit.userId(), newEdit.groupId(), newEdit.postId());
+        MembershipEntity membership = this.membershipFinder.getMembershipEntityByUserGroupPost(newEdit.userId(), newEdit.groupId(), newEdit.postId());
         membership.apply(newEdit);
         this.membershipRepository.save(membership);
     }

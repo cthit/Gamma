@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.whitelist.service;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class WhitelistFinder implements GetAllEntities<Cid> {
     public List<Cid> getAll() {
         return this.repository.findAll()
                 .stream()
-                .map(Whitelist::get)
+                .map(WhitelistEntity::get)
                 .collect(Collectors.toList());
     }
 

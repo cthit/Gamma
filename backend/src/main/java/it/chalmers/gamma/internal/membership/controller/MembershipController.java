@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.membership.controller;
 
-import it.chalmers.gamma.internal.group.service.GroupId;
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.membership.service.MembershipRestrictedDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipRestrictedFinder;
 import org.springframework.web.bind.annotation.GetMapping;

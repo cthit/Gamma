@@ -6,8 +6,8 @@ import it.chalmers.gamma.internal.authority.post.service.AuthorityPostPK;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostShallowDTO;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.post.service.PostId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.PostId;
+import it.chalmers.gamma.domain.SuperGroupId;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

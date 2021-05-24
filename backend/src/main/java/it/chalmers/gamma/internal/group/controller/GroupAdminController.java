@@ -1,13 +1,15 @@
 package it.chalmers.gamma.internal.group.controller;
 
+import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
-import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.domain.SuperGroupId;
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.util.domain.GroupWithMembers;
-import it.chalmers.gamma.util.domain.UserPost;
-import it.chalmers.gamma.internal.group.service.GroupId;
+import it.chalmers.gamma.domain.GroupWithMembers;
+import it.chalmers.gamma.domain.UserPost;
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
@@ -19,13 +21,10 @@ import javax.validation.Valid;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,8 +53,8 @@ public final class GroupAdminController {
                 .collect(Collectors.toList());
     }
 
-    private record CreateOrEditGroupRequest(String name,
-                                            String prettyName,
+    private record CreateOrEditGroupRequest(Name name,
+                                            PrettyName prettyName,
                                             SuperGroupId superGroup,
                                             Email email) { }
 

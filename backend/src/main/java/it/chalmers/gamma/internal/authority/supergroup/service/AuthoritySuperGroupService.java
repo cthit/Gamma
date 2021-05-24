@@ -19,7 +19,7 @@ public class AuthoritySuperGroupService implements CreateEntity<AuthoritySuperGr
     public void create(AuthoritySuperGroupShallowDTO authority) throws EntityAlreadyExistsException {
         try {
             this.authoritySuperGroupRepository.save(
-                    new AuthoritySuperGroup(authority)
+                    new AuthoritySuperGroupEntity(authority)
             );
         } catch (IllegalArgumentException e) {
             throw new EntityAlreadyExistsException();

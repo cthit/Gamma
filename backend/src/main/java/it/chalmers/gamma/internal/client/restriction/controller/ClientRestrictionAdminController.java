@@ -5,7 +5,7 @@ import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionDT
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionFinder;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionPK;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionService;
-import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

@@ -3,7 +3,7 @@ package it.chalmers.gamma.internal.user.approval.controller;
 import it.chalmers.gamma.internal.user.approval.service.UserApprovalDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.user.approval.service.UserApprovalFinder;
-import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.domain.ClientId;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,7 +1,8 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
+import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ActivationCodeFinder implements GetAllEntities<ActivationCodeDTO> {
     public List<ActivationCodeDTO> getAll() {
         return this.repository.findAll()
                 .stream()
-                .map(ActivationCode::toDTO)
+                .map(ActivationCodeEntity::toDTO)
                 .collect(Collectors.toList());
     }
 

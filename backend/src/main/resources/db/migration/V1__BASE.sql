@@ -106,7 +106,7 @@ create table whitelist_cid (
 );
 
 create table activation_code (
-  cid         varchar(10)     primary key references whitelist,
+  cid         varchar(10)     primary key references whitelist_cid,
   code        varchar(10)     not null,
   created_at  timestamp       not null default current_timestamp,
   version int

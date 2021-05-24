@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.group.service;
 
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;

@@ -1,15 +1,16 @@
 package it.chalmers.gamma.internal.user.passwordreset.service;
 
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.mail.MailSenderService;
 
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.util.TokenUtils;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -60,21 +61,19 @@ public class PasswordResetService {
         this.sendMail(user, token);
     }
 
-
     public void addToken(UserDTO user, String token) {
-        setToken(new PasswordResetToken(), user, token);
-
+        this.repository.save(new PasswordResetTokenEntity(
+                token,
+                user.id(),
+                Instant.now()
+        ));
     }
 
-    private void setToken(PasswordResetToken passwordResetToken, UserDTO user, String token) {
-        passwordResetToken.setUserId(user.id());
-        passwordResetToken.setToken(token);
-        this.repository.save(passwordResetToken);
-    }
-
-    public boolean tokenMatchesUser(UserId userId, String token) {
-        Optional<PasswordResetToken> storedToken = this.repository.findById(userId);
-        return storedToken.isPresent() && storedToken.get().getToken().equals(token);
+    public boolean tokenMatchesUser(UserId userId, String token) throws EntityNotFoundException {
+        PasswordResetTokenDTO d = this.repository.findById(userId)
+                .orElseThrow(EntityNotFoundException::new)
+                .toDTO();
+        return d.token().equals(token);
     }
 
     public void removeToken(UserDTO user) throws EntityNotFoundException {
@@ -92,7 +91,7 @@ public class PasswordResetService {
         this.mailSenderService.trySendingMail(user.email().get(), subject, message);
     }
 
-    protected PasswordResetToken getPasswordResetToken(PasswordResetTokenDTO passwordResetTokenDTO) {
+    protected PasswordResetTokenEntity getPasswordResetToken(PasswordResetTokenDTO passwordResetTokenDTO) {
         return this.repository.findById(passwordResetTokenDTO.userId()).orElse(null);
     }
 

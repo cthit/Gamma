@@ -1,13 +1,14 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
+import it.chalmers.gamma.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.Name;
 import it.chalmers.gamma.internal.client.service.ClientFinder;
-import it.chalmers.gamma.internal.client.service.ClientId;
-import it.chalmers.gamma.internal.client.service.ClientSecret;
+import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.internal.client.service.ClientDTO;
 
 import it.chalmers.gamma.internal.client.service.ClientService;
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
+import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.internal.user.approval.service.UserApprovalDTO;
@@ -63,7 +64,7 @@ public class ClientBootstrap {
                         clientSecret,
                         redirectUri,
                         true,
-                        "test-client",
+                        Name.valueOf("test-client"),
                         new TextDTO("", "")
                 ),
                 apiKeyToken

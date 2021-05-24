@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.group.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.group.service.GroupId;
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.internal.membership.service.MembershipRestrictedDTO;

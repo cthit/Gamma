@@ -1,8 +1,9 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
+import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class ActivationCodeService implements DeleteEntity<Cid>  {
             delete(cid);
         } catch (EntityNotFoundException ignored) {}
 
-        return this.activationCodeRepository.save(new ActivationCode(cid, Code.generate())).toDTO();
+        return this.activationCodeRepository.save(new ActivationCodeEntity(cid, Code.generate())).toDTO();
     }
 
     public void delete(Cid cid) throws EntityNotFoundException {

@@ -19,7 +19,7 @@ public class AuthorityPostService implements CreateEntity<AuthorityPostShallowDT
     public void create(AuthorityPostShallowDTO authority) throws EntityAlreadyExistsException {
         try {
             this.authorityPostRepository.save(
-                    new AuthorityPost(authority)
+                    new AuthorityPostEntity(authority)
             );
         } catch(IllegalArgumentException e) {
             throw new EntityAlreadyExistsException();

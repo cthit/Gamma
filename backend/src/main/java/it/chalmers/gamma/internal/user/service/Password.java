@@ -11,12 +11,11 @@ public class Password {
 
     @JsonIgnore
     @Column(name = "password")
-    @Size(min = 8)
     private String value;
 
     protected Password() { }
 
-    protected Password(String value) {
+    public Password(String value) {
         this.value = value;
     }
 

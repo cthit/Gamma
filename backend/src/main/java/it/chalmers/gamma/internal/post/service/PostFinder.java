@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.post.service;
 
+import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
@@ -23,7 +24,7 @@ public class PostFinder implements GetEntity<PostId, PostDTO>, GetAllEntities<Po
     }
 
     public List<PostDTO> getAll() {
-        return this.postRepository.findAll().stream().map(Post::toDTO).collect(Collectors.toList());
+        return this.postRepository.findAll().stream().map(PostEntity::toDTO).collect(Collectors.toList());
     }
 
     public PostDTO getBySvName(String svName) throws EntityNotFoundException {
@@ -35,11 +36,11 @@ public class PostFinder implements GetEntity<PostId, PostDTO>, GetAllEntities<Po
         return getEntity(id).toDTO();
     }
 
-    protected Post getEntity(PostId id) throws EntityNotFoundException {
+    protected PostEntity getEntity(PostId id) throws EntityNotFoundException {
         return this.postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    protected Post getEntity(PostDTO postDTO) throws EntityNotFoundException {
+    protected PostEntity getEntity(PostDTO postDTO) throws EntityNotFoundException {
         return getEntity(postDTO.id());
     }
 }

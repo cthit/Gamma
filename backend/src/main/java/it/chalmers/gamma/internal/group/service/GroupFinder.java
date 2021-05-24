@@ -1,10 +1,12 @@
 package it.chalmers.gamma.internal.group.service;
 
+import it.chalmers.gamma.domain.GroupId;
+import it.chalmers.gamma.domain.Name;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +33,7 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
         return this.groupRepository
                 .findAll()
                 .stream()
-                .map(Group::toDTO)
+                .map(GroupEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -40,24 +42,24 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
         return fromShallow(getGroupEntity(id).toDTO());
     }
 
-    public GroupDTO getByName(String name) throws EntityNotFoundException {
+    public GroupDTO getByName(Name name) throws EntityNotFoundException {
         return fromShallow(getGroupEntityByName(name).toDTO());
     }
 
-    protected Group getGroupEntity(GroupId id) throws EntityNotFoundException {
+    protected GroupEntity getGroupEntity(GroupId id) throws EntityNotFoundException {
         return this.groupRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected Group getGroupEntity(GroupShallowDTO group) throws EntityNotFoundException {
+    protected GroupEntity getGroupEntity(GroupShallowDTO group) throws EntityNotFoundException {
         return getGroupEntity(group.id());
     }
 
-    protected Group getGroupEntity(GroupDTO group) throws EntityNotFoundException {
+    protected GroupEntity getGroupEntity(GroupDTO group) throws EntityNotFoundException {
         return getGroupEntity(group.id());
     }
 
-    protected Group getGroupEntityByName(String name) throws EntityNotFoundException {
+    protected GroupEntity getGroupEntityByName(Name name) throws EntityNotFoundException {
         return this.groupRepository.findByName(name)
                 .orElseThrow(EntityNotFoundException::new);
     }
@@ -69,7 +71,7 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
 
         return this.groupRepository.findAllBySuperGroupId(superGroupId)
                 .stream()
-                .map(Group::toDTO)
+                .map(GroupEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }

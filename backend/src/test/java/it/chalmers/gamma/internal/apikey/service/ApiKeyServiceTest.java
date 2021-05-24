@@ -1,6 +1,10 @@
 package it.chalmers.gamma.internal.apikey.service;
 
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
+import it.chalmers.gamma.domain.ApiKeyId;
+import it.chalmers.gamma.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.ApiKeyType;
+import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +34,7 @@ class ApiKeyServiceTest {
     void create() {
         ApiKeyDTO apiKeyDTO = new ApiKeyDTO(
                 new ApiKeyId(),
-                new ApiKeyName("myapikey"),
+                Name.valueOf("myapikey"),
                 new TextDTO(
                         "Min API nyckel",
                         "My API key"
@@ -41,9 +45,9 @@ class ApiKeyServiceTest {
 
         apiKeyService.create(apiKeyDTO);
 
-        ArgumentCaptor<ApiKey> captor = ArgumentCaptor.forClass(ApiKey.class);
+        ArgumentCaptor<ApiKeyEntity> captor = ArgumentCaptor.forClass(ApiKeyEntity.class);
         verify(apiKeyRepository).save(captor.capture());
-        ApiKey newApiKey = captor.getValue();
+        ApiKeyEntity newApiKey = captor.getValue();
 
         assertThat(apiKeyDTO)
                 .usingRecursiveComparison()

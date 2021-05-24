@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.membership.controller;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.group.service.GroupId;
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.membership.service.MembershipPK;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.post.service.PostId;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.PostId;
+import it.chalmers.gamma.domain.UserId;
 
 import javax.validation.Valid;
 

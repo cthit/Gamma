@@ -27,7 +27,7 @@ public class AuthorityUserFinder implements GetAllEntities<AuthorityUserDTO> {
         return this.authorityUserRepository
                 .findAll()
                 .stream()
-                .map(AuthorityUser::toDTO)
+                .map(AuthorityUserEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }

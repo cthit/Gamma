@@ -1,15 +1,23 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.internal.activationcode.service.Code;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.FirstName;
+import it.chalmers.gamma.domain.GroupPost;
+import it.chalmers.gamma.domain.Language;
+import it.chalmers.gamma.domain.Code;
+import it.chalmers.gamma.domain.LastName;
+import it.chalmers.gamma.domain.Nick;
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
+import it.chalmers.gamma.internal.user.service.Password;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.internal.user.service.CidOrCodeNotMatchException;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserFinder;
-import it.chalmers.gamma.util.domain.*;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 
 import java.io.IOException;
@@ -71,11 +79,11 @@ public final class UserController {
     }
 
     record CreateUserRequest (Code code,
-                              String password,
-                              String nick,
-                              String firstName,
+                              UnencryptedPassword password,
+                              Nick nick,
+                              FirstName firstName,
                               Email email,
-                              String lastName,
+                              LastName lastName,
                               boolean userAgreement,
                               int acceptanceYear,
                               Cid cid,

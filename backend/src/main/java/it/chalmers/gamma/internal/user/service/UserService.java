@@ -1,10 +1,12 @@
 package it.chalmers.gamma.internal.user.service;
 
+import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
@@ -44,7 +46,7 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
     @Override
     public UserDetails loadUserByUsername(String cid) {
         try {
-            User user = this.userFinder.getEntity(new Cid(cid));
+            UserEntity user = this.userFinder.getEntity(new Cid(cid));
 
             List<AuthorityLevelName> authorities = this.authorityPostFinder.getGrantedAuthorities(user.getId());
 
@@ -65,14 +67,14 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
     }
 
     public void update(UserDTO newEdit) throws EntityNotFoundException {
-        User user = this.userFinder.getEntity(newEdit.id());
+        UserEntity user = this.userFinder.getEntity(newEdit.id());
         user.apply(newEdit);
         this.userRepository.save(user);
     }
 
-    public void setPassword(UserId userId, String password) throws EntityNotFoundException {
-        User user = this.userFinder.getEntity(userId);
-        user.setPassword(new Password(this.passwordEncoder.encode(password)));
+    public void setPassword(UserId userId, UnencryptedPassword password) throws EntityNotFoundException {
+        UserEntity user = this.userFinder.getEntity(userId);
+        user.setPassword(password.encrypt(this.passwordEncoder));
         this.userRepository.save(user);
     }
 
@@ -111,7 +113,7 @@ public class UserService implements UserDetailsService, DeleteEntity<UserId>, Up
     }
 
     public boolean passwordMatches(UserId userId, String password) throws EntityNotFoundException {
-        User user = this.userFinder.getEntity(userId);
+        UserEntity user = this.userFinder.getEntity(userId);
         return this.passwordEncoder.matches(password, user.getPassword().get());
     }
 

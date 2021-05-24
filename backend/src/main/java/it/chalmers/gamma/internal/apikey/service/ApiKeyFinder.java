@@ -1,5 +1,7 @@
 package it.chalmers.gamma.internal.apikey.service;
 
+import it.chalmers.gamma.domain.ApiKeyId;
+import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
@@ -30,7 +32,7 @@ public class ApiKeyFinder implements GetEntity<ApiKeyId, ApiKeyInformationDTO>, 
         return this.apiKeyRepository
                 .findAll()
                 .stream()
-                .map(ApiKey::toDTO)
+                .map(ApiKeyEntity::toDTO)
                 .map(ApiKeyInformationDTO::new)
                 .collect(Collectors.toList());
     }
@@ -40,7 +42,7 @@ public class ApiKeyFinder implements GetEntity<ApiKeyId, ApiKeyInformationDTO>, 
         return new ApiKeyInformationDTO(getApiKeyEntity(id).toDTO());
     }
 
-    protected ApiKey getApiKeyEntity(ApiKeyId id) throws EntityNotFoundException {
+    protected ApiKeyEntity getApiKeyEntity(ApiKeyId id) throws EntityNotFoundException {
         return this.apiKeyRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
     }

@@ -10,6 +10,11 @@ public abstract class AbstractEntity<I extends Id<?>, D extends DTO> {
     protected abstract D toDTO();
 
     @Override
+    public final String toString() {
+        return toDTO().toString();
+    }
+
+    @Override
     public final int hashCode() {
         assert(id() != null);
 

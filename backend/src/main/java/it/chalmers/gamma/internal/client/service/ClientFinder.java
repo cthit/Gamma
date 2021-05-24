@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.client.service;
 
+import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
@@ -22,7 +23,7 @@ public class ClientFinder implements GetEntity<ClientId, ClientDTO>, GetAllEntit
     }
 
     public List<ClientDTO> getAll() {
-        return this.clientRepository.findAll().stream().map(Client::toDTO).collect(Collectors.toList());
+        return this.clientRepository.findAll().stream().map(ClientEntity::toDTO).collect(Collectors.toList());
     }
 
     public ClientDTO get(ClientId clientId) throws EntityNotFoundException {

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.client.apikey.service;
 
-import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;

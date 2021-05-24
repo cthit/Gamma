@@ -1,8 +1,8 @@
 package it.chalmers.gamma.internal.authority.post.service;
 
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.post.service.PostId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.PostId;
+import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -40,9 +40,9 @@ class AuthorityPostServiceTest {
         assertThatNoException()
                 .isThrownBy(() -> authorityPostService.create(authorityPostShallowDTO));
 
-        ArgumentCaptor<AuthorityPost> captor = ArgumentCaptor.forClass(AuthorityPost.class);
+        ArgumentCaptor<AuthorityPostEntity> captor = ArgumentCaptor.forClass(AuthorityPostEntity.class);
         verify(authorityPostRepository).save(captor.capture());
-        AuthorityPost newAuthorityPost = captor.getValue();
+        AuthorityPostEntity newAuthorityPost = captor.getValue();
 
         assertThat(authorityPostShallowDTO)
                 .usingRecursiveComparison()
@@ -56,7 +56,7 @@ class AuthorityPostServiceTest {
         AuthorityLevelName authorityLevelName = new AuthorityLevelName("authority");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
-        AuthorityPost authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
+        AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
 
         willThrow(IllegalArgumentException.class)
                 .given(authorityPostRepository)
@@ -74,7 +74,7 @@ class AuthorityPostServiceTest {
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
 
-        AuthorityPost authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
+        AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
 
         assertThat(authorityPost)
                 .usingRecursiveComparison()

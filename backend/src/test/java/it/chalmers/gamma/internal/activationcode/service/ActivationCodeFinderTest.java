@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Code;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +28,7 @@ class ActivationCodeFinderTest {
 
     @Test
     void getAll() {
-        List<ActivationCode> activationCodeList = new ArrayList<>();
+        List<ActivationCodeEntity> activationCodeList = new ArrayList<>();
         activationCodeList.add(ActivationCodeFactory.create(new Cid("mycid"), Code.generate()));
         activationCodeList.add(ActivationCodeFactory.create(new Cid("mycidi"), Code.generate()));
 
@@ -38,7 +39,7 @@ class ActivationCodeFinderTest {
         //when
         List<ActivationCodeDTO> activationCodeDTOList = activationCodeFinder.getAll();
         for (int i = 0; i < activationCodeDTOList.size(); i++) {
-            ActivationCode ac = activationCodeList.get(0);
+            ActivationCodeEntity ac = activationCodeList.get(0);
             ActivationCodeDTO acDTO = activationCodeDTOList.get(0);
 
             assertThat(ac)

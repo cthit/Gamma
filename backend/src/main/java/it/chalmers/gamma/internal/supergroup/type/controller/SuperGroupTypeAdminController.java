@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.supergroup.type.controller;
 
 import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeFinder;
-import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeName;
+import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeService;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityHasUsagesException;
@@ -34,11 +34,11 @@ public class SuperGroupTypeAdminController {
     }
 
     @GetMapping
-    public List<SuperGroupTypeName> getSuperGroupTypes() {
+    public List<SuperGroupType> getSuperGroupTypes() {
         return this.superGroupTypeFinder.getAll();
     }
 
-    private record AddSuperGroupType(SuperGroupTypeName name) { }
+    private record AddSuperGroupType(SuperGroupType name) { }
 
 
     @PostMapping
@@ -52,7 +52,7 @@ public class SuperGroupTypeAdminController {
     }
 
     @DeleteMapping("/{name}")
-    public SuperGroupTypeRemovedResponse removeSuperGroupType(@PathVariable("name") SuperGroupTypeName name) {
+    public SuperGroupTypeRemovedResponse removeSuperGroupType(@PathVariable("name") SuperGroupType name) {
         try {
             this.superGroupTypeService.delete(name);
         } catch (EntityNotFoundException e) {

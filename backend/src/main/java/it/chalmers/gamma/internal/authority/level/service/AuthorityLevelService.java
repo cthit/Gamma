@@ -16,7 +16,7 @@ public class AuthorityLevelService implements CreateEntity<AuthorityLevelName>, 
 
     public void create(AuthorityLevelName levelName) throws EntityAlreadyExistsException {
         try {
-            this.authorityLevelRepository.save(new AuthorityLevel(levelName));
+            this.authorityLevelRepository.save(new AuthorityLevelEntity(levelName));
         } catch(IllegalArgumentException e) {
             throw new EntityAlreadyExistsException();
         }

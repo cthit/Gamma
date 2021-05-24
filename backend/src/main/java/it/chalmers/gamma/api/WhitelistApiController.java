@@ -1,9 +1,8 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.internal.whitelist.controller.WhitelistAdminController;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;

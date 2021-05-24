@@ -1,8 +1,8 @@
 package it.chalmers.gamma.internal.user.approval.service;
 
 import it.chalmers.gamma.util.domain.abstraction.Id;
-import it.chalmers.gamma.internal.client.service.ClientId;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.domain.UserId;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

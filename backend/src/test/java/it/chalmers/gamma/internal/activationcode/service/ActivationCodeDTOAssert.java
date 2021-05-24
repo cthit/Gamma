@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import org.assertj.core.api.AbstractAssert;
 
 import java.time.Instant;

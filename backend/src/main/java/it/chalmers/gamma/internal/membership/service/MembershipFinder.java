@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.membership.service;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.group.service.GroupId;
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
-import it.chalmers.gamma.internal.post.service.PostId;
+import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.internal.post.service.PostFinder;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserFinder;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ public class MembershipFinder {
     public List<GroupDTO> getGroupsWithPost(PostId postId) {
         List<GroupId> groups = this.membershipRepository.findAllById_PostId(postId)
                 .stream()
-                .map(Membership::toDTO)
+                .map(MembershipEntity::toDTO)
                 .map(MembershipShallowDTO::groupId)
                 .collect(Collectors.toList());
 
@@ -58,11 +58,11 @@ public class MembershipFinder {
             throw new EntityNotFoundException();
         }
 
-        List<Membership> memberships = this.membershipRepository
+        List<MembershipEntity> memberships = this.membershipRepository
                 .findAllById_UserId(userId);
         return memberships
                 .stream()
-                .map(Membership::toDTO)
+                .map(MembershipEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -72,11 +72,11 @@ public class MembershipFinder {
             throw new EntityNotFoundException();
         }
 
-        List<Membership> memberships = this.membershipRepository.findAllById_GroupId(groupId);
+        List<MembershipEntity> memberships = this.membershipRepository.findAllById_GroupId(groupId);
 
         return memberships
                 .stream()
-                .map(Membership::toDTO)
+                .map(MembershipEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -86,11 +86,11 @@ public class MembershipFinder {
             throw new EntityNotFoundException();
         }
 
-        List<Membership> memberships = this.membershipRepository.findAllById_GroupIdAndId_PostId(groupId, postId);
+        List<MembershipEntity> memberships = this.membershipRepository.findAllById_GroupIdAndId_PostId(groupId, postId);
 
         return memberships
                 .stream()
-                .map(Membership::toDTO)
+                .map(MembershipEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -105,7 +105,7 @@ public class MembershipFinder {
         return null;
     }
 
-    protected Membership getMembershipEntityByUserGroupPost(UserId userId, GroupId groupId, PostId postId) throws EntityNotFoundException {
+    protected MembershipEntity getMembershipEntityByUserGroupPost(UserId userId, GroupId groupId, PostId postId) throws EntityNotFoundException {
         return this.membershipRepository.findById(new MembershipPK(postId, groupId, userId))
                 .orElseThrow(EntityNotFoundException::new);
     }

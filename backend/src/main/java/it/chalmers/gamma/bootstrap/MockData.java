@@ -1,12 +1,17 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.internal.group.service.GroupId;
-import it.chalmers.gamma.internal.post.service.PostId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
-import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeName;
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
-import it.chalmers.gamma.internal.user.service.UserId;
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.FirstName;
+import it.chalmers.gamma.domain.GroupId;
+import it.chalmers.gamma.domain.LastName;
+import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.Nick;
+import it.chalmers.gamma.domain.PostId;
+import it.chalmers.gamma.domain.PrettyName;
+import it.chalmers.gamma.domain.SuperGroupId;
+import it.chalmers.gamma.domain.SuperGroupType;
+import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.UserId;
+import it.chalmers.gamma.domain.Cid;
 
 import java.util.List;
 
@@ -16,8 +21,8 @@ public record MockData(List<MockUser> users,
                        List<MockPost> posts) {
 
     public record MockGroup(GroupId id,
-                            String name,
-                            String prettyName,
+                            Name name,
+                            PrettyName prettyName,
                             List<MockMembership> members,
                             SuperGroupId superGroupId) { }
 
@@ -30,18 +35,18 @@ public record MockData(List<MockUser> users,
                            TextDTO postName) { }
 
     public record MockSuperGroup(SuperGroupId id,
-                                 String name,
-                                 String prettyName,
-                                 SuperGroupTypeName type,
+                                 Name name,
+                                 PrettyName prettyName,
+                                 SuperGroupType type,
                                  List<GroupId> groups) {
     }
 
     public record MockUser(
             UserId id,
             Cid cid,
-            String nick,
-            String firstName,
-            String lastName,
+            Nick nick,
+            FirstName firstName,
+            LastName lastName,
             int acceptanceYear) { }
 
 

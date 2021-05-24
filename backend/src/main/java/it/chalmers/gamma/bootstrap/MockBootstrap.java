@@ -2,9 +2,11 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeName;
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
-import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.PrettyName;
+import it.chalmers.gamma.domain.SuperGroupType;
+import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
@@ -115,14 +117,14 @@ public class MockBootstrap {
         int inactiveYear = inactiveGroupBecomesActive.get(Calendar.YEAR);
 
         mockData.groups().forEach(mockGroup -> {
-            SuperGroupTypeName type = mockData.superGroups()
+            SuperGroupType type = mockData.superGroups()
                     .stream()
                     .filter(sg -> sg.id().equals(mockGroup.superGroupId()))
                     .findFirst().orElseThrow().type();
-            boolean active = !type.equals(SuperGroupTypeName.valueOf("alumni"));
+            boolean active = !type.equals(SuperGroupType.valueOf("alumni"));
             int year = active ? activeYear : inactiveYear;
-            String name = mockGroup.name() + year;
-            String prettyName = mockGroup.prettyName() + year;
+            Name name = Name.valueOf(mockGroup.name().get() + year);
+            PrettyName prettyName = PrettyName.valueOf(mockGroup.prettyName().get() + year);
 
             GroupShallowDTO group = new GroupShallowDTO(
                     mockGroup.id(),

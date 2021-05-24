@@ -1,11 +1,12 @@
 package it.chalmers.gamma.internal.client.service;
 
+import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.domain.Name;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyId;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyName;
+import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyToken;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyType;
+import it.chalmers.gamma.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyDTO;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.client.controller.ClientAdminController;
@@ -41,13 +42,13 @@ public class ClientService implements ClientDetailsService, CreateEntity<ClientD
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
         return this.clientRepository.findById(new ClientId(clientId))
-                .map(Client::toDTO)
+                .map(ClientEntity::toDTO)
                 .map(ClientDetailsImpl::new)
                 .orElseThrow(ClientAdminController.ClientNotFoundResponse::new);
     }
 
     public void create(ClientDTO newClient) {
-        this.clientRepository.save(new Client(newClient));
+        this.clientRepository.save(new ClientEntity(newClient));
     }
 
     @Transactional
@@ -59,7 +60,7 @@ public class ClientService implements ClientDetailsService, CreateEntity<ClientD
         this.apiKeyService.create(
                 new ApiKeyDTO(
                         apiKeyId,
-                        new ApiKeyName(newClient.name()),
+                        newClient.name(),
                         newClient.description(),
                         apiKeyToken,
                         ApiKeyType.CLIENT

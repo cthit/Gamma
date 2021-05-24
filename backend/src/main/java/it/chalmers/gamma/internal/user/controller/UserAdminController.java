@@ -1,15 +1,19 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.FirstName;
+import it.chalmers.gamma.domain.LastName;
+import it.chalmers.gamma.domain.Nick;
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.Email;
-import it.chalmers.gamma.util.domain.Language;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.util.domain.GroupPost;
+import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.internal.membership.service.MembershipDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
@@ -56,7 +60,7 @@ public final class UserAdminController {
         this.membershipFinder = membershipFinder;
     }
 
-    record AdminChangePasswordRequest(String password) {}
+    record AdminChangePasswordRequest(UnencryptedPassword password) {}
 
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
@@ -114,10 +118,10 @@ public final class UserAdminController {
     }
 
     record AdminViewCreateUserRequest(@Valid Cid cid,
-                                         String password,
-                                         String nick,
-                                         String firstName,
-                                         String lastName,
+                                         UnencryptedPassword password,
+                                         Nick nick,
+                                         FirstName firstName,
+                                         LastName lastName,
                                          Email email,
                                          boolean userAgreement,
                                          int acceptanceYear,
@@ -140,9 +144,9 @@ public final class UserAdminController {
         return new UserCreatedResponse();
     }
 
-    record EditUserRequest (String nick,
-                            String firstName,
-                            String lastName,
+    record EditUserRequest (Nick nick,
+                            FirstName firstName,
+                            LastName lastName,
                             Email email,
                             Language language,
                             int acceptanceYear) { }

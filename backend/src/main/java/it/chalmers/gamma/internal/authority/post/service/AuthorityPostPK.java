@@ -2,8 +2,8 @@ package it.chalmers.gamma.internal.authority.post.service;
 
 import it.chalmers.gamma.util.domain.abstraction.Id;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.post.service.PostId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.PostId;
+import it.chalmers.gamma.domain.SuperGroupId;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

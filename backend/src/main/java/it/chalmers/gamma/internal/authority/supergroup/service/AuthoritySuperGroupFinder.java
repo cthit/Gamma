@@ -26,7 +26,7 @@ public class AuthoritySuperGroupFinder implements GetAllEntities<AuthoritySuperG
         return this.authoritySuperGroupRepository
                 .findAll()
                 .stream()
-                .map(AuthoritySuperGroup::toDTO)
+                .map(AuthoritySuperGroupEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }

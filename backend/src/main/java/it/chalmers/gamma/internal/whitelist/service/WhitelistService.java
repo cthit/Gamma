@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.whitelist.service;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
@@ -24,7 +24,7 @@ public class WhitelistService implements CreateEntity<Cid>, DeleteEntity<Cid> {
             throw new EntityAlreadyExistsException();
         }
 
-        Whitelist whitelist = new Whitelist(cid);
+        WhitelistEntity whitelist = new WhitelistEntity(cid);
         this.whitelistRepository.save(whitelist);
     }
 

@@ -1,7 +1,8 @@
 package it.chalmers.gamma.internal.user.service;
 
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.Email;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
@@ -48,26 +49,26 @@ public class UserFinder implements GetEntity<UserId, UserDTO>, GetAllEntities<Us
         return getEntity(id).toDTO();
     }
 
-    protected User getEntity(Cid cid) throws EntityNotFoundException {
+    protected UserEntity getEntity(Cid cid) throws EntityNotFoundException {
         return this.userRepository.findByCid(cid)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected User getEntity(Email email) throws EntityNotFoundException {
+    protected UserEntity getEntity(Email email) throws EntityNotFoundException {
         return this.userRepository.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected User getEntity(UserId id) throws EntityNotFoundException {
+    protected UserEntity getEntity(UserId id) throws EntityNotFoundException {
         return this.userRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    protected User getEntity(UserDTO user) throws EntityNotFoundException {
+    protected UserEntity getEntity(UserDTO user) throws EntityNotFoundException {
         return getEntity(user.id());
     }
 
     private List<UserDTO> getAllFull() {
-        return userRepository.findAll().stream().map(User::toDTO).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(UserEntity::toDTO).collect(Collectors.toList());
     }
 }

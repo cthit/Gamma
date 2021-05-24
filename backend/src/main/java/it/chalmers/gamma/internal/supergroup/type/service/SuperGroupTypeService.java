@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.type.service;
 
+import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
@@ -8,7 +9,7 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundExcepti
 import org.springframework.stereotype.Service;
 
 @Service
-public class SuperGroupTypeService implements CreateEntity<SuperGroupTypeName>, DeleteEntity<SuperGroupTypeName> {
+public class SuperGroupTypeService implements CreateEntity<SuperGroupType>, DeleteEntity<SuperGroupType> {
 
     private final SuperGroupTypeRepository superGroupTypeRepository;
 
@@ -19,12 +20,12 @@ public class SuperGroupTypeService implements CreateEntity<SuperGroupTypeName>, 
 
 
     @Override
-    public void create(SuperGroupTypeName name) throws EntityAlreadyExistsException {
-        this.superGroupTypeRepository.save(new SuperGroupType(name));
+    public void create(SuperGroupType name) throws EntityAlreadyExistsException {
+        this.superGroupTypeRepository.save(new SuperGroupTypeEntity(name));
     }
 
     @Override
-    public void delete(SuperGroupTypeName name) throws EntityNotFoundException, EntityHasUsagesException {
+    public void delete(SuperGroupType name) throws EntityNotFoundException, EntityHasUsagesException {
         this.superGroupTypeRepository.deleteById(name);
     }
 }

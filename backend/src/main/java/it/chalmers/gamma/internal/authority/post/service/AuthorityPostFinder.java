@@ -8,7 +8,7 @@ import it.chalmers.gamma.internal.membership.service.MembershipDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.internal.post.service.PostFinder;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public class AuthorityPostFinder implements GetAllEntities<AuthorityPostDTO> {
         return this.authorityPostRepository
                 .findAll()
                 .stream()
-                .map(AuthorityPost::toDTO)
+                .map(AuthorityPostEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -65,7 +65,7 @@ public class AuthorityPostFinder implements GetAllEntities<AuthorityPostDTO> {
 
         return this.authorityPostRepository.findAuthoritiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
-                .map(AuthorityPost::toDTO)
+                .map(AuthorityPostEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -92,7 +92,7 @@ public class AuthorityPostFinder implements GetAllEntities<AuthorityPostDTO> {
                 membership.group().superGroup().id(), membership.post().id()
         )
                 .stream()
-                .map(AuthorityPost::toDTO)
+                .map(AuthorityPostEntity::toDTO)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }

@@ -51,8 +51,8 @@ public class AuthorityLevelAdminController {
     }
 
     @DeleteMapping("/{name}")
-    public AuthorityLevelDeletedResponse removeAuthorityLevel(@PathVariable("name") String name) {
-        this.authorityLevelService.delete(new AuthorityLevelName(name));
+    public AuthorityLevelDeletedResponse removeAuthorityLevel(@PathVariable("name") AuthorityLevelName name) {
+        this.authorityLevelService.delete(name);
         return new AuthorityLevelDeletedResponse();
     }
 

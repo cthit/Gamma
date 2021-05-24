@@ -4,7 +4,7 @@ import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupPK;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupService;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupShallowDTO;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.ErrorResponse;

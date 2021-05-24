@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
+import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
@@ -22,7 +23,7 @@ public class SuperGroupService implements CreateEntity<SuperGroupDTO>, DeleteEnt
     }
 
     public void create(SuperGroupDTO superGroupDTO) throws EntityAlreadyExistsException {
-        this.repository.save(new SuperGroup(superGroupDTO));
+        this.repository.save(new SuperGroupEntity(superGroupDTO));
     }
 
     public void delete(SuperGroupId id) {
@@ -30,7 +31,7 @@ public class SuperGroupService implements CreateEntity<SuperGroupDTO>, DeleteEnt
     }
 
     public void update(SuperGroupDTO newSuperGroup) throws EntityNotFoundException {
-        SuperGroup superGroup = this.finder.getEntity(newSuperGroup);
+        SuperGroupEntity superGroup = this.finder.getEntity(newSuperGroup);
         superGroup.apply(newSuperGroup);
         this.repository.save(superGroup);
     }

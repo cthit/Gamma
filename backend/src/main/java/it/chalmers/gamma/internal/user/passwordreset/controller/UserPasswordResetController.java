@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.user.passwordreset.controller;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserFinder;
@@ -51,7 +52,7 @@ public class UserPasswordResetController {
         return new PasswordRestLinkSentResponse();
     }
 
-    private record ResetPasswordFinishRequest(String password,
+    private record ResetPasswordFinishRequest(UnencryptedPassword password,
                                               Cid cid,
                                               String token) { }
 

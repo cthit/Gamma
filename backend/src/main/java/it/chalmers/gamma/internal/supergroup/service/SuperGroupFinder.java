@@ -1,5 +1,7 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
+import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
@@ -23,7 +25,7 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
         return this.superGroupRepository.existsById(id);
     }
 
-    public SuperGroupDTO getByName(String name) throws EntityNotFoundException {
+    public SuperGroupDTO getByName(Name name) throws EntityNotFoundException {
         return getEntityByName(name).toDTO();
     }
 
@@ -31,22 +33,22 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
         return getEntity(id).toDTO();
     }
 
-    protected SuperGroup getEntity(SuperGroupId id) throws EntityNotFoundException {
+    protected SuperGroupEntity getEntity(SuperGroupId id) throws EntityNotFoundException {
         return this.superGroupRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-    protected SuperGroup getEntity(SuperGroupDTO superGroup) throws EntityNotFoundException {
+    protected SuperGroupEntity getEntity(SuperGroupDTO superGroup) throws EntityNotFoundException {
         return getEntity(superGroup.id());
     }
 
-    protected SuperGroup getEntityByName(String name) throws EntityNotFoundException {
+    protected SuperGroupEntity getEntityByName(Name name) throws EntityNotFoundException {
         return this.superGroupRepository.findByName(name)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     public List<SuperGroupDTO> getAll() {
         return Optional.of(this.superGroupRepository.findAll().stream()
-                .map(SuperGroup::toDTO)
+                .map(SuperGroupEntity::toDTO)
                 .collect(Collectors.toList())).orElseThrow();
     }
 

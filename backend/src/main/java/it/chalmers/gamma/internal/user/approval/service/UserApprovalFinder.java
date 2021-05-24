@@ -2,8 +2,8 @@ package it.chalmers.gamma.internal.user.approval.service;
 
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
-import it.chalmers.gamma.internal.client.service.ClientId;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.domain.UserId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class UserApprovalFinder implements GetEntity<UserApprovalPK, UserApprova
                 .collect(Collectors.toList());
     }
 
-    protected UserApprovalDTO toDTO(UserApproval userApproval) {
+    protected UserApprovalDTO toDTO(UserApprovalEntity userApproval) {
         return new UserApprovalDTO(
                 userApproval.id().get().userId(),
                 userApproval.id().get().clientId()

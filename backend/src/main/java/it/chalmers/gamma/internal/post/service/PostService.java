@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.post.service;
 
+import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
@@ -19,11 +20,11 @@ public class PostService implements CreateEntity<PostDTO>, DeleteEntity<PostId>,
     }
 
     public void create(PostDTO newPost) {
-        this.repository.save(new Post(newPost));
+        this.repository.save(new PostEntity(newPost));
     }
 
     public void update(PostDTO newEdit) throws EntityNotFoundException {
-        Post post = this.finder.getEntity(newEdit);
+        PostEntity post = this.finder.getEntity(newEdit);
         post.apply(newEdit);
         this.repository.save(post);
     }

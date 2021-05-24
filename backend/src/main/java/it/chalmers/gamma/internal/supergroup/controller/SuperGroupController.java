@@ -4,7 +4,7 @@ import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.group.service.GroupMinifiedDTO;
 import it.chalmers.gamma.internal.group.service.GroupFinder;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupId;
+import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
 
 import java.util.List;

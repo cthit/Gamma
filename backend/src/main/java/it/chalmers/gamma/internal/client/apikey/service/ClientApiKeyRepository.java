@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.client.apikey.service;
 
-import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.domain.ClientId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ClientApiKeyRepository extends JpaRepository<ClientApiKey, ClientId> {
+public interface ClientApiKeyRepository extends JpaRepository<ClientApiKeyEntity, ClientId> {
 }

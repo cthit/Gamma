@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.post.controller;
 
-import it.chalmers.gamma.internal.post.service.EmailPrefix;
-import it.chalmers.gamma.internal.text.data.dto.TextDTO;
+import it.chalmers.gamma.domain.EmailPrefix;
+import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.util.domain.GroupWithMembers;
-import it.chalmers.gamma.util.domain.UserPost;
+import it.chalmers.gamma.domain.GroupWithMembers;
+import it.chalmers.gamma.domain.UserPost;
 import it.chalmers.gamma.internal.membership.service.MembershipFinder;
-import it.chalmers.gamma.internal.post.service.PostId;
+import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.internal.post.service.PostDTO;
 import it.chalmers.gamma.internal.post.service.PostService;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;

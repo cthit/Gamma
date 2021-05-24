@@ -1,18 +1,21 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.FirstName;
+import it.chalmers.gamma.domain.LastName;
+import it.chalmers.gamma.domain.Nick;
+import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserService;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserShallowDTO;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserId;
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.TokenUtils;
-import it.chalmers.gamma.util.domain.Cid;
-import it.chalmers.gamma.util.domain.Email;
-import it.chalmers.gamma.util.domain.Language;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import org.apache.catalina.User;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -60,14 +63,14 @@ public class EnsureAnAdminUserBootstrap {
                                 new Cid(name),
                                 new Email(name + "@chalmers.it"),
                                 Language.EN,
-                                name,
-                                name,
-                                name,
+                                Nick.valueOf(name),
+                                FirstName.valueOf(name),
+                                LastName.valueOf(name),
                                 true,
                                 Year.of(2018),
                                 true
                         ),
-                        password
+                        UnencryptedPassword.valueOf(password)
                 );
                 i++;
             }

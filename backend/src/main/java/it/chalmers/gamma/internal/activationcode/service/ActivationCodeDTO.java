@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.util.domain.abstraction.DTO;
 
 import java.time.Instant;

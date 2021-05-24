@@ -4,8 +4,8 @@ public class ApiKeyFactory {
 
     private ApiKeyFactory() { }
 
-    public static ApiKey create(ApiKeyDTO apiKey) {
-        return new ApiKey(apiKey);
+    public static ApiKeyEntity create(ApiKeyDTO apiKey) {
+        return new ApiKeyEntity(apiKey);
     }
 
 }

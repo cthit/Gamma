@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.group.service;
 
+import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
 import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
 import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
@@ -21,7 +22,7 @@ public class GroupService implements CreateEntity<GroupShallowDTO>, DeleteEntity
 
     @Override
     public void create(GroupShallowDTO group) throws EntityAlreadyExistsException {
-        this.groupRepository.save(new Group(group));
+        this.groupRepository.save(new GroupEntity(group));
     }
 
     @Override
@@ -31,7 +32,7 @@ public class GroupService implements CreateEntity<GroupShallowDTO>, DeleteEntity
 
     @Override
     public void update(GroupShallowDTO newEdit) throws EntityNotFoundException {
-        Group group = this.groupFinder.getGroupEntity(newEdit.id());
+        GroupEntity group = this.groupFinder.getGroupEntity(newEdit.id());
         group.apply(newEdit);
         this.groupRepository.save(group);
     }

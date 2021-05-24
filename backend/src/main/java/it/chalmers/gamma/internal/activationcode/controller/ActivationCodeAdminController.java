@@ -5,7 +5,7 @@ import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundExcepti
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 
-import it.chalmers.gamma.util.domain.Cid;
+import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;

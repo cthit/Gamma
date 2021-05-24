@@ -1,12 +1,9 @@
 package it.chalmers.gamma.internal.client.restriction.service;
 
-import it.chalmers.gamma.internal.client.service.ClientId;
+import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.util.domain.abstraction.GetEntity;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.swing.text.html.parser.Entity;
-import java.util.Collections;
 
 @Service
 public class ClientRestrictionFinder implements GetEntity<ClientId, ClientRestrictionDTO> {
@@ -21,7 +18,7 @@ public class ClientRestrictionFinder implements GetEntity<ClientId, ClientRestri
     public ClientRestrictionDTO get(ClientId clientId) throws EntityNotFoundException {
         return this.clientRestrictionRepository.findClientRestrictionsById_ClientId(clientId)
                 .stream()
-                .map(ClientRestriction::toDTO)
+                .map(ClientRestrictionEntity::toDTO)
                 .reduce(
                         (cr1, cr2) -> {
                             cr1.authorityLevelNameList().addAll(cr2.authorityLevelNameList());
