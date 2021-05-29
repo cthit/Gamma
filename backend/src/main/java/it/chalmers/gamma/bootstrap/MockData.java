@@ -3,7 +3,7 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.LastName;
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.PrettyName;
@@ -21,7 +21,7 @@ public record MockData(List<MockUser> users,
                        List<MockPost> posts) {
 
     public record MockGroup(GroupId id,
-                            Name name,
+                            EntityName name,
                             PrettyName prettyName,
                             List<MockMembership> members,
                             SuperGroupId superGroupId) { }
@@ -35,7 +35,7 @@ public record MockData(List<MockUser> users,
                            TextDTO postName) { }
 
     public record MockSuperGroup(SuperGroupId id,
-                                 Name name,
+                                 EntityName name,
                                  PrettyName prettyName,
                                  SuperGroupType type,
                                  List<GroupId> groups) {

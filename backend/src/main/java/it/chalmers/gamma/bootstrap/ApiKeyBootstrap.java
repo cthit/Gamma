@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.ApiKeyId;
@@ -46,7 +46,7 @@ public class ApiKeyBootstrap {
                 this.apiKeyService.create(
                         new ApiKeyDTO(
                                 new ApiKeyId(),
-                                Name.valueOf(apiKeyType.name() + "-mock"),
+                                EntityName.valueOf(apiKeyType.name() + "-mock"),
                                 new TextDTO("", ""),
                                 apiKeyToken,
                                 apiKeyType

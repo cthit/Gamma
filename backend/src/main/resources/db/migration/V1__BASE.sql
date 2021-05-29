@@ -38,7 +38,7 @@ create table password_reset_token(
 
 create table fkit_super_group (
   super_group_id            uuid           primary key,
-  name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
+  e_name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null,
   email         varchar(100)   not null,
   type          varchar(30)    not null,
@@ -48,7 +48,7 @@ create table fkit_super_group (
 
 create table fkit_group (
   group_id                uuid                   primary key,
-  name              varchar(50)  not null constraint fkit_group_name_unique unique,
+  e_name              varchar(50)  not null constraint fkit_group_name_unique unique,
   pretty_name       varchar(50)  not null,
   super_group_id  uuid         not null references fkit_super_group,
   email             varchar(100) null,
@@ -117,7 +117,7 @@ create table itclient (
     client_secret varchar(75) not null,
     web_server_redirect_uri varchar(256) not null,
     auto_approve boolean default false not null,
-    name varchar(30) not null,
+    e_name varchar(30) not null,
     description uuid references internal_text,
     version int
 );
@@ -130,11 +130,11 @@ create table itclient_authority_level_restriction (
 
 create table apikey (
     api_key_id               uuid primary key,
-    name             varchar(30) not null,
+    e_name             varchar(30) not null,
     description      uuid references internal_text,
     key              varchar(150) unique,
     key_type         varchar(30) not null,
-    origin           varchar(256) not null,
+--     origin           varchar(256) not null,
     version int
 );
 

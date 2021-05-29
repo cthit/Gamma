@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.client.service;
 
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 
@@ -29,7 +29,7 @@ public class ClientEntity extends ImmutableEntity<ClientId, ClientDTO> {
     private boolean autoApprove;
 
     @Embedded
-    private Name name;
+    private EntityName name;
 
     protected ClientEntity() { }
 

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.internal.client.service;
 
 import it.chalmers.gamma.domain.ClientId;
-import it.chalmers.gamma.domain.Name;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;

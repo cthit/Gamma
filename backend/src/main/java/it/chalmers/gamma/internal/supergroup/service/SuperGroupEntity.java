@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
@@ -23,7 +23,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
     private TextEntity description;
 
     @Embedded
-    private Name name;
+    private EntityName name;
 
     @Embedded
     private PrettyName prettyName;

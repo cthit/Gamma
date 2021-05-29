@@ -1,7 +1,7 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.domain.ApiKeyToken;
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.client.service.ClientFinder;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
@@ -64,7 +64,7 @@ public class ClientBootstrap {
                         clientSecret,
                         redirectUri,
                         true,
-                        Name.valueOf("test-client"),
+                        EntityName.valueOf("test-client"),
                         new TextDTO("", "")
                 ),
                 apiKeyToken

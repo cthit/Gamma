@@ -13,6 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
     hibernate:

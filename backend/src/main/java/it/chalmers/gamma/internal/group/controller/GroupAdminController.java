@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.group.controller;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.domain.SuperGroupId;
@@ -53,7 +53,7 @@ public final class GroupAdminController {
                 .collect(Collectors.toList());
     }
 
-    private record CreateOrEditGroupRequest(Name name,
+    private record CreateOrEditGroupRequest(EntityName name,
                                             PrettyName prettyName,
                                             SuperGroupId superGroup,
                                             Email email) { }

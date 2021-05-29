@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
@@ -25,7 +25,7 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
         return this.superGroupRepository.existsById(id);
     }
 
-    public SuperGroupDTO getByName(Name name) throws EntityNotFoundException {
+    public SuperGroupDTO getByName(EntityName name) throws EntityNotFoundException {
         return getEntityByName(name).toDTO();
     }
 
@@ -41,7 +41,7 @@ public class SuperGroupFinder implements GetEntity<SuperGroupId, SuperGroupDTO>,
         return getEntity(superGroup.id());
     }
 
-    protected SuperGroupEntity getEntityByName(Name name) throws EntityNotFoundException {
+    protected SuperGroupEntity getEntityByName(EntityName name) throws EntityNotFoundException {
         return this.superGroupRepository.findByName(name)
                 .orElseThrow(EntityNotFoundException::new);
     }

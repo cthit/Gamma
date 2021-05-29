@@ -13,6 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        globally_quoted_identifiers: true
         temp:
           #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
           use_jdbc_metadata_defaults: false
@@ -35,7 +36,8 @@ server:
 
 
 logging:
-  file: ${LOGGING_FILE:production.log}
+  file:
+    name: ${LOGGING_FILE:production.log}
   level:
     root: ${ROOT_DEBUG_LEVEL:WARN}
     org:

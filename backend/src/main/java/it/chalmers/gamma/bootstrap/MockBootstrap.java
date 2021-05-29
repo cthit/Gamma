@@ -2,7 +2,7 @@ package it.chalmers.gamma.bootstrap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.internal.text.service.TextDTO;
@@ -129,7 +129,7 @@ public class MockBootstrap {
                     .findFirst().orElseThrow().type();
             boolean active = !type.equals(SuperGroupType.valueOf("alumni"));
             int year = active ? activeYear : inactiveYear;
-            Name name = Name.valueOf(mockGroup.name().get() + year);
+            EntityName name = EntityName.valueOf(mockGroup.name().get() + year);
             PrettyName prettyName = PrettyName.valueOf(mockGroup.prettyName().get() + year);
 
             GroupShallowDTO group = new GroupShallowDTO(

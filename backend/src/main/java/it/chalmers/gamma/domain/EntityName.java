@@ -10,19 +10,19 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class Name implements Serializable {
+public class EntityName implements Serializable {
 
     @JsonValue
     @Pattern(regexp = "^([a-z]{30})$")
-    @Column(name = "name")
+    @Column(name = "e_name")
     private String value;
 
-    protected Name() {
+    protected EntityName() {
 
     }
 
-    public static Name valueOf(String value) {
-        Name name = new Name();
+    public static EntityName valueOf(String value) {
+        EntityName name = new EntityName();
         name.value = value;
         return name;
     }
@@ -39,7 +39,7 @@ public class Name implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Name that = (Name) o;
+        EntityName that = (EntityName) o;
         return Objects.equals(value, that.value);
     }
 

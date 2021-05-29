@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.controller;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.internal.text.service.TextDTO;
@@ -34,7 +34,7 @@ public class SuperGroupAdminController {
         this.superGroupService = superGroupService;
     }
 
-    private record CreateOrEditSuperGroupRequest(Name name,
+    private record CreateOrEditSuperGroupRequest(EntityName name,
                                                  PrettyName prettyName,
                                                  SuperGroupType type,
                                                  Email email,

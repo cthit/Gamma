@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
@@ -9,7 +9,7 @@ import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.internal.text.service.TextDTO;
 
 public record SuperGroupDTO(SuperGroupId id,
-                            Name name,
+                            EntityName name,
                             PrettyName prettyName,
                             SuperGroupType type,
                             Email email,

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.user.approval.controller;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.client.service.ClientDTO;
 import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.util.domain.abstraction.DTO;
@@ -42,7 +42,7 @@ public class UserApprovalController {
 
     //TODO: Implement Delete
 
-    public record ClientUserAccess(Name name, TextDTO description) implements DTO { }
+    public record ClientUserAccess(EntityName name, TextDTO description) implements DTO { }
 
     @GetMapping()
     public List<ClientUserAccess> getApprovedClientsByUser(Principal principal) {

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.client.controller;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
@@ -44,7 +44,7 @@ public class ClientAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateClientRequest(String webServerRedirectUri, Name name, boolean autoApprove, TextDTO description, boolean generateApiKey) { }
+    private record CreateClientRequest(String webServerRedirectUri, EntityName name, boolean autoApprove, TextDTO description, boolean generateApiKey) { }
 
     private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
 

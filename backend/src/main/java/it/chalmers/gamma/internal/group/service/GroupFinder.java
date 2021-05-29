@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.group.service;
 
 import it.chalmers.gamma.domain.GroupId;
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.util.domain.abstraction.EntityExists;
 import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.domain.abstraction.GetAllEntities;
@@ -42,7 +42,7 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
         return fromShallow(getGroupEntity(id).toDTO());
     }
 
-    public GroupDTO getByName(Name name) throws EntityNotFoundException {
+    public GroupDTO getByName(EntityName name) throws EntityNotFoundException {
         return fromShallow(getGroupEntityByName(name).toDTO());
     }
 
@@ -59,7 +59,7 @@ public class GroupFinder implements GetEntity<GroupId, GroupDTO>, GetAllEntities
         return getGroupEntity(group.id());
     }
 
-    protected GroupEntity getGroupEntityByName(Name name) throws EntityNotFoundException {
+    protected GroupEntity getGroupEntityByName(EntityName name) throws EntityNotFoundException {
         return this.groupRepository.findByName(name)
                 .orElseThrow(EntityNotFoundException::new);
     }

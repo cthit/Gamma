@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.group.service;
 
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.GroupId;
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 import it.chalmers.gamma.domain.SuperGroupId;
@@ -17,7 +17,7 @@ public class GroupEntity extends MutableEntity<GroupId, GroupShallowDTO> {
     private GroupId id;
 
     @Embedded
-    private Name name;
+    private EntityName name;
 
     @Embedded
     private PrettyName prettyName;

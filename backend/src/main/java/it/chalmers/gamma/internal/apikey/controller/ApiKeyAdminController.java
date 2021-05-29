@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.apikey.controller;
 
-import it.chalmers.gamma.domain.Name;
+import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyInformationDTO;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.text.service.TextDTO;
@@ -36,7 +36,7 @@ public class ApiKeyAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateApiKeyRequest(Name name, TextDTO description, ApiKeyType keyType) { }
+    private record CreateApiKeyRequest(EntityName name, TextDTO description, ApiKeyType keyType) { }
 
     @PostMapping()
     public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {
