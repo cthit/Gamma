@@ -1,15 +1,13 @@
 package it.chalmers.gamma.internal.supergroup.type.service;
 
 import it.chalmers.gamma.domain.SuperGroupType;
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityHasUsagesException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class SuperGroupTypeService implements CreateEntity<SuperGroupType>, DeleteEntity<SuperGroupType> {
+public class SuperGroupTypeService {
 
     private final SuperGroupTypeRepository superGroupTypeRepository;
 
@@ -18,14 +16,22 @@ public class SuperGroupTypeService implements CreateEntity<SuperGroupType>, Dele
         this.superGroupTypeRepository = superGroupTypeRepository;
     }
 
-
-    @Override
-    public void create(SuperGroupType name) throws EntityAlreadyExistsException {
+    public void create(SuperGroupType name) throws SuperGroupNotFoundException {
         this.superGroupTypeRepository.save(new SuperGroupTypeEntity(name));
     }
 
-    @Override
-    public void delete(SuperGroupType name) throws EntityNotFoundException, EntityHasUsagesException {
+    public void delete(SuperGroupType name) throws SuperGroupNotFoundException, SuperGroupHasUsagesException {
         this.superGroupTypeRepository.deleteById(name);
     }
+
+    public List<SuperGroupType> getAll() {
+        return this.superGroupTypeRepository.findAll()
+                .stream()
+                .map(SuperGroupTypeEntity::get)
+                .collect(Collectors.toList());
+    }
+
+    public static class SuperGroupNotFoundException extends Exception { }
+    public static class SuperGroupHasUsagesException extends Exception { }
+
 }

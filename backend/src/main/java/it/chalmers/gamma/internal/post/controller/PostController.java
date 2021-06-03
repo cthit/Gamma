@@ -1,8 +1,8 @@
 package it.chalmers.gamma.internal.post.controller;
 
 import it.chalmers.gamma.internal.post.service.PostDTO;
-import it.chalmers.gamma.internal.post.service.PostFinder;
 
+import it.chalmers.gamma.internal.post.service.PostService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,14 +13,14 @@ import java.util.List;
 @RequestMapping("/groups/posts")
 public class PostController {
 
-    private final PostFinder postFinder;
+    private final PostService postService;
 
-    public PostController(PostFinder postFinder) {
-        this.postFinder = postFinder;
+    public PostController(PostService postService) {
+        this.postService = postService;
     }
 
     @GetMapping()
     public List<PostDTO> getPosts() {
-        return this.postFinder.getAll();
+        return this.postService.getAll();
     }
 }

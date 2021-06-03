@@ -1,36 +1,80 @@
 package it.chalmers.gamma.internal.authority.post.service;
 
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.post.service.PostService;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class AuthorityPostService implements CreateEntity<AuthorityPostShallowDTO>, DeleteEntity<AuthorityPostPK> {
+public class AuthorityPostService {
 
-    private final AuthorityPostRepository authorityPostRepository;
+    private final AuthorityPostRepository repository;
+    private final SuperGroupService superGroupService;
+    private final PostService postService;
 
-    public AuthorityPostService(AuthorityPostRepository authorityPostRepository) {
-        this.authorityPostRepository = authorityPostRepository;
+    public AuthorityPostService(AuthorityPostRepository repository,
+                                SuperGroupService superGroupService,
+                                PostService postService) {
+        this.repository = repository;
+        this.superGroupService = superGroupService;
+        this.postService = postService;
     }
 
-    public void create(AuthorityPostShallowDTO authority) throws EntityAlreadyExistsException {
+    public void create(AuthorityPostShallowDTO authority) throws AuthorityPostNotFoundException {
         try {
-            this.authorityPostRepository.save(
+            this.repository.save(
                     new AuthorityPostEntity(authority)
             );
         } catch(IllegalArgumentException e) {
-            throw new EntityAlreadyExistsException();
+            throw new AuthorityPostNotFoundException();
         }
     }
 
-    public void delete(AuthorityPostPK id) throws EntityNotFoundException {
+    public void delete(AuthorityPostPK id) throws AuthorityPostNotFoundException {
         try{
-            this.authorityPostRepository.deleteById(id);
+            this.repository.deleteById(id);
         } catch(IllegalArgumentException e){
-            throw new EntityNotFoundException();
+            throw new AuthorityPostNotFoundException();
         }
     }
+
+    public List<AuthorityPostDTO> getAll() {
+        return this.repository
+                .findAll()
+                .stream()
+                .map(AuthorityPostEntity::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    public List<AuthorityPostDTO> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+        return this.repository.findAuthoritiesById_AuthorityLevelName(authorityLevelName)
+                .stream()
+                .map(AuthorityPostEntity::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    public boolean existsBy(AuthorityLevelName name) {
+        return this.repository.existsById_AuthorityLevelName(name);
+    }
+
+    private AuthorityPostDTO fromShallow(AuthorityPostShallowDTO authority) {
+        try {
+            return new AuthorityPostDTO(
+                    this.superGroupService.get(authority.superGroupId()),
+                    this.postService.get(authority.postId()),
+                    authority.authorityLevelName()
+            );
+        } catch (PostService.PostNotFoundException | SuperGroupService.SuperGroupNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static class AuthorityPostNotFoundException extends Exception { }
+
 }

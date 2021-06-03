@@ -1,8 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.controller;
 
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.activationcode.service.ActivationCodeFinder;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 
 import it.chalmers.gamma.domain.Cid;
@@ -21,18 +19,15 @@ import java.util.List;
 @RequestMapping("/admin/activation_codes")
 public final class ActivationCodeAdminController {
 
-    private final ActivationCodeFinder activationCodeFinder;
     private final ActivationCodeService activationCodeService;
 
-    public ActivationCodeAdminController(ActivationCodeFinder activationCodeFinder,
-                                         ActivationCodeService activationCodeService) {
-        this.activationCodeFinder = activationCodeFinder;
+    public ActivationCodeAdminController(ActivationCodeService activationCodeService) {
         this.activationCodeService = activationCodeService;
     }
 
     @GetMapping()
     public List<ActivationCodeDTO> getAllActivationCodes() {
-        return this.activationCodeFinder.getAll();
+        return this.activationCodeService.getAll();
     }
 
     @DeleteMapping("/{cid}")
@@ -40,7 +35,7 @@ public final class ActivationCodeAdminController {
         try {
             this.activationCodeService.delete(cid);
             return new ActivationCodeDeletedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (ActivationCodeService.ActivationCodeNotFoundException e) {
             throw new ActivationCodeNotFoundResponse();
         }
     }

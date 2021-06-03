@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeEntity;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 

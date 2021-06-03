@@ -5,16 +5,13 @@ import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
 import it.chalmers.gamma.domain.GroupId;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipDTO;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
@@ -33,21 +30,18 @@ import java.util.stream.Collectors;
 public final class GroupAdminController {
 
     private final GroupService groupService;
-    private final GroupFinder groupFinder;
-    private final MembershipFinder membershipFinder;
+    private final MembershipService membershipService;
 
     public GroupAdminController(GroupService groupService,
-                                GroupFinder groupFinder,
-                                MembershipFinder membershipFinder) {
+                                MembershipService membershipService) {
         this.groupService = groupService;
-        this.groupFinder = groupFinder;
-        this.membershipFinder = membershipFinder;
+        this.membershipService = membershipService;
     }
 
 
     @GetMapping()
     public List<GroupWithMembers> getGroups() {
-        return this.groupFinder.getAll()
+        return this.groupService.getAll()
                 .stream()
                 .map(this::toGroupWithMembers)
                 .collect(Collectors.toList());
@@ -68,7 +62,7 @@ public final class GroupAdminController {
                     request.prettyName,
                     request.superGroup
             ));
-        } catch (EntityAlreadyExistsException e) {
+        } catch (GroupService.GroupAlreadyExistsException e) {
             throw new GroupAlreadyExistsResponse();
         }
 
@@ -87,7 +81,7 @@ public final class GroupAdminController {
                     request.superGroup
             );
             this.groupService.update(group);
-        } catch (EntityNotFoundException e) {
+        } catch (GroupService.GroupNotFoundException e) {
             throw new GroupNotFoundResponse();
         }
 
@@ -98,7 +92,7 @@ public final class GroupAdminController {
     public GroupDeletedResponse deleteGroup(@PathVariable("id") GroupId id) {
         try {
             this.groupService.delete(id);
-        } catch (EntityNotFoundException e) {
+        } catch (GroupService.GroupNotFoundException e) {
             throw new GroupNotFoundResponse();
         }
 
@@ -130,14 +124,10 @@ public final class GroupAdminController {
     }
 
     private GroupWithMembers toGroupWithMembers(GroupDTO group) {
-        try {
-            return new GroupWithMembers(
-                    group,
-                    toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
-            );
-        } catch (EntityNotFoundException e) {
-            return null;
-        }
+        return new GroupWithMembers(
+                group,
+                toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))
+        );
     }
 
     private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {

@@ -1,11 +1,10 @@
 package it.chalmers.gamma.internal.user.approval.service;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.user.service.UserFinder;
+import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;
@@ -16,15 +15,12 @@ import java.util.*;
 public class UserApprovalStore implements ApprovalStore {
 
     private final UserApprovalService userApprovalService;
-    private final UserApprovalFinder userApprovalFinder;
-    private final UserFinder userFinder;
+    private final UserService userService;
 
     public UserApprovalStore(UserApprovalService userApprovalService,
-                             UserApprovalFinder userApprovalFinder,
-                             UserFinder userFinder) {
+                             UserService userService) {
         this.userApprovalService = userApprovalService;
-        this.userApprovalFinder = userApprovalFinder;
-        this.userFinder = userFinder;
+        this.userService = userService;
     }
 
     @Override
@@ -37,12 +33,12 @@ public class UserApprovalStore implements ApprovalStore {
         accessApproval.ifPresent(approval -> {
             try {
                 String cid = approval.getUserId();
-                UserDTO user = this.userFinder.get(new Cid(cid));
+                UserDTO user = this.userService.get(new Cid(cid));
 
                 ClientId clientId = new ClientId(approval.getClientId());
 
                 this.userApprovalService.create(new UserApprovalDTO(user.id(), clientId));
-            } catch (EntityNotFoundException e) {
+            } catch (UserService.UserNotFoundException e) {
                 e.printStackTrace();
             }
         });
@@ -58,9 +54,9 @@ public class UserApprovalStore implements ApprovalStore {
     @Override
     public Collection<Approval> getApprovals(String cid, String clientId) {
         try {
-            UserId userId = this.userFinder.get(new Cid(cid)).id();
+            UserId userId = this.userService.get(new Cid(cid)).id();
 
-            UserApprovalDTO userApproval = this.userApprovalFinder.get(new UserApprovalPK(userId, new ClientId(clientId)));
+            UserApprovalDTO userApproval = this.userApprovalService.get(new UserApprovalPK(userId, new ClientId(clientId)));
             return userApproval == null
                     ? Collections.emptyList()
                     : Collections.singleton(
@@ -72,7 +68,7 @@ public class UserApprovalStore implements ApprovalStore {
                             Approval.ApprovalStatus.APPROVED
                     )
             );
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             return new ArrayList<>();
         }
     }

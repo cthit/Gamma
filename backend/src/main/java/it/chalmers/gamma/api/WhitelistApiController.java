@@ -1,9 +1,7 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.internal.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +23,15 @@ public class WhitelistApiController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistApiController.class);
 
-    private final WhitelistFinder whitelistFinder;
     private final WhitelistService whitelistService;
 
-    public WhitelistApiController(WhitelistFinder whitelistFinder, WhitelistService whitelistService) {
-        this.whitelistFinder = whitelistFinder;
+    public WhitelistApiController(WhitelistService whitelistService) {
         this.whitelistService = whitelistService;
     }
 
     @GetMapping()
     public List<Cid> getWhiteList() {
-        return this.whitelistFinder.getAll();
+        return this.whitelistService.getAll();
     }
 
     private record AddListOfWhitelistedRequest(List<Cid> cids) { }
@@ -48,7 +44,7 @@ public class WhitelistApiController {
             try {
                 this.whitelistService.create(cid);
                 LOGGER.info("Added user " + cid + " to whitelist");
-            } catch (EntityAlreadyExistsException e) {
+            } catch (WhitelistService.WhitelistNotFoundException e) {
                 LOGGER.info("Failed to add " + cid + " to whitelist");
                 failedToAdd.add(cid);
             }

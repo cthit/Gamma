@@ -1,37 +1,77 @@
 package it.chalmers.gamma.internal.authority.user.service;
 
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupDTO;
+import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupEntity;
+import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class AuthorityUserService implements CreateEntity<AuthorityUserShallowDTO>, DeleteEntity<AuthorityUserPK> {
+public class AuthorityUserService {
 
-    private final AuthorityUserRepository authorityUserRepository;
+    private final AuthorityUserRepository repository;
+    private final UserService userService;
 
-    public AuthorityUserService(AuthorityUserRepository authorityUserRepository) {
-        this.authorityUserRepository = authorityUserRepository;
+    public AuthorityUserService(AuthorityUserRepository repository, UserService userService) {
+        this.repository = repository;
+        this.userService = userService;
     }
 
-    @Override
-    public void create(AuthorityUserShallowDTO authority) throws EntityAlreadyExistsException {
+    public void create(AuthorityUserShallowDTO authority) throws AuthorityUserNotFoundException {
         try {
-            this.authorityUserRepository.save(
+            this.repository.save(
                     new AuthorityUserEntity(authority)
             );
         } catch (IllegalArgumentException e) {
-            throw new EntityAlreadyExistsException();
+            throw new AuthorityUserNotFoundException();
         }
     }
 
-    @Override
-    public void delete(AuthorityUserPK id) throws EntityNotFoundException {
+    public void delete(AuthorityUserPK id) throws AuthorityUserNotFoundException {
         try {
-            this.authorityUserRepository.deleteById(id);
+            this.repository.deleteById(id);
         } catch (IllegalArgumentException e) {
-            throw new EntityNotFoundException();
+            throw new AuthorityUserNotFoundException();
         }
     }
+
+    public List<AuthorityUserDTO> getAll() {
+        return this.repository
+                .findAll()
+                .stream()
+                .map(AuthorityUserEntity::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    public List<AuthorityUserDTO> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+        return this.repository.findAuthorityUserEntitiesById_AuthorityLevelName(authorityLevelName)
+                .stream()
+                .map(AuthorityUserEntity::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    private AuthorityUserDTO fromShallow(AuthorityUserShallowDTO authorityUserShallowDTO) {
+        try {
+            return new AuthorityUserDTO(
+                    new UserRestrictedDTO(this.userService.get(authorityUserShallowDTO.userId())),
+                    authorityUserShallowDTO.authorityLevelName()
+            );
+        } catch (UserService.UserNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean existsBy(AuthorityLevelName name) {
+        return this.repository.existsById_AuthorityLevelName(name);
+    }
+
+    public static class AuthorityUserNotFoundException extends Exception { }
+
 }

@@ -10,15 +10,12 @@ import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.user.service.Password;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.internal.user.service.CidOrCodeNotMatchException;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
-import it.chalmers.gamma.internal.user.service.UserFinder;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 
 import java.io.IOException;
 import java.time.Year;
@@ -28,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -43,21 +41,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public final class UserController {
 
-    private final UserFinder userFinder;
+    private final UserService userService;
     private final UserCreationService userCreationService;
-    private final MembershipFinder membershipFinder;
+    private final MembershipService membershipService;
 
-    public UserController(UserFinder userFinder,
+    public UserController(UserService userService,
                           UserCreationService userCreationService,
-                          MembershipFinder membershipFinder) {
-        this.userFinder = userFinder;
-        this.membershipFinder = membershipFinder;
+                          MembershipService membershipService) {
+        this.userService = userService;
+        this.membershipService = membershipService;
         this.userCreationService = userCreationService;
     }
 
     @GetMapping()
     public List<UserRestrictedDTO> getAllRestrictedUsers() {
-        return this.userFinder.getAll();
+        return this.userService.getAll();
     }
 
     public record GetUserRestrictedResponse(@JsonUnwrapped UserRestrictedDTO user, List<GroupPost> groups) { }
@@ -65,15 +63,15 @@ public final class UserController {
     @GetMapping("/{id}")
     public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
         try {
-            UserRestrictedDTO user = new UserRestrictedDTO(this.userFinder.get(id));
-            List<GroupPost> groups = this.membershipFinder
+            UserRestrictedDTO user = new UserRestrictedDTO(this.userService.get(id));
+            List<GroupPost> groups = this.membershipService
                     .getMembershipsByUser(id)
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
 
             return new GetUserRestrictedResponse(user, groups);
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }
@@ -120,7 +118,7 @@ public final class UserController {
     public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {
             ///todo fix
         //        tvcry {
-//            UserDTO user = this.userFinder.get(id);
+//            UserDTO user = this.userService.get(id);
 //            response.sendRedirect(user.avatarUrl());
 //        } catch (EntityNotFoundException e) {
 //            throw new UserNotFoundResponse();

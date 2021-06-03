@@ -1,9 +1,8 @@
 package it.chalmers.gamma.security.authentication;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -20,14 +19,14 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
     private static final String USERNAME_PARAMETER = "username";
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetNonActivatedAccountFilter.class);
     private final PasswordResetService passwordResetService;
-    private final UserFinder userFinder;
+    private final UserService userService;
 
     public ResetNonActivatedAccountFilter(String baseFrontendUrl,
                                           PasswordResetService passwordResetService,
-                                          UserFinder userFinder) {
+                                          UserService userService) {
         this.baseFrontendUrl = baseFrontendUrl;
         this.passwordResetService = passwordResetService;
-        this.userFinder = userFinder;
+        this.userService = userService;
     }
 
     @Override
@@ -36,14 +35,14 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                UserDTO user = this.userFinder.get(new Cid(username));
+                UserDTO user = this.userService.get(new Cid(username));
                 if (!user.activated()) {
                     this.passwordResetService.handlePasswordReset(user);
                     String params = "accountLocked=true";
                     response.sendRedirect(String.format("%s/reset-password/finish?%s", this.baseFrontendUrl, params));
                     return;
                 }
-            } catch (EntityNotFoundException e) {
+            } catch (UserService.UserNotFoundException e) {
                 LOGGER.info(String.format("User %s tried logging in, but no such user exists", username));
             }
         }

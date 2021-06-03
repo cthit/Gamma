@@ -5,8 +5,6 @@ import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
@@ -51,7 +49,7 @@ public class SuperGroupAdminController {
                     request.email,
                     request.description
             ));
-        } catch (EntityAlreadyExistsException e) {
+        } catch (SuperGroupService.SuperGroupNotFoundException e) {
             throw new SuperGroupAlreadyExistsResponse();
         }
         return new SuperGroupCreatedResponse();
@@ -75,7 +73,7 @@ public class SuperGroupAdminController {
                     request.email,
                     request.description
             ));
-        } catch (EntityNotFoundException e) {
+        } catch (SuperGroupService.SuperGroupNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }
         return new SuperGroupUpdatedResponse();

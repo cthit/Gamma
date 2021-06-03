@@ -1,20 +1,19 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
+import it.chalmers.gamma.internal.group.service.GroupService;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupPost;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,44 +35,44 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1")
 public class ApiV1Controller {
 
-    private final UserFinder userFinder;
-    private final MembershipFinder membershipFinder;
-    private final AuthorityPostFinder authorityPostFinder;
-    private final GroupFinder groupFinder;
-    private final SuperGroupFinder superGroupFinder;
+    private final UserService userService;
+    private final MembershipService membershipService;
+    private final AuthorityFinder authorityFinder;
+    private final GroupService groupService;
+    private final SuperGroupService superGroupService;
 
-    public ApiV1Controller(UserFinder userFinder,
-                           MembershipFinder membershipFinder,
-                           AuthorityPostFinder authorityPostFinder,
-                           GroupFinder groupFinder,
-                           SuperGroupFinder superGroupFinder) {
-        this.userFinder = userFinder;
-        this.membershipFinder = membershipFinder;
-        this.authorityPostFinder = authorityPostFinder;
-        this.groupFinder = groupFinder;
-        this.superGroupFinder = superGroupFinder;
+    public ApiV1Controller(UserService userService,
+                           MembershipService membershipService,
+                           AuthorityFinder authorityFinder,
+                           GroupService groupService,
+                           SuperGroupService superGroupService) {
+        this.userService = userService;
+        this.membershipService = membershipService;
+        this.authorityFinder = authorityFinder;
+        this.groupService = groupService;
+        this.superGroupService = superGroupService;
     }
 
     @GetMapping("/groups")
     public List<GroupDTO> getGroups() {
-        return this.groupFinder.getAll();
+        return this.groupService.getAll();
     }
 
     @GetMapping("/superGroups")
     public List<SuperGroupDTO> getSuperGroups() {
-        return this.superGroupFinder.getAll();
+        return this.superGroupService.getAll();
     }
 
     @GetMapping("/users")
     public List<UserRestrictedDTO> getUsersForClient() {
-        return this.userFinder.getAll();
+        return this.userService.getAll();
     }
 
     @GetMapping("/users/{id}")
     public UserRestrictedDTO getUser(@PathVariable("id") UserId id) {
         try {
-            return new UserRestrictedDTO(this.userFinder.get(id));
-        } catch (EntityNotFoundException e) {
+            return new UserRestrictedDTO(this.userService.get(id));
+        } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }
@@ -90,15 +89,15 @@ public class ApiV1Controller {
     @GetMapping("/users/me")
     public GetMeResponse getMe(Principal principal) {
         try {
-            UserDTO user = this.userFinder.get(new Cid(principal.getName()));
-            List<GroupPost> groups = this.membershipFinder.getMembershipsByUser(user.id())
+            UserDTO user = this.userService.get(new Cid(principal.getName()));
+            List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
-            List<AuthorityLevelName> authorityLevelNames = this.authorityPostFinder.getGrantedAuthorities(user.id());
+            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
 
             return new GetMeResponse(new UserRestrictedDTO(user), groups, authorityLevelNames);
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }

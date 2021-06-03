@@ -4,7 +4,7 @@ import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class SingleImmutableEntity<S extends Id> {
+public abstract class SingleImmutableEntity<S extends Id<?>> {
 
     protected abstract S get();
 

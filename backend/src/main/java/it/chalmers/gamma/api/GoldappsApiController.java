@@ -1,13 +1,12 @@
 package it.chalmers.gamma.api;
 
 import it.chalmers.gamma.internal.group.service.GroupDTO;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
+import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.membership.service.MembershipDTO;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,12 +21,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/goldapps")
 public class GoldappsApiController {
 
-    private final MembershipFinder membershipFinder;
-    private final GroupFinder groupFinder;
+    private final MembershipService membershipService;
+    private final GroupService groupService;
 
-    public GoldappsApiController(MembershipFinder membershipFinder, GroupFinder groupFinder) {
-        this.membershipFinder = membershipFinder;
-        this.groupFinder = groupFinder;
+    public GoldappsApiController(MembershipService membershipService,
+                                 GroupService groupService) {
+        this.membershipService = membershipService;
+        this.groupService = groupService;
     }
 
     private record Goldapps(List<GroupWithMembers> allGroups) { }
@@ -35,7 +35,7 @@ public class GoldappsApiController {
     @GetMapping
     public Goldapps get() {
         return new Goldapps(
-                this.groupFinder.getAll()
+                this.groupService.getAll()
                         .stream()
                         .map(this::toGroupWithMembers)
                         .collect(Collectors.toList())
@@ -43,14 +43,10 @@ public class GoldappsApiController {
     }
 
     private GroupWithMembers toGroupWithMembers(GroupDTO group) {
-        try {
-            return new GroupWithMembers(
-                    group,
-                    toUserPosts(this.membershipFinder.getMembershipsByGroup(group.id()))
-            );
-        } catch (EntityNotFoundException e) {
-            return null;
-        }
+        return new GroupWithMembers(
+                group,
+                toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))
+        );
     }
 
     private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {

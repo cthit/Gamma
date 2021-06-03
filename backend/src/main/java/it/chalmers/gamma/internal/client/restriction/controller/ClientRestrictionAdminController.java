@@ -2,11 +2,9 @@ package it.chalmers.gamma.internal.client.restriction.controller;
 
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionDTO;
-import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionFinder;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionPK;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionService;
 import it.chalmers.gamma.domain.ClientId;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -21,20 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/clients/restriction")
 public class ClientRestrictionAdminController {
 
-    private final ClientRestrictionFinder clientRestrictionFinder;
     private final ClientRestrictionService clientRestrictionService;
 
-    public ClientRestrictionAdminController(ClientRestrictionFinder clientRestrictionFinder,
-                                            ClientRestrictionService clientRestrictionService) {
-        this.clientRestrictionFinder = clientRestrictionFinder;
+    public ClientRestrictionAdminController(ClientRestrictionService clientRestrictionService) {
         this.clientRestrictionService = clientRestrictionService;
     }
 
     @GetMapping("/{clientId}")
     public ClientRestrictionDTO getClientRestrictions(@PathVariable("clientId") ClientId clientId) {
         try {
-            return this.clientRestrictionFinder.get(clientId);
-        } catch (EntityNotFoundException e) {
+            return this.clientRestrictionService.get(clientId);
+        } catch (ClientRestrictionService.ClientRestrictionNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
     }
@@ -42,17 +37,13 @@ public class ClientRestrictionAdminController {
     @DeleteMapping("/{clientId}")
     public ClientRestrictionDeleted deleteClientRestriction(@PathVariable("clientId") ClientId clientId,
                                                             @RequestParam("authorityLevelName") AuthorityLevelName authorityLevelName) {
-        try {
-            this.clientRestrictionService.delete(
-                    new ClientRestrictionPK(
-                            clientId,
-                            authorityLevelName
-                    )
-            );
-            return new ClientRestrictionDeleted();
-        } catch (EntityNotFoundException e) {
-            throw new ClientNotFoundResponse();
-        }
+        this.clientRestrictionService.delete(
+                new ClientRestrictionPK(
+                        clientId,
+                        authorityLevelName
+                )
+        );
+        return new ClientRestrictionDeleted();
     }
 
     private static class ClientRestrictionDeleted extends SuccessResponse { }

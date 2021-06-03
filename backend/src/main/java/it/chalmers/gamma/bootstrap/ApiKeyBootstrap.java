@@ -2,7 +2,6 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
@@ -21,20 +20,17 @@ public class ApiKeyBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyBootstrap.class);
 
     private final boolean mocking;
-    private final ApiKeyFinder apiKeyFinder;
     private final ApiKeyService apiKeyService;
 
     public ApiKeyBootstrap(@Value("${application.mocking}") boolean mocking,
-                           ApiKeyFinder apiKeyFinder,
                            ApiKeyService apiKeyService) {
         this.mocking = mocking;
-        this.apiKeyFinder = apiKeyFinder;
         this.apiKeyService = apiKeyService;
     }
 
     @PostConstruct
     public void ensureApiKeys() {
-        if (!mocking || !this.apiKeyFinder.getAll().isEmpty()) {
+        if (!mocking || !this.apiKeyService.getAll().isEmpty()) {
             return;
         }
 

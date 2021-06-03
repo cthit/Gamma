@@ -1,14 +1,13 @@
 package it.chalmers.gamma.internal.supergroup.controller;
 
+import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.group.service.GroupMinifiedDTO;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
 import it.chalmers.gamma.domain.SuperGroupId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupFinder;
 
 import java.util.List;
 
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,36 +19,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/superGroups")
 public class SuperGroupController {
 
-    private final SuperGroupFinder superGroupFinder;
-    private final GroupFinder groupFinder;
+    private final SuperGroupService superGroupService;
+    private final GroupService groupService;
 
-    public SuperGroupController(SuperGroupFinder superGroupFinder,
-                                GroupFinder groupFinder) {
-        this.superGroupFinder = superGroupFinder;
-        this.groupFinder = groupFinder;
+    public SuperGroupController(SuperGroupService superGroupService,
+                                GroupService groupService) {
+        this.superGroupService = superGroupService;
+        this.groupService = groupService;
     }
 
     @GetMapping()
     public List<SuperGroupDTO> getAllSuperGroups() {
-        return this.superGroupFinder.getAll();
+        return this.superGroupService.getAll();
     }
 
     @GetMapping("/{id}")
     public SuperGroupDTO getSuperGroup(@PathVariable("id") SuperGroupId id) {
         try {
-            return this.superGroupFinder.get(id);
-        } catch (EntityNotFoundException e) {
+            return this.superGroupService.get(id);
+        } catch (SuperGroupService.SuperGroupNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }
     }
 
     @GetMapping("/{id}/subgroups")
-    public List<GroupMinifiedDTO> getSuperGroupSubGroups(@PathVariable("id") SuperGroupId id) {
-        try {
-            return this.groupFinder.getGroupsMinifiedBySuperGroup(id);
-        } catch (EntityNotFoundException e) {
-            throw new SuperGroupDoesNotExistResponse();
-        }
+    public List<GroupDTO> getSuperGroupSubGroups(@PathVariable("id") SuperGroupId id) {
+        return this.groupService.getGroupsBySuperGroup(id);
     }
 
     private static class SuperGroupDoesNotExistResponse extends ErrorResponse {

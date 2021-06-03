@@ -1,39 +1,48 @@
 package it.chalmers.gamma.internal.whitelist.service;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class WhitelistService implements CreateEntity<Cid>, DeleteEntity<Cid> {
+public class WhitelistService {
 
-    private final WhitelistFinder whitelistFinder;
-    private final WhitelistRepository whitelistRepository;
+    private final WhitelistRepository repository;
 
-    public WhitelistService(WhitelistFinder whitelistFinder,
-                            WhitelistRepository whitelistRepository) {
-        this.whitelistFinder = whitelistFinder;
-        this.whitelistRepository = whitelistRepository;
+    public WhitelistService(WhitelistRepository repository) {
+        this.repository = repository;
     }
 
-    public void create(Cid cid) throws EntityAlreadyExistsException {
-        if (this.whitelistFinder.cidIsWhitelisted(cid)) {
-            throw new EntityAlreadyExistsException();
+    public void create(Cid cid) throws WhitelistNotFoundException {
+        if (this.cidIsWhitelisted(cid)) {
+            throw new WhitelistNotFoundException();
         }
 
         WhitelistEntity whitelist = new WhitelistEntity(cid);
-        this.whitelistRepository.save(whitelist);
+        this.repository.save(whitelist);
     }
 
-    public void delete(Cid cid) throws EntityNotFoundException {
+    public void delete(Cid cid) throws WhitelistNotFoundException {
         try{
-            this.whitelistRepository.deleteById(cid);
+            this.repository.deleteById(cid);
         } catch(IllegalArgumentException e) {
-            throw new EntityNotFoundException();
+            throw new WhitelistNotFoundException();
         }
     }
+
+    public boolean cidIsWhitelisted(Cid cid) {
+        return this.repository.existsById(cid);
+    }
+
+    public List<Cid> getAll() {
+        return this.repository.findAll()
+                .stream()
+                .map(WhitelistEntity::get)
+                .collect(Collectors.toList());
+    }
+
+    public static class WhitelistNotFoundException extends Exception { }
 
 }

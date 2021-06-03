@@ -5,8 +5,6 @@ import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGro
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupService;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupShallowDTO;
 import it.chalmers.gamma.domain.SuperGroupId;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -39,7 +37,7 @@ public class AuthoritySuperGroupAdminController {
                     )
             );
             return new AuthoritySuperGroupCreatedResponse();
-        } catch (EntityAlreadyExistsException e) {
+        } catch (AuthoritySuperGroupService.AuthoritySuperGroupAlreadyExistsException e) {
             throw new AuthoritySuperGroupAlreadyExistsResponse();
         }
     }
@@ -52,7 +50,7 @@ public class AuthoritySuperGroupAdminController {
                     new AuthoritySuperGroupPK(superGroupId, authorityLevelName)
             );
             return new AuthoritySuperGroupRemovedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (AuthoritySuperGroupService.AuthoritySuperGroupNotFoundException e) {
             throw new AuthoritySuperGroupNotFoundResponse();
         }
     }

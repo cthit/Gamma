@@ -1,11 +1,7 @@
 package it.chalmers.gamma.internal.supergroup.type.controller;
 
-import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeFinder;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeService;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityHasUsagesException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -24,18 +20,15 @@ import java.util.List;
 @RequestMapping(value = "/supergroup")
 public class SuperGroupTypeAdminController {
 
-    private final SuperGroupTypeFinder superGroupTypeFinder;
     private final SuperGroupTypeService superGroupTypeService;
 
-    public SuperGroupTypeAdminController(SuperGroupTypeFinder superGroupTypeFinder,
-                                         SuperGroupTypeService superGroupTypeService) {
-        this.superGroupTypeFinder = superGroupTypeFinder;
+    public SuperGroupTypeAdminController(SuperGroupTypeService superGroupTypeService) {
         this.superGroupTypeService = superGroupTypeService;
     }
 
     @GetMapping
     public List<SuperGroupType> getSuperGroupTypes() {
-        return this.superGroupTypeFinder.getAll();
+        return this.superGroupTypeService.getAll();
     }
 
     private record AddSuperGroupType(SuperGroupType name) { }
@@ -45,7 +38,7 @@ public class SuperGroupTypeAdminController {
     public SuperGroupTypeAddedResponse addSuperGroupType(@Valid @RequestBody AddSuperGroupType request) {
         try {
             this.superGroupTypeService.create(request.name);
-        } catch (EntityAlreadyExistsException e) {
+        } catch (SuperGroupTypeService.SuperGroupNotFoundException e) {
             throw new SuperGroupTypeAlreadyExistsResponse();
         }
         return new SuperGroupTypeAddedResponse();
@@ -55,9 +48,9 @@ public class SuperGroupTypeAdminController {
     public SuperGroupTypeRemovedResponse removeSuperGroupType(@PathVariable("name") SuperGroupType name) {
         try {
             this.superGroupTypeService.delete(name);
-        } catch (EntityNotFoundException e) {
+        } catch (SuperGroupTypeService.SuperGroupNotFoundException e) {
            throw new SuperGroupTypeDoesNotExistResponse();
-        } catch (EntityHasUsagesException e) {
+        } catch (SuperGroupTypeService.SuperGroupHasUsagesException e) {
             throw new SuperGroupTypeIsUsedResponse();
         }
         return new SuperGroupTypeRemovedResponse();

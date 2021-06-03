@@ -1,15 +1,13 @@
 package it.chalmers.gamma.internal.client.restriction.service;
 
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.internal.client.service.ClientService;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
 @Service
-public class ClientRestrictionService implements CreateEntity<ClientRestrictionDTO>, DeleteEntity<ClientRestrictionPK> {
+public class ClientRestrictionService {
 
     private final ClientRestrictionRepository clientRestrictionRepository;
 
@@ -17,8 +15,7 @@ public class ClientRestrictionService implements CreateEntity<ClientRestrictionD
         this.clientRestrictionRepository = clientRestrictionRepository;
     }
 
-    @Override
-    public void create(ClientRestrictionDTO clientRestriction) throws EntityAlreadyExistsException {
+    public void create(ClientRestrictionDTO clientRestriction) {
         this.clientRestrictionRepository.saveAll(
                 clientRestriction.authorityLevelNameList()
                         .stream()
@@ -32,8 +29,22 @@ public class ClientRestrictionService implements CreateEntity<ClientRestrictionD
         );
     }
 
-    @Override
-    public void delete(ClientRestrictionPK id) throws EntityNotFoundException {
+    public void delete(ClientRestrictionPK id) {
        this.clientRestrictionRepository.deleteById(id);
     }
+
+    public ClientRestrictionDTO get(ClientId clientId) throws ClientRestrictionNotFoundException {
+        return this.clientRestrictionRepository.findClientRestrictionsById_ClientId(clientId)
+                .stream()
+                .map(ClientRestrictionEntity::toDTO)
+                .reduce(
+                        (cr1, cr2) -> {
+                            cr1.authorityLevelNameList().addAll(cr2.authorityLevelNameList());
+                            return cr1;
+                        })
+                .orElseThrow(ClientRestrictionNotFoundException::new);
+    }
+
+    public static class ClientRestrictionNotFoundException extends Exception { }
+
 }

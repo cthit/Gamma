@@ -1,12 +1,12 @@
 package it.chalmers.gamma.internal.authority.level.service;
 
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class AuthorityLevelService implements CreateEntity<AuthorityLevelName>, DeleteEntity<AuthorityLevelName> {
+public class AuthorityLevelService {
 
     private final AuthorityLevelRepository authorityLevelRepository;
 
@@ -14,16 +14,23 @@ public class AuthorityLevelService implements CreateEntity<AuthorityLevelName>, 
         this.authorityLevelRepository = authorityLevelRepository;
     }
 
-    public void create(AuthorityLevelName levelName) throws EntityAlreadyExistsException {
+    public void create(AuthorityLevelName levelName) throws AuthorityLevelAlreadyExistsException {
         try {
             this.authorityLevelRepository.save(new AuthorityLevelEntity(levelName));
         } catch(IllegalArgumentException e) {
-            throw new EntityAlreadyExistsException();
+            throw new AuthorityLevelAlreadyExistsException();
         }
     }
 
-    public void delete(AuthorityLevelName name) {
+    public void delete(AuthorityLevelName name) throws AuthorityLevelNotFoundException {
         this.authorityLevelRepository.deleteById(name.value);
     }
+
+    public List<AuthorityLevelName> getAll() {
+        return this.authorityLevelRepository.findAll().stream().map(AuthorityLevelEntity::get).collect(Collectors.toList());
+    }
+
+    public static class AuthorityLevelAlreadyExistsException extends Exception { }
+    public static class AuthorityLevelNotFoundException extends Exception { }
 
 }

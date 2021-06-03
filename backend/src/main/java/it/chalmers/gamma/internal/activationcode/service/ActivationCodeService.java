@@ -1,36 +1,53 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
 import it.chalmers.gamma.domain.Code;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.Cid;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class ActivationCodeService implements DeleteEntity<Cid>  {
+public class ActivationCodeService {
 
-    private final ActivationCodeRepository activationCodeRepository;
+    private final ActivationCodeRepository repository;
 
-    public ActivationCodeService(ActivationCodeRepository activationCodeRepository) {
-        this.activationCodeRepository = activationCodeRepository;
+    public ActivationCodeService(ActivationCodeRepository repository) {
+        this.repository = repository;
     }
 
     public ActivationCodeDTO saveActivationCode(Cid cid) {
         // Delete if there was a code previously saved
         try {
             delete(cid);
-        } catch (EntityNotFoundException ignored) {}
+        } catch (ActivationCodeNotFoundException ignored) {}
 
-        return this.activationCodeRepository.save(new ActivationCodeEntity(cid, Code.generate())).toDTO();
+        return this.repository.save(new ActivationCodeEntity(cid, Code.generate())).toDTO();
     }
 
-    public void delete(Cid cid) throws EntityNotFoundException {
+    public void delete(Cid cid) throws ActivationCodeNotFoundException {
         try{
-            this.activationCodeRepository.deleteById(cid);
+            this.repository.deleteById(cid);
         } catch(IllegalArgumentException e) {
-            throw new EntityNotFoundException();
+            throw new ActivationCodeNotFoundException();
         }
     }
+
+    public List<ActivationCodeDTO> getAll() {
+        return this.repository.findAll()
+                .stream()
+                .map(ActivationCodeEntity::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public boolean codeMatchesCid(Cid cid, Code code) {
+        //TODO: check if activationcode is valid
+        //    @Value("${password-expiration-time}")
+        return this.repository.findActivationCodeByCidAndCode(cid, code).isPresent();
+    }
+
+    public static class ActivationCodeNotFoundException extends Exception { }
+
 
 }

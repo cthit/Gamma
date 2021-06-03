@@ -2,16 +2,14 @@ package it.chalmers.gamma.internal.user.passwordreset.service;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.UserId;
+import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.mail.MailSenderService;
 
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -20,26 +18,26 @@ public class PasswordResetService {
 
     private final PasswordResetTokenRepository repository;
     private final MailSenderService mailSenderService;
-    private final UserFinder userFinder;
+    private final UserService userService;
 
     public PasswordResetService(PasswordResetTokenRepository repository,
                                 MailSenderService mailSenderService,
-                                UserFinder userFinder) {
+                                UserService userService) {
         this.repository = repository;
         this.mailSenderService = mailSenderService;
-        this.userFinder = userFinder;
+        this.userService = userService;
     }
 
-    public void handlePasswordReset(String cidOrEmail) throws EntityNotFoundException {
+    public void handlePasswordReset(String cidOrEmail) throws UserService.UserNotFoundException {
         UserDTO user;
 
         try{
-            user = this.userFinder.get(new Cid(cidOrEmail));
-        }catch(EntityNotFoundException e) {
+            user = this.userService.get(new Cid(cidOrEmail));
+        }catch(UserService.UserNotFoundException e) {
             try {
-                user = this.userFinder.get(new Email(cidOrEmail));
-            } catch(EntityNotFoundException e2) {
-                throw new EntityNotFoundException();
+                user = this.userService.get(new Email(cidOrEmail));
+            } catch(UserService.UserNotFoundException e2) {
+                throw new UserService.UserNotFoundException();
             }
         }
 
@@ -55,7 +53,7 @@ public class PasswordResetService {
 
         try {
             this.removeToken(user);
-        } catch (EntityNotFoundException ignored) { }
+        } catch (UserService.UserNotFoundException ignored) { }
 
         this.addToken(user, token);
         this.sendMail(user, token);
@@ -69,18 +67,18 @@ public class PasswordResetService {
         ));
     }
 
-    public boolean tokenMatchesUser(UserId userId, String token) throws EntityNotFoundException {
+    public boolean tokenMatchesUser(UserId userId, String token) throws UserService.UserNotFoundException {
         PasswordResetTokenDTO d = this.repository.findById(userId)
-                .orElseThrow(EntityNotFoundException::new)
+                .orElseThrow(UserService.UserNotFoundException::new)
                 .toDTO();
         return d.token().equals(token);
     }
 
-    public void removeToken(UserDTO user) throws EntityNotFoundException {
+    public void removeToken(UserDTO user) throws UserService.UserNotFoundException {
         try {
             this.repository.deleteById(user.id());
         } catch(IllegalArgumentException e) {
-            throw new EntityNotFoundException();
+            throw new UserService.UserNotFoundException();
         }
     }
 

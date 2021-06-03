@@ -3,8 +3,6 @@ package it.chalmers.gamma.internal.authority.post.service;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.SuperGroupId;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -62,7 +60,7 @@ class AuthorityPostServiceTest {
                 .given(authorityPostRepository)
                 .save(authorityPost);
 
-        assertThatExceptionOfType(EntityAlreadyExistsException.class)
+        assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> authorityPostService.create(authorityPostShallowDTO));
     }
 
@@ -106,7 +104,7 @@ class AuthorityPostServiceTest {
 
         assertThatNoException()
                 .isThrownBy(() -> authorityPostService.delete(authority));
-        assertThatExceptionOfType(EntityNotFoundException.class)
+        assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> authorityPostService.delete(authority2));
     }
 
@@ -122,7 +120,7 @@ class AuthorityPostServiceTest {
                 .given(authorityPostRepository)
                 .deleteById(authority2);
 
-        assertThatExceptionOfType(EntityNotFoundException.class)
+        assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> authorityPostService.delete(authority2));
     }
 

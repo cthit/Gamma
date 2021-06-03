@@ -1,6 +1,5 @@
 package it.chalmers.gamma.internal.membership.controller;
 
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.membership.service.MembershipPK;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
@@ -47,12 +46,8 @@ public final class MembershipAdminController {
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") GroupId groupId,
                                                               @RequestParam("userId") UserId userId,
                                                               @RequestParam("postId") PostId postId) {
-        try {
-            this.membershipService.delete(new MembershipPK(postId, groupId, userId));
-            return new MemberRemovedFromGroupResponse();
-        } catch (EntityNotFoundException e) {
-            throw new MembershipNotFoundResponse();
-        }
+        this.membershipService.delete(new MembershipPK(postId, groupId, userId));
+        return new MemberRemovedFromGroupResponse();
     }
 
     private record EditMembershipRequest(String unofficialName) { }
@@ -71,7 +66,7 @@ public final class MembershipAdminController {
                             userId
                     )
             );
-        } catch (EntityNotFoundException e) {
+        } catch (MembershipService.MembershipNotFoundException e) {
             e.printStackTrace();
         }
 

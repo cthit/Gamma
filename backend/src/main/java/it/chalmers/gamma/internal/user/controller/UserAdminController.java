@@ -5,18 +5,16 @@ import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.internal.membership.service.MembershipDTO;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
 
 import java.time.Year;
@@ -43,21 +41,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/users")
 public final class UserAdminController {
 
-    private final UserFinder userFinder;
     private final UserService userService;
     private final UserCreationService userCreationService;
-    private final MembershipFinder membershipFinder;
+    private final MembershipService membershipService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
-    public UserAdminController(UserFinder userFinder,
-                               UserService userService,
+    public UserAdminController(UserService userService,
                                UserCreationService userCreationService,
-                               MembershipFinder membershipFinder) {
-        this.userFinder = userFinder;
+                               MembershipService membershipFinder) {
         this.userService = userService;
         this.userCreationService = userCreationService;
-        this.membershipFinder = membershipFinder;
+        this.membershipService = membershipFinder;
     }
 
     record AdminChangePasswordRequest(UnencryptedPassword password) {}
@@ -68,7 +63,7 @@ public final class UserAdminController {
             @Valid @RequestBody AdminChangePasswordRequest request) {
         try {
             this.userService.setPassword(id, request.password);
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             LOGGER.error("User not found", e);
             throw new UserNotFoundResponse();
         }
@@ -87,12 +82,11 @@ public final class UserAdminController {
     @GetMapping("/{id}")
     public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
         try {
-            UserDTO user = this.userFinder.get(id);
-            List<GroupPost> groups = this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.id()));
+            UserDTO user = this.userService.get(id);
+            List<GroupPost> groups = this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()));
 
             return new GetUserAdminResponse(user, groups);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("User not found", e);
+        } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }
@@ -103,15 +97,9 @@ public final class UserAdminController {
 
     @GetMapping()
     public GetAllUsersResponse getAllUsers() {
-        List<UserWithGroups> users = this.userFinder.getAll()
+        List<UserWithGroups> users = this.userService.getAll()
                 .stream()
-                .map(user -> {
-                    try {
-                        return new UserWithGroups(user, this.toGroupPosts(this.membershipFinder.getMembershipsByUser(user.id())));
-                    } catch (EntityNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(user -> new UserWithGroups(user, this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()))))
                 .collect(Collectors.toList());
 
         return new GetAllUsersResponse(users);
@@ -155,7 +143,7 @@ public final class UserAdminController {
     public UserEditedResponse editUser(@PathVariable("id") UserId id,
                                        @RequestBody EditUserRequest request) {
         try {
-            UserDTO user = this.userFinder.get(id);
+            UserDTO user = this.userService.get(id);
             this.userService.update(user.with()
                     .nick(request.nick)
                     .firstName(request.firstName)
@@ -166,7 +154,7 @@ public final class UserAdminController {
                     .build()
             );
             return new UserEditedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }

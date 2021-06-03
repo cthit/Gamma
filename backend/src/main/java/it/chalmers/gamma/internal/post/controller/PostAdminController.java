@@ -1,11 +1,10 @@
 package it.chalmers.gamma.internal.post.controller;
 
 import it.chalmers.gamma.domain.EmailPrefix;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.text.service.TextDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.internal.post.service.PostDTO;
 import it.chalmers.gamma.internal.post.service.PostService;
@@ -33,11 +32,12 @@ import java.util.stream.Collectors;
 public final class PostAdminController {
 
     private final PostService postService;
-    private final MembershipFinder membershipFinder;
+    private final MembershipService membershipService;
 
-    public PostAdminController(PostService postService, MembershipFinder membershipFinder) {
+    public PostAdminController(PostService postService,
+                               MembershipService membershipService) {
         this.postService = postService;
-        this.membershipFinder = membershipFinder;
+        this.membershipService = membershipService;
     }
 
     private record CreateOrEditPost(@Valid TextDTO post,
@@ -58,7 +58,7 @@ public final class PostAdminController {
         try {
             this.postService.update(new PostDTO(id, request.post(), request.emailPrefix()));
             return new PostEditedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (PostService.PostNotFoundException e) {
             throw new PostDoesNotExistResponse();
         }
     }
@@ -71,24 +71,18 @@ public final class PostAdminController {
 
     @GetMapping("/{id}/usage")
     public List<GroupWithMembers> getPostUsages(@PathVariable("id") PostId postId) {
-        return this.membershipFinder.getGroupsWithPost(postId)
+        return this.membershipService.getGroupsWithPost(postId)
                 .stream()
-                .map(group -> {
-                    try {
-                        return new GroupWithMembers(
-                                group,
-                                this.membershipFinder.getMembershipsByGroupAndPost(group.id(), postId)
-                                        .stream()
-                                        .map(membership -> new UserPost(
-                                                new UserRestrictedDTO(membership.user()),
-                                                membership.post()
-                                        ))
-                                        .collect(Collectors.toList())
-                        );
-                    } catch (EntityNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(group -> new GroupWithMembers(
+                        group,
+                        this.membershipService.getMembershipsByGroupAndPost(group.id(), postId)
+                                .stream()
+                                .map(membership -> new UserPost(
+                                        new UserRestrictedDTO(membership.user()),
+                                        membership.post()
+                                ))
+                                .collect(Collectors.toList())
+                ))
                 .collect(Collectors.toList());
     }
 

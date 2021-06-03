@@ -5,17 +5,15 @@ import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.MeService;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.GroupPost;
-import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -39,20 +37,17 @@ public class MeController {
 
     private final MeService meService;
     private final UserService userService;
-    private final UserFinder userFinder;
-    private final MembershipFinder membershipFinder;
-    private final AuthorityPostFinder authorityPostFinder;
+    private final MembershipService membershipService;
+    private final AuthorityFinder authorityFinder;
 
     public MeController(MeService meService,
                         UserService userService,
-                        UserFinder userFinder,
-                        MembershipFinder membershipFinder,
-                        AuthorityPostFinder authorityPostFinder) {
+                        MembershipService membershipService,
+                        AuthorityFinder authorityFinder) {
         this.meService = meService;
         this.userService = userService;
-        this.userFinder = userFinder;
-        this.membershipFinder = membershipFinder;
-        this.authorityPostFinder = authorityPostFinder;
+        this.membershipService = membershipService;
+        this.authorityFinder = authorityFinder;
     }
 
     public record GetMeResponse(@JsonUnwrapped UserDTO user,
@@ -63,16 +58,16 @@ public class MeController {
     public GetMeResponse getMe(Principal principal) {
         try {
             UserDTO user = extractUser(principal);
-            List<GroupPost> groups = this.membershipFinder.getMembershipsByUser(user.id())
+            List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
-            List<AuthorityLevelName> authorityLevelNames = this.authorityPostFinder.getGrantedAuthorities(user.id());
+            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
 
             return new GetMeResponse(user, groups, authorityLevelNames);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Signed in user doesn't exist, maybe deleted?", e);
-            throw new UserNotFoundResponse();
+        } catch (UserService.UserNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -98,7 +93,7 @@ public class MeController {
                             .acceptanceYear(Year.of(request.acceptanceYear()))
                             .build()
             );
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -111,7 +106,7 @@ public class MeController {
             UserDTO user = extractUser(principal);
             this.userService.editProfilePicture(user, file);
             return new EditedProfilePictureResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             LOGGER.error("Cannot find the signed in user", e);
             throw new UserNotFoundResponse();
         }
@@ -129,7 +124,7 @@ public class MeController {
             }
 
             this.userService.setPassword(user.id(), request.password);
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             LOGGER.error("Cannot find the signed in user", e);
             throw new UserNotFoundResponse();
         }
@@ -146,16 +141,13 @@ public class MeController {
             this.meService.tryToDeleteUser(user.id(), request.password);
 
             return new UserDeletedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 
-    private UserDTO extractUser(Principal principal) throws EntityNotFoundException {
-        return this.userFinder.get(new Cid(principal.getName()));
+    private UserDTO extractUser(Principal principal) throws UserService.UserNotFoundException {
+        return this.userService.get(new Cid(principal.getName()));
     }
 
     private static class EditedProfilePictureResponse extends SuccessResponse { }

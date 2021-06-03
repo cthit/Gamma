@@ -1,7 +1,5 @@
 package it.chalmers.gamma.internal.authority.post.controller;
 
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostPK;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostShallowDTO;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
@@ -37,7 +35,7 @@ public final class AuthorityPostAdminController {
                     )
             );
             return new AuthorityPostCreatedResponse();
-        } catch (EntityAlreadyExistsException e) {
+        } catch (AuthorityPostService.AuthorityPostNotFoundException e) {
             throw new AuthorityPostAlreadyExistsResponse();
         }
     }
@@ -51,7 +49,7 @@ public final class AuthorityPostAdminController {
                     new AuthorityPostPK(superGroupId, postId, authorityLevelName)
             );
             return new AuthorityPostRemovedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (AuthorityPostService.AuthorityPostNotFoundException e) {
             throw new AuthorityPostNotFoundResponse();
         }
     }

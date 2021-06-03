@@ -1,9 +1,6 @@
 package it.chalmers.gamma.internal.whitelist.controller;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 
 import java.util.List;
@@ -28,18 +25,15 @@ public final class WhitelistAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistAdminController.class);
 
-    private final WhitelistFinder whitelistFinder;
     private final WhitelistService whitelistService;
 
-    public WhitelistAdminController(WhitelistFinder whitelistFinder,
-                                    WhitelistService whitelistService) {
-        this.whitelistFinder = whitelistFinder;
+    public WhitelistAdminController(WhitelistService whitelistService) {
         this.whitelistService = whitelistService;
     }
 
     @GetMapping()
     public List<Cid> getWhiteList() {
-        return this.whitelistFinder.getAll();
+        return this.whitelistService.getAll();
     }
 
     private record AddToWhitelist(Cid cid) { }
@@ -48,7 +42,7 @@ public final class WhitelistAdminController {
     public WhitelistAddedResponse addWhitelistedUsers(@Valid @RequestBody AddToWhitelist request) {
         try {
             this.whitelistService.create(request.cid);
-        } catch (EntityAlreadyExistsException e) {
+        } catch (WhitelistService.WhitelistNotFoundException e) {
             throw new CidAlreadyWhitelistedResponse();
         }
 
@@ -59,7 +53,7 @@ public final class WhitelistAdminController {
     public CidRemovedFromWhitelistResponse removeWhitelist(@PathVariable("cid") Cid cid) {
         try {
             this.whitelistService.delete(cid);
-        } catch (EntityNotFoundException e) {
+        } catch (WhitelistService.WhitelistNotFoundException e) {
             throw new CidNotWhitelistedResponse();
         }
         return new CidRemovedFromWhitelistResponse();

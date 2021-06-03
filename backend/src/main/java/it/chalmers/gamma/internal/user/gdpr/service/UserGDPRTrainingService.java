@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.user.gdpr.service;
 
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.user.service.UserFinder;
+import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 public class UserGDPRTrainingService {
 
     private final UserGDPRTrainingRepository repository;
-    private final UserFinder userFinder;
+    private final UserService userService;
 
     public UserGDPRTrainingService(UserGDPRTrainingRepository repository,
-                                   UserFinder userFinder) {
+                                   UserService userService) {
         this.repository = repository;
-        this.userFinder = userFinder;
+        this.userService = userService;
     }
 
     public List<UserGDPRTrainingDTO> getUsersWithGDPR() {
-        return this.userFinder.getAll()
+        return this.userService.getAll()
                 .stream()
                 .map(user -> new UserGDPRTrainingDTO(user, false))
                 .collect(Collectors.toList());

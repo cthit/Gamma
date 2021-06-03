@@ -4,11 +4,9 @@ import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyInformationDTO;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.text.service.TextDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
@@ -28,11 +26,9 @@ import java.util.List;
 @RequestMapping("/admin/api_keys")
 public class ApiKeyAdminController {
 
-    private final ApiKeyFinder apiKeyFinder;
     private final ApiKeyService apiKeyService;
 
-    public ApiKeyAdminController(ApiKeyFinder apiKeyFinder, ApiKeyService apiKeyService) {
-        this.apiKeyFinder = apiKeyFinder;
+    public ApiKeyAdminController(ApiKeyService apiKeyService) {
         this.apiKeyService = apiKeyService;
     }
 
@@ -57,7 +53,8 @@ public class ApiKeyAdminController {
 
     @GetMapping()
     public List<ApiKeyInformationDTO> getAllApiKeys() {
-        return this.apiKeyFinder.getAll();
+        return this.apiKeyService
+                .getAll();
     }
 
     @DeleteMapping("/{id}")
@@ -65,7 +62,7 @@ public class ApiKeyAdminController {
         try {
             this.apiKeyService.delete(apiKeyId);
             return new ApiKeyDeletedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (ApiKeyService.ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundResponse();
         }
     }

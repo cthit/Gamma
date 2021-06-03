@@ -2,8 +2,8 @@ package it.chalmers.gamma.internal.whitelist.controller;
 
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeDTO;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.internal.whitelist.service.WhitelistFinder;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
+import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 import it.chalmers.gamma.mail.MailSenderService;
 
 import javax.validation.Valid;
@@ -23,7 +23,7 @@ public final class WhitelistController {
 
     private final ActivationCodeService activationCodeService;
     private final MailSenderService mailSenderService;
-    private final WhitelistFinder whitelistFinder;
+    private final WhitelistService whitelistService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
 
@@ -31,11 +31,11 @@ public final class WhitelistController {
     private static final String MAIL_POSTFIX = "student.chalmers.se";
 
     public WhitelistController(ActivationCodeService activationCodeService,
-            MailSenderService mailSenderService,
-            WhitelistFinder whitelistFinder) {
+                                MailSenderService mailSenderService,
+                                WhitelistService whitelistService) {
         this.activationCodeService = activationCodeService;
         this.mailSenderService = mailSenderService;
-        this.whitelistFinder = whitelistFinder;
+        this.whitelistService = whitelistService;
     }
 
     private record WhitelistCodeRequest(Cid cid) { }
@@ -44,7 +44,7 @@ public final class WhitelistController {
     public WhitelistedCidActivatedResponse createActivationCode(@Valid @RequestBody WhitelistCodeRequest request) {
         Cid cid = request.cid;
 
-        if (this.whitelistFinder.cidIsWhitelisted(cid)) {
+        if (this.whitelistService.cidIsWhitelisted(cid)) {
             ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(cid);
             sendEmail(activationCode);
         } else {

@@ -5,7 +5,6 @@ import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.text.service.TextDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -68,7 +67,7 @@ class ApiKeyServiceTest {
 
         assertThatNoException()
                 .isThrownBy(() -> apiKeyService.delete(apiKeyId));
-        assertThatExceptionOfType(EntityNotFoundException.class)
+        assertThatExceptionOfType(Exception.class)
                 .isThrownBy(() -> apiKeyService.delete(apiKeyId2));
     }
 }

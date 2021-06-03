@@ -1,7 +1,6 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
-import it.chalmers.gamma.internal.user.service.UserFinder;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.internal.user.service.UserService;
 
 import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
@@ -11,16 +10,15 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
-        <DefaultSecurityFilterChain, HttpSecurity> {
+public class AuthenticationFilterConfigurer
+        extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private final String secretKey;
     private final String baseFrontendUrl;
     private final String issuer;
     private final UserService userService;
     private final PasswordResetService passwordResetService;
-    private final UserFinder userFinder;
-    private final ApiKeyFinder apiKeyFinder;
+    private final ApiKeyService apiKeyService;
 
     public AuthenticationFilterConfigurer(
             UserService userService,
@@ -28,15 +26,13 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
             String issuer,
             PasswordResetService passwordResetService,
             String baseFrontendUrl,
-            UserFinder userFinder,
-            ApiKeyFinder apiKeyFinder) {
+            ApiKeyService apiKeyService) {
         this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;
         this.passwordResetService = passwordResetService;
         this.baseFrontendUrl = baseFrontendUrl;
-        this.userFinder = userFinder;
-        this.apiKeyFinder = apiKeyFinder;
+        this.apiKeyService = apiKeyService;
     }
 
     @Override
@@ -48,11 +44,12 @@ public class AuthenticationFilterConfigurer extends SecurityConfigurerAdapter
         );
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
                 this.userService,
-                this.apiKeyFinder);
+                this.apiKeyService
+        );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.baseFrontendUrl,
                 this.passwordResetService,
-                this.userFinder
+                this.userService
         );
         builder.addFilterBefore(c, UsernamePasswordAuthenticationFilter.class);
         builder.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);

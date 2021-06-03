@@ -1,14 +1,13 @@
 package it.chalmers.gamma.internal.group.controller;
 
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
-import it.chalmers.gamma.internal.membership.service.MembershipRestrictedDTO;
 
 import java.util.List;
 
-import it.chalmers.gamma.internal.membership.service.MembershipRestrictedFinder;
+import it.chalmers.gamma.internal.membership.service.MembershipDTO;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,27 +19,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/groups")
 public final class GroupController {
 
-    private final GroupFinder groupFinder;
-    private final MembershipRestrictedFinder membershipRestrictedFinder;
+    private final GroupService groupService;
+    private final MembershipService membershipService;
 
     public GroupController(
-            GroupFinder groupFinder,
-            MembershipRestrictedFinder membershipRestrictedFinder) {
-        this.groupFinder = groupFinder;
-        this.membershipRestrictedFinder = membershipRestrictedFinder;
+            GroupService groupService,
+            MembershipService membershipService) {
+        this.groupService = groupService;
+        this.membershipService = membershipService;
     }
 
-    private record GetGroupResponse(GroupDTO group, List<MembershipRestrictedDTO> groupMembers) {}
+    private record GetGroupResponse(GroupDTO group, List<MembershipDTO> groupMembers) {}
 
     @GetMapping("/{id}")
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
         try {
-            GroupDTO group = this.groupFinder.get(id);
-            List<MembershipRestrictedDTO> members = this.membershipRestrictedFinder
-                    .getRestrictedMembershipsInGroup(group.id());
+            GroupDTO group = this.groupService.get(id);
+            List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group.id());
 
             return new GetGroupResponse(group, members);
-        } catch (EntityNotFoundException e) {
+        } catch (GroupService.GroupNotFoundException e) {
             throw new GroupNotFoundResponse();
         }
     }

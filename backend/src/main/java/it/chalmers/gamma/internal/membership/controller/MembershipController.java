@@ -1,8 +1,8 @@
 package it.chalmers.gamma.internal.membership.controller;
 
 import it.chalmers.gamma.domain.GroupId;
-import it.chalmers.gamma.internal.membership.service.MembershipRestrictedDTO;
-import it.chalmers.gamma.internal.membership.service.MembershipRestrictedFinder;
+import it.chalmers.gamma.internal.membership.service.MembershipDTO;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,15 +14,15 @@ import java.util.List;
 @RequestMapping("/groups")
 public class MembershipController {
 
-    private final MembershipRestrictedFinder membershipRestrictedFinder;
+    private final MembershipService membershipService;
 
-    public MembershipController(MembershipRestrictedFinder membershipRestrictedFinder) {
-        this.membershipRestrictedFinder = membershipRestrictedFinder;
+    public MembershipController(MembershipService membershipService) {
+        this.membershipService = membershipService;
     }
 
     @GetMapping("/{groupId}/members")
-    public List<MembershipRestrictedDTO> getMembersOfGroup(@PathVariable("groupId") GroupId groupId) {
-        return this.membershipRestrictedFinder.getRestrictedMembershipsInGroup(groupId);
+    public List<MembershipDTO> getMembersOfGroup(@PathVariable("groupId") GroupId groupId) {
+        return this.membershipService.getMembershipsInGroup(groupId);
     }
 
 }

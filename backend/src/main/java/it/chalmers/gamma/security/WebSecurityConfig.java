@@ -1,16 +1,13 @@
 package it.chalmers.gamma.security;
 
-import it.chalmers.gamma.internal.apikey.service.ApiKeyFinder;
-import it.chalmers.gamma.internal.group.service.GroupDTO;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
+import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
+import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
 
 import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +40,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
-    private final UserFinder userFinder;
     private final UserService userService;
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
-    private final GroupFinder groupFinder;
-    private final ApiKeyFinder apiKeyFinder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
+    private final GroupService groupFinder;
+    private final ApiKeyService apiKeyService;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
@@ -61,18 +57,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
-                             UserFinder userFinder,
-                             GroupFinder groupFinder,
-                             ApiKeyFinder apiKeyFinder,
-                             CookieCsrfTokenRepository cookieCsrfTokenRepository) {
+                             CookieCsrfTokenRepository cookieCsrfTokenRepository,
+                             GroupService groupFinder,
+                             ApiKeyService apiKeyService) {
         this.userService = userService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
         this.loginRedirectHandler = loginRedirectHandler;
-        this.userFinder = userFinder;
-        this.groupFinder = groupFinder;
-        this.apiKeyFinder = apiKeyFinder;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
+        this.groupFinder = groupFinder;
+        this.apiKeyService = apiKeyService;
     }
 
     @Override
@@ -141,8 +135,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.issuer,
                             this.passwordResetService,
                             this.baseFrontendUrl,
-                            this.userFinder,
-                            this.apiKeyFinder
+                            this.apiKeyService
                     )
             );
         } catch (Exception e) {

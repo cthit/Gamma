@@ -1,18 +1,18 @@
 package it.chalmers.gamma.internal.authority.level.controller;
 
+import it.chalmers.gamma.domain.Authorities;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
-import it.chalmers.gamma.internal.authority.post.service.AuthorityPostFinder;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelFinder;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelService;
+import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
+import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -20,23 +20,20 @@ import java.util.List;
 @RequestMapping("/admin/authority/level")
 public class AuthorityLevelAdminController {
 
-    private final AuthorityPostFinder authorityPostFinder;
+    private final AuthorityFinder authorityFinder;
     private final AuthorityLevelService authorityLevelService;
-    private final AuthorityLevelFinder authorityLevelFinder;
 
-    public AuthorityLevelAdminController(AuthorityPostFinder authorityPostFinder,
-                                         AuthorityLevelService authorityLevelService,
-                                         AuthorityLevelFinder authorityLevelFinder) {
-        this.authorityPostFinder = authorityPostFinder;
+    public AuthorityLevelAdminController(AuthorityFinder authorityFinder,
+                                         AuthorityLevelService authorityLevelService) {
+        this.authorityFinder = authorityFinder;
         this.authorityLevelService = authorityLevelService;
-        this.authorityLevelFinder = authorityLevelFinder;
     }
 
     @PostMapping()
     public AuthorityLevelCreatedResponse addAuthorityLevel(@Valid @RequestBody CreateAuthorityLevelRequest request) {
         try {
             this.authorityLevelService.create(request.authorityLevel);
-        } catch (EntityAlreadyExistsException e) {
+        } catch (AuthorityLevelService.AuthorityLevelAlreadyExistsException e) {
             throw new AuthorityLevelAlreadyExistsResponse();
         }
 
@@ -47,19 +44,23 @@ public class AuthorityLevelAdminController {
 
     @GetMapping
     public List<AuthorityLevelName> getAllAuthorityLevels() {
-        return this.authorityLevelFinder.getAll();
+        return this.authorityLevelService.getAll();
     }
 
     @DeleteMapping("/{name}")
     public AuthorityLevelDeletedResponse removeAuthorityLevel(@PathVariable("name") AuthorityLevelName name) {
-        this.authorityLevelService.delete(name);
-        return new AuthorityLevelDeletedResponse();
+        try {
+            this.authorityLevelService.delete(name);
+            return new AuthorityLevelDeletedResponse();
+        } catch (AuthorityLevelService.AuthorityLevelNotFoundException e) {
+            throw new AuthorityLevelNotFoundResponse();
+        }
     }
 
     @GetMapping("/{name}")
-    public List<AuthorityPostDTO> getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
+    public Authorities getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
         try {
-            return this.authorityPostFinder.getByAuthorityLevel(name);
+            return this.authorityFinder.getByAuthorityLevel(name);
         } catch (EntityNotFoundException e) {
             throw new AuthorityLevelNotFoundResponse();
         }

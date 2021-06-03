@@ -1,39 +1,82 @@
 package it.chalmers.gamma.internal.group.service;
 
 import it.chalmers.gamma.domain.GroupId;
-import it.chalmers.gamma.util.domain.abstraction.CreateEntity;
-import it.chalmers.gamma.util.domain.abstraction.DeleteEntity;
-import it.chalmers.gamma.util.domain.abstraction.UpdateEntity;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
+import it.chalmers.gamma.domain.SuperGroupId;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class GroupService implements CreateEntity<GroupShallowDTO>, DeleteEntity<GroupId>, UpdateEntity<GroupShallowDTO> {
+public class GroupService {
 
-    private final GroupRepository groupRepository;
-    private final GroupFinder groupFinder;
+    private final GroupRepository repository;
+    private final SuperGroupService superGroupService;
 
-    public GroupService(GroupRepository groupRepository,
-                        GroupFinder groupFinder) {
-        this.groupRepository = groupRepository;
-        this.groupFinder = groupFinder;
+    public GroupService(GroupRepository repository,
+                        SuperGroupService superGroupService) {
+        this.repository = repository;
+        this.superGroupService = superGroupService;
     }
 
-    @Override
-    public void create(GroupShallowDTO group) throws EntityAlreadyExistsException {
-        this.groupRepository.save(new GroupEntity(group));
+    public void create(GroupShallowDTO group) throws GroupAlreadyExistsException {
+        this.repository.save(new GroupEntity(group));
     }
 
-    @Override
-    public void delete(GroupId id) throws EntityNotFoundException {
-        this.groupRepository.deleteById(id);
+    public void delete(GroupId id) throws GroupNotFoundException {
+        this.repository.deleteById(id);
     }
 
-    @Override
-    public void update(GroupShallowDTO newEdit) throws EntityNotFoundException {
-        GroupEntity group = this.groupFinder.getGroupEntity(newEdit.id());
+    public void update(GroupShallowDTO newEdit) throws GroupNotFoundException {
+        GroupEntity group = this.getGroupEntity(newEdit.id());
         group.apply(newEdit);
-        this.groupRepository.save(group);
+        this.repository.save(group);
     }
+
+    public List<GroupDTO> getAll() {
+        return this.repository
+                .findAll()
+                .stream()
+                .map(GroupEntity::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    public List<GroupDTO> getGroupsBySuperGroup(SuperGroupId superGroupId) {
+        return this.repository.findAllBySuperGroupId(superGroupId)
+                .stream()
+                .map(GroupEntity::toDTO)
+                .map(this::fromShallow)
+                .collect(Collectors.toList());
+    }
+
+    public GroupDTO get(GroupId id) throws GroupNotFoundException {
+        return fromShallow(getGroupEntity(id).toDTO());
+    }
+
+    protected GroupEntity getGroupEntity(GroupId id) throws GroupNotFoundException {
+        return this.repository.findById(id)
+                .orElseThrow(GroupNotFoundException::new);
+    }
+
+
+    protected GroupDTO fromShallow(GroupShallowDTO group) {
+        try {
+            return new GroupDTO(
+                    group.id(),
+                    group.email(),
+                    group.name(),
+                    group.prettyName(),
+                    superGroupService.get(group.superGroupId())
+            );
+        } catch (SuperGroupService.SuperGroupNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class GroupNotFoundException extends Exception { }
+    public static class GroupAlreadyExistsException extends Exception { }
+
 }

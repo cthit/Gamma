@@ -5,11 +5,9 @@ import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.text.service.TextDTO;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.internal.client.service.ClientDTO;
-import it.chalmers.gamma.internal.client.service.ClientFinder;
 import it.chalmers.gamma.internal.client.service.ClientService;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
@@ -29,16 +27,13 @@ import java.util.List;
 @RequestMapping("/admin/clients")
 public class ClientAdminController {
 
-    private final ClientFinder clientFinder;
     private final ClientService clientService;
     private final ClientApiKeyService clientApiKeyService;
     private final ApiKeyService apiKeyService;
 
-    public ClientAdminController(ClientFinder clientFinder,
-                                 ClientService clientService,
+    public ClientAdminController(ClientService clientService,
                                  ClientApiKeyService clientApiKeyService,
                                  ApiKeyService apiKeyService) {
-        this.clientFinder = clientFinder;
         this.clientService = clientService;
         this.clientApiKeyService = clientApiKeyService;
         this.apiKeyService = apiKeyService;
@@ -74,7 +69,7 @@ public class ClientAdminController {
 
     @GetMapping()
     public List<ClientDTO> getAllClient() {
-        return this.clientFinder.getAll();
+        return this.clientService.getAll();
     }
 
     @DeleteMapping("/{clientId}")
@@ -82,7 +77,7 @@ public class ClientAdminController {
         try {
             this.clientService.delete(id);
             return new ClientDeletedResponse();
-        } catch (EntityNotFoundException e) {
+        } catch (ClientService.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
     }

@@ -2,9 +2,7 @@ package it.chalmers.gamma.internal.user.passwordreset.controller;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.UnencryptedPassword;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserFinder;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
 
@@ -26,16 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users/reset_password")
 public class UserPasswordResetController {
 
-    private final UserFinder userFinder;
     private final UserService userService;
     private final PasswordResetService passwordResetService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserPasswordResetController.class);
 
-    public UserPasswordResetController(UserFinder userFinder,
-                                       UserService userService,
+    public UserPasswordResetController(UserService userService,
                                        PasswordResetService passwordResetService) {
-        this.userFinder = userFinder;
         this.userService = userService;
         this.passwordResetService = passwordResetService;
     }
@@ -46,7 +41,7 @@ public class UserPasswordResetController {
     public PasswordRestLinkSentResponse resetPasswordRequest(@Valid @RequestBody ResetPasswordRequest request) {
         try {
             this.passwordResetService.handlePasswordReset(request.cidOrEmail);
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             LOGGER.info("Someone tried to reset password for " + request.cidOrEmail + " but that user doesn't exist");
         }
         return new PasswordRestLinkSentResponse();
@@ -59,7 +54,7 @@ public class UserPasswordResetController {
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@Valid @RequestBody ResetPasswordFinishRequest request) {
         try {
-            UserDTO user = this.userFinder.get(request.cid);
+            UserDTO user = this.userService.get(request.cid);
 
             if (!this.passwordResetService.tokenMatchesUser(user.id(), request.token)) {
                 throw new CodeOrCidIsWrongResponse();
@@ -67,7 +62,7 @@ public class UserPasswordResetController {
 
             this.userService.setPassword(user.id(), request.password);
             this.passwordResetService.removeToken(user);
-        } catch (EntityNotFoundException e) {
+        } catch (UserService.UserNotFoundException e) {
             throw new CodeOrCidIsWrongResponse();
         }
 

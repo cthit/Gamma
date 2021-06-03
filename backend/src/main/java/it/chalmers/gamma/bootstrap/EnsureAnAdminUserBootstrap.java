@@ -15,7 +15,6 @@ import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityAlreadyExistsException;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -86,7 +85,7 @@ public class EnsureAnAdminUserBootstrap {
                                 adminAuthorityLevel
                         )
                 );
-            } catch (EntityAlreadyExistsException e) {
+            } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
                 e.printStackTrace();
             }
 

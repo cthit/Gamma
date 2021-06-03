@@ -1,13 +1,12 @@
 package it.chalmers.gamma.api;
 
 import it.chalmers.gamma.internal.group.service.GroupDTO;
-import it.chalmers.gamma.internal.group.service.GroupFinder;
-import it.chalmers.gamma.internal.membership.service.MembershipFinder;
 import it.chalmers.gamma.domain.SuperGroupId;
+import it.chalmers.gamma.internal.group.service.GroupService;
+import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
-import it.chalmers.gamma.util.domain.abstraction.exception.EntityNotFoundException;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,46 +22,36 @@ import java.util.stream.Collectors;
 @RequestMapping("/chalmersit")
 public class ChalmersitApiController {
 
-    private final GroupFinder groupFinder;
-    private final MembershipFinder membershipFinder;
+    private final GroupService groupService;
+    private final MembershipService membershipService;
 
-    public ChalmersitApiController(GroupFinder groupFinder,
-                                   MembershipFinder membershipFinder) {
-        this.groupFinder = groupFinder;
-        this.membershipFinder = membershipFinder;
+    public ChalmersitApiController(GroupService groupService,
+                                   MembershipService membershipService) {
+        this.groupService = groupService;
+        this.membershipService = membershipService;
     }
 
     // add /users/me
 
-
     @GetMapping("/superGroups/{id}/active")
     public List<GroupWithMembers> getActiveSuperGroupsWithMembers(@PathVariable("id") SuperGroupId id) {
-        try {
-            return this.groupFinder.getGroupsBySuperGroup(id)
-                    .stream()
-                    .map(this::toGroupWithMembers)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        } catch (EntityNotFoundException e) {
-            throw new SuperGroupDoesNotExistResponse();
-        }
+        return this.groupService.getGroupsBySuperGroup(id)
+                .stream()
+                .map(this::toGroupWithMembers)
+                .collect(Collectors.toList());
     }
 
     private GroupWithMembers toGroupWithMembers(GroupDTO group) {
-        try {
-            return new GroupWithMembers(
-                    group,
-                    this.membershipFinder.getMembershipsByGroup(group.id())
-                            .stream()
-                            .map(membership -> new UserPost(
-                                    new UserRestrictedDTO(membership.user()),
-                                    membership.post())
-                            )
-                            .collect(Collectors.toList())
-            );
-        } catch (EntityNotFoundException e) {
-            return null;
-        }
+        return new GroupWithMembers(
+                group,
+                this.membershipService.getMembershipsByGroup(group.id())
+                        .stream()
+                        .map(membership -> new UserPost(
+                                new UserRestrictedDTO(membership.user()),
+                                membership.post())
+                    )
+                        .collect(Collectors.toList())
+        );
     }
 
     private static class SuperGroupDoesNotExistResponse extends ErrorResponse {
