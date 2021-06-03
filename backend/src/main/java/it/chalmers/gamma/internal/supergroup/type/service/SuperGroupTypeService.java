@@ -16,7 +16,7 @@ public class SuperGroupTypeService {
         this.superGroupTypeRepository = superGroupTypeRepository;
     }
 
-    public void create(SuperGroupType name) throws SuperGroupNotFoundException {
+    public void create(SuperGroupType name) throws SuperGroupAlreadyExistsException {
         this.superGroupTypeRepository.save(new SuperGroupTypeEntity(name));
     }
 
@@ -31,6 +31,7 @@ public class SuperGroupTypeService {
                 .collect(Collectors.toList());
     }
 
+    public static class SuperGroupAlreadyExistsException extends Exception { }
     public static class SuperGroupNotFoundException extends Exception { }
     public static class SuperGroupHasUsagesException extends Exception { }
 

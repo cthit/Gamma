@@ -78,8 +78,8 @@ public class AuthorityFinder {
 
     public boolean authorityLevelUsed(AuthorityLevelName name) {
         return this.authorityPostService.existsBy(name)
-                && this.authorityUserService.existsBy(name)
-                && this.authoritySuperGroupService.existsBy(name);
+                || this.authorityUserService.existsBy(name)
+                || this.authoritySuperGroupService.existsBy(name);
     }
 
 }

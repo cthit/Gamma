@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/activation_codes")
+@RequestMapping("/internal/admin/activation_codes")
 public final class ActivationCodeAdminController {
 
     private final ActivationCodeService activationCodeService;

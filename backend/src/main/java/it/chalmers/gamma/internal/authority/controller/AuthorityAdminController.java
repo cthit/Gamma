@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/authority")
+@RequestMapping("/internal/admin/authority")
 public class AuthorityAdminController {
 
     private final AuthorityFinder authorityFinder;

@@ -28,7 +28,7 @@ public class LastName implements Serializable {
 
     @Override
     public String toString() {
-        return "LastName: " + this.value;
+        return this.value;
     }
 
     @Override

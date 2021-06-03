@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/supergroup")
+@RequestMapping(value = "/internal/supergroup")
 public class SuperGroupTypeAdminController {
 
     private final SuperGroupTypeService superGroupTypeService;
@@ -38,7 +38,7 @@ public class SuperGroupTypeAdminController {
     public SuperGroupTypeAddedResponse addSuperGroupType(@Valid @RequestBody AddSuperGroupType request) {
         try {
             this.superGroupTypeService.create(request.name);
-        } catch (SuperGroupTypeService.SuperGroupNotFoundException e) {
+        } catch (SuperGroupTypeService.SuperGroupAlreadyExistsException e) {
             throw new SuperGroupTypeAlreadyExistsResponse();
         }
         return new SuperGroupTypeAddedResponse();

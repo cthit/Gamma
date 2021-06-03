@@ -5,7 +5,6 @@ import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeEntity;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
@@ -24,7 +23,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
     private TextEntity description;
 
     @Embedded
-    private EntityName name;
+    private EntityName entityName;
 
     @Embedded
     private PrettyName prettyName;
@@ -52,7 +51,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
         assert(this.id == sg.id());
 
         this.email = sg.email();
-        this.name = sg.name();
+        this.entityName = sg.name();
         this.prettyName = sg.prettyName();
         this.type = sg.type();
 
@@ -64,7 +63,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
     protected SuperGroupDTO toDTO() {
         return new SuperGroupDTO(
                 this.id,
-                this.name,
+                this.entityName,
                 this.prettyName,
                 this.type,
                 this.email,

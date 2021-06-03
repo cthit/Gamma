@@ -24,7 +24,7 @@ public abstract class Id<S> implements Serializable {
     }
 
     public final String toString() {
-        return "Id: " + get();
+        return this.get().toString();
     }
 
 }

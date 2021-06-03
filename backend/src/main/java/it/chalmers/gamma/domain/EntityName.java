@@ -50,6 +50,6 @@ public class EntityName implements Serializable {
 
     @Override
     public String toString() {
-        return "Name: " + this.value;
+        return this.value;
     }
 }

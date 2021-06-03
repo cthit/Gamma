@@ -10,14 +10,16 @@ spring:
     ansi:
       enabled: ALWAYS
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
+    open-in-view: false
 
   servlet:
     multipart:

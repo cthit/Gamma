@@ -50,7 +50,7 @@ public class Code implements Serializable {
 
     @Override
     public String toString() {
-        return "Code: " + this.value;
+        return this.value;
     }
 }
 

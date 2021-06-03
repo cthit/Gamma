@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/authority/post")
+@RequestMapping("/internal/admin/authority/post")
 public final class AuthorityPostAdminController {
 
     private final AuthorityPostService authorityPostService;

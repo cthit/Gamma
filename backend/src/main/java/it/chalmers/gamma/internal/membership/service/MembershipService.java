@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.post.service.PostService;
+import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -122,7 +123,7 @@ public class MembershipService {
                     this.postService.get(membership.postId()),
                     this.groupService.get(membership.groupId()),
                     membership.unofficialPostName(),
-                    this.userService.get(membership.userId())
+                    new UserRestrictedDTO(this.userService.get(membership.userId()))
             );
         } catch (PostService.PostNotFoundException e) {
             e.printStackTrace();

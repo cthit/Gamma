@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/whitelist")
+@RequestMapping(WhitelistApiController.URI)
 public class WhitelistApiController {
+
+    public static final String URI = "/whitelist";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistApiController.class);
 

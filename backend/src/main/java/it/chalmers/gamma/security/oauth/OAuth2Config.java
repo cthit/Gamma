@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -37,8 +38,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableOAuth2Client
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
-    @Qualifier("userDetailsService")
-    private final UserService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Qualifier("authenticationManagerBean")
     private final AuthenticationManager authenticationManager;
@@ -57,7 +57,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Value("${security.jwt.token.expire-length}")
     private long expiration;
 
-    public OAuth2Config(UserService userDetailsService,
+    public OAuth2Config(UserDetailsService userDetailsService,
                         AuthenticationManager authenticationManager,
                         ClientService clientDetailsService,
                         UserApprovalStore userApprovalStore) {

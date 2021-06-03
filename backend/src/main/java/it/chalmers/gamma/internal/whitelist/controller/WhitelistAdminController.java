@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/users/whitelist")
+@RequestMapping("/internal/admin/users/whitelist")
 public final class WhitelistAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistAdminController.class);

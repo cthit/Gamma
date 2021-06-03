@@ -32,6 +32,6 @@ public class EmailPrefix implements Serializable {
 
     @Override
     public String toString() {
-        return "EmailPrefix: " + this.value;
+        return this.value;
     }
 }

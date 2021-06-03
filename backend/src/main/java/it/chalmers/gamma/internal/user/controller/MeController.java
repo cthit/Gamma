@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/users/me")
+@RequestMapping("/internal/users/me")
 public class MeController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MeController.class);

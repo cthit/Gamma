@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/users/approval")
+@RequestMapping("/internal/admin/users/approval")
 public class UserApprovalAdminController {
 
     private final UserService userService;

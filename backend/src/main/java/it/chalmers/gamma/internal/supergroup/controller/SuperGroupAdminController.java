@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/superGroups")
+@RequestMapping("/internal/admin/superGroups")
 public class SuperGroupAdminController {
 
     private final SuperGroupService superGroupService;

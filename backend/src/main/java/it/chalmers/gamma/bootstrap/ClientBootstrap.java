@@ -26,31 +26,32 @@ public class ClientBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrap.class);
 
-    private final boolean mocking;
     private final String redirectUri;
     private final ClientService clientService;
     private final UserApprovalService userApprovalService;
     private final UserService userService;
+    private final boolean mocking;
 
-    public ClientBootstrap(@Value("${application.mocking}") boolean mocking,
-                           @Value("${application.default-oauth2-client.redirect-uri}") String redirectUri,
-                           ClientService clientService,
+    public ClientBootstrap(ClientService clientService,
                            UserApprovalService userApprovalService,
-                           UserService userService) {
-        this.mocking = mocking;
+                           UserService userService,
+                           @Value("${application.mocking}") boolean mocking,
+                           @Value("${application.default-oauth2-client.redirect-uri}") String redirectUri) {
         this.redirectUri = redirectUri;
         this.clientService = clientService;
         this.userApprovalService = userApprovalService;
         this.userService = userService;
+        this.mocking = mocking;
     }
 
     @PostConstruct
     void runOauthClient() {
-        LOGGER.info("Creating test client...");
-
         if(!this.mocking || !this.clientService.getAll().isEmpty()) {
             return;
         }
+        LOGGER.info("========== CLIENT BOOTSTRAP ==========");
+        LOGGER.info("Creating test client...");
+
 
         ClientId clientId = ClientId.valueOf("test");
         ClientSecret clientSecret = ClientSecret.valueOf("secret");
@@ -82,5 +83,6 @@ public class ClientBootstrap {
         LOGGER.info("ClientSecret: " + clientSecret.get());
         LOGGER.info("Client redirect uri: " + this.redirectUri);
         LOGGER.info("An API key was also generated with the client, it has the token: " + apiKeyToken.get());
+        LOGGER.info("========== CLIENT BOOTSTRAP ==========");
     }
 }

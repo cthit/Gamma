@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/admin/groups")
+@RequestMapping("/internal/admin/groups")
 public final class MembershipAdminController {
 
     private final MembershipService membershipService;

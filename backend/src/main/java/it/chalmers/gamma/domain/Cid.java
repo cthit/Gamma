@@ -29,5 +29,4 @@ public class Cid extends Id<String> implements DTO {
     public String get(){
         return this.value;
     }
-
 }

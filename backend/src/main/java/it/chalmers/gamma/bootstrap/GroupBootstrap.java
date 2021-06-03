@@ -10,6 +10,7 @@ import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.membership.service.MembershipShallowDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +31,26 @@ public class GroupBootstrap {
     private final MockData mockData;
     private final GroupService groupService;
     private final MembershipService membershipService;
+    private final boolean mocking;
 
     public GroupBootstrap(MockData mockData,
                           GroupService groupService,
-                          MembershipService membershipService) {
+                          MembershipService membershipService,
+                          @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
         this.groupService = groupService;
         this.membershipService = membershipService;
+        this.mocking = mocking;
     }
 
     @PostConstruct
     public void createGroups() {
+        if (!this.mocking || !this.groupService.getAll().isEmpty()) {
+            return;
+        }
+
+        LOGGER.info("========== GROUP BOOTSTRAP ==========");
+
         Calendar activeGroupBecomesActive = toCalendar(
                 Instant.now().minus(1, ChronoUnit.DAYS)
         );
@@ -85,7 +95,7 @@ public class GroupBootstrap {
             }
         });
 
-        LOGGER.info("Groups created");
+        LOGGER.info("========== GROUP BOOTSTRAP ==========");
     }
 
     private Calendar toCalendar(Instant i) {

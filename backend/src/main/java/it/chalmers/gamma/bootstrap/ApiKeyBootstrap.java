@@ -19,13 +19,13 @@ public class ApiKeyBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyBootstrap.class);
 
-    private final boolean mocking;
     private final ApiKeyService apiKeyService;
+    private final boolean mocking;
 
-    public ApiKeyBootstrap(@Value("${application.mocking}") boolean mocking,
-                           ApiKeyService apiKeyService) {
-        this.mocking = mocking;
+    public ApiKeyBootstrap(ApiKeyService apiKeyService,
+                           @Value("${application.mocking}") boolean mocking) {
         this.apiKeyService = apiKeyService;
+        this.mocking = mocking;
     }
 
     @PostConstruct
@@ -34,6 +34,7 @@ public class ApiKeyBootstrap {
             return;
         }
 
+        LOGGER.info("========== API BOOTSTRAP ==========");
         LOGGER.info("Generating mock api keys...");
 
         for (ApiKeyType apiKeyType : ApiKeyType.values()) {
@@ -52,6 +53,7 @@ public class ApiKeyBootstrap {
                 LOGGER.info("Api key of type " + apiKeyType.name() + " has been generated with token: " + apiKeyToken.get());
             }
         }
+        LOGGER.info("========== API BOOTSTRAP ==========");
     }
 
 }

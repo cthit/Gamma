@@ -32,7 +32,7 @@ public class PrettyName implements Serializable {
 
     @Override
     public String toString() {
-        return "PrettyName: " + this.value;
+        return this.value;
     }
 
     @Override

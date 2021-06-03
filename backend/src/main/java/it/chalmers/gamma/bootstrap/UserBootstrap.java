@@ -40,9 +40,16 @@ public class UserBootstrap {
 
     @PostConstruct
     public void createUsers() {
-        if (!this.mocking || !this.userService.getAll().isEmpty()) {
+        if (!this.mocking
+                || !this.userService.getAll()
+                            .stream()
+                            .filter(user -> !user.cid().get().contains("admin"))
+                            .collect(Collectors.toList())
+                .isEmpty()) {
             return;
         }
+
+        LOGGER.info("========== USER BOOTSTRAP ==========");
 
         this.mockData.users().forEach(mockUser -> this.userCreationService.createUser(
                 new UserDTO(
@@ -65,8 +72,9 @@ public class UserBootstrap {
                         .stream()
                         .map(MockData.MockUser::cid)
                         .map(Cid::get)
-                        .collect(Collectors.joining(","))
+                        .collect(Collectors.joining(", "))
         );
         LOGGER.info("Use a cid from the row above and use the password: password to sign in");
+        LOGGER.info("========== USER BOOTSTRAP ==========");
     }
 }

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.internal.group.service.GroupDTO;
@@ -32,8 +33,10 @@ import java.util.stream.Collectors;
  * If you need changes, then create a new version of the API.
  */
 @RestController
-@RequestMapping("/v1")
+@RequestMapping(ApiV1Controller.URI)
 public class ApiV1Controller {
+
+    public static final String URI = "/v1";
 
     private final UserService userService;
     private final MembershipService membershipService;

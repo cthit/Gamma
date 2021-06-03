@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/clients")
+@RequestMapping("/internal/admin/clients")
 public class ClientAdminController {
 
     private final ClientService clientService;

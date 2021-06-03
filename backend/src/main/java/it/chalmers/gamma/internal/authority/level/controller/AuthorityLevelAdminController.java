@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/authority/level")
+@RequestMapping("/internal/admin/authority/level")
 public class AuthorityLevelAdminController {
 
     private final AuthorityFinder authorityFinder;

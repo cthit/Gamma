@@ -39,6 +39,6 @@ public class Email implements Serializable {
 
     @Override
     public String toString() {
-        return "Email: " + this.value;
+        return this.value;
     }
 }

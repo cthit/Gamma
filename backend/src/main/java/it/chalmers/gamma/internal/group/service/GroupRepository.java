@@ -12,5 +12,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GroupRepository extends JpaRepository<GroupEntity, GroupId> {
     List<GroupEntity> findAllBySuperGroupId(SuperGroupId id);
-    Optional<GroupEntity> findByName(EntityName name);
 }

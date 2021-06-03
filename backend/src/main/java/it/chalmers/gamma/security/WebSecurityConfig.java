@@ -1,5 +1,6 @@
 package it.chalmers.gamma.security;
 
+import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
@@ -22,6 +23,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -40,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${security.jwt.token.issuer}")
     private String issuer;
 
+    private final UserDetailsService userDetailsService;
     private final UserService userService;
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
@@ -53,13 +56,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
-    public WebSecurityConfig(UserService userService,
+    public WebSecurityConfig(UserDetailsService userDetailsService,
+                             UserService userService,
                              PasswordResetService passwordResetService,
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
                              GroupService groupFinder,
                              ApiKeyService apiKeyService) {
+        this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
@@ -96,7 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(this.userService);
+        authProvider.setUserDetailsService(this.userDetailsService);
         authProvider.setPasswordEncoder(this.passwordEncoder);
         return authProvider;
     }
@@ -192,9 +197,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void setAdminPaths(HttpSecurity http) {
         try {
-            http.authorizeRequests().antMatchers("/admin/gdpr/**")
-                    .hasAnyAuthority("admin").and().authorizeRequests().antMatchers("/admin/**")
+            http.authorizeRequests()
+                    .antMatchers("/admin/**")
                     .hasAuthority("admin");
+
+            for (ApiKeyType type : ApiKeyType.values()) {
+                http.authorizeRequests()
+                        .antMatchers(type.URI);
+            }
+
         } catch (Exception e) {
             LOGGER.error("something went wrong when setting admin paths", e);
         }

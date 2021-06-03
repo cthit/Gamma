@@ -12,7 +12,7 @@ import java.util.Locale;
 @Embeddable
 public class SuperGroupType extends Id<String> implements DTO {
 
-    @Column(name = "name")
+    @Column(name = "type")
     @JsonValue
     @Pattern(regexp = "^([a-z]{30})$")
     private String value;

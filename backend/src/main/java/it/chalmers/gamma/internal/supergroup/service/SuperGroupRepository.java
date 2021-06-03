@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SuperGroupRepository extends JpaRepository<SuperGroupEntity, SuperGroupId> {
-    Optional<SuperGroupEntity> findByName(EntityName name);
+    Optional<SuperGroupEntity> findByEntityName(EntityName name);
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController()
-@RequestMapping("/admin/gdpr")
+@RequestMapping("/internal/admin/gdpr")
 public class UserGDPRAdminController {
 
     private final UserGDPRTrainingService userGDPRTrainingService;

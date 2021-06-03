@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/admin/groups/posts")
+@RequestMapping("/internal/admin/groups/posts")
 public final class PostAdminController {
 
     private final PostService postService;
@@ -78,7 +78,7 @@ public final class PostAdminController {
                         this.membershipService.getMembershipsByGroupAndPost(group.id(), postId)
                                 .stream()
                                 .map(membership -> new UserPost(
-                                        new UserRestrictedDTO(membership.user()),
+                                        membership.user(),
                                         membership.post()
                                 ))
                                 .collect(Collectors.toList())

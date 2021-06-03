@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/clients/restriction")
+@RequestMapping("/internal/admin/clients/restriction")
 public class ClientRestrictionAdminController {
 
     private final ClientRestrictionService clientRestrictionService;

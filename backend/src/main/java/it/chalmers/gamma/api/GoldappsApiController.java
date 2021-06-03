@@ -18,8 +18,10 @@ import java.util.stream.Collectors;
  * Used by cthit/goldapps to sync Google accounts for the student division
  */
 @RestController
-@RequestMapping("/goldapps")
+@RequestMapping(GoldappsApiController.URI)
 public class GoldappsApiController {
+
+    public static final String URI = "/goldapps";
 
     private final MembershipService membershipService;
     private final GroupService groupService;
@@ -52,7 +54,7 @@ public class GoldappsApiController {
     private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {
         return memberships
                 .stream()
-                .map(membership -> new UserPost(new UserRestrictedDTO(membership.user()), membership.post()))
+                .map(membership -> new UserPost(membership.user(), membership.post()))
                 .collect(Collectors.toList());
     }
 

@@ -6,12 +6,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
+import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.internal.user.service.UserDetailsImpl;
 import it.chalmers.gamma.security.authentication.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.internal.user.service.UserService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Collections;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -67,14 +71,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(String cid) {
-        UserDetails userDetails;
+        UserDTO user;
         try {
-            userDetails = this.userService.loadUserByUsername(cid);
-        } catch (UsernameNotFoundException e) {
+            user = this.userService.get(new Cid(cid));
+        } catch (UserService.UserNotFoundException e) {
             throw new InvalidJWTTokenResponse();
         }
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(),
-                null, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+                user.cid().get(),
+                null,
+                Collections.emptyList()
+        );
     }
 
     /*

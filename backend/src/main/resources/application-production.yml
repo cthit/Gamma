@@ -73,7 +73,7 @@ application:
     password: ${ADMIN_PASSWORD:password}
   mocking: ${IS_MOCKING:false}
   default-oauth2-client:
-    client-name: ${DEFAULT_CLIENT_NAME:name}
+    client-name: ${DEFAULT_CLIENT_NAME:test}
     client-id: ${DEFAULT_CLIENT_ID:id}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}
     redirect-uri: ${DEFAULT_REDIRECT_URI:http://localhost:3001/auth/callback}

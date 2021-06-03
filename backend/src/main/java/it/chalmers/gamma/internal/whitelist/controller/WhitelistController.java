@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/whitelist")
+@RequestMapping(value = "/internal/whitelist")
 public final class WhitelistController {
 
     private final ActivationCodeService activationCodeService;
@@ -27,7 +27,6 @@ public final class WhitelistController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
 
-    @Value("${mail.receiver.standard-postfix}")
     private static final String MAIL_POSTFIX = "student.chalmers.se";
 
     public WhitelistController(ActivationCodeService activationCodeService,

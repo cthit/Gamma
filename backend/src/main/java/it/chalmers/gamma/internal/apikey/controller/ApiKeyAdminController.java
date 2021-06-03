@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/api_keys")
+@RequestMapping("/internal/admin/api_keys")
 public class ApiKeyAdminController {
 
     private final ApiKeyService apiKeyService;

@@ -22,36 +22,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service("userDetailsService")
-public class UserService implements UserDetailsService {
+@Service
+public class UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthorityFinder authorityFinder;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       AuthorityFinder authorityFinder) {
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authorityFinder = authorityFinder;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String cid) {
-        UserEntity user = this.userRepository.findByCid(new Cid(cid))
-                .orElseThrow(() -> new UsernameNotFoundException("User with: " + cid + " not found"));
-
-        List<AuthorityLevelName> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
-
-        return new UserDetailsImpl(
-                user.getCid().get(),
-                user.getPassword().get(),
-                authorities,
-                false
-        );
     }
 
     public void delete(UserId id) {
@@ -90,11 +72,6 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(UserNotFoundException::new)
                 .toDTO();
     }
-
-    public boolean exists(UserId id) {
-        return this.userRepository.existsById(id);
-    }
-
 
     public void setPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException {
         UserEntity user = this.getEntity(userId);

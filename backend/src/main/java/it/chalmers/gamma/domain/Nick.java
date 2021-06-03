@@ -28,7 +28,7 @@ public class Nick implements Serializable {
 
     @Override
     public String toString() {
-        return "Nick: " + this.value;
+        return this.value;
     }
 
     @Override

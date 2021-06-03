@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/users/reset_password")
+@RequestMapping("/internal/users/reset_password")
 public class UserPasswordResetController {
 
     private final UserService userService;

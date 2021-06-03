@@ -55,8 +55,9 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAdminAuthentication() {
-        UserDetails userDetails = this.userService.loadUserByUsername("admin");
-        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+        //UserDetails userDetails = this.userService.loadUserByUsername("admin");
+        //return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+        return null;
     }
 
     private String removeBasic(String token) {

@@ -19,8 +19,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/chalmersit")
+@RequestMapping(ChalmersitApiController.API)
 public class ChalmersitApiController {
+
+    public static final String API = "/chalmersit";
 
     private final GroupService groupService;
     private final MembershipService membershipService;
@@ -47,7 +49,7 @@ public class ChalmersitApiController {
                 this.membershipService.getMembershipsByGroup(group.id())
                         .stream()
                         .map(membership -> new UserPost(
-                                new UserRestrictedDTO(membership.user()),
+                                membership.user(),
                                 membership.post())
                     )
                         .collect(Collectors.toList())
