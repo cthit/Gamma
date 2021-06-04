@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/groups/posts")
+@RequestMapping("/internal/groups/posts")
 public class PostController {
 
     private final PostService postService;

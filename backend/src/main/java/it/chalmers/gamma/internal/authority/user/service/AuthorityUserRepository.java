@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.authority.user.service;
 
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,4 +10,5 @@ public interface AuthorityUserRepository extends JpaRepository<AuthorityUserEnti
     boolean existsById_AuthorityLevelName(AuthorityLevelName authorityLevelName);
 
     List<AuthorityUserEntity> findAuthorityUserEntitiesById_AuthorityLevelName(AuthorityLevelName authorityLevelName);
+    List<AuthorityUserEntity> findAuthorityUserEntitiesById_UserId(UserId userId);
 }

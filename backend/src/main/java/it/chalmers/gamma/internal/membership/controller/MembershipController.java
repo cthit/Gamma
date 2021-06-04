@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/internal/groups")
 public class MembershipController {
 
     private final MembershipService membershipService;

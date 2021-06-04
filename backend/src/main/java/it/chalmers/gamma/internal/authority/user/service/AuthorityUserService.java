@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.authority.user.service;
 
+import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupDTO;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupEntity;
@@ -70,6 +71,14 @@ public class AuthorityUserService {
 
     public boolean existsBy(AuthorityLevelName name) {
         return this.repository.existsById_AuthorityLevelName(name);
+    }
+
+    public List<AuthorityLevelName> getByUser(UserId userId) {
+        return this.repository.findAuthorityUserEntitiesById_UserId(userId)
+                .stream()
+                .map(AuthorityUserEntity::toDTO)
+                .map(AuthorityUserShallowDTO::authorityLevelName)
+                .collect(Collectors.toList());
     }
 
     public static class AuthorityUserNotFoundException extends Exception { }

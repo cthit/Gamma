@@ -15,6 +15,8 @@ import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,8 @@ import java.time.Year;
 @DependsOn("adminAuthorityLevelBootstrap")
 @Component
 public class EnsureAnAdminUserBootstrap {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnsureAnAdminUserBootstrap.class);
 
     private final AuthorityFinder authorityFinder;
     private final AuthorityUserService authorityUserService;
@@ -56,7 +60,6 @@ public class EnsureAnAdminUserBootstrap {
                 String name = admin + (i == 0 ? "" : i);
                 adminId = new UserId();
 
-                //TODO logg out information about the new admin
                 try {
                     this.userCreationService.createUser(
                             new UserDTO(
@@ -73,6 +76,9 @@ public class EnsureAnAdminUserBootstrap {
                             ),
                             UnencryptedPassword.valueOf(password)
                     );
+                    LOGGER.info("Admin user created!");
+                    LOGGER.info("cid: " + name);
+                    LOGGER.info("password: " + password);
                     break;
                 } catch (Exception ignored) {
                 }

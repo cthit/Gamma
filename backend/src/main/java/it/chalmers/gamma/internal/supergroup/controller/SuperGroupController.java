@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/superGroups")
+@RequestMapping("/internal/superGroups")
 public class SuperGroupController {
 
     private final SuperGroupService superGroupService;
