@@ -1,16 +1,13 @@
 package it.chalmers.gamma.internal.user.passwordreset.service;
 
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.activationcode.service.ActivationCodeDTO;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
 import java.time.Instant;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity

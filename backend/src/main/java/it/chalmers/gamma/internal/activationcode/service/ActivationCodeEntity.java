@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import javax.persistence.*;
 
+import it.chalmers.gamma.domain.ActivationCodeDTO;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;

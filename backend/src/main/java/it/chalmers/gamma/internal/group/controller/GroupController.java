@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.group.controller;
 
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.domain.GroupId;
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 
 import java.util.List;
 
@@ -29,12 +29,12 @@ public final class GroupController {
         this.membershipService = membershipService;
     }
 
-    private record GetGroupResponse(GroupDTO group, List<MembershipDTO> groupMembers) {}
+    private record GetGroupResponse(Group group, List<MembershipDTO> groupMembers) {}
 
     @GetMapping("/{id}")
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
         try {
-            GroupDTO group = this.groupService.get(id);
+            Group group = this.groupService.get(id);
             List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group.id());
 
             return new GetGroupResponse(group, members);

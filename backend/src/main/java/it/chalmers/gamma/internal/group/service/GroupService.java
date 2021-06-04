@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.group.service;
 
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
@@ -34,7 +35,7 @@ public class GroupService {
         this.repository.save(group);
     }
 
-    public List<GroupDTO> getAll() {
+    public List<Group> getAll() {
         return this.repository
                 .findAll()
                 .stream()
@@ -43,7 +44,7 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
-    public List<GroupDTO> getGroupsBySuperGroup(SuperGroupId superGroupId) {
+    public List<Group> getGroupsBySuperGroup(SuperGroupId superGroupId) {
         return this.repository.findAllBySuperGroupId(superGroupId)
                 .stream()
                 .map(GroupEntity::toDTO)
@@ -51,7 +52,7 @@ public class GroupService {
                 .collect(Collectors.toList());
     }
 
-    public GroupDTO get(GroupId id) throws GroupNotFoundException {
+    public Group get(GroupId id) throws GroupNotFoundException {
         return fromShallow(getGroupEntity(id).toDTO());
     }
 
@@ -61,9 +62,9 @@ public class GroupService {
     }
 
 
-    protected GroupDTO fromShallow(GroupShallowDTO group) {
+    protected Group fromShallow(GroupShallowDTO group) {
         try {
-            return new GroupDTO(
+            return new Group(
                     group.id(),
                     group.email(),
                     group.name(),

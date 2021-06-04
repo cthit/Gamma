@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.controller;
 
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
 import it.chalmers.gamma.domain.SuperGroupId;
@@ -43,7 +43,7 @@ public class SuperGroupController {
     }
 
     @GetMapping("/{id}/subgroups")
-    public List<GroupDTO> getSuperGroupSubGroups(@PathVariable("id") SuperGroupId id) {
+    public List<Group> getSuperGroupSubGroups(@PathVariable("id") SuperGroupId id) {
         return this.groupService.getGroupsBySuperGroup(id);
     }
 

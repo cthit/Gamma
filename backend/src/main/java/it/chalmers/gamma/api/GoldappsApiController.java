@@ -1,10 +1,9 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.membership.service.MembershipDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +43,7 @@ public class GoldappsApiController {
         );
     }
 
-    private GroupWithMembers toGroupWithMembers(GroupDTO group) {
+    private GroupWithMembers toGroupWithMembers(Group group) {
         return new GroupWithMembers(
                 group,
                 toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))

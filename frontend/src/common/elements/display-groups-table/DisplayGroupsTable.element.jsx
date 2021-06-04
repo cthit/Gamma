@@ -6,9 +6,7 @@ import {
 } from "@cthit/react-digit-components";
 
 import {
-    GROUP_DESCRIPTION,
     GROUP_EMAIL,
-    GROUP_FUNCTION,
     GROUP_ID,
     GROUP_NAME,
     GROUP_PRETTY_NAME
@@ -21,9 +19,7 @@ function generateHeaderTexts(text) {
 
     output[GROUP_ID] = text.Id;
     output[GROUP_NAME] = text.Name;
-    output[GROUP_DESCRIPTION] = text.Description;
     output[GROUP_EMAIL] = text.Email;
-    output[GROUP_FUNCTION] = text.Function;
     output[GROUP_PRETTY_NAME] = text.PrettyName;
     output["__link"] = text.Details;
 
@@ -36,16 +32,7 @@ function modifyData(groups, text, activeLanguage, columns) {
 
         newGroup[GROUP_ID] = group[GROUP_ID];
         newGroup[GROUP_NAME] = group[GROUP_NAME];
-        newGroup[GROUP_DESCRIPTION] =
-            columns.includes(GROUP_DESCRIPTION) &&
-            group[GROUP_DESCRIPTION] != null
-                ? group[GROUP_DESCRIPTION][activeLanguage]
-                : null;
         newGroup[GROUP_EMAIL] = group[GROUP_EMAIL];
-        newGroup[GROUP_FUNCTION] =
-            columns.includes(GROUP_FUNCTION) && group[GROUP_FUNCTION] != null
-                ? group[GROUP_FUNCTION][activeLanguage]
-                : null;
         newGroup["__link"] = "/groups/" + group[GROUP_ID];
 
         return newGroup;

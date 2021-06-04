@@ -9,6 +9,8 @@ import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
+import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.internal.authority.post.service.AuthorityPostShallowDTO;
 import it.chalmers.gamma.internal.text.service.TextDTO;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.Cid;
@@ -18,7 +20,8 @@ import java.util.List;
 public record MockData(List<MockUser> users,
                        List<MockGroup> groups,
                        List<MockSuperGroup> superGroups,
-                       List<MockPost> posts) {
+                       List<MockPost> posts,
+                       List<MockAuthority> authorities) {
 
     public record MockGroup(GroupId id,
                             EntityName name,
@@ -47,8 +50,18 @@ public record MockData(List<MockUser> users,
             Nick nick,
             FirstName firstName,
             LastName lastName,
-            int acceptanceYear) { }
+            int acceptanceYear,
+            List<AuthorityLevelName> authorities) { }
 
+    public record MockAuthority(
+            AuthorityLevelName name,
+            List<MockPostAuthority> postAuthorities,
+            List<SuperGroupId> superGroupAuthorities) { }
+
+    public record MockPostAuthority(
+            SuperGroupId superGroupId,
+            PostId postId
+    ) { }
 
 }
 

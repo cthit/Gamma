@@ -48,6 +48,7 @@ import {
     updateValidationSchema
 } from "./Users.options";
 import translations from "./Users.translations";
+import UserGroupsTable from "./usergroupstable";
 
 const UserImage = styled.img`
     width: 250px;
@@ -141,7 +142,7 @@ const Users = () => {
             )}
             detailsRenderEnd={data => (
                 <>
-                    <DisplayGroupsTable
+                    <UserGroupsTable
                         margin={{ top: "16px" }}
                         groups={data[USER_GROUPS]}
                         title={data[USER_NICK] + ":s " + text.Groups}

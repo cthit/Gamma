@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.whitelist.controller;
 
-import it.chalmers.gamma.internal.activationcode.service.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCodeDTO;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

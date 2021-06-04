@@ -74,7 +74,7 @@ public class EnsureAnAdminUserBootstrap {
                                     Year.of(2018),
                                     true
                             ),
-                            UnencryptedPassword.valueOf(password)
+                            UnencryptedPassword.valueOf("password")
                     );
                     LOGGER.info("Admin user created!");
                     LOGGER.info("cid: " + name);

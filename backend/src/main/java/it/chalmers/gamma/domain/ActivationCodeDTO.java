@@ -1,4 +1,4 @@
-package it.chalmers.gamma.internal.activationcode.service;
+package it.chalmers.gamma.domain;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Code;

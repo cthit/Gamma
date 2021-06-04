@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.group.controller;
 
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.GroupWithMembers;
@@ -12,7 +12,6 @@ import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.group.service.GroupShallowDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipDTO;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
 
@@ -123,7 +122,7 @@ public final class GroupAdminController {
         return new GroupUpdatedResponse();
     }
 
-    private GroupWithMembers toGroupWithMembers(GroupDTO group) {
+    private GroupWithMembers toGroupWithMembers(Group group) {
         return new GroupWithMembers(
                 group,
                 toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))

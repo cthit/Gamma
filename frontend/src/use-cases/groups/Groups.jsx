@@ -1,4 +1,3 @@
-import { addDays } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -13,19 +12,12 @@ import { deleteGroup } from "api/groups/delete.groups.api";
 import { getGroup, getGroupsMinified } from "api/groups/get.groups.api";
 import { addGroup } from "api/groups/post.groups.api";
 import {
-    GROUP_BECOMES_ACTIVE,
-    GROUP_BECOMES_INACTIVE,
     GROUP_MEMBERS,
     GROUP_ID,
     GROUP_NAME,
     GROUP_PRETTY_NAME,
     GROUP_SUPER_GROUP,
-    GROUP_EMAIL,
-    GROUP_DESCRIPTION_EN,
-    GROUP_DESCRIPTION_SV,
-    GROUP_FUNCTION_EN,
-    GROUP_FUNCTION_SV,
-    GROUP_NO_ACCOUNT_MEMBERS
+    GROUP_EMAIL
 } from "api/groups/props.groups.api";
 import { editGroup } from "api/groups/put.groups.api";
 import { getSuperGroups } from "api/super-groups/get.super-groups.api";
@@ -81,56 +73,23 @@ const Groups = () => {
             readAllRequest={getGroupsMinified}
             readOneRequest={getGroup}
             deleteRequest={deleteGroup}
-            updateRequest={(id, data) => {
-                const becomesActive = addDays(data.becomesActive, 1);
-                const becomesInactive = addDays(data.becomesInactive, 1);
-
-                return editGroup(id, {
+            updateRequest={(id, data) =>
+                editGroup(id, {
                     name: data.name,
-                    function: {
-                        sv: data.functionSv,
-                        en: data.functionEn
-                    },
-                    description: {
-                        sv: data.descriptionSv,
-                        en: data.descriptionEn
-                    },
                     email: data.email,
                     superGroup: data.superGroup,
-                    prettyName: data.prettyName,
-                    becomesActive: becomesActive,
-                    becomesInactive: becomesInactive
-                });
-            }}
+                    prettyName: data.prettyName
+                })
+            }
             createRequest={
                 admin
-                    ? data => {
-                          const becomesActive = addDays(
-                              data[GROUP_BECOMES_ACTIVE],
-                              1
-                          );
-                          const becomesInactive = addDays(
-                              data[GROUP_BECOMES_INACTIVE],
-                              1
-                          );
-
-                          return addGroup({
+                    ? data =>
+                          addGroup({
                               name: data[GROUP_NAME],
-                              function: {
-                                  sv: data[GROUP_FUNCTION_SV],
-                                  en: data[GROUP_FUNCTION_EN]
-                              },
-                              description: {
-                                  sv: data[GROUP_DESCRIPTION_SV],
-                                  en: data[GROUP_DESCRIPTION_EN]
-                              },
                               email: data[GROUP_EMAIL],
                               superGroup: data[GROUP_SUPER_GROUP],
-                              prettyName: data[GROUP_PRETTY_NAME],
-                              becomesActive,
-                              becomesInactive
-                          });
-                      }
+                              prettyName: data[GROUP_PRETTY_NAME]
+                          })
                     : null
             }
             tableProps={{
@@ -161,32 +120,14 @@ const Groups = () => {
                 <DigitLayout.Row flexWrap={"wrap"} justifyContent={"center"}>
                     <DisplayMembersTable
                         margin={{
-                            top: "16px",
-                            right:
-                                data[GROUP_NO_ACCOUNT_MEMBERS].length > 0
-                                    ? "8px"
-                                    : "0px"
+                            top: "16px"
                         }}
                         noUsersText={text.NoGroupMembers}
                         users={data[GROUP_MEMBERS]}
                         group={data}
                     />
-
-                    {data[GROUP_NO_ACCOUNT_MEMBERS].length > 0 && (
-                        <DisplayMembersTable
-                            title={text.NoAccountMembers}
-                            margin={{ top: "16px", left: "8px" }}
-                            users={data[GROUP_NO_ACCOUNT_MEMBERS].map(
-                                member => ({
-                                    nick: member.cid,
-                                    ...member
-                                })
-                            )}
-                        />
-                    )}
                 </DigitLayout.Row>
             )}
-            dateProps={[GROUP_BECOMES_ACTIVE, GROUP_BECOMES_INACTIVE]}
             createButtonText={text.Create + " " + text.Group}
             updateTitle={group => text.Update + " " + group[GROUP_PRETTY_NAME]}
             createTitle={text.CreateGroup}

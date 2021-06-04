@@ -3,7 +3,7 @@ package it.chalmers.gamma.internal.membership.service;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.post.service.PostService;
 import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
@@ -51,7 +51,7 @@ public class MembershipService {
         this.membershipRepository.save(membership);
     }
 
-    public List<GroupDTO> getGroupsWithPost(PostId postId) {
+    public List<Group> getGroupsWithPost(PostId postId) {
         List<GroupId> groups = this.membershipRepository.findAllById_PostId(postId)
                 .stream()
                 .map(MembershipEntity::toDTO)
@@ -104,7 +104,7 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    private GroupDTO getGroup(GroupId groupId) {
+    private Group getGroup(GroupId groupId) {
         try {
             return this.groupService.get(groupId);
         } catch (GroupService.GroupNotFoundException e) {

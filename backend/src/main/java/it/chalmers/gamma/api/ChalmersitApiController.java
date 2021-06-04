@@ -1,10 +1,9 @@
 package it.chalmers.gamma.api;
 
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
 import it.chalmers.gamma.util.response.ErrorResponse;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,7 +41,7 @@ public class ChalmersitApiController {
                 .collect(Collectors.toList());
     }
 
-    private GroupWithMembers toGroupWithMembers(GroupDTO group) {
+    private GroupWithMembers toGroupWithMembers(Group group) {
         return new GroupWithMembers(
                 group,
                 this.membershipService.getMembershipsByGroup(group.id())

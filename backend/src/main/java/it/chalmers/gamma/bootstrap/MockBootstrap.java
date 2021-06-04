@@ -8,10 +8,12 @@ import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+@DependsOn("ensureAnAdminUserBootstrap")
 @Component
 public class MockBootstrap {
 
@@ -34,6 +36,7 @@ public class MockBootstrap {
             LOGGER.error(e.getMessage());
             LOGGER.error("Error when trying to read mock.json");
             return new MockData(
+                    Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),

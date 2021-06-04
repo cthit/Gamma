@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
+import it.chalmers.gamma.domain.ActivationCodeDTO;
 import it.chalmers.gamma.domain.Cid;
 import org.assertj.core.api.AbstractAssert;
 

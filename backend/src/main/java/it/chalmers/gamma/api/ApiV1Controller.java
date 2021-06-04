@@ -1,10 +1,9 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
-import it.chalmers.gamma.internal.group.service.GroupDTO;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
@@ -57,7 +56,7 @@ public class ApiV1Controller {
     }
 
     @GetMapping("/groups")
-    public List<GroupDTO> getGroups() {
+    public List<Group> getGroups() {
         return this.groupService.getAll();
     }
 
