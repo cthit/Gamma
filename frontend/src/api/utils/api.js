@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import { on401 } from "common/utils/error-handling/error-handling";
 
-const path = "/api";
+const path = "/api/internal";
 
 const error401Redirect = error => {
     try {

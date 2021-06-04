@@ -2,7 +2,7 @@ import { getRequest } from "../utils/api";
 import { ADMIN_USERS_ENDPOINT, USERS_ENDPOINT } from "../utils/endpoints";
 
 export function getUsersMinified() {
-    return getRequest(USERS_ENDPOINT + "minified");
+    return getRequest(USERS_ENDPOINT);
 }
 
 export function getUser(id) {
