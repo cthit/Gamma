@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.user.service;
 
-import it.chalmers.gamma.internal.authority.level.service.GrantedAuthorityImpl;
+import it.chalmers.gamma.internal.authoritylevel.service.GrantedAuthorityImpl;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -10,7 +10,7 @@ import it.chalmers.gamma.internal.client.service.ClientService;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.domain.UserApproval;
-import it.chalmers.gamma.internal.user.approval.service.UserApprovalService;
+import it.chalmers.gamma.internal.userapproval.service.UserApprovalService;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,7 +3,7 @@ package it.chalmers.gamma.internal.client.controller;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
-import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
+import it.chalmers.gamma.internal.clientapikey.service.ClientApiKeyService;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;

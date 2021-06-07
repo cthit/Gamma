@@ -8,7 +8,7 @@ import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
 import it.chalmers.gamma.internal.user.service.UserService;
 
-import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
+import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

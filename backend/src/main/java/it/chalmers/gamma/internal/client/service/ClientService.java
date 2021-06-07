@@ -9,7 +9,7 @@ import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.domain.ClientApiKey;
-import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
+import it.chalmers.gamma.internal.clientapikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.client.controller.ClientAdminController;
 
 import org.springframework.security.oauth2.provider.ClientDetails;
