@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.authority.supergroup.service;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthoritySuperGroup;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class AuthoritySuperGroupService {
         return this.repository.existsById_AuthorityLevelName(name);
     }
 
-    public List<AuthoritySuperGroupDTO> getAll() {
+    public List<AuthoritySuperGroup> getAll() {
         return this.repository
                 .findAll()
                 .stream()
@@ -50,7 +51,7 @@ public class AuthoritySuperGroupService {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthoritySuperGroupDTO> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    public List<AuthoritySuperGroup> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
         return this.repository.findAuthoritySuperGroupEntitiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
                 .map(AuthoritySuperGroupEntity::toDTO)
@@ -58,9 +59,9 @@ public class AuthoritySuperGroupService {
                 .collect(Collectors.toList());
     }
 
-    private AuthoritySuperGroupDTO fromShallow(AuthoritySuperGroupShallowDTO authoritySuperGroup) {
+    private AuthoritySuperGroup fromShallow(AuthoritySuperGroupShallowDTO authoritySuperGroup) {
         try {
-            return new AuthoritySuperGroupDTO(
+            return new AuthoritySuperGroup(
                     this.superGroupService.get(authoritySuperGroup.superGroupId()),
                     authoritySuperGroup.authorityLevelName()
             );

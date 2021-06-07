@@ -4,12 +4,12 @@ import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
-import it.chalmers.gamma.internal.client.service.ClientDTO;
+import it.chalmers.gamma.domain.Client;
 
 import it.chalmers.gamma.internal.client.service.ClientService;
-import it.chalmers.gamma.internal.text.service.TextDTO;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
-import it.chalmers.gamma.internal.user.approval.service.UserApprovalDTO;
+import it.chalmers.gamma.domain.Text;
+import it.chalmers.gamma.domain.UserRestricted;
+import it.chalmers.gamma.domain.UserApproval;
 import it.chalmers.gamma.internal.user.approval.service.UserApprovalService;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.slf4j.Logger;
@@ -58,20 +58,20 @@ public class ClientBootstrap {
         ApiKeyToken apiKeyToken = ApiKeyToken.valueOf("test-api-key-secret-token");
 
         this.clientService.createWithApiKey(
-                new ClientDTO(
+                new Client(
                         clientId,
-                        clientSecret,
                         redirectUri,
                         true,
                         EntityName.valueOf("test-client"),
-                        new TextDTO("", "")
+                        new Text("", "")
                 ),
+                clientSecret,
                 apiKeyToken
         );
 
-        for (UserRestrictedDTO user : this.userService.getAll()) {
+        for (UserRestricted user : this.userService.getAll()) {
             this.userApprovalService.create(
-                    new UserApprovalDTO(
+                    new UserApproval(
                             user.id(),
                             clientId
                     )

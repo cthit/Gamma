@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.apikey.service;
 
+import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "apikey")
-public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKeyDTO> {
+public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
 
     @EmbeddedId
     private ApiKeyId id;
@@ -31,24 +32,23 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKeyDTO> {
 
     protected ApiKeyEntity() { }
 
-    protected ApiKeyEntity(ApiKeyDTO apiKey) {
+    protected ApiKeyEntity(ApiKey apiKey, ApiKeyToken apiKeyToken) {
         assert(apiKey.id() != null);
-        assert(apiKey.key() != null);
+        assert(apiKeyToken != null);
 
         this.id = apiKey.id();
-        this.key = apiKey.key();
+        this.key = apiKeyToken;
         this.name = apiKey.name();
         this.description = new TextEntity(apiKey.description());
         this.keyType = apiKey.keyType();
     }
 
     @Override
-    protected ApiKeyDTO toDTO() {
-        return new ApiKeyDTO(
+    protected ApiKey toDTO() {
+        return new ApiKey(
                 this.id,
                 this.name,
                 this.description.toDTO(),
-                this.key,
                 this.keyType
         );
     }

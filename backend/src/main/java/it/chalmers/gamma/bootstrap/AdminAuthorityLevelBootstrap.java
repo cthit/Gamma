@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelService;
 import org.springframework.stereotype.Component;
 

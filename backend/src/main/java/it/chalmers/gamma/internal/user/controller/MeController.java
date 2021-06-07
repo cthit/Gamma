@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.MeService;
@@ -12,8 +13,7 @@ import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.GroupPost;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -50,14 +50,14 @@ public class MeController {
         this.authorityFinder = authorityFinder;
     }
 
-    public record GetMeResponse(@JsonUnwrapped UserDTO user,
+    public record GetMeResponse(@JsonUnwrapped User user,
                                 List<GroupPost> groups,
                                 List<AuthorityLevelName> authorities) { }
 
     @GetMapping()
     public GetMeResponse getMe(Principal principal) {
         try {
-            UserDTO user = extractUser(principal);
+            User user = extractUser(principal);
             List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
@@ -81,7 +81,7 @@ public class MeController {
     @PutMapping()
     public UserEditedResponse editMe(Principal principal, @RequestBody EditMeRequest request) {
         try {
-            UserDTO user = extractUser(principal);
+            User user = extractUser(principal);
 
             this.userService.update(
                     user.with()
@@ -103,7 +103,7 @@ public class MeController {
     @PutMapping("/avatar")
     public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
         try {
-            UserDTO user = extractUser(principal);
+            User user = extractUser(principal);
             this.userService.editProfilePicture(user, file);
             return new EditedProfilePictureResponse();
         } catch (UserService.UserNotFoundException e) {
@@ -117,7 +117,7 @@ public class MeController {
     @PutMapping("/change_password")
     public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request) {
         try {
-            UserDTO user = this.extractUser(principal);
+            User user = this.extractUser(principal);
 
             if (!this.userService.passwordMatches(user.id(), request.oldPassword)) {
                 throw new IncorrectCidOrPasswordResponse();
@@ -136,7 +136,7 @@ public class MeController {
     @DeleteMapping()
     public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request) {
         try {
-            UserDTO user = this.extractUser(principal);
+            User user = this.extractUser(principal);
 
             this.meService.tryToDeleteUser(user.id(), request.password);
 
@@ -146,7 +146,7 @@ public class MeController {
         }
     }
 
-    private UserDTO extractUser(Principal principal) throws UserService.UserNotFoundException {
+    private User extractUser(Principal principal) throws UserService.UserNotFoundException {
         return this.userService.get(new Cid(principal.getName()));
     }
 

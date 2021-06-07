@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.authority.post.service;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityPost;
 import it.chalmers.gamma.internal.post.service.PostService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class AuthorityPostService {
         }
     }
 
-    public List<AuthorityPostDTO> getAll() {
+    public List<AuthorityPost> getAll() {
         return this.repository
                 .findAll()
                 .stream()
@@ -50,7 +51,7 @@ public class AuthorityPostService {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthorityPostDTO> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    public List<AuthorityPost> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
         return this.repository.findAuthoritiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
                 .map(AuthorityPostEntity::toDTO)
@@ -62,9 +63,9 @@ public class AuthorityPostService {
         return this.repository.existsById_AuthorityLevelName(name);
     }
 
-    private AuthorityPostDTO fromShallow(AuthorityPostShallowDTO authority) {
+    private AuthorityPost fromShallow(AuthorityPostShallowDTO authority) {
         try {
-            return new AuthorityPostDTO(
+            return new AuthorityPost(
                     this.superGroupService.get(authority.superGroupId()),
                     this.postService.get(authority.postId()),
                     authority.authorityLevelName()

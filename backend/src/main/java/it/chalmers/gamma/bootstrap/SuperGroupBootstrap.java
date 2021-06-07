@@ -1,10 +1,10 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.domain.Email;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.internal.supergroup.type.service.SuperGroupTypeService;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,13 +54,13 @@ public class SuperGroupBootstrap {
 
         mockData.superGroups().forEach(mockSuperGroup -> {
             try {
-                this.superGroupService.create(new SuperGroupDTO(
+                this.superGroupService.create(new SuperGroup(
                         mockSuperGroup.id(),
                         mockSuperGroup.name(),
                         mockSuperGroup.prettyName(),
                         mockSuperGroup.type(),
                         new Email(mockSuperGroup.name() + "@chalmers.it"),
-                        new TextDTO("", "")));
+                        new Text("", "")));
             } catch (SuperGroupService.SuperGroupNotFoundException e) {
                 LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
             }

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.security.authentication;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.user.service.UserService;
-import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -35,7 +35,7 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                UserDTO user = this.userService.get(new Cid(username));
+                User user = this.userService.get(new Cid(username));
                 if (!user.activated()) {
                     this.passwordResetService.handlePasswordReset(user);
                     String params = "accountLocked=true";

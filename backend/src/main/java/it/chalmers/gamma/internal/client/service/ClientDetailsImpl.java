@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import it.chalmers.gamma.domain.Client;
+import it.chalmers.gamma.domain.ClientSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,10 +23,12 @@ public class ClientDetailsImpl implements ClientDetails {
     @Value("${application.auth.refreshTokenValidityTime}")
     private static int refreshTokenValidityTime;
 
-    private final ClientDTO client;
+    private final Client client;
+    private final ClientSecret clientSecret;
 
-    public ClientDetailsImpl(ClientDTO client) {
+    public ClientDetailsImpl(Client client, ClientSecret clientSecret) {
         this.client = client;
+        this.clientSecret = clientSecret;
     }
 
     @Override
@@ -51,7 +55,7 @@ public class ClientDetailsImpl implements ClientDetails {
     @Override
     @JsonIgnore
     public String getClientSecret() {
-        return this.client.clientSecret().get();
+        return this.clientSecret.get();
     }
 
     @Override

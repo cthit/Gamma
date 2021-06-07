@@ -1,4 +1,4 @@
-package it.chalmers.gamma.internal.authority.level.service;
+package it.chalmers.gamma.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.util.domain.abstraction.DTO;

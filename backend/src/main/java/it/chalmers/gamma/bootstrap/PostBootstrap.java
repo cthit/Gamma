@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.internal.post.service.PostDTO;
+import it.chalmers.gamma.domain.Post;
 import it.chalmers.gamma.internal.post.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class PostBootstrap {
 
         mockData.posts().forEach(mockPost ->
                 this.postService.create(
-                        new PostDTO(
+                        new Post(
                                 mockPost.id(),
                                 mockPost.postName(),
                                 null

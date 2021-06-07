@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.domain.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCode;
 import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.domain.Cid;
 
@@ -18,7 +18,7 @@ public class ActivationCodeService {
         this.repository = repository;
     }
 
-    public ActivationCodeDTO saveActivationCode(Cid cid) {
+    public ActivationCode saveActivationCode(Cid cid) {
         // Delete if there was a code previously saved
         try {
             delete(cid);
@@ -35,7 +35,7 @@ public class ActivationCodeService {
         }
     }
 
-    public List<ActivationCodeDTO> getAll() {
+    public List<ActivationCode> getAll() {
         return this.repository.findAll()
                 .stream()
                 .map(ActivationCodeEntity::toDTO)

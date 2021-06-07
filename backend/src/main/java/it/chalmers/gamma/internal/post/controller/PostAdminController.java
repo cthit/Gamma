@@ -2,13 +2,12 @@ package it.chalmers.gamma.internal.post.controller;
 
 import it.chalmers.gamma.domain.EmailPrefix;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
 import it.chalmers.gamma.domain.PostId;
-import it.chalmers.gamma.internal.post.service.PostDTO;
+import it.chalmers.gamma.domain.Post;
 import it.chalmers.gamma.internal.post.service.PostService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
 
 import javax.validation.Valid;
 
@@ -40,13 +39,13 @@ public final class PostAdminController {
         this.membershipService = membershipService;
     }
 
-    private record CreateOrEditPost(@Valid TextDTO post,
+    private record CreateOrEditPost(@Valid Text post,
                                    @Valid EmailPrefix emailPrefix) { }
 
     @PostMapping()
     public PostCreatedResponse addPost(@Valid @RequestBody CreateOrEditPost request) {
         this.postService.create(
-                new PostDTO(new PostId(), request.post(), request.emailPrefix())
+                new Post(new PostId(), request.post(), request.emailPrefix())
         );
         return new PostCreatedResponse();
     }
@@ -56,7 +55,7 @@ public final class PostAdminController {
             @RequestBody CreateOrEditPost request,
             @PathVariable("id") PostId id) {
         try {
-            this.postService.update(new PostDTO(id, request.post(), request.emailPrefix()));
+            this.postService.update(new Post(id, request.post(), request.emailPrefix()));
             return new PostEditedResponse();
         } catch (PostService.PostNotFoundException e) {
             throw new PostDoesNotExistResponse();

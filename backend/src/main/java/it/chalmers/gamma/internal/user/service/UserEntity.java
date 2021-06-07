@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
@@ -15,7 +16,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "ituser")
-public class UserEntity extends MutableEntity<UserId, UserDTO> {
+public class UserEntity extends MutableEntity<UserId, User> {
 
     @EmbeddedId
     private UserId id;
@@ -53,7 +54,7 @@ public class UserEntity extends MutableEntity<UserId, UserDTO> {
 
     protected UserEntity() { }
 
-    protected UserEntity(UserDTO user) {
+    protected UserEntity(User user) {
         assert(user.id() != null);
         assert(user.cid() != null);
 
@@ -63,8 +64,8 @@ public class UserEntity extends MutableEntity<UserId, UserDTO> {
         this.apply(user);
     }
 
-    protected UserDTO toDTO() {
-        return new UserDTO(
+    protected User toDTO() {
+        return new User(
                 this.id,
                 this.cid,
                 this.email,
@@ -84,7 +85,7 @@ public class UserEntity extends MutableEntity<UserId, UserDTO> {
     }
 
     @Override
-    public void apply(UserDTO u) {
+    public void apply(User u) {
         assert(this.id == u.id());
         assert(this.cid == u.cid());
 

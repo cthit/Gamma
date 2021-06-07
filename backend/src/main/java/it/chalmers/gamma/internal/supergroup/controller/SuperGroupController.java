@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.supergroup.controller;
 
 import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.domain.SuperGroupId;
 
 import java.util.List;
@@ -29,12 +29,12 @@ public class SuperGroupController {
     }
 
     @GetMapping()
-    public List<SuperGroupDTO> getAllSuperGroups() {
+    public List<SuperGroup> getAllSuperGroups() {
         return this.superGroupService.getAll();
     }
 
     @GetMapping("/{id}")
-    public SuperGroupDTO getSuperGroup(@PathVariable("id") SuperGroupId id) {
+    public SuperGroup getSuperGroup(@PathVariable("id") SuperGroupId id) {
         try {
             return this.superGroupService.get(id);
         } catch (SuperGroupService.SuperGroupNotFoundException e) {

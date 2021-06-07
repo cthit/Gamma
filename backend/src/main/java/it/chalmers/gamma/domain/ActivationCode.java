@@ -6,7 +6,7 @@ import it.chalmers.gamma.util.domain.abstraction.DTO;
 
 import java.time.Instant;
 
-public record ActivationCodeDTO(Cid cid,
-                         Code code,
-                         Instant createdAt)
+public record ActivationCode(Cid cid,
+                             Code code,
+                             Instant createdAt)
         implements DTO { }

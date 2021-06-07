@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.client.restriction.service;
 
+import it.chalmers.gamma.domain.ClientRestrictions;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
@@ -9,7 +10,7 @@ import java.util.Collections;
 
 @Entity
 @Table(name = "itclient_authority_level_restriction")
-public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK, ClientRestrictionDTO> {
+public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK, ClientRestrictions> {
 
     @EmbeddedId
     private ClientRestrictionPK id;
@@ -26,8 +27,8 @@ public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK
     }
 
     @Override
-    protected ClientRestrictionDTO toDTO() {
-        return new ClientRestrictionDTO(
+    protected ClientRestrictions toDTO() {
+        return new ClientRestrictions(
                 this.id.get().clientId(),
                 Collections.singletonList(this.id.get().authorityLevelName())
         );

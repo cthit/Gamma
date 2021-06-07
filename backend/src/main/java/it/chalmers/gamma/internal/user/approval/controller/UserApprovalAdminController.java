@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.user.approval.controller;
 
-import it.chalmers.gamma.internal.user.approval.service.UserApprovalDTO;
+import it.chalmers.gamma.domain.UserApproval;
 import it.chalmers.gamma.domain.ClientId;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import it.chalmers.gamma.internal.user.approval.service.UserApprovalService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +29,7 @@ public class UserApprovalAdminController {
     }
 
     @GetMapping("/{clientId}")
-    public List<UserRestrictedDTO> getApprovalsByClientId(@PathVariable("clientId") ClientId clientId) {
+    public List<UserRestricted> getApprovalsByClientId(@PathVariable("clientId") ClientId clientId) {
         return this.userApprovalService.getApprovalsByClientId(clientId)
                     .stream()
                     .map(this::toUserRestricted)
@@ -37,9 +37,9 @@ public class UserApprovalAdminController {
                     .collect(Collectors.toList());
     }
 
-    private UserRestrictedDTO toUserRestricted(UserApprovalDTO userApproval) {
+    private UserRestricted toUserRestricted(UserApproval userApproval) {
         try {
-            return new UserRestrictedDTO(this.userService.get(userApproval.userId()));
+            return new UserRestricted(this.userService.get(userApproval.userId()));
         } catch (UserService.UserNotFoundException ignored) {
             return null;
         }

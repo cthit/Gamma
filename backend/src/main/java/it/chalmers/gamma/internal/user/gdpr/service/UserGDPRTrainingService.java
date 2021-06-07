@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.user.gdpr.service;
 
+import it.chalmers.gamma.domain.UserGDPRTraining;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,10 @@ public class UserGDPRTrainingService {
         this.userService = userService;
     }
 
-    public List<UserGDPRTrainingDTO> getUsersWithGDPR() {
+    public List<UserGDPRTraining> getUsersWithGDPR() {
         return this.userService.getAll()
                 .stream()
-                .map(user -> new UserGDPRTrainingDTO(user, false))
+                .map(user -> new UserGDPRTraining(user, false))
                 .collect(Collectors.toList());
     }
 

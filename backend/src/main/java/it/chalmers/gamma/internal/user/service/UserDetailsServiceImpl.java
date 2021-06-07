@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.user.service;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,10 +1,9 @@
 package it.chalmers.gamma.internal.authority.user.service;
 
+import it.chalmers.gamma.domain.AuthorityUser;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupDTO;
-import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupEntity;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,7 @@ public class AuthorityUserService {
         }
     }
 
-    public List<AuthorityUserDTO> getAll() {
+    public List<AuthorityUser> getAll() {
         return this.repository
                 .findAll()
                 .stream()
@@ -49,7 +48,7 @@ public class AuthorityUserService {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthorityUserDTO> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    public List<AuthorityUser> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
         return this.repository.findAuthorityUserEntitiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
                 .map(AuthorityUserEntity::toDTO)
@@ -57,10 +56,10 @@ public class AuthorityUserService {
                 .collect(Collectors.toList());
     }
 
-    private AuthorityUserDTO fromShallow(AuthorityUserShallowDTO authorityUserShallowDTO) {
+    private AuthorityUser fromShallow(AuthorityUserShallowDTO authorityUserShallowDTO) {
         try {
-            return new AuthorityUserDTO(
-                    new UserRestrictedDTO(this.userService.get(authorityUserShallowDTO.userId())),
+            return new AuthorityUser(
+                    new UserRestricted(this.userService.get(authorityUserShallowDTO.userId())),
                     authorityUserShallowDTO.authorityLevelName()
             );
         } catch (UserService.UserNotFoundException e) {

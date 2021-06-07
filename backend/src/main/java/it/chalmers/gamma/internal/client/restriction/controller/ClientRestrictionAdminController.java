@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.client.restriction.controller;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionDTO;
+import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.ClientRestrictions;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionPK;
 import it.chalmers.gamma.internal.client.restriction.service.ClientRestrictionService;
 import it.chalmers.gamma.domain.ClientId;
@@ -26,7 +26,7 @@ public class ClientRestrictionAdminController {
     }
 
     @GetMapping("/{clientId}")
-    public ClientRestrictionDTO getClientRestrictions(@PathVariable("clientId") ClientId clientId) {
+    public ClientRestrictions getClientRestrictions(@PathVariable("clientId") ClientId clientId) {
         try {
             return this.clientRestrictionService.get(clientId);
         } catch (ClientRestrictionService.ClientRestrictionNotFoundException e) {

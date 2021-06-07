@@ -6,15 +6,15 @@ import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.GroupPost;
-import it.chalmers.gamma.internal.membership.service.MembershipDTO;
+import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
-import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.user.service.UserService;
 
 import java.time.Year;
@@ -76,13 +76,13 @@ public final class UserAdminController {
         return new UserDeletedResponse();
     }
 
-    public record GetUserAdminResponse(@JsonUnwrapped UserDTO user,
+    public record GetUserAdminResponse(@JsonUnwrapped User user,
                                        List<GroupPost> groups) { }
 
     @GetMapping("/{id}")
     public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
         try {
-            UserDTO user = this.userService.get(id);
+            User user = this.userService.get(id);
             List<GroupPost> groups = this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()));
 
             return new GetUserAdminResponse(user, groups);
@@ -91,7 +91,7 @@ public final class UserAdminController {
         }
     }
 
-    record UserWithGroups(@JsonUnwrapped UserRestrictedDTO user, List<GroupPost> groups) { }
+    record UserWithGroups(@JsonUnwrapped UserRestricted user, List<GroupPost> groups) { }
 
     record GetAllUsersResponse(List<UserWithGroups> users) { }
 
@@ -117,7 +117,7 @@ public final class UserAdminController {
 
     @PostMapping()
     public UserCreatedResponse addUser(@Valid @RequestBody AdminViewCreateUserRequest request) {
-        this.userCreationService.createUser(new UserDTO(
+        this.userCreationService.createUser(new User(
                 new UserId(),
                 request.cid,
                 request.email,
@@ -143,7 +143,7 @@ public final class UserAdminController {
     public UserEditedResponse editUser(@PathVariable("id") UserId id,
                                        @RequestBody EditUserRequest request) {
         try {
-            UserDTO user = this.userService.get(id);
+            User user = this.userService.get(id);
             this.userService.update(user.with()
                     .nick(request.nick)
                     .firstName(request.firstName)
@@ -159,7 +159,7 @@ public final class UserAdminController {
         }
     }
 
-    private List<GroupPost> toGroupPosts(List<MembershipDTO> memberships) {
+    private List<GroupPost> toGroupPosts(List<Membership> memberships) {
         return memberships
                 .stream()
                 .map(membership -> new GroupPost(membership.post(), membership.group()))

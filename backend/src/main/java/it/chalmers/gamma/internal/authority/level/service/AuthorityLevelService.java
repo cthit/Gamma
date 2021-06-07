@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.authority.level.service;
 
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

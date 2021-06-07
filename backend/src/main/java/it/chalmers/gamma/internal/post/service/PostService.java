@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.post.service;
 
+import it.chalmers.gamma.domain.Post;
 import it.chalmers.gamma.domain.PostId;
 
 import org.springframework.stereotype.Service;
@@ -16,11 +17,11 @@ public class PostService {
         this.repository = repository;
     }
 
-    public void create(PostDTO newPost) {
+    public void create(Post newPost) {
         this.repository.save(new PostEntity(newPost));
     }
 
-    public void update(PostDTO newEdit) throws PostNotFoundException {
+    public void update(Post newEdit) throws PostNotFoundException {
         PostEntity post = this.getEntity(newEdit.id());
         post.apply(newEdit);
         this.repository.save(post);
@@ -34,11 +35,11 @@ public class PostService {
         return this.repository.existsById(postId);
     }
 
-    public List<PostDTO> getAll() {
+    public List<Post> getAll() {
         return this.repository.findAll().stream().map(PostEntity::toDTO).collect(Collectors.toList());
     }
 
-    public PostDTO get(PostId id) throws PostNotFoundException {
+    public Post get(PostId id) throws PostNotFoundException {
         return getEntity(id).toDTO();
     }
 

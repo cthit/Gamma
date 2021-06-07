@@ -1,12 +1,14 @@
 package it.chalmers.gamma.internal.client.service;
 
+import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.domain.ClientId;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
+import it.chalmers.gamma.domain.ClientSecret;
+import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
-import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyDTO;
+import it.chalmers.gamma.domain.ClientApiKey;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.client.controller.ClientAdminController;
 
@@ -36,33 +38,32 @@ public class ClientService implements ClientDetailsService {
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
         return this.clientRepository.findById(new ClientId(clientId))
-                .map(ClientEntity::toDTO)
-                .map(ClientDetailsImpl::new)
+                .map(clientEntity -> new ClientDetailsImpl(clientEntity.toDTO(), clientEntity.getClientSecret()))
                 .orElseThrow(ClientAdminController.ClientNotFoundResponse::new);
     }
 
-    public void create(ClientDTO newClient) {
-        this.clientRepository.save(new ClientEntity(newClient));
+    public void create(Client newClient, ClientSecret clientSecret) {
+        this.clientRepository.save(new ClientEntity(newClient, clientSecret));
     }
 
     @Transactional
-    public ApiKeyToken createWithApiKey(ClientDTO newClient, ApiKeyToken apiKeyToken) {
-        this.create(newClient);
+    public ApiKeyToken createWithApiKey(Client newClient, ClientSecret clientSecret, ApiKeyToken apiKeyToken) {
+        this.create(newClient, clientSecret);
 
         ApiKeyId apiKeyId = new ApiKeyId();
 
         this.apiKeyService.create(
-                new ApiKeyDTO(
+                new ApiKey(
                         apiKeyId,
                         newClient.name(),
                         newClient.description(),
-                        apiKeyToken,
                         ApiKeyType.CLIENT
-                )
+                ),
+                apiKeyToken
         );
 
         this.clientApiKeyService.create(
-                new ClientApiKeyDTO(
+                new ClientApiKey(
                         newClient.clientId(),
                         apiKeyId
                 )
@@ -75,11 +76,11 @@ public class ClientService implements ClientDetailsService {
         this.clientRepository.deleteById(clientId);
     }
 
-    public List<ClientDTO> getAll() {
+    public List<Client> getAll() {
         return this.clientRepository.findAll().stream().map(ClientEntity::toDTO).collect(Collectors.toList());
     }
 
-    public ClientDTO get(ClientId clientId) throws ClientNotFoundException {
+    public Client get(ClientId clientId) throws ClientNotFoundException {
         return this.clientRepository.findById(clientId)
                 .orElseThrow(ClientNotFoundException::new)
                 .toDTO();

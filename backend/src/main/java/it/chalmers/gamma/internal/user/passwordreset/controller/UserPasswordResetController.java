@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.user.passwordreset.controller;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.UnencryptedPassword;
-import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.internal.user.passwordreset.service.PasswordResetService;
 
@@ -54,7 +54,7 @@ public class UserPasswordResetController {
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@Valid @RequestBody ResetPasswordFinishRequest request) {
         try {
-            UserDTO user = this.userService.get(request.cid);
+            User user = this.userService.get(request.cid);
 
             if (!this.passwordResetService.tokenMatchesUser(user.id(), request.token)) {
                 throw new CodeOrCidIsWrongResponse();

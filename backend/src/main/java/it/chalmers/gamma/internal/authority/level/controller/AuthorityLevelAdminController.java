@@ -1,10 +1,8 @@
 package it.chalmers.gamma.internal.authority.level.controller;
 
 import it.chalmers.gamma.domain.Authorities;
-import it.chalmers.gamma.internal.authority.post.service.AuthorityPostDTO;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelService;
-import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

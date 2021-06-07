@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.user.approval.service;
 
 import it.chalmers.gamma.domain.ClientId;
+import it.chalmers.gamma.domain.UserApproval;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class UserApprovalService {
         this.repository = repository;
     }
 
-    public void create(UserApprovalDTO userApproval) {
+    public void create(UserApproval userApproval) {
         this.repository.save(new UserApprovalEntity(userApproval));
     }
 
@@ -26,28 +27,28 @@ public class UserApprovalService {
     }
 
 
-    public UserApprovalDTO get(UserApprovalPK userApprovalPK) throws UserService.UserNotFoundException {
+    public UserApproval get(UserApprovalPK userApprovalPK) throws UserService.UserNotFoundException {
         return this.repository.findById(userApprovalPK)
                 .orElseThrow(UserService.UserNotFoundException::new)
                 .toDTO();
     }
 
-    public List<UserApprovalDTO> getApprovalsByClientId(ClientId clientId) {
+    public List<UserApproval> getApprovalsByClientId(ClientId clientId) {
         return this.repository.findAllById_ClientId(clientId)
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<UserApprovalDTO> getApprovalsByUser(UserId userId) {
+    public List<UserApproval> getApprovalsByUser(UserId userId) {
         return this.repository.findAllById_UserId(userId)
                 .stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    protected UserApprovalDTO toDTO(UserApprovalEntity userApproval) {
-        return new UserApprovalDTO(
+    protected UserApproval toDTO(UserApprovalEntity userApproval) {
+        return new UserApproval(
                 userApproval.id().get().userId(),
                 userApproval.id().get().clientId()
         );

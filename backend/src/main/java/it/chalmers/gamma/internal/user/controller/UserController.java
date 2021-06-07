@@ -12,8 +12,8 @@ import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.User;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.internal.user.service.CidOrCodeNotMatchException;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 
@@ -54,16 +54,16 @@ public final class UserController {
     }
 
     @GetMapping()
-    public List<UserRestrictedDTO> getAllRestrictedUsers() {
+    public List<UserRestricted> getAllRestrictedUsers() {
         return this.userService.getAll();
     }
 
-    public record GetUserRestrictedResponse(@JsonUnwrapped UserRestrictedDTO user, List<GroupPost> groups) { }
+    public record GetUserRestrictedResponse(@JsonUnwrapped UserRestricted user, List<GroupPost> groups) { }
 
     @GetMapping("/{id}")
     public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
         try {
-            UserRestrictedDTO user = new UserRestrictedDTO(this.userService.get(id));
+            UserRestricted user = new UserRestricted(this.userService.get(id));
             List<GroupPost> groups = this.membershipService
                     .getMembershipsByUser(id)
                     .stream()
@@ -91,7 +91,7 @@ public final class UserController {
     @ResponseBody
     public UserCreatedResponse createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
-            this.userCreationService.createUserByCode(new UserDTO(
+            this.userCreationService.createUserByCode(new User(
                             new UserId(),
                             request.cid,
                             request.email,

@@ -1,7 +1,8 @@
 package it.chalmers.gamma.internal.user.approval.service;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.domain.User;
+import it.chalmers.gamma.domain.UserApproval;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.internal.user.service.UserService;
@@ -33,11 +34,11 @@ public class UserApprovalStore implements ApprovalStore {
         accessApproval.ifPresent(approval -> {
             try {
                 String cid = approval.getUserId();
-                UserDTO user = this.userService.get(new Cid(cid));
+                User user = this.userService.get(new Cid(cid));
 
                 ClientId clientId = new ClientId(approval.getClientId());
 
-                this.userApprovalService.create(new UserApprovalDTO(user.id(), clientId));
+                this.userApprovalService.create(new UserApproval(user.id(), clientId));
             } catch (UserService.UserNotFoundException e) {
                 e.printStackTrace();
             }
@@ -56,7 +57,7 @@ public class UserApprovalStore implements ApprovalStore {
         try {
             UserId userId = this.userService.get(new Cid(cid)).id();
 
-            UserApprovalDTO userApproval = this.userApprovalService.get(new UserApprovalPK(userId, new ClientId(clientId)));
+            UserApproval userApproval = this.userApprovalService.get(new UserApprovalPK(userId, new ClientId(clientId)));
             return userApproval == null
                     ? Collections.emptyList()
                     : Collections.singleton(

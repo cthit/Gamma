@@ -4,14 +4,14 @@ import java.time.Instant;
 
 import javax.persistence.*;
 
-import it.chalmers.gamma.domain.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCode;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
 @Entity
 @Table(name = "activation_code")
-public class ActivationCodeEntity extends ImmutableEntity<Cid, ActivationCodeDTO> {
+public class ActivationCodeEntity extends ImmutableEntity<Cid, ActivationCode> {
 
     @EmbeddedId
     private Cid cid;
@@ -31,8 +31,8 @@ public class ActivationCodeEntity extends ImmutableEntity<Cid, ActivationCodeDTO
     }
 
     @Override
-    protected ActivationCodeDTO toDTO() {
-        return new ActivationCodeDTO(
+    protected ActivationCode toDTO() {
+        return new ActivationCode(
                 this.cid,
                 this.code,
                 this.createdAt

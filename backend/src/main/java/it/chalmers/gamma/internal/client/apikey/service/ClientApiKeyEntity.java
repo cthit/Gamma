@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.client.apikey.service;
 
 import it.chalmers.gamma.domain.ApiKeyId;
+import it.chalmers.gamma.domain.ClientApiKey;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
@@ -10,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "itclient_apikey")
-public class ClientApiKeyEntity extends ImmutableEntity<ClientId, ClientApiKeyDTO> {
+public class ClientApiKeyEntity extends ImmutableEntity<ClientId, ClientApiKey> {
 
     @EmbeddedId
     private ClientId clientId;
@@ -32,8 +33,8 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId, ClientApiKeyDT
     }
 
     @Override
-    protected ClientApiKeyDTO toDTO() {
-        return new ClientApiKeyDTO(
+    protected ClientApiKey toDTO() {
+        return new ClientApiKey(
                 this.clientId,
                 this.apiKeyId
         );

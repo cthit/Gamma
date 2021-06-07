@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.user.passwordreset.service;
 
+import it.chalmers.gamma.domain.PasswordResetToken;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset_token")
-public class PasswordResetTokenEntity extends ImmutableEntity<UserId, PasswordResetTokenDTO> {
+public class PasswordResetTokenEntity extends ImmutableEntity<UserId, PasswordResetToken> {
 
     @Column(name = "token")
     private String token;
@@ -37,8 +38,8 @@ public class PasswordResetTokenEntity extends ImmutableEntity<UserId, PasswordRe
     }
 
     @Override
-    protected PasswordResetTokenDTO toDTO() {
-        return new PasswordResetTokenDTO(
+    protected PasswordResetToken toDTO() {
+        return new PasswordResetToken(
                 this.userId,
                 this.token,
                 this.createdAt

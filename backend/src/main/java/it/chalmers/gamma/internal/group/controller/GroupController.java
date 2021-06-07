@@ -6,7 +6,7 @@ import it.chalmers.gamma.domain.Group;
 
 import java.util.List;
 
-import it.chalmers.gamma.internal.membership.service.MembershipDTO;
+import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -29,13 +29,13 @@ public final class GroupController {
         this.membershipService = membershipService;
     }
 
-    private record GetGroupResponse(Group group, List<MembershipDTO> groupMembers) {}
+    private record GetGroupResponse(Group group, List<Membership> groupMembers) {}
 
     @GetMapping("/{id}")
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
         try {
             Group group = this.groupService.get(id);
-            List<MembershipDTO> members = this.membershipService.getMembershipsInGroup(group.id());
+            List<Membership> members = this.membershipService.getMembershipsInGroup(group.id());
 
             return new GetGroupResponse(group, members);
         } catch (GroupService.GroupNotFoundException e) {

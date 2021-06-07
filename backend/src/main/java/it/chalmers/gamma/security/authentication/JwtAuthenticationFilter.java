@@ -7,8 +7,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.internal.user.service.UserDTO;
-import it.chalmers.gamma.internal.user.service.UserDetailsImpl;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.security.authentication.response.InvalidJWTTokenResponse;
 import it.chalmers.gamma.internal.user.service.UserService;
 
@@ -27,8 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -71,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(String cid) {
-        UserDTO user;
+        User user;
         try {
             user = this.userService.get(new Cid(cid));
         } catch (UserService.UserNotFoundException e) {

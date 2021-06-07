@@ -1,18 +1,18 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.domain.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCode;
 import it.chalmers.gamma.domain.Cid;
 import org.assertj.core.api.AbstractAssert;
 
 import java.time.Instant;
 
-public class ActivationCodeDTOAssert extends AbstractAssert<ActivationCodeDTOAssert, ActivationCodeDTO> {
+public class ActivationCodeDTOAssert extends AbstractAssert<ActivationCodeDTOAssert, ActivationCode> {
 
-    public ActivationCodeDTOAssert(ActivationCodeDTO activationCode) {
+    public ActivationCodeDTOAssert(ActivationCode activationCode) {
         super(activationCode, ActivationCodeDTOAssert.class);
     }
 
-    public static ActivationCodeDTOAssert assertThat(ActivationCodeDTO actual) {
+    public static ActivationCodeDTOAssert assertThat(ActivationCode actual) {
         return new ActivationCodeDTOAssert(actual);
     }
 

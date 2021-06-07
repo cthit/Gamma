@@ -2,6 +2,7 @@ package it.chalmers.gamma.internal.user.service;
 
 import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class UserCreationService {
         this.repository = repository;
     }
 
-    public void createUserByCode(UserDTO newUser, UnencryptedPassword password, Code code) throws CidOrCodeNotMatchException {
+    public void createUserByCode(User newUser, UnencryptedPassword password, Code code) throws CidOrCodeNotMatchException {
         if(!activationCodeService.codeMatchesCid(newUser.cid(), code)) {
             throw new CidOrCodeNotMatchException();
         }
@@ -52,7 +53,7 @@ public class UserCreationService {
 
     //TODO throw exception if something goes wrong e.g. same name
     //I will because of this fix things in HaveUserThatIsAdminBootstrap
-    public void createUser(UserDTO newUser, UnencryptedPassword password) {
+    public void createUser(User newUser, UnencryptedPassword password) {
         UserEntity user = new UserEntity(newUser);
         user.setPassword(password.encrypt(this.passwordEncoder));
 

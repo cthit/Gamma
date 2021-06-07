@@ -4,12 +4,12 @@ import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserService;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserShallowDTO;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
-import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.util.TokenUtils;
 import it.chalmers.gamma.domain.Cid;
@@ -17,7 +17,6 @@ import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
@@ -62,7 +61,7 @@ public class EnsureAnAdminUserBootstrap {
 
                 try {
                     this.userCreationService.createUser(
-                            new UserDTO(
+                            new User(
                                     adminId,
                                     new Cid(name),
                                     new Email(name + "@chalmers.it"),

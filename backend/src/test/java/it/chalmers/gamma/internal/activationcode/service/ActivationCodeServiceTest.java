@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
-import it.chalmers.gamma.domain.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCode;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Code;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class ActivationCodeServiceTest {
                 .willAnswer(returnsFirstArg());
 
         Cid cid = new Cid("mycid");
-        ActivationCodeDTO activationCode = activationCodeService.saveActivationCode(cid);
+        ActivationCode activationCode = activationCodeService.saveActivationCode(cid);
 
         ActivationCodeDTOAssert.assertThat(activationCode)
                 .hasCorrectCid(cid)
@@ -80,10 +80,10 @@ class ActivationCodeServiceTest {
                 .willReturn(activationCodeList);
 
         //when
-        List<ActivationCodeDTO> activationCodeDTOList = activationCodeService.getAll();
+        List<ActivationCode> activationCodeDTOList = activationCodeService.getAll();
         for (int i = 0; i < activationCodeDTOList.size(); i++) {
             ActivationCodeEntity ac = activationCodeList.get(0);
-            ActivationCodeDTO acDTO = activationCodeDTOList.get(0);
+            ActivationCode acDTO = activationCodeDTOList.get(0);
 
             assertThat(ac)
                     .usingRecursiveComparison()

@@ -2,7 +2,7 @@ package it.chalmers.gamma.api;
 
 import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
-import it.chalmers.gamma.internal.membership.service.MembershipDTO;
+import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
@@ -50,7 +50,7 @@ public class GoldappsApiController {
         );
     }
 
-    private List<UserPost> toUserPosts(List<MembershipDTO> memberships) {
+    private List<UserPost> toUserPosts(List<Membership> memberships) {
         return memberships
                 .stream()
                 .map(membership -> new UserPost(membership.user(), membership.post()))

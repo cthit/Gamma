@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.authority.controller;
 
 import it.chalmers.gamma.domain.Authorities;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

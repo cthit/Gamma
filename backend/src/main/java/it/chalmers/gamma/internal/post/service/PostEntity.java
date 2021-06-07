@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.post.service;
 
 import it.chalmers.gamma.domain.EmailPrefix;
+import it.chalmers.gamma.domain.Post;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "post")
-public class PostEntity extends MutableEntity<PostId, PostDTO> {
+public class PostEntity extends MutableEntity<PostId, Post> {
 
     @EmbeddedId
     private PostId id;
@@ -23,7 +24,7 @@ public class PostEntity extends MutableEntity<PostId, PostDTO> {
 
     protected PostEntity() { }
 
-    protected PostEntity(PostDTO p) {
+    protected PostEntity(Post p) {
         assert(p.id() != null);
 
         this.id = p.id();
@@ -33,7 +34,7 @@ public class PostEntity extends MutableEntity<PostId, PostDTO> {
     }
 
     @Override
-    public void apply(PostDTO p) {
+    public void apply(Post p) {
         assert(this.id == p.id());
 
         this.postName.apply(p.name());
@@ -41,8 +42,8 @@ public class PostEntity extends MutableEntity<PostId, PostDTO> {
     }
 
     @Override
-    protected PostDTO toDTO() {
-        return new PostDTO(
+    protected Post toDTO() {
+        return new Post(
                 this.id,
                 this.postName.toDTO(),
                 this.emailPrefix

@@ -1,10 +1,11 @@
 package it.chalmers.gamma.internal.apikey.service;
 
+import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.domain.EntityName;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Text;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -31,24 +32,23 @@ class ApiKeyServiceTest {
 
     @Test
     void create() {
-        ApiKeyDTO apiKeyDTO = new ApiKeyDTO(
+        ApiKey apiKey = new ApiKey(
                 new ApiKeyId(),
                 EntityName.valueOf("myapikey"),
-                new TextDTO(
+                new Text(
                         "Min API nyckel",
                         "My API key"
                 ),
-                new ApiKeyToken(),
                 ApiKeyType.CLIENT
         );
 
-        apiKeyService.create(apiKeyDTO);
+        apiKeyService.create(apiKey, new ApiKeyToken());
 
         ArgumentCaptor<ApiKeyEntity> captor = ArgumentCaptor.forClass(ApiKeyEntity.class);
         verify(apiKeyRepository).save(captor.capture());
         ApiKeyEntity newApiKey = captor.getValue();
 
-        assertThat(apiKeyDTO)
+        assertThat(apiKey)
                 .usingRecursiveComparison()
                 .isEqualTo(newApiKey);
     }

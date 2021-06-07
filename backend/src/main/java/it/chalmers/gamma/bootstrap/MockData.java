@@ -9,9 +9,8 @@ import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
-import it.chalmers.gamma.internal.authority.post.service.AuthorityPostShallowDTO;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.Cid;
 
@@ -35,7 +34,7 @@ public record MockData(List<MockUser> users,
 
 
     public record MockPost(PostId id,
-                           TextDTO postName) { }
+                           Text postName) { }
 
     public record MockSuperGroup(SuperGroupId id,
                                  EntityName name,

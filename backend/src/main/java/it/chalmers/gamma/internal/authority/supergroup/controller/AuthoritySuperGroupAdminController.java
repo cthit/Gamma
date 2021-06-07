@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.authority.supergroup.controller;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupPK;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupService;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupShallowDTO;

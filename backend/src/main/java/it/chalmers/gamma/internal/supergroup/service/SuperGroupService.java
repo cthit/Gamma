@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.supergroup.service;
 
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.domain.SuperGroupId;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +17,21 @@ public class SuperGroupService {
         this.repository = repository;
     }
 
-    public void create(SuperGroupDTO superGroupDTO) throws SuperGroupNotFoundException {
-        this.repository.save(new SuperGroupEntity(superGroupDTO));
+    public void create(SuperGroup superGroup) throws SuperGroupNotFoundException {
+        this.repository.save(new SuperGroupEntity(superGroup));
     }
 
     public void delete(SuperGroupId id) {
         this.repository.deleteById(id);
     }
 
-    public void update(SuperGroupDTO newSuperGroup) throws SuperGroupNotFoundException {
+    public void update(SuperGroup newSuperGroup) throws SuperGroupNotFoundException {
         SuperGroupEntity superGroup = this.getEntity(newSuperGroup.id());
         superGroup.apply(newSuperGroup);
         this.repository.save(superGroup);
     }
 
-    public List<SuperGroupDTO> getAll() {
+    public List<SuperGroup> getAll() {
         return Optional.of(this.repository.findAll().stream()
                 .map(SuperGroupEntity::toDTO)
                 .collect(Collectors.toList())).orElseThrow();
@@ -40,7 +41,7 @@ public class SuperGroupService {
         return this.repository.existsById(id);
     }
 
-    public SuperGroupDTO get(SuperGroupId id) throws SuperGroupNotFoundException {
+    public SuperGroup get(SuperGroupId id) throws SuperGroupNotFoundException {
         return getEntity(id).toDTO();
     }
 

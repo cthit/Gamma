@@ -3,7 +3,7 @@ package it.chalmers.gamma.internal.authority.post.controller;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostPK;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostShallowDTO;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.SuperGroupId;
 

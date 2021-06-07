@@ -1,8 +1,8 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
-import it.chalmers.gamma.internal.user.service.UserDTO;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
@@ -52,7 +52,7 @@ public class UserBootstrap {
         LOGGER.info("========== USER BOOTSTRAP ==========");
 
         this.mockData.users().forEach(mockUser -> this.userCreationService.createUser(
-                new UserDTO(
+                new User(
                         mockUser.id(),
                         mockUser.cid(),
                         new Email(mockUser.cid() + "@student.chalmers.it"),

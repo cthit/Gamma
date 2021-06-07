@@ -3,10 +3,10 @@ package it.chalmers.gamma.internal.supergroup.controller;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.SuperGroupType;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.SuperGroupId;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 
 import javax.validation.Valid;
@@ -36,12 +36,12 @@ public class SuperGroupAdminController {
                                                  PrettyName prettyName,
                                                  SuperGroupType type,
                                                  Email email,
-                                                 TextDTO description) { }
+                                                 Text description) { }
 
     @PostMapping()
     public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupService.create(new SuperGroupDTO(
+            this.superGroupService.create(new SuperGroup(
                     null,
                     request.name,
                     request.prettyName,
@@ -65,7 +65,7 @@ public class SuperGroupAdminController {
     public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
                                                 @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupService.update(new SuperGroupDTO(
+            this.superGroupService.update(new SuperGroup(
                     id,
                     request.name,
                     request.prettyName,

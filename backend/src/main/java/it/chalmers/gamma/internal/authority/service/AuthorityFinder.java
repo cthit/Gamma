@@ -2,12 +2,13 @@ package it.chalmers.gamma.internal.authority.service;
 
 import it.chalmers.gamma.domain.Authorities;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelService;
 import it.chalmers.gamma.internal.authority.post.service.AuthorityPostService;
 import it.chalmers.gamma.internal.authority.supergroup.service.AuthoritySuperGroupService;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserService;
 import it.chalmers.gamma.internal.group.service.GroupService;
+import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class AuthorityFinder {
@@ -77,11 +80,31 @@ public class AuthorityFinder {
     }
 
     public List<AuthorityLevelName> getGrantedAuthorities(UserId userId) {
-        List<AuthorityLevelName> authorities = new ArrayList<>();
+        Set<AuthorityLevelName> authorities = new HashSet<>();
 
+        //User authorities
         authorities.addAll(this.authorityUserService.getByUser(userId));
 
-        return authorities;
+        List<Membership> memberships = this.membershipService.getMembershipsByUser(userId);
+
+        //Super groups authorities
+        this.authoritySuperGroupService.getAll()
+                .stream()
+                .filter(authoritySuperGroup -> memberships
+                        .stream()
+                        .anyMatch(membership -> authoritySuperGroup.superGroup().id().equals(membership.group().superGroup().id())))
+                .forEach(authoritySuperGroup -> authorities.add(authoritySuperGroup.authorityLevelName()));
+
+        //Supergroup post authorities
+        this.authorityPostService.getAll()
+                .stream()
+                .filter(authorityPost -> memberships
+                        .stream()
+                        .anyMatch(membership -> authorityPost.post().id().equals(membership.post().id())
+                                && authorityPost.superGroup().id().equals(membership.group().superGroup().id())))
+                .forEach(authorityPost -> authorities.add(authorityPost.authorityLevelName()));
+
+        return new ArrayList<>(authorities);
     }
 
     public Authorities getByAuthorityLevel(AuthorityLevelName authorityLevelName) {

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.authority.user.controller;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserPK;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserService;
 import it.chalmers.gamma.internal.authority.user.service.AuthorityUserShallowDTO;

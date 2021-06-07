@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.client.restriction.service;
 
 import it.chalmers.gamma.domain.ClientId;
-import it.chalmers.gamma.internal.client.service.ClientService;
+import it.chalmers.gamma.domain.ClientRestrictions;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ public class ClientRestrictionService {
         this.clientRestrictionRepository = clientRestrictionRepository;
     }
 
-    public void create(ClientRestrictionDTO clientRestriction) {
+    public void create(ClientRestrictions clientRestriction) {
         this.clientRestrictionRepository.saveAll(
                 clientRestriction.authorityLevelNameList()
                         .stream()
@@ -33,7 +33,7 @@ public class ClientRestrictionService {
        this.clientRestrictionRepository.deleteById(id);
     }
 
-    public ClientRestrictionDTO get(ClientId clientId) throws ClientRestrictionNotFoundException {
+    public ClientRestrictions get(ClientId clientId) throws ClientRestrictionNotFoundException {
         return this.clientRestrictionRepository.findClientRestrictionsById_ClientId(clientId)
                 .stream()
                 .map(ClientRestrictionEntity::toDTO)

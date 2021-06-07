@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.apikey.service;
 
+import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
 
 import it.chalmers.gamma.domain.ApiKeyToken;
@@ -17,8 +18,8 @@ public class ApiKeyService {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    public void create(ApiKeyDTO newApiKey) {
-        this.apiKeyRepository.save(new ApiKeyEntity(newApiKey));
+    public void create(ApiKey newApiKey, ApiKeyToken apiKeyToken) {
+        this.apiKeyRepository.save(new ApiKeyEntity(newApiKey, apiKeyToken));
     }
 
     public void delete(ApiKeyId id) throws ApiKeyNotFoundException {
@@ -29,21 +30,18 @@ public class ApiKeyService {
         }
     }
 
-    public List<ApiKeyInformationDTO> getAll() {
+    public List<ApiKey> getAll() {
         return this.apiKeyRepository
                 .findAll()
                 .stream()
                 .map(ApiKeyEntity::toDTO)
-                .map(ApiKeyInformationDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public ApiKeyInformationDTO get(ApiKeyId id) throws ApiKeyNotFoundException {
-        return new ApiKeyInformationDTO(
-                this.apiKeyRepository.findById(id)
+    public ApiKey get(ApiKeyId id) throws ApiKeyNotFoundException {
+        return this.apiKeyRepository.findById(id)
                         .orElseThrow(ApiKeyNotFoundException::new)
-                        .toDTO()
-        );
+                        .toDTO();
     }
 
     public boolean isValidApiKey(ApiKeyToken apiKey) {

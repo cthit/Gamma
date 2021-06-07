@@ -4,10 +4,10 @@ import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.internal.client.apikey.service.ClientApiKeyService;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
-import it.chalmers.gamma.internal.client.service.ClientDTO;
+import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.internal.client.service.ClientService;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
@@ -39,19 +39,18 @@ public class ClientAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateClientRequest(String webServerRedirectUri, EntityName name, boolean autoApprove, TextDTO description, boolean generateApiKey) { }
+    private record CreateClientRequest(String webServerRedirectUri, EntityName name, boolean autoApprove, Text description, boolean generateApiKey) { }
 
     private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
 
     @PostMapping()
-    public ClientSecret addITClient(@RequestBody CreateClientRequest request) {
+    public NewClientSecrets addITClient(@RequestBody CreateClientRequest request) {
         ClientSecret clientSecret = new ClientSecret();
         ApiKeyToken apiKeyToken = null;
 
-        ClientDTO newClient =
-                new ClientDTO(
+        Client newClient =
+                new Client(
                         new ClientId(),
-                        clientSecret,
                         request.webServerRedirectUri,
                         request.autoApprove,
                         request.name,
@@ -59,16 +58,16 @@ public class ClientAdminController {
                 );
         if (request.generateApiKey) {
             apiKeyToken = new ApiKeyToken();
-            this.clientService.createWithApiKey(newClient, apiKeyToken);
+            this.clientService.createWithApiKey(newClient, clientSecret, apiKeyToken);
         } else {
-            this.clientService.create(newClient);
+            this.clientService.create(newClient, clientSecret);
         }
 
-        return clientSecret;
+        return new NewClientSecrets(clientSecret, apiKeyToken);
     }
 
     @GetMapping()
-    public List<ClientDTO> getAllClient() {
+    public List<Client> getAllClient() {
         return this.clientService.getAll();
     }
 

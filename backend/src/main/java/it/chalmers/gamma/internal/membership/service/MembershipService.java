@@ -1,12 +1,13 @@
 package it.chalmers.gamma.internal.membership.service;
 
 import it.chalmers.gamma.domain.GroupId;
+import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.post.service.PostService;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.internal.user.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,7 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipDTO> getMembershipsByUser(UserId userId) {
+    public List<Membership> getMembershipsByUser(UserId userId) {
         List<MembershipEntity> memberships = this.membershipRepository.findAllById_UserId(userId);
 
         return memberships
@@ -75,7 +76,7 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipDTO> getMembershipsByGroup(GroupId groupId) {
+    public List<Membership> getMembershipsByGroup(GroupId groupId) {
         List<MembershipEntity> memberships = this.membershipRepository.findAllById_GroupId(groupId);
 
         return memberships
@@ -85,7 +86,7 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipDTO> getMembershipsByGroupAndPost(GroupId groupId, PostId postId) {
+    public List<Membership> getMembershipsByGroupAndPost(GroupId groupId, PostId postId) {
         List<MembershipEntity> memberships = this.membershipRepository.findAllById_GroupIdAndId_PostId(groupId, postId);
 
         return memberships
@@ -95,7 +96,7 @@ public class MembershipService {
                 .collect(Collectors.toList());
     }
 
-    public List<MembershipDTO> getMembershipsInGroup(GroupId groupId) {
+    public List<Membership> getMembershipsInGroup(GroupId groupId) {
         return this.membershipRepository
                 .findAllById_GroupId(groupId)
                 .stream()
@@ -117,13 +118,13 @@ public class MembershipService {
                 .orElseThrow(MembershipNotFoundException::new);
     }
 
-    protected MembershipDTO fromShallow(MembershipShallowDTO membership) {
+    protected Membership fromShallow(MembershipShallowDTO membership) {
         try {
-            return new MembershipDTO(
+            return new Membership(
                     this.postService.get(membership.postId()),
                     this.groupService.get(membership.groupId()),
                     membership.unofficialPostName(),
-                    new UserRestrictedDTO(this.userService.get(membership.userId()))
+                    new UserRestricted(this.userService.get(membership.userId()))
             );
         } catch (PostService.PostNotFoundException e) {
             e.printStackTrace();

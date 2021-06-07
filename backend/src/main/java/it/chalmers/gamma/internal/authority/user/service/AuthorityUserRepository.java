@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.authority.user.service;
 
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

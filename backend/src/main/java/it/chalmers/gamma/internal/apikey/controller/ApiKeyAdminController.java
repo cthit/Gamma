@@ -1,12 +1,11 @@
 package it.chalmers.gamma.internal.apikey.controller;
 
 import it.chalmers.gamma.domain.EntityName;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyInformationDTO;
 import it.chalmers.gamma.domain.ApiKeyType;
-import it.chalmers.gamma.internal.text.service.TextDTO;
+import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyDTO;
+import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/internal/admin/api_keys")
 public class ApiKeyAdminController {
@@ -32,29 +32,28 @@ public class ApiKeyAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateApiKeyRequest(EntityName name, TextDTO description, ApiKeyType keyType) { }
+    private record CreateApiKeyRequest(EntityName name, Text description, ApiKeyType keyType) { }
 
     @PostMapping()
     public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {
         ApiKeyToken key = new ApiKeyToken();
 
         this.apiKeyService.create(
-            new ApiKeyDTO(
+            new ApiKey(
                     new ApiKeyId(),
                     request.name,
                     request.description,
-                    key,
                     request.keyType
-            )
+            ),
+                key
         );
 
         return key;
     }
 
     @GetMapping()
-    public List<ApiKeyInformationDTO> getAllApiKeys() {
-        return this.apiKeyService
-                .getAll();
+    public List<ApiKey> getAllApiKeys() {
+        return this.apiKeyService.getAll();
     }
 
     @DeleteMapping("/{id}")

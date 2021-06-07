@@ -2,6 +2,7 @@ package it.chalmers.gamma.internal.supergroup.service;
 
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.domain.Email;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "fkit_super_group")
-public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO> {
+public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
 
     @EmbeddedId
     private SuperGroupId id;
@@ -37,7 +38,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
 
     protected SuperGroupEntity() {}
 
-    protected SuperGroupEntity(SuperGroupDTO sg) {
+    protected SuperGroupEntity(SuperGroup sg) {
         assert(sg.id() != null);
 
         this.id = sg.id();
@@ -47,7 +48,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
     }
 
     @Override
-    public void apply(SuperGroupDTO sg)  {
+    public void apply(SuperGroup sg)  {
         assert(this.id == sg.id());
 
         this.email = sg.email();
@@ -60,8 +61,8 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroupDTO>
     }
 
     @Override
-    protected SuperGroupDTO toDTO() {
-        return new SuperGroupDTO(
+    protected SuperGroup toDTO() {
+        return new SuperGroup(
                 this.id,
                 this.entityName,
                 this.prettyName,

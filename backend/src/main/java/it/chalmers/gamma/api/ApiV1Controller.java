@@ -1,16 +1,16 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupDTO;
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
-import it.chalmers.gamma.internal.user.service.UserDTO;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.user.service.UserRestrictedDTO;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.internal.user.service.UserService;
@@ -61,19 +61,19 @@ public class ApiV1Controller {
     }
 
     @GetMapping("/superGroups")
-    public List<SuperGroupDTO> getSuperGroups() {
+    public List<SuperGroup> getSuperGroups() {
         return this.superGroupService.getAll();
     }
 
     @GetMapping("/users")
-    public List<UserRestrictedDTO> getUsersForClient() {
+    public List<UserRestricted> getUsersForClient() {
         return this.userService.getAll();
     }
 
     @GetMapping("/users/{id}")
-    public UserRestrictedDTO getUser(@PathVariable("id") UserId id) {
+    public UserRestricted getUser(@PathVariable("id") UserId id) {
         try {
-            return new UserRestrictedDTO(this.userService.get(id));
+            return new UserRestricted(this.userService.get(id));
         } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
@@ -84,21 +84,21 @@ public class ApiV1Controller {
 
     }
 
-    private record GetMeResponse(@JsonUnwrapped UserRestrictedDTO user,
+    private record GetMeResponse(@JsonUnwrapped UserRestricted user,
                                 List<GroupPost> groups,
                                 List<AuthorityLevelName> authorities) { }
 
     @GetMapping("/users/me")
     public GetMeResponse getMe(Principal principal) {
         try {
-            UserDTO user = this.userService.get(new Cid(principal.getName()));
+            User user = this.userService.get(new Cid(principal.getName()));
             List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
             List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
 
-            return new GetMeResponse(new UserRestrictedDTO(user), groups, authorityLevelNames);
+            return new GetMeResponse(new UserRestricted(user), groups, authorityLevelNames);
         } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }

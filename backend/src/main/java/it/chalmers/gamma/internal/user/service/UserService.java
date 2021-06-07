@@ -2,12 +2,12 @@ package it.chalmers.gamma.internal.user.service;
 
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.UnencryptedPassword;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.Cid;
 
-import it.chalmers.gamma.internal.authority.level.service.AuthorityLevelName;
+import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
-import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.util.ImageUtils;
 
 import java.util.List;
@@ -15,9 +15,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,34 +37,34 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
-    public void update(UserDTO newEdit) throws UserNotFoundException {
+    public void update(User newEdit) throws UserNotFoundException {
         UserEntity user = this.getEntity(newEdit.id());
         user.apply(newEdit);
         this.userRepository.save(user);
     }
 
     //todo filter out non activated accounts
-    public List<UserRestrictedDTO> getAll() {
+    public List<UserRestricted> getAll() {
         return this.userRepository.findAll()
                 .stream()
                 .map(UserEntity::toDTO)
-                .map(UserRestrictedDTO::new)
+                .map(UserRestricted::new)
                 .collect(Collectors.toList());
     }
 
-    public UserDTO get(Email email) throws UserNotFoundException {
+    public User get(Email email) throws UserNotFoundException {
         return this.userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new)
                 .toDTO();
     }
 
-    public UserDTO get(Cid cid) throws UserNotFoundException {
+    public User get(Cid cid) throws UserNotFoundException {
         return this.userRepository.findByCid(cid)
                 .orElseThrow(UserNotFoundException::new)
                 .toDTO();
     }
 
-    public UserDTO get(UserId id) throws UserNotFoundException {
+    public User get(UserId id) throws UserNotFoundException {
         return this.userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new)
                 .toDTO();
@@ -80,7 +77,7 @@ public class UserService {
     }
 
 
-    public void editProfilePicture(UserDTO user, MultipartFile file) throws UserNotFoundException {
+    public void editProfilePicture(User user, MultipartFile file) throws UserNotFoundException {
         if (ImageUtils.isImageOrGif(file)) {
 //            try {
 //                if (!user.avatarUrl().equals("default.jpg")) {

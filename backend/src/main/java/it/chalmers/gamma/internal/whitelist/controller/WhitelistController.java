@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.whitelist.controller;
 
-import it.chalmers.gamma.domain.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCode;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
@@ -43,7 +43,7 @@ public final class WhitelistController {
         Cid cid = request.cid;
 
         if (this.whitelistService.cidIsWhitelisted(cid)) {
-            ActivationCodeDTO activationCode = this.activationCodeService.saveActivationCode(cid);
+            ActivationCode activationCode = this.activationCodeService.saveActivationCode(cid);
             sendEmail(activationCode);
         } else {
             LOGGER.warn(String.format("Non Whitelisted User: %s Tried to Create Account", cid));
@@ -53,7 +53,7 @@ public final class WhitelistController {
         return new WhitelistedCidActivatedResponse();
     }
 
-    private void sendEmail(ActivationCodeDTO activationCode) {
+    private void sendEmail(ActivationCode activationCode) {
         String code = activationCode.code().get();
         String to = activationCode.cid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;

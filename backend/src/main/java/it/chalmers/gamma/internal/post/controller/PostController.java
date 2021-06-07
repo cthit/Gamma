@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.post.controller;
 
-import it.chalmers.gamma.internal.post.service.PostDTO;
+import it.chalmers.gamma.domain.Post;
 
 import it.chalmers.gamma.internal.post.service.PostService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ public class PostController {
     }
 
     @GetMapping()
-    public List<PostDTO> getPosts() {
+    public List<Post> getPosts() {
         return this.postService.getAll();
     }
 }

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.client.service;
 
+import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.domain.EntityName;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "itclient")
-public class ClientEntity extends ImmutableEntity<ClientId, ClientDTO> {
+public class ClientEntity extends ImmutableEntity<ClientId, Client> {
 
     @EmbeddedId
     private ClientId clientId;
@@ -33,16 +34,18 @@ public class ClientEntity extends ImmutableEntity<ClientId, ClientDTO> {
 
     protected ClientEntity() { }
 
-    protected ClientEntity(ClientDTO client) {
-        assert(client.clientId() != null);
-
+    protected ClientEntity(Client client, ClientSecret clientSecret) {
         this.clientId = client.clientId();
-        this.clientSecret = client.clientSecret();
+        this.clientSecret = clientSecret;
         this.description = new TextEntity(client.description());
         this.webServerRedirectUri = client.webServerRedirectUri();
         this.autoApprove = client.autoApprove();
         this.name = client.name();
         this.description.apply(client.description());
+    }
+
+    protected ClientSecret getClientSecret() {
+        return this.clientSecret;
     }
 
     @Override
@@ -51,10 +54,9 @@ public class ClientEntity extends ImmutableEntity<ClientId, ClientDTO> {
     }
 
     @Override
-    protected ClientDTO toDTO() {
-        return new ClientDTO(
+    protected Client toDTO() {
+        return new Client(
                 this.clientId,
-                this.clientSecret,
                 this.webServerRedirectUri,
                 this.autoApprove,
                 this.name,

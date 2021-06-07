@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.user.gdpr.controller;
 
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.internal.user.gdpr.service.UserGDPRTrainingDTO;
+import it.chalmers.gamma.domain.UserGDPRTraining;
 import it.chalmers.gamma.internal.user.gdpr.service.UserGDPRTrainingService;
 
 import javax.validation.Valid;
@@ -36,7 +36,7 @@ public class UserGDPRAdminController {
     }
 
     @GetMapping("/minified")
-    public List<UserGDPRTrainingDTO> getAllUserMini() {
+    public List<UserGDPRTraining> getAllUserMini() {
         return userGDPRTrainingService.getUsersWithGDPR();
     }
 

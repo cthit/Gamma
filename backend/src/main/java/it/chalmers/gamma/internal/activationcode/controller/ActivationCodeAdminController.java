@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.activationcode.controller;
 
-import it.chalmers.gamma.domain.ActivationCodeDTO;
+import it.chalmers.gamma.domain.ActivationCode;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 
 import it.chalmers.gamma.domain.Cid;
@@ -26,7 +26,7 @@ public final class ActivationCodeAdminController {
     }
 
     @GetMapping()
-    public List<ActivationCodeDTO> getAllActivationCodes() {
+    public List<ActivationCode> getAllActivationCodes() {
         return this.activationCodeService.getAll();
     }
 
