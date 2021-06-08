@@ -6,10 +6,10 @@ export const ADMIN_CLIENTS_ENDPOINT = "/admin/clients/";
 export const ADMIN_SUPER_GROUPS_ENDPOINT = "/admin/superGroups/";
 export const ADMIN_GDPR_ENDPOINT = "/admin/gdpr/";
 export const ADMIN_API_KEYS_ENDPOINT = "/admin/api_keys/";
-export const ADMIN_POSTS_ENDPOINT = "/admin/groups/posts/";
+export const ADMIN_POSTS_ENDPOINT = "/admin/posts/";
 
 export const WHITELIST_ENDPOINT = "/whitelist/";
-export const POSTS_ENDPOINT = "/groups/posts/";
+export const POSTS_ENDPOINT = "/posts/";
 export const CREATE_ACCOUNT_ENDPOINT = "/users/";
 export const GROUPS_ENDPOINT = "/groups/";
 export const USERS_ENDPOINT = "/users/";

@@ -11,7 +11,9 @@ import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -85,15 +87,7 @@ public class SuperGroupAdminController {
 
     private static class SuperGroupCreatedResponse extends SuccessResponse { }
 
-    private static class SuperGroupAlreadyExistsResponse extends ErrorResponse {
-        private SuperGroupAlreadyExistsResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class SuperGroupAlreadyExistsResponse extends AlreadyExistsResponse { }
 
-    private static class SuperGroupDoesNotExistResponse extends ErrorResponse {
-        private SuperGroupDoesNotExistResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class SuperGroupDoesNotExistResponse extends NotFoundResponse { }
 }

@@ -5,7 +5,9 @@ import it.chalmers.gamma.internal.authorityuser.service.AuthorityUserPK;
 import it.chalmers.gamma.internal.authorityuser.service.AuthorityUserService;
 import it.chalmers.gamma.internal.authorityuser.service.AuthorityUserShallowDTO;
 import it.chalmers.gamma.domain.UserId;
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,16 +64,8 @@ public class AuthorityUserAdminController {
 
     private static class AuthorityUserCreatedResponse extends SuccessResponse { }
 
-    private static class AuthorityUserNotFoundResponse extends ErrorResponse {
-        private AuthorityUserNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class AuthorityUserNotFoundResponse extends NotFoundResponse { }
 
-    private static class AuthorityUserAlreadyExistsResponse extends ErrorResponse {
-        private AuthorityUserAlreadyExistsResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class AuthorityUserAlreadyExistsResponse extends AlreadyExistsResponse { }
 
 }

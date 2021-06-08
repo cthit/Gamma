@@ -5,7 +5,9 @@ import it.chalmers.gamma.internal.authoritysupergroup.service.AuthoritySuperGrou
 import it.chalmers.gamma.internal.authoritysupergroup.service.AuthoritySuperGroupService;
 import it.chalmers.gamma.internal.authoritysupergroup.service.AuthoritySuperGroupShallowDTO;
 import it.chalmers.gamma.domain.SuperGroupId;
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,17 +61,9 @@ public class AuthoritySuperGroupAdminController {
 
     private static class AuthoritySuperGroupCreatedResponse extends SuccessResponse { }
 
-    private static class AuthoritySuperGroupNotFoundResponse extends ErrorResponse {
-        private AuthoritySuperGroupNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class AuthoritySuperGroupNotFoundResponse extends NotFoundResponse { }
 
-    private static class AuthoritySuperGroupAlreadyExistsResponse extends ErrorResponse {
-        private AuthoritySuperGroupAlreadyExistsResponse() {
-            super(HttpStatus.CONFLICT);
-        }
-    }
+    private static class AuthoritySuperGroupAlreadyExistsResponse extends AlreadyExistsResponse { }
 
 
 }

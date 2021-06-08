@@ -9,6 +9,7 @@ import java.util.List;
 
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,10 +48,6 @@ public class SuperGroupController {
         return this.groupService.getGroupsBySuperGroup(id);
     }
 
-    private static class SuperGroupDoesNotExistResponse extends ErrorResponse {
-        private SuperGroupDoesNotExistResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class SuperGroupDoesNotExistResponse extends NotFoundResponse { }
 
 }

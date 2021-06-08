@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.post.controller;
 
 import it.chalmers.gamma.domain.EmailPrefix;
+import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.GroupWithMembers;
@@ -11,9 +12,8 @@ import it.chalmers.gamma.internal.post.service.PostService;
 
 import javax.validation.Valid;
 
-import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/internal/admin/groups/posts")
+@RequestMapping("/internal/admin/posts")
 public final class PostAdminController {
 
     private final PostService postService;
@@ -58,7 +58,7 @@ public final class PostAdminController {
             this.postService.update(new Post(id, request.post(), request.emailPrefix()));
             return new PostEditedResponse();
         } catch (PostService.PostNotFoundException e) {
-            throw new PostDoesNotExistResponse();
+            throw new PostNotFoundResponse();
         }
     }
 
@@ -69,20 +69,8 @@ public final class PostAdminController {
     }
 
     @GetMapping("/{id}/usage")
-    public List<GroupWithMembers> getPostUsages(@PathVariable("id") PostId postId) {
-        return this.membershipService.getGroupsWithPost(postId)
-                .stream()
-                .map(group -> new GroupWithMembers(
-                        group,
-                        this.membershipService.getMembershipsByGroupAndPost(group.id(), postId)
-                                .stream()
-                                .map(membership -> new UserPost(
-                                        membership.user(),
-                                        membership.post()
-                                ))
-                                .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
+    public List<Group> getPostUsages(@PathVariable("id") PostId postId) {
+        return this.membershipService.getGroupsWithPost(postId);
     }
 
     private static class PostEditedResponse extends SuccessResponse { }
@@ -91,10 +79,6 @@ public final class PostAdminController {
 
     private static class PostCreatedResponse extends SuccessResponse {}
 
-    private static class PostDoesNotExistResponse extends ErrorResponse {
-        private PostDoesNotExistResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class PostNotFoundResponse extends NotFoundResponse { }
 
 }

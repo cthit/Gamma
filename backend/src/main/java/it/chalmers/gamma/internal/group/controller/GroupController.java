@@ -1,14 +1,18 @@
 package it.chalmers.gamma.internal.group.controller;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.UserPost;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.Group;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/internal/groups")
 public final class GroupController {
 
     private final GroupService groupService;
@@ -29,7 +33,13 @@ public final class GroupController {
         this.membershipService = membershipService;
     }
 
-    private record GetGroupResponse(Group group, List<Membership> groupMembers) {}
+    @GetMapping()
+    public List<Group> getGroups() {
+        return this.groupService.getAll();
+    }
+
+    private record GetGroupResponse(@JsonUnwrapped Group group, List<Membership> members) {
+    }
 
     @GetMapping("/{id}")
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
@@ -43,10 +53,6 @@ public final class GroupController {
         }
     }
 
-    private static class GroupNotFoundResponse extends ErrorResponse {
-        private GroupNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class GroupNotFoundResponse extends NotFoundResponse { }
 
 }

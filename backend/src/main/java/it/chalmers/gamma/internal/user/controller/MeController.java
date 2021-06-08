@@ -1,12 +1,14 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.Authority;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.authority.service.AuthorityType;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.MeService;
 import it.chalmers.gamma.domain.Cid;
@@ -16,6 +18,7 @@ import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,9 +53,10 @@ public class MeController {
         this.authorityFinder = authorityFinder;
     }
 
+
     public record GetMeResponse(@JsonUnwrapped User user,
                                 List<GroupPost> groups,
-                                List<AuthorityLevelName> authorities) { }
+                                List<Authority> authorities) { }
 
     @GetMapping()
     public GetMeResponse getMe(Principal principal) {
@@ -62,9 +66,9 @@ public class MeController {
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
-            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
+            List<Authority> authorities = this.authorityFinder.getGrantedAuthoritiesWithType(user.id());
 
-            return new GetMeResponse(user, groups, authorityLevelNames);
+            return new GetMeResponse(user, groups, authorities);
         } catch (UserService.UserNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -158,11 +162,7 @@ public class MeController {
 
     private static class UserDeletedResponse extends SuccessResponse { }
 
-    private static class UserNotFoundResponse extends ErrorResponse {
-        public UserNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class UserNotFoundResponse extends NotFoundResponse { }
 
     private static class IncorrectCidOrPasswordResponse extends ErrorResponse {
         public IncorrectCidOrPasswordResponse() {

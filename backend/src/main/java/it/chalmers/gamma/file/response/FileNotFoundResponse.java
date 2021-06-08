@@ -1,10 +1,5 @@
 package it.chalmers.gamma.file.response;
 
-import it.chalmers.gamma.util.response.ErrorResponse;
-import org.springframework.http.HttpStatus;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 
-public class FileNotFoundResponse extends ErrorResponse {
-    public FileNotFoundResponse() {
-        super(HttpStatus.NOT_FOUND);
-    }
-}
+public class FileNotFoundResponse extends NotFoundResponse { }

@@ -7,7 +7,9 @@ import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.SuperGroupId;
 
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -58,17 +60,9 @@ public final class AuthorityPostAdminController {
 
     private static class AuthorityPostCreatedResponse extends SuccessResponse { }
 
-    private static class AuthorityPostNotFoundResponse extends ErrorResponse {
-        private AuthorityPostNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class AuthorityPostNotFoundResponse extends NotFoundResponse { }
 
-    private static class AuthorityPostAlreadyExistsResponse extends ErrorResponse {
-        private AuthorityPostAlreadyExistsResponse() {
-            super(HttpStatus.CONFLICT);
-        }
-    }
+    private static class AuthorityPostAlreadyExistsResponse extends AlreadyExistsResponse { }
 
 }
 

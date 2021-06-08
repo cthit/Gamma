@@ -6,6 +6,7 @@ import it.chalmers.gamma.internal.clientrestriction.service.ClientRestrictionPK;
 import it.chalmers.gamma.internal.clientrestriction.service.ClientRestrictionService;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,10 +49,6 @@ public class ClientRestrictionAdminController {
 
     private static class ClientRestrictionDeleted extends SuccessResponse { }
 
-    private static class ClientNotFoundResponse extends ErrorResponse {
-        private ClientNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class ClientNotFoundResponse extends NotFoundResponse { }
 
 }

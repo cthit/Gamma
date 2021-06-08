@@ -1,6 +1,7 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.Authority;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.Group;
@@ -15,6 +16,7 @@ import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +88,7 @@ public class ApiV1Controller {
 
     private record GetMeResponse(@JsonUnwrapped UserRestricted user,
                                 List<GroupPost> groups,
-                                List<AuthorityLevelName> authorities) { }
+                                List<Authority> authorities) { }
 
     @GetMapping("/users/me")
     public GetMeResponse getMe(Principal principal) {
@@ -96,18 +98,14 @@ public class ApiV1Controller {
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))
                     .collect(Collectors.toList());
-            List<AuthorityLevelName> authorityLevelNames = this.authorityFinder.getGrantedAuthorities(user.id());
+            List<Authority> authorities = this.authorityFinder.getGrantedAuthoritiesWithType(user.id());
 
-            return new GetMeResponse(new UserRestricted(user), groups, authorityLevelNames);
+            return new GetMeResponse(new UserRestricted(user), groups, authorities);
         } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
     }
 
-    private static class UserNotFoundResponse extends ErrorResponse {
-        private UserNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class UserNotFoundResponse extends NotFoundResponse { }
 
 }

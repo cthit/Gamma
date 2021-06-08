@@ -27,6 +27,7 @@ import javax.validation.Valid;
 
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -133,10 +134,6 @@ public final class UserController {
         }
     }
 
-    private static class UserNotFoundResponse extends ErrorResponse {
-        private UserNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class UserNotFoundResponse extends NotFoundResponse { }
 
 }

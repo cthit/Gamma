@@ -9,6 +9,7 @@ import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,10 +69,6 @@ public class ApiKeyAdminController {
 
     private static class ApiKeyDeletedResponse extends SuccessResponse { }
 
-    private static class ApiKeyNotFoundResponse extends ErrorResponse {
-        private ApiKeyNotFoundResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class ApiKeyNotFoundResponse extends NotFoundResponse { }
 
 }

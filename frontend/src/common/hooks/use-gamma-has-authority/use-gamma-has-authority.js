@@ -1,4 +1,5 @@
 import useGammaUser from "../use-gamma-user/useGammaUser";
+import some from "lodash/some";
 
 function useGammaHasAuthority(authority) {
     const user = useGammaUser();
@@ -6,7 +7,7 @@ function useGammaHasAuthority(authority) {
         return false;
     }
 
-    return user.authorities.includes(authority);
+    return some(user.authorities, ["authority", authority]);
 }
 
 export default useGammaHasAuthority;

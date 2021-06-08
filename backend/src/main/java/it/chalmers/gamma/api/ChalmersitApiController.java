@@ -7,6 +7,7 @@ import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.domain.GroupWithMembers;
 import it.chalmers.gamma.domain.UserPost;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,9 +55,5 @@ public class ChalmersitApiController {
         );
     }
 
-    private static class SuperGroupDoesNotExistResponse extends ErrorResponse {
-        private SuperGroupDoesNotExistResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class SuperGroupDoesNotExistResponse extends NotFoundResponse { }
 }

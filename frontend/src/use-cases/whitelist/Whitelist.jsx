@@ -7,7 +7,7 @@ import {
     getWhitelist,
     getWhitelistItem
 } from "api/whitelist/get.whitelist.api";
-import { addUsersToWhitelist } from "api/whitelist/post.whitelist.api";
+import { addUserToWhitelist } from "api/whitelist/post.whitelist.api";
 import { WHITELIST_CID } from "api/whitelist/props.whitelist.api";
 import { editWhitelistItem } from "api/whitelist/put.whitelist.api";
 
@@ -40,7 +40,7 @@ const Whitelist = () => {
             path={"/whitelist"}
             readAllRequest={getWhitelist}
             createRequest={data =>
-                addUsersToWhitelist({ cids: [data[WHITELIST_CID]] })
+                addUserToWhitelist({ cid: data[WHITELIST_CID] })
             }
             deleteRequest={deleteWhitelistItem}
             keysOrder={keysOrder()}

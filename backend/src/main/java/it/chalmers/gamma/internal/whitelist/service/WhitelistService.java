@@ -15,13 +15,13 @@ public class WhitelistService {
         this.repository = repository;
     }
 
-    public void create(Cid cid) throws WhitelistNotFoundException {
-        if (this.cidIsWhitelisted(cid)) {
-            throw new WhitelistNotFoundException();
+    public void create(Cid cid) {
+        System.out.println(cid);
+        try {
+            this.repository.save(new WhitelistEntity(cid));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        WhitelistEntity whitelist = new WhitelistEntity(cid);
-        this.repository.save(whitelist);
     }
 
     public void delete(Cid cid) throws WhitelistNotFoundException {

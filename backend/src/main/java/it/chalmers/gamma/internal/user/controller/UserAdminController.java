@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,10 +175,6 @@ public final class UserAdminController {
 
     private static class UserEditedResponse extends SuccessResponse { }
 
-    private static class UserNotFoundResponse extends ErrorResponse {
-        private UserNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class UserNotFoundResponse extends NotFoundResponse { }
 
 }

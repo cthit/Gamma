@@ -10,6 +10,7 @@ import it.chalmers.gamma.domain.UserId;
 import javax.validation.Valid;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -79,9 +80,5 @@ public final class MembershipAdminController {
 
     private static class MemberRemovedFromGroupResponse extends SuccessResponse { }
 
-    private static class MembershipNotFoundResponse extends ErrorResponse {
-        private MembershipNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class MembershipNotFoundResponse extends NotFoundResponse { }
 }

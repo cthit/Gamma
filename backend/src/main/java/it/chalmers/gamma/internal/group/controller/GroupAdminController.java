@@ -15,7 +15,9 @@ import it.chalmers.gamma.internal.membership.service.MembershipService;
 
 import javax.validation.Valid;
 
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,15 +37,6 @@ public final class GroupAdminController {
                                 MembershipService membershipService) {
         this.groupService = groupService;
         this.membershipService = membershipService;
-    }
-
-
-    @GetMapping()
-    public List<GroupWithMembers> getGroups() {
-        return this.groupService.getAll()
-                .stream()
-                .map(this::toGroupWithMembers)
-                .collect(Collectors.toList());
     }
 
     private record CreateOrEditGroupRequest(EntityName name,
@@ -136,30 +129,14 @@ public final class GroupAdminController {
                 .collect(Collectors.toList());
     }
 
-    private static class GroupAlreadyExistsResponse extends ErrorResponse {
-        private GroupAlreadyExistsResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class GroupCreatedResponse extends SuccessResponse { }
 
-    private static class GroupCreatedResponse extends SuccessResponse {
+    private static class GroupDeletedResponse extends SuccessResponse { }
 
-    }
+    private static class GroupUpdatedResponse extends SuccessResponse { }
 
-    private static class GroupDeletedResponse extends SuccessResponse {
+    private static class GroupNotFoundResponse extends NotFoundResponse { }
 
-    }
-
-    private static class GroupNotFoundResponse extends ErrorResponse {
-        private GroupNotFoundResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private static class GroupUpdatedResponse extends SuccessResponse {
-
-    }
-
-
+    private static class GroupAlreadyExistsResponse extends AlreadyExistsResponse { }
 
 }

@@ -4,7 +4,9 @@ import it.chalmers.gamma.domain.Authorities;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -68,16 +70,8 @@ public class AuthorityLevelAdminController {
 
     private static class AuthorityLevelCreatedResponse extends SuccessResponse { }
 
-    private static class AuthorityLevelNotFoundResponse extends ErrorResponse {
-        private AuthorityLevelNotFoundResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse { }
 
-    private static class AuthorityLevelAlreadyExistsResponse extends ErrorResponse {
-        private AuthorityLevelAlreadyExistsResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class AuthorityLevelAlreadyExistsResponse extends AlreadyExistsResponse { }
 
 }

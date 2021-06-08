@@ -2,7 +2,9 @@ package it.chalmers.gamma.internal.supergrouptype.controller;
 
 import it.chalmers.gamma.domain.SuperGroupType;
 import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeService;
+import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -60,17 +62,9 @@ public class SuperGroupTypeAdminController {
 
     private static class SuperGroupTypeRemovedResponse extends SuccessResponse { }
 
-    private static class SuperGroupTypeAlreadyExistsResponse extends ErrorResponse {
-        private SuperGroupTypeAlreadyExistsResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class SuperGroupTypeAlreadyExistsResponse extends AlreadyExistsResponse { }
 
-    private static class SuperGroupTypeDoesNotExistResponse extends ErrorResponse {
-        private SuperGroupTypeDoesNotExistResponse() {
-            super(HttpStatus.NOT_FOUND);
-        }
-    }
+    private static class SuperGroupTypeDoesNotExistResponse extends NotFoundResponse { }
 
     private static class SuperGroupTypeIsUsedResponse extends ErrorResponse {
         private SuperGroupTypeIsUsedResponse() {

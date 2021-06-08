@@ -46,7 +46,7 @@ public class WhitelistApiController {
             try {
                 this.whitelistService.create(cid);
                 LOGGER.info("Added user " + cid + " to whitelist");
-            } catch (WhitelistService.WhitelistNotFoundException e) {
+            } catch (Exception e) {
                 LOGGER.info("Failed to add " + cid + " to whitelist");
                 failedToAdd.add(cid);
             }

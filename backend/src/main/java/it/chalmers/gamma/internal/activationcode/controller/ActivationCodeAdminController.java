@@ -5,6 +5,7 @@ import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
 
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,10 +43,6 @@ public final class ActivationCodeAdminController {
 
     private static class ActivationCodeDeletedResponse extends SuccessResponse { }
 
-    private static class ActivationCodeNotFoundResponse extends ErrorResponse {
-        private ActivationCodeNotFoundResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class ActivationCodeNotFoundResponse extends NotFoundResponse { }
 
 }

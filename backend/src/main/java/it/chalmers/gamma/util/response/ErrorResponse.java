@@ -17,7 +17,7 @@ public class ErrorResponse extends ResponseStatusException {
         super(status);
 
         LOGGER.error(String.format(
-                "An exception was thrown in the application: \n status: %d, \n Reason: %s",
+                "An exception was thrown in the application: status: %d, Reason: %s",
                 status.value(),
                 ClassNameGeneratorUtils.classToScreamingSnakeCase(this.getClass())));
         LOGGER.debug(String.format("Stacktrace: \n %s:", Arrays.stream(super.fillInStackTrace().getStackTrace())

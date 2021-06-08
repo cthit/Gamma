@@ -11,6 +11,7 @@ import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.internal.client.service.ClientService;
 
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,7 +45,7 @@ public class ClientAdminController {
     private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
 
     @PostMapping()
-    public NewClientSecrets addITClient(@RequestBody CreateClientRequest request) {
+    public NewClientSecrets addClient(@RequestBody CreateClientRequest request) {
         ClientSecret clientSecret = new ClientSecret();
         ApiKeyToken apiKeyToken = null;
 
@@ -67,8 +68,17 @@ public class ClientAdminController {
     }
 
     @GetMapping()
-    public List<Client> getAllClient() {
+    public List<Client> getClients() {
         return this.clientService.getAll();
+    }
+
+    @GetMapping("/{clientId}")
+    public Client getClient(@PathVariable("clientId") ClientId id) {
+        try {
+            return this.clientService.get(id);
+        } catch (ClientService.ClientNotFoundException e) {
+            throw new ClientNotFoundResponse();
+        }
     }
 
     @DeleteMapping("/{clientId}")
@@ -83,11 +93,6 @@ public class ClientAdminController {
 
     private static class ClientDeletedResponse extends SuccessResponse { }
 
-    public static class ClientNotFoundResponse extends ErrorResponse {
-        public ClientNotFoundResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
-
-
+    public static class ClientNotFoundResponse extends NotFoundResponse { }
+    
 }
