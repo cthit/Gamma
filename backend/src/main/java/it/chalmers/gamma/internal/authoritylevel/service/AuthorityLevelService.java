@@ -24,11 +24,15 @@ public class AuthorityLevelService {
     }
 
     public void delete(AuthorityLevelName name) throws AuthorityLevelNotFoundException {
-        this.authorityLevelRepository.deleteById(name.value);
+        this.authorityLevelRepository.deleteById(name);
     }
 
     public List<AuthorityLevelName> getAll() {
         return this.authorityLevelRepository.findAll().stream().map(AuthorityLevelEntity::get).collect(Collectors.toList());
+    }
+
+    public boolean exists(AuthorityLevelName authorityLevelName) {
+        return this.authorityLevelRepository.existsById(authorityLevelName);
     }
 
     public static class AuthorityLevelAlreadyExistsException extends Exception { }

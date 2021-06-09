@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.util.TokenUtils;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import java.util.Objects;
 @Embeddable
 public class ClientSecret {
 
+    @JsonValue
     @Column(name = "client_secret")
     private final String value;
 

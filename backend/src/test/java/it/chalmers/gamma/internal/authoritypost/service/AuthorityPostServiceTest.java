@@ -31,7 +31,7 @@ class AuthorityPostServiceTest {
     void successfulCreation() {
         SuperGroupId superGroupId = new SuperGroupId();
         PostId postId = new PostId();
-        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authority");
+        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authorityLevelName");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
 
@@ -51,7 +51,7 @@ class AuthorityPostServiceTest {
     void throwIfAuthorityAlreadyExists() {
         SuperGroupId superGroupId = new SuperGroupId();
         PostId postId = new PostId();
-        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authority");
+        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authorityLevelName");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
         AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
@@ -68,7 +68,7 @@ class AuthorityPostServiceTest {
     void compareEntityAndDTO() {
         SuperGroupId superGroupId = new SuperGroupId();
         PostId postId = new PostId();
-        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authority");
+        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authorityLevelName");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
 

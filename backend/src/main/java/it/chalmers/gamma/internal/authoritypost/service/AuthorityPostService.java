@@ -1,7 +1,9 @@
 package it.chalmers.gamma.internal.authoritypost.service;
 
+import it.chalmers.gamma.domain.Authorities;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.AuthorityPost;
+import it.chalmers.gamma.domain.Post;
 import it.chalmers.gamma.internal.post.service.PostService;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
@@ -51,11 +53,12 @@ public class AuthorityPostService {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthorityPost> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    public List<Authorities.SuperGroupPost> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
         return this.repository.findAuthoritiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
                 .map(AuthorityPostEntity::toDTO)
                 .map(this::fromShallow)
+                .map(authorityPost -> new Authorities.SuperGroupPost(authorityPost.superGroup(), authorityPost.post()))
                 .collect(Collectors.toList());
     }
 

@@ -6,10 +6,8 @@ import it.chalmers.gamma.internal.authoritysupergroup.service.AuthoritySuperGrou
 import it.chalmers.gamma.internal.authoritysupergroup.service.AuthoritySuperGroupShallowDTO;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
-import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +25,7 @@ public class AuthoritySuperGroupAdminController {
         this.authoritySuperGroupService = authoritySuperGroupService;
     }
 
-    private record CreateAuthoritySuperGroupRequest(SuperGroupId superGroupId, AuthorityLevelName authority) { }
+    private record CreateAuthoritySuperGroupRequest(SuperGroupId superGroupId, AuthorityLevelName authorityLevelName) { }
 
     @PostMapping
     public AuthoritySuperGroupCreatedResponse addAuthority(@RequestBody CreateAuthoritySuperGroupRequest request) {
@@ -35,7 +33,7 @@ public class AuthoritySuperGroupAdminController {
             this.authoritySuperGroupService.create(
                     new AuthoritySuperGroupShallowDTO(
                             request.superGroupId,
-                            request.authority
+                            request.authorityLevelName
                     )
             );
             return new AuthoritySuperGroupCreatedResponse();

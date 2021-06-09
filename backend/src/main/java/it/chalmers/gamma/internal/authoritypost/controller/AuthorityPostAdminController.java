@@ -8,10 +8,8 @@ import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.SuperGroupId;
 
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
-import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +22,7 @@ public final class AuthorityPostAdminController {
         this.authorityPostService = authorityPostService;
     }
 
-    private record CreateAuthorityPostRequest(PostId postId, SuperGroupId superGroupId, AuthorityLevelName authority) { }
+    private record CreateAuthorityPostRequest(PostId postId, SuperGroupId superGroupId, AuthorityLevelName authorityLevelName) { }
 
     @PostMapping
     public AuthorityPostCreatedResponse addAuthority(@RequestBody CreateAuthorityPostRequest request) {
@@ -33,7 +31,7 @@ public final class AuthorityPostAdminController {
                     new AuthorityPostShallowDTO(
                         request.superGroupId,
                         request.postId,
-                        request.authority
+                        request.authorityLevelName
                     )
             );
             return new AuthorityPostCreatedResponse();

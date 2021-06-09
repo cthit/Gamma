@@ -47,7 +47,7 @@ public class ClientService implements ClientDetailsService {
     }
 
     @Transactional
-    public ApiKeyToken createWithApiKey(Client newClient, ClientSecret clientSecret, ApiKeyToken apiKeyToken) {
+    public void createWithApiKey(Client newClient, ClientSecret clientSecret, ApiKeyToken apiKeyToken) {
         this.create(newClient, clientSecret);
 
         ApiKeyId apiKeyId = new ApiKeyId();
@@ -68,8 +68,6 @@ public class ClientService implements ClientDetailsService {
                         apiKeyId
                 )
         );
-
-        return apiKeyToken;
     }
 
     public void delete(ClientId clientId) throws ClientNotFoundException {

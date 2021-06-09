@@ -30,6 +30,7 @@ import {
     keysComponentData,
     keysOrder,
     readAllKeysOrder,
+    createKeysOrder,
     keysText,
     validationSchema
 } from "./Clients.options";
@@ -53,6 +54,7 @@ const Clients = () => {
     return (
         <DigitCRUD
             keysOrder={keysOrder()}
+            createKeysOrder={createKeysOrder()}
             readAllKeysOrder={readAllKeysOrder()}
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
@@ -71,7 +73,9 @@ const Clients = () => {
                             sv: client[CLIENT_DESCRIPTION_SWEDISH],
                             en: client[CLIENT_DESCRIPTION_ENGLISH]
                         },
-                        webServerRedirectUri: client[CLIENT_REDIRECT]
+                        webServerRedirectUri: client[CLIENT_REDIRECT],
+                        autoApprove: client.autoApprove,
+                        generateApiKey: client.generateApiKey
                     })
                         .then(response => {
                             openDialog({

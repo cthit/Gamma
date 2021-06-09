@@ -29,15 +29,9 @@ import java.util.List;
 public class ClientAdminController {
 
     private final ClientService clientService;
-    private final ClientApiKeyService clientApiKeyService;
-    private final ApiKeyService apiKeyService;
 
-    public ClientAdminController(ClientService clientService,
-                                 ClientApiKeyService clientApiKeyService,
-                                 ApiKeyService apiKeyService) {
+    public ClientAdminController(ClientService clientService) {
         this.clientService = clientService;
-        this.clientApiKeyService = clientApiKeyService;
-        this.apiKeyService = apiKeyService;
     }
 
     private record CreateClientRequest(String webServerRedirectUri, EntityName name, boolean autoApprove, Text description, boolean generateApiKey) { }

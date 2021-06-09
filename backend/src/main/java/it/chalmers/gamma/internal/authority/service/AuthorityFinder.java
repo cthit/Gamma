@@ -8,20 +8,15 @@ import it.chalmers.gamma.internal.authoritylevel.service.AuthorityLevelService;
 import it.chalmers.gamma.internal.authoritypost.service.AuthorityPostService;
 import it.chalmers.gamma.internal.authoritysupergroup.service.AuthoritySuperGroupService;
 import it.chalmers.gamma.internal.authorityuser.service.AuthorityUserService;
-import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.domain.Membership;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
-import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,35 +40,36 @@ public class AuthorityFinder {
         this.membershipService = membershipService;
     }
 
-    public Map<AuthorityLevelName, Authorities> getAuthorities() {
+    public List<Authorities> getAuthorities() {
         Map<AuthorityLevelName, Authorities> authorityMap = new HashMap<>();
 
         this.authorityLevelService.getAll()
                 .forEach(authorityLevelName -> authorityMap.put(
                         authorityLevelName,
                         new Authorities(
-                                Collections.emptyList(),
-                                Collections.emptyList(),
-                                Collections.emptyList()
+                                authorityLevelName,
+                                new ArrayList<>(),
+                                new ArrayList<>(),
+                                new ArrayList<>()
                         )
                 ));
 
         this.authorityPostService.getAll()
                 .forEach(authorityPost ->
-                        authorityMap.get(authorityPost.authorityLevelName()).postAuthorities().add(authorityPost)
+                        authorityMap.get(authorityPost.authorityLevelName()).posts().add(new Authorities.SuperGroupPost(authorityPost.superGroup(), authorityPost.post()))
                 );
 
         this.authorityUserService.getAll()
                 .forEach(authorityUser ->
-                        authorityMap.get(authorityUser.authorityLevelName()).userAuthorities().add(authorityUser)
+                        authorityMap.get(authorityUser.authorityLevelName()).users().add(authorityUser.user())
                 );
 
         this.authoritySuperGroupService.getAll()
                 .forEach(authoritySuperGroup ->
-                        authorityMap.get(authoritySuperGroup.authorityLevelName()).superGroupAuthorities().add(authoritySuperGroup)
+                        authorityMap.get(authoritySuperGroup.authorityLevelName()).superGroups().add(authoritySuperGroup.superGroup())
                 );
 
-        return authorityMap;
+        return authorityMap.values().stream().toList();
     }
 
     public List<AuthorityLevelName> getGrantedAuthorities(UserId userId) {
@@ -124,8 +120,14 @@ public class AuthorityFinder {
                 .collect(Collectors.toList());
     }
 
-    public Authorities getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    @Transactional
+    public Authorities getByAuthorityLevel(AuthorityLevelName authorityLevelName) throws AuthorityLevelService.AuthorityLevelNotFoundException {
+        if (!this.authorityLevelService.exists(authorityLevelName)) {
+            throw new AuthorityLevelService.AuthorityLevelNotFoundException();
+        }
+
         return new Authorities(
+                authorityLevelName,
                 this.authorityPostService.getByAuthorityLevel(authorityLevelName),
                 this.authoritySuperGroupService.getByAuthorityLevel(authorityLevelName),
                 this.authorityUserService.getByAuthorityLevel(authorityLevelName)

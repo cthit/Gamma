@@ -2,6 +2,7 @@ package it.chalmers.gamma.internal.authoritysupergroup.service;
 
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.AuthoritySuperGroup;
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import org.springframework.stereotype.Service;
 
@@ -51,11 +52,12 @@ public class AuthoritySuperGroupService {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthoritySuperGroup> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    public List<SuperGroup> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
         return this.repository.findAuthoritySuperGroupEntitiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
                 .map(AuthoritySuperGroupEntity::toDTO)
                 .map(this::fromShallow)
+                .map(AuthoritySuperGroup::superGroup)
                 .collect(Collectors.toList());
     }
 

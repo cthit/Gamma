@@ -12,7 +12,8 @@ import {
     CLIENT_NAME,
     CLIENT_REDIRECT,
     CLIENT_AUTO_APPROVE,
-    CLIENT_ID
+    CLIENT_ID,
+    CLIENT_GENERATE_API_KEY
 } from "api/clients/props.clients.api";
 
 export const validationSchema = text => {
@@ -32,6 +33,7 @@ export const validationSchema = text => {
         .required(text.EnglishDescription + text.IsRequired);
 
     schema[CLIENT_AUTO_APPROVE] = yup.bool().required();
+    schema[CLIENT_GENERATE_API_KEY] = yup.bool().required();
 
     return yup.object().shape(schema);
 };
@@ -43,6 +45,7 @@ export const initialValues = () => {
     initialValues[CLIENT_DESCRIPTION_SWEDISH] = "";
     initialValues[CLIENT_DESCRIPTION_ENGLISH] = "";
     initialValues[CLIENT_AUTO_APPROVE] = false;
+    initialValues[CLIENT_GENERATE_API_KEY] = false;
 
     return initialValues;
 };
@@ -93,6 +96,14 @@ export const keysComponentData = text => {
         }
     };
 
+    keysComponentData[CLIENT_GENERATE_API_KEY] = {
+        component: DigitCheckbox,
+        componentProps: {
+            primary: true,
+            label: text.GenerateApiKey
+        }
+    };
+
     return keysComponentData;
 };
 
@@ -105,6 +116,7 @@ export const keysText = text => {
     keysText[CLIENT_DESCRIPTION_ENGLISH] = text.EnglishDescription;
     keysText[CLIENT_ID] = text.ClientId;
     keysText[CLIENT_AUTO_APPROVE] = text.AutoApprove;
+    keysText[CLIENT_GENERATE_API_KEY] = text.GenerateApiKey;
 
     return keysText;
 };
@@ -115,6 +127,15 @@ export const keysOrder = () => [
     CLIENT_DESCRIPTION_SWEDISH,
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_AUTO_APPROVE
+];
+
+export const createKeysOrder = () => [
+    CLIENT_NAME,
+    CLIENT_REDIRECT,
+    CLIENT_DESCRIPTION_SWEDISH,
+    CLIENT_DESCRIPTION_ENGLISH,
+    CLIENT_AUTO_APPROVE,
+    CLIENT_GENERATE_API_KEY
 ];
 
 export const readAllKeysOrder = () => [CLIENT_NAME, CLIENT_REDIRECT];

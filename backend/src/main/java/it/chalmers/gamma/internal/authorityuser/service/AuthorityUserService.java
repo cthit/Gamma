@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.authorityuser.service;
 
 import it.chalmers.gamma.domain.AuthorityUser;
+import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.UserRestricted;
@@ -48,11 +49,12 @@ public class AuthorityUserService {
                 .collect(Collectors.toList());
     }
 
-    public List<AuthorityUser> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
+    public List<UserRestricted> getByAuthorityLevel(AuthorityLevelName authorityLevelName) {
         return this.repository.findAuthorityUserEntitiesById_AuthorityLevelName(authorityLevelName)
                 .stream()
                 .map(AuthorityUserEntity::toDTO)
                 .map(this::fromShallow)
+                .map(AuthorityUser::user)
                 .collect(Collectors.toList());
     }
 

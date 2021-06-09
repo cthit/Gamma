@@ -31,57 +31,38 @@ const Grid = styled.div`
 `;
 
 const ViewAuthorities = () => {
-    const [authorityLevels, setAuthorityLevels] = useState(null);
     const [authorities, setAuthorities] = useState(null);
     const [text] = useDigitTranslations(translations);
     const [read, setRead] = useState(true);
 
     useEffect(() => {
         if (read) {
-            Promise.all([getAuthorities(), getAuthorityLevels()]).then(
-                ([authoritiesResponse, authorityLevelsResponse]) => {
-                    const newAuthorities = {};
-                    authoritiesResponse.data.authorities.forEach(authority => {
-                        const { superGroup, post, authorityLevel } = authority;
-
-                        var auth = newAuthorities[authorityLevel.id];
-                        if (auth == null) {
-                            auth = [];
-                        }
-
-                        auth.push({
-                            superGroup,
-                            post
-                        });
-
-                        newAuthorities[authorityLevel.id] = auth;
-                    });
-
-                    setAuthorities(newAuthorities);
-                    setAuthorityLevels(
-                        authorityLevelsResponse.data.authorityLevels
-                    );
-                }
+            getAuthorities().then(authoritiesResponse =>
+                setAuthorities(authoritiesResponse.data)
             );
         }
         setRead(false);
     }, [read, setRead]);
 
-    if (authorityLevels == null || authorities == null) {
+    if (authorities == null) {
         return null;
     }
 
     return (
         <>
             <Grid>
-                {authorityLevels.map(authorityLevel => (
-                    <AuthorityLevelCard
-                        key={authorityLevel.id}
-                        authorityLevel={authorityLevel}
-                        authorities={authorities[authorityLevel.id]}
-                        forceUpdate={() => setRead(true)}
-                    />
-                ))}
+                {authorities.map(
+                    ({ authorityLevelName, users, posts, superGroups }) => (
+                        <AuthorityLevelCard
+                            key={authorityLevelName}
+                            authorityLevel={authorityLevelName}
+                            forceUpdate={() => setRead(true)}
+                            users={users}
+                            posts={posts}
+                            superGroups={superGroups}
+                        />
+                    )
+                )}
             </Grid>
             <DigitLayout.DownRightPosition>
                 <DigitDesign.Link to={"/authorities/create-authority-level"}>

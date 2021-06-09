@@ -6,10 +6,12 @@ import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/internal/admin/authority")
 public class AuthorityAdminController {
 
@@ -20,7 +22,7 @@ public class AuthorityAdminController {
     }
 
     @GetMapping
-    public Map<AuthorityLevelName, Authorities> getAuthorities() {
+    public List<Authorities> getAuthorities() {
         return this.authorityFinder.getAuthorities();
     }
 

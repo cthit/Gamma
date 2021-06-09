@@ -16,7 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/internal/admin/authority/level")
 public class AuthorityLevelAdminController {
 
@@ -61,7 +61,7 @@ public class AuthorityLevelAdminController {
     public Authorities getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
         try {
             return this.authorityFinder.getByAuthorityLevel(name);
-        } catch (EntityNotFoundException e) {
+        } catch (AuthorityLevelService.AuthorityLevelNotFoundException e) {
             throw new AuthorityLevelNotFoundResponse();
         }
     }

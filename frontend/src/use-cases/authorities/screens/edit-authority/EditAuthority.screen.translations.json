@@ -23,5 +23,25 @@
     "FailedAuthorityDeleted": [
         "Something went wrong when deleting the authority",
         "Någonting gick fel när rättigheten försöktes raderas"
+    ],
+    "TypeOfAuthority": [
+        "Type of authority to create",
+        "Typ av rättighet att skapa"
+    ],
+    "PostSuperGroup": ["Post/Supergroup", "Post/Supergrupp"],
+    "User": ["User", "Användare"],
+    "SuperGroup": ["Supergroup", "Supergrupp"],
+    "AreYouSureDeleteAuthorityLevel": [
+        "Are you sure you want to delete this authority level? This can cause major issues with other application using this authority level.",
+        "Är du säker att du vill radera denna rättighetsnivå? Det kan skapa stora problem med andra applikationer som förlitar sig på denna rättighetsnivå."
+    ],
+    "ImSure": ["Im sure, delete", "Jag är säker, radera"],
+    "DeleteFailed": [
+        "Something went wrong when trying to delete authority level",
+        "Någonting gick fel när rättighetsnivån försöktes raderas"
+    ],
+    "DeleteSuccessful": [
+        "Authority level was deleted",
+        "Rättighetsnivån har raderats"
     ]
 }

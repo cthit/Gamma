@@ -21,9 +21,14 @@ public class UserGDPRTrainingService {
     }
 
     public List<UserGDPRTraining> getUsersWithGDPR() {
+        List<UserId> gdprTrained = this.repository.findAll()
+                .stream()
+                .map(UserGDPRTrainingEntity::toDTO)
+                .collect(Collectors.toList());
+
         return this.userService.getAll()
                 .stream()
-                .map(user -> new UserGDPRTraining(user, false))
+                .map(user -> new UserGDPRTraining(user, gdprTrained.remove(user.id())))
                 .collect(Collectors.toList());
     }
 

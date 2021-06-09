@@ -13,7 +13,7 @@ public class AuthorityLevelName extends Id<String> implements DTO {
 
     @Column(name = "authority_level")
     @JsonValue
-    @Pattern(regexp = "^([a-z]{30})$")
+    @Pattern(regexp = "^([a-z]{5,30})$")
     public String value;
 
     protected AuthorityLevelName() {}

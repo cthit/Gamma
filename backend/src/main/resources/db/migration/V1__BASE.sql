@@ -104,8 +104,8 @@ create table activation_code (
 );
 
 create table itclient (
-    client_id varchar(75) primary key,
-    client_secret varchar(75) not null,
+    client_id varchar(100) primary key,
+    client_secret varchar(100) not null,
     web_server_redirect_uri varchar(256) not null,
     auto_approve boolean default false not null,
     e_name varchar(30) not null,

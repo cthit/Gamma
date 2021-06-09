@@ -18,11 +18,10 @@ export function getClients() {
 export function getClient(clientId) {
     return getRequest(ADMIN_CLIENTS_ENDPOINT + clientId, input => ({
         data: {
-            id: input.data.id,
-            name: input.data.additionalInformation.name,
+            name: input.data.name,
             clientId: input.data.clientId,
-            descriptionEn: input.data.additionalInformation.description.en,
-            descriptionSv: input.data.additionalInformation.description.sv,
+            descriptionEn: input.data.description.en,
+            descriptionSv: input.data.description.sv,
             webServerRedirectUri: input.data.webServerRedirectUri,
             autoApprove: input.data.autoApprove + ""
         }

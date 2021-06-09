@@ -29,18 +29,18 @@ public class UserGDPRAdminController {
     private record ChangeGDPRStatusRequest(boolean gdpr) { }
 
     @PutMapping("/{id}")
-    public GDPRStatusEditedResponse editGDPRStatus(@PathVariable("id") UserId id,
+    public GdprStatusEditedResponse editGDPRStatus(@PathVariable("id") UserId id,
                                                    @Valid @RequestBody ChangeGDPRStatusRequest request) {
         userGDPRTrainingService.editGDPR(id, request.gdpr);
-        return new GDPRStatusEditedResponse();
+        return new GdprStatusEditedResponse();
     }
 
-    @GetMapping("/minified")
-    public List<UserGDPRTraining> getAllUserMini() {
+    @GetMapping()
+    public List<UserGDPRTraining> getAllUser() {
         return userGDPRTrainingService.getUsersWithGDPR();
     }
 
-    private static class GDPRStatusEditedResponse extends SuccessResponse { }
+    private static class GdprStatusEditedResponse extends SuccessResponse { }
 
 }
 
