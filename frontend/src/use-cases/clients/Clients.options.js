@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 import {
+    DigitAutocompleteSelectMultiple,
     DigitCheckbox,
     DigitTextArea,
     DigitTextField
@@ -13,7 +14,8 @@ import {
     CLIENT_REDIRECT,
     CLIENT_AUTO_APPROVE,
     CLIENT_ID,
-    CLIENT_GENERATE_API_KEY
+    CLIENT_GENERATE_API_KEY,
+    CLIENT_RESTRICTIONS
 } from "api/clients/props.clients.api";
 
 export const validationSchema = text => {
@@ -34,6 +36,7 @@ export const validationSchema = text => {
 
     schema[CLIENT_AUTO_APPROVE] = yup.bool().required();
     schema[CLIENT_GENERATE_API_KEY] = yup.bool().required();
+    schema[CLIENT_RESTRICTIONS] = yup.array().of(yup.string());
 
     return yup.object().shape(schema);
 };
@@ -46,11 +49,12 @@ export const initialValues = () => {
     initialValues[CLIENT_DESCRIPTION_ENGLISH] = "";
     initialValues[CLIENT_AUTO_APPROVE] = false;
     initialValues[CLIENT_GENERATE_API_KEY] = false;
+    initialValues[CLIENT_RESTRICTIONS] = [];
 
     return initialValues;
 };
 
-export const keysComponentData = text => {
+export const keysComponentData = (text, authorityLevels) => {
     const keysComponentData = {};
     keysComponentData[CLIENT_NAME] = {
         component: DigitTextField,
@@ -104,6 +108,17 @@ export const keysComponentData = text => {
         }
     };
 
+    keysComponentData[CLIENT_RESTRICTIONS] = {
+        component: DigitAutocompleteSelectMultiple,
+        componentProps: {
+            outlined: true,
+            options: authorityLevels.map(level => ({
+                text: level,
+                value: level
+            }))
+        }
+    };
+
     return keysComponentData;
 };
 
@@ -117,6 +132,7 @@ export const keysText = text => {
     keysText[CLIENT_ID] = text.ClientId;
     keysText[CLIENT_AUTO_APPROVE] = text.AutoApprove;
     keysText[CLIENT_GENERATE_API_KEY] = text.GenerateApiKey;
+    keysText[CLIENT_RESTRICTIONS] = text.Restrictions;
 
     return keysText;
 };
@@ -135,7 +151,8 @@ export const createKeysOrder = () => [
     CLIENT_DESCRIPTION_SWEDISH,
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_AUTO_APPROVE,
-    CLIENT_GENERATE_API_KEY
+    CLIENT_GENERATE_API_KEY,
+    CLIENT_RESTRICTIONS
 ];
 
 export const readAllKeysOrder = () => [CLIENT_NAME, CLIENT_REDIRECT];

@@ -83,7 +83,7 @@ public class AuthorityFinder {
     public List<Authority> getGrantedAuthoritiesWithType(UserId userId) {
         List<Authority> authorities = new ArrayList<>();
 
-        //User authorities
+        //User restrictions
         this.authorityUserService.getByUser(userId)
                 .stream()
                 .map(authorityLevelName -> new Authority(authorityLevelName, AuthorityType.AUTHORITY))
@@ -96,7 +96,7 @@ public class AuthorityFinder {
             authorities.add(new Authority(new AuthorityLevelName(membership.group().superGroup().name().get()), AuthorityType.SUPERGROUP));
         });
 
-        //Super groups authorities
+        //Super groups restrictions
         this.authoritySuperGroupService.getAll()
                 .stream()
                 .filter(authoritySuperGroup -> memberships
@@ -104,7 +104,7 @@ public class AuthorityFinder {
                         .anyMatch(membership -> authoritySuperGroup.superGroup().id().equals(membership.group().superGroup().id())))
                 .forEach(authoritySuperGroup -> authorities.add(new Authority(authoritySuperGroup.authorityLevelName(), AuthorityType.AUTHORITY)));
 
-        //Supergroup post authorities
+        //Supergroup post restrictions
         this.authorityPostService.getAll()
                 .stream()
                 .filter(authorityPost -> memberships

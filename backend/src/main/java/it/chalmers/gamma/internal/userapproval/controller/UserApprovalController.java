@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.userapproval.controller;
 
 import it.chalmers.gamma.domain.Cid;
+import it.chalmers.gamma.domain.ClientWithRestrictions;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.internal.client.service.ClientService;
@@ -53,7 +54,7 @@ public class UserApprovalController {
                     .map(userApproval ->
                             {
                                 try {
-                                    Client client = clientService.get(userApproval.clientId());
+                                    Client client = clientService.get(userApproval.clientId()).client();
                                     return new ClientUserAccess(
                                             client.name(),
                                             client.description()

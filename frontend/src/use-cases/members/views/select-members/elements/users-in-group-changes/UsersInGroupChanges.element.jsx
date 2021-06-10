@@ -13,15 +13,16 @@ import MemberCurrent from "./sub-elements/member-current";
 import MemberDeletion from "./sub-elements/member-deletion";
 
 function findAdditions(currentMembers, selectedMembers) {
+    currentMembers = currentMembers.map(member => member.user);
     return selectedMembers.filter(
         member => _.find(currentMembers, { id: member.id }) == null
     );
 }
 
 function findDeletions(currentMembers, selectedMembers) {
-    return currentMembers.filter(
-        member => _.find(selectedMembers, { id: member.id }) == null
-    );
+    return currentMembers
+        .map(member => member.user)
+        .filter(member => _.find(selectedMembers, { id: member.id }) == null);
 }
 
 const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => {
@@ -32,7 +33,7 @@ const UsersInGroupChanges = ({ currentMembers, selectedMembers }) => {
             <DigitDesign.CardBody>
                 <DigitText.Title text={text.Current} />
                 {currentMembers.map(member => (
-                    <MemberCurrent key={member.id} member={member} />
+                    <MemberCurrent key={member.user.id} member={member} />
                 ))}
                 <DigitText.Title text={text.Additions} />
                 {findAdditions(currentMembers, selectedMembers).map(member => (

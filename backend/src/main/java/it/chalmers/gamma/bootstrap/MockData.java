@@ -20,7 +20,7 @@ public record MockData(List<MockUser> users,
                        List<MockGroup> groups,
                        List<MockSuperGroup> superGroups,
                        List<MockPost> posts,
-                       List<MockAuthority> authorities) {
+                       List<MockPostAuthority> postAuthorities) {
 
     public record MockGroup(GroupId id,
                             EntityName name,
@@ -40,7 +40,7 @@ public record MockData(List<MockUser> users,
                                  EntityName name,
                                  PrettyName prettyName,
                                  SuperGroupType type,
-                                 List<GroupId> groups) {
+                                 List<AuthorityLevelName> authorities) {
     }
 
     public record MockUser(
@@ -52,12 +52,8 @@ public record MockData(List<MockUser> users,
             int acceptanceYear,
             List<AuthorityLevelName> authorities) { }
 
-    public record MockAuthority(
-            AuthorityLevelName name,
-            List<MockPostAuthority> postAuthorities,
-            List<SuperGroupId> superGroupAuthorities) { }
-
     public record MockPostAuthority(
+            AuthorityLevelName name,
             SuperGroupId superGroupId,
             PostId postId
     ) { }

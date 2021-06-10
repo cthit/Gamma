@@ -1,9 +1,11 @@
 package it.chalmers.gamma.internal.clientrestriction.service;
 
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.ClientId;
-import it.chalmers.gamma.domain.ClientRestrictions;
+import it.chalmers.gamma.domain.ClientRestriction;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,13 +17,13 @@ public class ClientRestrictionService {
         this.clientRestrictionRepository = clientRestrictionRepository;
     }
 
-    public void create(ClientRestrictions clientRestriction) {
+    public void create(ClientId clientId, List<AuthorityLevelName> restrictions) {
         this.clientRestrictionRepository.saveAll(
-                clientRestriction.authorityLevelNameList()
+                restrictions
                         .stream()
                         .map(authorityLevelName -> new ClientRestrictionEntity(
                                 new ClientRestrictionPK(
-                                        clientRestriction.clientId(),
+                                        clientId,
                                         authorityLevelName
                                 )
                         ))
@@ -33,16 +35,12 @@ public class ClientRestrictionService {
        this.clientRestrictionRepository.deleteById(id);
     }
 
-    public ClientRestrictions get(ClientId clientId) throws ClientRestrictionNotFoundException {
+    public List<AuthorityLevelName> get(ClientId clientId) {
         return this.clientRestrictionRepository.findClientRestrictionsById_ClientId(clientId)
                 .stream()
                 .map(ClientRestrictionEntity::toDTO)
-                .reduce(
-                        (cr1, cr2) -> {
-                            cr1.authorityLevelNameList().addAll(cr2.authorityLevelNameList());
-                            return cr1;
-                        })
-                .orElseThrow(ClientRestrictionNotFoundException::new);
+                .map(ClientRestriction::authorityLevelName)
+                .collect(Collectors.toList());
     }
 
     public static class ClientRestrictionNotFoundException extends Exception { }

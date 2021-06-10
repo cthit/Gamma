@@ -9,7 +9,8 @@ import {
     useDigitTranslations,
     useDigitToast,
     useDigitDialog,
-    DigitRadioButtonGroup
+    DigitRadioButtonGroup,
+    DigitLoading
 } from "@cthit/react-digit-components";
 
 import {
@@ -117,7 +118,7 @@ const EditAuthority = () => {
         postMap == null ||
         userOptions == null
     ) {
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     const { users, superGroups, posts, authorityLevelName } = authorityLevel;

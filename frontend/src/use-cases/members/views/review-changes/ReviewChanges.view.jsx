@@ -58,9 +58,10 @@ const save = (
             })
     );
 
-    const deletions = getDeletions(previousMembers, newMembersData).map(
-        previousMember => removeUserFromGroup(groupId, previousMember.id)
-    );
+    const deletions = getDeletions(
+        previousMembers,
+        newMembersData
+    ).map(previousMember => removeUserFromGroup(groupId, previousMember.id));
 
     const edits = getEdits(previousMembers, newMembersData).map(member => {
         const newMemberData = _.find(newMembersData, { id: member.id });
@@ -83,7 +84,6 @@ const save = (
             queueToast({
                 text: text.MembersError
             });
-            console.log(e);
         });
 };
 

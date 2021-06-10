@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 import java.time.Year;
 import java.util.stream.Collectors;
 
-@DependsOn("authorityBootstrap")
+@DependsOn("mockBootstrap")
 @Component
 public class UserBootstrap {
 

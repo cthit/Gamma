@@ -23,7 +23,8 @@ export function getClient(clientId) {
             descriptionEn: input.data.description.en,
             descriptionSv: input.data.description.sv,
             webServerRedirectUri: input.data.webServerRedirectUri,
-            autoApprove: input.data.autoApprove + ""
+            autoApprove: input.data.autoApprove + "",
+            restrictions: input.data.restrictions
         }
     }));
 }

@@ -33,7 +33,8 @@ import {
     initialValues,
     keysOrder,
     keysText,
-    validationSchema
+    validationSchema,
+    updateKeysOrder
 } from "../../Me.options";
 import translations from "./MeCRUD.screen.translations";
 
@@ -68,6 +69,7 @@ const MeCRUD = () => {
     return (
         <DigitCRUD
             keysOrder={keysOrder()}
+            updateKeysOrder={updateKeysOrder()}
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
             formComponentData={generateUserEditComponentData(text)}

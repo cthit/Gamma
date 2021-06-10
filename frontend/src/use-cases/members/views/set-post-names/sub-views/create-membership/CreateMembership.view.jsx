@@ -20,7 +20,7 @@ const CustomRow = styled.div`
     display: flex;
     flex-direction: row;
     margin-bottom: 16px;
-    align-items: baseline;
+    align-items: center;
 
     @media (max-width: 600px) {
         flex-direction: column;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import {
+    DigitLoading,
     DigitTable,
     useDigitTranslations
 } from "@cthit/react-digit-components";
@@ -22,7 +23,7 @@ const UserClientApprovals = ({ client }) => {
     }, [clientId]);
 
     if (users == null) {
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (

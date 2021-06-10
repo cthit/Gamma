@@ -1,19 +1,17 @@
 package it.chalmers.gamma.internal.client.controller;
 
+import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.ClientWithRestrictions;
 import it.chalmers.gamma.domain.EntityName;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
-import it.chalmers.gamma.internal.clientapikey.service.ClientApiKeyService;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.internal.client.service.ClientService;
 
-import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +32,13 @@ public class ClientAdminController {
         this.clientService = clientService;
     }
 
-    private record CreateClientRequest(String webServerRedirectUri, EntityName name, boolean autoApprove, Text description, boolean generateApiKey) { }
+    private record CreateClientRequest(String webServerRedirectUri,
+                                       EntityName name,
+                                       boolean autoApprove,
+                                       Text description,
+                                       boolean generateApiKey,
+                                       List<AuthorityLevelName> restrictions
+    ) { }
 
     private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
 
@@ -53,9 +57,9 @@ public class ClientAdminController {
                 );
         if (request.generateApiKey) {
             apiKeyToken = new ApiKeyToken();
-            this.clientService.createWithApiKey(newClient, clientSecret, apiKeyToken);
+            this.clientService.createWithApiKey(newClient, clientSecret, apiKeyToken, request.restrictions);
         } else {
-            this.clientService.create(newClient, clientSecret);
+            this.clientService.create(newClient, clientSecret, request.restrictions);
         }
 
         return new NewClientSecrets(clientSecret, apiKeyToken);
@@ -67,7 +71,7 @@ public class ClientAdminController {
     }
 
     @GetMapping("/{clientId}")
-    public Client getClient(@PathVariable("clientId") ClientId id) {
+    public ClientWithRestrictions getClient(@PathVariable("clientId") ClientId id) {
         try {
             return this.clientService.get(id);
         } catch (ClientService.ClientNotFoundException e) {

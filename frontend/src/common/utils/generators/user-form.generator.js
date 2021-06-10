@@ -17,7 +17,6 @@ import {
     USER_LAST_NAME,
     USER_NICK,
     USER_PASSWORD,
-    USER_PHONE,
     USER_AGREEMENT
 } from "api/users/props.users.api";
 import { ENGLISH_LANGUAGE, SWEDISH_LANGUAGE } from "api/utils/commonProps";
@@ -103,15 +102,6 @@ export function generateUserEditComponentData(text) {
         componentProps: {
             label: text.AcceptUserAgreement,
             primary: true
-        }
-    };
-
-    componentData[USER_PHONE] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Phone,
-            outlined: true,
-            maxLength: 15
         }
     };
 

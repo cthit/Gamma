@@ -38,8 +38,7 @@ public final class GroupController {
         return this.groupService.getAll();
     }
 
-    private record GetGroupResponse(@JsonUnwrapped Group group, List<Membership> members) {
-    }
+    private record GetGroupResponse(@JsonUnwrapped Group group, List<Membership> members) { }
 
     @GetMapping("/{id}")
     public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {

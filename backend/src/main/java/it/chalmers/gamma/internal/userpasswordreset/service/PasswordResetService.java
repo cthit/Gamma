@@ -47,7 +47,7 @@ public class PasswordResetService {
 
     public void handlePasswordReset(User user) {
         String token = TokenUtils.generateToken(
-                10,
+                75,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS
         );
@@ -68,6 +68,7 @@ public class PasswordResetService {
         ));
     }
 
+    //TODO: check if the token is too old
     public boolean tokenMatchesUser(UserId userId, String token) throws UserService.UserNotFoundException {
         PasswordResetToken d = this.repository.findById(userId)
                 .orElseThrow(UserService.UserNotFoundException::new)

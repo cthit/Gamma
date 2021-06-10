@@ -10,7 +10,6 @@ import {
     USER_LAST_NAME,
     USER_NICK,
     USER_PASSWORD,
-    USER_PHONE,
     USER_RELATIONSHIPS,
     USER_AGREEMENT,
     USER_ID
@@ -32,8 +31,6 @@ export const createValidationSchema = text => {
     schema[USER_ACCEPTANCE_YEAR] = yup
         .number()
         .required(text.AcceptanceYear + text.IsRequired);
-
-    schema[USER_PHONE] = yup.string().nullable();
 
     schema[USER_AGREEMENT] = yup
         .boolean()
@@ -70,7 +67,6 @@ export const updateValidationSchema = text => {
         .number()
         .required(text.AcceptanceYear + text.IsRequired);
 
-    schema[USER_PHONE] = yup.string().nullable();
     return yup.object().shape(schema);
 };
 
@@ -86,7 +82,6 @@ export const initialValues = () => {
     output[USER_AGREEMENT] = false;
     output[USER_CID] = "";
     output[USER_PASSWORD] = "";
-    output[USER_PHONE] = "";
 
     return output;
 };
@@ -105,7 +100,6 @@ export const keysText = text => {
     output[USER_CID] = text.Cid;
     output[USER_AGREEMENT] = text.AcceptUserAgreement;
     output[USER_PASSWORD] = text.Password;
-    output[USER_PHONE] = text.Phone;
 
     return output;
 };
@@ -117,7 +111,6 @@ export const keysOrder = () => [
     USER_NICK,
     USER_EMAIL,
     USER_ACCEPTANCE_YEAR,
-    USER_PHONE,
     USER_LANGUAGE,
     USER_AGREEMENT,
     USER_GROUPS
@@ -130,7 +123,6 @@ export const readOneKeysOrder = () => [
     USER_NICK,
     USER_EMAIL,
     USER_ACCEPTANCE_YEAR,
-    USER_PHONE,
     USER_LANGUAGE,
     USER_RELATIONSHIPS
 ];
@@ -149,7 +141,6 @@ export const updateKeysOrder = () => [
     USER_NICK,
     USER_EMAIL,
     USER_ACCEPTANCE_YEAR,
-    USER_PHONE,
     USER_LANGUAGE
 ];
 
@@ -161,7 +152,6 @@ export const createKeysOrder = () => [
     USER_NICK,
     USER_EMAIL,
     USER_ACCEPTANCE_YEAR,
-    USER_PHONE,
     USER_LANGUAGE,
     USER_AGREEMENT,
     USER_GROUPS

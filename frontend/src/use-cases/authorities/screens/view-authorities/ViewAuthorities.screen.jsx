@@ -6,7 +6,8 @@ import {
     DigitFAB,
     DigitLayout,
     DigitDesign,
-    useDigitTranslations
+    useDigitTranslations,
+    DigitLoading
 } from "@cthit/react-digit-components";
 
 import {
@@ -45,7 +46,7 @@ const ViewAuthorities = () => {
     }, [read, setRead]);
 
     if (authorities == null) {
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (

@@ -5,7 +5,8 @@ import {
     DigitCRUD,
     useDigitTranslations,
     DigitButton,
-    DigitLayout
+    DigitLayout,
+    DigitLoading
 } from "@cthit/react-digit-components";
 
 import { deleteGroup } from "api/groups/delete.groups.api";
@@ -53,7 +54,7 @@ const Groups = () => {
     }, []);
 
     if (superGroups.length === 0) {
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (
@@ -123,7 +124,10 @@ const Groups = () => {
                             top: "16px"
                         }}
                         noUsersText={text.NoGroupMembers}
-                        users={data[GROUP_MEMBERS]}
+                        users={data[GROUP_MEMBERS].map(member => ({
+                            ...member.user,
+                            post: member.post
+                        }))}
                         group={data}
                     />
                 </DigitLayout.Row>

@@ -79,8 +79,7 @@ public class MeController {
                                  FirstName firstName,
                                  LastName lastName,
                                  Email email,
-                                 Language language,
-                                 int acceptanceYear) { }
+                                 Language language) { }
 
     @PutMapping()
     public UserEditedResponse editMe(Principal principal, @RequestBody EditMeRequest request) {
@@ -94,7 +93,6 @@ public class MeController {
                             .lastName(request.lastName())
                             .email(request.email())
                             .language(request.language())
-                            .acceptanceYear(Year.of(request.acceptanceYear()))
                             .build()
             );
         } catch (UserService.UserNotFoundException e) {

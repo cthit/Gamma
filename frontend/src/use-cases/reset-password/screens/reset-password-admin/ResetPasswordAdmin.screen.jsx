@@ -37,7 +37,7 @@ const ResetPasswordAdmin = () => {
     }
 
     if (user == null) {
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (

@@ -12,11 +12,11 @@ const MemberCurrent = ({ member }) => (
     <DigitLayout.Column>
         <DigitText.Text
             text={
-                member[USER_FIRST_NAME] +
+                member.user[USER_FIRST_NAME] +
                 ' "' +
-                member[USER_NICK] +
+                member.user[USER_NICK] +
                 '" ' +
-                member[USER_LAST_NAME]
+                member.user[USER_LAST_NAME]
             }
         />
     </DigitLayout.Column>

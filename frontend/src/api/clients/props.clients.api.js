@@ -6,3 +6,4 @@ export const CLIENT_REDIRECT = "webServerRedirectUri";
 export const CLIENT_SECRET = "clientSecret";
 export const CLIENT_AUTO_APPROVE = "autoApprove";
 export const CLIENT_GENERATE_API_KEY = "generateApiKey";
+export const CLIENT_RESTRICTIONS = "restrictions";

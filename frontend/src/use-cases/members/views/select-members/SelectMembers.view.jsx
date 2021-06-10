@@ -54,12 +54,12 @@ const generateHeaderTexts = text => {
 const SelectMembers = ({ users, group, onMembersSelected }) => {
     const [text] = useDigitTranslations(translations);
     const [selectedMemberIds, setSelectedMemberIds] = useState(
-        group.groupMembers.map(member => member.id)
+        group.members.map(member => member.user.id)
     );
 
     const unsavedEdits = useMemo(
-        () => selectedMemberIds.length !== group.groupMembers.length,
-        [selectedMemberIds, group.groupMembers]
+        () => selectedMemberIds.length !== group.members.length,
+        [selectedMemberIds, group.members]
     );
 
     return (
@@ -89,7 +89,7 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                 </DigitDesign.CardBody>
             </SpannedCard>
             <UsersInGroupChanges
-                currentMembers={group.groupMembers}
+                currentMembers={group.members}
                 selectedMembers={selectedMemberIds.map(memberId =>
                     _.find(users, { id: memberId })
                 )}

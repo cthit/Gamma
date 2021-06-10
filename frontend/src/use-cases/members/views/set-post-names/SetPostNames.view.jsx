@@ -26,6 +26,8 @@ import translations from "./SetPostNames.view.translations.json";
 import NewMembershipArray from "./sub-views/new-membership-array";
 
 function getInitialValues(selectedMemberIds, currentMembers, users) {
+    const currentMemberUsers = currentMembers.map(member => member.user);
+
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
         const user = _.find(users, { id: selectedMember });
 
@@ -37,7 +39,10 @@ function getInitialValues(selectedMemberIds, currentMembers, users) {
         necessaryMemberData[USER_ACCEPTANCE_YEAR] = user[USER_ACCEPTANCE_YEAR];
         necessaryMemberData[USER_ID] = user[USER_ID];
 
-        const previousMemberData = _.find(currentMembers, { id: user.id });
+        const previousMemberData = _.find(
+            currentMembers,
+            member => member.user.id === user.id
+        );
 
         var postId = "";
         var unofficialPostName = "";

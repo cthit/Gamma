@@ -65,19 +65,14 @@ const DisplayMembersTable = ({
                 var postEmail;
 
                 if (group != null && group.active && user.post.emailPrefix) {
-                    postEmail =
-                        user.post.emailPrefix +
-                        "." +
-                        group.superGroupName +
-                        "@chalmers.it";
+                    postEmail = user.post.emailPrefix + "." + group.email;
                 }
 
                 return {
-                    ...user.user,
+                    ...user,
                     postName: officialPostName + unofficialPostName,
                     postEmail,
-                    __link:
-                        user.user.id != null ? "/users/" + user.user.id : null
+                    __link: user.id != null ? "/users/" + user.id : null
                 };
             })}
             emptyTableText={noUsersText || text.NoUsers}

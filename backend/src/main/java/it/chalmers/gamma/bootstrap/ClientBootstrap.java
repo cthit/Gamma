@@ -19,6 +19,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 
 @DependsOn("mockBootstrap")
 @Component
@@ -66,8 +67,8 @@ public class ClientBootstrap {
                         new Text("", "")
                 ),
                 clientSecret,
-                apiKeyToken
-        );
+                apiKeyToken,
+                new ArrayList<>());
 
         for (UserRestricted user : this.userService.getAll()) {
             this.userApprovalService.create(

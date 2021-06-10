@@ -1,10 +1,12 @@
 package it.chalmers.gamma.internal.client.service;
 
+import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
+import it.chalmers.gamma.domain.ClientWithRestrictions;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
@@ -12,6 +14,7 @@ import it.chalmers.gamma.domain.ClientApiKey;
 import it.chalmers.gamma.internal.clientapikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.client.controller.ClientAdminController;
 
+import it.chalmers.gamma.internal.clientrestriction.service.ClientRestrictionService;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
@@ -26,13 +29,16 @@ public class ClientService implements ClientDetailsService {
     private final ClientRepository clientRepository;
     private final ApiKeyService apiKeyService;
     private final ClientApiKeyService clientApiKeyService;
+    private final ClientRestrictionService clientRestrictionService;
 
     public ClientService(ClientRepository clientRepository,
                          ApiKeyService apiKeyService,
-                         ClientApiKeyService clientApiKeyService) {
+                         ClientApiKeyService clientApiKeyService,
+                         ClientRestrictionService clientRestrictionService) {
         this.clientRepository = clientRepository;
         this.apiKeyService = apiKeyService;
         this.clientApiKeyService = clientApiKeyService;
+        this.clientRestrictionService = clientRestrictionService;
     }
 
     @Override
@@ -42,13 +48,18 @@ public class ClientService implements ClientDetailsService {
                 .orElseThrow(ClientAdminController.ClientNotFoundResponse::new);
     }
 
-    public void create(Client newClient, ClientSecret clientSecret) {
+    @Transactional
+    public void create(Client newClient, ClientSecret clientSecret, List<AuthorityLevelName> restrictions) {
         this.clientRepository.save(new ClientEntity(newClient, clientSecret));
+        this.clientRestrictionService.create(newClient.clientId(), restrictions);
     }
 
     @Transactional
-    public void createWithApiKey(Client newClient, ClientSecret clientSecret, ApiKeyToken apiKeyToken) {
-        this.create(newClient, clientSecret);
+    public void createWithApiKey(Client newClient,
+                                 ClientSecret clientSecret,
+                                 ApiKeyToken apiKeyToken,
+                                 List<AuthorityLevelName> restrictions) {
+        this.create(newClient, clientSecret, restrictions);
 
         ApiKeyId apiKeyId = new ApiKeyId();
 
@@ -78,10 +89,13 @@ public class ClientService implements ClientDetailsService {
         return this.clientRepository.findAll().stream().map(ClientEntity::toDTO).collect(Collectors.toList());
     }
 
-    public Client get(ClientId clientId) throws ClientNotFoundException {
-        return this.clientRepository.findById(clientId)
-                .orElseThrow(ClientNotFoundException::new)
-                .toDTO();
+    public ClientWithRestrictions get(ClientId clientId) throws ClientNotFoundException {
+        return new ClientWithRestrictions(
+                this.clientRepository.findById(clientId)
+                        .orElseThrow(ClientNotFoundException::new)
+                        .toDTO(),
+                this.clientRestrictionService.get(clientId)
+                );
     }
 
     public static class ClientNotFoundException extends Exception { }
