@@ -34,12 +34,16 @@ create table password_reset_token(
   created_at  timestamp       not null default current_timestamp
 );
 
+create table super_group_type (
+    super_group_type_name varchar(30) PRIMARY KEY
+);
+
 create table fkit_super_group (
   super_group_id            uuid           primary key,
   e_name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
   pretty_name   varchar(50)    not null,
   email         varchar(100)   not null,
-  type          varchar(30)    not null,
+  super_group_type_name          varchar(30) references super_group_type    not null,
   description   uuid           references internal_text,
   version int
 );
@@ -136,10 +140,6 @@ create table it_user_approval (
   user_id UUID REFERENCES ituser,
   client_id varchar(75) REFERENCES itclient(client_id),
   CONSTRAINT it_user_approval_pk PRIMARY KEY(user_id, client_id)
-);
-
-create table super_group_type (
-    type varchar(30) PRIMARY KEY
 );
 
 create table user_avatar_uri (

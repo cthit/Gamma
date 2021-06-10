@@ -51,7 +51,7 @@ public class UserCreationService {
 
     }
 
-    //TODO throw exception if something goes wrong e.g. same name
+    //TODO throw exception if something goes wrong e.g. same type
     //I will because of this fix things in HaveUserThatIsAdminBootstrap
     public void createUser(User newUser, UnencryptedPassword password) {
         UserEntity user = new UserEntity(newUser);

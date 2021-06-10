@@ -16,7 +16,6 @@ public class WhitelistService {
     }
 
     public void create(Cid cid) {
-        System.out.println(cid);
         try {
             this.repository.save(new WhitelistEntity(cid));
         } catch (Exception e) {

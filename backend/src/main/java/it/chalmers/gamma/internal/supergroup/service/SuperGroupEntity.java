@@ -29,9 +29,8 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
     @Embedded
     private PrettyName prettyName;
 
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
-    private SuperGroupType type;
+    @Embedded
+    private SuperGroupType superGroupType;
 
     @Embedded
     private Email email;
@@ -54,7 +53,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
         this.email = sg.email();
         this.entityName = sg.name();
         this.prettyName = sg.prettyName();
-        this.type = sg.type();
+        this.superGroupType = sg.type();
 
 
         this.description.apply(sg.description());
@@ -66,7 +65,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
                 this.id,
                 this.entityName,
                 this.prettyName,
-                this.type,
+                this.superGroupType,
                 this.email,
                 this.description.toDTO()
         );

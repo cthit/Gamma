@@ -91,7 +91,7 @@ public class GroupBootstrap {
                         )
                 ));
             } catch (GroupService.GroupAlreadyExistsException e) {
-                LOGGER.error("Group with name " + group.name() + " already exists");
+                LOGGER.error("Group with type " + group.name() + " already exists");
             }
         });
 

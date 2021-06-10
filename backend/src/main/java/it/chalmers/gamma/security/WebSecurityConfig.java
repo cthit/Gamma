@@ -198,7 +198,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private void setAdminPaths(HttpSecurity http) {
         try {
             http.authorizeRequests()
-                    .antMatchers("/admin/**")
+                    .antMatchers("/internal/admin/**")
                     .hasAuthority("admin");
 
             for (ApiKeyType type : ApiKeyType.values()) {

@@ -81,6 +81,11 @@ const Drawer = ({ closeDrawer }) => {
                     onClick={closeDrawer}
                     link={"/authorities"}
                 />
+                <DigitNavLink
+                    text={text.SuperGroupTypes}
+                    onClick={closeDrawer}
+                    link={"/super-group-types"}
+                />
                 <LanguageSelection />
             </DigitLayout.Column>
         );

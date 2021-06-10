@@ -26,20 +26,28 @@ function generateHeaderTexts(text) {
     return output;
 }
 
-function modifyData(groups, text, activeLanguage, columns) {
+function modifyData(groups, superGroup) {
     return groups.map(group => {
         const newGroup = { ...group };
 
         newGroup[GROUP_ID] = group[GROUP_ID];
         newGroup[GROUP_NAME] = group[GROUP_NAME];
         newGroup[GROUP_EMAIL] = group[GROUP_EMAIL];
-        newGroup["__link"] = "/groups/" + group[GROUP_ID];
+        newGroup["__link"] =
+            (superGroup ? "/super-groups/" : "/groups/") + group[GROUP_ID];
 
         return newGroup;
     });
 }
 
-const DisplayGroupsTable = ({ title, groups, columnsOrder, margin = {} }) => {
+const DisplayGroupsTable = ({
+    title,
+    groups,
+    columnsOrder,
+    margin = {},
+    superGroup,
+    backButton
+}) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     if (groups == null) {
@@ -56,8 +64,9 @@ const DisplayGroupsTable = ({ title, groups, columnsOrder, margin = {} }) => {
             startOrderBy={GROUP_NAME}
             columnsOrder={columnsOrder}
             headerTexts={generateHeaderTexts(text)}
-            data={modifyData(groups, text, activeLanguage, columnsOrder)}
+            data={modifyData(groups, superGroup)}
             emptyTableText={text.NoGroups}
+            backButton={backButton}
         />
     );
 };

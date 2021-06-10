@@ -30,10 +30,12 @@ import Users from "../use-cases/users";
 import Whitelist from "../use-cases/whitelist";
 import FiveZeroZero from "./elements/five-zero-zero";
 import Drawer from "./views/drawer";
+import SuperGroupTypes from "../use-cases/super-group-types";
 
 export const App = () => {
-    const [user, update, [loading, error], ignore] =
-        useContext(GammaUserContext);
+    const [user, update, [loading, error], ignore] = useContext(
+        GammaUserContext
+    );
     const [, , , setCommonTranslations] = useDigitTranslations(translations);
     const { pathname } = useLocation();
 
@@ -89,6 +91,10 @@ export const App = () => {
                     <Route path={"/about"} component={About} />
                     <Route path="/members" component={Members} />
                     <Route path="/reset-password" component={ResetPassword} />
+                    <Route
+                        path="/super-group-types"
+                        component={SuperGroupTypes}
+                    />
                     <Route path="/" exact component={Home} />
                     <Route component={FourOFour} />
                 </Switch>

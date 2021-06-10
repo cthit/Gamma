@@ -1,6 +1,8 @@
 package it.chalmers.gamma.internal.supergrouptype.controller;
 
+import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.domain.SuperGroupType;
+import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
 import it.chalmers.gamma.internal.supergrouptype.service.SuperGroupTypeService;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
@@ -19,13 +21,16 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/internal/supergroup")
+@RequestMapping(value = "/internal/admin/supergrouptype")
 public class SuperGroupTypeAdminController {
 
     private final SuperGroupTypeService superGroupTypeService;
+    private final SuperGroupService superGroupService;
 
-    public SuperGroupTypeAdminController(SuperGroupTypeService superGroupTypeService) {
+    public SuperGroupTypeAdminController(SuperGroupTypeService superGroupTypeService,
+                                         SuperGroupService superGroupService) {
         this.superGroupTypeService = superGroupTypeService;
+        this.superGroupService = superGroupService;
     }
 
     @GetMapping
@@ -33,13 +38,17 @@ public class SuperGroupTypeAdminController {
         return this.superGroupTypeService.getAll();
     }
 
-    private record AddSuperGroupType(SuperGroupType name) { }
+    @GetMapping("/{type}/usage")
+    public List<SuperGroup> getSuperGroupTypeUsage(@PathVariable("type") SuperGroupType type) {
+        return this.superGroupService.getAllByType(type);
+    }
 
-
+    private record AddSuperGroupType(SuperGroupType type) { }
+    
     @PostMapping
     public SuperGroupTypeAddedResponse addSuperGroupType(@Valid @RequestBody AddSuperGroupType request) {
         try {
-            this.superGroupTypeService.create(request.name);
+            this.superGroupTypeService.create(request.type);
         } catch (SuperGroupTypeService.SuperGroupAlreadyExistsException e) {
             throw new SuperGroupTypeAlreadyExistsResponse();
         }

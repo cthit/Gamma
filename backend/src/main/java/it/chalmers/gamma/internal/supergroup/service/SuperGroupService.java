@@ -2,6 +2,7 @@ package it.chalmers.gamma.internal.supergroup.service;
 
 import it.chalmers.gamma.domain.SuperGroup;
 import it.chalmers.gamma.domain.SuperGroupId;
+import it.chalmers.gamma.domain.SuperGroupType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +44,13 @@ public class SuperGroupService {
 
     public SuperGroup get(SuperGroupId id) throws SuperGroupNotFoundException {
         return getEntity(id).toDTO();
+    }
+
+    public List<SuperGroup> getAllByType(SuperGroupType type) {
+        return this.repository.findAllBySuperGroupType(type)
+                .stream()
+                .map(SuperGroupEntity::toDTO)
+                .collect(Collectors.toList());
     }
 
     protected SuperGroupEntity getEntity(SuperGroupId id) throws SuperGroupNotFoundException {
