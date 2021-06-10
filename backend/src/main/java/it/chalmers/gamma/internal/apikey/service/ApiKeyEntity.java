@@ -21,7 +21,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
     private ApiKeyToken key;
 
     @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER)
     private TextEntity description;
 
     @Embedded

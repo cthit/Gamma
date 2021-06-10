@@ -37,6 +37,7 @@ import {
     updateKeysOrder
 } from "../../Me.options";
 import translations from "./MeCRUD.screen.translations";
+import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 
 const NoStyleLink = styled(Link)`
     color: inherit;
@@ -121,7 +122,9 @@ const MeCRUD = () => {
             updateTitle={data => fullName(data)}
             deleteRequest={(_, form) =>
                 deleteMe(form).then(() => {
-                    window.location.reload();
+                    window.location.replace(
+                        getBackendUrl() + "/account-deleted"
+                    );
                 })
             }
             dialogDeleteTitle={() => text.AreYouSure}

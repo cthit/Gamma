@@ -98,6 +98,13 @@ public class ClientService implements ClientDetailsService {
                 );
     }
 
+    public void resetClientSecret(ClientId clientId, ClientSecret clientSecret) throws ClientNotFoundException {
+        ClientEntity clientEntity = this.clientRepository.findById(clientId)
+                .orElseThrow(ClientNotFoundException::new);
+        clientEntity.setClientSecret(clientSecret);
+        this.clientRepository.save(clientEntity);
+    }
+
     public static class ClientNotFoundException extends Exception { }
 
 

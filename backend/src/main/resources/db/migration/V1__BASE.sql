@@ -30,7 +30,7 @@ create table ituser_account_locked (
 
 create table password_reset_token(
   token   varchar(100) not null,
-  user_id  uuid primary key references ituser,
+  user_id  uuid primary key references ituser on delete cascade,
   created_at  timestamp       not null default current_timestamp
 );
 
@@ -44,7 +44,7 @@ create table fkit_super_group (
   pretty_name   varchar(50)    not null,
   email         varchar(100)   not null,
   super_group_type_name          varchar(30) references super_group_type    not null,
-  description   uuid           references internal_text,
+  description   uuid           references internal_text on delete cascade,
   version int
 );
 
@@ -59,7 +59,7 @@ create table fkit_group (
 
 create table post (
   post_id        uuid primary key,
-  post_name uuid not null references internal_text,
+  post_name uuid not null references internal_text on delete cascade,
   email_prefix VARCHAR(20),
   version int
 );
@@ -82,15 +82,15 @@ create table authority_super_group (
 );
 
 create table authority_user (
-    user_id uuid references ituser,
+    user_id uuid references ituser on delete cascade,
     authority_level varchar(30),
     constraint authority_user_pk primary key (user_id, authority_level)
 );
 
 create table membership (
-  user_id            uuid         constraint membership_ituser_fk references ituser,
-  group_id         uuid         constraint membership_fkit_group_fk references fkit_group,
-  post_id              uuid         constraint membership_post_fk references post,
+  user_id            uuid         constraint membership_ituser_fk references ituser on delete cascade,
+  group_id         uuid         constraint membership_fkit_group_fk references fkit_group on delete cascade,
+  post_id              uuid         constraint membership_post_fk references post on delete cascade,
   unofficial_post_name varchar(100) null,
   constraint membership_pk primary key (user_id, group_id, post_id),
   version int
@@ -113,7 +113,7 @@ create table itclient (
     web_server_redirect_uri varchar(256) not null,
     auto_approve boolean default false not null,
     e_name varchar(30) not null,
-    description uuid references internal_text
+    description uuid references internal_text on delete cascade
 );
 
 create table itclient_authority_level_restriction (
@@ -125,7 +125,7 @@ create table itclient_authority_level_restriction (
 create table apikey (
     api_key_id               uuid primary key,
     e_name             varchar(30) not null,
-    description      uuid references internal_text,
+    description      uuid references internal_text on delete cascade,
     key              varchar(150) unique,
     key_type         varchar(30) not null
 --     origin           varchar(256) not null
@@ -137,13 +137,13 @@ create table itclient_apikey (
 );
 
 create table it_user_approval (
-  user_id UUID REFERENCES ituser,
+  user_id UUID references ituser on delete cascade,
   client_id varchar(75) REFERENCES itclient(client_id),
   CONSTRAINT it_user_approval_pk PRIMARY KEY(user_id, client_id)
 );
 
 create table user_avatar_uri (
-    user_id UUID REFERENCES ituser,
+    user_id UUID references ituser on delete cascade,
     avatar_uri varchar(255),
     version int
 );

@@ -20,7 +20,7 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
     private ClientSecret clientSecret;
 
     @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER)
     private TextEntity description;
 
     @Column(name = "web_server_redirect_uri")
@@ -46,6 +46,10 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
 
     protected ClientSecret getClientSecret() {
         return this.clientSecret;
+    }
+
+    protected void setClientSecret(ClientSecret clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     @Override

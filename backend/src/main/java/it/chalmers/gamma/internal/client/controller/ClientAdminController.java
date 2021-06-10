@@ -65,6 +65,19 @@ public class ClientAdminController {
         return new NewClientSecrets(clientSecret, apiKeyToken);
     }
 
+    @PostMapping("/{clientId}/reset")
+    public ClientSecret resetClientCredentials(@PathVariable("clientId") ClientId clientId) {
+        ClientSecret clientSecret = new ClientSecret();
+
+        try {
+            this.clientService.resetClientSecret(clientId, clientSecret);
+        } catch (ClientService.ClientNotFoundException e) {
+            throw new ClientNotFoundResponse();
+        }
+
+        return clientSecret;
+    }
+
     @GetMapping()
     public List<Client> getClients() {
         return this.clientService.getAll();

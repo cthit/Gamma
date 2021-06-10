@@ -7,12 +7,13 @@ import {
     DigitButton,
     useDigitCustomDialog,
     DigitDesign,
-    DigitLoading
+    DigitLoading,
+    useDigitDialog
 } from "@cthit/react-digit-components";
 
 import { deleteClient } from "api/clients/delete.clients.api";
 import { getClient, getClients } from "api/clients/get.clients.api";
-import { addClient } from "api/clients/post.clients.api";
+import { addClient, resetClientSecret } from "api/clients/post.clients.api";
 import {
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_DESCRIPTION_SWEDISH,
@@ -43,7 +44,8 @@ import ClientRestrictions from "./client-restrictions";
 
 const Clients = () => {
     const [text] = useDigitTranslations(translations);
-    const [openDialog] = useDigitCustomDialog();
+    const [openCustomDialog] = useDigitCustomDialog();
+    const [openDialog] = useDigitDialog();
     const [authorityLevels, setAuthorityLevels] = useState(null);
 
     useEffect(() => {
@@ -89,7 +91,7 @@ const Clients = () => {
                         restrictions: client.restrictions
                     })
                         .then(response => {
-                            openDialog({
+                            openCustomDialog({
                                 title: text.YourClientSecret,
                                 renderButtons: confirm => (
                                     <DigitButton
@@ -182,7 +184,36 @@ const Clients = () => {
                     outlined
                     onClick={() => {
                         openDialog({
-                            title: text.AreYouSure
+                            title: text.AreYouSure,
+                            description: text.ResetClient,
+                            confirmButtonText: text.UpdateClientSecret,
+                            cancelButtonText: text.Cancel,
+                            onConfirm: () =>
+                                resetClientSecret(client.clientId).then(
+                                    response =>
+                                        openCustomDialog({
+                                            title: text.YourClientSecret,
+                                            renderButtons: confirm => (
+                                                <DigitButton
+                                                    text={text.Close}
+                                                    onClick={confirm}
+                                                />
+                                            ),
+                                            renderMain: () => (
+                                                <>
+                                                    <DigitText.Text
+                                                        text={
+                                                            "Secret: " +
+                                                            response.data.replace(
+                                                                "{noop}",
+                                                                ""
+                                                            )
+                                                        }
+                                                    />
+                                                </>
+                                            )
+                                        })
+                                )
                         });
                     }}
                 />
