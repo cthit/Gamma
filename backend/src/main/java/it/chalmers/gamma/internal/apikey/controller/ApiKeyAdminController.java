@@ -2,6 +2,7 @@ package it.chalmers.gamma.internal.apikey.controller;
 
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.ApiKeyType;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
@@ -33,16 +34,16 @@ public class ApiKeyAdminController {
         this.apiKeyService = apiKeyService;
     }
 
-    private record CreateApiKeyRequest(EntityName name, Text description, ApiKeyType keyType) { }
+    private record CreateApiKeyRequest(PrettyName prettyName, Text description, ApiKeyType keyType) { }
 
     @PostMapping()
     public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {
-        ApiKeyToken key = new ApiKeyToken();
+        ApiKeyToken key = ApiKeyToken.generate();
 
         this.apiKeyService.create(
             new ApiKey(
-                    new ApiKeyId(),
-                    request.name,
+                    ApiKeyId.generate(),
+                    request.prettyName,
                     request.description,
                     request.keyType
             ),

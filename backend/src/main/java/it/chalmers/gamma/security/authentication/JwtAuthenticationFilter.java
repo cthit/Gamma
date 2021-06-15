@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private Authentication getAuthentication(String cid) {
         User user;
         try {
-            user = this.userService.get(new Cid(cid));
+            user = this.userService.get(Cid.valueOf(cid));
         } catch (UserService.UserNotFoundException e) {
             throw new InvalidJWTTokenResponse();
         }

@@ -23,13 +23,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String cid) {
-        UserEntity user = this.repository.findByCid(new Cid(cid))
+        UserEntity user = this.repository.findByCid(Cid.valueOf(cid))
                 .orElseThrow(() -> new UsernameNotFoundException("User with: " + cid + " not found"));
 
         List<AuthorityLevelName> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
 
         return new UserDetailsImpl(
-                user.getCid().get(),
+                user.getCid(),
                 user.getPassword().get(),
                 authorities,
                 false

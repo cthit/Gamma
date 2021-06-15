@@ -17,12 +17,15 @@ public class EmailPrefix implements Serializable {
      */
     @JsonValue
     @Column(name = "email_prefix")
-    @Pattern(regexp = "^$|^(?:\\w+|\\w+\\.\\w+)+$")
     private String value;
 
     protected EmailPrefix() { }
 
-    protected EmailPrefix(String value) {
+    private EmailPrefix(String value) {
+        if (value != null && !value.matches("^$|^(?:\\w+|\\w+\\.\\w+)+$")) {
+            throw new IllegalArgumentException("Email prefix most be letters of a - z, and each word must be seperated by a dot");
+        }
+
         this.value = value;
     }
 

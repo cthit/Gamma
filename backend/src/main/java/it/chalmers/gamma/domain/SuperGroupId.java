@@ -14,12 +14,16 @@ public class SuperGroupId extends Id<UUID> {
     @Column(name = "super_group_id")
     private final UUID value;
 
-    public SuperGroupId() {
+    protected SuperGroupId() {
         this.value = UUID.randomUUID();
     }
 
     private SuperGroupId(UUID value) {
         this.value = value;
+    }
+
+    public static SuperGroupId generate() {
+        return new SuperGroupId();
     }
 
     public static SuperGroupId valueOf(String value) {

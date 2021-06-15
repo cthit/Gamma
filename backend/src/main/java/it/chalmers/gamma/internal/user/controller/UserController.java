@@ -1,12 +1,13 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.AcceptanceYear;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.Code;
+import it.chalmers.gamma.domain.ActivationCodeToken;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
@@ -18,7 +19,6 @@ import it.chalmers.gamma.internal.user.service.CidOrCodeNotMatchException;
 import it.chalmers.gamma.internal.user.service.UserCreationService;
 
 import java.io.IOException;
-import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,14 +77,14 @@ public final class UserController {
         }
     }
 
-    record CreateUserRequest (Code code,
+    record CreateUserRequest (ActivationCodeToken token,
                               UnencryptedPassword password,
                               Nick nick,
                               FirstName firstName,
                               Email email,
                               LastName lastName,
                               boolean userAgreement,
-                              int acceptanceYear,
+                              AcceptanceYear acceptanceYear,
                               Cid cid,
                               Language language) {}
 
@@ -93,7 +93,7 @@ public final class UserController {
     public UserCreatedResponse createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
             this.userCreationService.createUserByCode(new User(
-                            new UserId(),
+                            UserId.generate(),
                             request.cid,
                             request.email,
                             request.language,
@@ -101,11 +101,10 @@ public final class UserController {
                             request.firstName,
                             request.lastName,
                             request.userAgreement,
-                            Year.of(request.acceptanceYear),
-                            true
+                            request.acceptanceYear
                     ),
                     request.password,
-                    request.code
+                    request.token
             );
         } catch (CidOrCodeNotMatchException e) {
             // If anything is wrong, throw generic error

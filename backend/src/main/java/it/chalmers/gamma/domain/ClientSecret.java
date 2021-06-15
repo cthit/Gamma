@@ -14,15 +14,19 @@ public class ClientSecret {
     @Column(name = "client_secret")
     private final String value;
 
-    public ClientSecret() {
+    protected ClientSecret() {
         value = "{noop}" + TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS
         );
     }
 
-    public ClientSecret(String value) {
+    private ClientSecret(String value) {
         this.value = value;
+    }
+
+    public static ClientSecret generate() {
+        return new ClientSecret();
     }
 
     public static ClientSecret valueOf(String value)  {

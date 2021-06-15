@@ -28,6 +28,15 @@ public class ErrorHandlingControllerAdvice {
         return new ValidationErrorResponse(errors);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Error onIllegalArgumentException(IllegalArgumentException e) {
+        return new Error(e.getStackTrace()[0].getClassName(), e.getMessage());
+    }
+
+    public record Error(String origin, String message) { }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

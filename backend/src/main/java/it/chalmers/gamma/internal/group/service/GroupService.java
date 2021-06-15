@@ -4,8 +4,15 @@ import it.chalmers.gamma.domain.Group;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.SuperGroupId;
 import it.chalmers.gamma.internal.supergroup.service.SuperGroupService;
+import it.chalmers.gamma.util.ConstraintErrorUtils;
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +29,13 @@ public class GroupService {
     }
 
     public void create(GroupShallowDTO group) throws GroupAlreadyExistsException {
-        this.repository.save(new GroupEntity(group));
+        try {
+            this.repository.save(new GroupEntity(group));
+        } catch (DataIntegrityViolationException e) {
+            System.out.println(e.getLocalizedMessage());
+            System.out.println(ConstraintErrorUtils.getConstraint(e));
+            throw new GroupAlreadyExistsException();
+        }
     }
 
     public void delete(GroupId id) throws GroupNotFoundException {

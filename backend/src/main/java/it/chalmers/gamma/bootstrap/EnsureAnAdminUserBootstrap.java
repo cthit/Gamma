@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.AcceptanceYear;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
@@ -57,21 +58,20 @@ public class EnsureAnAdminUserBootstrap {
             UserId adminId = null;
             while (i < 100) {
                 String name = admin + (i == 0 ? "" : i);
-                adminId = new UserId();
+                adminId = UserId.generate();
 
                 try {
                     this.userCreationService.createUser(
                             new User(
                                     adminId,
-                                    new Cid(name),
-                                    new Email(name + "@chalmers.it"),
+                                    Cid.valueOf(name),
+                                    Email.valueOf(name + "@chalmers.it"),
                                     Language.EN,
                                     Nick.valueOf(name),
                                     FirstName.valueOf(name),
                                     LastName.valueOf(name),
                                     true,
-                                    Year.of(2018),
-                                    true
+                                    AcceptanceYear.valueOf(2018)
                             ),
                             UnencryptedPassword.valueOf("password")
                     );

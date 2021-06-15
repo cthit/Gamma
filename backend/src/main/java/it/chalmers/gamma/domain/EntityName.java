@@ -13,7 +13,7 @@ import java.util.Objects;
 public class EntityName implements Serializable {
 
     @JsonValue
-    @Pattern(regexp = "^([a-z]{30})$")
+    @Pattern(regexp = "^([a-z]{5,30})$")
     @Column(name = "e_name")
     private String value;
 
@@ -21,10 +21,18 @@ public class EntityName implements Serializable {
 
     }
 
+    private EntityName(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        } else if (!value.matches("^([a-z]{5,30})$")) {
+            throw new IllegalArgumentException("Name must be letters a - z and be of length between 5 - 30");
+        }
+
+        this.value = value;
+    }
+
     public static EntityName valueOf(String value) {
-        EntityName name = new EntityName();
-        name.value = value;
-        return name;
+        return new EntityName(value);
     }
 
     public String get() {

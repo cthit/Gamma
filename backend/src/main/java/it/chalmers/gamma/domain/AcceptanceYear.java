@@ -3,21 +3,29 @@ package it.chalmers.gamma.domain;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
+@Embeddable
 public class AcceptanceYear implements Serializable {
 
     @JsonValue
     @Column(name = "acceptance_year")
-    @Size(min = 2001)
     private int value;
 
-    //TODO: add better validation so that you cannot set your acceptanceYear in the future.
+    protected AcceptanceYear() { }
+
+    protected AcceptanceYear(int value) {
+        if (value < 2001) {
+            throw new IllegalArgumentException("Acceptanc year cannot be less than 2001");
+        }
+
+        this.value = value;
+    }
+
     public static AcceptanceYear valueOf(int value) {
-        AcceptanceYear acceptanceYear = new AcceptanceYear();
-        acceptanceYear.value = value;
-        return acceptanceYear;
+        return new AcceptanceYear(value);
     }
 
 }

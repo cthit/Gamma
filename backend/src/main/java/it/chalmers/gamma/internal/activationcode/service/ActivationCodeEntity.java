@@ -5,8 +5,8 @@ import java.time.Instant;
 import javax.persistence.*;
 
 import it.chalmers.gamma.domain.ActivationCode;
+import it.chalmers.gamma.domain.ActivationCodeToken;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Code;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
 @Entity
@@ -17,24 +17,24 @@ public class ActivationCodeEntity extends ImmutableEntity<Cid, ActivationCode> {
     private Cid cid;
 
     @Column(name = "code")
-    private Code code;
+    private ActivationCodeToken token;
 
     @Column(name = "created_at")
     private Instant createdAt;
 
     protected ActivationCodeEntity() { }
 
-    protected ActivationCodeEntity(Cid cid, Code code) {
+    protected ActivationCodeEntity(Cid cid, ActivationCodeToken token) {
         this.createdAt = Instant.now();
         this.cid = cid;
-        this.code = code;
+        this.token = token;
     }
 
     @Override
     protected ActivationCode toDTO() {
         return new ActivationCode(
                 this.cid,
-                this.code,
+                this.token,
                 this.createdAt
         );
     }

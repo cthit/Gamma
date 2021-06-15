@@ -39,21 +39,23 @@ public final class GroupAdminController {
         this.membershipService = membershipService;
     }
 
-    private record CreateOrEditGroupRequest(EntityName name,
-                                            PrettyName prettyName,
-                                            SuperGroupId superGroup,
-                                            Email email) { }
+    private record CreateOrEditGroupRequest(@Valid EntityName name,
+                                            @Valid PrettyName prettyName,
+                                            @Valid SuperGroupId superGroup,
+                                            @Valid Email email) { }
 
     @PostMapping()
     public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest request) {
         try {
-            this.groupService.create(new GroupShallowDTO(
-                    null,
-                    request.email,
-                    request.name,
-                    request.prettyName,
-                    request.superGroup
-            ));
+            this.groupService.create(
+                    new GroupShallowDTO(
+                            GroupId.generate(),
+                            request.email,
+                            request.name,
+                            request.prettyName,
+                            request.superGroup
+                    )
+            );
         } catch (GroupService.GroupAlreadyExistsException e) {
             throw new GroupAlreadyExistsResponse();
         }

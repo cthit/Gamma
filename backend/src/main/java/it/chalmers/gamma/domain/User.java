@@ -14,6 +14,5 @@ public record User(UserId id,
                    FirstName firstName,
                    LastName lastName,
                    boolean userAgreement,
-                   Year acceptanceYear,
-                   boolean activated)
+                   AcceptanceYear acceptanceYear)
         implements DTO, UserBuilder.With { }

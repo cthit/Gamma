@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.domain.Client;
 
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.client.service.ClientService;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.UserRestricted;
@@ -63,8 +64,8 @@ public class ClientBootstrap {
                         clientId,
                         redirectUri,
                         true,
-                        EntityName.valueOf("test-client"),
-                        new Text("", "")
+                        PrettyName.valueOf("test-client"),
+                        new Text()
                 ),
                 clientSecret,
                 apiKeyToken,

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
 import it.chalmers.gamma.domain.ActivationCode;
-import it.chalmers.gamma.domain.Code;
+import it.chalmers.gamma.domain.ActivationCodeToken;
 import it.chalmers.gamma.domain.Cid;
 
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class ActivationCodeService {
             delete(cid);
         } catch (ActivationCodeNotFoundException ignored) {}
 
-        return this.repository.save(new ActivationCodeEntity(cid, Code.generate())).toDTO();
+        return this.repository.save(new ActivationCodeEntity(cid, ActivationCodeToken.generate())).toDTO();
     }
 
     public void delete(Cid cid) throws ActivationCodeNotFoundException {
@@ -42,10 +42,10 @@ public class ActivationCodeService {
                 .collect(Collectors.toList());
     }
 
-    public boolean codeMatchesCid(Cid cid, Code code) {
+    public boolean codeMatchesCid(Cid cid, ActivationCodeToken token) {
         //TODO: check if activationcode is valid
         //    @Value("${password-expiration-time}")
-        return this.repository.findActivationCodeByCidAndCode(cid, code).isPresent();
+        return this.repository.findActivationCodeByCidAndCode(cid, token).isPresent();
     }
 
     public static class ActivationCodeNotFoundException extends Exception { }

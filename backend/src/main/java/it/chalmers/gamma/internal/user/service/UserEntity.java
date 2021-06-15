@@ -1,5 +1,6 @@
 package it.chalmers.gamma.internal.user.service;
 
+import it.chalmers.gamma.domain.AcceptanceYear;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.FirstName;
@@ -46,11 +47,8 @@ public class UserEntity extends MutableEntity<UserId, User> {
     @Column(name = "user_agreement")
     private boolean userAgreement;
 
-    @Column(name = "activated")
-    private boolean activated;
-
-    @Column(name = "acceptance_year")
-    private int acceptanceYear;
+    @Embedded
+    private AcceptanceYear acceptanceYear;
 
     protected UserEntity() { }
 
@@ -74,8 +72,7 @@ public class UserEntity extends MutableEntity<UserId, User> {
                 this.firstName,
                 this.lastName,
                 this.userAgreement,
-                Year.of(this.acceptanceYear),
-                this.activated
+                this.acceptanceYear
         );
     }
 
@@ -89,8 +86,7 @@ public class UserEntity extends MutableEntity<UserId, User> {
         assert(this.id == u.id());
         assert(this.cid == u.cid());
 
-        this.acceptanceYear = u.acceptanceYear().getValue();
-        this.activated = u.activated();
+        this.acceptanceYear = u.acceptanceYear();
         this.email = u.email();
         this.firstName = u.firstName();
         this.lastName = u.lastName();

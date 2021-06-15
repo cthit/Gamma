@@ -4,6 +4,7 @@ import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.ClientWithRestrictions;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.Client;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.client.service.ClientService;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.internal.userapproval.service.UserApprovalService;
@@ -41,13 +42,13 @@ public class UserApprovalController {
 
     //TODO: Implement Delete
 
-    public record ClientUserAccess(EntityName name, Text description) implements DTO { }
+    public record ClientUserAccess(PrettyName name, Text description) implements DTO { }
 
     @GetMapping()
     public List<ClientUserAccess> getApprovedClientsByUser(Principal principal) {
         String cid = principal.getName();
         try {
-            UserId userId = this.userService.get(new Cid(cid)).id();
+            UserId userId = this.userService.get(Cid.valueOf(cid)).id();
 
             return this.userApprovalService.getApprovalsByUser(userId)
                     .stream()
@@ -56,7 +57,7 @@ public class UserApprovalController {
                                 try {
                                     Client client = clientService.get(userApproval.clientId()).client();
                                     return new ClientUserAccess(
-                                            client.name(),
+                                            client.prettyName(),
                                             client.description()
                                     );
                                 } catch (ClientService.ClientNotFoundException e) {

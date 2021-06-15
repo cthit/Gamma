@@ -13,13 +13,24 @@ public class Nick implements Serializable {
 
     @JsonValue
     @Column(name = "nick")
-    @Max(30)
     private String value;
 
+    protected Nick() {
+
+    }
+
+    private Nick(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Nick cannot be null");
+        } else if (value.length() < 1 || value.length() > 30) {
+            throw new IllegalArgumentException("Nick length must be between 1 and 30");
+        }
+
+        this.value = value;
+    }
+
     public static Nick valueOf(String value) {
-        Nick nick = new Nick();
-        nick.value = value;
-        return nick;
+        return new Nick(value);
     }
 
     public String get() {

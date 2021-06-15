@@ -92,8 +92,8 @@ public class AuthorityFinder {
         List<Membership> memberships = this.membershipService.getMembershipsByUser(userId);
 
         memberships.forEach(membership -> {
-            authorities.add(new Authority(new AuthorityLevelName(membership.group().name().get()), AuthorityType.GROUP));
-            authorities.add(new Authority(new AuthorityLevelName(membership.group().superGroup().name().get()), AuthorityType.SUPERGROUP));
+            authorities.add(new Authority(AuthorityLevelName.valueOf(membership.group().name().get()), AuthorityType.GROUP));
+            authorities.add(new Authority(AuthorityLevelName.valueOf(membership.group().superGroup().name().get()), AuthorityType.SUPERGROUP));
         });
 
         //Super groups restrictions

@@ -5,26 +5,22 @@ import it.chalmers.gamma.util.TokenUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class Code implements Serializable {
+public class ActivationCodeToken implements Serializable {
 
     @JsonValue
     @Column(name = "code")
-    @Pattern(regexp = "^([0-9]{8})$")
     private String value;
 
-    protected Code() { }
-
-    private Code(String value) {
-        this.value = value;
+    protected ActivationCodeToken() {
+        this.value = TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS);
     }
 
-    public static Code generate() {
-        return new Code(TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS));
+    public static ActivationCodeToken generate() {
+        return new ActivationCodeToken();
     }
 
     public String get() {
@@ -39,8 +35,8 @@ public class Code implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Code code = (Code) o;
-        return Objects.equals(value, code.value);
+        ActivationCodeToken token = (ActivationCodeToken) o;
+        return Objects.equals(value, token.value);
     }
 
     @Override

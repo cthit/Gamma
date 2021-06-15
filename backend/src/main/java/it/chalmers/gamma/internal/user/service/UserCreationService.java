@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.user.service;
 
-import it.chalmers.gamma.domain.Code;
+import it.chalmers.gamma.domain.ActivationCodeToken;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
@@ -30,8 +30,8 @@ public class UserCreationService {
         this.repository = repository;
     }
 
-    public void createUserByCode(User newUser, UnencryptedPassword password, Code code) throws CidOrCodeNotMatchException {
-        if(!activationCodeService.codeMatchesCid(newUser.cid(), code)) {
+    public void createUserByCode(User newUser, UnencryptedPassword password, ActivationCodeToken token) throws CidOrCodeNotMatchException {
+        if(!activationCodeService.codeMatchesCid(newUser.cid(), token)) {
             throw new CidOrCodeNotMatchException();
         }
 

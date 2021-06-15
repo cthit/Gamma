@@ -105,7 +105,7 @@ public class ClientDetailsImpl implements ClientDetails {
     @Override
     public Map<String, Object> getAdditionalInformation() {
         Map<String, Object> additionalInformation = new HashMap<>();
-        additionalInformation.put("name", this.client.name());
+        additionalInformation.put("name", this.client.prettyName());
         additionalInformation.put("description", this.client.description());
         return additionalInformation;
     }

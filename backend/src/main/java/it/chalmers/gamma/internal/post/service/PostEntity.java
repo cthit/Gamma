@@ -16,7 +16,7 @@ public class PostEntity extends MutableEntity<PostId, Post> {
     private PostId id;
 
     @JoinColumn(name = "post_name")
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE)
     private TextEntity postName;
 
     @Column(name = "email_prefix")

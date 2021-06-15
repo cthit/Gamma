@@ -15,12 +15,16 @@ public class UserId extends Id<UUID> implements DTO {
     @Column(name = "user_id")
     private final UUID value;
 
-    public UserId() {
+    protected UserId() {
         this.value = UUID.randomUUID();
     }
 
     private UserId(UUID value) {
         this.value = value;
+    }
+
+    public static UserId generate() {
+        return new UserId();
     }
 
     public static UserId valueOf(String value) {

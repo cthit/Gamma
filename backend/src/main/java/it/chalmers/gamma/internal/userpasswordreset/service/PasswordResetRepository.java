@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetTokenEntity, UserId> { }
+public interface PasswordResetRepository extends JpaRepository<PasswordResetEntity, UserId> { }

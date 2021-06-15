@@ -14,12 +14,16 @@ public class ApiKeyId extends Id<UUID> {
     @Column(name = "api_key_id")
     private final UUID value;
 
-    public ApiKeyId() {
+    protected ApiKeyId() {
         this.value = UUID.randomUUID();
     }
 
     private ApiKeyId(UUID value) {
         this.value = value;
+    }
+
+    public static ApiKeyId generate() {
+        return new ApiKeyId();
     }
 
     public static ApiKeyId valueOf(String value) {

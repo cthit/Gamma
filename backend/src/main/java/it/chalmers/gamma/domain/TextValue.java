@@ -4,32 +4,36 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class PrettyName implements Serializable {
+public class TextValue implements Serializable {
 
     @JsonValue
-    @Column(name = "pretty_name")
+    @Column
     private String value;
 
-    protected PrettyName() { }
+    protected TextValue() {
+        value = "";
+    }
 
-    private PrettyName(String value) {
+    private TextValue(String value) {
         if (value == null) {
-            throw new IllegalArgumentException("Pretty name cannot be null");
-        } else if (value.length() < 5 || value.length() > 50) {
-            throw new IllegalArgumentException("Pretty name must be between 5 and 50 in length");
+            throw new IllegalArgumentException("Text value cannot be null");
+        } else if (value.length() > 2048) {
+            throw new IllegalArgumentException("Text value max length is 2048");
         }
 
         this.value = value;
     }
 
-    public static PrettyName valueOf(String value) {
-        return new PrettyName(value);
+    public static TextValue empty() {
+        return new TextValue();
+    }
+
+    public static TextValue valueOf(String value) {
+        return new TextValue(value);
     }
 
     public String get() {
@@ -45,8 +49,8 @@ public class PrettyName implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PrettyName that = (PrettyName) o;
-        return Objects.equals(value, that.value);
+        TextValue lastName = (TextValue) o;
+        return Objects.equals(value, lastName.value);
     }
 
     @Override

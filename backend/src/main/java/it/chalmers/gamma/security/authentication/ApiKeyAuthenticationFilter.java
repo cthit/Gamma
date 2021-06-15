@@ -38,7 +38,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        ApiKeyToken token = new ApiKeyToken(resolveToken(request));
+        ApiKeyToken token = ApiKeyToken.valueOf(resolveToken(request));
         if (this.apiKeyService.isValidApiKey(token)) {
             Authentication auth = getAdminAuthentication();
             SecurityContextHolder.getContext().setAuthentication(auth);

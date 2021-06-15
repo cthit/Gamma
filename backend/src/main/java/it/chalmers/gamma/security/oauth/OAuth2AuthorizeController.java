@@ -28,8 +28,8 @@ public class OAuth2AuthorizeController {
     @GetMapping("/oauth/confirm_access")
     public String getConfirmAccess(@ModelAttribute AuthorizationRequest clientAuth, Model model) {
         try {
-            Client client = this.clientService.get(new ClientId(clientAuth.getClientId())).client();
-            model.addAttribute("clientName", client.name());
+            Client client = this.clientService.get(ClientId.valueOf(clientAuth.getClientId())).client();
+            model.addAttribute("clientName", client.prettyName());
         } catch (ClientService.ClientNotFoundException e) {
             LOGGER.error("Cannot find provided client in authorize", e);
         }

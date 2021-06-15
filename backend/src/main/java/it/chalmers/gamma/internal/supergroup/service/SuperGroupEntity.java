@@ -20,7 +20,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
     private SuperGroupId id;
 
     @JoinColumn(name = "description")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     private TextEntity description;
 
     @Embedded

@@ -3,6 +3,7 @@ package it.chalmers.gamma.security;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.internal.group.service.GroupService;
+import it.chalmers.gamma.internal.userlocked.service.UserLockedService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
@@ -47,8 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
-    private final GroupService groupFinder;
     private final ApiKeyService apiKeyService;
+    private final UserLockedService userLockedService;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
@@ -62,15 +63,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
-                             GroupService groupFinder,
-                             ApiKeyService apiKeyService) {
+                             ApiKeyService apiKeyService,
+                             UserLockedService userLockedService) {
         this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.passwordResetService = passwordResetService;
         this.passwordEncoder = passwordEncoder;
         this.loginRedirectHandler = loginRedirectHandler;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
-        this.groupFinder = groupFinder;
+        this.userLockedService = userLockedService;
         this.apiKeyService = apiKeyService;
     }
 
@@ -85,7 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         setTheRestOfPathsToAuthenticatedOnly(http);
         addRedirectFilter(http);
     }
-
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -140,8 +140,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.issuer,
                             this.passwordResetService,
                             this.baseFrontendUrl,
-                            this.apiKeyService
-                    )
+                            this.apiKeyService,
+                            userLockedService)
             );
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding JwtAuthenticationFilter", e);

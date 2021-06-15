@@ -54,7 +54,7 @@ public final class WhitelistController {
     }
 
     private void sendEmail(ActivationCode activationCode) {
-        String code = activationCode.code().get();
+        String code = activationCode.token().get();
         String to = activationCode.cid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
         this.mailSenderService.trySendingMail(to, "Chalmers activationcode code", message);

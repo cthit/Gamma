@@ -1,8 +1,8 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
 import it.chalmers.gamma.domain.ActivationCode;
+import it.chalmers.gamma.domain.ActivationCodeToken;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Code;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
-class ActivationCodeServiceTest {
+class ActivationActivationCodeTokenServiceTest {
 
     @Mock
     private ActivationCodeRepository activationCodeRepository;
@@ -37,7 +37,7 @@ class ActivationCodeServiceTest {
         given(activationCodeRepository.save(any(ActivationCodeEntity.class)))
                 .willAnswer(returnsFirstArg());
 
-        Cid cid = new Cid("mycid");
+        Cid cid = Cid.valueOf("mycid");
         ActivationCode activationCode = activationCodeService.saveActivationCode(cid);
 
         ActivationCodeDTOAssert.assertThat(activationCode)
@@ -48,8 +48,8 @@ class ActivationCodeServiceTest {
 
     @Test
     void delete() {
-        Cid cid = new Cid("mycid");
-        Cid cid2 = new Cid("mycidi");
+        Cid cid = Cid.valueOf("mycid");
+        Cid cid2 = Cid.valueOf("mycidi");
 
         willThrow(IllegalArgumentException.class)
                 .given(activationCodeRepository)
@@ -72,8 +72,8 @@ class ActivationCodeServiceTest {
     @Test
     void getAll() {
         List<ActivationCodeEntity> activationCodeList = new ArrayList<>();
-        activationCodeList.add(ActivationCodeFactory.create(new Cid("mycid"), Code.generate()));
-        activationCodeList.add(ActivationCodeFactory.create(new Cid("mycidi"), Code.generate()));
+        activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycid"), ActivationCodeToken.generate()));
+        activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycidi"), ActivationCodeToken.generate()));
 
         //given
         given(activationCodeRepository.findAll())
@@ -93,18 +93,18 @@ class ActivationCodeServiceTest {
 
     @Test
     void codeMatchesCid() {
-        Cid cid = new Cid("mycid");
-        Code code = Code.generate();
+        Cid cid = Cid.valueOf("mycid");
+        ActivationCodeToken token = ActivationCodeToken.generate();
 
         //given
-        given(activationCodeRepository.findActivationCodeByCidAndCode(any(Cid.class), any(Code.class)))
+        given(activationCodeRepository.findActivationCodeByCidAndCode(any(Cid.class), any(ActivationCodeToken.class)))
                 .willReturn(Optional.empty());
-        given(activationCodeRepository.findActivationCodeByCidAndCode(eq(cid), eq(code)))
-                .willReturn(Optional.of(ActivationCodeFactory.create(cid, code)));
+        given(activationCodeRepository.findActivationCodeByCidAndCode(eq(cid), eq(token)))
+                .willReturn(Optional.of(ActivationCodeFactory.create(cid, token)));
 
         //when
-        boolean combination1 = activationCodeService.codeMatchesCid(cid, code);
-        boolean combination2 = activationCodeService.codeMatchesCid(cid, Code.generate());
+        boolean combination1 = activationCodeService.codeMatchesCid(cid, token);
+        boolean combination2 = activationCodeService.codeMatchesCid(cid, ActivationCodeToken.generate());
 
         //then
         assertThat(combination1).isTrue();

@@ -13,13 +13,18 @@ public class Cid extends Id<String> implements DTO {
 
     @JsonValue
     @Column(name = "cid")
-    @Size(min = 4, max = 12, message = "CIDS_MUST_BE_BETWEEN_4_AND_12_CHARACTERS")
     private String value;
 
     protected Cid() {}
 
-    public Cid(String value) {
-        this.value = value.toLowerCase();
+    protected Cid(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cid cannot be null");
+        } else if (!value.matches("^([a-z]{4,12})$")) {
+            throw new IllegalArgumentException("Cid length must be between 4 and 12, and only have letters between a - z");
+        }
+
+        this.value = value;
     }
 
     public static Cid valueOf(String cid) {

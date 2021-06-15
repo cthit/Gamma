@@ -5,7 +5,9 @@ import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.domain.EntityName;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.Text;
+import it.chalmers.gamma.domain.TextValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -33,8 +35,8 @@ class ApiKeyServiceTest {
     @Test
     void create() {
         ApiKey apiKey = new ApiKey(
-                new ApiKeyId(),
-                EntityName.valueOf("myapikey"),
+                ApiKeyId.generate(),
+                PrettyName.valueOf("myapikey"),
                 new Text(
                         "Min API nyckel",
                         "My API key"
@@ -42,7 +44,7 @@ class ApiKeyServiceTest {
                 ApiKeyType.CLIENT
         );
 
-        apiKeyService.create(apiKey, new ApiKeyToken());
+        apiKeyService.create(apiKey, ApiKeyToken.generate());
 
         ArgumentCaptor<ApiKeyEntity> captor = ArgumentCaptor.forClass(ApiKeyEntity.class);
         verify(apiKeyRepository).save(captor.capture());
@@ -55,8 +57,8 @@ class ApiKeyServiceTest {
 
     @Test
     void delete() {
-        ApiKeyId apiKeyId = new ApiKeyId();
-        ApiKeyId apiKeyId2 = new ApiKeyId();
+        ApiKeyId apiKeyId = ApiKeyId.generate();
+        ApiKeyId apiKeyId2 = ApiKeyId.generate();
 
         willThrow(IllegalArgumentException.class)
                 .given(apiKeyRepository)

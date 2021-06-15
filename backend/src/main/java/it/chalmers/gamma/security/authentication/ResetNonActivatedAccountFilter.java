@@ -3,6 +3,7 @@ package it.chalmers.gamma.security.authentication;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.user.service.UserService;
+import it.chalmers.gamma.internal.userlocked.service.UserLockedService;
 import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -20,13 +21,16 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetNonActivatedAccountFilter.class);
     private final PasswordResetService passwordResetService;
     private final UserService userService;
+    private final UserLockedService userLockedService;
 
     public ResetNonActivatedAccountFilter(String baseFrontendUrl,
                                           PasswordResetService passwordResetService,
-                                          UserService userService) {
+                                          UserService userService,
+                                          UserLockedService userLockedService) {
         this.baseFrontendUrl = baseFrontendUrl;
         this.passwordResetService = passwordResetService;
         this.userService = userService;
+        this.userLockedService = userLockedService;
     }
 
     @Override
@@ -35,8 +39,8 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                User user = this.userService.get(new Cid(username));
-                if (!user.activated()) {
+                User user = this.userService.get(Cid.valueOf(username));
+                if (this.userLockedService.isLocked(user.id())) {
                     this.passwordResetService.handlePasswordReset(user);
                     String params = "accountLocked=true";
                     response.sendRedirect(String.format("%s/reset-password/finish?%s", this.baseFrontendUrl, params));

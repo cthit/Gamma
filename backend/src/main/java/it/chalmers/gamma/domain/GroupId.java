@@ -14,12 +14,16 @@ public class GroupId extends Id<UUID> {
     @Column(name = "group_id")
     private final UUID value;
 
-    public GroupId() {
+    protected GroupId() {
         this.value = UUID.randomUUID();
     }
 
     private GroupId(UUID value) {
         this.value = value;
+    }
+
+    public static GroupId generate() {
+        return new GroupId();
     }
 
     public static GroupId valueOf(String value) {

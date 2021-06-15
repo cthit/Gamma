@@ -7,13 +7,24 @@ import javax.validation.constraints.Min;
 
 public class UnencryptedPassword {
 
-    @Min(8)
     private String password;
 
+    protected UnencryptedPassword() {
+
+    }
+
+    private UnencryptedPassword(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Password cannot be null");
+        } else if (value.length() < 8) {
+            throw new IllegalArgumentException("Password length must be atleast 8");
+        }
+
+        this.password = value;
+    }
+
     public static UnencryptedPassword valueOf(String value) {
-        UnencryptedPassword unencryptedPassword = new UnencryptedPassword();
-        unencryptedPassword.password = value;
-        return unencryptedPassword;
+        return new UnencryptedPassword(value);
     }
 
     public Password encrypt(PasswordEncoder passwordEncoder) {

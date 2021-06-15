@@ -29,9 +29,9 @@ class AuthorityPostServiceTest {
 
     @Test
     void successfulCreation() {
-        SuperGroupId superGroupId = new SuperGroupId();
-        PostId postId = new PostId();
-        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authorityLevelName");
+        SuperGroupId superGroupId = SuperGroupId.generate();
+        PostId postId = PostId.generate();
+        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
 
@@ -49,9 +49,9 @@ class AuthorityPostServiceTest {
 
     @Test
     void throwIfAuthorityAlreadyExists() {
-        SuperGroupId superGroupId = new SuperGroupId();
-        PostId postId = new PostId();
-        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authorityLevelName");
+        SuperGroupId superGroupId =  SuperGroupId.generate();
+        PostId postId = PostId.generate();
+        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
         AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
@@ -66,9 +66,9 @@ class AuthorityPostServiceTest {
 
     @Test
     void compareEntityAndDTO() {
-        SuperGroupId superGroupId = new SuperGroupId();
-        PostId postId = new PostId();
-        AuthorityLevelName authorityLevelName = new AuthorityLevelName("authorityLevelName");
+        SuperGroupId superGroupId = SuperGroupId.generate();
+        PostId postId = PostId.generate();
+        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
 
         AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
 
@@ -83,15 +83,15 @@ class AuthorityPostServiceTest {
     @Test
     void successfulDeletion() {
         AuthorityPostPK authority = new AuthorityPostPK(
-                new SuperGroupId(),
-                new PostId(),
-                new AuthorityLevelName("authority1")
+                SuperGroupId.generate(),
+                PostId.generate(),
+                AuthorityLevelName.valueOf("authority1")
         );
 
         AuthorityPostPK authority2 = new AuthorityPostPK(
-                new SuperGroupId(),
-                new PostId(),
-                new AuthorityLevelName("authority1")
+                SuperGroupId.generate(),
+                PostId.generate(),
+                AuthorityLevelName.valueOf("authority1")
         );
 
         willThrow(IllegalArgumentException.class)
@@ -111,9 +111,9 @@ class AuthorityPostServiceTest {
     @Test
     void failedDeletion() {
         AuthorityPostPK authority2 = new AuthorityPostPK(
-                new SuperGroupId(),
-                new PostId(),
-                new AuthorityLevelName("authority1")
+                SuperGroupId.generate(),
+                PostId.generate(),
+                AuthorityLevelName.valueOf("authority1")
         );
 
         willThrow(IllegalArgumentException.class)

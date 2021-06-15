@@ -13,13 +13,24 @@ public class LastName implements Serializable {
 
     @JsonValue
     @Column(name = "last_name")
-    @Max(60)
     private String value;
 
+    protected LastName() {
+
+    }
+
+    private LastName(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Last name cannot be null");
+        } else if (value.length() < 1 || value.length() > 50) {
+            throw new IllegalArgumentException("Last name length must be between 1 and 50");
+        }
+
+        this.value = value;
+    }
+
     public static LastName valueOf(String value) {
-        LastName lastName = new LastName();
-        lastName.value = value;
-        return lastName;
+        return new LastName(value);
     }
 
     public String get() {

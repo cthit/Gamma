@@ -149,7 +149,7 @@ public class MeController {
     }
 
     private User extractUser(Principal principal) throws UserService.UserNotFoundException {
-        return this.userService.get(new Cid(principal.getName()));
+        return this.userService.get(Cid.valueOf(principal.getName()));
     }
 
     private static class EditedProfilePictureResponse extends SuccessResponse { }

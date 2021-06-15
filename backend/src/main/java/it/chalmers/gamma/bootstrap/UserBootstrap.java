@@ -55,14 +55,13 @@ public class UserBootstrap {
                 new User(
                         mockUser.id(),
                         mockUser.cid(),
-                        new Email(mockUser.cid() + "@student.chalmers.it"),
+                        Email.valueOf(mockUser.cid() + "@student.chalmers.it"),
                         Language.EN,
                         mockUser.nick(),
                         mockUser.firstName(),
                         mockUser.lastName(),
                         true,
-                        Year.of(mockUser.acceptanceYear()),
-                        true
+                        mockUser.acceptanceYear()
                 ),
                 UnencryptedPassword.valueOf("password")
         ));

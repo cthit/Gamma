@@ -2,6 +2,7 @@ package it.chalmers.gamma.internal.text.service;
 
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.TextId;
+import it.chalmers.gamma.domain.TextValue;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
 import javax.persistence.*;
@@ -13,17 +14,19 @@ public class TextEntity extends MutableEntity<TextId, Text> {
     @EmbeddedId
     private final TextId textId;
 
-    @Column(name = "sv")
-    private String sv;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "sv"))
+    private TextValue sv;
 
-    @Column(name = "en")
-    private String en;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "en"))
+    private TextValue en;
 
     public TextEntity() {
-        this(new TextId(), null, null);
+        this(TextId.generate(), null, null);
     }
 
-    public TextEntity(TextId textId, String sv, String en) {
+    public TextEntity(TextId textId, TextValue sv, TextValue en) {
         assert(textId != null);
 
         this.textId = textId;
@@ -32,7 +35,7 @@ public class TextEntity extends MutableEntity<TextId, Text> {
     }
 
     public TextEntity(Text text) {
-        this(new TextId(), text.sv(), text.en());
+        this(TextId.generate(), text.sv(), text.en());
     }
 
     @Override

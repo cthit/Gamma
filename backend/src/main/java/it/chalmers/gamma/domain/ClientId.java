@@ -15,15 +15,19 @@ public class ClientId extends Id<String> implements Serializable {
     @Column(name = "client_id")
     private final String value;
 
-    public ClientId() {
+    protected ClientId() {
         value = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS
         );
     }
 
-    public ClientId(String value) {
+    private ClientId(String value) {
         this.value = value;
+    }
+
+    public static ClientId generate() {
+        return new ClientId();
     }
 
     public static ClientId valueOf(String value)  {

@@ -4,6 +4,7 @@ import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
 import it.chalmers.gamma.domain.EntityName;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 
@@ -20,7 +21,7 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
     private ClientSecret clientSecret;
 
     @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE)
     private TextEntity description;
 
     @Column(name = "web_server_redirect_uri")
@@ -30,7 +31,7 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
     private boolean autoApprove;
 
     @Embedded
-    private EntityName name;
+    private PrettyName prettyName;
 
     protected ClientEntity() { }
 
@@ -40,7 +41,7 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
         this.description = new TextEntity(client.description());
         this.webServerRedirectUri = client.webServerRedirectUri();
         this.autoApprove = client.autoApprove();
-        this.name = client.name();
+        this.prettyName = client.prettyName();
         this.description.apply(client.description());
     }
 
@@ -63,7 +64,7 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
                 this.clientId,
                 this.webServerRedirectUri,
                 this.autoApprove,
-                this.name,
+                this.prettyName,
                 this.description.toDTO()
         );
     }

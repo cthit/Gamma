@@ -14,12 +14,16 @@ public class PostId extends Id<UUID> {
     @Column(name = "post_id")
     private final UUID value;
 
-    public PostId() {
+    protected PostId() {
         this.value = UUID.randomUUID();
     }
 
     private PostId(UUID value) {
         this.value = value;
+    }
+
+    public static PostId generate() {
+        return new PostId();
     }
 
     public static PostId valueOf(String value) {

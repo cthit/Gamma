@@ -14,12 +14,16 @@ public class TextId extends Id<UUID> {
     @Column(name = "text_id")
     private final UUID value;
 
-    public TextId() {
+    protected TextId() {
         this.value = UUID.randomUUID();
     }
 
     private TextId(UUID value) {
         this.value = value;
+    }
+
+    public static TextId generate() {
+        return new TextId();
     }
 
     public static TextId valueOf(String value) {

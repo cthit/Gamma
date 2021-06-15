@@ -93,7 +93,7 @@ public class ApiV1Controller {
     @GetMapping("/users/me")
     public GetMeResponse getMe(Principal principal) {
         try {
-            User user = this.userService.get(new Cid(principal.getName()));
+            User user = this.userService.get(Cid.valueOf(principal.getName()));
             List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
                     .stream()
                     .map(membership -> new GroupPost(membership.post(), membership.group()))

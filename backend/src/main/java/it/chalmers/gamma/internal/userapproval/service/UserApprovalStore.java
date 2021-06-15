@@ -34,9 +34,9 @@ public class UserApprovalStore implements ApprovalStore {
         accessApproval.ifPresent(approval -> {
             try {
                 String cid = approval.getUserId();
-                User user = this.userService.get(new Cid(cid));
+                User user = this.userService.get(Cid.valueOf(cid));
 
-                ClientId clientId = new ClientId(approval.getClientId());
+                ClientId clientId = ClientId.valueOf(approval.getClientId());
 
                 this.userApprovalService.create(new UserApproval(user.id(), clientId));
             } catch (UserService.UserNotFoundException e) {
@@ -55,9 +55,9 @@ public class UserApprovalStore implements ApprovalStore {
     @Override
     public Collection<Approval> getApprovals(String cid, String clientId) {
         try {
-            UserId userId = this.userService.get(new Cid(cid)).id();
+            UserId userId = this.userService.get(Cid.valueOf(cid)).id();
 
-            UserApproval userApproval = this.userApprovalService.get(new UserApprovalPK(userId, new ClientId(clientId)));
+            UserApproval userApproval = this.userApprovalService.get(new UserApprovalPK(userId, ClientId.valueOf(clientId)));
             return userApproval == null
                     ? Collections.emptyList()
                     : Collections.singleton(

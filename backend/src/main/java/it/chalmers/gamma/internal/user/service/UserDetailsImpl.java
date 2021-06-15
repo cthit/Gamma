@@ -16,11 +16,11 @@ public class UserDetailsImpl implements UserDetails {
     private final List<AuthorityLevelName> authorities;
     private final boolean accountLocked;
 
-    public UserDetailsImpl(String cid,
+    public UserDetailsImpl(Cid cid,
                            String password,
                            List<AuthorityLevelName> authorities,
                            boolean accountLocked) {
-        this.cid = new Cid(cid);
+        this.cid = cid;
         this.password = password;
         this.authorities = authorities;
         this.accountLocked = accountLocked;

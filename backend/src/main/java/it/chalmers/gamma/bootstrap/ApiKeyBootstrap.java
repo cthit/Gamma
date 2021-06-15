@@ -3,6 +3,7 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
@@ -42,9 +43,9 @@ public class ApiKeyBootstrap {
                 ApiKeyToken apiKeyToken = ApiKeyToken.valueOf(apiKeyType.name() + "-super-secret-token");
                 this.apiKeyService.create(
                         new ApiKey(
-                                new ApiKeyId(),
-                                EntityName.valueOf(apiKeyType.name() + "-mock"),
-                                new Text("", ""),
+                                ApiKeyId.generate(),
+                                PrettyName.valueOf(apiKeyType.name() + "-mock"),
+                                new Text(),
                                 apiKeyType
                         ),
                         apiKeyToken

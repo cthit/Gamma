@@ -14,13 +14,18 @@ public class SuperGroupType extends Id<String> implements DTO {
 
     @Column(name = "super_group_type_name")
     @JsonValue
-    @Pattern(regexp = "^([a-z]{30})$")
     private String value;
 
     protected SuperGroupType() { }
 
     private SuperGroupType(String value) {
-        this.value = value.toLowerCase(Locale.ROOT);
+        if (value == null) {
+            throw new IllegalArgumentException("Super group type cannot be null");
+        } else if (!value.matches("^([a-z]{5,30})$")) {
+            throw new IllegalArgumentException("Super group type must be made using letters with length between 5 - 30");
+        }
+
+        this.value = value;
     }
 
     public static SuperGroupType valueOf(String name) {

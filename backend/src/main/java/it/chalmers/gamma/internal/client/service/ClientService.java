@@ -10,7 +10,7 @@ import it.chalmers.gamma.domain.ClientWithRestrictions;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
-import it.chalmers.gamma.domain.ClientApiKey;
+import it.chalmers.gamma.domain.ClientApiKeyPair;
 import it.chalmers.gamma.internal.clientapikey.service.ClientApiKeyService;
 import it.chalmers.gamma.internal.client.controller.ClientAdminController;
 
@@ -43,7 +43,7 @@ public class ClientService implements ClientDetailsService {
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
-        return this.clientRepository.findById(new ClientId(clientId))
+        return this.clientRepository.findById(ClientId.valueOf(clientId))
                 .map(clientEntity -> new ClientDetailsImpl(clientEntity.toDTO(), clientEntity.getClientSecret()))
                 .orElseThrow(ClientAdminController.ClientNotFoundResponse::new);
     }
@@ -61,12 +61,12 @@ public class ClientService implements ClientDetailsService {
                                  List<AuthorityLevelName> restrictions) {
         this.create(newClient, clientSecret, restrictions);
 
-        ApiKeyId apiKeyId = new ApiKeyId();
+        ApiKeyId apiKeyId = ApiKeyId.generate();
 
         this.apiKeyService.create(
                 new ApiKey(
                         apiKeyId,
-                        newClient.name(),
+                        newClient.prettyName(),
                         newClient.description(),
                         ApiKeyType.CLIENT
                 ),
@@ -74,7 +74,7 @@ public class ClientService implements ClientDetailsService {
         );
 
         this.clientApiKeyService.create(
-                new ClientApiKey(
+                new ClientApiKeyPair(
                         newClient.clientId(),
                         apiKeyId
                 )

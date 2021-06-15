@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.AcceptanceYear;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.LastName;
@@ -49,7 +50,7 @@ public record MockData(List<MockUser> users,
             Nick nick,
             FirstName firstName,
             LastName lastName,
-            int acceptanceYear,
+            AcceptanceYear acceptanceYear,
             List<AuthorityLevelName> authorities) { }
 
     public record MockPostAuthority(

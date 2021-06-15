@@ -2,8 +2,8 @@ package it.chalmers.gamma.internal.client.controller;
 
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.ClientWithRestrictions;
-import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.Text;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
@@ -33,7 +33,7 @@ public class ClientAdminController {
     }
 
     private record CreateClientRequest(String webServerRedirectUri,
-                                       EntityName name,
+                                       PrettyName prettyName,
                                        boolean autoApprove,
                                        Text description,
                                        boolean generateApiKey,
@@ -44,19 +44,19 @@ public class ClientAdminController {
 
     @PostMapping()
     public NewClientSecrets addClient(@RequestBody CreateClientRequest request) {
-        ClientSecret clientSecret = new ClientSecret();
+        ClientSecret clientSecret = ClientSecret.generate();
         ApiKeyToken apiKeyToken = null;
 
         Client newClient =
                 new Client(
-                        new ClientId(),
+                        ClientId.generate(),
                         request.webServerRedirectUri,
                         request.autoApprove,
-                        request.name,
+                        request.prettyName,
                         request.description
                 );
         if (request.generateApiKey) {
-            apiKeyToken = new ApiKeyToken();
+            apiKeyToken = ApiKeyToken.generate();
             this.clientService.createWithApiKey(newClient, clientSecret, apiKeyToken, request.restrictions);
         } else {
             this.clientService.create(newClient, clientSecret, request.restrictions);
@@ -67,7 +67,7 @@ public class ClientAdminController {
 
     @PostMapping("/{clientId}/reset")
     public ClientSecret resetClientCredentials(@PathVariable("clientId") ClientId clientId) {
-        ClientSecret clientSecret = new ClientSecret();
+        ClientSecret clientSecret = ClientSecret.generate();
 
         try {
             this.clientService.resetClientSecret(clientId, clientSecret);

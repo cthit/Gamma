@@ -1,14 +1,14 @@
 package it.chalmers.gamma.internal.activationcode.service;
 
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.Code;
+import it.chalmers.gamma.domain.ActivationCodeToken;
 
 public class ActivationCodeFactory {
 
     private ActivationCodeFactory() { }
 
-    public static ActivationCodeEntity create(Cid cid, Code code) {
-        return new ActivationCodeEntity(cid, code);
+    public static ActivationCodeEntity create(Cid cid, ActivationCodeToken token) {
+        return new ActivationCodeEntity(cid, token);
     }
 
 }

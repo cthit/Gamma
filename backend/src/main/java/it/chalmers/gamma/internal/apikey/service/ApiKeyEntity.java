@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.domain.EntityName;
+import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
@@ -21,11 +22,11 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
     private ApiKeyToken key;
 
     @JoinColumn(name = "description")
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE)
     private TextEntity description;
 
     @Embedded
-    private EntityName name;
+    private PrettyName prettyName;
 
     @Enumerated(EnumType.STRING)
     private ApiKeyType keyType;
@@ -38,7 +39,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
 
         this.id = apiKey.id();
         this.key = apiKeyToken;
-        this.name = apiKey.name();
+        this.prettyName = apiKey.prettyName();
         this.description = new TextEntity(apiKey.description());
         this.keyType = apiKey.keyType();
     }
@@ -47,7 +48,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
     protected ApiKey toDTO() {
         return new ApiKey(
                 this.id,
-                this.name,
+                this.prettyName,
                 this.description.toDTO(),
                 this.keyType
         );

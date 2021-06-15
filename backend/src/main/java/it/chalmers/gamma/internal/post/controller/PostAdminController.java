@@ -45,7 +45,7 @@ public final class PostAdminController {
     @PostMapping()
     public PostCreatedResponse addPost(@Valid @RequestBody CreateOrEditPost request) {
         this.postService.create(
-                new Post(new PostId(), request.post(), request.emailPrefix())
+                new Post(PostId.generate(), request.post(), request.emailPrefix())
         );
         return new PostCreatedResponse();
     }

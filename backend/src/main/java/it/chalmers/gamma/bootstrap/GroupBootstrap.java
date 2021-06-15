@@ -73,7 +73,7 @@ public class GroupBootstrap {
 
             GroupShallowDTO group = new GroupShallowDTO(
                     mockGroup.id(),
-                    new Email(name + "@chalmers.lol"),
+                    Email.valueOf(name + "@chalmers.lol"),
                     name,
                     prettyName,
                     mockGroup.superGroupId()

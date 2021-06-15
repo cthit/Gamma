@@ -1,6 +1,7 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.domain.AcceptanceYear;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
@@ -113,13 +114,13 @@ public final class UserAdminController {
                                          LastName lastName,
                                          Email email,
                                          boolean userAgreement,
-                                         int acceptanceYear,
+                                         AcceptanceYear acceptanceYear,
                                          Language language) { }
 
     @PostMapping()
     public UserCreatedResponse addUser(@Valid @RequestBody AdminViewCreateUserRequest request) {
         this.userCreationService.createUser(new User(
-                new UserId(),
+                UserId.generate(),
                 request.cid,
                 request.email,
                 request.language,
@@ -127,8 +128,7 @@ public final class UserAdminController {
                 request.firstName,
                 request.lastName,
                 request.userAgreement,
-                Year.of(request.acceptanceYear),
-                true
+                request.acceptanceYear
         ), request.password);
         return new UserCreatedResponse();
     }
@@ -138,7 +138,7 @@ public final class UserAdminController {
                             LastName lastName,
                             Email email,
                             Language language,
-                            int acceptanceYear) { }
+                            AcceptanceYear acceptanceYear) { }
 
     @PutMapping("/{id}")
     public UserEditedResponse editUser(@PathVariable("id") UserId id,
@@ -151,7 +151,7 @@ public final class UserAdminController {
                     .lastName(request.lastName)
                     .email(request.email)
                     .language(request.language)
-                    .acceptanceYear(Year.of(request.acceptanceYear))
+                    .acceptanceYear(request.acceptanceYear)
                     .build()
             );
             return new UserEditedResponse();
