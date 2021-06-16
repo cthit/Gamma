@@ -1,6 +1,5 @@
 package it.chalmers.gamma.internal.apikey.controller;
 
-import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.ApiKeyType;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.domain.Text;
@@ -9,10 +8,8 @@ import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
 
-import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,9 +50,36 @@ public class ApiKeyAdminController {
         return key;
     }
 
+    @PostMapping("/{id}/reset")
+    public ApiKeyToken resetApiKey(@PathVariable("id") ApiKeyId id) {
+        ApiKeyToken token = ApiKeyToken.generate();
+
+        try {
+            this.apiKeyService.resetApiKeyToken(id, token);
+        } catch (ApiKeyService.ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundResponse();
+        }
+
+        return token;
+    }
+
     @GetMapping()
     public List<ApiKey> getAllApiKeys() {
         return this.apiKeyService.getAll();
+    }
+
+    @GetMapping("/types")
+    public ApiKeyType[] getTypes() {
+        return ApiKeyType.values();
+    }
+
+    @GetMapping("/{id}")
+    public ApiKey getApiKey(@PathVariable("id") ApiKeyId id) {
+        try {
+            return this.apiKeyService.get(id);
+        } catch (ApiKeyService.ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundResponse();
+        }
     }
 
     @DeleteMapping("/{id}")

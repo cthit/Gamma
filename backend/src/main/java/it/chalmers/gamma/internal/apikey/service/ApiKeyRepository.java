@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApiKeyRepository extends JpaRepository<ApiKeyEntity, ApiKeyId> {
-    boolean existsByKey(ApiKeyToken apiKey);
+    boolean existsByToken(ApiKeyToken token);
 }

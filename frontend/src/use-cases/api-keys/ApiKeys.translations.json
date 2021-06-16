@@ -33,5 +33,11 @@
     "ApiKeyCreateFailed": [
         "Something went wrong when deleting the api key",
         "Någonting gick fel när api nyckeln försöktes raderas"
+    ],
+    "ApiKeyType": ["Api key type", "Apinyckel typ"],
+    "ResetToken": ["Reset api key token", "Återställ apinyckel"],
+    "ResetTokenDescription": [
+        "This will create a new token for the api key and the old token will no longer work",
+        "Det här kommer att skapa en ny nyckel och den gamla kommer inte längre att fungera"
     ]
 }

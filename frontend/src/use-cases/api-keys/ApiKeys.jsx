@@ -5,19 +5,26 @@ import {
     keysText,
     validationSchema
 } from "./ApiKeys.options";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
     DigitButton,
     DigitCRUD,
+    DigitLayout,
+    DigitLoading,
     DigitText,
     useDigitCustomDialog,
+    useDigitDialog,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
 import { deleteApiKey } from "api/api-keys/delete.api-keys.api";
-import { getApiKey, getApiKeys } from "api/api-keys/get.api-keys.api";
-import { addApiKey } from "api/api-keys/post.api-keys.api";
+import {
+    getApiKey,
+    getApiKeys,
+    getApiKeyTypes
+} from "api/api-keys/get.api-keys.api";
+import { addApiKey, resetApiKey } from "api/api-keys/post.api-keys.api";
 import { API_ID, API_NAME, API_SECRET } from "api/api-keys/props.api-keys.api";
 
 import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
@@ -29,12 +36,26 @@ import translations from "./ApiKeys.translations.json";
 
 const ApiKeys = () => {
     const [text] = useDigitTranslations(translations);
-    const [showDialog] = useDigitCustomDialog({
+    const [showDialog] = useDigitDialog();
+    const [showCustomDialog] = useDigitCustomDialog({
         title: text.YourApiKeySecret,
         renderButtons: confirm => (
             <DigitButton text={text.Close} onClick={confirm} />
         )
     });
+    const [types, setTypes] = useState(null);
+
+    useEffect(() => {
+        getApiKeyTypes().then(response => setTypes(response.data));
+    }, []);
+
+    if (types == null) {
+        return (
+            <DigitLayout.Center size={{ height: "200px" }}>
+                <DigitLoading loading />
+            </DigitLayout.Center>
+        );
+    }
 
     const admin = useGammaIsAdmin();
     if (!admin) {
@@ -45,7 +66,7 @@ const ApiKeys = () => {
         <DigitCRUD
             keysText={keysText(text)}
             keysOrder={keysOrder()}
-            formComponentData={keysComponentData(text)}
+            formComponentData={keysComponentData(text, types)}
             formValidationSchema={validationSchema(text)}
             formInitialValues={initialValues()}
             readOneRequest={getApiKey}
@@ -53,7 +74,8 @@ const ApiKeys = () => {
             deleteRequest={deleteApiKey}
             createRequest={newApi =>
                 addApiKey({
-                    name: newApi.name,
+                    prettyName: newApi.prettyName,
+                    keyType: newApi.keyType,
                     description: {
                         sv: newApi.descriptionSv,
                         en: newApi.descriptionEn
@@ -61,8 +83,8 @@ const ApiKeys = () => {
                 })
             }
             onCreate={response => {
-                const secret = response.data[API_SECRET];
-                showDialog({
+                const secret = response.data;
+                showCustomDialog({
                     renderMain: () => (
                         <>
                             <DigitText.Text bold alignCenter text={secret} />
@@ -116,6 +138,41 @@ const ApiKeys = () => {
             }}
             toastCreateSuccessful={() => text.ApiKeyCreated}
             toastCreateFailed={() => text.ApiKeyCreateFailed}
+            useKeyTextsInUpperLabel
+            detailsRenderCardEnd={data => (
+                <DigitButton
+                    text={text.ResetToken}
+                    outlined
+                    onClick={() =>
+                        showDialog({
+                            title: text.AreYouSure,
+                            description: text.ResetTokenDescription,
+                            confirmButtonText: text.ResetToken,
+                            cancelButtonText: text.Cancel,
+                            onConfirm: () =>
+                                resetApiKey(data.id).then(response => {
+                                    const secret = response.data;
+                                    showCustomDialog({
+                                        renderMain: () => (
+                                            <>
+                                                <DigitText.Text
+                                                    bold
+                                                    alignCenter
+                                                    text={secret}
+                                                />
+                                                <DigitText.Text
+                                                    text={
+                                                        text.YourApiKeySecretDescription
+                                                    }
+                                                />
+                                            </>
+                                        )
+                                    });
+                                })
+                        })
+                    }
+                />
+            )}
         />
     );
 };

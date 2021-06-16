@@ -19,7 +19,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
     private ApiKeyId id;
 
     @Embedded
-    private ApiKeyToken key;
+    private ApiKeyToken token;
 
     @JoinColumn(name = "description")
     @OneToOne(cascade = CascadeType.MERGE)
@@ -38,10 +38,14 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
         assert(apiKeyToken != null);
 
         this.id = apiKey.id();
-        this.key = apiKeyToken;
+        this.token = apiKeyToken;
         this.prettyName = apiKey.prettyName();
         this.description = new TextEntity(apiKey.description());
         this.keyType = apiKey.keyType();
+    }
+
+    protected void setToken(ApiKeyToken token) {
+        this.token = token;
     }
 
     @Override

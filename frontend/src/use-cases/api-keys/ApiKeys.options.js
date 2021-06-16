@@ -1,10 +1,15 @@
 import * as yup from "yup";
 
-import { DigitTextArea, DigitTextField } from "@cthit/react-digit-components";
+import {
+    DigitSelect,
+    DigitTextArea,
+    DigitTextField
+} from "@cthit/react-digit-components";
 
 import {
     API_DESCRIPTION_ENGLISH,
     API_DESCRIPTION_SWEDISH,
+    API_KEY_TYPE,
     API_NAME
 } from "api/api-keys/props.api-keys.api";
 
@@ -32,13 +37,12 @@ export const initialValues = () => {
     return initialValues;
 };
 
-export const keysComponentData = text => {
+export const keysComponentData = (text, types) => {
     const keysComponentData = {};
     keysComponentData[API_NAME] = {
         component: DigitTextField,
         componentProps: {
             outlined: true,
-            upperLabel: text.Name,
             maxLength: 50
         }
     };
@@ -48,7 +52,6 @@ export const keysComponentData = text => {
         componentProps: {
             outlined: true,
             rows: 3,
-            upperLabel: text.SwedishDescription,
             maxLength: 500
         }
     };
@@ -58,9 +61,19 @@ export const keysComponentData = text => {
         componentProps: {
             outlined: true,
             rows: 3,
-            upperLabel: text.EnglishDescription,
             maxLength: 500,
             onKeyPress: null
+        }
+    };
+
+    const valueToTextMap = {};
+    types.forEach(type => (valueToTextMap[type] = type));
+
+    keysComponentData[API_KEY_TYPE] = {
+        component: DigitSelect,
+        componentProps: {
+            outlined: true,
+            valueToTextMap
         }
     };
 
@@ -73,6 +86,7 @@ export const keysText = text => {
     keysText[API_NAME] = text.Name;
     keysText[API_DESCRIPTION_SWEDISH] = text.SwedishDescription;
     keysText[API_DESCRIPTION_ENGLISH] = text.EnglishDescription;
+    keysText[API_KEY_TYPE] = text.ApiKeyType;
 
     return keysText;
 };
@@ -80,5 +94,6 @@ export const keysText = text => {
 export const keysOrder = () => [
     API_NAME,
     API_DESCRIPTION_SWEDISH,
-    API_DESCRIPTION_ENGLISH
+    API_DESCRIPTION_ENGLISH,
+    API_KEY_TYPE
 ];
