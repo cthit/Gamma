@@ -47,5 +47,7 @@
         "Something went wrong! Group wasn't updated.",
         "Någonting gick fel! Grupp uppdaterades inte."
     ],
-    "EditMembers": ["Edit members", "Redigera medlemmarna"]
+    "EditMembers": ["Edit members", "Redigera medlemmarna"],
+    "EditBanner": ["Edit banner", "Redigera banner"],
+    "EditAvatar": ["Edit avatar", "Redigera avatar"]
 }

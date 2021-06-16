@@ -7,7 +7,7 @@ import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.GroupPost;
 import it.chalmers.gamma.domain.Language;
-import it.chalmers.gamma.domain.ActivationCodeToken;
+import it.chalmers.gamma.domain.UserActivationToken;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
@@ -77,7 +77,7 @@ public final class UserController {
         }
     }
 
-    record CreateUserRequest (ActivationCodeToken token,
+    record CreateUserRequest (UserActivationToken token,
                               UnencryptedPassword password,
                               Nick nick,
                               FirstName firstName,

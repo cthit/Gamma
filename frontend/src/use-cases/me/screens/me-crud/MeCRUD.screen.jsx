@@ -100,7 +100,10 @@ const MeCRUD = () => {
             }
             detailsRenderCardStart={data => (
                 <>
-                    <UserImage src={data.avatarUrl} alt={"Profile picture"} />
+                    <UserImage
+                        src={"/api/internal/users/avatar/" + data.id}
+                        alt={"Profile picture"}
+                    />
                     <NoStyleLink to={"/me/avatar"}>
                         <DigitButton outlined text={text.ChangeAvatar} />
                     </NoStyleLink>

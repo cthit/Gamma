@@ -7,6 +7,7 @@ import it.chalmers.gamma.util.domain.abstraction.Id;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Size;
+import java.util.Locale;
 
 @Embeddable
 public class Cid extends Id<String> implements DTO {
@@ -20,8 +21,12 @@ public class Cid extends Id<String> implements DTO {
     protected Cid(String value) {
         if (value == null) {
             throw new IllegalArgumentException("Cid cannot be null");
-        } else if (!value.matches("^([a-z]{4,12})$")) {
-            throw new IllegalArgumentException("Cid length must be between 4 and 12, and only have letters between a - z");
+        }
+
+        value = value.toLowerCase(Locale.ROOT);
+
+        if (!value.matches("^([a-z]{4,12})$")) {
+            throw new IllegalArgumentException("Input: " + value + "; Cid length must be between 4 and 12, and only have letters between a - z");
         }
 
         this.value = value;

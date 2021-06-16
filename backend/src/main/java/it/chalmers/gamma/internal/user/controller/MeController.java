@@ -102,18 +102,6 @@ public class MeController {
         return new UserEditedResponse();
     }
 
-    @PutMapping("/avatar")
-    public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
-        try {
-            User user = extractUser(principal);
-            this.userService.editProfilePicture(user, file);
-            return new EditedProfilePictureResponse();
-        } catch (UserService.UserNotFoundException e) {
-            LOGGER.error("Cannot find the signed in user", e);
-            throw new UserNotFoundResponse();
-        }
-    }
-
     record ChangeUserPassword(String oldPassword, UnencryptedPassword password) { }
 
     @PutMapping("/change_password")
@@ -151,8 +139,6 @@ public class MeController {
     private User extractUser(Principal principal) throws UserService.UserNotFoundException {
         return this.userService.get(Cid.valueOf(principal.getName()));
     }
-
-    private static class EditedProfilePictureResponse extends SuccessResponse { }
 
     private static class UserEditedResponse extends SuccessResponse { }
 

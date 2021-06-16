@@ -122,7 +122,7 @@ CREATE TABLE whitelist_cid
     cid VARCHAR(10) PRIMARY KEY CHECK (LOWER(cid) = cid)
 );
 
-CREATE TABLE activation_code
+CREATE TABLE user_activation
 (
     cid        VARCHAR(10) PRIMARY KEY REFERENCES whitelist_cid,
     token       VARCHAR(10) NOT NULL,
@@ -169,9 +169,10 @@ CREATE TABLE it_user_approval
     PRIMARY KEY(user_id, client_id)
 );
 
-CREATE TABLE group_avatar_uri
+CREATE TABLE group_images_uri
 (
     group_id   UUID REFERENCES fkit_group ON DELETE CASCADE,
     avatar_uri VARCHAR(255),
+    banner_uri VARCHAR(255),
     version    INT
 );

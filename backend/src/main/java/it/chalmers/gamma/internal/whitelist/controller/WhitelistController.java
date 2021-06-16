@@ -1,8 +1,8 @@
 package it.chalmers.gamma.internal.whitelist.controller;
 
-import it.chalmers.gamma.domain.ActivationCode;
+import it.chalmers.gamma.domain.UserActivation;
 import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
+import it.chalmers.gamma.internal.useractivation.service.UserActivationService;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 import it.chalmers.gamma.mail.MailSenderService;
 
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/internal/whitelist")
 public final class WhitelistController {
 
-    private final ActivationCodeService activationCodeService;
+    private final UserActivationService userActivationService;
     private final MailSenderService mailSenderService;
     private final WhitelistService whitelistService;
 
@@ -28,10 +28,10 @@ public final class WhitelistController {
 
     private static final String MAIL_POSTFIX = "student.chalmers.se";
 
-    public WhitelistController(ActivationCodeService activationCodeService,
-                                MailSenderService mailSenderService,
-                                WhitelistService whitelistService) {
-        this.activationCodeService = activationCodeService;
+    public WhitelistController(UserActivationService userActivationService,
+                               MailSenderService mailSenderService,
+                               WhitelistService whitelistService) {
+        this.userActivationService = userActivationService;
         this.mailSenderService = mailSenderService;
         this.whitelistService = whitelistService;
     }
@@ -43,8 +43,8 @@ public final class WhitelistController {
         Cid cid = request.cid;
 
         if (this.whitelistService.cidIsWhitelisted(cid)) {
-            ActivationCode activationCode = this.activationCodeService.saveActivationCode(cid);
-            sendEmail(activationCode);
+            UserActivation userActivation = this.userActivationService.saveUserActivation(cid);
+            sendEmail(userActivation);
         } else {
             LOGGER.warn(String.format("Non Whitelisted User: %s Tried to Create Account", cid));
         }
@@ -53,9 +53,9 @@ public final class WhitelistController {
         return new WhitelistedCidActivatedResponse();
     }
 
-    private void sendEmail(ActivationCode activationCode) {
-        String code = activationCode.token().get();
-        String to = activationCode.cid() + "@" + MAIL_POSTFIX;
+    private void sendEmail(UserActivation userActivation) {
+        String code = userActivation.token().get();
+        String to = userActivation.cid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
         this.mailSenderService.trySendingMail(to, "Chalmers activationcode code", message);
     }

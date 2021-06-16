@@ -1,0 +1,10 @@
+{
+    "SelectImage": ["Select image", "Välj bild"],
+    "UploadImage": ["Upload image", "Ladda upp bild"],
+    "UploadFailed": ["Upload failed", "Uppladdning misslyckades"],
+    "TooLargeFile": [
+        "File is to large (Max 2MB)",
+        "Filen är för stor (Max 2MB)"
+    ],
+    "InvalidFileType": ["Invalid file type", "Ogiltig filtyp"]
+}

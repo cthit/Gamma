@@ -138,7 +138,10 @@ const Users = () => {
             toastCreateFailed={() => text.FailedCreatingUser}
             formInitialValues={initialValues()}
             detailsRenderCardStart={data => (
-                <UserImage src={data.avatarUrl} alt={"Profile picture"} />
+                <UserImage
+                    src={"/api/internal/users/avatar/" + data.id}
+                    alt={"Profile picture"}
+                />
             )}
             detailsRenderEnd={data => (
                 <>

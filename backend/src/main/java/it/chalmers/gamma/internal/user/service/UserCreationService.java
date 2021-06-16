@@ -1,9 +1,9 @@
 package it.chalmers.gamma.internal.user.service;
 
-import it.chalmers.gamma.domain.ActivationCodeToken;
+import it.chalmers.gamma.domain.UserActivationToken;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.User;
-import it.chalmers.gamma.internal.activationcode.service.ActivationCodeService;
+import it.chalmers.gamma.internal.useractivation.service.UserActivationService;
 import it.chalmers.gamma.internal.whitelist.service.WhitelistService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,22 +16,22 @@ public class UserCreationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCreationService.class);
 
     private final WhitelistService whitelistService;
-    private final ActivationCodeService activationCodeService;
+    private final UserActivationService userActivationService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository repository;
 
     public UserCreationService(WhitelistService whitelistService,
-                               ActivationCodeService activationCodeService,
+                               UserActivationService userActivationService,
                                PasswordEncoder passwordEncoder,
                                UserRepository repository) {
         this.whitelistService = whitelistService;
-        this.activationCodeService = activationCodeService;
+        this.userActivationService = userActivationService;
         this.passwordEncoder = passwordEncoder;
         this.repository = repository;
     }
 
-    public void createUserByCode(User newUser, UnencryptedPassword password, ActivationCodeToken token) throws CidOrCodeNotMatchException {
-        if(!activationCodeService.codeMatchesCid(newUser.cid(), token)) {
+    public void createUserByCode(User newUser, UnencryptedPassword password, UserActivationToken token) throws CidOrCodeNotMatchException {
+        if(!userActivationService.codeMatchesCid(newUser.cid(), token)) {
             throw new CidOrCodeNotMatchException();
         }
 
@@ -39,10 +39,10 @@ public class UserCreationService {
 
         try {
             this.whitelistService.delete(newUser.cid());
-            this.activationCodeService.delete(newUser.cid());
+            this.userActivationService.delete(newUser.cid());
 
             this.createUser(newUser, password);
-        } catch (ActivationCodeService.ActivationCodeNotFoundException | WhitelistService.WhitelistNotFoundException e) {
+        } catch (UserActivationService.UserActivationNotFoundException | WhitelistService.WhitelistNotFoundException e) {
             LOGGER.error("Something went wrong when clearing whitelist and/or activation code", e);
 
             //Throwing generic error for security reasons

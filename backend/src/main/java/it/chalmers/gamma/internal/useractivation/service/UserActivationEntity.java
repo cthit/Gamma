@@ -1,38 +1,38 @@
-package it.chalmers.gamma.internal.activationcode.service;
+package it.chalmers.gamma.internal.useractivation.service;
 
 import java.time.Instant;
 
 import javax.persistence.*;
 
-import it.chalmers.gamma.domain.ActivationCode;
-import it.chalmers.gamma.domain.ActivationCodeToken;
+import it.chalmers.gamma.domain.UserActivation;
+import it.chalmers.gamma.domain.UserActivationToken;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
 
 @Entity
-@Table(name = "activation_code")
-public class ActivationCodeEntity extends ImmutableEntity<Cid, ActivationCode> {
+@Table(name = "user_activation")
+public class UserActivationEntity extends ImmutableEntity<Cid, UserActivation> {
 
     @EmbeddedId
     private Cid cid;
 
-    @Column(name = "code")
-    private ActivationCodeToken token;
+    @Embedded
+    private UserActivationToken token;
 
     @Column(name = "created_at")
     private Instant createdAt;
 
-    protected ActivationCodeEntity() { }
+    protected UserActivationEntity() { }
 
-    protected ActivationCodeEntity(Cid cid, ActivationCodeToken token) {
+    protected UserActivationEntity(Cid cid, UserActivationToken token) {
         this.createdAt = Instant.now();
         this.cid = cid;
         this.token = token;
     }
 
     @Override
-    protected ActivationCode toDTO() {
-        return new ActivationCode(
+    protected UserActivation toDTO() {
+        return new UserActivation(
                 this.cid,
                 this.token,
                 this.createdAt

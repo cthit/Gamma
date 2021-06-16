@@ -40,12 +40,7 @@ public class UserBootstrap {
 
     @PostConstruct
     public void createUsers() {
-        if (!this.mocking
-                || !this.userService.getAll()
-                            .stream()
-                            .filter(user -> !user.cid().get().contains("admin"))
-                            .collect(Collectors.toList())
-                .isEmpty()) {
+        if (!this.mocking || this.userService.getAll().stream().anyMatch(user -> !user.cid().get().contains("admin"))) {
             return;
         }
 

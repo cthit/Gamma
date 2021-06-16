@@ -46,7 +46,7 @@ export const keysComponentData = (text, superGroups = []) => {
         component: DigitTextField,
         componentProps: {
             upperLabel: text.Name,
-            maxLength: 50,
+            maxLength: 51,
             outlined: true
         }
     };

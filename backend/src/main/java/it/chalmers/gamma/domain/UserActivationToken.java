@@ -9,18 +9,18 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class ActivationCodeToken implements Serializable {
+public class UserActivationToken implements Serializable {
 
     @JsonValue
-    @Column(name = "code")
+    @Column(name = "token")
     private String value;
 
-    protected ActivationCodeToken() {
+    protected UserActivationToken() {
         this.value = TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS);
     }
 
-    public static ActivationCodeToken generate() {
-        return new ActivationCodeToken();
+    public static UserActivationToken generate() {
+        return new UserActivationToken();
     }
 
     public String get() {
@@ -35,7 +35,7 @@ public class ActivationCodeToken implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ActivationCodeToken token = (ActivationCodeToken) o;
+        UserActivationToken token = (UserActivationToken) o;
         return Objects.equals(value, token.value);
     }
 

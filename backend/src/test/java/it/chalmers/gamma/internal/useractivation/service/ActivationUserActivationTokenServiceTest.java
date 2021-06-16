@@ -1,7 +1,7 @@
-package it.chalmers.gamma.internal.activationcode.service;
+package it.chalmers.gamma.internal.useractivation.service;
 
-import it.chalmers.gamma.domain.ActivationCode;
-import it.chalmers.gamma.domain.ActivationCodeToken;
+import it.chalmers.gamma.domain.UserActivation;
+import it.chalmers.gamma.domain.UserActivationToken;
 import it.chalmers.gamma.domain.Cid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,23 +24,23 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
-class ActivationActivationCodeTokenServiceTest {
+class ActivationUserActivationTokenServiceTest {
 
     @Mock
-    private ActivationCodeRepository activationCodeRepository;
+    private UserActivationRepository userActivationRepository;
 
     @InjectMocks
-    private ActivationCodeService activationCodeService;
+    private UserActivationService userActivationService;
 
     @Test
     void savedActivationCode() {
-        given(activationCodeRepository.save(any(ActivationCodeEntity.class)))
+        given(userActivationRepository.save(any(UserActivationEntity.class)))
                 .willAnswer(returnsFirstArg());
 
         Cid cid = Cid.valueOf("mycid");
-        ActivationCode activationCode = activationCodeService.saveActivationCode(cid);
+        UserActivation userActivation = userActivationService.saveUserActivation(cid);
 
-        ActivationCodeDTOAssert.assertThat(activationCode)
+        ActivationCodeDTOAssert.assertThat(userActivation)
                 .hasCorrectCid(cid)
                 .hasValidCode()
                 .hasCreatedAtDateNotInFuture();
@@ -52,16 +52,16 @@ class ActivationActivationCodeTokenServiceTest {
         Cid cid2 = Cid.valueOf("mycidi");
 
         willThrow(IllegalArgumentException.class)
-                .given(activationCodeRepository)
+                .given(userActivationRepository)
                 .deleteById(any(Cid.class));
         willDoNothing()
-                .given(activationCodeRepository)
+                .given(userActivationRepository)
                 .deleteById(cid);
 
         assertThatNoException()
-                .isThrownBy(() -> activationCodeService.delete(cid));
+                .isThrownBy(() -> userActivationService.delete(cid));
         assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> activationCodeService.delete(cid2));
+                .isThrownBy(() -> userActivationService.delete(cid2));
     }
 
     @Test
@@ -71,19 +71,19 @@ class ActivationActivationCodeTokenServiceTest {
 
     @Test
     void getAll() {
-        List<ActivationCodeEntity> activationCodeList = new ArrayList<>();
-        activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycid"), ActivationCodeToken.generate()));
-        activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycidi"), ActivationCodeToken.generate()));
+        List<UserActivationEntity> activationCodeList = new ArrayList<>();
+        activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycid"), UserActivationToken.generate()));
+        activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycidi"), UserActivationToken.generate()));
 
         //given
-        given(activationCodeRepository.findAll())
+        given(userActivationRepository.findAll())
                 .willReturn(activationCodeList);
 
         //when
-        List<ActivationCode> activationCodeDTOList = activationCodeService.getAll();
-        for (int i = 0; i < activationCodeDTOList.size(); i++) {
-            ActivationCodeEntity ac = activationCodeList.get(0);
-            ActivationCode acDTO = activationCodeDTOList.get(0);
+        List<UserActivation> userActivationList = userActivationService.getAll();
+        for (int i = 0; i < userActivationList.size(); i++) {
+            UserActivationEntity ac = activationCodeList.get(0);
+            UserActivation acDTO = userActivationList.get(0);
 
             assertThat(ac)
                     .usingRecursiveComparison()
@@ -94,17 +94,17 @@ class ActivationActivationCodeTokenServiceTest {
     @Test
     void codeMatchesCid() {
         Cid cid = Cid.valueOf("mycid");
-        ActivationCodeToken token = ActivationCodeToken.generate();
+        UserActivationToken token = UserActivationToken.generate();
 
         //given
-        given(activationCodeRepository.findActivationCodeByCidAndCode(any(Cid.class), any(ActivationCodeToken.class)))
+        given(userActivationRepository.findUserActivationByCidAndToken(any(Cid.class), any(UserActivationToken.class)))
                 .willReturn(Optional.empty());
-        given(activationCodeRepository.findActivationCodeByCidAndCode(eq(cid), eq(token)))
+        given(userActivationRepository.findUserActivationByCidAndToken(eq(cid), eq(token)))
                 .willReturn(Optional.of(ActivationCodeFactory.create(cid, token)));
 
         //when
-        boolean combination1 = activationCodeService.codeMatchesCid(cid, token);
-        boolean combination2 = activationCodeService.codeMatchesCid(cid, ActivationCodeToken.generate());
+        boolean combination1 = userActivationService.codeMatchesCid(cid, token);
+        boolean combination2 = userActivationService.codeMatchesCid(cid, UserActivationToken.generate());
 
         //then
         assertThat(combination1).isTrue();

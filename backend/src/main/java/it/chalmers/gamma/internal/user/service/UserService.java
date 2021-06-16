@@ -1,16 +1,19 @@
 package it.chalmers.gamma.internal.user.service;
 
 import it.chalmers.gamma.domain.Email;
+import it.chalmers.gamma.domain.ImageUri;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.User;
+import it.chalmers.gamma.domain.UserAvatar;
 import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.Cid;
 
 import it.chalmers.gamma.domain.UserRestricted;
-import it.chalmers.gamma.file.response.InvalidFileTypeResponse;
-import it.chalmers.gamma.util.ImageUtils;
+import it.chalmers.gamma.internal.useravatar.service.UserAvatarService;
+import it.chalmers.gamma.util.component.ImageService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,11 +29,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserAvatarService userAvatarService;
+    private final ImageService imageService;
 
     public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder,
+                       UserAvatarService userAvatarService,
+                       ImageService imageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userAvatarService = userAvatarService;
+        this.imageService = imageService;
     }
 
     public void delete(UserId id) {
@@ -76,37 +85,6 @@ public class UserService {
         this.userRepository.save(user);
     }
 
-
-    public void editProfilePicture(User user, MultipartFile file) throws UserNotFoundException {
-        if (ImageUtils.isImageOrGif(file)) {
-//            try {
-//                if (!user.avatarUrl().equals("default.jpg")) {
-//                    ImageUtils.removeImage(user.avatarUrl());
-//                }
-//                String fileUrl = ImageUtils.saveImage(file, user.cid().get());
-//                UserDTO newUser = new UserDTO(
-//                        user.id(),
-//                        user.cid(),
-//                        user.email(),
-//                        user.language(),
-//                        user.nick(),
-//                        user.firstName(),
-//                        user.lastName(),
-//                        fileUrl,
-//                        user.userAgreement(),
-//                        user.acceptanceYear(),
-//                        user.activated()
-//                );
-//
-//                update(newUser);
-//            } catch (FileNotFoundResponse e) {
-//                throw new FileNotSavedResponse();
-//            }
-        } else {
-            throw new InvalidFileTypeResponse();
-        }
-    }
-
     public boolean passwordMatches(UserId userId, String password) throws UserNotFoundException {
         UserEntity user = this.getEntity(userId);
         return this.passwordEncoder.matches(password, user.getPassword().get());
@@ -117,7 +95,6 @@ public class UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    public static class UserNotFoundException extends Exception {
-    }
+    public static class UserNotFoundException extends Exception { }
 
 }

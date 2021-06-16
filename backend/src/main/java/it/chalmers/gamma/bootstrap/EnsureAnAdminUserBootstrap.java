@@ -54,36 +54,28 @@ public class EnsureAnAdminUserBootstrap {
                     TokenUtils.CharacterTypes.UPPERCASE,
                     TokenUtils.CharacterTypes.NUMBERS
             );
-            int i = 0;
-            UserId adminId = null;
-            while (i < 100) {
-                String name = admin + (i == 0 ? "" : i);
-                adminId = UserId.generate();
 
-                try {
-                    this.userCreationService.createUser(
-                            new User(
-                                    adminId,
-                                    Cid.valueOf(name),
-                                    Email.valueOf(name + "@chalmers.it"),
-                                    Language.EN,
-                                    Nick.valueOf(name),
-                                    FirstName.valueOf(name),
-                                    LastName.valueOf(name),
-                                    true,
-                                    AcceptanceYear.valueOf(2018)
-                            ),
-                            UnencryptedPassword.valueOf("password")
-                    );
-                    LOGGER.info("Admin user created!");
-                    LOGGER.info("cid: " + name);
-                    LOGGER.info("password: " + password);
-                    break;
-                } catch (Exception ignored) {
-                }
-                i++;
-            }
+            UserId adminId = UserId.generate();
+            String name = "admin";
+            this.userCreationService.createUser(
+                    new User(
+                            adminId,
+                            Cid.valueOf(name),
+                            Email.valueOf(name + "@chalmers.it"),
+                            Language.EN,
+                            Nick.valueOf(name),
+                            FirstName.valueOf(name),
+                            LastName.valueOf(name),
+                            true,
+                            AcceptanceYear.valueOf(2018)
+                    ),
+                    UnencryptedPassword.valueOf("password")
+            );
 
+            LOGGER.info("Admin user created!");
+            LOGGER.info("cid: " + name);
+            LOGGER.info("password: " + password);
+            
             try {
                 this.authorityUserService.create(
                         new AuthorityUserShallowDTO(

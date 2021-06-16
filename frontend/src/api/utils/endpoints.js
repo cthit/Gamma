@@ -1,6 +1,6 @@
 export const ADMIN_WHITELIST_ENDPOINT = "/admin/users/whitelist/";
 export const ADMIN_GROUPS_ENDPOINT = "/admin/groups/";
-export const ADMIN_ACTIVATION_CODES_ENDPOINT = "/admin/activation_codes/";
+export const ADMIN_ACTIVATION_CODES_ENDPOINT = "/admin/user-activation/";
 export const ADMIN_USERS_ENDPOINT = "/admin/users/";
 export const ADMIN_CLIENTS_ENDPOINT = "/admin/clients/";
 export const ADMIN_SUPER_GROUPS_ENDPOINT = "/admin/superGroups/";

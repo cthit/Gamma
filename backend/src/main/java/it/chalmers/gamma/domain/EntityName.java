@@ -7,25 +7,27 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
 
 @Embeddable
 public class EntityName implements Serializable {
 
     @JsonValue
-    @Pattern(regexp = "^([a-z]{5,30})$")
     @Column(name = "e_name")
     private String value;
 
-    protected EntityName() {
-
-    }
+    protected EntityName() { }
 
     private EntityName(String value) {
         if (value == null) {
             throw new IllegalArgumentException("Name cannot be null");
-        } else if (!value.matches("^([a-z]{5,30})$")) {
-            throw new IllegalArgumentException("Name must be letters a - z and be of length between 5 - 30");
+        }
+
+        value = value.toLowerCase(Locale.ROOT);
+
+        if (!value.matches("^([0-9a-z]{3,30})$")) {
+            throw new IllegalArgumentException("Name: [" + value + "] must be letters a - z and be of length between 5 - 30");
         }
 
         this.value = value;
