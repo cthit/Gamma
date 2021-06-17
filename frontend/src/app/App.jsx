@@ -31,6 +31,7 @@ import Whitelist from "../use-cases/whitelist";
 import FiveZeroZero from "./elements/five-zero-zero";
 import Drawer from "./views/drawer";
 import SuperGroupTypes from "../use-cases/super-group-types";
+import EnforceUserAgreement from "./enforce-user-agreement";
 
 export const App = () => {
     const [user, update, [loading, error], ignore] = useContext(
@@ -63,6 +64,10 @@ export const App = () => {
             ignore();
         }
     }, [loading, error, pathname, update, user, ignore]);
+
+    if (user && !user.userAgreement) {
+        return <EnforceUserAgreement />;
+    }
 
     const main = (
         <>

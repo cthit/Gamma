@@ -8,3 +8,6 @@ export function editMe(newUserData) {
 export function editPassword(passwordData) {
     return putRequest(USERS_ENDPOINT + "me/change_password", passwordData);
 }
+
+export const acceptUserAgreement = () =>
+    putRequest(USERS_ENDPOINT + "me/accept-user-agreement");

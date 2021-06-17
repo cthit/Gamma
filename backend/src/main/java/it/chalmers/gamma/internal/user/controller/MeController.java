@@ -53,7 +53,6 @@ public class MeController {
         this.authorityFinder = authorityFinder;
     }
 
-
     public record GetMeResponse(@JsonUnwrapped User user,
                                 List<GroupPost> groups,
                                 List<Authority> authorities) { }
@@ -136,9 +135,22 @@ public class MeController {
         }
     }
 
+    @PutMapping("/accept-user-agreement")
+    public UserAgreementAccepted acceptUserAgreement(Principal principal) {
+        try {
+            User user = this.extractUser(principal);
+            this.userService.update(user.withUserAgreement(true));
+            return new UserAgreementAccepted();
+        } catch (UserService.UserNotFoundException e) {
+            throw new UserNotFoundResponse();
+        }
+    }
+
     private User extractUser(Principal principal) throws UserService.UserNotFoundException {
         return this.userService.get(Cid.valueOf(principal.getName()));
     }
+
+    private static class UserAgreementAccepted extends SuccessResponse { }
 
     private static class UserEditedResponse extends SuccessResponse { }
 

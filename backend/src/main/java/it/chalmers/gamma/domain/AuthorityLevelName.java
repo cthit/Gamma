@@ -21,7 +21,7 @@ public class AuthorityLevelName extends Id<String> implements DTO {
     protected AuthorityLevelName(String value) {
         if (value == null) {
             throw new IllegalArgumentException("Authority level cannot be null");
-        } else if (!value.matches("^([a-z]{5,30})$")) {
+        } else if (!value.matches("^([0-9a-z]{5,30})$")) {
             throw new IllegalArgumentException("Authority level must have letter ranging a - z, and be between size 5 and 30 to be valid");
         }
 
