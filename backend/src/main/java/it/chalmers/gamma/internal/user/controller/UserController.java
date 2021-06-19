@@ -90,7 +90,7 @@ public final class UserController {
 
     @PostMapping("/create")
     @ResponseBody
-    public UserCreatedResponse createUser(@Valid @RequestBody CreateUserRequest request) {
+    public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
         try {
             this.userCreationService.createUserByCode(new User(
                             UserId.generate(),

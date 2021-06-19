@@ -29,7 +29,7 @@ public final class MembershipAdminController {
 
     @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
-            @Valid @RequestBody AddUserGroupRequest request,
+            @RequestBody AddUserGroupRequest request,
             @PathVariable("id") GroupId groupId) {
         this.membershipService.create(
                 new MembershipShallowDTO(
@@ -57,7 +57,7 @@ public final class MembershipAdminController {
     public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") GroupId groupId,
                                                     @RequestParam("userId") UserId userId,
                                                     @RequestParam("postId") PostId postId,
-                                                    @Valid @RequestBody EditMembershipRequest request) {
+                                                    @RequestBody EditMembershipRequest request) {
         try {
             this.membershipService.update(
                     new MembershipShallowDTO(

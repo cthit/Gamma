@@ -5,10 +5,7 @@ import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.SuperGroupId;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-public record AuthorityPostShallowDTO(@NotNull SuperGroupId superGroupId,
-                                      @NotNull PostId postId,
-                                      @Valid AuthorityLevelName authorityLevelName)
+public record AuthorityPostShallowDTO(SuperGroupId superGroupId,
+                                      PostId postId,
+                                      AuthorityLevelName authorityLevelName)
         implements DTO { }

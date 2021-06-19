@@ -62,7 +62,7 @@ public final class UserAdminController {
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
             @PathVariable("id") UserId id,
-            @Valid @RequestBody AdminChangePasswordRequest request) {
+            @RequestBody AdminChangePasswordRequest request) {
         try {
             this.userService.setPassword(id, request.password);
         } catch (UserService.UserNotFoundException e) {
@@ -107,7 +107,7 @@ public final class UserAdminController {
         return new GetAllUsersResponse(users);
     }
 
-    record AdminViewCreateUserRequest(@Valid Cid cid,
+    record AdminViewCreateUserRequest(Cid cid,
                                          UnencryptedPassword password,
                                          Nick nick,
                                          FirstName firstName,
@@ -118,7 +118,7 @@ public final class UserAdminController {
                                          Language language) { }
 
     @PostMapping()
-    public UserCreatedResponse addUser(@Valid @RequestBody AdminViewCreateUserRequest request) {
+    public UserCreatedResponse addUser(@RequestBody AdminViewCreateUserRequest request) {
         this.userCreationService.createUser(new User(
                 UserId.generate(),
                 request.cid,

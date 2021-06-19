@@ -38,7 +38,7 @@ public class UserPasswordResetController {
     private record ResetPasswordRequest(String cidOrEmail) { }
 
     @PostMapping()
-    public PasswordRestLinkSentResponse resetPasswordRequest(@Valid @RequestBody ResetPasswordRequest request) {
+    public PasswordRestLinkSentResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
         try {
             this.passwordResetService.handlePasswordReset(request.cidOrEmail);
         } catch (UserService.UserNotFoundException e) {
@@ -52,7 +52,7 @@ public class UserPasswordResetController {
                                               String token) { }
 
     @PutMapping("/finish")
-    public PasswordChangedResponse resetPassword(@Valid @RequestBody ResetPasswordFinishRequest request) {
+    public PasswordChangedResponse resetPassword(@RequestBody ResetPasswordFinishRequest request) {
         try {
             User user = this.userService.get(request.cid);
 

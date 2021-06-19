@@ -39,7 +39,7 @@ public final class WhitelistAdminController {
     private record AddToWhitelist(Cid cid) { }
 
     @PostMapping()
-    public WhitelistAddedResponse addWhitelistedUser(@Valid @RequestBody AddToWhitelist request) {
+    public WhitelistAddedResponse addWhitelistedUser(@RequestBody AddToWhitelist request) {
         try {
             this.whitelistService.create(request.cid);
         } catch (Exception e) {

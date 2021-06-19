@@ -176,3 +176,10 @@ CREATE TABLE group_images_uri
     banner_uri VARCHAR(255),
     version    INT
 );
+
+CREATE TABLE settings (
+    id INT PRIMARY KEY auto_increment,
+    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    last_updated_user_agreement TIMESTAMP,
+    version    INT
+);

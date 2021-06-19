@@ -46,7 +46,7 @@ public class SuperGroupTypeAdminController {
     private record AddSuperGroupType(SuperGroupType type) { }
     
     @PostMapping
-    public SuperGroupTypeAddedResponse addSuperGroupType(@Valid @RequestBody AddSuperGroupType request) {
+    public SuperGroupTypeAddedResponse addSuperGroupType(@RequestBody AddSuperGroupType request) {
         try {
             this.superGroupTypeService.create(request.type);
         } catch (SuperGroupTypeService.SuperGroupAlreadyExistsException e) {

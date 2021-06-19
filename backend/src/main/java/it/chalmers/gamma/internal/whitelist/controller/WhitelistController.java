@@ -39,7 +39,7 @@ public final class WhitelistController {
     private record WhitelistCodeRequest(Cid cid) { }
 
     @PostMapping("/activate_cid")
-    public WhitelistedCidActivatedResponse createActivationCode(@Valid @RequestBody WhitelistCodeRequest request) {
+    public WhitelistedCidActivatedResponse createActivationCode(@RequestBody WhitelistCodeRequest request) {
         Cid cid = request.cid;
 
         if (this.whitelistService.cidIsWhitelisted(cid)) {

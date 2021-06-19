@@ -39,11 +39,10 @@ public final class PostAdminController {
         this.membershipService = membershipService;
     }
 
-    private record CreateOrEditPost(@Valid Text post,
-                                   @Valid EmailPrefix emailPrefix) { }
+    private record CreateOrEditPost(Text post, EmailPrefix emailPrefix) { }
 
     @PostMapping()
-    public PostCreatedResponse addPost(@Valid @RequestBody CreateOrEditPost request) {
+    public PostCreatedResponse addPost(@RequestBody CreateOrEditPost request) {
         this.postService.create(
                 new Post(PostId.generate(), request.post(), request.emailPrefix())
         );

@@ -30,7 +30,7 @@ public class UserGDPRAdminController {
 
     @PutMapping("/{id}")
     public GdprStatusEditedResponse editGDPRStatus(@PathVariable("id") UserId id,
-                                                   @Valid @RequestBody ChangeGDPRStatusRequest request) {
+                                                   @RequestBody ChangeGDPRStatusRequest request) {
         userGDPRTrainingService.editGDPR(id, request.gdpr);
         return new GdprStatusEditedResponse();
     }

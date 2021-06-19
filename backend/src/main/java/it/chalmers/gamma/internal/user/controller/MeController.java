@@ -104,7 +104,7 @@ public class MeController {
     record ChangeUserPassword(String oldPassword, UnencryptedPassword password) { }
 
     @PutMapping("/change_password")
-    public PasswordChangedResponse changePassword(Principal principal, @Valid @RequestBody ChangeUserPassword request) {
+    public PasswordChangedResponse changePassword(Principal principal, @RequestBody ChangeUserPassword request) {
         try {
             User user = this.extractUser(principal);
 
@@ -123,7 +123,7 @@ public class MeController {
     record DeleteMeRequest (String password) { }
 
     @DeleteMapping()
-    public UserDeletedResponse deleteMe(Principal principal, @Valid @RequestBody DeleteMeRequest request) {
+    public UserDeletedResponse deleteMe(Principal principal, @RequestBody DeleteMeRequest request) {
         try {
             User user = this.extractUser(principal);
 

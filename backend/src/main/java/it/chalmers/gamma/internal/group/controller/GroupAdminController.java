@@ -39,13 +39,13 @@ public final class GroupAdminController {
         this.membershipService = membershipService;
     }
 
-    private record CreateOrEditGroupRequest(@Valid EntityName name,
-                                            @Valid PrettyName prettyName,
-                                            @Valid SuperGroupId superGroup,
-                                            @Valid Email email) { }
+    private record CreateOrEditGroupRequest(EntityName name,
+                                            PrettyName prettyName,
+                                            SuperGroupId superGroup,
+                                            Email email) { }
 
     @PostMapping()
-    public GroupCreatedResponse addNewGroup(@Valid @RequestBody CreateOrEditGroupRequest request) {
+    public GroupCreatedResponse addNewGroup(@RequestBody CreateOrEditGroupRequest request) {
         try {
             this.groupService.create(
                     new GroupShallowDTO(
@@ -64,7 +64,7 @@ public final class GroupAdminController {
     }
 
     @PutMapping("/{id}")
-    public GroupUpdatedResponse editGroup(@Valid @RequestBody CreateOrEditGroupRequest request,
+    public GroupUpdatedResponse editGroup(@RequestBody CreateOrEditGroupRequest request,
                                           @PathVariable("id") GroupId id) {
         try {
             GroupShallowDTO group = new GroupShallowDTO(

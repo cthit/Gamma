@@ -41,7 +41,7 @@ public class SuperGroupAdminController {
                                                  Text description) { }
 
     @PostMapping()
-    public SuperGroupCreatedResponse createSuperGroup(@Valid @RequestBody CreateOrEditSuperGroupRequest request) {
+    public SuperGroupCreatedResponse createSuperGroup(@RequestBody CreateOrEditSuperGroupRequest request) {
         try {
             this.superGroupService.create(new SuperGroup(
                     null,

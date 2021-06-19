@@ -30,7 +30,7 @@ public class AuthorityLevelAdminController {
     }
 
     @PostMapping()
-    public AuthorityLevelCreatedResponse addAuthorityLevel(@Valid @RequestBody CreateAuthorityLevelRequest request) {
+    public AuthorityLevelCreatedResponse addAuthorityLevel(@RequestBody CreateAuthorityLevelRequest request) {
         try {
             this.authorityLevelService.create(request.authorityLevel);
         } catch (AuthorityLevelService.AuthorityLevelAlreadyExistsException e) {
@@ -40,7 +40,7 @@ public class AuthorityLevelAdminController {
         return new AuthorityLevelCreatedResponse();
     }
 
-    private record CreateAuthorityLevelRequest(@Valid AuthorityLevelName authorityLevel) { }
+    private record CreateAuthorityLevelRequest(AuthorityLevelName authorityLevel) { }
 
     @GetMapping
     public List<AuthorityLevelName> getAllAuthorityLevels() {
