@@ -21,7 +21,7 @@ public class AppSettingsService {
     public Settings getSettings() {
         if (this.settings == null) {
             AppSettingsEntity appSettingsEntity = this.repository.findTopByOrderByIdDesc();
-            this.settings = new Settings(appSettingsEntity.lastUpdatedUserAgreement);
+            this.settings = appSettingsEntity.toDTO();
         }
 
         return this.settings;

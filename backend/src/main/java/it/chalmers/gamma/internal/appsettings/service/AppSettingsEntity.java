@@ -1,9 +1,11 @@
 package it.chalmers.gamma.internal.appsettings.service;
 
 import it.chalmers.gamma.domain.Settings;
+import it.chalmers.gamma.domain.SettingsId;
 import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -11,11 +13,10 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "settings")
-public class AppSettingsEntity extends MutableEntity<Integer, Settings> {
+public class AppSettingsEntity extends MutableEntity<SettingsId, Settings> {
 
-    @Id
-    @Column(name = "id")
-    private int id;
+    @EmbeddedId
+    private SettingsId id;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -28,13 +29,13 @@ public class AppSettingsEntity extends MutableEntity<Integer, Settings> {
     }
 
     @Override
-    protected Integer id() {
-        return null;
+    protected SettingsId id() {
+        return this.id;
     }
 
     @Override
     protected Settings toDTO() {
-        return new Settings();
+        return new Settings(this.lastUpdatedUserAgreement);
     }
 
     @Override
