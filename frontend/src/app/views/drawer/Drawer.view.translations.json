@@ -10,5 +10,6 @@
     "ActivationCodes": ["Activation code", "Aktiveringskoder"],
     "Clients": ["Clients", "Klienter"],
     "ApiKeys": ["API keys", "API nycklar"],
-    "Authorities": ["Authorities", "Rättigheter"]
+    "Authorities": ["Authorities", "Rättigheter"],
+    "SuperGroupTypes": ["Super group types", "Supergruppstyper"]
 }

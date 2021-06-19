@@ -6,17 +6,19 @@ import {
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
-import translations from "./AdminOptions.element.translations.json";
 import HomeLink from "../../elements/home-link";
+import translations from "./AdminOptions.element.translations.json";
 
 const AdminOptions = () => {
     const [text] = useDigitTranslations(translations);
 
     return (
         <DigitDesign.Card>
-            <DigitDesign.CardTitle text={text.AdminOptions} />
+            <DigitDesign.CardHeader>
+                <DigitDesign.CardTitle text={text.AdminOptions} />
+            </DigitDesign.CardHeader>
             <DigitDesign.CardBody>
-                <DigitLayout.Grid columns={`repeat(${2}, 1fr)`} margin={"4px"}>
+                <DigitLayout.Grid columns={`repeat(${2}, 1fr)`}>
                     <HomeLink
                         text={text.ActivationCodes}
                         link={"/activation-codes"}

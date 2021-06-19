@@ -10,18 +10,25 @@ spring:
     ansi:
       enabled: ALWAYS
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
+        globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
+    open-in-view: false
+
   servlet:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
-
+  data:
+    redis:
+      repositories:
+        enabled: false
   thymeleaf:
     cache: false
     check-template: true
@@ -47,6 +54,7 @@ server:
   error:
     whitelabel:
       enabled: false
+    path: /error
   servlet:
     context-path: /api
 
@@ -84,7 +92,7 @@ application:
     password: ${ADMIN_PASSWORD:password}
   mocking: ${IS_MOCKING:true}
   default-oauth2-client:
-    client-name: ${DEFAULT_CLIENT_NAME:name}
+    client-name: ${DEFAULT_CLIENT_NAME:type}
     client-id: ${DEFAULT_CLIENT_ID:id}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}
     redirect-uri: ${DEFAULT_REDIRECT_URI:http://localhost:3001/auth/account/callback}
@@ -96,3 +104,4 @@ application:
   auth:
     accessTokenValidityTime: 3600
     refreshTokenValidityTime: 500000000
+

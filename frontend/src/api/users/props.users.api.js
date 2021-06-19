@@ -9,5 +9,4 @@ export const USER_AGREEMENT = "userAgreement";
 export const USER_PASSWORD = "password";
 export const USER_LANGUAGE = "language";
 export const USER_GROUPS = "groups";
-export const USER_PHONE = "phone";
 export const USER_RELATIONSHIPS = "relationships";

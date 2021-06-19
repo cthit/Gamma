@@ -1,8 +1,24 @@
 package it.chalmers.gamma.domain;
 
-//Since frontend likes it lowercase. Might need to be changed in the future, but would be breaking.
-@SuppressWarnings("PMD.FieldNamingConventions")
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Arrays;
+
 public enum Language {
-    sv,
-    en
+    SV,
+    EN;
+
+    @JsonCreator
+    public static Language setValue(String key) {
+        return Arrays.stream(Language.values())
+                .filter(exampleEnum -> exampleEnum.toString().equals(key.toUpperCase()))
+                .findAny()
+                .orElse(null);
+    }
+
+    @JsonValue
+    public String get() {
+        return this.name().toLowerCase();
+    }
 }

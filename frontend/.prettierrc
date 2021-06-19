@@ -8,5 +8,11 @@
     "trailingComma": "none",
     "jsxBracketSameLine": false,
     "singleQuote": false,
-    "jsxSingleQuote": false
+    "jsxSingleQuote": false,
+    "importOrder": ["^@cthit/react-digit-components", "api/(.*)$", "common/(.*)$","^[./]"],
+    "importOrderSeparation": true,
+    "experimentalBabelParserPluginsList": [
+        "jsx",
+        "flow"
+    ]
 }

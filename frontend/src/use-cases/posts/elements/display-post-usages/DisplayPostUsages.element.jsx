@@ -1,10 +1,8 @@
 import React from "react";
 
 import { DigitLayout, DigitText } from "@cthit/react-digit-components";
-import {
-    GROUP_ID,
-    GROUP_PRETTY_NAME
-} from "../../../../api/groups/props.groups.api";
+
+import { GROUP_ID, GROUP_PRETTY_NAME } from "api/groups/props.groups.api";
 
 const DisplayPostUsages = ({ usages }) => (
     <DigitLayout.Column>

@@ -1,9 +1,8 @@
 import * as yup from "yup";
+
 import { DigitTextField } from "@cthit/react-digit-components";
-import {
-    WHITELIST_CID,
-    WHITELIST_ID
-} from "../../api/whitelist/props.whitelist.api";
+
+import { WHITELIST_CID } from "api/whitelist/props.whitelist.api";
 
 export const validationSchema = text => {
     const schema = {};
@@ -42,7 +41,6 @@ export const keysComponentData = () => {
 export const keysText = text => {
     const keysText = {};
 
-    keysText[WHITELIST_ID] = text.Id;
     keysText[WHITELIST_CID] = text.Cid;
 
     return keysText;

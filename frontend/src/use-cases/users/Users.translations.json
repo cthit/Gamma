@@ -44,7 +44,6 @@
         "Lösenordet måste vara minst 8 karaktärer"
     ],
     "ChangePassword": ["Change password", "Ändra lösenordet"],
-    "Phone": ["Phone number", "Telefonnummer"],
     "YouMustAccept": [
         "You must accept the user agreement",
         "Du måste acceptera användaravtalen"

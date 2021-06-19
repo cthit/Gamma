@@ -1,4 +1,7 @@
+import * as _ from "lodash";
 import React, { useMemo, useState } from "react";
+import styled from "styled-components";
+
 import {
     DigitButton,
     DigitSelectMultipleTable,
@@ -7,17 +10,17 @@ import {
     DigitDesign,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import translations from "./SelectMembers.view.translations";
-import UsersInGroupChanges from "./elements/users-in-group-changes";
-import * as _ from "lodash";
-import { GROUP_PRETTY_NAME } from "../../../../api/groups/props.groups.api";
+
+import { GROUP_PRETTY_NAME } from "api/groups/props.groups.api";
 import {
     USER_FIRST_NAME,
     USER_ID,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../../api/users/props.users.api";
-import styled from "styled-components";
+} from "api/users/props.users.api";
+
+import translations from "./SelectMembers.view.translations";
+import UsersInGroupChanges from "./elements/users-in-group-changes";
 
 const Table = styled.div`
     display: grid;
@@ -51,12 +54,12 @@ const generateHeaderTexts = text => {
 const SelectMembers = ({ users, group, onMembersSelected }) => {
     const [text] = useDigitTranslations(translations);
     const [selectedMemberIds, setSelectedMemberIds] = useState(
-        group.groupMembers.map(member => member.id)
+        group.members.map(member => member.user.id)
     );
 
     const unsavedEdits = useMemo(
-        () => selectedMemberIds.length !== group.groupMembers.length,
-        [selectedMemberIds, group.groupMembers]
+        () => selectedMemberIds.length !== group.members.length,
+        [selectedMemberIds, group.members]
     );
 
     return (
@@ -86,7 +89,7 @@ const SelectMembers = ({ users, group, onMembersSelected }) => {
                 </DigitDesign.CardBody>
             </SpannedCard>
             <UsersInGroupChanges
-                currentMembers={group.groupMembers}
+                currentMembers={group.members}
                 selectedMembers={selectedMemberIds.map(memberId =>
                     _.find(users, { id: memberId })
                 )}

@@ -1,4 +1,7 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitTextField,
     DigitEditDataCard,
@@ -6,13 +9,14 @@ import {
     useDigitToast,
     DigitLayout
 } from "@cthit/react-digit-components";
+
+import { resetPasswordInitialize } from "api/reset-password/post.reset-password";
+
+import statusCode from "common/utils/formatters/statusCode.formatter";
+import statusMessage from "common/utils/formatters/statusMessage.formatter";
+import ChangeLanguageLocally from "common/views/change-language-locally";
+
 import translations from "./ResetPasswordInitialize.screen.translations";
-import * as yup from "yup";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-import { resetPasswordInitialize } from "../../../../api/reset-password/post.reset-password";
-import { useHistory } from "react-router-dom";
-import ChangeLanguageLocally from "../../../../common/views/change-language-locally";
 
 const ResetPasswordInitialize = () => {
     const [text] = useDigitTranslations(translations);

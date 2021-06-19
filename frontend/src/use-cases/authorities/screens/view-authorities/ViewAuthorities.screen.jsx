@@ -1,18 +1,22 @@
+import Add from "@material-ui/icons/Add";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+
 import {
     DigitFAB,
     DigitLayout,
     DigitDesign,
-    useDigitTranslations
+    useDigitTranslations,
+    DigitLoading
 } from "@cthit/react-digit-components";
-import Add from "@material-ui/icons/Add";
-import React, { useEffect, useState } from "react";
-import translations from "../../Authorities.translations";
+
 import {
     getAuthorities,
     getAuthorityLevels
-} from "../../../../api/authorities/get.authorities";
+} from "api/authorities/get.authorities";
+
+import translations from "../../Authorities.translations";
 import AuthorityLevelCard from "./elements/authority-level-card";
-import styled from "styled-components";
 
 const Grid = styled.div`
     flex: 1;
@@ -28,57 +32,38 @@ const Grid = styled.div`
 `;
 
 const ViewAuthorities = () => {
-    const [authorityLevels, setAuthorityLevels] = useState(null);
     const [authorities, setAuthorities] = useState(null);
     const [text] = useDigitTranslations(translations);
     const [read, setRead] = useState(true);
 
     useEffect(() => {
         if (read) {
-            Promise.all([getAuthorities(), getAuthorityLevels()]).then(
-                ([authoritiesResponse, authorityLevelsResponse]) => {
-                    const newAuthorities = {};
-                    authoritiesResponse.data.authorities.forEach(authority => {
-                        const { superGroup, post, authorityLevel } = authority;
-
-                        var auth = newAuthorities[authorityLevel.id];
-                        if (auth == null) {
-                            auth = [];
-                        }
-
-                        auth.push({
-                            superGroup,
-                            post
-                        });
-
-                        newAuthorities[authorityLevel.id] = auth;
-                    });
-
-                    setAuthorities(newAuthorities);
-                    setAuthorityLevels(
-                        authorityLevelsResponse.data.authorityLevels
-                    );
-                }
+            getAuthorities().then(authoritiesResponse =>
+                setAuthorities(authoritiesResponse.data)
             );
         }
         setRead(false);
     }, [read, setRead]);
 
-    if (authorityLevels == null || authorities == null) {
-        return null;
+    if (authorities == null) {
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (
         <>
             <Grid>
-                {authorityLevels.map(authorityLevel => (
-                    <AuthorityLevelCard
-                        key={authorityLevel.id}
-                        authorityLevel={authorityLevel}
-                        authorities={authorities[authorityLevel.id]}
-                        forceUpdate={() => setRead(true)}
-                    />
-                ))}
+                {authorities.map(
+                    ({ authorityLevelName, users, posts, superGroups }) => (
+                        <AuthorityLevelCard
+                            key={authorityLevelName}
+                            authorityLevel={authorityLevelName}
+                            forceUpdate={() => setRead(true)}
+                            users={users}
+                            posts={posts}
+                            superGroups={superGroups}
+                        />
+                    )
+                )}
             </Grid>
             <DigitLayout.DownRightPosition>
                 <DigitDesign.Link to={"/authorities/create-authority-level"}>

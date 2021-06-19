@@ -9,7 +9,7 @@
     "ClientRedirect": ["Client redirect", "Klient omdirigeringslänk"],
     "CreateClient": ["Create new client", "Skapa ny klient"],
     "SubmitClient": ["Create client", "Skapa klient"],
-    "YourClientSecret": ["Your client secret", "Din klient secret"],
+    "YourClientSecret": ["Your client secrets", "Dina klient hemligheter"],
     "YourClientSecretDescription": [
         "Make sure this is kept safe. This secret can be used to access other users information! This will be the last time it will be shown.",
         "Se till att denna nyckel behålls hemlig. Denna hemliga nyckel kan användas för att komma åt andra användares data! Detta är enda gången den kommer att synas."
@@ -32,5 +32,12 @@
         "Någonting gick fel när klienten"
     ],
     "ClientDeletionFailed2": ["", "försökte raderas"],
-    "AutoApprove": ["Auto approve client", "Automatiskt godkänn client"]
+    "AutoApprove": ["Auto approve client", "Automatiskt godkänn client"],
+    "GenerateApiKey": ["Generate api key", "Generera api nyckel"],
+    "Restrictions": ["Client restrictions", "Klient restriktioner"],
+    "UpdateClientSecret": ["Reset client secret", "Återställ klient nyckel"],
+    "ResetClient": [
+        "This means that the secret of the client will be reset. Note that if the client has an api, that token won't the reset and have to be reset on separately",
+        "Det här betyder att klientens hemlighet kommer att återställas. Notera att om klienten har en api nyckel, så kommer den inte att återställas och behöver göras det separat."
+    ]
 }

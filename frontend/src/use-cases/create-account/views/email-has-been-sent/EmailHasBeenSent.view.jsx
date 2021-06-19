@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
     DigitButton,
     DigitDesign,
@@ -5,7 +7,7 @@ import {
     DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import React from "react";
+
 import translations from "./EmailHasBeenSent.view.translations.json";
 
 const EmailHasBeenSent = () => {

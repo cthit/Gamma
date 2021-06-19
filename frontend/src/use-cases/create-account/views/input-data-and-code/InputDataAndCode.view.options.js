@@ -1,4 +1,11 @@
 import * as yup from "yup";
+
+import {
+    DigitSelect,
+    DigitSwitch,
+    DigitTextField
+} from "@cthit/react-digit-components";
+
 import {
     USER_ACCEPTANCE_YEAR,
     USER_CID,
@@ -8,12 +15,7 @@ import {
     USER_NICK,
     USER_PASSWORD,
     USER_AGREEMENT
-} from "../../../../api/users/props.users.api";
-import {
-    DigitSelect,
-    DigitSwitch,
-    DigitTextField
-} from "@cthit/react-digit-components";
+} from "api/users/props.users.api";
 
 const CODE = "code";
 const PASSWORD_CONFIRMATION = "passwordConfirmation";

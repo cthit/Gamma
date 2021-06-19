@@ -1,10 +1,10 @@
 import React from "react";
 
-import translations from "./WelcomeUser.element.translations.json";
-
 import { DigitText, useDigitTranslations } from "@cthit/react-digit-components";
 
-import { USER_NICK } from "../../../../api/users/props.users.api";
+import { USER_NICK } from "api/users/props.users.api";
+
+import translations from "./WelcomeUser.element.translations.json";
 
 const WelcomeUser = ({ user }) => {
     const [text] = useDigitTranslations(translations);

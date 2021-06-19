@@ -1,15 +1,18 @@
-import React, { useContext } from "react";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import { getBackendUrl } from "../../../../../common/utils/configs/envVariablesLoader";
+import React, { useContext } from "react";
+import styled from "styled-components";
+
 import {
     useDigitTranslations,
     DigitLayout,
     DigitAvatar,
     DigitMenu
 } from "@cthit/react-digit-components";
-import styled from "styled-components";
+
+import GammaUserContext from "common/context/GammaUser.context";
+import { getBackendUrl } from "common/utils/configs/envVariablesLoader";
+
 import translations from "./GammaActions.element.translations";
-import GammaUserContext from "../../../../../common/context/GammaUser.context";
 
 const Nick = styled.h6`
     font-family: Roboto, serif;

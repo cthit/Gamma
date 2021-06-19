@@ -1,6 +1,8 @@
 import * as yup from "yup";
-import { USER_CID } from "../../../../api/users/props.users.api";
+
 import { DigitTextField } from "@cthit/react-digit-components";
+
+import { USER_CID } from "api/users/props.users.api";
 
 export const validationSchema = text => {
     const schema = {};

@@ -1,8 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { DigitText } from "@cthit/react-digit-components";
-import { Link } from "react-router-dom";
 
 const NoStyleLink = styled(Link)`
     color: black;

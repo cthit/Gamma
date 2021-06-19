@@ -1,11 +1,13 @@
+import React from "react";
+import * as yup from "yup";
+
 import {
     DigitEditData,
     DigitSelect,
     DigitTextField,
     DigitTranslations
 } from "@cthit/react-digit-components";
-import React from "react";
-import * as yup from "yup";
+
 import {
     USER_ACCEPTANCE_YEAR,
     USER_CID,
@@ -15,12 +17,10 @@ import {
     USER_NICK,
     USER_PASSWORD,
     USER_LANGUAGE
-} from "../../../api/users/props.users.api";
+} from "api/users/props.users.api";
+import { ENGLISH_LANGUAGE, SWEDISH_LANGUAGE } from "api/utils/commonProps";
+
 import translations from "./UserForm.view.translations.json";
-import {
-    ENGLISH_LANGUAGE,
-    SWEDISH_LANGUAGE
-} from "../../../api/utils/commonProps";
 
 function _getCurrentYear() {
     return new Date().getFullYear() + "";

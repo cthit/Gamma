@@ -1,15 +1,8 @@
 import React, { useContext } from "react";
-import {
-    initialValues,
-    keysOrder,
-    keysText,
-    validationSchema
-} from "../../Me.options";
-import {
-    generateUserCustomDetailsRenders,
-    generateUserEditComponentData
-} from "../../../../common/utils/generators/user-form.generator";
-import { editMe } from "../../../../api/me/put.me.api";
+import { Link, useHistory } from "react-router-dom";
+import styled from "styled-components";
+import * as yup from "yup";
+
 import {
     DigitButton,
     DigitCRUD,
@@ -17,21 +10,34 @@ import {
     DigitTextField,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { deleteMe } from "../../../../api/me/delete.me.api";
+
+import { deleteMe } from "api/me/delete.me.api";
+import { editMe } from "api/me/put.me.api";
 import {
     USER_FIRST_NAME,
     USER_LAST_NAME,
     USER_NICK,
     USER_PASSWORD
-} from "../../../../api/users/props.users.api";
-import * as yup from "yup";
-import InsufficientAccess from "../../../../common/views/insufficient-access";
-import FourOFour from "../../../four-o-four";
+} from "api/users/props.users.api";
+
+import GammaUserContext from "common/context/GammaUser.context";
+import {
+    generateUserCustomDetailsRenders,
+    generateUserEditComponentData
+} from "common/utils/generators/user-form.generator";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../../../app/elements/five-zero-zero";
+import FourOFour from "../../../four-o-four";
+import {
+    initialValues,
+    keysOrder,
+    keysText,
+    validationSchema,
+    updateKeysOrder
+} from "../../Me.options";
 import translations from "./MeCRUD.screen.translations";
-import GammaUserContext from "../../../../common/context/GammaUser.context";
-import { Link, useHistory } from "react-router-dom";
-import styled from "styled-components";
+import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 
 const NoStyleLink = styled(Link)`
     color: inherit;
@@ -64,6 +70,7 @@ const MeCRUD = () => {
     return (
         <DigitCRUD
             keysOrder={keysOrder()}
+            updateKeysOrder={updateKeysOrder()}
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
             formComponentData={generateUserEditComponentData(text)}
@@ -93,7 +100,10 @@ const MeCRUD = () => {
             }
             detailsRenderCardStart={data => (
                 <>
-                    <UserImage src={data.avatarUrl} alt={"Profile picture"} />
+                    <UserImage
+                        src={"/api/internal/users/avatar/" + data.id}
+                        alt={"Profile picture"}
+                    />
                     <NoStyleLink to={"/me/avatar"}>
                         <DigitButton outlined text={text.ChangeAvatar} />
                     </NoStyleLink>
@@ -115,7 +125,9 @@ const MeCRUD = () => {
             updateTitle={data => fullName(data)}
             deleteRequest={(_, form) =>
                 deleteMe(form).then(() => {
-                    window.location.reload();
+                    window.location.replace(
+                        getBackendUrl() + "/account-deleted"
+                    );
                 })
             }
             dialogDeleteTitle={() => text.AreYouSure}
@@ -138,7 +150,8 @@ const MeCRUD = () => {
                     componentProps: {
                         upperLabel: text.Password,
                         password: true,
-                        outlined: true
+                        outlined: true,
+                        autoComplete: false
                     }
                 }
             }}

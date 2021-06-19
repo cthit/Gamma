@@ -1,10 +1,11 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import MeChangePassword from "./screens/me-change-password";
-import MeGroups from "./screens/me-groups";
-import MeAvatar from "./screens/me-avatar";
+
 import MeApprovals from "./screens/me-approvals";
+import MeAvatar from "./screens/me-avatar";
+import MeChangePassword from "./screens/me-change-password";
 import MeCRUD from "./screens/me-crud";
+import MeGroups from "./screens/me-groups";
 
 const Me = () => {
     return (

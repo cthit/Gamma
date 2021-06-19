@@ -3,10 +3,7 @@
     "NoActiveGroups": ["No active groups", "Inga aktiva grupper"],
     "PastGroups": ["Your past groups", "Dina gamla grupper"],
     "NoPastGroups": ["No past groups", "Inga gamla grupper"],
-    "NoGroupsForYou": [
-        "You have no groups.... yet ;)",
-        "Du har inga grupper... än ;)"
-    ],
+    "NoGroupsForYou": ["You have no groups", "Du har inga grupper"],
     "FutureGroups": [
         "Future groups (Not active yet)",
         "Framtida grupper (Inte aktiv än)"

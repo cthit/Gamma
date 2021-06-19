@@ -1,7 +1,9 @@
 import React from "react";
+
 import { DigitProviders } from "@cthit/react-digit-components";
-import { GammaLoadingSingletonProvider } from "../common/context/GammaLoading.context";
-import { GammaUserSingletonProvider } from "../common/context/GammaUser.context";
+
+import { GammaLoadingSingletonProvider } from "common/context/GammaLoading.context";
+import { GammaUserSingletonProvider } from "common/context/GammaUser.context";
 
 const theme = {
     breakpoints: {

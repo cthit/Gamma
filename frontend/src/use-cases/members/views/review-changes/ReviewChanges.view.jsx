@@ -1,5 +1,8 @@
-import React, { useEffect } from "react";
 import Save from "@material-ui/icons/Save";
+import * as _ from "lodash";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+
 import {
     DigitLayout,
     DigitDesign,
@@ -8,13 +11,14 @@ import {
     DigitText,
     useDigitToast
 } from "@cthit/react-digit-components";
-import * as _ from "lodash";
+
+import { removeUserFromGroup } from "api/groups/delete.groups.api";
+import { addUserToGroup } from "api/groups/post.groups.api";
+import { editUserInGroup } from "api/groups/put.groups.api";
+
+import DisplayMembersTable from "common/elements/display-members-table";
+
 import translations from "./ReviewChanges.view.translations";
-import { editUserInGroup } from "../../../../api/groups/put.groups.api";
-import { removeUserFromGroup } from "../../../../api/groups/delete.groups.api";
-import { addUserToGroup } from "../../../../api/groups/post.groups.api";
-import { useHistory } from "react-router-dom";
-import DisplayMembersTable from "../../../../common/elements/display-members-table";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
@@ -80,7 +84,6 @@ const save = (
             queueToast({
                 text: text.MembersError
             });
-            console.log(e);
         });
 };
 

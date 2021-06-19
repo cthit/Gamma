@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
     DigitButton,
     DigitDesign,
@@ -8,69 +9,37 @@ import {
     useDigitToast,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import { deleteAuthorityLevel } from "../../../../../../api/authorities/delete.authoritites";
+
+import { deleteAuthorityLevel } from "api/authorities/delete.authoritites";
+
 import translations from "./AuthorityLevelCard.element.translations";
+import AuthoritiesList from "../../../../authorities-list";
 
 const AuthorityLevelCard = ({
     authorityLevel,
-    authorities = [],
-    forceUpdate
+    forceUpdate,
+    users = [],
+    superGroups = [],
+    posts = []
 }) => {
-    const [text, activeLanguage] = useDigitTranslations(translations);
+    const [text] = useDigitTranslations(translations);
     const [openDialog] = useDigitDialog();
     const [queueToast] = useDigitToast();
 
     return (
-        <DigitDesign.Card size={{ height: "400px" }}>
+        <DigitDesign.Card size={{ height: "500px" }}>
             <DigitDesign.CardHeader>
-                <DigitDesign.CardTitle text={authorityLevel.authority} />
+                <DigitDesign.CardTitle text={authorityLevel} />
             </DigitDesign.CardHeader>
             <DigitDesign.CardBody>
-                {authorities.length === 0 && (
-                    <DigitText.Text alignCenter text={text.NoAuthorities} />
-                )}
-                {authorities.length > 0 && (
-                    <div style={{ overflowY: "auto" }}>
-                        <DigitList
-                            items={authorities.map(authority => ({
-                                text:
-                                    authority.superGroup.prettyName +
-                                    " - " +
-                                    authority.post[activeLanguage]
-                            }))}
-                            onClick={null}
-                            dense
-                        />
-                    </div>
-                )}
+                <AuthoritiesList
+                    users={users}
+                    posts={posts}
+                    superGroups={superGroups}
+                />
             </DigitDesign.CardBody>
             <DigitDesign.CardButtons leftRight>
-                <DigitButton
-                    text={text.Delete}
-                    onClick={() => {
-                        openDialog({
-                            title: text.AreYouSure,
-                            description: text.AreYouSureDeleteAuthorityLevel,
-                            confirmButtonText: text.ImSure,
-                            cancelButtonText: text.Cancel,
-                            onConfirm: () => {
-                                deleteAuthorityLevel(authorityLevel.id)
-                                    .then(() => {
-                                        queueToast({
-                                            text: text.DeleteSuccessful
-                                        });
-                                        forceUpdate();
-                                    })
-                                    .catch(() => {
-                                        queueToast({
-                                            text: text.DeleteFailed
-                                        });
-                                    });
-                            }
-                        });
-                    }}
-                />
-                <DigitDesign.Link to={"/authorities/edit/" + authorityLevel.id}>
+                <DigitDesign.Link to={"/authorities/edit/" + authorityLevel}>
                     <DigitButton text={text.Edit} outlined />
                 </DigitDesign.Link>
             </DigitDesign.CardButtons>

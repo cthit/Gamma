@@ -13,6 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        globally_quoted_identifiers: true
         temp:
           #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
           use_jdbc_metadata_defaults: false
@@ -30,17 +31,20 @@ server:
     context-path: /api
     session:
       timeout: ${SESSION_TIMEOUT:-1}
-
+  error:
+    path: /error
 
 
 logging:
-  file: ${LOGGING_FILE:production.log}
+  file:
+    name: ${LOGGING_FILE:production.log}
   level:
     root: ${ROOT_DEBUG_LEVEL:WARN}
     org:
       springframework:
         web: ${WEB_DEBUG_LEVEL:WARN}
       hibernate: ${HIBERNATE_DEBUG_LEVEL:ERROR}
+
 
 security:
   jwt:
@@ -69,7 +73,7 @@ application:
     password: ${ADMIN_PASSWORD:password}
   mocking: ${IS_MOCKING:false}
   default-oauth2-client:
-    client-name: ${DEFAULT_CLIENT_NAME:name}
+    client-name: ${DEFAULT_CLIENT_NAME:test}
     client-id: ${DEFAULT_CLIENT_ID:id}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}
     redirect-uri: ${DEFAULT_REDIRECT_URI:http://localhost:3001/auth/callback}

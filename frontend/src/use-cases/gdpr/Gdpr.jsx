@@ -1,3 +1,6 @@
+import * as _ from "lodash";
+import React, { useCallback, useEffect, useState } from "react";
+
 import {
     DigitSelectMultipleTable,
     useDigitTranslations,
@@ -5,21 +8,22 @@ import {
     DigitLoading,
     DigitLayout
 } from "@cthit/react-digit-components";
-import React, { useCallback, useEffect, useState } from "react";
-import translations from "./Gdpr.translations.json";
+
+import { getUsersWithGDPRMinified } from "api/gdpr/get.gdpr.api";
+import { setGDPRValue } from "api/gdpr/put.gdpr.api";
 import {
     USER_CID,
     USER_FIRST_NAME,
     USER_ID,
     USER_LAST_NAME,
     USER_NICK
-} from "../../api/users/props.users.api";
-import * as _ from "lodash";
-import InsufficientAccess from "../../common/views/insufficient-access";
-import { getUsersWithGDPRMinified } from "../../api/gdpr/get.gdpr.api";
-import { setGDPRValue } from "../../api/gdpr/put.gdpr.api";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import useGammaHasAuthority from "../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
+} from "api/users/props.users.api";
+
+import useGammaHasAuthority from "common/hooks/use-gamma-has-authority/use-gamma-has-authority";
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
+import translations from "./Gdpr.translations.json";
 
 function _generateHeaderTexts(text) {
     const output = {};

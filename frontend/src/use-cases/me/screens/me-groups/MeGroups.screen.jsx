@@ -1,12 +1,15 @@
 import React, { useMemo } from "react";
+
 import {
     DigitText,
     DigitLayout,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
+import DisplayGroupsTable from "common/elements/display-groups-table/DisplayGroupsTable.element";
+import useGammaUser from "common/hooks/use-gamma-user/useGammaUser";
+
 import translations from "./MeGroups.screen.translations";
-import DisplayGroupsTable from "../../../../common/elements/display-groups-table/DisplayGroupsTable.element";
-import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
 
 const MeGroups = () => {
     const [text] = useDigitTranslations(translations);

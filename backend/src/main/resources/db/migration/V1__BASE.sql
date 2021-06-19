@@ -1,148 +1,178 @@
-create table internal_text (
-  id  uuid constraint text_pk primary key,
-  sv  text not null,
-  en  text
+CREATE TABLE internal_text
+(
+    text_id UUID PRIMARY KEY,
+    sv      VARCHAR(2048) NOT NULL,
+    en      VARCHAR(2048) NOT NULL,
+    version INT
 );
 
-create table website (
-  id uuid     constraint websites_pk primary key,
-  name        varchar(100) not null constraint website_name unique,
-  pretty_name varchar(100) not null
+CREATE TABLE ituser
+(
+    user_id         UUID PRIMARY KEY,
+    cid             VARCHAR(12) NOT NULL UNIQUE,
+    password        VARCHAR(255) NOT NULL,
+    nick            VARCHAR(50) NOT NULL,
+    first_name      VARCHAR(50) NOT NULL,
+    last_name       VARCHAR(50) NOT NULL,
+    email           VARCHAR(100) NOT NULL UNIQUE,
+    LANGUAGE        VARCHAR(15) NULL,
+    user_agreement  BOOLEAN NOT NULL DEFAULT FALSE,
+    acceptance_year INTEGER,
+    version         INT
 );
 
-create table website_url (
-  id      uuid          constraint websites_url_pk primary key,
-  website uuid          not null references website,
-  url     varchar(2000) not null
+CREATE TABLE ituser_gdpr_training
+(
+    user_id UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE
 );
 
-create table ituser (
-  id               uuid constraint ituser_pk primary key,
-  cid              varchar(10)  not null constraint ituser_cid_unique unique,
-  password         varchar(255) not null,
-  nick             varchar(50)  not null,
-  first_name       varchar(50)  null,
-  last_name        varchar(50)  null,
-  email            varchar(100) not null constraint ituser_email_unique unique,
-  phone            varchar(15)  null,
-  language         varchar(15)  null,
-  avatar_url       varchar(255) default 'default.jpg',
-  gdpr             boolean      not null default false,
-  user_agreement   boolean      not null default false,
-  account_locked   boolean      not null default false,
-  acceptance_year  integer constraint ituser_valid_year check (acceptance_year >= 2001),
-  created_at       timestamp    not null default current_timestamp,
-  last_modified_at timestamp    not null default current_timestamp
-);
-
-create table ituser_website (
-  id          uuid constraint ituser_website_pk primary key,
-  ituser      uuid not null references ituser,
-  website     uuid not null references website_url
-);
-
-create table authority_level (
-  id  uuid constraint authority_level_pk primary key,
-  authority_level varchar(30)
-);
-
-create table password_reset_token(
-  id      uuid constraint password_reset_token_pk primary key,
-  token   varchar(100) not null,
-  ituser  uuid references ituser
-);
-
-create table fkit_super_group (
-  id            uuid                    constraint fkit_super_group_pk                  primary key,
-  name          varchar(50)    not null constraint fkit_super_group_name_unique         unique,
-  pretty_name   varchar(50)    not null constraint fkit_super_group_pretty_name_unique  unique,
-  email         varchar(100)   not null,
-  type          varchar(30)    not null
-);
-
-create table fkit_group (
-  id                uuid                  constraint fkit_group_pk primary key,
-  name              varchar(50)  not null constraint fkit_group_name_unique unique,
-  pretty_name       varchar(50)  not null,
-  description       uuid         null     references internal_text,
-  function          uuid         not null references internal_text,
-  becomes_active    date         not null,
-  becomes_inactive  date         not null, constraint inactive_after_inactive check (becomes_active < becomes_inactive),
-  fkit_super_group  uuid         not null references fkit_super_group,
-  email             varchar(100) null,
-  avatar_url        varchar(255) null
-);
-
-create table post (
-  id        uuid constraint post_pk primary key,
-  post_name uuid not null references internal_text
-
-);
-
-create table authority (
-  id              uuid  constraint authority_unique unique,
-  fkit_group_id   uuid  constraint authority_fkit_super_group_fk            references fkit_super_group,
-  post_id         uuid  constraint authority_post                     references post,
-  authority_level uuid  constraint authority_authority_level          references authority_level,
-  constraint      authority_pk primary key (post_id, fkit_group_id)
-);
-
-create table fkit_group_website(
-  id          uuid constraint fkit_group_website_pk primary key,
-  fkit_group  uuid not null references fkit_group,
-  website     uuid not null references website_url
+CREATE TABLE ituser_account_locked
+(
+    user_id UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE
 );
 
 
-
-create table membership (   -- Should this be rebuilt to look like all other tables? probably
-  ituser_id            uuid         constraint membership_ituser_fk references ituser,
-  fkit_group_id        uuid         constraint membership_fkit_group_fk references fkit_group,
-  post_id              uuid         constraint membership_post_fk references post,
-  unofficial_post_name varchar(100) null,
-  constraint membership_pk primary key (ituser_id, fkit_group_id, post_id)
+CREATE TABLE user_avatar_uri
+(
+    user_id    UUID REFERENCES ituser ON DELETE CASCADE,
+    avatar_uri VARCHAR(255) NOT NULL,
+    version    INT
 );
 
-create table no_account_membership (
-    user_name            varchar(20) not null,
-    fkit_group_id        uuid         constraint no_account_membership_fkit_group_fk references fkit_group,
-    post_id              uuid         not null constraint no_account_membership_post_fk references post,
-    unofficial_post_name varchar(100) null,
-    constraint no_account_membership_pk primary key (user_name, fkit_group_id)
+CREATE TABLE password_reset
+(
+    token      VARCHAR(100) NOT NULL,
+    user_id    UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
-create table whitelist (
-  id  uuid constraint whitelist_pk primary key,
-  cid varchar(10) not null constraint whitelist_cid_unique unique
+CREATE TABLE super_group_type
+(
+    super_group_type_name VARCHAR(30) PRIMARY KEY
 );
 
-create table activation_code (
-  id          uuid constraint activation_code_pk primary key,
-  cid         uuid unique     not null references whitelist,
-  code        varchar(30)     not null,
-  created_at  timestamp       not null default current_timestamp
+CREATE TABLE fkit_super_group
+(
+    super_group_id        UUID PRIMARY KEY,
+    e_name                VARCHAR(50) NOT NULL UNIQUE,
+    pretty_name           VARCHAR(50) NOT NULL,
+    email                 VARCHAR(100) NOT NULL,
+    super_group_type_name VARCHAR(30) NOT NULL REFERENCES super_group_type,
+    description           UUID REFERENCES internal_text ON DELETE CASCADE,
+    version               INT
 );
 
-create table itclient (
-    id  uuid constraint itclient_pk primary key,
-    client_id varchar(256) not null,
-    client_secret varchar(256) not null,
-    web_server_redirect_uri varchar(256) not null,
-    --authorities varchar(256) not null,
-    access_token_validity integer not null,
-    refresh_token_validity integer not null,
-    auto_approve boolean default false not null,
-    name varchar(30) not null,
-    description uuid references internal_text,
-    created_at       timestamp    not null default current_timestamp,
-    last_modified_at timestamp    not null default current_timestamp
+CREATE TABLE fkit_group
+(
+    group_id       UUID PRIMARY KEY,
+    e_name         VARCHAR(50) NOT NULL UNIQUE,
+    pretty_name    VARCHAR(50) NOT NULL,
+    super_group_id UUID NOT NULL REFERENCES fkit_super_group,
+    email          VARCHAR(100) NULL,
+    version        INT
 );
 
-create table apikey (
-    id               uuid constraint apikey_pk primary key,
-    name             varchar(30) not null,
-    description      uuid references internal_text,
-    key              varchar(150) not null,
-    created_at       timestamp    not null default current_timestamp,
-    last_modified_at timestamp    not null default current_timestamp
-)
+CREATE TABLE post
+(
+    post_id      UUID PRIMARY KEY,
+    post_name    UUID NOT NULL REFERENCES internal_text ON DELETE CASCADE,
+    email_prefix VARCHAR(20),
+    version      INT
+);
+
+CREATE TABLE authority_level
+(
+    authority_level VARCHAR(30) PRIMARY KEY
+);
+
+CREATE TABLE authority_post
+(
+    super_group_id  UUID REFERENCES fkit_super_group,
+    post_id         UUID REFERENCES post,
+    authority_level VARCHAR(30) REFERENCES authority_level,
+    PRIMARY KEY (post_id, super_group_id, authority_level)
+);
+
+CREATE TABLE authority_super_group
+(
+    super_group_id  UUID REFERENCES fkit_super_group,
+    authority_level VARCHAR(30) REFERENCES authority_level,
+    PRIMARY KEY (super_group_id, authority_level)
+);
+
+CREATE TABLE authority_user
+(
+    user_id         UUID REFERENCES ituser ON DELETE CASCADE,
+    authority_level VARCHAR(30) REFERENCES authority_level,
+    PRIMARY KEY (user_id, authority_level)
+);
+
+CREATE TABLE membership
+(
+    user_id              UUID REFERENCES ituser ON DELETE CASCADE,
+    group_id             UUID REFERENCES fkit_group ON DELETE CASCADE,
+    post_id              UUID REFERENCES post ON DELETE CASCADE,
+    unofficial_post_name VARCHAR(100),
+    version              INT,
+    PRIMARY KEY (user_id, group_id, post_id)
+);
+
+CREATE TABLE whitelist_cid
+(
+    cid VARCHAR(10) PRIMARY KEY CHECK (LOWER(cid) = cid)
+);
+
+CREATE TABLE user_activation
+(
+    cid        VARCHAR(10) PRIMARY KEY REFERENCES whitelist_cid,
+    token       VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+);
+
+CREATE TABLE itclient
+(
+    client_id               VARCHAR(100) PRIMARY KEY,
+    client_secret           VARCHAR(100) NOT NULL,
+    web_server_redirect_uri VARCHAR(256) NOT NULL,
+    auto_approve            BOOLEAN DEFAULT FALSE,
+    pretty_name             VARCHAR(30) NOT NULL,
+    description             UUID REFERENCES internal_text ON DELETE CASCADE
+);
+
+CREATE TABLE itclient_authority_level_restriction
+(
+    client_id VARCHAR(75) REFERENCES itclient,
+    authority_level VARCHAR(30) REFERENCES authority_level,
+    PRIMARY KEY(client_id, authority_level)
+);
+
+CREATE TABLE apikey
+(
+    api_key_id  UUID PRIMARY KEY,
+    pretty_name VARCHAR(30) NOT NULL,
+    description UUID REFERENCES internal_text ON DELETE CASCADE,
+    token       VARCHAR(150) UNIQUE,
+    key_type    VARCHAR(30) NOT NULL
+    --     origin           varchar(256) not null
+);
+
+CREATE TABLE itclient_apikey
+(
+    client_id  VARCHAR(75) PRIMARY KEY REFERENCES itclient ON DELETE CASCADE,
+    api_key_id UUID REFERENCES apikey ON DELETE CASCADE
+);
+
+CREATE TABLE it_user_approval
+(
+    user_id   UUID REFERENCES ituser ON DELETE CASCADE,
+    client_id VARCHAR(75) REFERENCES itclient ON DELETE CASCADE,
+    PRIMARY KEY(user_id, client_id)
+);
+
+CREATE TABLE group_images_uri
+(
+    group_id   UUID REFERENCES fkit_group ON DELETE CASCADE,
+    avatar_uri VARCHAR(255),
+    banner_uri VARCHAR(255),
+    version    INT
+);

@@ -3,7 +3,7 @@ import {
     AC_CODE,
     AC_CREATED_AT,
     AC_ID
-} from "../../api/activation-codes/props.activationCodes.api";
+} from "api/activation-codes/props.activationCodes.api";
 
 export const keysText = text => {
     const keysText = {};

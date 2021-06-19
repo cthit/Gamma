@@ -1,16 +1,19 @@
+import React, { useEffect, useState } from "react";
+
 import {
     DigitCRUD,
     useDigitTranslations,
     DigitText,
     DigitButton,
-    useDigitCustomDialog
+    useDigitCustomDialog,
+    DigitDesign,
+    DigitLoading,
+    useDigitDialog
 } from "@cthit/react-digit-components";
-import React from "react";
-import { getClient, getClients } from "../../api/clients/get.clients.api";
-import { addClient } from "../../api/clients/post.clients.api";
-import translations from "./Clients.translations";
-import { deleteClient } from "../../api/clients/delete.clients.api";
-import InsufficientAccess from "../../common/views/insufficient-access";
+
+import { deleteClient } from "api/clients/delete.clients.api";
+import { getClient, getClients } from "api/clients/get.clients.api";
+import { addClient, resetClientSecret } from "api/clients/post.clients.api";
 import {
     CLIENT_DESCRIPTION_ENGLISH,
     CLIENT_DESCRIPTION_SWEDISH,
@@ -18,42 +21,57 @@ import {
     CLIENT_REDIRECT,
     CLIENT_SECRET,
     CLIENT_ID
-} from "../../api/clients/props.clients.api";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
-import FourOFour from "../four-o-four";
+} from "api/clients/props.clients.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import FiveZeroZero from "../../app/elements/five-zero-zero";
+import FourOFour from "../four-o-four";
 import {
     initialValues,
     keysComponentData,
     keysOrder,
     readAllKeysOrder,
+    createKeysOrder,
     keysText,
     validationSchema
 } from "./Clients.options";
+import translations from "./Clients.translations";
 import UserClientApprovals from "./views/user-client-approvals";
+import { getAuthorityLevels } from "../../api/authorities/get.authorities";
+import ClientRestrictions from "./client-restrictions";
 
 const Clients = () => {
     const [text] = useDigitTranslations(translations);
-    const [openDialog] = useDigitCustomDialog({
-        title: text.YourClientSecret,
-        renderButtons: confirm => (
-            <DigitButton text={text.Close} onClick={confirm} />
-        )
-    });
+    const [openCustomDialog] = useDigitCustomDialog();
+    const [openDialog] = useDigitDialog();
+    const [authorityLevels, setAuthorityLevels] = useState(null);
+
+    useEffect(() => {
+        getAuthorityLevels().then(response =>
+            setAuthorityLevels(response.data)
+        );
+    }, []);
 
     const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
     }
 
+    if (authorityLevels == null) {
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
+    }
+
     return (
         <DigitCRUD
             keysOrder={keysOrder()}
+            createKeysOrder={createKeysOrder()}
             readAllKeysOrder={readAllKeysOrder()}
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
             formInitialValues={initialValues()}
-            formComponentData={keysComponentData(text)}
+            formComponentData={keysComponentData(text, authorityLevels)}
             name={"clients"}
             path={"/clients"}
             readAllRequest={getClients}
@@ -67,19 +85,43 @@ const Clients = () => {
                             sv: client[CLIENT_DESCRIPTION_SWEDISH],
                             en: client[CLIENT_DESCRIPTION_ENGLISH]
                         },
-                        webServerRedirectUri: client[CLIENT_REDIRECT]
+                        webServerRedirectUri: client[CLIENT_REDIRECT],
+                        autoApprove: client.autoApprove,
+                        generateApiKey: client.generateApiKey,
+                        restrictions: client.restrictions
                     })
                         .then(response => {
-                            openDialog({
+                            openCustomDialog({
+                                title: text.YourClientSecret,
+                                renderButtons: confirm => (
+                                    <DigitButton
+                                        text={text.Close}
+                                        onClick={confirm}
+                                    />
+                                ),
                                 renderMain: () => (
                                     <>
                                         <DigitText.Text
-                                            bold
-                                            alignCenter
-                                            text={response.data[
-                                                CLIENT_SECRET
-                                            ].replace("{noop}", "")}
+                                            text={
+                                                "Secret: " +
+                                                response.data[
+                                                    CLIENT_SECRET
+                                                ].replace("{noop}", "")
+                                            }
                                         />
+                                        {response.data.apiKeyToken != null && (
+                                            <>
+                                                <DigitDesign.Divider />
+                                                <DigitText.Text
+                                                    text={
+                                                        "Api token: " +
+                                                        response.data
+                                                            .apiKeyToken
+                                                    }
+                                                />
+                                            </>
+                                        )}
+                                        <DigitDesign.Divider />
                                         <DigitText.Text
                                             text={
                                                 text.YourClientSecretDescription
@@ -136,11 +178,57 @@ const Clients = () => {
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             useKeyTextsInUpperLabel
-            detailsRenderEnd={client =>
-                String(client.autoApprove) === "false" ? (
-                    <UserClientApprovals client={client} />
-                ) : null
-            }
+            detailsRenderCardEnd={client => (
+                <DigitButton
+                    text={text.UpdateClientSecret}
+                    outlined
+                    onClick={() => {
+                        openDialog({
+                            title: text.AreYouSure,
+                            description: text.ResetClient,
+                            confirmButtonText: text.UpdateClientSecret,
+                            cancelButtonText: text.Cancel,
+                            onConfirm: () =>
+                                resetClientSecret(client.clientId).then(
+                                    response =>
+                                        openCustomDialog({
+                                            title: text.YourClientSecret,
+                                            renderButtons: confirm => (
+                                                <DigitButton
+                                                    text={text.Close}
+                                                    onClick={confirm}
+                                                />
+                                            ),
+                                            renderMain: () => (
+                                                <>
+                                                    <DigitText.Text
+                                                        text={
+                                                            "Secret: " +
+                                                            response.data.replace(
+                                                                "{noop}",
+                                                                ""
+                                                            )
+                                                        }
+                                                    />
+                                                </>
+                                            )
+                                        })
+                                )
+                        });
+                    }}
+                />
+            )}
+            detailsRenderEnd={client => (
+                <>
+                    {String(client.autoApprove) === "false" ? (
+                        <UserClientApprovals client={client} />
+                    ) : null}
+                    {client.restrictions != null &&
+                        client.restrictions.length > 0 && (
+                            <ClientRestrictions client={client} />
+                        )}
+                </>
+            )}
             readOneProps={{
                 margin: {
                     bottom: "16px"

@@ -6,20 +6,10 @@ import {
 
 const ACTIVATE_CID_ENDPOINT = "activate_cid/";
 
-/**
- * {
- *     cids: [String]
- * }
- */
-export function addUsersToWhitelist(whitelistData) {
+export function addUserToWhitelist(whitelistData) {
     return postRequest(ADMIN_WHITELIST_ENDPOINT, whitelistData);
 }
 
-/**
- * {
- *      cid: String
- * }
- */
 export function activateCid(data) {
     return postRequest(WHITELIST_ENDPOINT + ACTIVATE_CID_ENDPOINT, data, false);
 }

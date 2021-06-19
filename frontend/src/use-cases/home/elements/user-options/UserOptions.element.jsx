@@ -7,7 +7,6 @@ import {
 } from "@cthit/react-digit-components";
 
 import HomeLink from "../../elements/home-link";
-
 import translations from "./UserOptions.element.translations.json";
 
 const UserOptions = ({ hasGroups }) => {
@@ -15,7 +14,9 @@ const UserOptions = ({ hasGroups }) => {
 
     return (
         <DigitDesign.Card>
-            <DigitDesign.CardTitle text={text.UserOptions} />
+            <DigitDesign.CardHeader>
+                <DigitDesign.CardTitle text={text.UserOptions} />
+            </DigitDesign.CardHeader>
             <DigitDesign.CardBody>
                 <DigitLayout.Grid columns={`repeat(${2}, 1fr)`} margin={"4px"}>
                     <HomeLink text={text.MyAccount} link="/me" />

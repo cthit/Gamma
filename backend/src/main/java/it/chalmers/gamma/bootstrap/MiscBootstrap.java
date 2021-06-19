@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MiscBootstrap {
 
-    @Value("classpath:image/default.jpg")
+    @Value("classpath:/image/default_user_avatar.jpg")
     private Resource defaultResourceFile;
 
     @Value("${application.files.path}")
@@ -20,9 +20,8 @@ public class MiscBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MiscBootstrap.class);
 
-
     public void runImageBootstrap() {
-        File targetFile = new File(String.format("%s/%s", this.targetDir, "default.jpg"));
+        File targetFile = new File(String.format("%s/%s", this.targetDir, "default_user_avatar.jpg"));
         if (!targetFile.exists()) {
             LOGGER.info("Default Avatar file does not exist, creating a new one");
             try {

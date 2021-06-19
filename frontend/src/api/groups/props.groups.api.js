@@ -1,16 +1,7 @@
 export const GROUP_ID = "id";
 export const GROUP_NAME = "name";
 export const GROUP_PRETTY_NAME = "prettyName";
-export const GROUP_DESCRIPTION = "description";
 export const GROUP_EMAIL = "email";
-export const GROUP_FUNCTION = "function";
-export const GROUP_BECOMES_ACTIVE = "becomesActive";
-export const GROUP_BECOMES_INACTIVE = "becomesInactive";
 export const GROUP_SUPER_GROUP = "superGroup";
-export const GROUP_MEMBERS = "groupMembers";
+export const GROUP_MEMBERS = "members";
 export const GROUP_SUPER_GROUP_PRETTY_NAME = "superGroupPrettyName";
-export const GROUP_DESCRIPTION_SV = "descriptionSv";
-export const GROUP_DESCRIPTION_EN = "descriptionEn";
-export const GROUP_FUNCTION_SV = "functionSv";
-export const GROUP_FUNCTION_EN = "functionEn";
-export const GROUP_NO_ACCOUNT_MEMBERS = "noAccountMembers";

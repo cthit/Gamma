@@ -1,4 +1,7 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitEditDataCard,
     useDigitTranslations,
@@ -6,11 +9,13 @@ import {
     DigitLayout,
     useDigitToast
 } from "@cthit/react-digit-components";
-import * as yup from "yup";
+
+import { editPassword } from "api/me/put.me.api";
+
+import useGammaUser from "common/hooks/use-gamma-user/useGammaUser";
+
 import translations from "./MeChangePassword.screen.translations";
-import { editPassword } from "../../../../api/me/put.me.api";
-import { useHistory } from "react-router-dom";
-import useGammaUser from "../../../../common/hooks/use-gamma-user/useGammaUser";
+
 const MeChangePassword = () => {
     const me = useGammaUser();
     const [text] = useDigitTranslations(translations);
@@ -33,8 +38,7 @@ const MeChangePassword = () => {
                         })
                         .catch(() =>
                             queueToast({
-                                text:
-                                    text.SomethingWentWrongWhenChangingPassword
+                                text: text.SomethingWentWrongWhenChangingPassword
                             })
                         );
                 }}

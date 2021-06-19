@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import translations from "./FiveZeroZero.element.translations";
+
 import {
     DigitDesign,
     DigitButton,
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
+import translations from "./FiveZeroZero.element.translations";
 
 const FiveZeroZero = ({ getMe, reset }) => {
     const [text] = useDigitTranslations(translations);

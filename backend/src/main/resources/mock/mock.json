@@ -6,7 +6,10 @@
       "lastName": "MacMakin",
       "cid": "wmacmak",
       "nick": "Chokladkaka",
-      "acceptanceYear": 2014
+      "acceptanceYear": 2014,
+      "authorities": [
+        "admin"
+      ]
     },
     {
       "id": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -57,7 +60,7 @@
       "acceptanceYear": 2018
     },
     {
-      "id": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "id": "08e4abb5-e4d6-413b-94f2-6e1aa63716e7",
       "firstName": "Dolly",
       "lastName": "Mathy",
       "cid": "dmathy",
@@ -65,7 +68,7 @@
       "acceptanceYear": 2017
     },
     {
-      "id": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "id": "43af2838-43b9-4665-b3d7-9c615f5038fb",
       "firstName": "Matelda",
       "lastName": "Novotne",
       "cid": "mnovotne",
@@ -110,8 +113,7 @@
       "id": "047ac437-a789-4cc5-bb6e-ba50efd7c509",
       "name": "digit",
       "prettyName": "digIT",
-      "active": false,
-      "superGroup": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
+      "superGroupId": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
       "members": [
         {
           "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -134,8 +136,7 @@
       "id": "2abe2264-fd61-4899-ba46-851279d85229",
       "name": "digit",
       "prettyName": "digIT",
-      "active": true,
-      "superGroup": "aed27030-ad90-4526-855c-1e909b1dcecb",
+      "superGroupId": "aed27030-ad90-4526-855c-1e909b1dcecb",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
@@ -158,8 +159,7 @@
       "id": "a2f06d3a-7432-4655-a778-69c9142912f1",
       "name": "styrit",
       "prettyName": "styrIT",
-      "active": false,
-      "superGroup": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
+      "superGroupId": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
       "members": [
         {
           "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
@@ -187,8 +187,7 @@
       "id": "834651d1-34c1-4bac-b148-6546368a8454",
       "name": "styrit",
       "prettyName": "styrIT",
-      "active": true,
-      "superGroup": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
+      "superGroupId": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
       "members": [
         {
           "userId": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
@@ -216,8 +215,7 @@
       "id": "672db849-8afb-4160-9f12-7f8c1d379fcc",
       "name": "drawit",
       "prettyName": "DrawIT",
-      "active": false,
-      "superGroup": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
+      "superGroupId": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
@@ -240,8 +238,7 @@
       "id": "9b239de9-88a3-4992-96d1-b8dea2a637ec",
       "name": "drawit",
       "prettyName": "DrawIT",
-      "active": true,
-      "superGroup": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
+      "superGroupId": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
       "members": [
         {
           "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
@@ -264,8 +261,7 @@
       "id": "5f26a10c-e668-4ec1-b072-a7dd8f11735c",
       "name": "prit",
       "prettyName": "P.R.I.T.",
-      "active": false,
-      "superGroup": "326807b4-ae68-4626-8382-919a15a8e23c",
+      "superGroupId": "326807b4-ae68-4626-8382-919a15a8e23c",
       "members": [
         {
           "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
@@ -288,8 +284,7 @@
       "id": "1ed91274-13c8-4d6d-ab75-37c9d732b51b",
       "name": "prit",
       "prettyName": "P.R.I.T.",
-      "active": true,
-      "superGroup": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
+      "superGroupId": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
       "members": [
         {
           "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -312,8 +307,7 @@
       "id": "ee4153d5-830d-445f-acb3-ec09c53e7c0c",
       "name": "kandidatmiddagen",
       "prettyName": "Kandidatmiddagen",
-      "active": true,
-      "superGroup": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
+      "superGroupId": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
       "members": [
         {
           "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
@@ -339,64 +333,58 @@
       "id": "aed27030-ad90-4526-855c-1e909b1dcecb",
       "name": "digit",
       "prettyName": "digIT",
-      "type": "COMMITTEE",
-      "groups": ["2abe2264-fd61-4899-ba46-851279d85229"]
+      "type": "COMMITTEE"
     },
     {
       "id": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
       "name": "styrit",
       "prettyName": "styrIT",
-      "type": "BOARD",
-      "groups": ["834651d1-34c1-4bac-b148-6546368a8454"]
+      "type": "BOARD"
     },
     {
       "id": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
       "name": "drawit",
       "prettyName": "DrawIT",
-      "type": "SOCIETY",
-      "groups": ["9b239de9-88a3-4992-96d1-b8dea2a637ec"]
+      "type": "SOCIETY"
     },
     {
       "id": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
       "name": "prit",
       "prettyName": "P.R.I.T.",
-      "type": "COMMITTEE",
-      "groups": ["1ed91274-13c8-4d6d-ab75-37c9d732b51b"]
+      "type": "COMMITTEE"
     },
     {
       "id": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
       "name": "didit",
       "prettyName": "didIT",
-      "type": "ALUMNI",
-      "groups": ["047ac437-a789-4cc5-bb6e-ba50efd7c509"]
+      "type": "ALUMNI"
     },
     {
       "id": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
       "name": "emeritus",
       "prettyName": "EmerITus",
-      "type": "ALUMNI",
-      "groups": ["a2f06d3a-7432-4655-a778-69c9142912f1"]
+      "type": "ALUMNI"
     },
     {
       "id": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
       "name": "dragit",
       "prettyName": "DragIT",
-      "type": "ALUMNI",
-      "groups": ["672db849-8afb-4160-9f12-7f8c1d379fcc"]
+      "type": "ALUMNI"
     },
     {
       "id": "326807b4-ae68-4626-8382-919a15a8e23c",
       "name": "sprit",
       "prettyName": "S.P.R.I.T.",
-      "type": "ALUMNI",
-      "groups": ["5f26a10c-e668-4ec1-b072-a7dd8f11735c"]
+      "type": "ALUMNI"
     },
     {
       "id": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
       "name": "kandidatmiddagen",
       "prettyName": "Kandidatmiddagen",
       "type": "FUNCTIONARIES",
-      "groups": ["ee4153d5-830d-445f-acb3-ec09c53e7c0c"]
+      "authorities": [
+        "myauthority"
+      ]
     }
   ],
   "posts": [
@@ -427,6 +415,13 @@
         "sv": "Vice Ordförande",
         "en": "Vice-chairman"
       }
+    }
+  ],
+  "postAuthorities": [
+    {
+      "name": "myauthority",
+      "superGroupId": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
+      "postId": "524db9a7-e8be-403e-a07c-a41803ea5ee7"
     }
   ]
 }

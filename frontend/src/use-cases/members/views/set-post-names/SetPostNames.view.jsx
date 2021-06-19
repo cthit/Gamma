@@ -1,5 +1,9 @@
+import Save from "@material-ui/icons/Save";
+import _ from "lodash";
 import React from "react";
-import translations from "./SetPostNames.view.translations.json";
+import { useHistory } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitButton,
     DigitDesign,
@@ -8,9 +12,7 @@ import {
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import NewMembershipArray from "./sub-views/new-membership-array";
-import _ from "lodash";
-import * as yup from "yup";
+
 import {
     USER_ACCEPTANCE_YEAR,
     USER_CID,
@@ -18,11 +20,14 @@ import {
     USER_ID,
     USER_LAST_NAME,
     USER_NICK
-} from "../../../../api/users/props.users.api";
-import { useHistory } from "react-router-dom";
-import Save from "@material-ui/icons/Save";
+} from "api/users/props.users.api";
+
+import translations from "./SetPostNames.view.translations.json";
+import NewMembershipArray from "./sub-views/new-membership-array";
 
 function getInitialValues(selectedMemberIds, currentMembers, users) {
+    const currentMemberUsers = currentMembers.map(member => member.user);
+
     const necessaryMembersData = selectedMemberIds.map(selectedMember => {
         const user = _.find(users, { id: selectedMember });
 
@@ -34,7 +39,10 @@ function getInitialValues(selectedMemberIds, currentMembers, users) {
         necessaryMemberData[USER_ACCEPTANCE_YEAR] = user[USER_ACCEPTANCE_YEAR];
         necessaryMemberData[USER_ID] = user[USER_ID];
 
-        const previousMemberData = _.find(currentMembers, { id: user.id });
+        const previousMemberData = _.find(
+            currentMembers,
+            member => member.user.id === user.id
+        );
 
         var postId = "";
         var unofficialPostName = "";

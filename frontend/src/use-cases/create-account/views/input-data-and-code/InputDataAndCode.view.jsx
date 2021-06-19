@@ -1,3 +1,7 @@
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import {
     DigitButton,
     DigitDesign,
@@ -7,19 +11,19 @@ import {
     useDigitCustomDialog,
     DigitMarkdown
 } from "@cthit/react-digit-components";
-import React, { useEffect, useState } from "react";
-import statusCode from "../../../../common/utils/formatters/statusCode.formatter";
-import statusMessage from "../../../../common/utils/formatters/statusMessage.formatter";
-import translations from "./InputDataAndCode.view.translations.json";
-import { useHistory } from "react-router-dom";
-import { createAccount } from "../../../../api/create-account/post.createAccount.api";
+
+import { createAccount } from "api/create-account/post.createAccount.api";
+
+import statusCode from "common/utils/formatters/statusCode.formatter";
+import statusMessage from "common/utils/formatters/statusMessage.formatter";
+
 import {
     initialValues,
     keysComponentData,
     keysOrder,
     validationSchema
 } from "./InputDataAndCode.view.options";
-import axios from "axios";
+import translations from "./InputDataAndCode.view.translations.json";
 
 const InputDataAndCode = () => {
     const [text, activeLanguage] = useDigitTranslations(translations);

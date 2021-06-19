@@ -9,10 +9,9 @@ public final class TokenUtils {
     public enum CharacterTypes {
         UPPERCASE("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
         LOWERCASE("abcdefghijklmnopqrstuvwxyz"),
-        NUMBERS("123456789"),
-        SPECIALS("!@#$%&()+=[]|/?><");
+        NUMBERS("123456789");
 
-        private String characters;
+        private final String characters;
 
         CharacterTypes(String characters) {
             this.characters = characters;
@@ -22,27 +21,9 @@ public final class TokenUtils {
             return this.characters;
         }
 
-        public static CharacterTypes[] allValues() {
-            return new CharacterTypes[]{
-                    UPPERCASE, LOWERCASE, NUMBERS, SPECIALS
-            };
-        }
     }
 
-    private TokenUtils() {
-
-    }
-
-    public static String generateToken() {
-        CharacterTypes[] types = {
-                CharacterTypes.UPPERCASE,
-                CharacterTypes.LOWERCASE,
-                CharacterTypes.NUMBERS,
-                CharacterTypes.SPECIALS};
-
-        return generateToken(100, types);
-    }
-
+    private TokenUtils() { }
 
     public static String generateToken(int length, CharacterTypes...types) {
         String characters = Arrays.stream(types)

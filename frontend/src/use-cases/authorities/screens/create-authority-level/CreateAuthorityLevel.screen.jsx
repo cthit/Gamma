@@ -1,4 +1,7 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import * as yup from "yup";
+
 import {
     DigitLayout,
     DigitEditDataCard,
@@ -6,10 +9,10 @@ import {
     useDigitTranslations,
     useDigitToast
 } from "@cthit/react-digit-components";
+
+import { addAuthorityLevel } from "api/authorities/post.authoritites";
+
 import translations from "./CreateAuthorityLevel.screen.translations";
-import * as yup from "yup";
-import { useHistory } from "react-router-dom";
-import { addAuthorityLevel } from "../../../../api/authorities/post.authoritites";
 
 const CreateAuthorityLevel = () => {
     const [text] = useDigitTranslations(translations);

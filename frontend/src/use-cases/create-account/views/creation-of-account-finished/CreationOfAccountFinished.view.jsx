@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
     DigitButton,
     DigitDesign,
@@ -5,9 +7,10 @@ import {
     DigitText,
     useDigitTranslations
 } from "@cthit/react-digit-components";
-import React from "react";
+
+import { getBackendUrl } from "common/utils/configs/envVariablesLoader";
+
 import translations from "./CreationOfAccountFinished.view.translations.json";
-import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 
 const CreationOfAccountFinished = () => {
     const [text] = useDigitTranslations(translations);

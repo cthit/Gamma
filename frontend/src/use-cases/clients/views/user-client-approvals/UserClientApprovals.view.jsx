@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getAllApprovalsbyClientId } from "../../../../api/approval/get.approval.api";
+
 import {
+    DigitLoading,
     DigitTable,
     useDigitTranslations
 } from "@cthit/react-digit-components";
+
+import { getAllApprovalsbyClientId } from "api/approval/get.approval.api";
+
 import translations from "./UserClientApprovals.translations.view";
 
 const UserClientApprovals = ({ client }) => {
@@ -19,7 +23,7 @@ const UserClientApprovals = ({ client }) => {
     }, [clientId]);
 
     if (users == null) {
-        return null;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (

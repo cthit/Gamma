@@ -1,6 +1,6 @@
-FROM node:13.2.0 as build
+FROM node:14 as build
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock jsconfig.json .eslintrc ./
 RUN yarn --production --frozen-lockfile --network-timeout 10000000
 COPY src src
 COPY public public

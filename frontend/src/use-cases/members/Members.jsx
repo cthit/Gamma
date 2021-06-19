@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
+
 import {
     DigitStepper,
     DigitLayout,
     useDigitTranslations,
     DigitLoading
 } from "@cthit/react-digit-components";
-import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { GROUP_NAME } from "../../api/groups/props.groups.api";
-import InsufficientAccess from "../../common/views/insufficient-access";
+
+import { getGroup } from "api/groups/get.groups.api";
+import { GROUP_NAME } from "api/groups/props.groups.api";
+import { getPosts } from "api/posts/get.posts.api";
+import { getUsersMinified } from "api/users/get.users.api";
+
+import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import InsufficientAccess from "common/views/insufficient-access";
+
 import translations from "./Members.translations";
-import SetPostNames from "./views/set-post-names";
 import ReviewChanges from "./views/review-changes";
 import SelectMembers from "./views/select-members";
-import { getPosts } from "../../api/posts/get.posts.api";
-import { getUsersMinified } from "../../api/users/get.users.api";
-import { getGroup } from "../../api/groups/get.groups.api";
-import useGammaIsAdmin from "../../common/hooks/use-gamma-is-admin/useGammaIsAdmin";
+import SetPostNames from "./views/set-post-names";
 
 const Members = () => {
     const history = useHistory();
@@ -107,7 +111,7 @@ const Members = () => {
                             selectedMemberIds={selectedMemberIds}
                             groupId={groupId}
                             posts={posts}
-                            currentMembers={group.groupMembers}
+                            currentMembers={group.members}
                             users={users}
                             onNewMembers={value => {
                                 setNewMembersData(value.members);
@@ -123,7 +127,7 @@ const Members = () => {
                         <ReviewChanges
                             groupName={group[GROUP_NAME]}
                             posts={posts}
-                            previousMembers={group.groupMembers}
+                            previousMembers={group.members}
                             newMembersData={newMembersData}
                             groupId={groupId}
                             onFinished={() => {

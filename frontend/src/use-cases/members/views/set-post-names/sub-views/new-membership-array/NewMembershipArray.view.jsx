@@ -1,6 +1,8 @@
 import React from "react";
-import CreateMembership from "../create-membership";
+
 import { useDigitFormFieldArray } from "@cthit/react-digit-components";
+
+import CreateMembership from "../create-membership";
 
 const NewPostsArray = ({ posts }) => {
     const { innerInputs, value } = useDigitFormFieldArray("members", {
