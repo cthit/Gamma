@@ -1,6 +1,6 @@
 package it.chalmers.gamma.util.component;
 
-import it.chalmers.gamma.domain.ImageUri;
+import it.chalmers.gamma.app.domain.ImageUri;
 
 import java.io.File;
 import java.io.IOException;

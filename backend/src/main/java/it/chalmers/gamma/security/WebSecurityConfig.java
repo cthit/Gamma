@@ -1,15 +1,14 @@
 package it.chalmers.gamma.security;
 
-import it.chalmers.gamma.domain.ApiKeyType;
-import it.chalmers.gamma.internal.apikey.service.ApiKeyService;
-import it.chalmers.gamma.internal.group.service.GroupService;
-import it.chalmers.gamma.internal.userlocked.service.UserLockedService;
+import it.chalmers.gamma.app.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.service.ApiKeyService;
+import it.chalmers.gamma.app.service.UserLockedService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
-import it.chalmers.gamma.internal.user.service.UserService;
+import it.chalmers.gamma.app.user.service.UserService;
 
-import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.app.userpasswordreset.service.PasswordResetService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.util;
 
-import it.chalmers.gamma.internal.user.service.UserDetailsImpl;
+import it.chalmers.gamma.app.user.service.UserDetailsImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserUtils {

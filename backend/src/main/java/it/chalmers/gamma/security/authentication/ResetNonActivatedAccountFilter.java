@@ -1,10 +1,10 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.domain.Cid;
-import it.chalmers.gamma.domain.User;
-import it.chalmers.gamma.internal.user.service.UserService;
-import it.chalmers.gamma.internal.userlocked.service.UserLockedService;
-import it.chalmers.gamma.internal.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.service.UserLockedService;
+import it.chalmers.gamma.app.userpasswordreset.service.PasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
