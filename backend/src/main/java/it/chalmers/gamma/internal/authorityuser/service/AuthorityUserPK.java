@@ -2,7 +2,7 @@ package it.chalmers.gamma.internal.authorityuser.service;
 
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.entity.Id;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

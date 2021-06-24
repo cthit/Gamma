@@ -9,9 +9,7 @@ import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
-
-import java.time.Year;
+import it.chalmers.gamma.util.entity.MutableEntity;
 
 import javax.persistence.*;
 
@@ -103,6 +101,10 @@ public class UserEntity extends MutableEntity<UserId, User> {
         return password;
     }
 
+    protected void resetUserAgreement() {
+        this.userAgreement = false;
+    }
+
     protected UserId getId() {
         return id;
     }
@@ -110,5 +112,4 @@ public class UserEntity extends MutableEntity<UserId, User> {
     protected Cid getCid() {
         return cid;
     }
-
 }

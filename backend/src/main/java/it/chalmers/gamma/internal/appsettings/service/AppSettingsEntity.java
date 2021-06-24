@@ -2,12 +2,11 @@ package it.chalmers.gamma.internal.appsettings.service;
 
 import it.chalmers.gamma.domain.Settings;
 import it.chalmers.gamma.domain.SettingsId;
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.entity.MutableEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -26,6 +25,12 @@ public class AppSettingsEntity extends MutableEntity<SettingsId, Settings> {
 
     protected AppSettingsEntity() {
 
+    }
+
+    protected AppSettingsEntity(Settings settings) {
+        this.id = SettingsId.generate();
+        this.createdAt = Instant.now();
+        this.apply(settings);
     }
 
     @Override

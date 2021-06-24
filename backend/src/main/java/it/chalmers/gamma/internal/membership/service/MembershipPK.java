@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.membership.service;
 
-import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.entity.Id;
 import it.chalmers.gamma.domain.GroupId;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.domain.UserId;

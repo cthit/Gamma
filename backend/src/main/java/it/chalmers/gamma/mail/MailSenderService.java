@@ -14,14 +14,17 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class MailSenderService {
 
-    @Value("${application.gotify.key}")
-    private String gotifyApiKey;
+    private final String gotifyApiKey;
+    private final String gotifyURL;
+    private final boolean production;
 
-    @Value("${application.gotify.url}")
-    private String gotifyURL;
-
-    @Value("${application.production}")
-    private boolean production;
+    public MailSenderService(@Value("${application.gotify.key}") String gotifyApiKey,
+                             @Value("${application.gotify.url}") String gotifyURL,
+                             @Value("${application.production}") boolean production) {
+        this.gotifyApiKey = gotifyApiKey;
+        this.gotifyURL = gotifyURL;
+        this.production = production;
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MailSenderService.class);
 

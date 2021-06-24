@@ -4,7 +4,7 @@ import it.chalmers.gamma.domain.EmailPrefix;
 import it.chalmers.gamma.domain.Post;
 import it.chalmers.gamma.domain.PostId;
 import it.chalmers.gamma.internal.text.service.TextEntity;
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
+import it.chalmers.gamma.util.entity.MutableEntity;
 
 import javax.persistence.*;
 

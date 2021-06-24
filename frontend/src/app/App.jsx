@@ -32,6 +32,7 @@ import FiveZeroZero from "./elements/five-zero-zero";
 import Drawer from "./views/drawer";
 import SuperGroupTypes from "../use-cases/super-group-types";
 import EnforceUserAgreement from "./enforce-user-agreement";
+import UserAgreement from "../use-cases/useragreement";
 
 export const App = () => {
     const [user, update, [loading, error], ignore] = useContext(
@@ -64,6 +65,8 @@ export const App = () => {
             ignore();
         }
     }, [loading, error, pathname, update, user, ignore]);
+
+    console.log(user);
 
     if (user && !user.userAgreement) {
         return <EnforceUserAgreement />;
@@ -99,6 +102,11 @@ export const App = () => {
                     <Route
                         path="/super-group-types"
                         component={SuperGroupTypes}
+                    />
+                    <Route
+                        path="/user-agreement"
+                        exact
+                        component={UserAgreement}
                     />
                     <Route path="/" exact component={Home} />
                     <Route component={FourOFour} />

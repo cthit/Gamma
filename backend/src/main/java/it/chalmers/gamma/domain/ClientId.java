@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.entity.Id;
 import it.chalmers.gamma.util.TokenUtils;
 
 import javax.persistence.Column;

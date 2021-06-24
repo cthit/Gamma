@@ -1,10 +1,9 @@
 package it.chalmers.gamma.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.Authority;
-import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
 import it.chalmers.gamma.domain.Group;
+import it.chalmers.gamma.internal.authoritylevel.service.GrantedAuthorityImpl;
 import it.chalmers.gamma.internal.group.service.GroupService;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.domain.SuperGroup;
@@ -14,10 +13,11 @@ import it.chalmers.gamma.domain.UserId;
 import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.GroupPost;
+import it.chalmers.gamma.internal.user.controller.MeController;
+import it.chalmers.gamma.internal.user.service.UserDetailsImpl;
 import it.chalmers.gamma.internal.user.service.UserService;
-import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.UserUtils;
 import it.chalmers.gamma.util.response.NotFoundResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,24 +87,19 @@ public class ApiV1Controller {
 
     }
 
-    private record GetMeResponse(@JsonUnwrapped UserRestricted user,
-                                List<GroupPost> groups,
-                                List<Authority> authorities) { }
+    private record GetMeResponse(@JsonUnwrapped User user,
+                                 List<GroupPost> groups,
+                                 Collection<GrantedAuthorityImpl> authorities) { }
 
     @GetMapping("/users/me")
-    public GetMeResponse getMe(Principal principal) {
-        try {
-            User user = this.userService.get(Cid.valueOf(principal.getName()));
-            List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
-                    .stream()
-                    .map(membership -> new GroupPost(membership.post(), membership.group()))
-                    .collect(Collectors.toList());
-            List<Authority> authorities = this.authorityFinder.getGrantedAuthoritiesWithType(user.id());
+    public GetMeResponse getMe() {
+        UserDetailsImpl userDetails = UserUtils.getUserDetails();
+        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
+                .stream()
+                .map(membership -> new GroupPost(membership.post(), membership.group()))
+                .collect(Collectors.toList());
 
-            return new GetMeResponse(new UserRestricted(user), groups, authorities);
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
     }
 
     private static class UserNotFoundResponse extends NotFoundResponse { }

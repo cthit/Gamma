@@ -1,0 +1,12 @@
+{
+    "UATitle": ["Reset user agreement", "Återställ användaravtal"],
+    "UADescription": [
+        "Here you have the option to reset the user agreement for every user, which will force each user to accept the new user agreement. Make sure that the user agreement has been updated before resetting it.",
+        "Här har du möjligheten att återställa accepterandet av användaravtalet för varje användare, vilket kommer tvinga varje användare att acceptera det nya användaravtalet. Se bara till att du har uppdaterat den innan du återställer det för alla."
+    ],
+    "UAReset": ["Reset", "Återställ"],
+    "EnterYourPassword": [
+        "You must enter your own password to confirm this action",
+        "Du måste skriva in ditt lösenord för att genomföra detta"
+    ]
+}

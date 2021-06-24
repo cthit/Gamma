@@ -3,9 +3,8 @@ package it.chalmers.gamma.internal.client.service;
 import it.chalmers.gamma.domain.Client;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.ClientSecret;
-import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
-import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.entity.ImmutableEntity;
 import it.chalmers.gamma.internal.text.service.TextEntity;
 
 import javax.persistence.*;

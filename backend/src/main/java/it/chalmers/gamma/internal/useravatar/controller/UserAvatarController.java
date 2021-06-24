@@ -1,10 +1,9 @@
 package it.chalmers.gamma.internal.useravatar.controller;
 
-import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.ImageUri;
-import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.domain.UserAvatar;
 import it.chalmers.gamma.domain.UserId;
+import it.chalmers.gamma.internal.user.service.MeService;
 import it.chalmers.gamma.internal.user.service.UserService;
 import it.chalmers.gamma.internal.useravatar.service.UserAvatarService;
 import it.chalmers.gamma.util.component.ImageService;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/internal/users/avatar")
@@ -32,13 +30,16 @@ public class UserAvatarController {
     private final UserService userService;
     private final UserAvatarService userAvatarService;
     private final ImageService imageService;
+    private final MeService meService;
 
     public UserAvatarController(UserService userService,
                                 UserAvatarService userAvatarService,
-                                ImageService imageService) {
+                                ImageService imageService,
+                                MeService meService) {
         this.userService = userService;
         this.userAvatarService = userAvatarService;
         this.imageService = imageService;
+        this.meService = meService;
     }
 
     @GetMapping("/{id}")
@@ -57,12 +58,9 @@ public class UserAvatarController {
     }
 
     @PutMapping
-    public EditedProfilePictureResponse editProfileImage(Principal principal, @RequestParam MultipartFile file) {
+    public EditedProfilePictureResponse editProfileImage(@RequestParam MultipartFile file) {
         try {
-            User user = userService.get(Cid.valueOf(principal.getName()));
-            this.userAvatarService.editUserAvatar(user.id(), file);
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
+            this.meService.editAvatar(file);
         } catch (ImageService.FileCouldNotBeSavedException | ImageService.FileCouldNotBeRemovedException | ImageService.FileContentNotValidException e) {
             throw new FileIssueResponse();
         }

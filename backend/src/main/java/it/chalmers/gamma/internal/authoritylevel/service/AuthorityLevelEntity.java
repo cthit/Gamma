@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.authoritylevel.service;
 
 import it.chalmers.gamma.domain.AuthorityLevelName;
-import it.chalmers.gamma.util.domain.abstraction.SingleImmutableEntity;
+import it.chalmers.gamma.util.entity.SingleImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

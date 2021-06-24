@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.appsettings.service.AppSettingsService;
 import it.chalmers.gamma.internal.user.service.UserService;
+import it.chalmers.gamma.internal.useragreement.service.UserAgreementService;
 import it.chalmers.gamma.util.response.BadRequestResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -20,30 +21,21 @@ import java.security.Principal;
 @RequestMapping("/internal/admin/useragreement")
 public class UserAgreementAdminController {
 
-    private final UserService userService;
-    private final AppSettingsService appSettingsService;
+    private final UserAgreementService userAgreementService;
 
-    public UserAgreementAdminController(UserService userService,
-                                        AppSettingsService appSettingsService) {
-        this.userService = userService;
-        this.appSettingsService = appSettingsService;
+    public UserAgreementAdminController(UserAgreementService userAgreementService) {
+        this.userAgreementService = userAgreementService;
     }
 
     private record ConfirmPassword(String password) { }
 
     @PostMapping
-    public UserAgreementHasBeenResetResponse resetUserAgreement(Principal principal, @RequestBody ConfirmPassword password) {
+    public UserAgreementHasBeenResetResponse resetUserAgreement(@RequestBody ConfirmPassword password) {
         try {
-            User user = this.userService.get(Cid.valueOf(principal.getName()));
-
-            if (!this.userService.passwordMatches(user.id(), password.password)) {
-                throw new IncorrectPasswordResponse();
-            }
-
-        } catch (UserService.UserNotFoundException e) {
-            e.printStackTrace();
+            this.userAgreementService.resetUserAgreement(password.password);
+        } catch (UserAgreementService.IncorrectPasswordException e) {
+            throw new IncorrectPasswordResponse();
         }
-
         return new UserAgreementHasBeenResetResponse();
     }
 

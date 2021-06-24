@@ -3,6 +3,8 @@ package it.chalmers.gamma.internal.user.service;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.AuthorityLevelName;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
+import it.chalmers.gamma.internal.authoritylevel.service.GrantedAuthorityImpl;
+import it.chalmers.gamma.internal.userlocked.service.UserLockedService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,10 +17,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository repository;
     private final AuthorityFinder authorityFinder;
+    private final UserLockedService userLockedService;
 
-    public UserDetailsServiceImpl(UserRepository repository, AuthorityFinder authorityFinder) {
+    public UserDetailsServiceImpl(UserRepository repository,
+                                  AuthorityFinder authorityFinder,
+                                  UserLockedService userLockedService) {
         this.repository = repository;
         this.authorityFinder = authorityFinder;
+        this.userLockedService = userLockedService;
     }
 
     @Override
@@ -26,13 +32,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserEntity user = this.repository.findByCid(Cid.valueOf(cid))
                 .orElseThrow(() -> new UsernameNotFoundException("User with: " + cid + " not found"));
 
-        List<AuthorityLevelName> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
+        List<GrantedAuthorityImpl> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
+        boolean userLocked = this.userLockedService.isLocked(user.id());
 
         return new UserDetailsImpl(
-                user.getCid(),
+                user.toDTO(),
                 user.getPassword().get(),
                 authorities,
-                false
+                userLocked
         );
     }
+
 }

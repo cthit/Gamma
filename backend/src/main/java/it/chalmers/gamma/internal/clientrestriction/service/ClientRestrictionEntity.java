@@ -1,7 +1,7 @@
 package it.chalmers.gamma.internal.clientrestriction.service;
 
 import it.chalmers.gamma.domain.ClientRestriction;
-import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.entity.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

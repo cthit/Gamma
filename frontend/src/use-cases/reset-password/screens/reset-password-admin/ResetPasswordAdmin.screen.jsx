@@ -7,7 +7,8 @@ import {
     DigitEditDataCard,
     DigitTextField,
     useDigitTranslations,
-    useDigitToast
+    useDigitToast,
+    DigitLoading
 } from "@cthit/react-digit-components";
 
 import { getUser } from "api/users/get.users.api";

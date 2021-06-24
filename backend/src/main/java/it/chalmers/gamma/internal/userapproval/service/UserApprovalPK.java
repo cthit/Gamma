@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.userapproval.service;
 
-import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.entity.Id;
 import it.chalmers.gamma.domain.ClientId;
 import it.chalmers.gamma.domain.UserId;
 

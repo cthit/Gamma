@@ -1,22 +1,38 @@
 package it.chalmers.gamma.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.entity.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import java.util.UUID;
 
 @Embeddable
-public class SettingsId extends Id<Integer> {
+public class SettingsId extends Id<UUID> {
 
     @JsonValue
     @Column(name = "id")
-    private int value;
+    private UUID value;
 
-    protected SettingsId() { }
+    protected SettingsId() {
+        this.value = UUID.randomUUID();
+    }
+
+    protected SettingsId(UUID value) {
+        this.value = value;
+    }
+
+    public static SettingsId generate() {
+        return new SettingsId();
+    }
+
+    public static SettingsId valueOf(String value) {
+        return new SettingsId(UUID.fromString(value));
+    }
 
     @Override
-    protected Integer get() {
+    protected UUID get() {
         return this.value;
     }
 }

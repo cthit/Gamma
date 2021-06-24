@@ -3,7 +3,7 @@ package it.chalmers.gamma.internal.userpasswordreset.service;
 import it.chalmers.gamma.domain.PasswordReset;
 import it.chalmers.gamma.domain.PasswordResetToken;
 import it.chalmers.gamma.domain.UserId;
-import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.entity.ImmutableEntity;
 
 import java.time.Instant;
 

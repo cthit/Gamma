@@ -27,14 +27,8 @@ public class UserAvatarService {
         return this.repository.findById(userId).map(UserAvatarEntity::toDTO);
     }
 
-    public void editUserAvatar(UserId userId, MultipartFile file) throws UserService.UserNotFoundException, ImageService.FileCouldNotBeRemovedException, ImageService.FileCouldNotBeSavedException, ImageService.FileContentNotValidException {
-        Optional<UserAvatar> userAvatar = this.getUserAvatar(userId);
-        if (userAvatar.isPresent()) {
-            this.imageService.removeImage(userAvatar.get().avatarUri());
-        }
 
-        ImageUri imageUri = this.imageService.saveImage(file);
-        this.repository.save(new UserAvatarEntity(new UserAvatar(userId, imageUri)));
+    public void saveUserAvatar(UserAvatar userAvatar) {
+        this.repository.save(new UserAvatarEntity(userAvatar));
     }
-
 }

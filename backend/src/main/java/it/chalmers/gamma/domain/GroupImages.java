@@ -1,7 +1,7 @@
 package it.chalmers.gamma.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
-import it.chalmers.gamma.util.domain.abstraction.DTO;
+import it.chalmers.gamma.util.entity.DTO;
 
 @RecordBuilder
 public record GroupImages(GroupId groupId,

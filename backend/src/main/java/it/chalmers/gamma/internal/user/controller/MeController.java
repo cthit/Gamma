@@ -1,34 +1,33 @@
 package it.chalmers.gamma.internal.user.controller;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.domain.Authority;
 import it.chalmers.gamma.domain.FirstName;
 import it.chalmers.gamma.domain.LastName;
 import it.chalmers.gamma.domain.Nick;
 import it.chalmers.gamma.domain.UnencryptedPassword;
 import it.chalmers.gamma.domain.User;
 import it.chalmers.gamma.internal.authority.service.AuthorityFinder;
-import it.chalmers.gamma.internal.authority.service.AuthorityType;
+import it.chalmers.gamma.internal.authoritylevel.service.GrantedAuthorityImpl;
 import it.chalmers.gamma.internal.membership.service.MembershipService;
 import it.chalmers.gamma.internal.user.service.MeService;
 import it.chalmers.gamma.domain.Cid;
 import it.chalmers.gamma.domain.Email;
 import it.chalmers.gamma.domain.Language;
 import it.chalmers.gamma.domain.GroupPost;
-import it.chalmers.gamma.domain.AuthorityLevelName;
+import it.chalmers.gamma.internal.user.service.UserDetailsImpl;
 import it.chalmers.gamma.internal.user.service.UserService;
+import it.chalmers.gamma.util.UserUtils;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.security.Principal;
-import java.time.Year;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,37 +40,28 @@ public class MeController {
     private final MeService meService;
     private final UserService userService;
     private final MembershipService membershipService;
-    private final AuthorityFinder authorityFinder;
 
     public MeController(MeService meService,
                         UserService userService,
-                        MembershipService membershipService,
-                        AuthorityFinder authorityFinder) {
+                        MembershipService membershipService) {
         this.meService = meService;
         this.userService = userService;
         this.membershipService = membershipService;
-        this.authorityFinder = authorityFinder;
     }
 
     public record GetMeResponse(@JsonUnwrapped User user,
                                 List<GroupPost> groups,
-                                List<Authority> authorities) { }
+                                Collection<GrantedAuthorityImpl> authorities) { }
 
     @GetMapping()
-    public GetMeResponse getMe(Principal principal) {
-        try {
-            User user = extractUser(principal);
-            List<GroupPost> groups = this.membershipService.getMembershipsByUser(user.id())
-                    .stream()
-                    .map(membership -> new GroupPost(membership.post(), membership.group()))
-                    .collect(Collectors.toList());
-            List<Authority> authorities = this.authorityFinder.getGrantedAuthoritiesWithType(user.id());
+    public GetMeResponse getMe() {
+        UserDetailsImpl userDetails = UserUtils.getUserDetails();
+        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
+                .stream()
+                .map(membership -> new GroupPost(membership.post(), membership.group()))
+                .collect(Collectors.toList());
 
-            return new GetMeResponse(user, groups, authorities);
-        } catch (UserService.UserNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
     }
 
     public record EditMeRequest (Nick nick,
@@ -81,9 +71,9 @@ public class MeController {
                                  Language language) { }
 
     @PutMapping()
-    public UserEditedResponse editMe(Principal principal, @RequestBody EditMeRequest request) {
+    public UserEditedResponse editMe(@RequestBody EditMeRequest request) {
         try {
-            User user = extractUser(principal);
+            User user = UserUtils.getUserDetails().getUser();
 
             this.userService.update(
                     user.with()
@@ -94,6 +84,7 @@ public class MeController {
                             .language(request.language())
                             .build()
             );
+
         } catch (UserService.UserNotFoundException e) {
             e.printStackTrace();
         }
@@ -104,50 +95,28 @@ public class MeController {
     record ChangeUserPassword(String oldPassword, UnencryptedPassword password) { }
 
     @PutMapping("/change_password")
-    public PasswordChangedResponse changePassword(Principal principal, @RequestBody ChangeUserPassword request) {
-        try {
-            User user = this.extractUser(principal);
-
-            if (!this.userService.passwordMatches(user.id(), request.oldPassword)) {
-                throw new IncorrectCidOrPasswordResponse();
-            }
-
-            this.userService.setPassword(user.id(), request.password);
-        } catch (UserService.UserNotFoundException e) {
-            LOGGER.error("Cannot find the signed in user", e);
-            throw new UserNotFoundResponse();
-        }
+    public PasswordChangedResponse changePassword(@RequestBody ChangeUserPassword request) {
+        this.meService.changePassword(request.oldPassword, request.password);
         return new PasswordChangedResponse();
     }
 
     record DeleteMeRequest (String password) { }
 
     @DeleteMapping()
-    public UserDeletedResponse deleteMe(Principal principal, @RequestBody DeleteMeRequest request) {
-        try {
-            User user = this.extractUser(principal);
-
-            this.meService.tryToDeleteUser(user.id(), request.password);
-
-            return new UserDeletedResponse();
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+    public UserDeletedResponse deleteMe(@RequestBody DeleteMeRequest request) {
+        this.meService.deleteAccount(request.password);
+        return new UserDeletedResponse();
     }
 
     @PutMapping("/accept-user-agreement")
     public UserAgreementAccepted acceptUserAgreement(Principal principal) {
         try {
-            User user = this.extractUser(principal);
+            User user = UserUtils.getUserDetails().getUser();
             this.userService.update(user.withUserAgreement(true));
             return new UserAgreementAccepted();
         } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }
-    }
-
-    private User extractUser(Principal principal) throws UserService.UserNotFoundException {
-        return this.userService.get(Cid.valueOf(principal.getName()));
     }
 
     private static class UserAgreementAccepted extends SuccessResponse { }

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.authoritysupergroup.service;
 
-import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.entity.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

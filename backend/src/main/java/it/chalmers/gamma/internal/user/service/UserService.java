@@ -10,6 +10,7 @@ import it.chalmers.gamma.domain.Cid;
 
 import it.chalmers.gamma.domain.UserRestricted;
 import it.chalmers.gamma.internal.useravatar.service.UserAvatarService;
+import it.chalmers.gamma.util.UserUtils;
 import it.chalmers.gamma.util.component.ImageService;
 
 import java.util.List;
@@ -85,14 +86,15 @@ public class UserService {
         this.userRepository.save(user);
     }
 
-    public boolean passwordMatches(UserId userId, String password) throws UserNotFoundException {
-        UserEntity user = this.getEntity(userId);
-        return this.passwordEncoder.matches(password, user.getPassword().get());
-    }
-
     protected UserEntity getEntity(UserId id) throws UserNotFoundException {
         return this.userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    public void resetAllUserAgreements() {
+        List<UserEntity> userEntities = this.userRepository.findAll();
+        userEntities.forEach(UserEntity::resetUserAgreement);
+        this.userRepository.saveAll(userEntities);
     }
 
     public static class UserNotFoundException extends Exception { }

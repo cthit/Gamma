@@ -1,4 +1,4 @@
-package it.chalmers.gamma.util.domain.abstraction;
+package it.chalmers.gamma.util.entity;
 
 import java.io.Serializable;
 import java.util.Objects;

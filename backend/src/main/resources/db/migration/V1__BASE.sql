@@ -178,7 +178,7 @@ CREATE TABLE group_images_uri
 );
 
 CREATE TABLE settings (
-    id INT PRIMARY KEY auto_increment,
+    id UUID PRIMARY KEY ,
     created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
     last_updated_user_agreement TIMESTAMP,
     version    INT

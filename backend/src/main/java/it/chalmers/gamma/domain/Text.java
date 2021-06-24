@@ -1,8 +1,6 @@
 package it.chalmers.gamma.domain;
 
-import it.chalmers.gamma.util.domain.abstraction.DTO;
-
-import javax.validation.constraints.NotNull;
+import it.chalmers.gamma.util.entity.DTO;
 
 public record Text(TextValue sv,
                    TextValue en)

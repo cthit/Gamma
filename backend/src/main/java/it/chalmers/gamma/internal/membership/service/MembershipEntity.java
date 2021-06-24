@@ -1,8 +1,7 @@
 package it.chalmers.gamma.internal.membership.service;
 
 
-import it.chalmers.gamma.util.domain.abstraction.MutableEntity;
-import it.chalmers.gamma.util.domain.abstraction.Id;
+import it.chalmers.gamma.util.entity.MutableEntity;
 
 import javax.persistence.*;
 

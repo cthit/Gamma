@@ -4,10 +4,9 @@ import it.chalmers.gamma.domain.ApiKey;
 import it.chalmers.gamma.domain.ApiKeyId;
 import it.chalmers.gamma.domain.ApiKeyToken;
 import it.chalmers.gamma.domain.ApiKeyType;
-import it.chalmers.gamma.domain.EntityName;
 import it.chalmers.gamma.domain.PrettyName;
 import it.chalmers.gamma.internal.text.service.TextEntity;
-import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.entity.ImmutableEntity;
 
 import javax.persistence.*;
 

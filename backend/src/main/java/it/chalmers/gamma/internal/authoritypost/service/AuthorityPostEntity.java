@@ -1,6 +1,6 @@
 package it.chalmers.gamma.internal.authoritypost.service;
 
-import it.chalmers.gamma.util.domain.abstraction.ImmutableEntity;
+import it.chalmers.gamma.util.entity.ImmutableEntity;
 
 import javax.persistence.*;
 
