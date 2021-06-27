@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security.authentication;
 
+import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.service.ApiKeyService;
 import it.chalmers.gamma.app.user.service.UserService;
 
 import java.io.IOException;
@@ -19,12 +19,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserService userService;
-    private final ApiKeyService apiKeyService;
+    private final ApiKeyRepository apiKeyRepository;
 
     public ApiKeyAuthenticationFilter(UserService userService,
-                                      ApiKeyService apiKeyService) {
+                                      ApiKeyRepository apiKeyRepository) {
         this.userService = userService;
-        this.apiKeyService = apiKeyService;
+        this.apiKeyRepository = apiKeyRepository;
     }
 
     /*
@@ -37,7 +37,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         ApiKeyToken token = ApiKeyToken.valueOf(resolveToken(request));
-        if (this.apiKeyService.isValidApiKey(token)) {
+        if (this.apiKeyRepository.getByToken(token).isPresent()) {
             Authentication auth = getAdminAuthentication();
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

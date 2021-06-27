@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.util.entity.DTO;
-import it.chalmers.gamma.util.entity.Id;
+import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
+import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

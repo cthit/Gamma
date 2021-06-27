@@ -5,11 +5,10 @@ import it.chalmers.gamma.util.TokenUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class ApiKeyToken implements Serializable {
+public class ApiKeyToken {
 
     @JsonValue
     @Column(name = "token")

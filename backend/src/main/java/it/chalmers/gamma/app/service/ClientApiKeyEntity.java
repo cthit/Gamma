@@ -3,7 +3,7 @@ package it.chalmers.gamma.app.service;
 import it.chalmers.gamma.app.domain.ApiKeyId;
 import it.chalmers.gamma.app.domain.ClientApiKeyPair;
 import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.util.entity.ImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

@@ -3,7 +3,7 @@ package it.chalmers.gamma.app.service;
 import it.chalmers.gamma.app.domain.Text;
 import it.chalmers.gamma.app.domain.TextId;
 import it.chalmers.gamma.app.domain.TextValue;
-import it.chalmers.gamma.util.entity.MutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.*;
 

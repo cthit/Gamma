@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.userapproval.service;
 
-import it.chalmers.gamma.util.entity.Id;
+import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 import it.chalmers.gamma.app.domain.ClientId;
 import it.chalmers.gamma.app.domain.UserId;
 

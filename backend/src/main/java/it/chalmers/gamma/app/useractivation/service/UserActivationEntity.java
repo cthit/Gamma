@@ -7,7 +7,7 @@ import javax.persistence.*;
 import it.chalmers.gamma.app.domain.UserActivation;
 import it.chalmers.gamma.app.domain.UserActivationToken;
 import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.util.entity.ImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 @Entity
 @Table(name = "user_activation")

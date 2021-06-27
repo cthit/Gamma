@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.client.service;
 
+import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.Client;
 import it.chalmers.gamma.app.domain.ClientId;
@@ -7,7 +8,6 @@ import it.chalmers.gamma.app.domain.ClientSecret;
 import it.chalmers.gamma.app.domain.ApiKey;
 import it.chalmers.gamma.app.domain.ApiKeyId;
 import it.chalmers.gamma.app.domain.ClientWithRestrictions;
-import it.chalmers.gamma.app.apikey.service.ApiKeyService;
 import it.chalmers.gamma.app.domain.ApiKeyToken;
 import it.chalmers.gamma.app.domain.ApiKeyType;
 import it.chalmers.gamma.app.domain.ClientApiKeyPair;
@@ -27,16 +27,16 @@ import java.util.stream.Collectors;
 public class ClientService implements ClientDetailsService {
 
     private final ClientRepository clientRepository;
-    private final ApiKeyService apiKeyService;
+    private final ApiKeyRepository apiKeyRepository;
     private final ClientApiKeyService clientApiKeyService;
     private final ClientRestrictionService clientRestrictionService;
 
     public ClientService(ClientRepository clientRepository,
-                         ApiKeyService apiKeyService,
+                         ApiKeyRepository apiKeyRepository,
                          ClientApiKeyService clientApiKeyService,
                          ClientRestrictionService clientRestrictionService) {
         this.clientRepository = clientRepository;
-        this.apiKeyService = apiKeyService;
+        this.apiKeyRepository = apiKeyRepository;
         this.clientApiKeyService = clientApiKeyService;
         this.clientRestrictionService = clientRestrictionService;
     }
@@ -63,14 +63,14 @@ public class ClientService implements ClientDetailsService {
 
         ApiKeyId apiKeyId = ApiKeyId.generate();
 
-        this.apiKeyService.create(
+        this.apiKeyRepository.create(
                 new ApiKey(
                         apiKeyId,
                         newClient.prettyName(),
                         newClient.description(),
-                        ApiKeyType.CLIENT
-                ),
-                apiKeyToken
+                        ApiKeyType.CLIENT,
+                        apiKeyToken
+                )
         );
 
         this.clientApiKeyService.create(

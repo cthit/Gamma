@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.authoritysupergroup.service;
 
-import it.chalmers.gamma.util.entity.ImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

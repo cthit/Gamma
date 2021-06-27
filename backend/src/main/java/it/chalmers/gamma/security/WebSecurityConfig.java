@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security;
 
+import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.ApiKeyType;
-import it.chalmers.gamma.app.apikey.service.ApiKeyService;
 import it.chalmers.gamma.app.service.UserLockedService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordResetService passwordResetService;
     private final PasswordEncoder passwordEncoder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
-    private final ApiKeyService apiKeyService;
+    private final ApiKeyRepository apiKeyService;
     private final UserLockedService userLockedService;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
-                             ApiKeyService apiKeyService,
+                             ApiKeyRepository apiKeyService,
                              UserLockedService userLockedService) {
         this.userDetailsService = userDetailsService;
         this.userService = userService;

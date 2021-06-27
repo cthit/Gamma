@@ -9,7 +9,7 @@ import it.chalmers.gamma.app.domain.LastName;
 import it.chalmers.gamma.app.domain.Nick;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.util.entity.MutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.*;
 

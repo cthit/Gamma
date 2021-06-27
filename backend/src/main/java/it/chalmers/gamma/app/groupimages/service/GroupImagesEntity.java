@@ -3,7 +3,7 @@ package it.chalmers.gamma.app.groupimages.service;
 import it.chalmers.gamma.app.domain.GroupId;
 import it.chalmers.gamma.app.domain.GroupImages;
 import it.chalmers.gamma.app.domain.ImageUri;
-import it.chalmers.gamma.util.entity.MutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;

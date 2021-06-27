@@ -7,7 +7,7 @@ import it.chalmers.gamma.app.domain.SuperGroupId;
 import it.chalmers.gamma.app.domain.SuperGroupType;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.service.TextEntity;
-import it.chalmers.gamma.util.entity.MutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.*;
 

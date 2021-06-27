@@ -7,7 +7,7 @@ import it.chalmers.gamma.app.domain.PasswordResetToken;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.app.user.service.UserService;
-import it.chalmers.gamma.mail.MailSenderService;
+import it.chalmers.gamma.adapter.secondary.mail.MailSenderService;
 
 import java.time.Instant;
 

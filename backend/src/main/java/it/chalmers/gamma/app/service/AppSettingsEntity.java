@@ -2,7 +2,7 @@ package it.chalmers.gamma.app.service;
 
 import it.chalmers.gamma.app.domain.Settings;
 import it.chalmers.gamma.app.domain.SettingsId;
-import it.chalmers.gamma.util.entity.MutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;

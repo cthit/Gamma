@@ -4,7 +4,7 @@ import it.chalmers.gamma.app.domain.Client;
 import it.chalmers.gamma.app.domain.ClientId;
 import it.chalmers.gamma.app.domain.ClientSecret;
 import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.util.entity.ImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.service.TextEntity;
 
 import javax.persistence.*;

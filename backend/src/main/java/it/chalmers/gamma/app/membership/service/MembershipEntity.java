@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.membership.service;
 
 
-import it.chalmers.gamma.util.entity.MutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.*;
 

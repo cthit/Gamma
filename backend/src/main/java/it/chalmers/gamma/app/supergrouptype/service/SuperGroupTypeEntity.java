@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.supergrouptype.service;
 
 import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.util.entity.SingleImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

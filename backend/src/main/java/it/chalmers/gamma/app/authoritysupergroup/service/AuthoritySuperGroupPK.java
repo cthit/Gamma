@@ -2,7 +2,7 @@ package it.chalmers.gamma.app.authoritysupergroup.service;
 
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.util.entity.Id;
+import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

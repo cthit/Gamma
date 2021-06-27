@@ -4,7 +4,7 @@ import it.chalmers.gamma.app.domain.UserActivation;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.useractivation.service.UserActivationService;
 import it.chalmers.gamma.app.whitelist.service.WhitelistService;
-import it.chalmers.gamma.mail.MailSenderService;
+import it.chalmers.gamma.adapter.secondary.mail.MailSenderService;
 
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;

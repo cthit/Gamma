@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.util.entity.DTO;
-import it.chalmers.gamma.util.entity.Id;
+import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
+import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,7 +16,8 @@ public class AuthorityLevelName extends Id<String> implements DTO {
     @Pattern(regexp = "^([a-z]{5,30})$")
     public String value;
 
-    protected AuthorityLevelName() {}
+    protected AuthorityLevelName() {
+    }
 
     protected AuthorityLevelName(String value) {
         if (value == null) {

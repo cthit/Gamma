@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.membership.service;
 
-import it.chalmers.gamma.util.entity.Id;
+import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 import it.chalmers.gamma.app.domain.GroupId;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.UserId;

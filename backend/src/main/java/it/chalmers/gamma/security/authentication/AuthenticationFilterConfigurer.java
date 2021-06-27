@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.apikey.service.ApiKeyService;
+import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.user.service.UserService;
 
 import it.chalmers.gamma.app.service.UserLockedService;
@@ -19,7 +19,7 @@ public class AuthenticationFilterConfigurer
     private final String issuer;
     private final UserService userService;
     private final PasswordResetService passwordResetService;
-    private final ApiKeyService apiKeyService;
+    private final ApiKeyRepository apiKeyRepository;
     private final UserLockedService userLockedService;
 
     public AuthenticationFilterConfigurer(
@@ -28,14 +28,14 @@ public class AuthenticationFilterConfigurer
             String issuer,
             PasswordResetService passwordResetService,
             String baseFrontendUrl,
-            ApiKeyService apiKeyService,
+            ApiKeyRepository apiKeyRepository,
             UserLockedService userLockedService) {
         this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;
         this.passwordResetService = passwordResetService;
         this.baseFrontendUrl = baseFrontendUrl;
-        this.apiKeyService = apiKeyService;
+        this.apiKeyRepository = apiKeyRepository;
         this.userLockedService = userLockedService;
     }
 
@@ -48,7 +48,7 @@ public class AuthenticationFilterConfigurer
         );
         ApiKeyAuthenticationFilter apiKeyAuthenticationFilter = new ApiKeyAuthenticationFilter(
                 this.userService,
-                this.apiKeyService
+                this.apiKeyRepository
         );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.baseFrontendUrl,
