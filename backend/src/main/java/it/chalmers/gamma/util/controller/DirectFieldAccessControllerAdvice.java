@@ -9,7 +9,7 @@ public class DirectFieldAccessControllerAdvice {
 
     @InitBinder
     private void activateDirectFieldAccess(DataBinder dataBinder) {
-        dataBinder.initDirectFieldAccess();
+//        dataBinder.initDirectFieldAccess();
     }
 
 }

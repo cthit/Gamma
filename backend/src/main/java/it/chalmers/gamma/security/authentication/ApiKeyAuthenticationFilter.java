@@ -2,7 +2,7 @@ package it.chalmers.gamma.security.authentication;
 
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserService;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -36,7 +36,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        ApiKeyToken token = ApiKeyToken.valueOf(resolveToken(request));
+        ApiKeyToken token = new ApiKeyToken(resolveToken(request));
         if (this.apiKeyRepository.getByToken(token).isPresent()) {
             Authentication auth = getAdminAuthentication();
             SecurityContextHolder.getContext().setAuthentication(auth);

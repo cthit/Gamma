@@ -1,19 +1,18 @@
 package it.chalmers.gamma.adapter.primary.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.authority.service.AuthorityFinder;
+import it.chalmers.gamma.app.authority.AuthorityFinder;
 import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.authoritylevel.service.GrantedAuthorityImpl;
-import it.chalmers.gamma.app.group.service.GroupService;
-import it.chalmers.gamma.app.membership.service.MembershipService;
+import it.chalmers.gamma.app.authority.GrantedAuthorityImpl;
+import it.chalmers.gamma.app.group.GroupService;
+import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.service.SuperGroupService;
+import it.chalmers.gamma.app.supergroup.SuperGroupService;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.domain.UserRestricted;
 import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.app.user.service.UserDetailsImpl;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserDetailsImpl;
+import it.chalmers.gamma.app.user.UserService;
 import it.chalmers.gamma.util.UserUtils;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,14 +65,14 @@ public class ApiV1Controller {
     }
 
     @GetMapping("/users")
-    public List<UserRestricted> getUsersForClient() {
+    public List<User> getUsersForClient() {
         return this.userService.getAll();
     }
 
     @GetMapping("/users/{id}")
-    public UserRestricted getUser(@PathVariable("id") UserId id) {
+    public User getUser(@PathVariable("id") UserId id) {
         try {
-            return new UserRestricted(this.userService.get(id));
+            return new User(this.userService.get(id));
         } catch (UserService.UserNotFoundException e) {
             throw new UserNotFoundResponse();
         }

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.useractivation.service;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserActivationEntity;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.UserActivationToken;
 

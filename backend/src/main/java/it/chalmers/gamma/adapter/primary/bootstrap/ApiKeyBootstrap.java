@@ -39,18 +39,18 @@ public class ApiKeyBootstrap {
 
         for (ApiKeyType apiKeyType : ApiKeyType.values()) {
             if (apiKeyType != ApiKeyType.CLIENT) {
-                ApiKeyToken apiKeyToken = ApiKeyToken.valueOf(apiKeyType.name() + "-super-secret-token");
+                ApiKeyToken apiKeyToken = new ApiKeyToken(apiKeyType.name() + "-super-secret-token");
                 this.apiKeyRepository.create(
                         new ApiKey(
                                 ApiKeyId.generate(),
-                                PrettyName.valueOf(apiKeyType.name() + "-mock"),
+                                new PrettyName(apiKeyType.name() + "-mock"),
                                 new Text(),
                                 apiKeyType,
                                 apiKeyToken
                         )
                 );
 
-                LOGGER.info("Api key of type " + apiKeyType.name() + " has been generated with token: " + apiKeyToken.get());
+                LOGGER.info("Api key of type " + apiKeyType.name() + " has been generated with token: " + apiKeyToken.value());
             }
         }
         LOGGER.info("========== API BOOTSTRAP ==========");

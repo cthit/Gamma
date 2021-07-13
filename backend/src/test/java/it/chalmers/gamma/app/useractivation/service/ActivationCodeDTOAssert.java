@@ -26,7 +26,7 @@ public class ActivationCodeDTOAssert extends AbstractAssert<ActivationCodeDTOAss
 
     public ActivationCodeDTOAssert hasValidCode() {
         isNotNull();
-        if(!actual.token().get().matches("^([0-9]{8})$")) {
+        if(!actual.token().value().matches("^([0-9]{8})$")) {
             failWithMessage("ActivationCode doesn't match the regex [0-9]{8}");
         }
         return this;

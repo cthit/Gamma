@@ -1,37 +1,21 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.UUID;
 
-@Embeddable
 public class TextId extends Id<UUID> {
 
-    @JsonIgnore
-    @Column(name = "text_id")
     private final UUID value;
-
-    protected TextId() {
-        this.value = UUID.randomUUID();
-    }
 
     private TextId(UUID value) {
         this.value = value;
     }
 
     public static TextId generate() {
-        return new TextId();
-    }
-
-    public static TextId valueOf(String value) {
-        return new TextId(UUID.fromString(value));
+        return new TextId(UUID.randomUUID());
     }
 
     @Override
-    protected UUID get() {
+    public UUID value() {
         return this.value;
     }
 }

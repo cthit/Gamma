@@ -1,12 +1,12 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
 import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.EntityName;
+import it.chalmers.gamma.app.domain.Name;
 import it.chalmers.gamma.app.domain.PrettyName;
 import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.app.group.service.GroupService;
+import it.chalmers.gamma.app.group.GroupService;
 import it.chalmers.gamma.app.group.service.GroupShallowDTO;
-import it.chalmers.gamma.app.membership.service.MembershipService;
+import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.membership.service.MembershipShallowDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,12 +68,12 @@ public class GroupBootstrap {
                     .findFirst().orElseThrow().type();
             boolean active = !type.equals(SuperGroupType.valueOf("alumni"));
             int year = active ? activeYear : inactiveYear;
-            EntityName name = EntityName.valueOf(mockGroup.name().get() + year);
-            PrettyName prettyName = PrettyName.valueOf(mockGroup.prettyName().get() + year);
+            Name name = new Name(mockGroup.name().value() + year);
+            PrettyName prettyName = new PrettyName(mockGroup.prettyName().value() + year);
 
             GroupShallowDTO group = new GroupShallowDTO(
                     mockGroup.id(),
-                    Email.valueOf(name + "@chalmers.lol"),
+                    new Email(name + "@chalmers.lol"),
                     name,
                     prettyName,
                     mockGroup.superGroupId()

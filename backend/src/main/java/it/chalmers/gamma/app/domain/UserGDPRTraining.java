@@ -1,6 +1,13 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
 
-public record UserGDPRTraining(@JsonUnwrapped UserRestricted user, boolean gdpr) implements DTO { }
+import java.util.Objects;
+
+public record UserGDPRTraining(User user, boolean gdpr) implements DTO {
+
+    public UserGDPRTraining {
+        Objects.requireNonNull(user);
+    }
+
+}

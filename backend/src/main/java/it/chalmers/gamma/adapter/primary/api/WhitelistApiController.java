@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api;
 
-import it.chalmers.gamma.app.whitelist.service.WhitelistService;
+import it.chalmers.gamma.app.whitelist.WhitelistService;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;

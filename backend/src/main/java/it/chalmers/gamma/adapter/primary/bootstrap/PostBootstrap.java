@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
 import it.chalmers.gamma.app.domain.Post;
-import it.chalmers.gamma.app.post.service.PostService;
+import it.chalmers.gamma.app.post.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

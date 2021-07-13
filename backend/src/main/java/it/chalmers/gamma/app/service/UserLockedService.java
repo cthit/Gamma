@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.service;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserLockedEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserLockedRepository;
 import it.chalmers.gamma.app.domain.UserId;
 import org.springframework.stereotype.Service;
 

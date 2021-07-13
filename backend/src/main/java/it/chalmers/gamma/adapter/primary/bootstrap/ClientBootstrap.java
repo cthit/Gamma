@@ -6,12 +6,11 @@ import it.chalmers.gamma.app.domain.ClientSecret;
 import it.chalmers.gamma.app.domain.Client;
 
 import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.client.service.ClientService;
+import it.chalmers.gamma.app.client.ClientService;
 import it.chalmers.gamma.app.domain.Text;
-import it.chalmers.gamma.app.domain.UserRestricted;
 import it.chalmers.gamma.app.domain.UserApproval;
-import it.chalmers.gamma.app.userapproval.service.UserApprovalService;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserApprovalService;
+import it.chalmers.gamma.app.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,15 +54,15 @@ public class ClientBootstrap {
 
 
         ClientId clientId = ClientId.valueOf("test");
-        ClientSecret clientSecret = ClientSecret.valueOf("secret");
-        ApiKeyToken apiKeyToken = ApiKeyToken.valueOf("test-api-key-secret-token");
+        ClientSecret clientSecret = new ClientSecret("secret");
+        ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-token");
 
         this.clientService.createWithApiKey(
                 new Client(
                         clientId,
                         redirectUri,
                         true,
-                        PrettyName.valueOf("test-client"),
+                        new PrettyName("test-client"),
                         new Text()
                 ),
                 clientSecret,
@@ -80,10 +79,10 @@ public class ClientBootstrap {
         }
 
         LOGGER.info("Client generated with information:");
-        LOGGER.info("ClientId: " + clientId.get());
-        LOGGER.info("ClientSecret: " + clientSecret.get());
+        LOGGER.info("ClientId: " + clientId.value());
+        LOGGER.info("ClientSecret: " + clientSecret.value());
         LOGGER.info("Client redirect uri: " + this.redirectUri);
-        LOGGER.info("An API key was also generated with the client, it has the token: " + apiKeyToken.get());
+        LOGGER.info("An API key was also generated with the client, it has the token: " + apiKeyToken.value());
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
     }
 }

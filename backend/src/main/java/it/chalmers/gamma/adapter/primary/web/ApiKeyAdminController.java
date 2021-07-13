@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/internal/admin/api_keys")
-public class ApiKeyAdminController {
+public final class ApiKeyAdminController {
 
     private final ApiKeyRepository apiKeyRepository;
 

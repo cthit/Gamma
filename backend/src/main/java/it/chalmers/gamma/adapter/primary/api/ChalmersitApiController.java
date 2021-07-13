@@ -2,8 +2,8 @@ package it.chalmers.gamma.adapter.primary.api;
 
 import it.chalmers.gamma.app.domain.Group;
 import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.group.service.GroupService;
-import it.chalmers.gamma.app.membership.service.MembershipService;
+import it.chalmers.gamma.app.group.GroupService;
+import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.GroupWithMembers;
 import it.chalmers.gamma.app.domain.UserPost;
 import it.chalmers.gamma.util.response.NotFoundResponse;

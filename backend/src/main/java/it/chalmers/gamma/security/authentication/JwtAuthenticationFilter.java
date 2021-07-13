@@ -9,7 +9,7 @@ import io.jsonwebtoken.SignatureException;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.security.authentication.response.InvalidJWTTokenResponse;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -75,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new InvalidJWTTokenResponse();
         }
         return new UsernamePasswordAuthenticationToken(
-                user.cid().get(),
+                user.cid().value(),
                 null,
                 Collections.emptyList()
         );

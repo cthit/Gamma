@@ -1,3 +1,12 @@
 package it.chalmers.gamma.app.domain;
 
-public record GroupPost(Post post, Group group) { }
+import java.util.Objects;
+
+public record GroupPost(Post post, Group group) {
+
+    public GroupPost {
+        Objects.requireNonNull(post);
+        Objects.requireNonNull(group);
+    }
+
+}

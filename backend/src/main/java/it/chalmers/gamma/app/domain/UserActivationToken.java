@@ -1,52 +1,15 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.util.TokenUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-import java.util.Objects;
+public record UserActivationToken(String value) {
 
-@Embeddable
-public class UserActivationToken implements Serializable {
-
-    @JsonValue
-    @Column(name = "token")
-    private String value;
-
-    protected UserActivationToken() {
-        this.value = TokenUtils.generateToken(8, TokenUtils.CharacterTypes.NUMBERS);
-    }
+    //TODO add validation that length must be 9 in only numbers
 
     public static UserActivationToken generate() {
-        return new UserActivationToken();
+        String value = TokenUtils.generateToken(9, TokenUtils.CharacterTypes.NUMBERS);
+        return new UserActivationToken(value);
     }
 
-    public String get() {
-        return this.value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        UserActivationToken token = (UserActivationToken) o;
-        return Objects.equals(value, token.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return this.value;
-    }
 }
 

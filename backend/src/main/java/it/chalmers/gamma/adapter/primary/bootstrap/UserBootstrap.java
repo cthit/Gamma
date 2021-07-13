@@ -2,11 +2,11 @@ package it.chalmers.gamma.adapter.primary.bootstrap;
 
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.user.service.UserCreationService;
+import it.chalmers.gamma.app.user.UserCreationService;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.Language;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +39,7 @@ public class UserBootstrap {
 
     @PostConstruct
     public void createUsers() {
-        if (!this.mocking || this.userService.getAll().stream().anyMatch(user -> !user.cid().get().contains("admin"))) {
+        if (!this.mocking || this.userService.getAll().stream().anyMatch(user -> !user.cid().value().contains("admin"))) {
             return;
         }
 
@@ -49,7 +49,7 @@ public class UserBootstrap {
                 new User(
                         mockUser.id(),
                         mockUser.cid(),
-                        Email.valueOf(mockUser.cid() + "@student.chalmers.it"),
+                        new Email(mockUser.cid() + "@student.chalmers.it"),
                         Language.EN,
                         mockUser.nick(),
                         mockUser.firstName(),
@@ -64,7 +64,7 @@ public class UserBootstrap {
                 + this.mockData.users()
                         .stream()
                         .map(MockData.MockUser::cid)
-                        .map(Cid::get)
+                        .map(Cid::value)
                         .collect(Collectors.joining(", "))
         );
         LOGGER.info("Use a cid from the row above and use the password: password to sign in");

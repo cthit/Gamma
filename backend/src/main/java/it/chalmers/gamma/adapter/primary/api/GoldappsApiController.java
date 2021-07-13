@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.primary.api;
 
 import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.group.service.GroupService;
+import it.chalmers.gamma.app.group.GroupService;
 import it.chalmers.gamma.app.domain.Membership;
-import it.chalmers.gamma.app.membership.service.MembershipService;
+import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.GroupWithMembers;
 import it.chalmers.gamma.app.domain.UserPost;
 import org.springframework.web.bind.annotation.GetMapping;

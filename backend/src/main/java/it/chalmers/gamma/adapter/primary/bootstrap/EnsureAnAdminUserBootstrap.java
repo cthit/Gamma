@@ -6,10 +6,10 @@ import it.chalmers.gamma.app.domain.LastName;
 import it.chalmers.gamma.app.domain.Nick;
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authority.service.AuthorityFinder;
-import it.chalmers.gamma.app.authorityuser.service.AuthorityUserService;
+import it.chalmers.gamma.app.authority.AuthorityFinder;
+import it.chalmers.gamma.app.authority.AuthorityUserService;
 import it.chalmers.gamma.app.authorityuser.service.AuthorityUserShallowDTO;
-import it.chalmers.gamma.app.user.service.UserCreationService;
+import it.chalmers.gamma.app.user.UserCreationService;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.util.TokenUtils;
@@ -60,13 +60,13 @@ public class EnsureAnAdminUserBootstrap {
                     new User(
                             adminId,
                             Cid.valueOf(name),
-                            Email.valueOf(name + "@chalmers.it"),
+                            new Email(name + "@chalmers.it"),
                             Language.EN,
-                            Nick.valueOf(name),
-                            FirstName.valueOf(name),
-                            LastName.valueOf(name),
+                            new Nick(name),
+                            new FirstName(name),
+                            new LastName(name),
                             true,
-                            AcceptanceYear.valueOf(2018)
+                            new AcceptanceYear(2018)
                     ),
                     UnencryptedPassword.valueOf("password")
             );

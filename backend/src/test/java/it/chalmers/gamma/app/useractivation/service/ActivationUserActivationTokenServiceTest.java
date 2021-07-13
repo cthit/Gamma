@@ -1,8 +1,11 @@
 package it.chalmers.gamma.app.useractivation.service;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserActivationEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserActivationJpaRepository;
 import it.chalmers.gamma.app.domain.UserActivation;
 import it.chalmers.gamma.app.domain.UserActivationToken;
 import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.app.user.UserActivationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,14 +30,14 @@ import static org.mockito.BDDMockito.willThrow;
 class ActivationUserActivationTokenServiceTest {
 
     @Mock
-    private UserActivationRepository userActivationRepository;
+    private UserActivationJpaRepository userActivationJpaRepository;
 
     @InjectMocks
     private UserActivationService userActivationService;
 
     @Test
     void savedActivationCode() {
-        given(userActivationRepository.save(any(UserActivationEntity.class)))
+        given(userActivationJpaRepository.save(any(UserActivationEntity.class)))
                 .willAnswer(returnsFirstArg());
 
         Cid cid = Cid.valueOf("mycid");
@@ -52,10 +55,10 @@ class ActivationUserActivationTokenServiceTest {
         Cid cid2 = Cid.valueOf("mycidi");
 
         willThrow(IllegalArgumentException.class)
-                .given(userActivationRepository)
+                .given(userActivationJpaRepository)
                 .deleteById(any(Cid.class));
         willDoNothing()
-                .given(userActivationRepository)
+                .given(userActivationJpaRepository)
                 .deleteById(cid);
 
         assertThatNoException()
@@ -76,7 +79,7 @@ class ActivationUserActivationTokenServiceTest {
         activationCodeList.add(ActivationCodeFactory.create(Cid.valueOf("mycidi"), UserActivationToken.generate()));
 
         //given
-        given(userActivationRepository.findAll())
+        given(userActivationJpaRepository.findAll())
                 .willReturn(activationCodeList);
 
         //when
@@ -97,9 +100,9 @@ class ActivationUserActivationTokenServiceTest {
         UserActivationToken token = UserActivationToken.generate();
 
         //given
-        given(userActivationRepository.findUserActivationByCidAndToken(any(Cid.class), any(UserActivationToken.class)))
+        given(userActivationJpaRepository.findUserActivationByCidAndToken(any(Cid.class), any(UserActivationToken.class)))
                 .willReturn(Optional.empty());
-        given(userActivationRepository.findUserActivationByCidAndToken(eq(cid), eq(token)))
+        given(userActivationJpaRepository.findUserActivationByCidAndToken(eq(cid), eq(token)))
                 .willReturn(Optional.of(ActivationCodeFactory.create(cid, token)));
 
         //when

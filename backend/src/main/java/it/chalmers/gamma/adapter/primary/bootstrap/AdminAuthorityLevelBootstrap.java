@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authoritylevel.service.AuthorityLevelService;
+import it.chalmers.gamma.app.authority.AuthorityLevelService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

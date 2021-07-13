@@ -1,25 +1,16 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.Locale;
 
-@Embeddable
 public class Cid extends Id<String> implements DTO {
 
-    @JsonValue
-    @Column(name = "cid")
-    private String value;
+    private final String value;
 
-    protected Cid() {}
-
-    protected Cid(String value) {
+    private Cid(String value) {
         if (value == null) {
-            throw new IllegalArgumentException("Cid cannot be null");
+            throw new NullPointerException("Cid cannot be null");
         }
 
         value = value.toLowerCase(Locale.ROOT);
@@ -35,7 +26,8 @@ public class Cid extends Id<String> implements DTO {
         return new Cid(cid);
     }
 
-    public String get(){
+    @Override
+    public String value(){
         return this.value;
     }
 }

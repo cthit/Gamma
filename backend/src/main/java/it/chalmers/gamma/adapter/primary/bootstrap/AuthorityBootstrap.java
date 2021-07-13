@@ -1,11 +1,11 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
-import it.chalmers.gamma.app.authoritylevel.service.AuthorityLevelService;
-import it.chalmers.gamma.app.authoritypost.service.AuthorityPostService;
-import it.chalmers.gamma.app.authoritypost.service.AuthorityPostShallowDTO;
-import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupService;
-import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupShallowDTO;
-import it.chalmers.gamma.app.authorityuser.service.AuthorityUserService;
+import it.chalmers.gamma.app.authority.AuthorityLevelService;
+import it.chalmers.gamma.app.authority.AuthorityPostService;
+import it.chalmers.gamma.app.authoritypost.service.AuthorityPostDTO;
+import it.chalmers.gamma.app.authority.AuthoritySuperGroupService;
+import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupDTO;
+import it.chalmers.gamma.app.authority.AuthorityUserService;
 import it.chalmers.gamma.app.authorityuser.service.AuthorityUserShallowDTO;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,7 +73,7 @@ public class AuthorityBootstrap {
                     }
 
                     try {
-                        this.authoritySuperGroupService.create(new AuthoritySuperGroupShallowDTO(mockSuperGroup.id(), authorityLevelName));
+                        this.authoritySuperGroupService.create(new AuthoritySuperGroupDTO(mockSuperGroup.id(), authorityLevelName));
                     } catch (AuthoritySuperGroupService.AuthoritySuperGroupAlreadyExistsException ignored) {
                     }
                 });
@@ -86,7 +86,7 @@ public class AuthorityBootstrap {
             } catch (AuthorityLevelService.AuthorityLevelAlreadyExistsException ignored) { }
 
             try {
-                this.authorityPostService.create(new AuthorityPostShallowDTO(
+                this.authorityPostService.create(new AuthorityPostDTO(
                         mockPostAuthority.superGroupId(),
                         mockPostAuthority.postId(),
                         mockPostAuthority.name())

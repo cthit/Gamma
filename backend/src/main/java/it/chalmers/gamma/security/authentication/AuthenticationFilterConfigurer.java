@@ -1,10 +1,10 @@
 package it.chalmers.gamma.security.authentication;
 
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserService;
 
 import it.chalmers.gamma.app.service.UserLockedService;
-import it.chalmers.gamma.app.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.app.user.UserPasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -18,7 +18,7 @@ public class AuthenticationFilterConfigurer
     private final String baseFrontendUrl;
     private final String issuer;
     private final UserService userService;
-    private final PasswordResetService passwordResetService;
+    private final UserPasswordResetService userPasswordResetService;
     private final ApiKeyRepository apiKeyRepository;
     private final UserLockedService userLockedService;
 
@@ -26,14 +26,14 @@ public class AuthenticationFilterConfigurer
             UserService userService,
             String secretKey,
             String issuer,
-            PasswordResetService passwordResetService,
+            UserPasswordResetService userPasswordResetService,
             String baseFrontendUrl,
             ApiKeyRepository apiKeyRepository,
             UserLockedService userLockedService) {
         this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;
-        this.passwordResetService = passwordResetService;
+        this.userPasswordResetService = userPasswordResetService;
         this.baseFrontendUrl = baseFrontendUrl;
         this.apiKeyRepository = apiKeyRepository;
         this.userLockedService = userLockedService;
@@ -52,7 +52,7 @@ public class AuthenticationFilterConfigurer
         );
         ResetNonActivatedAccountFilter c = new ResetNonActivatedAccountFilter(
                 this.baseFrontendUrl,
-                this.passwordResetService,
+                this.userPasswordResetService,
                 this.userService,
                 this.userLockedService);
         builder.addFilterBefore(c, UsernamePasswordAuthenticationFilter.class);

@@ -4,7 +4,7 @@ import it.chalmers.gamma.app.domain.AcceptanceYear;
 import it.chalmers.gamma.app.domain.FirstName;
 import it.chalmers.gamma.app.domain.GroupId;
 import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.EntityName;
+import it.chalmers.gamma.app.domain.Name;
 import it.chalmers.gamma.app.domain.Nick;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.PrettyName;
@@ -24,7 +24,7 @@ public record MockData(List<MockUser> users,
                        List<MockPostAuthority> postAuthorities) {
 
     public record MockGroup(GroupId id,
-                            EntityName name,
+                            Name name,
                             PrettyName prettyName,
                             List<MockMembership> members,
                             SuperGroupId superGroupId) { }
@@ -38,7 +38,7 @@ public record MockData(List<MockUser> users,
                            Text postName) { }
 
     public record MockSuperGroup(SuperGroupId id,
-                                 EntityName name,
+                                 Name name,
                                  PrettyName prettyName,
                                  SuperGroupType type,
                                  List<AuthorityLevelName> authorities) {

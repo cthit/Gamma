@@ -3,7 +3,7 @@ package it.chalmers.gamma.security.oauth;
 import it.chalmers.gamma.app.domain.ClientId;
 import it.chalmers.gamma.app.domain.Client;
 
-import it.chalmers.gamma.app.client.service.ClientService;
+import it.chalmers.gamma.app.client.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;

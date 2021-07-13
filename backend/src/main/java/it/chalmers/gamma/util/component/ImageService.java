@@ -64,7 +64,7 @@ public class ImageService {
             throw new FileCouldNotBeSavedException("(2) File could not be created", e);
         }
 
-        return ImageUri.valueOf(filePathString);
+        return new ImageUri(filePathString);
     }
 
     public void removeImage(ImageUri imageUri) throws FileCouldNotBeRemovedException {

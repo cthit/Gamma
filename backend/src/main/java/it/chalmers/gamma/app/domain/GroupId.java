@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -30,8 +29,12 @@ public class GroupId extends Id<UUID> {
         return new GroupId(UUID.fromString(value));
     }
 
+    public static GroupId valueOf(UUID uuid) {
+        return new GroupId(uuid);
+    }
+
     @Override
-    protected UUID get() {
+    public UUID value() {
         return this.value;
     }
 }

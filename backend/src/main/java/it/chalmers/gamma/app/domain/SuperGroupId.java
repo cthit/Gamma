@@ -1,37 +1,29 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.UUID;
 
-@Embeddable
 public class SuperGroupId extends Id<UUID> {
 
-    @JsonValue
-    @Column(name = "super_group_id")
     private final UUID value;
-
-    protected SuperGroupId() {
-        this.value = UUID.randomUUID();
-    }
 
     private SuperGroupId(UUID value) {
         this.value = value;
     }
 
     public static SuperGroupId generate() {
-        return new SuperGroupId();
+        return new SuperGroupId(UUID.randomUUID());
     }
 
     public static SuperGroupId valueOf(String value) {
         return new SuperGroupId(UUID.fromString(value));
     }
 
+    public static SuperGroupId valueOf(UUID uuid) {
+        return new SuperGroupId(uuid);
+    }
+
     @Override
-    protected UUID get() {
+    public UUID value() {
         return this.value;
     }
 }

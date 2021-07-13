@@ -35,7 +35,7 @@ class ApiKeyServiceTest {
 //    void create() {
 //        ApiKey apiKey = new ApiKey(
 //                ApiKeyId.generate(),
-//                PrettyName.valueOf("myapikey"),
+//                new PrettyName("myapikey"),
 //                new Text(
 //                        "Min API nyckel",
 //                        "My API key"

@@ -1,25 +1,16 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import java.util.Locale;
 
-@Embeddable
 public class SuperGroupType extends Id<String> implements DTO {
 
-    @Column(name = "super_group_type_name")
-    @JsonValue
-    private String value;
-
-    protected SuperGroupType() { }
+    private final String value;
 
     private SuperGroupType(String value) {
         if (value == null) {
-            throw new IllegalArgumentException("Super group type cannot be null");
+            throw new NullPointerException("Super group type cannot be null");
         }
 
         value = value.toLowerCase(Locale.ROOT);
@@ -36,7 +27,7 @@ public class SuperGroupType extends Id<String> implements DTO {
     }
 
     @Override
-    protected String get() {
+    public String value() {
         return this.value;
     }
 }

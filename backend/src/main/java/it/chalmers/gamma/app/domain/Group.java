@@ -4,7 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
 
 public record Group(GroupId id,
                     Email email,
-                    EntityName name,
+                    Name name,
                     PrettyName prettyName,
                     SuperGroup superGroup)
         implements DTO { }

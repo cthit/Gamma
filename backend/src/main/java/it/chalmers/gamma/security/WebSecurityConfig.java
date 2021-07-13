@@ -6,9 +6,9 @@ import it.chalmers.gamma.app.service.UserLockedService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
-import it.chalmers.gamma.app.user.service.UserService;
+import it.chalmers.gamma.app.user.UserService;
 
-import it.chalmers.gamma.app.userpasswordreset.service.PasswordResetService;
+import it.chalmers.gamma.app.user.UserPasswordResetService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final UserService userService;
-    private final PasswordResetService passwordResetService;
+    private final UserPasswordResetService userPasswordResetService;
     private final PasswordEncoder passwordEncoder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
     private final ApiKeyRepository apiKeyService;
@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
                              UserService userService,
-                             PasswordResetService passwordResetService,
+                             UserPasswordResetService userPasswordResetService,
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              UserLockedService userLockedService) {
         this.userDetailsService = userDetailsService;
         this.userService = userService;
-        this.passwordResetService = passwordResetService;
+        this.userPasswordResetService = userPasswordResetService;
         this.passwordEncoder = passwordEncoder;
         this.loginRedirectHandler = loginRedirectHandler;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
@@ -137,7 +137,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.userService,
                             this.secretKey,
                             this.issuer,
-                            this.passwordResetService,
+                            this.userPasswordResetService,
                             this.baseFrontendUrl,
                             this.apiKeyService,
                             userLockedService)

@@ -1,5 +1,9 @@
 package it.chalmers.gamma.app.authoritypost.service;
 
+import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostPK;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostJpaRepository;
+import it.chalmers.gamma.app.authority.AuthorityPostService;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.SuperGroupId;
@@ -22,7 +26,7 @@ import static org.mockito.Mockito.verify;
 class AuthorityPostServiceTest {
 
     @Mock
-    private AuthorityPostRepository authorityPostRepository;
+    private AuthorityPostJpaRepository authorityPostJpaRepository;
 
     @InjectMocks
     private AuthorityPostService authorityPostService;
@@ -33,16 +37,16 @@ class AuthorityPostServiceTest {
         PostId postId = PostId.generate();
         AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
 
-        AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
+        AuthorityPostDTO authorityPostDTO = new AuthorityPostDTO(superGroupId, postId, authorityLevelName);
 
         assertThatNoException()
-                .isThrownBy(() -> authorityPostService.create(authorityPostShallowDTO));
+                .isThrownBy(() -> authorityPostService.create(authorityPostDTO));
 
         ArgumentCaptor<AuthorityPostEntity> captor = ArgumentCaptor.forClass(AuthorityPostEntity.class);
-        verify(authorityPostRepository).save(captor.capture());
+        verify(authorityPostJpaRepository).save(captor.capture());
         AuthorityPostEntity newAuthorityPost = captor.getValue();
 
-        assertThat(authorityPostShallowDTO)
+        assertThat(authorityPostDTO)
                 .usingRecursiveComparison()
                 .isEqualTo(newAuthorityPost.id());
     }
@@ -53,15 +57,15 @@ class AuthorityPostServiceTest {
         PostId postId = PostId.generate();
         AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
 
-        AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
+        AuthorityPostDTO authorityPostDTO = new AuthorityPostDTO(superGroupId, postId, authorityLevelName);
         AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
 
         willThrow(IllegalArgumentException.class)
-                .given(authorityPostRepository)
+                .given(authorityPostJpaRepository)
                 .save(authorityPost);
 
         assertThatExceptionOfType(Exception.class)
-                .isThrownBy(() -> authorityPostService.create(authorityPostShallowDTO));
+                .isThrownBy(() -> authorityPostService.create(authorityPostDTO));
     }
 
     @Test
@@ -70,14 +74,14 @@ class AuthorityPostServiceTest {
         PostId postId = PostId.generate();
         AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
 
-        AuthorityPostShallowDTO authorityPostShallowDTO = new AuthorityPostShallowDTO(superGroupId, postId, authorityLevelName);
+        AuthorityPostDTO authorityPostDTO = new AuthorityPostDTO(superGroupId, postId, authorityLevelName);
 
         AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
 
         assertThat(authorityPost)
                 .usingRecursiveComparison()
                 .ignoringFields("id") //id is compared in successfulCreation
-                .isEqualTo(authorityPostShallowDTO);
+                .isEqualTo(authorityPostDTO);
     }
 
     @Test
@@ -95,11 +99,11 @@ class AuthorityPostServiceTest {
         );
 
         willThrow(IllegalArgumentException.class)
-                .given(authorityPostRepository)
+                .given(authorityPostJpaRepository)
                 .deleteById(any(AuthorityPostPK.class));
 
         willDoNothing()
-                .given(authorityPostRepository)
+                .given(authorityPostJpaRepository)
                 .deleteById(authority);
 
         assertThatNoException()
@@ -117,7 +121,7 @@ class AuthorityPostServiceTest {
         );
 
         willThrow(IllegalArgumentException.class)
-                .given(authorityPostRepository)
+                .given(authorityPostJpaRepository)
                 .deleteById(authority2);
 
         assertThatExceptionOfType(Exception.class)

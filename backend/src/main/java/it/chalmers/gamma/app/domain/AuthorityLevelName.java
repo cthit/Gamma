@@ -1,27 +1,14 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-import it.chalmers.gamma.adapter.secondary.jpa.util.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.validation.constraints.Pattern;
-
-@Embeddable
 public class AuthorityLevelName extends Id<String> implements DTO {
 
-    @Column(name = "authority_level")
-    @JsonValue
-    @Pattern(regexp = "^([a-z]{5,30})$")
-    public String value;
+    private final String value;
 
-    protected AuthorityLevelName() {
-    }
-
-    protected AuthorityLevelName(String value) {
+    private AuthorityLevelName(String value) {
         if (value == null) {
-            throw new IllegalArgumentException("Authority level cannot be null");
+            throw new NullPointerException("Authority level cannot be null");
         } else if (!value.matches("^([0-9a-z]{5,30})$")) {
             throw new IllegalArgumentException("Authority level must have letter ranging a - z, and be between size 5 and 30 to be valid");
         }
@@ -34,7 +21,7 @@ public class AuthorityLevelName extends Id<String> implements DTO {
     }
 
     @Override
-    protected String get() {
+    public String value() {
         return this.value;
     }
 }

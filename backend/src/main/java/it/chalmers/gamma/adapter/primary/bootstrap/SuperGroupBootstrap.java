@@ -2,8 +2,8 @@ package it.chalmers.gamma.adapter.primary.bootstrap;
 
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.service.SuperGroupService;
-import it.chalmers.gamma.app.supergrouptype.service.SuperGroupTypeService;
+import it.chalmers.gamma.app.supergroup.SuperGroupService;
+import it.chalmers.gamma.app.supergroup.SuperGroupTypeService;
 import it.chalmers.gamma.app.domain.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class SuperGroupBootstrap {
                         mockSuperGroup.name(),
                         mockSuperGroup.prettyName(),
                         mockSuperGroup.type(),
-                        Email.valueOf(mockSuperGroup.name() + "@chalmers.it"),
+                        new Email(mockSuperGroup.name() + "@chalmers.it"),
                         new Text()));
             } catch (SuperGroupService.SuperGroupNotFoundException e) {
                 LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");

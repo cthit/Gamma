@@ -16,6 +16,7 @@ public record User(UserId id,
                    boolean userAgreement,
                    AcceptanceYear acceptanceYear)
         implements DTO, UserBuilder.With {
+
     public User {
         Objects.requireNonNull(id);
         Objects.requireNonNull(cid);
@@ -25,4 +26,5 @@ public record User(UserId id,
         Objects.requireNonNull(lastName);
         Objects.requireNonNull(acceptanceYear);
     }
+
 }

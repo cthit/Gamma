@@ -1,30 +1,11 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+public record AcceptanceYear(int value) {
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import java.io.Serializable;
-
-@Embeddable
-public class AcceptanceYear implements Serializable {
-
-    @JsonValue
-    @Column(name = "acceptance_year")
-    private int value;
-
-    protected AcceptanceYear() { }
-
-    protected AcceptanceYear(int value) {
+    public AcceptanceYear {
         if (value < 2001) {
-            throw new IllegalArgumentException("Acceptanc year cannot be less than 2001");
+            throw new IllegalArgumentException("Acceptance year cannot be less than 2001");
         }
-
-        this.value = value;
-    }
-
-    public static AcceptanceYear valueOf(int value) {
-        return new AcceptanceYear(value);
     }
 
 }

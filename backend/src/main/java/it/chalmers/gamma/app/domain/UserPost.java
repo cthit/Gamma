@@ -1,4 +1,13 @@
 package it.chalmers.gamma.app.domain;
 
-public record UserPost(UserRestricted user,
-                       Post post) { }
+import java.util.Objects;
+
+public record UserPost(User user,
+                       Post post) {
+
+    public UserPost {
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(post);
+    }
+
+}

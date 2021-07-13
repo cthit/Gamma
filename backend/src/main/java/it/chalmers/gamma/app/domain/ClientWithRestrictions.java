@@ -1,7 +1,13 @@
 package it.chalmers.gamma.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
 import java.util.List;
+import java.util.Objects;
 
-public record ClientWithRestrictions(@JsonUnwrapped Client client, List<AuthorityLevelName> restrictions) { }
+public record ClientWithRestrictions(Client client, List<AuthorityLevelName> restrictions) {
+
+    public ClientWithRestrictions {
+        Objects.requireNonNull(client);
+        Objects.requireNonNull(restrictions);
+    }
+
+}

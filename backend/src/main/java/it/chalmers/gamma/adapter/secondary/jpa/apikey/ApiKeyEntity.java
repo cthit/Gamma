@@ -5,30 +5,32 @@ import it.chalmers.gamma.app.domain.ApiKeyId;
 import it.chalmers.gamma.app.domain.ApiKeyToken;
 import it.chalmers.gamma.app.domain.ApiKeyType;
 import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.service.TextEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "apikey")
 public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
 
-    @EmbeddedId
-    private ApiKeyId id;
+    @Id
+    @Column(name = "api_key_id")
+    private UUID id;
 
-    @Embedded
-    private ApiKeyToken token;
+    @Column(name = "token")
+    private String token;
+
+    @Column(name = "pretty_name")
+    private String prettyName;
+
+    @Enumerated(EnumType.STRING)
+    private ApiKeyType keyType;
 
     @JoinColumn(name = "description")
     @OneToOne(cascade = CascadeType.MERGE)
     private TextEntity description;
-
-    @Embedded
-    private PrettyName prettyName;
-
-    @Enumerated(EnumType.STRING)
-    private ApiKeyType keyType;
 
     protected ApiKeyEntity() { }
 
@@ -36,31 +38,31 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
         assert(apiKey.id() != null);
         assert(apiKey.apiKeyToken() != null);
 
-        this.id = apiKey.id();
-        this.token = apiKey.apiKeyToken();
-        this.prettyName = apiKey.prettyName();
+        this.id = apiKey.id().value();
+        this.token = apiKey.apiKeyToken().value();
+        this.prettyName = apiKey.prettyName().value();
         this.description = new TextEntity(apiKey.description());
         this.keyType = apiKey.keyType();
     }
 
     protected void setToken(ApiKeyToken token) {
-        this.token = token;
+        this.token = token.value();
     }
 
     @Override
     protected ApiKey toDTO() {
         return new ApiKey(
-                this.id,
-                this.prettyName,
+                ApiKeyId.valueOf(this.id),
+                new PrettyName(this.prettyName),
                 this.description.toDTO(),
                 this.keyType,
-                this.token
+                new ApiKeyToken(this.token)
         );
     }
 
     @Override
     protected ApiKeyId id() {
-        return this.id;
+        return ApiKeyId.valueOf(this.id);
     }
 
 }
