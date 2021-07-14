@@ -41,7 +41,7 @@ public class GroupImagesEntity extends MutableEntity<GroupId, GroupImages> {
     }
 
     @Override
-    protected GroupImages toDTO() {
+    protected GroupImages toDomain() {
         return new GroupImages(
                 this.id,
                 this.avatarUri,

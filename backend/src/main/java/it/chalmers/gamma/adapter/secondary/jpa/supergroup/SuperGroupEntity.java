@@ -62,14 +62,14 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
     }
 
     @Override
-    public SuperGroup toDTO() {
+    public SuperGroup toDomain() {
         return new SuperGroup(
                 SuperGroupId.valueOf(this.id),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
                 SuperGroupType.valueOf(this.superGroupType),
                 new Email(this.email),
-                this.description.toDTO()
+                this.description.toDomain()
         );
     }
 

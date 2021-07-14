@@ -22,7 +22,7 @@ public class UserAvatarService {
     }
 
     public Optional<UserAvatar> getUserAvatar(UserId userId) {
-        return this.repository.findById(userId).map(UserAvatarEntity::toDTO);
+        return this.repository.findById(userId).map(UserAvatarEntity::toDomain);
     }
 
 

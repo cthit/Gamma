@@ -1,7 +1,8 @@
-package it.chalmers.gamma.adapter.secondary.jpa.authoritysupergroup;
+package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupDTO;
+import it.chalmers.gamma.app.domain.SuperGroup;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -16,15 +17,11 @@ public class AuthoritySuperGroupEntity extends ImmutableEntity<AuthoritySuperGro
 
     protected AuthoritySuperGroupEntity() { }
 
-    protected AuthoritySuperGroupEntity(AuthoritySuperGroupDTO authority) {
-        this.id = new AuthoritySuperGroupPK(
-                authority.superGroupId(),
-                authority.authorityLevelName()
-        );
+    protected AuthoritySuperGroupEntity(SuperGroup superGroup) {
     }
 
     @Override
-    protected AuthoritySuperGroupDTO toDTO() {
+    protected AuthoritySuperGroupDTO toDomain() {
         return new AuthoritySuperGroupDTO(this.id.value().superGroupId(), this.id.value().authorityLevelName());
     }
 

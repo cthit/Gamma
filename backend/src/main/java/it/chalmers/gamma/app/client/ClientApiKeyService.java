@@ -4,7 +4,6 @@ import it.chalmers.gamma.adapter.secondary.jpa.client.ClientApiKeyEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientApiKeyRepository;
 import it.chalmers.gamma.app.domain.ClientApiKeyPair;
 import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.client.ClientService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +27,7 @@ public class ClientApiKeyService {
     public ClientApiKeyPair get(ClientId id) throws ClientService.ClientNotFoundException {
         return this.clientApiKeyRepository.findById(id)
                 .orElseThrow(ClientService.ClientNotFoundException::new)
-                .toDTO();
+                .toDomain();
     }
 
 }

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.authoritypost.service;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostPK;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostPK;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostJpaRepository;
 import it.chalmers.gamma.app.authority.AuthorityPostService;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
@@ -35,7 +35,7 @@ class AuthorityPostServiceTest {
     void successfulCreation() {
         SuperGroupId superGroupId = SuperGroupId.generate();
         PostId postId = PostId.generate();
-        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
+        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("name");
 
         AuthorityPostDTO authorityPostDTO = new AuthorityPostDTO(superGroupId, postId, authorityLevelName);
 
@@ -55,7 +55,7 @@ class AuthorityPostServiceTest {
     void throwIfAuthorityAlreadyExists() {
         SuperGroupId superGroupId =  SuperGroupId.generate();
         PostId postId = PostId.generate();
-        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
+        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("name");
 
         AuthorityPostDTO authorityPostDTO = new AuthorityPostDTO(superGroupId, postId, authorityLevelName);
         AuthorityPostEntity authorityPost = AuthorityFactory.create(superGroupId, postId, authorityLevelName);
@@ -72,7 +72,7 @@ class AuthorityPostServiceTest {
     void compareEntityAndDTO() {
         SuperGroupId superGroupId = SuperGroupId.generate();
         PostId postId = PostId.generate();
-        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("authorityLevelName");
+        AuthorityLevelName authorityLevelName = AuthorityLevelName.valueOf("name");
 
         AuthorityPostDTO authorityPostDTO = new AuthorityPostDTO(superGroupId, postId, authorityLevelName);
 

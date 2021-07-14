@@ -26,7 +26,7 @@ public class UserActivationService {
             delete(cid);
         } catch (UserActivationNotFoundException ignored) {}
 
-        return this.repository.save(new UserActivationEntity(cid, UserActivationToken.generate())).toDTO();
+        return this.repository.save(new UserActivationEntity(cid, UserActivationToken.generate())).toDomain();
     }
 
     public void delete(Cid cid) throws UserActivationNotFoundException {
@@ -40,7 +40,7 @@ public class UserActivationService {
     public List<UserActivation> getAll() {
         return this.repository.findAll()
                 .stream()
-                .map(UserActivationEntity::toDTO)
+                .map(UserActivationEntity::toDomain)
                 .collect(Collectors.toList());
     }
 

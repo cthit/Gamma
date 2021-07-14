@@ -32,7 +32,7 @@ public class UserActivationEntity extends ImmutableEntity<Cid, UserActivation> {
     }
 
     @Override
-    protected UserActivation toDTO() {
+    protected UserActivation toDomain() {
         return new UserActivation(
                 Cid.valueOf(this.cid),
                 new UserActivationToken(this.token),

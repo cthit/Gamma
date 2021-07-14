@@ -52,26 +52,26 @@ public class UserService {
     public List<User> getAll() {
         return this.userRepository.findAll()
                 .stream()
-                .map(UserEntity::toDTO)
+                .map(UserEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     public User get(Email email) throws UserNotFoundException {
         return this.userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new)
-                .toDTO();
+                .toDomain();
     }
 
     public User get(Cid cid) throws UserNotFoundException {
         return this.userRepository.findByCid(cid)
                 .orElseThrow(UserNotFoundException::new)
-                .toDTO();
+                .toDomain();
     }
 
     public User get(UserId id) throws UserNotFoundException {
         return this.userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new)
-                .toDTO();
+                .toDomain();
     }
 
     public void setPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException {

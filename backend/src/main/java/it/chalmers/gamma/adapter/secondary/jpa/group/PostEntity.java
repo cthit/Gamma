@@ -44,10 +44,10 @@ public class PostEntity extends MutableEntity<PostId, Post> {
     }
 
     @Override
-    protected Post toDTO() {
+    protected Post toDomain() {
         return new Post(
                 PostId.valueOf(this.id),
-                this.postName.toDTO(),
+                this.postName.toDomain(),
                 new EmailPrefix(this.emailPrefix)
         );
     }

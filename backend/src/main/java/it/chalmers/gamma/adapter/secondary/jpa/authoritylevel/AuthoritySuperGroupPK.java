@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.authoritysupergroup;
+package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.SuperGroupId;

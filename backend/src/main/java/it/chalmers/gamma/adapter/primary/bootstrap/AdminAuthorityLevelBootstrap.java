@@ -23,7 +23,7 @@ public class AdminAuthorityLevelBootstrap {
         try {
             this.authorityLevelService.create(adminAuthorityLevel);
         } catch (AuthorityLevelService.AuthorityLevelAlreadyExistsException e) {
-            // admin authorityLevelName already exists, moving on
+            // admin name already exists, moving on
         }
     }
 

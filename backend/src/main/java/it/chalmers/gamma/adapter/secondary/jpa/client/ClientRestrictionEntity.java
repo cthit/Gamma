@@ -26,7 +26,7 @@ public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK
     }
 
     @Override
-    protected ClientRestriction toDTO() {
+    protected ClientRestriction toDomain() {
         return new ClientRestriction(
                 this.id.value().clientId(),
                 this.id.value().authorityLevelName()

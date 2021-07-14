@@ -17,12 +17,12 @@ public class AppSettingsService {
     }
 
     public Settings getSettings() {
-        return this.repository.findTopByOrderByIdDesc().toDTO();
+        return this.repository.findTopByOrderByIdDesc().toDomain();
     }
 
     public void resetUserAgreement() {
         AppSettingsEntity appSettingsEntity = this.repository.findTopByOrderByIdDesc();
-        Settings settings = appSettingsEntity.toDTO();
+        Settings settings = appSettingsEntity.toDomain();
         Settings newSettings = settings.withLastUpdatedUserAgreement(Instant.now());
         appSettingsEntity.apply(newSettings);
     }

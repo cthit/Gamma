@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostPK;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostPK;
 import it.chalmers.gamma.app.authoritypost.service.AuthorityPostDTO;
 import it.chalmers.gamma.app.authority.AuthorityPostService;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;

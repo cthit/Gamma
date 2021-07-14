@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.authoritypost.service;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritypost.AuthorityPostEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostEntity;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.SuperGroupId;

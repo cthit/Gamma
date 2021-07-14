@@ -21,7 +21,7 @@ public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK, Us
     }
 
     @Override
-    protected UserApproval toDTO() {
+    protected UserApproval toDomain() {
         return new UserApproval(
                 this.id.value().user(),
                 this.id.value().client()

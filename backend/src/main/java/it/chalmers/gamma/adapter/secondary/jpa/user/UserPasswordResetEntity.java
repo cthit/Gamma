@@ -40,7 +40,7 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId, PasswordRes
     }
 
     @Override
-    protected PasswordReset toDTO() {
+    protected PasswordReset toDomain() {
         return new PasswordReset(
                 this.userId,
                 this.token,

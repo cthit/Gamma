@@ -8,7 +8,6 @@ import it.chalmers.gamma.app.domain.PasswordReset;
 import it.chalmers.gamma.app.domain.PasswordResetToken;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.user.UserService;
 import it.chalmers.gamma.adapter.secondary.mail.MailSenderService;
 
 import java.time.Instant;
@@ -69,7 +68,7 @@ public class UserPasswordResetService {
     public boolean tokenMatchesUser(UserId userId, String token) throws UserService.UserNotFoundException {
         PasswordReset d = this.repository.findById(userId)
                 .orElseThrow(UserService.UserNotFoundException::new)
-                .toDTO();
+                .toDomain();
         return d.token().equals(token);
     }
 

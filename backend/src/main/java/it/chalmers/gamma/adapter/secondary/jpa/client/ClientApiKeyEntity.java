@@ -33,7 +33,7 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId, ClientApiKeyPa
     }
 
     @Override
-    protected ClientApiKeyPair toDTO() {
+    protected ClientApiKeyPair toDomain() {
         return new ClientApiKeyPair(
                 this.clientId,
                 this.apiKeyId

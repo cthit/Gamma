@@ -34,18 +34,18 @@ public class ApiKeyJpaRepositoryAdapter implements ApiKeyRepository {
         return this.repository
                 .findAll()
                 .stream()
-                .map(ApiKeyEntity::toDTO)
+                .map(ApiKeyEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<ApiKey> getById(ApiKeyId apiKeyId) {
-        return this.repository.findById(apiKeyId).map(ApiKeyEntity::toDTO);
+        return this.repository.findById(apiKeyId).map(ApiKeyEntity::toDomain);
     }
 
     @Override
     public Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken) {
-        return this.repository.findByToken(apiKeyToken).map(ApiKeyEntity::toDTO);
+        return this.repository.findByToken(apiKeyToken).map(ApiKeyEntity::toDomain);
     }
 
     @Override

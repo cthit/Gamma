@@ -33,7 +33,7 @@ public class UserGDPRTrainingEntity extends ImmutableEntity<UserId, UserId> {
     }
 
     @Override
-    protected UserId toDTO() {
+    protected UserId toDomain() {
         return this.user.id();
     }
 }

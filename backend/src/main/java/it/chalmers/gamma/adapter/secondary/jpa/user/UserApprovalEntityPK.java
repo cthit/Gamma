@@ -34,8 +34,8 @@ public class UserApprovalEntityPK extends Id<UserApprovalEntityPK.UserApprovalPK
     @Override
     public UserApprovalPKDTO value() {
         return new UserApprovalPKDTO(
-                this.user.toDTO(),
-                this.client.toDTO()
+                this.user.toDomain(),
+                this.client.toDomain()
         );
     }
 }

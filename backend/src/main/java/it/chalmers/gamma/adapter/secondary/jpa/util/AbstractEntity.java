@@ -9,11 +9,11 @@ import java.util.Objects;
 public abstract class AbstractEntity<I extends Id<?>, D extends DTO> {
 
     protected abstract I id();
-    protected abstract D toDTO();
+    protected abstract D toDomain();
 
     @Override
     public final String toString() {
-        return toDTO().toString();
+        return toDomain().toString();
     }
 
     @Override

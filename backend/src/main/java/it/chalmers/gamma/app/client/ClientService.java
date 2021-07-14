@@ -44,7 +44,7 @@ public class ClientService implements ClientDetailsService {
     @Override
     public ClientDetails loadClientByClientId(String clientId) {
         return this.clientRepository.findById(ClientId.valueOf(clientId))
-                .map(clientEntity -> new ClientDetailsImpl(clientEntity.toDTO(), clientEntity.getClientSecret()))
+                .map(clientEntity -> new ClientDetailsImpl(clientEntity.toDomain(), clientEntity.getClientSecret()))
                 .orElseThrow(ClientAdminController.ClientNotFoundResponse::new);
     }
 
@@ -86,14 +86,14 @@ public class ClientService implements ClientDetailsService {
     }
 
     public List<Client> getAll() {
-        return this.clientRepository.findAll().stream().map(ClientEntity::toDTO).collect(Collectors.toList());
+        return this.clientRepository.findAll().stream().map(ClientEntity::toDomain).collect(Collectors.toList());
     }
 
     public ClientWithRestrictions get(ClientId clientId) throws ClientNotFoundException {
         return new ClientWithRestrictions(
                 this.clientRepository.findById(clientId)
                         .orElseThrow(ClientNotFoundException::new)
-                        .toDTO(),
+                        .toDomain(),
                 this.clientRestrictionService.get(clientId)
                 );
     }

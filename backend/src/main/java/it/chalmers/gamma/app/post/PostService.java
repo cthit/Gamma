@@ -38,11 +38,11 @@ public class PostService {
     }
 
     public List<Post> getAll() {
-        return this.repository.findAll().stream().map(PostEntity::toDTO).collect(Collectors.toList());
+        return this.repository.findAll().stream().map(PostEntity::toDomain).collect(Collectors.toList());
     }
 
     public Post get(PostId id) throws PostNotFoundException {
-        return getEntity(id).toDTO();
+        return getEntity(id).toDomain();
     }
 
     protected PostEntity getEntity(PostId id) throws PostNotFoundException {

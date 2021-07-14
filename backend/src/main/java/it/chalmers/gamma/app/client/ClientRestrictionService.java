@@ -41,7 +41,7 @@ public class ClientRestrictionService {
     public List<AuthorityLevelName> get(ClientId clientId) {
         return this.clientRestrictionRepository.findClientRestrictionsById_ClientId(clientId)
                 .stream()
-                .map(ClientRestrictionEntity::toDTO)
+                .map(ClientRestrictionEntity::toDomain)
                 .map(ClientRestriction::authorityLevelName)
                 .collect(Collectors.toList());
     }

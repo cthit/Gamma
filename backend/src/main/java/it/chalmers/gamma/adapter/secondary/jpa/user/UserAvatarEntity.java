@@ -1,15 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.app.domain.ImageUri;
-import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserAvatar;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
-import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -42,9 +38,9 @@ public class UserAvatarEntity extends MutableEntity<UserId, UserAvatar> {
     }
 
     @Override
-    protected UserAvatar toDTO() {
+    protected UserAvatar toDomain() {
         return new UserAvatar(
-                this.user.toDTO(),
+                this.user.toDomain(),
                 new ImageUri(this.avatarUri)
         );
     }

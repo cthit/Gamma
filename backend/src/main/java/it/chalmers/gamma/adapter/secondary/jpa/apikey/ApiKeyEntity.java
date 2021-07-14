@@ -50,11 +50,11 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
     }
 
     @Override
-    protected ApiKey toDTO() {
+    protected ApiKey toDomain() {
         return new ApiKey(
                 ApiKeyId.valueOf(this.id),
                 new PrettyName(this.prettyName),
-                this.description.toDTO(),
+                this.description.toDomain(),
                 this.keyType,
                 new ApiKeyToken(this.token)
         );

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.domain.Authorities;
+import it.chalmers.gamma.app.domain.AuthorityLevel;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authority.AuthorityLevelService;
 import it.chalmers.gamma.app.authority.AuthorityFinder;
@@ -53,7 +53,7 @@ public final class AuthorityLevelAdminController {
     }
 
     @GetMapping("/{name}")
-    public Authorities getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
+    public AuthorityLevel getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
         try {
             return this.authorityFinder.getByAuthorityLevel(name);
         } catch (AuthorityLevelService.AuthorityLevelNotFoundException e) {

@@ -40,7 +40,7 @@ public class MembershipEntity extends MutableEntity<MembershipPK, MembershipShal
     }
 
     @Override
-    protected MembershipShallowDTO toDTO() {
+    protected MembershipShallowDTO toDomain() {
         return new MembershipShallowDTO(
                 this.id.value().postId(),
                 this.id.value().groupId(),

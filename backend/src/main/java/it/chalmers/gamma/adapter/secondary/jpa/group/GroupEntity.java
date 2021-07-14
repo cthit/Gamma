@@ -53,13 +53,13 @@ public class GroupEntity extends MutableEntity<GroupId, Group> {
     }
 
     @Override
-    protected Group toDTO() {
+    protected Group toDomain() {
         return new Group(
                 GroupId.valueOf(this.id),
                 new Email(this.email),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
-                this.superGroup.toDTO()
+                this.superGroup.toDomain()
         );
     }
 

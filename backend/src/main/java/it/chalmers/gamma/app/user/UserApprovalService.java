@@ -8,7 +8,6 @@ import it.chalmers.gamma.app.domain.ClientId;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserApproval;
 import it.chalmers.gamma.app.client.ClientService;
-import it.chalmers.gamma.app.user.UserService;
 import it.chalmers.gamma.util.UserUtils;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,7 @@ public class UserApprovalService {
     public UserApproval get(UserApprovalEntityPK userApprovalPK) throws UserService.UserNotFoundException {
         return this.repository.findById(userApprovalPK)
                 .orElseThrow(UserService.UserNotFoundException::new)
-                .toDTO();
+                .toDomain();
     }
 
     public List<UserApproval> getApprovalsByClientId(ClientId clientId) {
@@ -59,7 +58,7 @@ public class UserApprovalService {
         User user = UserUtils.getUserDetails().getUser();
         return this.repository.findAllById_UserId(user.id())
                 .stream()
-                .map(userApprovalEntity -> clientMap.get(userApprovalEntity.toDTO().clientId()))
+                .map(userApprovalEntity -> clientMap.get(userApprovalEntity.toDomain().clientId()))
                 .collect(Collectors.toList());
     }
 

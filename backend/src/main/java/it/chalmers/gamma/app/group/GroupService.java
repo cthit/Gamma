@@ -46,7 +46,7 @@ public class GroupService {
         return this.repository
                 .findAll()
                 .stream()
-                .map(GroupEntity::toDTO)
+                .map(GroupEntity::toDomain)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -54,13 +54,13 @@ public class GroupService {
     public List<Group> getGroupsBySuperGroup(SuperGroupId superGroupId) {
         return this.repository.findAllBySuperGroupId(superGroupId)
                 .stream()
-                .map(GroupEntity::toDTO)
+                .map(GroupEntity::toDomain)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
 
     public Group get(GroupId id) throws GroupNotFoundException {
-        return fromShallow(getGroupEntity(id).toDTO());
+        return fromShallow(getGroupEntity(id).toDomain());
     }
 
     protected GroupEntity getGroupEntity(GroupId id) throws GroupNotFoundException {

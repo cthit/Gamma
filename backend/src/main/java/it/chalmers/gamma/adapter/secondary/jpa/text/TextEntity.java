@@ -39,7 +39,7 @@ public class TextEntity extends MutableEntity<TextId, Text> {
     }
 
     @Override
-    public Text toDTO() {
+    public Text toDomain() {
         return new Text(
                 this.sv,
                 this.en

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.adapter.secondary.jpa.authorityuser.AuthorityUserPK;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityUserPK;
 import it.chalmers.gamma.app.authority.AuthorityUserService;
 import it.chalmers.gamma.app.authorityuser.service.AuthorityUserShallowDTO;
 import it.chalmers.gamma.app.domain.UserId;

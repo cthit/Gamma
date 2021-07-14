@@ -39,7 +39,7 @@ public class AppSettingsEntity extends MutableEntity<SettingsId, Settings> {
     }
 
     @Override
-    protected Settings toDTO() {
+    protected Settings toDomain() {
         return new Settings(this.lastUpdatedUserAgreement);
     }
 

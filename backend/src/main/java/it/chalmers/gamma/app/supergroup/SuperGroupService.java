@@ -36,7 +36,7 @@ public class SuperGroupService {
 
     public List<SuperGroup> getAll() {
         return Optional.of(this.repository.findAll().stream()
-                .map(SuperGroupEntity::toDTO)
+                .map(SuperGroupEntity::toDomain)
                 .collect(Collectors.toList())).orElseThrow();
     }
 
@@ -45,13 +45,13 @@ public class SuperGroupService {
     }
 
     public SuperGroup get(SuperGroupId id) throws SuperGroupNotFoundException {
-        return getEntity(id).toDTO();
+        return getEntity(id).toDomain();
     }
 
     public List<SuperGroup> getAllByType(SuperGroupType type) {
         return this.repository.findAllBySuperGroupType(type)
                 .stream()
-                .map(SuperGroupEntity::toDTO)
+                .map(SuperGroupEntity::toDomain)
                 .collect(Collectors.toList());
     }
 

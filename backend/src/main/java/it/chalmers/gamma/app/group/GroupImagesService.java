@@ -25,12 +25,12 @@ public class GroupImagesService {
 
     public Optional<GroupImages> getGroupImages(GroupId groupId) {
         return this.repository.findById(groupId)
-                .map(GroupImagesEntity::toDTO);
+                .map(GroupImagesEntity::toDomain);
     }
 
     public void editGroupAvatar(GroupId groupId, MultipartFile file) throws ImageService.FileCouldNotBeRemovedException, ImageService.FileCouldNotBeSavedException, ImageService.FileContentNotValidException {
         GroupImagesEntity groupImagesEntity = this.repository.findById(groupId).orElse(new GroupImagesEntity(groupId));
-        GroupImages groupImages = groupImagesEntity.toDTO();
+        GroupImages groupImages = groupImagesEntity.toDomain();
         ImageUri previousAvatarUri = groupImages.avatarUri();
         if (previousAvatarUri != null) {
             this.imageService.removeImage(previousAvatarUri);
@@ -43,7 +43,7 @@ public class GroupImagesService {
 
     public void editGroupBanner(GroupId groupId, MultipartFile file) throws ImageService.FileCouldNotBeRemovedException, ImageService.FileCouldNotBeSavedException, ImageService.FileContentNotValidException {
         GroupImagesEntity groupImagesEntity = this.repository.findById(groupId).orElse(new GroupImagesEntity(groupId));
-        GroupImages groupImages = groupImagesEntity.toDTO();
+        GroupImages groupImages = groupImagesEntity.toDomain();
         ImageUri previousBannerUri = groupImages.bannerUri();
         if (previousBannerUri != null) {
             this.imageService.removeImage(previousBannerUri);

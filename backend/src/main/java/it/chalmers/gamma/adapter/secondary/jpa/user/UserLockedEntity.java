@@ -29,7 +29,7 @@ public class UserLockedEntity extends ImmutableEntity<UserId, UserId> {
     }
 
     @Override
-    protected UserId toDTO() {
+    protected UserId toDomain() {
         return this.userId;
     }
 }

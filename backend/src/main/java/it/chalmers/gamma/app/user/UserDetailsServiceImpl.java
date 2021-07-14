@@ -37,7 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         boolean userLocked = this.userLockedService.isLocked(user.id());
 
         return new UserDetailsImpl(
-                user.toDTO(),
+                user.toDomain(),
                 user.getPassword().value(),
                 authorities,
                 userLocked

@@ -55,14 +55,14 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
     }
 
     @Override
-    public Client toDTO() {
+    public Client toDomain() {
         return new Client(
                 ClientId.valueOf(this.clientId),
                 new ClientSecret(this.clientSecret),
                 this.webServerRedirectUri,
                 this.autoApprove,
                 new PrettyName(this.prettyName),
-                this.description.toDTO()
+                this.description.toDomain()
         );
     }
 }

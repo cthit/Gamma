@@ -56,7 +56,7 @@ public class MembershipService {
     public List<Group> getGroupsWithPost(PostId postId) {
         List<GroupId> groups = this.membershipRepository.findAllById_PostId(postId)
                 .stream()
-                .map(MembershipEntity::toDTO)
+                .map(MembershipEntity::toDomain)
                 .map(MembershipShallowDTO::groupId)
                 .collect(Collectors.toList());
 
@@ -72,7 +72,7 @@ public class MembershipService {
 
         return memberships
                 .stream()
-                .map(MembershipEntity::toDTO)
+                .map(MembershipEntity::toDomain)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -82,7 +82,7 @@ public class MembershipService {
 
         return memberships
                 .stream()
-                .map(MembershipEntity::toDTO)
+                .map(MembershipEntity::toDomain)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -92,7 +92,7 @@ public class MembershipService {
 
         return memberships
                 .stream()
-                .map(MembershipEntity::toDTO)
+                .map(MembershipEntity::toDomain)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }
@@ -101,7 +101,7 @@ public class MembershipService {
         return this.membershipRepository
                 .findAllById_GroupId(groupId)
                 .stream()
-                .map(MembershipEntity::toDTO)
+                .map(MembershipEntity::toDomain)
                 .map(this::fromShallow)
                 .collect(Collectors.toList());
     }

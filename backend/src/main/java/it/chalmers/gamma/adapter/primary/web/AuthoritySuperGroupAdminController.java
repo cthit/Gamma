@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritysupergroup.AuthoritySuperGroupPK;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthoritySuperGroupPK;
 import it.chalmers.gamma.app.authority.AuthoritySuperGroupService;
 import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupDTO;
 import it.chalmers.gamma.app.domain.SuperGroupId;

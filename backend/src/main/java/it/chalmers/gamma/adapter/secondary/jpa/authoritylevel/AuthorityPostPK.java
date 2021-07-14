@@ -1,5 +1,7 @@
-package it.chalmers.gamma.adapter.secondary.jpa.authoritypost;
+package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
+import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.PostId;
@@ -16,13 +18,13 @@ public class AuthorityPostPK extends Id<AuthorityPostPK.AuthorityPostPKDTO> {
                                         AuthorityLevelName authorityLevelName) { }
 
     @Embedded
-    private SuperGroupId superGroupId;
+    private SuperGroupEntity superGroupId;
 
     @Embedded
-    private PostId postId;
+    private PostEntity postId;
 
     @Embedded
-    private AuthorityLevelName authorityLevelName;
+    private AuthorityLevelEntity authorityLevelName;
 
     protected AuthorityPostPK() {}
 

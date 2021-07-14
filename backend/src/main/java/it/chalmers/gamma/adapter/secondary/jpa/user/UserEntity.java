@@ -63,7 +63,7 @@ public class UserEntity extends MutableEntity<UserId, User> {
         this.apply(user);
     }
 
-    protected User toDTO() {
+    protected User toDomain() {
         return new User(
                 UserId.valueOf(this.id),
                 Cid.valueOf(this.cid),
