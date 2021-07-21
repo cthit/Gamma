@@ -3,7 +3,7 @@ package it.chalmers.gamma.security.oauth;
 import it.chalmers.gamma.app.domain.ClientId;
 import it.chalmers.gamma.app.domain.Client;
 
-import it.chalmers.gamma.app.client.ClientService;
+import it.chalmers.gamma.app.client.ClientFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
@@ -17,20 +17,20 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes(types = AuthorizationRequest.class)
 public class OAuth2AuthorizeController {
 
-    private final ClientService clientService;
+    private final ClientFacade clientFacade;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2AuthorizeController.class);
 
-    public OAuth2AuthorizeController(ClientService clientService) {
-        this.clientService = clientService;
+    public OAuth2AuthorizeController(ClientFacade clientFacade) {
+        this.clientFacade = clientFacade;
     }
 
     @GetMapping("/oauth/confirm_access")
     public String getConfirmAccess(@ModelAttribute AuthorizationRequest clientAuth, Model model) {
         try {
-            Client client = this.clientService.get(ClientId.valueOf(clientAuth.getClientId())).client();
+            Client client = this.clientFacade.get(ClientId.valueOf(clientAuth.getClientId())).client();
             model.addAttribute("clientName", client.prettyName());
-        } catch (ClientService.ClientNotFoundException e) {
+        } catch (ClientFacade.ClientNotFoundException e) {
             LOGGER.error("Cannot find provided client in authorize", e);
         }
 

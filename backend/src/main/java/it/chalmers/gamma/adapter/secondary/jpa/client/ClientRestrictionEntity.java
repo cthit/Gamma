@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.app.domain.ClientRestriction;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
@@ -9,7 +8,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "itclient_authority_level_restriction")
-public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK, ClientRestriction> {
+public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK> {
 
     @EmbeddedId
     private ClientRestrictionPK id;
@@ -20,16 +19,8 @@ public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK
         this.id = id;
     }
 
-    @Override
     protected ClientRestrictionPK id() {
         return this.id;
     }
 
-    @Override
-    protected ClientRestriction toDomain() {
-        return new ClientRestriction(
-                this.id.value().clientId(),
-                this.id.value().authorityLevelName()
-        );
-    }
 }

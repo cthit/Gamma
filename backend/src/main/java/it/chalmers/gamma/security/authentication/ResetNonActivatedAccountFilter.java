@@ -1,9 +1,8 @@
 package it.chalmers.gamma.security.authentication;
 
+import it.chalmers.gamma.app.UserFacade;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.user.UserService;
-import it.chalmers.gamma.app.service.UserLockedService;
 import it.chalmers.gamma.app.user.UserPasswordResetService;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -20,17 +19,14 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
     private static final String USERNAME_PARAMETER = "username";
     private static final Logger LOGGER = LoggerFactory.getLogger(ResetNonActivatedAccountFilter.class);
     private final UserPasswordResetService userPasswordResetService;
-    private final UserService userService;
-    private final UserLockedService userLockedService;
+    private final UserFacade userFacade;
 
     public ResetNonActivatedAccountFilter(String baseFrontendUrl,
                                           UserPasswordResetService userPasswordResetService,
-                                          UserService userService,
-                                          UserLockedService userLockedService) {
+                                          UserFacade userFacade) {
         this.baseFrontendUrl = baseFrontendUrl;
         this.userPasswordResetService = userPasswordResetService;
-        this.userService = userService;
-        this.userLockedService = userLockedService;
+        this.userFacade = userFacade;
     }
 
     @Override
@@ -39,8 +35,8 @@ public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
         String username = request.getParameter(USERNAME_PARAMETER);
         if (username != null) {
             try {
-                User user = this.userService.get(Cid.valueOf(username));
-                if (this.userLockedService.isLocked(user.id())) {
+                User user = this.userFacade.get(Cid.valueOf(username));
+                if (user.locked()) {
                     this.userPasswordResetService.handlePasswordReset(user);
                     String params = "accountLocked=true";
                     response.sendRedirect(String.format("%s/reset-password/finish?%s", this.baseFrontendUrl, params));

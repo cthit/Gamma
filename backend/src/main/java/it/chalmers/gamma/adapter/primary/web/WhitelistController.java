@@ -4,7 +4,7 @@ import it.chalmers.gamma.app.domain.UserActivation;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.user.UserActivationService;
 import it.chalmers.gamma.app.whitelist.WhitelistService;
-import it.chalmers.gamma.adapter.secondary.mail.MailSenderService;
+import it.chalmers.gamma.adapter.secondary.mail.GotifyMailService;
 
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public final class WhitelistController {
 
     private final UserActivationService userActivationService;
-    private final MailSenderService mailSenderService;
+    private final GotifyMailService mailSenderService;
     private final WhitelistService whitelistService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistController.class);
@@ -27,7 +27,7 @@ public final class WhitelistController {
     private static final String MAIL_POSTFIX = "student.chalmers.se";
 
     public WhitelistController(UserActivationService userActivationService,
-                               MailSenderService mailSenderService,
+                               GotifyMailService mailSenderService,
                                WhitelistService whitelistService) {
         this.userActivationService = userActivationService;
         this.mailSenderService = mailSenderService;
@@ -55,7 +55,7 @@ public final class WhitelistController {
         String code = userActivation.token().value();
         String to = userActivation.cid() + "@" + MAIL_POSTFIX;
         String message = "Your code to Gamma is: " + code;
-        this.mailSenderService.trySendingMail(to, "Chalmers activationcode code", message);
+        this.mailSenderService.sendMail(to, "Chalmers activationcode code", message);
     }
 
     // This will be thrown even if there was an error for security reasons.

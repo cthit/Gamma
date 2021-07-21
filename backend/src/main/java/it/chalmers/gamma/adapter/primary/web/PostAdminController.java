@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.PostFacade;
 import it.chalmers.gamma.app.domain.EmailPrefix;
 import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.Text;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.Post;
@@ -25,13 +25,10 @@ import java.util.List;
 @RequestMapping("/internal/admin/posts")
 public final class PostAdminController {
 
-    private final PostService postService;
-    private final MembershipService membershipService;
+    private final PostFacade postFacade;
 
-    public PostAdminController(PostService postService,
-                               MembershipService membershipService) {
-        this.postService = postService;
-        this.membershipService = membershipService;
+    public PostAdminController(PostFacade postFacade) {
+        this.postFacade = postFacade;
     }
 
     private record CreateOrEditPost(Text post, EmailPrefix emailPrefix) { }

@@ -1,8 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostPK;
-import it.chalmers.gamma.app.authoritypost.service.AuthorityPostDTO;
-import it.chalmers.gamma.app.authority.AuthorityPostService;
+import it.chalmers.gamma.app.AuthorityFacade;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.SuperGroupId;
@@ -16,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/internal/admin/authority/post")
 public final class AuthorityPostAdminController {
 
-    private final AuthorityPostService authorityPostService;
+    private final AuthorityFacade authorityFacade;
 
-    public AuthorityPostAdminController(AuthorityPostService authorityPostService) {
-        this.authorityPostService = authorityPostService;
+    public AuthorityPostAdminController(AuthorityFacade authorityFacade) {
+        this.authorityFacade = authorityFacade;
     }
 
     private record CreateAuthorityPostRequest(PostId postId, SuperGroupId superGroupId, AuthorityLevelName authorityLevelName) { }

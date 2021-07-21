@@ -7,12 +7,10 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class MutableEntity<I extends Id<?>, D extends DTO> extends AbstractEntity<I, D> {
+public abstract class MutableEntity<I extends Id<?>> extends AbstractEntity<I> {
 
     @Version
     @Column(name = "version")
     private int version;
-
-    protected abstract void apply(D d);
 
 }

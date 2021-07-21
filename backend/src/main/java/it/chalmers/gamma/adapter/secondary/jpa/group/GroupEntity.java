@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fkit_group")
-public class GroupEntity extends MutableEntity<GroupId, Group> {
+public class GroupEntity extends MutableEntity<GroupId> {
 
     @Id
     @Column(name = "group_id")
@@ -42,7 +42,6 @@ public class GroupEntity extends MutableEntity<GroupId, Group> {
         apply(g);
     }
 
-    @Override
     public void apply(Group g) {
         assert(this.id == g.id().value());
 
@@ -52,8 +51,7 @@ public class GroupEntity extends MutableEntity<GroupId, Group> {
         this.superGroup = new SuperGroupEntity(g.superGroup());
     }
 
-    @Override
-    protected Group toDomain() {
+    public Group toDomain() {
         return new Group(
                 GroupId.valueOf(this.id),
                 new Email(this.email),

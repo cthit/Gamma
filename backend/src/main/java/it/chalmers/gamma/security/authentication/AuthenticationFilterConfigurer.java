@@ -3,7 +3,6 @@ package it.chalmers.gamma.security.authentication;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.user.UserService;
 
-import it.chalmers.gamma.app.service.UserLockedService;
 import it.chalmers.gamma.app.user.UserPasswordResetService;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +19,6 @@ public class AuthenticationFilterConfigurer
     private final UserService userService;
     private final UserPasswordResetService userPasswordResetService;
     private final ApiKeyRepository apiKeyRepository;
-    private final UserLockedService userLockedService;
 
     public AuthenticationFilterConfigurer(
             UserService userService,
@@ -28,8 +26,7 @@ public class AuthenticationFilterConfigurer
             String issuer,
             UserPasswordResetService userPasswordResetService,
             String baseFrontendUrl,
-            ApiKeyRepository apiKeyRepository,
-            UserLockedService userLockedService) {
+            ApiKeyRepository apiKeyRepository) {
         this.userService = userService;
         this.secretKey = secretKey;
         this.issuer = issuer;

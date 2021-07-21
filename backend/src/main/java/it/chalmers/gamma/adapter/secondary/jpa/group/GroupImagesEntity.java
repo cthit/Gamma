@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.GroupImages;
-import it.chalmers.gamma.app.domain.ImageUri;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
+import it.chalmers.gamma.app.domain.GroupId;
+import it.chalmers.gamma.app.domain.ImageUri;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -14,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "group_images_uri")
-public class GroupImagesEntity extends MutableEntity<GroupId, GroupImages> {
+public class GroupImagesEntity extends MutableEntity<GroupId> {
 
     @EmbeddedId
     private GroupId id;
@@ -40,20 +39,4 @@ public class GroupImagesEntity extends MutableEntity<GroupId, GroupImages> {
         return this.id;
     }
 
-    @Override
-    protected GroupImages toDomain() {
-        return new GroupImages(
-                this.id,
-                this.avatarUri,
-                this.bannerUri
-        );
-    }
-
-    @Override
-    protected void apply(GroupImages groupImages) {
-        assert (this.id == groupImages.groupId());
-
-        this.avatarUri = groupImages.avatarUri();
-        this.bannerUri = groupImages.bannerUri();
-    }
 }

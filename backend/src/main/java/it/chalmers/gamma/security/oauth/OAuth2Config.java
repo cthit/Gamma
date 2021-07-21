@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security.oauth;
 
-import it.chalmers.gamma.app.user.UserApprovalStore;
-import it.chalmers.gamma.app.client.ClientService;
+import it.chalmers.gamma.adapter.secondary.oauth.UserApprovalStore;
+import it.chalmers.gamma.app.client.ClientFacade;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,7 +43,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private final AuthenticationManager authenticationManager;
 
     @Qualifier("clientDetailsService")
-    private final ClientService clientDetailsService;
+    private final ClientFacade clientDetailsService;
 
     private final UserApprovalStore userApprovalStore;
 
@@ -58,7 +58,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     public OAuth2Config(UserDetailsService userDetailsService,
                         AuthenticationManager authenticationManager,
-                        ClientService clientDetailsService,
+                        ClientFacade clientDetailsService,
                         UserApprovalStore userApprovalStore) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;

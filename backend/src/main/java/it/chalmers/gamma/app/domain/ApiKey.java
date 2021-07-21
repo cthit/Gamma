@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
 
 import java.util.Objects;
 
@@ -11,7 +10,7 @@ public record ApiKey(ApiKeyId id,
                      Text description,
                      ApiKeyType keyType,
                      ApiKeyToken apiKeyToken)
-        implements DTO, ApiKeyBuilder.With  {
+        implements ApiKeyBuilder.With  {
     public ApiKey {
         Objects.requireNonNull(id);
         Objects.requireNonNull(prettyName);

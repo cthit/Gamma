@@ -1,14 +1,11 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-
 import java.util.Objects;
 
 public record Membership(Post post,
                          Group group,
                          String unofficialPostName,
-                         User user)
-        implements DTO {
+                         User user) {
 
     //TODO: Add custom class for unofficialPostName
 

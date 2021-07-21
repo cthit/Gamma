@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ituser_gdpr_training")
-public class UserGDPRTrainingEntity extends ImmutableEntity<UserId, UserId> {
+public class UserGDPRTrainingEntity extends ImmutableEntity<UserId> {
 
     @Id
     @OneToOne
@@ -23,17 +23,9 @@ public class UserGDPRTrainingEntity extends ImmutableEntity<UserId, UserId> {
 
     protected UserGDPRTrainingEntity() {}
 
-    protected UserGDPRTrainingEntity(User user) {
-        this.user = new UserEntity(user);
-    }
-
     @Override
     protected UserId id() {
         return this.user.id();
     }
 
-    @Override
-    protected UserId toDomain() {
-        return this.user.id();
-    }
 }

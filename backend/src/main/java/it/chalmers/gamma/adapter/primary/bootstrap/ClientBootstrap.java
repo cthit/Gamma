@@ -6,7 +6,7 @@ import it.chalmers.gamma.app.domain.ClientSecret;
 import it.chalmers.gamma.app.domain.Client;
 
 import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.client.ClientService;
+import it.chalmers.gamma.app.client.ClientFacade;
 import it.chalmers.gamma.app.domain.Text;
 import it.chalmers.gamma.app.domain.UserApproval;
 import it.chalmers.gamma.app.user.UserApprovalService;
@@ -27,18 +27,18 @@ public class ClientBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrap.class);
 
     private final String redirectUri;
-    private final ClientService clientService;
+    private final ClientFacade clientFacade;
     private final UserApprovalService userApprovalService;
     private final UserService userService;
     private final boolean mocking;
 
-    public ClientBootstrap(ClientService clientService,
+    public ClientBootstrap(ClientFacade clientFacade,
                            UserApprovalService userApprovalService,
                            UserService userService,
                            @Value("${application.mocking}") boolean mocking,
                            @Value("${application.default-oauth2-client.redirect-uri}") String redirectUri) {
         this.redirectUri = redirectUri;
-        this.clientService = clientService;
+        this.clientFacade = clientFacade;
         this.userApprovalService = userApprovalService;
         this.userService = userService;
         this.mocking = mocking;
@@ -46,7 +46,7 @@ public class ClientBootstrap {
 
     @PostConstruct
     void runOauthClient() {
-        if(!this.mocking || !this.clientService.getAll().isEmpty()) {
+        if(!this.mocking || !this.clientFacade.getAll().isEmpty()) {
             return;
         }
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
@@ -57,7 +57,7 @@ public class ClientBootstrap {
         ClientSecret clientSecret = new ClientSecret("secret");
         ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-token");
 
-        this.clientService.createWithApiKey(
+        this.clientFacade.createWithApiKey(
                 new Client(
                         clientId,
                         redirectUri,

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
 
 import java.util.Objects;
 
@@ -14,8 +13,11 @@ public record User(UserId id,
                    FirstName firstName,
                    LastName lastName,
                    boolean userAgreement,
-                   AcceptanceYear acceptanceYear)
-        implements DTO, UserBuilder.With {
+                   AcceptanceYear acceptanceYear,
+                   boolean gdprTrained,
+                   boolean locked,
+                   ImageUri imageUri) //TODO: Add authorities
+        implements UserBuilder.With {
 
     public User {
         Objects.requireNonNull(id);

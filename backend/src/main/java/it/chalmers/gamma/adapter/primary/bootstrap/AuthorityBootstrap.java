@@ -1,12 +1,6 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
-import it.chalmers.gamma.app.authority.AuthorityLevelService;
-import it.chalmers.gamma.app.authority.AuthorityPostService;
-import it.chalmers.gamma.app.authoritypost.service.AuthorityPostDTO;
-import it.chalmers.gamma.app.authority.AuthoritySuperGroupService;
-import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupDTO;
-import it.chalmers.gamma.app.authority.AuthorityUserService;
-import it.chalmers.gamma.app.authorityuser.service.AuthorityUserShallowDTO;
+import it.chalmers.gamma.app.AuthorityFacade;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
@@ -21,23 +15,14 @@ public class AuthorityBootstrap {
     private static final Logger LOGGER = Logger.getLogger(AuthorityBootstrap.class);
 
     private final MockData mockData;
-    private final AuthorityLevelService authorityLevelService;
-    private final AuthorityPostService authorityPostService;
-    private final AuthorityUserService authorityUserService;
-    private final AuthoritySuperGroupService authoritySuperGroupService;
+    private final AuthorityFacade authorityFacade;
     private final boolean mocking;
 
     public AuthorityBootstrap(MockData mockData,
-                              AuthorityLevelService authorityLevelService,
-                              AuthorityPostService authorityPostService,
-                              AuthorityUserService authorityUserService,
-                              AuthoritySuperGroupService authoritySuperGroupService,
+                              AuthorityFacade authorityFacade,
                               @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
-        this.authorityLevelService = authorityLevelService;
-        this.authorityPostService = authorityPostService;
-        this.authorityUserService = authorityUserService;
-        this.authoritySuperGroupService = authoritySuperGroupService;
+        this.authorityFacade = authorityFacade;
         this.mocking = mocking;
     }
 

@@ -1,14 +1,14 @@
 package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserPasswordResetEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserPasswordResetRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserPasswordResetJpaRepository;
+import it.chalmers.gamma.app.MailService;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.PasswordReset;
 import it.chalmers.gamma.app.domain.PasswordResetToken;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.adapter.secondary.mail.MailSenderService;
 
 import java.time.Instant;
 
@@ -17,16 +17,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserPasswordResetService {
 
-    private final UserPasswordResetRepository repository;
-    private final MailSenderService mailSenderService;
-    private final UserService userService;
+    private final UserPasswordResetJpaRepository repository;
+    private final MailService mailService;
 
-    public UserPasswordResetService(UserPasswordResetRepository repository,
-                                    MailSenderService mailSenderService,
-                                    UserService userService) {
+    public UserPasswordResetService(UserPasswordResetJpaRepository repository,
+                                    MailService mailService) {
         this.repository = repository;
-        this.mailSenderService = mailSenderService;
-        this.userService = userService;
+        this.mailService = mailService;
     }
 
     public void handlePasswordReset(String cidOrEmail) throws UserService.UserNotFoundException {
@@ -84,7 +81,7 @@ public class UserPasswordResetService {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token;
-        this.mailSenderService.trySendingMail(user.email().value(), subject, message);
+        this.mailSenderService.sendMail(user.email().value(), subject, message);
     }
 
     protected UserPasswordResetEntity getPasswordResetToken(PasswordReset passwordResetDTO) {

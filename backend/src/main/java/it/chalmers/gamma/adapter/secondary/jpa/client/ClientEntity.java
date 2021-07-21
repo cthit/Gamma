@@ -8,10 +8,11 @@ import it.chalmers.gamma.app.domain.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 
 import javax.persistence.*;
+import java.util.Collections;
 
 @Entity
 @Table(name = "itclient")
-public class ClientEntity extends ImmutableEntity<ClientId, Client> {
+public class ClientEntity extends ImmutableEntity<ClientId> {
 
     @Id
     @Column(name = "client_id")
@@ -54,7 +55,6 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
         return ClientId.valueOf(this.clientId);
     }
 
-    @Override
     public Client toDomain() {
         return new Client(
                 ClientId.valueOf(this.clientId),
@@ -62,7 +62,8 @@ public class ClientEntity extends ImmutableEntity<ClientId, Client> {
                 this.webServerRedirectUri,
                 this.autoApprove,
                 new PrettyName(this.prettyName),
-                this.description.toDomain()
+                this.description.toDomain(),
+                Collections.EMPTY_LIST //TODO: JoinColumn
         );
     }
 }

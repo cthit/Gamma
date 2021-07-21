@@ -8,7 +8,7 @@ import it.chalmers.gamma.app.domain.Text;
 import it.chalmers.gamma.app.domain.ClientId;
 import it.chalmers.gamma.app.domain.ClientSecret;
 import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.client.ClientService;
+import it.chalmers.gamma.app.client.ClientFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -26,10 +26,10 @@ import java.util.List;
 @RequestMapping("/internal/admin/clients")
 public final class ClientAdminController {
 
-    private final ClientService clientService;
+    private final ClientFacade clientFacade;
 
-    public ClientAdminController(ClientService clientService) {
-        this.clientService = clientService;
+    public ClientAdminController(ClientFacade clientFacade) {
+        this.clientFacade = clientFacade;
     }
 
     private record CreateClientRequest(String webServerRedirectUri,
@@ -57,9 +57,9 @@ public final class ClientAdminController {
                 );
         if (request.generateApiKey) {
             apiKeyToken = ApiKeyToken.generate();
-            this.clientService.createWithApiKey(newClient, clientSecret, apiKeyToken, request.restrictions);
+            this.clientFacade.createWithApiKey(newClient, clientSecret, apiKeyToken, request.restrictions);
         } else {
-            this.clientService.create(newClient, clientSecret, request.restrictions);
+            this.clientFacade.create(newClient, clientSecret, request.restrictions);
         }
 
         return new NewClientSecrets(clientSecret, apiKeyToken);
@@ -70,8 +70,8 @@ public final class ClientAdminController {
         ClientSecret clientSecret = ClientSecret.generate();
 
         try {
-            this.clientService.resetClientSecret(clientId, clientSecret);
-        } catch (ClientService.ClientNotFoundException e) {
+            this.clientFacade.resetClientSecret(clientId, clientSecret);
+        } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
 
@@ -80,14 +80,14 @@ public final class ClientAdminController {
 
     @GetMapping()
     public List<Client> getClients() {
-        return this.clientService.getAll();
+        return this.clientFacade.getAll();
     }
 
     @GetMapping("/{clientId}")
     public ClientWithRestrictions getClient(@PathVariable("clientId") ClientId id) {
         try {
-            return this.clientService.get(id);
-        } catch (ClientService.ClientNotFoundException e) {
+            return this.clientFacade.get(id);
+        } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
     }
@@ -95,9 +95,9 @@ public final class ClientAdminController {
     @DeleteMapping("/{clientId}")
     public ClientDeletedResponse deleteClient(@PathVariable("clientId") ClientId id) {
         try {
-            this.clientService.delete(id);
+            this.clientFacade.delete(id);
             return new ClientDeletedResponse();
-        } catch (ClientService.ClientNotFoundException e) {
+        } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
     }

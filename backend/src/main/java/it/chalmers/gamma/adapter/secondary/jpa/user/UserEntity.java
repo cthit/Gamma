@@ -10,14 +10,14 @@ import it.chalmers.gamma.app.domain.Nick;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.user.Password;
+import it.chalmers.gamma.app.domain.Password;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 @Table(name = "ituser")
-public class UserEntity extends MutableEntity<UserId, User> {
+public class UserEntity extends MutableEntity<UserId> {
 
     @Id
     @Column(name = "user_id")
@@ -63,7 +63,7 @@ public class UserEntity extends MutableEntity<UserId, User> {
         this.apply(user);
     }
 
-    protected User toDomain() {
+    public User toDomain() {
         return new User(
                 UserId.valueOf(this.id),
                 Cid.valueOf(this.cid),
@@ -73,8 +73,12 @@ public class UserEntity extends MutableEntity<UserId, User> {
                 new FirstName(this.firstName),
                 new LastName(this.lastName),
                 this.userAgreement,
-                new AcceptanceYear(this.acceptanceYear)
+                new AcceptanceYear(this.acceptanceYear),
+                false,
+                false,
+                null
         );
+        //TODO add one to one
     }
 
     @Override
@@ -82,7 +86,6 @@ public class UserEntity extends MutableEntity<UserId, User> {
         return UserId.valueOf(this.id);
     }
 
-    @Override
     public void apply(User u) {
         assert(this.id == u.id().value());
         assert(this.cid.equals(u.cid().value()));
@@ -94,6 +97,7 @@ public class UserEntity extends MutableEntity<UserId, User> {
         this.language = u.language();
         this.nick = u.nick().value();
         this.userAgreement = u.userAgreement();
+        //TODO: Add gdpr locked and imageUri
     }
 
     protected void setPassword(Password password) {

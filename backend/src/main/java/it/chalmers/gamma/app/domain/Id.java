@@ -1,8 +1,9 @@
 package it.chalmers.gamma.app.domain;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Id<S> {
+public abstract class Id<S> implements Serializable {
 
     public abstract S value();
 

@@ -1,14 +1,14 @@
 package it.chalmers.gamma.util;
 
-import it.chalmers.gamma.app.user.UserDetailsImpl;
+import it.chalmers.gamma.adapter.secondary.userdetails.UserDetailsProxy;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserUtils {
 
     private UserUtils() { }
 
-    public static UserDetailsImpl getUserDetails() {
-        return (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public static UserDetailsProxy getUserDetails() {
+        return (UserDetailsProxy) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

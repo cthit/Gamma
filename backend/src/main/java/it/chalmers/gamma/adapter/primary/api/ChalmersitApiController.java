@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.primary.api;
 
+import it.chalmers.gamma.app.GroupFacade;
 import it.chalmers.gamma.app.domain.Group;
 import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.group.GroupService;
-import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.GroupWithMembers;
 import it.chalmers.gamma.app.domain.UserPost;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -21,13 +20,10 @@ public class ChalmersitApiController {
 
     public static final String API = "/chalmersit";
 
-    private final GroupService groupService;
-    private final MembershipService membershipService;
+    private final GroupFacade groupFacade;
 
-    public ChalmersitApiController(GroupService groupService,
-                                   MembershipService membershipService) {
-        this.groupService = groupService;
-        this.membershipService = membershipService;
+    public ChalmersitApiController(GroupFacade groupFacade) {
+        this.groupFacade = groupFacade;
     }
 
     // add /users/me

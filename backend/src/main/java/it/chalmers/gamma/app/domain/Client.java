@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-
+import java.util.List;
 import java.util.Objects;
 
 public record Client(ClientId clientId,
@@ -9,8 +8,8 @@ public record Client(ClientId clientId,
                      String webServerRedirectUri,
                      boolean autoApprove,
                      PrettyName prettyName,
-                     Text description)
-        implements DTO {
+                     Text description,
+                     List<AuthorityLevelName> restrictions) {
 
     public Client {
         //TODO Create Webserverredirecturi class instead of using string
@@ -19,6 +18,7 @@ public record Client(ClientId clientId,
         Objects.requireNonNull(webServerRedirectUri);
         Objects.requireNonNull(prettyName);
         Objects.requireNonNull(description);
+        Objects.requireNonNull(restrictions);
     }
 
 }

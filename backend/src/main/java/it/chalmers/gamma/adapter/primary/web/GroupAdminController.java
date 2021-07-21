@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.GroupFacade;
 import it.chalmers.gamma.app.domain.Name;
 import it.chalmers.gamma.app.domain.PrettyName;
 import it.chalmers.gamma.app.domain.Group;
@@ -8,10 +9,7 @@ import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.GroupWithMembers;
 import it.chalmers.gamma.app.domain.UserPost;
 import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.group.GroupService;
-import it.chalmers.gamma.app.group.service.GroupShallowDTO;
 import it.chalmers.gamma.app.domain.Membership;
-import it.chalmers.gamma.app.group.MembershipService;
 
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -26,13 +24,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/internal/admin/groups")
 public final class GroupAdminController {
 
-    private final GroupService groupService;
-    private final MembershipService membershipService;
+    private final GroupFacade groupFacade;
 
-    public GroupAdminController(GroupService groupService,
-                                MembershipService membershipService) {
-        this.groupService = groupService;
-        this.membershipService = membershipService;
+    public GroupAdminController(GroupFacade groupFacade) {
+        this.groupFacade = groupFacade;
     }
 
     private record CreateOrEditGroupRequest(Name name,
@@ -42,19 +37,19 @@ public final class GroupAdminController {
 
     @PostMapping()
     public GroupCreatedResponse addNewGroup(@RequestBody CreateOrEditGroupRequest request) {
-        try {
-            this.groupService.create(
-                    new GroupShallowDTO(
-                            GroupId.generate(),
-                            request.email,
-                            request.name,
-                            request.prettyName,
-                            request.superGroup
-                    )
-            );
-        } catch (GroupService.GroupAlreadyExistsException e) {
-            throw new GroupAlreadyExistsResponse();
-        }
+//        try {
+//            this.groupService.create(
+//                    new GroupShallowDTO(
+//                            GroupId.generate(),
+//                            request.email,
+//                            request.name,
+//                            request.prettyName,
+//                            request.superGroup
+//                    )
+//            );
+//        } catch (GroupService.GroupAlreadyExistsException e) {
+//            throw new GroupAlreadyExistsResponse();
+//        }
 
         return new GroupCreatedResponse();
     }
@@ -62,29 +57,29 @@ public final class GroupAdminController {
     @PutMapping("/{id}")
     public GroupUpdatedResponse editGroup(@RequestBody CreateOrEditGroupRequest request,
                                           @PathVariable("id") GroupId id) {
-        try {
-            GroupShallowDTO group = new GroupShallowDTO(
-                    id,
-                    request.email,
-                    request.name,
-                    request.prettyName,
-                    request.superGroup
-            );
-            this.groupService.update(group);
-        } catch (GroupService.GroupNotFoundException e) {
-            throw new GroupNotFoundResponse();
-        }
-
+//        try {
+//            GroupShallowDTO group = new GroupShallowDTO(
+//                    id,
+//                    request.email,
+//                    request.name,
+//                    request.prettyName,
+//                    request.superGroup
+//            );
+//            this.groupService.update(group);
+//        } catch (GroupService.GroupNotFoundException e) {
+//            throw new GroupNotFoundResponse();
+//        }
+//
         return new GroupUpdatedResponse();
     }
 
     @DeleteMapping("/{id}")
     public GroupDeletedResponse deleteGroup(@PathVariable("id") GroupId id) {
-        try {
-            this.groupService.delete(id);
-        } catch (GroupService.GroupNotFoundException e) {
-            throw new GroupNotFoundResponse();
-        }
+//        try {
+//            this.groupService.delete(id);
+//        } catch (GroupService.GroupNotFoundException e) {
+//            throw new GroupNotFoundResponse();
+//        }
 
         return new GroupDeletedResponse();
     }
@@ -111,20 +106,6 @@ public final class GroupAdminController {
         }
 */
         return new GroupUpdatedResponse();
-    }
-
-    private GroupWithMembers toGroupWithMembers(Group group) {
-        return new GroupWithMembers(
-                group,
-                toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))
-        );
-    }
-
-    private List<UserPost> toUserPosts(List<Membership> memberships) {
-        return memberships
-                .stream()
-                .map(membership -> new UserPost(membership.user(), membership.post()))
-                .collect(Collectors.toList());
     }
 
     private static class GroupCreatedResponse extends SuccessResponse { }

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "apikey")
-public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
+public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
 
     @Id
     @Column(name = "api_key_id")
@@ -49,8 +49,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId, ApiKey> {
         this.token = token.value();
     }
 
-    @Override
-    protected ApiKey toDomain() {
+    public ApiKey toDomain() {
         return new ApiKey(
                 ApiKeyId.valueOf(this.id),
                 new PrettyName(this.prettyName),

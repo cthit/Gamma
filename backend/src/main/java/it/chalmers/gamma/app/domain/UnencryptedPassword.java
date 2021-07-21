@@ -1,6 +1,5 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.app.user.Password;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 //TODO: whats the purpose?

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "it_user_approval")
-public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK, UserApproval> {
+public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK> {
 
     @EmbeddedId
     private UserApprovalEntityPK id;
@@ -18,14 +18,6 @@ public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK, Us
 
     public UserApprovalEntity(UserApproval userApproval) {
         this.id = new UserApprovalEntityPK(userApproval.user(), userApproval.client());
-    }
-
-    @Override
-    protected UserApproval toDomain() {
-        return new UserApproval(
-                this.id.value().user(),
-                this.id.value().client()
-        );
     }
 
     @Override

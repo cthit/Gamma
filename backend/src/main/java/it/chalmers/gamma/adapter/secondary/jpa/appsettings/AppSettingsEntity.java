@@ -12,7 +12,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "settings")
-public class AppSettingsEntity extends MutableEntity<SettingsId, Settings> {
+public class AppSettingsEntity extends MutableEntity<SettingsId> {
 
     @EmbeddedId
     private SettingsId id;
@@ -38,12 +38,10 @@ public class AppSettingsEntity extends MutableEntity<SettingsId, Settings> {
         return this.id;
     }
 
-    @Override
-    protected Settings toDomain() {
+    public Settings toDomain() {
         return new Settings(this.lastUpdatedUserAgreement);
     }
 
-    @Override
     protected void apply(Settings settings) {
         this.lastUpdatedUserAgreement = settings.lastUpdatedUserAgreement();
     }

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.authorityuser.service.AuthorityUserShallowDTO;
 import it.chalmers.gamma.app.domain.User;
 
 import javax.persistence.EmbeddedId;
@@ -10,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "authority_user")
-public class AuthorityUserEntity extends ImmutableEntity<AuthorityUserPK, AuthorityUserShallowDTO> {
+public class AuthorityUserEntity extends ImmutableEntity<AuthorityUserPK> {
 
     @EmbeddedId
     private AuthorityUserPK id;
@@ -20,14 +19,6 @@ public class AuthorityUserEntity extends ImmutableEntity<AuthorityUserPK, Author
     }
 
     protected AuthorityUserEntity(User user) {
-    }
-
-    @Override
-    protected AuthorityUserShallowDTO toDomain() {
-        return new AuthorityUserShallowDTO(
-                this.id.getUserId(),
-                this.id.getAuthorityLevelName()
-        );
     }
 
     @Override

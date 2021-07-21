@@ -1,19 +1,15 @@
 package it.chalmers.gamma.adapter.primary.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.authority.AuthorityFinder;
+import it.chalmers.gamma.app.GroupFacade;
+import it.chalmers.gamma.app.SuperGroupFacade;
+import it.chalmers.gamma.app.UserFacade;
 import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.authority.GrantedAuthorityImpl;
-import it.chalmers.gamma.app.group.GroupService;
-import it.chalmers.gamma.app.group.MembershipService;
+import it.chalmers.gamma.adapter.secondary.userdetails.GrantedAuthorityProxy;
 import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.SuperGroupService;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.app.user.UserDetailsImpl;
-import it.chalmers.gamma.app.user.UserService;
-import it.chalmers.gamma.util.UserUtils;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The API must not be altered since it's used by a lot of different clients.
@@ -36,22 +31,14 @@ public class ApiV1Controller {
 
     public static final String URI = "/v1";
 
-    private final UserService userService;
-    private final MembershipService membershipService;
-    private final AuthorityFinder authorityFinder;
-    private final GroupService groupService;
-    private final SuperGroupService superGroupService;
+    private final UserFacade userFacade;
+    private final GroupFacade groupFacade;
+    private final SuperGroupFacade superGroupFacade;
 
-    public ApiV1Controller(UserService userService,
-                           MembershipService membershipService,
-                           AuthorityFinder authorityFinder,
-                           GroupService groupService,
-                           SuperGroupService superGroupService) {
-        this.userService = userService;
-        this.membershipService = membershipService;
-        this.authorityFinder = authorityFinder;
-        this.groupService = groupService;
-        this.superGroupService = superGroupService;
+    public ApiV1Controller(UserFacade userFacade, GroupFacade groupFacade, SuperGroupFacade superGroupFacade) {
+        this.userFacade = userFacade;
+        this.groupFacade = groupFacade;
+        this.superGroupFacade = superGroupFacade;
     }
 
     @GetMapping("/groups")
@@ -66,35 +53,37 @@ public class ApiV1Controller {
 
     @GetMapping("/users")
     public List<User> getUsersForClient() {
-        return this.userService.getAll();
+//        return this.userService.getAll();
+        return null;
     }
 
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable("id") UserId id) {
-        try {
-            return new User(this.userService.get(id));
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+//        try {
+//            return new User(this.userService.get(id));
+//        } catch (UserService.UserNotFoundException e) {
+//            throw new UserNotFoundResponse();
+//    }
+        return null;
     }
 
     @GetMapping("/users/{id}/avatar")
-    public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {
-    }
+    public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException { }
 
     private record GetMeResponse(@JsonUnwrapped User user,
                                  List<GroupPost> groups,
-                                 Collection<GrantedAuthorityImpl> authorities) { }
+                                 Collection<GrantedAuthorityProxy> authorities) { }
 
     @GetMapping("/users/me")
     public GetMeResponse getMe() {
-        UserDetailsImpl userDetails = UserUtils.getUserDetails();
-        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
-                .stream()
-                .map(membership -> new GroupPost(membership.post(), membership.group()))
-                .collect(Collectors.toList());
-
-        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
+//        UserDetailsImpl userDetails = UserUtils.getUserDetails();
+//        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
+//                .stream()
+//                .map(membership -> new GroupPost(membership.post(), membership.group()))
+//                .collect(Collectors.toList());
+//
+//        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
+        return null;
     }
 
     private static class UserNotFoundResponse extends NotFoundResponse { }

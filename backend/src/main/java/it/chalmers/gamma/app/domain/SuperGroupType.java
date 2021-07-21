@@ -1,10 +1,8 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-
 import java.util.Locale;
 
-public class SuperGroupType extends Id<String> implements DTO {
+public class SuperGroupType extends Id<String> {
 
     private final String value;
 

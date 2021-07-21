@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fkit_super_group")
-public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
+public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
 
     @Id
     @Column(name = "fkit_super_group")
@@ -48,7 +48,6 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
         apply(sg);
     }
 
-    @Override
     public void apply(SuperGroup sg)  {
         assert(this.id == sg.id().value());
 
@@ -61,7 +60,6 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId, SuperGroup> {
         this.description.apply(sg.description());
     }
 
-    @Override
     public SuperGroup toDomain() {
         return new SuperGroup(
                 SuperGroupId.valueOf(this.id),

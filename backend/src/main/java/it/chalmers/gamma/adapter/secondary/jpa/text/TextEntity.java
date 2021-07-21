@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "internal_text")
-public class TextEntity extends MutableEntity<TextId, Text> {
+public class TextEntity extends MutableEntity<TextId> {
 
     @EmbeddedId
     private final TextId textId;
@@ -38,7 +38,6 @@ public class TextEntity extends MutableEntity<TextId, Text> {
         this(TextId.generate(), text.sv(), text.en());
     }
 
-    @Override
     public Text toDomain() {
         return new Text(
                 this.sv,
@@ -51,7 +50,6 @@ public class TextEntity extends MutableEntity<TextId, Text> {
         return this.textId;
     }
 
-    @Override
     public void apply(Text newText) {
         this.sv = newText.sv();
         this.en = newText.en();

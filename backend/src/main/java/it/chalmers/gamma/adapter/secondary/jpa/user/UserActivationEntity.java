@@ -11,7 +11,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 @Entity
 @Table(name = "user_activation")
-public class UserActivationEntity extends ImmutableEntity<Cid, UserActivation> {
+public class UserActivationEntity extends ImmutableEntity<Cid> {
 
     @Id
     @Column(name = "cid")
@@ -31,8 +31,7 @@ public class UserActivationEntity extends ImmutableEntity<Cid, UserActivation> {
         this.token = token.value();
     }
 
-    @Override
-    protected UserActivation toDomain() {
+    public UserActivation toDomain() {
         return new UserActivation(
                 Cid.valueOf(this.cid),
                 new UserActivationToken(this.token),

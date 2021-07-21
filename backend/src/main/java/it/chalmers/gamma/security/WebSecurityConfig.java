@@ -2,7 +2,6 @@ package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.ApiKeyType;
-import it.chalmers.gamma.app.service.UserLockedService;
 import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
@@ -48,7 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
     private final ApiKeyRepository apiKeyService;
-    private final UserLockedService userLockedService;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
@@ -62,15 +60,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
-                             ApiKeyRepository apiKeyService,
-                             UserLockedService userLockedService) {
+                             ApiKeyRepository apiKeyService) {
         this.userDetailsService = userDetailsService;
         this.userService = userService;
         this.userPasswordResetService = userPasswordResetService;
         this.passwordEncoder = passwordEncoder;
         this.loginRedirectHandler = loginRedirectHandler;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
-        this.userLockedService = userLockedService;
         this.apiKeyService = apiKeyService;
     }
 
@@ -139,8 +135,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             this.issuer,
                             this.userPasswordResetService,
                             this.baseFrontendUrl,
-                            this.apiKeyService,
-                            userLockedService)
+                            this.apiKeyService)
             );
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding JwtAuthenticationFilter", e);

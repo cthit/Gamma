@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
+import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.UserActivationToken;
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.User;
@@ -31,9 +32,9 @@ public class UserCreationService {
         this.repository = repository;
     }
 
-    public void createUserByCode(User newUser, UnencryptedPassword password, UserActivationToken token) throws CidOrCodeNotMatchException {
+    public void createUserByCode(User newUser, UnencryptedPassword password, UserActivationToken token) throws UserApprovalService.CidOrCodeNotMatchException {
         if(!userActivationService.codeMatchesCid(newUser.cid(), token)) {
-            throw new CidOrCodeNotMatchException();
+            throw new UserApprovalService.CidOrCodeNotMatchException();
         }
 
         //TODO: Check if code is still valid.
@@ -60,5 +61,12 @@ public class UserCreationService {
 
         this.repository.save(user);
     }
+
+    public boolean codeMatchesCid(Cid cid, UserActivationToken token) {
+        //TODO: check if useractivation is valid
+        //    @Value("${password-expiration-time}")
+        return this.repository.findUserActivationByCidAndToken(cid, token).isPresent();
+    }
+
 
 }

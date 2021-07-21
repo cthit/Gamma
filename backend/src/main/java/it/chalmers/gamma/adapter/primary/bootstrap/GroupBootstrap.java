@@ -1,13 +1,10 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
+import it.chalmers.gamma.app.GroupFacade;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.Name;
 import it.chalmers.gamma.app.domain.PrettyName;
 import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.app.group.GroupService;
-import it.chalmers.gamma.app.group.service.GroupShallowDTO;
-import it.chalmers.gamma.app.group.MembershipService;
-import it.chalmers.gamma.app.membership.service.MembershipShallowDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,17 +26,14 @@ public class GroupBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupBootstrap.class);
 
     private final MockData mockData;
-    private final GroupService groupService;
-    private final MembershipService membershipService;
+    private final GroupFacade groupFacade;
     private final boolean mocking;
 
     public GroupBootstrap(MockData mockData,
-                          GroupService groupService,
-                          MembershipService membershipService,
+                          GroupFacade groupFacade,
                           @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
-        this.groupService = groupService;
-        this.membershipService = membershipService;
+        this.groupFacade = groupFacade;
         this.mocking = mocking;
     }
 

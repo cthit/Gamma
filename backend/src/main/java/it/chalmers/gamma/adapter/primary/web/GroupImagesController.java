@@ -1,11 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.GroupFacade;
+import it.chalmers.gamma.app.ImageService;
 import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.GroupImages;
 import it.chalmers.gamma.app.domain.ImageUri;
-import it.chalmers.gamma.app.group.GroupService;
-import it.chalmers.gamma.app.group.GroupImagesService;
-import it.chalmers.gamma.util.component.ImageService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -25,50 +23,47 @@ import java.io.IOException;
 @RequestMapping("/internal/groups")
 public final class GroupImagesController {
 
-    private final GroupService groupService;
-    private final GroupImagesService groupImagesService;
-    private final ImageService imageService;
+    private final GroupFacade groupFacade;
 
-    public GroupImagesController(GroupService groupService,
-                                 GroupImagesService groupImagesService,
-                                 ImageService imageService) {
-        this.groupService = groupService;
-        this.groupImagesService = groupImagesService;
-        this.imageService = imageService;
+    public GroupImagesController(GroupFacade groupFacade) {
+        this.groupFacade = groupFacade;
     }
 
     @PutMapping("/avatar/{id}")
     public GroupAvatarEdited editGroupAvatar(@RequestParam MultipartFile file, @PathVariable("id") GroupId id) {
-        try {
-            this.groupImagesService.editGroupAvatar(id, file);
-            return new GroupAvatarEdited();
-        } catch (ImageService.FileCouldNotBeRemovedException
-                | ImageService.FileContentNotValidException
-                | ImageService.FileCouldNotBeSavedException e) {
-            throw new FileIssueResponse();
-        }
+//        try {
+//            this.groupImagesService.editGroupAvatar(id, file);
+//            return new GroupAvatarEdited();
+//        } catch (ImageService.ImageCouldNotBeRemovedException
+//                | ImageService.ImageContentNotValidException
+//                | ImageService.ImageCouldNotBeSavedException e) {
+//            throw new FileIssueResponse();
+//        }
+        return null;
     }
 
     @PutMapping("/banner/{id}")
     public GroupBannerEdited editGroupBanner(@RequestParam MultipartFile file, @PathVariable("id") GroupId id) {
-        try {
-            this.groupImagesService.editGroupBanner(id, file);
-            return new GroupBannerEdited();
-        } catch (ImageService.FileCouldNotBeRemovedException
-                | ImageService.FileContentNotValidException
-                | ImageService.FileCouldNotBeSavedException e) {
-            throw new FileIssueResponse();
-        }
+//        try {
+//            this.groupImagesService.editGroupBanner(id, file);
+//            return new GroupBannerEdited();
+//        } catch (ImageService.ImageCouldNotBeRemovedException
+//                | ImageService.ImageContentNotValidException
+//                | ImageService.ImageCouldNotBeSavedException e) {
+//            throw new FileIssueResponse();
+//        }
+        return null;
     }
 
     @GetMapping("/avatar/{id}")
     public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") GroupId id) throws IOException {
-        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::avatarUri)
-                .orElse(new ImageUri("default_group_avatar.jpg"));
-        return ResponseEntity
-                .ok()
-                .contentType(getContentType(uri))
-                .body(imageService.getData(uri));
+//        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::avatarUri)
+//                .orElse(new ImageUri("default_group_avatar.jpg"));
+//        return ResponseEntity
+//                .ok()
+//                .contentType(getContentType(uri))
+//                .body(imageService.getData(uri));
+        return null;
     }
 
     @GetMapping("/banner/{id}")

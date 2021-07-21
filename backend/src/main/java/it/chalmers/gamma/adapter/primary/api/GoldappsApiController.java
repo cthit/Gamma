@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.primary.api;
 
+import it.chalmers.gamma.app.GroupFacade;
 import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.group.GroupService;
 import it.chalmers.gamma.app.domain.Membership;
-import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.GroupWithMembers;
 import it.chalmers.gamma.app.domain.UserPost;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +21,10 @@ public class GoldappsApiController {
 
     public static final String URI = "/goldapps";
 
-    private final MembershipService membershipService;
-    private final GroupService groupService;
+    private final GroupFacade groupFacade;
 
-    public GoldappsApiController(MembershipService membershipService,
-                                 GroupService groupService) {
-        this.membershipService = membershipService;
-        this.groupService = groupService;
+    public GoldappsApiController(GroupFacade groupFacade) {
+        this.groupFacade = groupFacade;
     }
 
     private record Goldapps(List<GroupWithMembers> allGroups) { }

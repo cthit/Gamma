@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.AuthorityFacade;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthoritySuperGroupPK;
-import it.chalmers.gamma.app.authority.AuthoritySuperGroupService;
-import it.chalmers.gamma.app.authoritysupergroup.service.AuthoritySuperGroupDTO;
 import it.chalmers.gamma.app.domain.SuperGroupId;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -19,40 +18,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/admin/authority/supergroup")
 public final class AuthoritySuperGroupAdminController {
 
-    private final AuthoritySuperGroupService authoritySuperGroupService;
+    private final AuthorityFacade authorityFacade;
 
-    public AuthoritySuperGroupAdminController(AuthoritySuperGroupService authoritySuperGroupService) {
-        this.authoritySuperGroupService = authoritySuperGroupService;
+    public AuthoritySuperGroupAdminController(AuthorityFacade authorityFacade) {
+        this.authorityFacade = authorityFacade;
     }
 
     private record CreateAuthoritySuperGroupRequest(SuperGroupId superGroupId, AuthorityLevelName authorityLevelName) { }
 
     @PostMapping
     public AuthoritySuperGroupCreatedResponse addAuthority(@RequestBody CreateAuthoritySuperGroupRequest request) {
-        try {
-            this.authoritySuperGroupService.create(
-                    new AuthoritySuperGroupDTO(
-                            request.superGroupId,
-                            request.authorityLevelName
-                    )
-            );
-            return new AuthoritySuperGroupCreatedResponse();
-        } catch (AuthoritySuperGroupService.AuthoritySuperGroupAlreadyExistsException e) {
-            throw new AuthoritySuperGroupAlreadyExistsResponse();
-        }
+//        try {
+//            this.authoritySuperGroupService.create(
+//                    new AuthoritySuperGroupDTO(
+//                            request.superGroupId,
+//                            request.authorityLevelName
+//                    )
+//            );
+//            return new AuthoritySuperGroupCreatedResponse();
+//        } catch (AuthoritySuperGroupService.AuthoritySuperGroupAlreadyExistsException e) {
+//            throw new AuthoritySuperGroupAlreadyExistsResponse();
+//        }
+        return null;
     }
 
     @DeleteMapping
     public AuthoritySuperGroupRemovedResponse removeAuthority(@RequestParam("superGroupId") SuperGroupId superGroupId,
                                                               @RequestParam("authorityLevelName") AuthorityLevelName authorityLevelName) {
-        try {
-            this.authoritySuperGroupService.delete(
-                    new AuthoritySuperGroupPK(superGroupId, authorityLevelName)
-            );
-            return new AuthoritySuperGroupRemovedResponse();
-        } catch (AuthoritySuperGroupService.AuthoritySuperGroupNotFoundException e) {
-            throw new AuthoritySuperGroupNotFoundResponse();
-        }
+//        try {
+//            this.authoritySuperGroupService.delete(
+//                    new AuthoritySuperGroupPK(superGroupId, authorityLevelName)
+//            );
+//            return new AuthoritySuperGroupRemovedResponse();
+//        } catch (AuthoritySuperGroupService.AuthoritySuperGroupNotFoundException e) {
+//            throw new AuthoritySuperGroupNotFoundResponse();
+//        }
+        return null;
     }
 
     private static class AuthoritySuperGroupRemovedResponse extends SuccessResponse { }

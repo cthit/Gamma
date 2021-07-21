@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset")
-public class UserPasswordResetEntity extends ImmutableEntity<UserId, PasswordReset> {
+public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
 
     @Embedded
     private PasswordResetToken token;
@@ -39,8 +39,7 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId, PasswordRes
         return this.userId;
     }
 
-    @Override
-    protected PasswordReset toDomain() {
+    public PasswordReset toDomain() {
         return new PasswordReset(
                 this.userId,
                 this.token,

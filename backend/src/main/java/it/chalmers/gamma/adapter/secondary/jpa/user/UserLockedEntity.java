@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ituser_account_locked")
-public class UserLockedEntity extends ImmutableEntity<UserId, UserId> {
+public class UserLockedEntity extends ImmutableEntity<UserId> {
 
     @EmbeddedId
     private UserId userId;
@@ -19,17 +19,9 @@ public class UserLockedEntity extends ImmutableEntity<UserId, UserId> {
 
     }
 
-    protected UserLockedEntity(UserId userId) {
-        this.userId = userId;
-    }
-
     @Override
     protected UserId id() {
         return this.userId;
     }
 
-    @Override
-    protected UserId toDomain() {
-        return this.userId;
-    }
 }

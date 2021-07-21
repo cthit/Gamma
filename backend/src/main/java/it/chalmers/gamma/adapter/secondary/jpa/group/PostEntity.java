@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "post")
-public class PostEntity extends MutableEntity<PostId, Post> {
+public class PostEntity extends MutableEntity<PostId> {
 
     @Id
     @Column(name = "post_id")

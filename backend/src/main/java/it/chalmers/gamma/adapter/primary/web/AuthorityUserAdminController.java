@@ -1,9 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.AuthorityFacade;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityUserPK;
-import it.chalmers.gamma.app.authority.AuthorityUserService;
-import it.chalmers.gamma.app.authorityuser.service.AuthorityUserShallowDTO;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -19,42 +17,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/admin/authority/user")
 public final class AuthorityUserAdminController {
 
-    private final AuthorityUserService authorityUserService;
+    private final AuthorityFacade authorityFacade;
 
-    public AuthorityUserAdminController(AuthorityUserService authorityUserService) {
-        this.authorityUserService = authorityUserService;
+    public AuthorityUserAdminController(AuthorityFacade authorityFacade) {
+        this.authorityFacade = authorityFacade;
     }
 
     private record CreateAuthorityUserRequest(UserId userId, AuthorityLevelName authorityLevelName) { }
 
     @PostMapping
     public AuthorityUserCreatedResponse addAuthority(@RequestBody CreateAuthorityUserRequest request) {
-        try {
-            this.authorityUserService.create(
-                    new AuthorityUserShallowDTO(
-                            request.userId,
-                            request.authorityLevelName
-                    )
-            );
-        } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
-            throw new AuthorityUserAlreadyExistsResponse();
-        }
+//        try {
+//            this.authorityUserService.create(
+//                    new AuthorityUserShallowDTO(
+//                            request.userId,
+//                            request.authorityLevelName
+//                    )
+//            );
+//        } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
+//            throw new AuthorityUserAlreadyExistsResponse();
+//        }
         return new AuthorityUserCreatedResponse();
     }
 
     @DeleteMapping
     public AuthorityUserRemovedResponse removeAuthority(@RequestParam("userId") UserId userId,
                                                         @RequestParam("authorityLevelName") AuthorityLevelName authorityLevelName) {
-        try {
-            this.authorityUserService.delete(
-                    new AuthorityUserPK(
-                            userId,
-                            authorityLevelName
-                    )
-            );
-        } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
-            throw new AuthorityUserNotFoundResponse();
-        }
+//        try {
+//            this.authorityUserService.delete(
+//                    new AuthorityUserPK(
+//                            userId,
+//                            authorityLevelName
+//                    )
+//            );
+//        } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
+//            throw new AuthorityUserNotFoundResponse();
+//        }
         return new AuthorityUserRemovedResponse();
     }
 

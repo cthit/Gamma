@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.bootstrap;
 
+import it.chalmers.gamma.app.AuthorityFacade;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authority.AuthorityLevelService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -9,10 +9,10 @@ import javax.annotation.PostConstruct;
 @Component
 public class AdminAuthorityLevelBootstrap {
 
-    private final AuthorityLevelService authorityLevelService;
+    private final AuthorityFacade authorityFacade;
 
-    public AdminAuthorityLevelBootstrap(AuthorityLevelService authorityLevelService) {
-        this.authorityLevelService = authorityLevelService;
+    public AdminAuthorityLevelBootstrap(AuthorityFacade authorityFacade) {
+        this.authorityFacade = authorityFacade;
     }
 
     @PostConstruct

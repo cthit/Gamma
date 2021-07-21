@@ -17,17 +17,17 @@ public class ApiKeyFacade extends Facade {
     }
 
     public void create(ApiKey apiKey) {
-        accessGuard.requireIsAdminOrApi();
+        accessGuard.requireIsAdmin();
         apiKeyRepository.create(apiKey);
     }
 
     public void delete(ApiKeyId apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
-        accessGuard.requireIsAdminOrApi();
+        accessGuard.requireIsAdmin();
         apiKeyRepository.delete(apiKeyId);
     }
 
     public List<ApiKey> getAll() {
-        accessGuard.requireIsAdminOrApi();
+        accessGuard.requireIsAdmin();
         return this.apiKeyRepository.getAll();
     }
 

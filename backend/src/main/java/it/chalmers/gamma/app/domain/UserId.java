@@ -1,10 +1,8 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-
 import java.util.UUID;
 
-public class UserId extends Id<UUID> implements DTO {
+public class UserId extends Id<UUID> {
 
     private final UUID value;
 

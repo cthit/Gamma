@@ -1,8 +1,6 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-
-public class AuthorityLevelName extends Id<String> implements DTO {
+public class AuthorityLevelName extends Id<String> {
 
     private final String value;
 

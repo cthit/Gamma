@@ -17,7 +17,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "authority_level")
-public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName, AuthorityLevel> {
+public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName> {
 
     @Id
     @Column(name = "autority_level")
@@ -59,8 +59,7 @@ public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName, Auth
         return AuthorityLevelName.valueOf(this.authorityLevel);
     }
 
-    @Override
-    protected AuthorityLevel toDomain() {
+    public AuthorityLevel toDomain() {
         return new AuthorityLevel(
                 AuthorityLevelName.valueOf(this.authorityLevel),
                 this.postEntityList.stream().map(AuthorityPostEntity::toDomain).toList(),
@@ -69,8 +68,4 @@ public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName, Auth
         );
     }
 
-    @Override
-    protected void apply(AuthorityLevel authorityLevel) {
-
-    }
 }

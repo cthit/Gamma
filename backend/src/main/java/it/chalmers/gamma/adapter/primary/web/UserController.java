@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.app.UserFacade;
 import it.chalmers.gamma.app.domain.AcceptanceYear;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.Email;
@@ -12,12 +13,10 @@ import it.chalmers.gamma.app.domain.LastName;
 import it.chalmers.gamma.app.domain.Nick;
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.user.CidOrCodeNotMatchException;
-import it.chalmers.gamma.app.user.UserCreationService;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,39 +39,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/users")
 public final class UserController {
 
-    private final UserService userService;
-    private final UserCreationService userCreationService;
-    private final MembershipService membershipService;
+    private final UserFacade userFacade;
 
-    public UserController(UserService userService,
-                          UserCreationService userCreationService,
-                          MembershipService membershipService) {
-        this.userService = userService;
-        this.membershipService = membershipService;
-        this.userCreationService = userCreationService;
+    public UserController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     @GetMapping()
     public List<User> getAllRestrictedUsers() {
-        return this.userService.getAll();
+        return Collections.emptyList();
+//        return this.userService.getAll();
     }
 
     public record GetUserRestrictedResponse(@JsonUnwrapped User user, List<GroupPost> groups) { }
 
     @GetMapping("/{id}")
     public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
-        try {
-            User user = this.userService.get(id);
-            List<GroupPost> groups = this.membershipService
-                    .getMembershipsByUser(id)
-                    .stream()
-                    .map(membership -> new GroupPost(membership.post(), membership.group()))
-                    .collect(Collectors.toList());
-
-            return new GetUserRestrictedResponse(user, groups);
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+//        try {
+//            User user = this.userService.get(id);
+//            List<GroupPost> groups = this.membershipService
+//                    .getMembershipsByUser(id)
+//                    .stream()
+//                    .map(membership -> new GroupPost(membership.post(), membership.group()))
+//                    .collect(Collectors.toList());
+//
+//            return new GetUserRestrictedResponse(user, groups);
+//        } catch (UserService.UserNotFoundException e) {
+//            throw new UserNotFoundResponse();
+//        }
+        return null;
     }
 
     record CreateUserRequest (UserActivationToken token,

@@ -1,7 +1,5 @@
 package it.chalmers.gamma.app.domain;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DTO;
-
 import java.util.Objects;
 
 public record SuperGroup(SuperGroupId id,
@@ -9,7 +7,7 @@ public record SuperGroup(SuperGroupId id,
                          PrettyName prettyName,
                          SuperGroupType type,
                          Email email,
-                         Text description) implements DTO {
+                         Text description) {
 
     public SuperGroup {
         Objects.requireNonNull(id);

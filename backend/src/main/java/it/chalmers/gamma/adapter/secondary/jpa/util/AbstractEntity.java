@@ -6,15 +6,9 @@ import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class AbstractEntity<I extends Id<?>, D extends DTO> {
+public abstract class AbstractEntity<I extends Id<?>> {
 
     protected abstract I id();
-    protected abstract D toDomain();
-
-    @Override
-    public final String toString() {
-        return toDomain().toString();
-    }
 
     @Override
     public final int hashCode() {
@@ -35,6 +29,6 @@ public abstract class AbstractEntity<I extends Id<?>, D extends DTO> {
             return false;
         }
 
-        return this.id().equals(((AbstractEntity<?, ?>) o).id());
+        return this.id().equals(((AbstractEntity<?>) o).id());
     }
 }

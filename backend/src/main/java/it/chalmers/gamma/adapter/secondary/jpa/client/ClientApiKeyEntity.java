@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "itclient_apikey")
-public class ClientApiKeyEntity extends ImmutableEntity<ClientId, ClientApiKeyPair> {
+public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
 
     @EmbeddedId
     private ClientId clientId;
@@ -32,11 +32,4 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId, ClientApiKeyPa
         return this.clientId;
     }
 
-    @Override
-    protected ClientApiKeyPair toDomain() {
-        return new ClientApiKeyPair(
-                this.clientId,
-                this.apiKeyId
-        );
-    }
 }

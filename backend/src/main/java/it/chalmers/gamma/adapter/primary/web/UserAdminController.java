@@ -1,19 +1,18 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.app.UserFacade;
 import it.chalmers.gamma.app.domain.AcceptanceYear;
 import it.chalmers.gamma.app.domain.FirstName;
 import it.chalmers.gamma.app.domain.LastName;
 import it.chalmers.gamma.app.domain.Nick;
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.Language;
 import it.chalmers.gamma.app.domain.GroupPost;
 import it.chalmers.gamma.app.domain.Membership;
 import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.user.UserCreationService;
 import it.chalmers.gamma.app.domain.User;
 import it.chalmers.gamma.app.user.UserService;
 
@@ -37,18 +36,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/admin/users")
 public final class UserAdminController {
 
-    private final UserService userService;
-    private final UserCreationService userCreationService;
-    private final MembershipService membershipService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
-    public UserAdminController(UserService userService,
-                               UserCreationService userCreationService,
-                               MembershipService membershipFinder) {
-        this.userService = userService;
-        this.userCreationService = userCreationService;
-        this.membershipService = membershipFinder;
+    private final UserFacade userFacade;
+
+    public UserAdminController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
 
     record AdminChangePasswordRequest(UnencryptedPassword password) {}
@@ -57,18 +50,18 @@ public final class UserAdminController {
     public PasswordChangedResponse changePassword(
             @PathVariable("id") UserId id,
             @RequestBody AdminChangePasswordRequest request) {
-        try {
-            this.userService.setPassword(id, request.password);
-        } catch (UserService.UserNotFoundException e) {
-            LOGGER.error("User not found", e);
-            throw new UserNotFoundResponse();
-        }
+//        try {
+//            this.userService.setPassword(id, request.password);
+//        } catch (UserService.UserNotFoundException e) {
+//            LOGGER.error("User not found", e);
+//            throw new UserNotFoundResponse();
+//        }
         return new PasswordChangedResponse();
     }
 
     @DeleteMapping("/{id}")
     public UserDeletedResponse deleteUser(@PathVariable("id") UserId id) {
-        this.userService.delete(id);
+//        this.userService.delete(id);
         return new UserDeletedResponse();
     }
 
@@ -77,14 +70,15 @@ public final class UserAdminController {
 
     @GetMapping("/{id}")
     public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
-        try {
-            User user = this.userService.get(id);
-            List<GroupPost> groups = this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()));
-
-            return new GetUserAdminResponse(user, groups);
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+//        try {
+//            User user = this.userService.get(id);
+//            List<GroupPost> groups = this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()));
+//
+//            return new GetUserAdminResponse(user, groups);
+//        } catch (UserService.UserNotFoundException e) {
+//            throw new UserNotFoundResponse();
+//        }
+            return null;
     }
 
     record UserWithGroups(@JsonUnwrapped User user, List<GroupPost> groups) { }
@@ -93,12 +87,13 @@ public final class UserAdminController {
 
     @GetMapping()
     public GetAllUsersResponse getAllUsers() {
-        List<UserWithGroups> users = this.userService.getAll()
-                .stream()
-                .map(user -> new UserWithGroups(user, this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()))))
-                .collect(Collectors.toList());
-
-        return new GetAllUsersResponse(users);
+//        List<UserWithGroups> users = this.userService.getAll()
+//                .stream()
+//                .map(user -> new UserWithGroups(user, this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()))))
+//                .collect(Collectors.toList());
+//
+//        return new GetAllUsersResponse(users);
+        return null;
     }
 
     record AdminViewCreateUserRequest(Cid cid,
@@ -113,17 +108,17 @@ public final class UserAdminController {
 
     @PostMapping()
     public UserCreatedResponse addUser(@RequestBody AdminViewCreateUserRequest request) {
-        this.userCreationService.createUser(new User(
-                UserId.generate(),
-                request.cid,
-                request.email,
-                request.language,
-                request.nick,
-                request.firstName,
-                request.lastName,
-                request.userAgreement,
-                request.acceptanceYear
-        ), request.password);
+//        this.userCreationService.createUser(new User(
+//                UserId.generate(),
+//                request.cid,
+//                request.email,
+//                request.language,
+//                request.nick,
+//                request.firstName,
+//                request.lastName,
+//                request.userAgreement,
+//                request.acceptanceYear
+//        ), request.password);
         return new UserCreatedResponse();
     }
 
@@ -137,28 +132,21 @@ public final class UserAdminController {
     @PutMapping("/{id}")
     public UserEditedResponse editUser(@PathVariable("id") UserId id,
                                        @RequestBody EditUserRequest request) {
-        try {
-            User user = this.userService.get(id);
-            this.userService.update(user.with()
-                    .nick(request.nick)
-                    .firstName(request.firstName)
-                    .lastName(request.lastName)
-                    .email(request.email)
-                    .language(request.language)
-                    .acceptanceYear(request.acceptanceYear)
-                    .build()
-            );
+//        try {
+//            User user = this.userService.get(id);
+//            this.userService.update(user.with()
+//                    .nick(request.nick)
+//                    .firstName(request.firstName)
+//                    .lastName(request.lastName)
+//                    .email(request.email)
+//                    .language(request.language)
+//                    .acceptanceYear(request.acceptanceYear)
+//                    .build()
+//            );
             return new UserEditedResponse();
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
-    }
-
-    private List<GroupPost> toGroupPosts(List<Membership> memberships) {
-        return memberships
-                .stream()
-                .map(membership -> new GroupPost(membership.post(), membership.group()))
-                .collect(Collectors.toList());
+//        } catch (UserService.UserNotFoundException e) {
+//            throw new UserNotFoundResponse();
+//        }
     }
 
     private static class PasswordChangedResponse extends SuccessResponse { }

@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.GroupFacade;
 import it.chalmers.gamma.app.domain.GroupId;
 import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipPK;
-import it.chalmers.gamma.app.membership.service.MembershipShallowDTO;
-import it.chalmers.gamma.app.group.MembershipService;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.UserId;
 
@@ -15,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/internal/admin/groups")
 public final class MembershipAdminController {
 
-    private final MembershipService membershipService;
+    private final GroupFacade groupFacade;
 
-    public MembershipAdminController(MembershipService membershipService) {
-        this.membershipService = membershipService;
+    public MembershipAdminController(GroupFacade groupFacade) {
+        this.groupFacade = groupFacade;
     }
 
     private record AddUserGroupRequest(UserId userId, PostId postId, String unofficialName) { }
@@ -27,14 +26,14 @@ public final class MembershipAdminController {
     public MemberAddedToGroupResponse addUserToGroup(
             @RequestBody AddUserGroupRequest request,
             @PathVariable("id") GroupId groupId) {
-        this.membershipService.create(
-                new MembershipShallowDTO(
-                        request.postId,
-                        groupId,
-                        request.unofficialName,
-                        request.userId
-                )
-        );
+//        this.membershipService.create(
+//                new MembershipShallowDTO(
+//                        request.postId,
+//                        groupId,
+//                        request.unofficialName,
+//                        request.userId
+//                )
+//        );
 
         return new MemberAddedToGroupResponse();
     }
@@ -43,7 +42,7 @@ public final class MembershipAdminController {
     public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") GroupId groupId,
                                                               @RequestParam("userId") UserId userId,
                                                               @RequestParam("postId") PostId postId) {
-        this.membershipService.delete(new MembershipPK(postId, groupId, userId));
+//        this.membershipService.delete(new MembershipPK(postId, groupId, userId));
         return new MemberRemovedFromGroupResponse();
     }
 
@@ -54,18 +53,18 @@ public final class MembershipAdminController {
                                                     @RequestParam("userId") UserId userId,
                                                     @RequestParam("postId") PostId postId,
                                                     @RequestBody EditMembershipRequest request) {
-        try {
-            this.membershipService.update(
-                    new MembershipShallowDTO(
-                            postId,
-                            groupId,
-                            request.unofficialName,
-                            userId
-                    )
-            );
-        } catch (MembershipService.MembershipNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.membershipService.update(
+//                    new MembershipShallowDTO(
+//                            postId,
+//                            groupId,
+//                            request.unofficialName,
+//                            userId
+//                    )
+//            );
+//        } catch (MembershipService.MembershipNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         return new EditedMembershipResponse();
     }
