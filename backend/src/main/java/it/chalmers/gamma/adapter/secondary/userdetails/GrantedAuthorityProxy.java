@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authority.AuthorityType;
 import org.springframework.security.core.GrantedAuthority;
 
 public class GrantedAuthorityProxy implements GrantedAuthority {
@@ -17,7 +16,7 @@ public class GrantedAuthorityProxy implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return this.authorityLevelName.value;
+        return this.authorityLevelName.value();
     }
 
     public AuthorityType getType() {
@@ -26,7 +25,7 @@ public class GrantedAuthorityProxy implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return this.authorityLevelName.value;
+        return this.authorityLevelName.value();
     }
 
     public enum AuthorityType {

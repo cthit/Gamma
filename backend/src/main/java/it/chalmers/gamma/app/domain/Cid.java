@@ -1,8 +1,10 @@
 package it.chalmers.gamma.app.domain;
 
+import it.chalmers.gamma.app.user.UserSignInIdentifier;
+
 import java.util.Locale;
 
-public class Cid extends Id<String> {
+public class Cid extends Id<String> implements UserSignInIdentifier {
 
     private final String value;
 

@@ -1,12 +1,11 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.user.UserCreationService;
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.Language;
-import it.chalmers.gamma.app.user.UserService;
+import it.chalmers.gamma.app.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,29 +22,26 @@ public class UserBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserBootstrap.class);
 
     private final MockData mockData;
-    private final UserCreationService userCreationService;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final boolean mocking;
 
     public UserBootstrap(MockData mockData,
-                         UserCreationService userCreationService,
-                         UserService userService,
+                         UserRepository userRepository,
                          @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
-        this.userCreationService = userCreationService;
-        this.userService = userService;
+        this.userRepository = userRepository;
         this.mocking = mocking;
     }
 
     @PostConstruct
     public void createUsers() {
-        if (!this.mocking || this.userService.getAll().stream().anyMatch(user -> !user.cid().value().contains("admin"))) {
+        if (!this.mocking || this.userRepository.getAll().stream().anyMatch(user -> !user.cid().value().contains("admin"))) {
             return;
         }
 
         LOGGER.info("========== USER BOOTSTRAP ==========");
 
-        this.mockData.users().forEach(mockUser -> this.userCreationService.createUser(
+        this.mockData.users().forEach(mockUser -> this.userRepository.create(
                 new User(
                         mockUser.id(),
                         mockUser.cid(),
@@ -55,7 +51,10 @@ public class UserBootstrap {
                         mockUser.firstName(),
                         mockUser.lastName(),
                         true,
-                        mockUser.acceptanceYear()
+                        mockUser.acceptanceYear(),
+                        false,
+                        false,
+                        null
                 ),
                 UnencryptedPassword.valueOf("password")
         ));

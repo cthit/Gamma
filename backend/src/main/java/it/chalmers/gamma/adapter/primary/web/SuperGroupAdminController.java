@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.SuperGroupFacade;
 import it.chalmers.gamma.app.domain.Name;
 import it.chalmers.gamma.app.domain.PrettyName;
 import it.chalmers.gamma.app.domain.SuperGroupType;
@@ -7,8 +8,8 @@ import it.chalmers.gamma.app.domain.Text;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.SuperGroupId;
 import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.SuperGroupService;
 
+import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -24,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/admin/superGroups")
 public class SuperGroupAdminController {
 
-    private final SuperGroupService superGroupService;
+    private final SuperGroupFacade superGroupFacade;
 
-    public SuperGroupAdminController(SuperGroupService superGroupService) {
-        this.superGroupService = superGroupService;
+    public SuperGroupAdminController(SuperGroupFacade superGroupFacade) {
+        this.superGroupFacade = superGroupFacade;
     }
 
     private record CreateOrEditSuperGroupRequest(Name name,
@@ -39,23 +40,29 @@ public class SuperGroupAdminController {
     @PostMapping()
     public SuperGroupCreatedResponse createSuperGroup(@RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupService.create(new SuperGroup(
-                    null,
-                    request.name,
-                    request.prettyName,
-                    request.type,
-                    request.email,
-                    request.description
-            ));
-        } catch (SuperGroupService.SuperGroupNotFoundException e) {
-            throw new SuperGroupAlreadyExistsResponse();
+            this.superGroupFacade.createSuperGroup(
+                    new SuperGroup(
+                            SuperGroupId.generate(),
+                            request.name,
+                            request.prettyName,
+                            request.type,
+                            request.email,
+                            request.description
+                    )
+            );
+        } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
+            throw new SuperGroupDoesNotExistResponse();
         }
         return new SuperGroupCreatedResponse();
     }
 
     @DeleteMapping("/{id}")
     public SuperGroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
-        this.superGroupService.delete(id);
+        try {
+            this.superGroupFacade.deleteSuperGroup(id);
+        } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
+            throw new SuperGroupDoesNotExistResponse();
+        }
         return new SuperGroupDeletedResponse();
     }
 
@@ -63,7 +70,7 @@ public class SuperGroupAdminController {
     public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
                                                 @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupService.update(new SuperGroup(
+            this.superGroupFacade.updateSuperGroup(new SuperGroup(
                     id,
                     request.name,
                     request.prettyName,
@@ -71,7 +78,7 @@ public class SuperGroupAdminController {
                     request.email,
                     request.description
             ));
-        } catch (SuperGroupService.SuperGroupNotFoundException e) {
+        } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }
         return new SuperGroupUpdatedResponse();

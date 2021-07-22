@@ -6,7 +6,6 @@ import it.chalmers.gamma.app.domain.Group;
 import it.chalmers.gamma.app.domain.Text;
 import it.chalmers.gamma.app.domain.PostId;
 import it.chalmers.gamma.app.domain.Post;
-import it.chalmers.gamma.app.post.PostService;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.PostFacade;
 import it.chalmers.gamma.app.domain.Post;
 
 import it.chalmers.gamma.app.domain.PostId;
-import it.chalmers.gamma.app.post.PostService;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,25 +16,22 @@ import java.util.List;
 @RequestMapping("/internal/posts")
 public final class PostController {
 
-    private final PostService postService;
+    private final PostFacade postFacade;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
+    public PostController(PostFacade postFacade) {
+        this.postFacade = postFacade;
     }
 
     @GetMapping("/{id}")
     public Post getPost(@PathVariable("id") PostId id) {
-        try {
-            return this.postService.get(id);
-        } catch (PostService.PostNotFoundException e) {
-            throw new PostNotFoundResponse();
-        }
+        return this.postFacade.get(id)
+                .orElseThrow(PostNotFoundResponse::new);
     }
 
 
     @GetMapping()
     public List<Post> getPosts() {
-        return this.postService.getAll();
+        return this.postFacade.getAll();
     }
 
     private static class PostNotFoundResponse extends NotFoundResponse { }

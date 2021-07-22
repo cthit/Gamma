@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.MeFacade;
 import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.user.UserApprovalService;
 
 import java.util.List;
 
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/users/approval")
 public class UserApprovalController {
 
-    private final UserApprovalService userApprovalService;
+    private final MeFacade meFacade;
 
-    public UserApprovalController(UserApprovalService userApprovalService) {
-        this.userApprovalService = userApprovalService;
+    public UserApprovalController(MeFacade meFacade) {
+        this.meFacade = meFacade;
     }
 
     @GetMapping()
     public List<Client> getApprovedClientsByUser() {
-        return this.userApprovalService.getSignedInUserApprovals();
+        return this.meFacade.getSignedInUserApprovals();
     }
 }

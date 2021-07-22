@@ -1,19 +1,8 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.AuthorityFacade;
 import it.chalmers.gamma.app.UserFacade;
-import it.chalmers.gamma.app.domain.AcceptanceYear;
-import it.chalmers.gamma.app.domain.FirstName;
-import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.Nick;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.util.TokenUtils;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;

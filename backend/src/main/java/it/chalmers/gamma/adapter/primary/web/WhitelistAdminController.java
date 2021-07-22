@@ -1,10 +1,11 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.whitelist.WhitelistService;
 
 import java.util.List;
 
+import it.chalmers.gamma.app.whitelist.WhitelistFacade;
+import it.chalmers.gamma.app.whitelist.WhitelistRepository;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
@@ -24,15 +25,15 @@ public final class WhitelistAdminController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistAdminController.class);
 
-    private final WhitelistService whitelistService;
+    private final WhitelistFacade whitelistFacade;
 
-    public WhitelistAdminController(WhitelistService whitelistService) {
-        this.whitelistService = whitelistService;
+    public WhitelistAdminController(WhitelistFacade whitelistFacade) {
+        this.whitelistFacade = whitelistFacade;
     }
 
     @GetMapping()
     public List<Cid> getWhiteList() {
-        return this.whitelistService.getAll();
+        return this.whitelistFacade.getWhitelist();
     }
 
     private record AddToWhitelist(Cid cid) { }
@@ -40,9 +41,8 @@ public final class WhitelistAdminController {
     @PostMapping()
     public WhitelistAddedResponse addWhitelistedUser(@RequestBody AddToWhitelist request) {
         try {
-            this.whitelistService.create(request.cid);
-        } catch (Exception e) {
-            e.printStackTrace();
+            this.whitelistFacade.whitelist(request.cid);
+        } catch (WhitelistRepository.AlreadyWhitelistedException e) {
             throw new CidAlreadyWhitelistedResponse();
         }
 
@@ -52,8 +52,8 @@ public final class WhitelistAdminController {
     @DeleteMapping("/{cid}")
     public CidRemovedFromWhitelistResponse removeWhitelist(@PathVariable("cid") Cid cid) {
         try {
-            this.whitelistService.delete(cid);
-        } catch (WhitelistService.WhitelistNotFoundException e) {
+            this.whitelistFacade.removeFromWhitelist(cid);
+        } catch (WhitelistRepository.CidIsNotWhitelistedException e) {
             throw new CidNotWhitelistedResponse();
         }
         return new CidRemovedFromWhitelistResponse();

@@ -11,13 +11,10 @@ import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.Language;
 import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.app.domain.Membership;
 import it.chalmers.gamma.app.domain.UserId;
 import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.user.UserService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

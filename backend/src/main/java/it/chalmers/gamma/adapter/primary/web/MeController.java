@@ -11,7 +11,6 @@ import it.chalmers.gamma.adapter.secondary.userdetails.GrantedAuthorityProxy;
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.Language;
 import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.app.user.UserService;
 import it.chalmers.gamma.util.UserUtils;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;

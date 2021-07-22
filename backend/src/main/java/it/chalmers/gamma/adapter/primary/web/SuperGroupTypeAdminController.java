@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.SuperGroupFacade;
 import it.chalmers.gamma.app.domain.SuperGroup;
 import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.app.supergroup.SuperGroupService;
-import it.chalmers.gamma.app.supergroup.SuperGroupTypeService;
+import it.chalmers.gamma.app.supergroup.SuperGroupTypeRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -23,23 +23,20 @@ import java.util.List;
 @RequestMapping(value = "/internal/admin/supergrouptype")
 public class SuperGroupTypeAdminController {
 
-    private final SuperGroupTypeService superGroupTypeService;
-    private final SuperGroupService superGroupService;
+    private final SuperGroupFacade superGroupFacade;
 
-    public SuperGroupTypeAdminController(SuperGroupTypeService superGroupTypeService,
-                                         SuperGroupService superGroupService) {
-        this.superGroupTypeService = superGroupTypeService;
-        this.superGroupService = superGroupService;
+    public SuperGroupTypeAdminController(SuperGroupFacade superGroupFacade) {
+        this.superGroupFacade = superGroupFacade;
     }
 
     @GetMapping
     public List<SuperGroupType> getSuperGroupTypes() {
-        return this.superGroupTypeService.getAll();
+        return this.superGroupFacade.getAllTypes();
     }
 
     @GetMapping("/{type}/usage")
     public List<SuperGroup> getSuperGroupTypeUsage(@PathVariable("type") SuperGroupType type) {
-        return this.superGroupService.getAllByType(type);
+        return this.superGroupFacade.getAllSuperGroupsByType(type);
     }
 
     private record AddSuperGroupType(SuperGroupType type) { }
@@ -47,8 +44,8 @@ public class SuperGroupTypeAdminController {
     @PostMapping
     public SuperGroupTypeAddedResponse addSuperGroupType(@RequestBody AddSuperGroupType request) {
         try {
-            this.superGroupTypeService.create(request.type);
-        } catch (SuperGroupTypeService.SuperGroupAlreadyExistsException e) {
+            this.superGroupFacade.addType(request.type);
+        } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
             throw new SuperGroupTypeAlreadyExistsResponse();
         }
         return new SuperGroupTypeAddedResponse();
@@ -57,10 +54,10 @@ public class SuperGroupTypeAdminController {
     @DeleteMapping("/{name}")
     public SuperGroupTypeRemovedResponse removeSuperGroupType(@PathVariable("name") SuperGroupType name) {
         try {
-            this.superGroupTypeService.delete(name);
-        } catch (SuperGroupTypeService.SuperGroupNotFoundException e) {
+            this.superGroupFacade.removeType(name);
+        } catch (SuperGroupTypeRepository.SuperGroupTypeNotFoundException e) {
            throw new SuperGroupTypeDoesNotExistResponse();
-        } catch (SuperGroupTypeService.SuperGroupHasUsagesException e) {
+        } catch (SuperGroupTypeRepository.SuperGroupTypeHasUsagesException e) {
             throw new SuperGroupTypeIsUsedResponse();
         }
         return new SuperGroupTypeRemovedResponse();
@@ -79,6 +76,5 @@ public class SuperGroupTypeAdminController {
             super(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
-
 
 }

@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.domain.UserApproval;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;
@@ -15,10 +14,6 @@ public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK> {
     private UserApprovalEntityPK id;
 
     protected UserApprovalEntity() {}
-
-    public UserApprovalEntity(UserApproval userApproval) {
-        this.id = new UserApprovalEntityPK(userApproval.user(), userApproval.client());
-    }
 
     @Override
     protected UserApprovalEntityPK id() {

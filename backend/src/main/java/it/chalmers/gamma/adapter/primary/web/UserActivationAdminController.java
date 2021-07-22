@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.UserCreationFacade;
 import it.chalmers.gamma.app.domain.UserActivation;
-import it.chalmers.gamma.app.user.UserActivationService;
 
 import it.chalmers.gamma.app.domain.Cid;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -18,10 +18,10 @@ import java.util.List;
 @RequestMapping("/internal/admin/user-activation")
 public final class UserActivationAdminController {
 
-    private final UserActivationService userActivationService;
+    private final UserCreationFacade userCreationFacade;
 
-    public UserActivationAdminController(UserActivationService userActivationService) {
-        this.userActivationService = userActivationService;
+    public UserActivationAdminController(UserCreationFacade userCreationFacade) {
+        this.userCreationFacade = userCreationFacade;
     }
 
     @GetMapping()

@@ -1,7 +1,7 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.domain.Settings;
-import it.chalmers.gamma.app.service.AppSettingsService;
+import it.chalmers.gamma.app.settings.AppSettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class EnsureAppSettingsBootstrap {
     public void ensureAppSettings() {
         if (!this.appSettingsService.hasSettings()) {
             Settings settings = new Settings(Instant.ofEpochSecond(0));
-            this.appSettingsService.addSettings(settings);
+            this.appSettingsService.setSettings(settings);
             LOGGER.info("Adding default settings");
             LOGGER.info(String.valueOf(settings));
         }

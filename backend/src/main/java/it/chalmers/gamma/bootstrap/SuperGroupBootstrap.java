@@ -1,10 +1,10 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.domain.Email;
 import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.SuperGroupService;
-import it.chalmers.gamma.app.supergroup.SuperGroupTypeService;
 import it.chalmers.gamma.app.domain.Text;
+import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
+import it.chalmers.gamma.app.supergroup.SuperGroupTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,23 +20,23 @@ public class SuperGroupBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(SuperGroupBootstrap.class);
 
     private final MockData mockData;
-    private final SuperGroupTypeService superGroupTypeService;
-    private final SuperGroupService superGroupService;
+    private final SuperGroupTypeRepository superGroupTypeRepository;
+    private final SuperGroupRepository superGroupRepository;
     private final boolean mocking;
 
     public SuperGroupBootstrap(MockData mockData,
-                               SuperGroupTypeService superGroupTypeService,
-                               SuperGroupService superGroupService,
+                               SuperGroupTypeRepository superGroupTypeRepository,
+                               SuperGroupRepository superGroupRepository,
                                @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
-        this.superGroupTypeService = superGroupTypeService;
-        this.superGroupService = superGroupService;
+        this.superGroupTypeRepository = superGroupTypeRepository;
+        this.superGroupRepository = superGroupRepository;
         this.mocking = mocking;
     }
 
     @PostConstruct
     public void createSuperGroups() {
-        if (!this.mocking || !this.superGroupService.getAll().isEmpty()) {
+        if (!this.mocking || !this.superGroupRepository.getAll().isEmpty()) {
             return;
         }
 
@@ -44,7 +44,7 @@ public class SuperGroupBootstrap {
 
         mockData.superGroups().stream().map(MockData.MockSuperGroup::type).forEach(type -> {
             try {
-                this.superGroupTypeService.create(type);
+                this.superGroupTypeRepository.create(type);
             } catch (SuperGroupTypeService.SuperGroupAlreadyExistsException e) {
                 LOGGER.error("Error creating supergroup type: " + type + ";");
             }
@@ -54,7 +54,7 @@ public class SuperGroupBootstrap {
 
         mockData.superGroups().forEach(mockSuperGroup -> {
             try {
-                this.superGroupService.create(new SuperGroup(
+                this.superGroupRepository.create(new SuperGroup(
                         mockSuperGroup.id(),
                         mockSuperGroup.name(),
                         mockSuperGroup.prettyName(),

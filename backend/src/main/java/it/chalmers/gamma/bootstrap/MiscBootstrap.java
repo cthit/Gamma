@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import java.io.File;
 import java.io.IOException;

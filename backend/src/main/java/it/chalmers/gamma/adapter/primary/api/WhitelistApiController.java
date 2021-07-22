@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.api;
 
-import it.chalmers.gamma.app.whitelist.WhitelistService;
 import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.app.whitelist.WhitelistFacade;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +24,11 @@ public class WhitelistApiController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistApiController.class);
 
-    private final WhitelistService whitelistService;
-
-    public WhitelistApiController(WhitelistService whitelistService) {
-        this.whitelistService = whitelistService;
-    }
+    private final WhitelistFacade whitelistFacade;
 
     @GetMapping()
     public List<Cid> getWhiteList() {
-        return this.whitelistService.getAll();
+        return this.whitelistFacade.getWhitelist();
     }
 
     private record AddListOfWhitelistedRequest(List<Cid> cids) { }
@@ -43,7 +39,7 @@ public class WhitelistApiController {
 
         for (Cid cid : request.cids) {
             try {
-                this.whitelistService.create(cid);
+                this.whitelistFacade.whitelist(cid);
                 LOGGER.info("Added user " + cid + " to whitelist");
             } catch (Exception e) {
                 LOGGER.info("Failed to add " + cid + " to whitelist");

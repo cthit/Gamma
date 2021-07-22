@@ -1,15 +1,14 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.ResetPasswordFacade;
 import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.app.domain.Email;
+import it.chalmers.gamma.app.domain.PasswordResetToken;
 import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.user.UserService;
-import it.chalmers.gamma.app.user.UserPasswordResetService;
 
+import it.chalmers.gamma.app.user.UserSignInIdentifier;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,15 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/users/reset_password")
 public class UserPasswordResetController {
 
-    private final UserService userService;
-    private final UserPasswordResetService userPasswordResetService;
+    private final ResetPasswordFacade resetPasswordFacade;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserPasswordResetController.class);
-
-    public UserPasswordResetController(UserService userService,
-                                       UserPasswordResetService userPasswordResetService) {
-        this.userService = userService;
-        this.userPasswordResetService = userPasswordResetService;
+    public UserPasswordResetController(ResetPasswordFacade resetPasswordFacade) {
+        this.resetPasswordFacade = resetPasswordFacade;
     }
 
     private record ResetPasswordRequest(String cidOrEmail) { }
@@ -38,32 +32,24 @@ public class UserPasswordResetController {
     @PostMapping()
     public PasswordRestLinkSentResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
         try {
-            this.userPasswordResetService.handlePasswordReset(request.cidOrEmail);
-        } catch (UserService.UserNotFoundException e) {
-            LOGGER.info("Someone tried to reset password for " + request.cidOrEmail + " but that user doesn't exist");
+            this.resetPasswordFacade.startResetPasswordProcess(toSignInIdentifier(request.cidOrEmail));
+        } catch (ResetPasswordFacade.PasswordResetProcessException e) {
+            throw new PasswordResetProcessErrorResponse();
         }
         return new PasswordRestLinkSentResponse();
     }
 
     private record ResetPasswordFinishRequest(UnencryptedPassword password,
-                                              Cid cid,
-                                              String token) { }
+                                              String cidOrEmail,
+                                              PasswordResetToken token) { }
 
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@RequestBody ResetPasswordFinishRequest request) {
         try {
-            User user = this.userService.get(request.cid);
-
-            if (!this.userPasswordResetService.tokenMatchesUser(user.id(), request.token)) {
-                throw new CodeOrCidIsWrongResponse();
-            }
-
-            this.userService.setPassword(user.id(), request.password);
-            this.userPasswordResetService.removeToken(user);
-        } catch (UserService.UserNotFoundException e) {
-            throw new CodeOrCidIsWrongResponse();
+            this.resetPasswordFacade.finishResetPasswordProcess(toSignInIdentifier(request.cidOrEmail), request.token, request.password);
+        } catch (ResetPasswordFacade.PasswordResetProcessException e) {
+            throw new PasswordResetProcessErrorResponse();
         }
-
         return new PasswordChangedResponse();
     }
 
@@ -71,10 +57,18 @@ public class UserPasswordResetController {
 
     private static class PasswordChangedResponse extends SuccessResponse { }
 
-    private static class CodeOrCidIsWrongResponse extends ErrorResponse {
-        private CodeOrCidIsWrongResponse() {
+    private static class PasswordResetProcessErrorResponse extends ErrorResponse {
+        private PasswordResetProcessErrorResponse() {
             super(HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+
+    private UserSignInIdentifier toSignInIdentifier(String identifier) {
+        try {
+            return Cid.valueOf(identifier);
+        } catch (IllegalArgumentException ignored) { }
+
+        return new Email(identifier);
     }
 
 }

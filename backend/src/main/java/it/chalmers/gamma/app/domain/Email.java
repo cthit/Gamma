@@ -1,9 +1,11 @@
 package it.chalmers.gamma.app.domain;
 
+import it.chalmers.gamma.app.user.UserSignInIdentifier;
+
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
-public record Email(String value) implements Serializable {
+public record Email(String value) implements UserSignInIdentifier, Serializable {
 
     private static final Pattern emailPattern = Pattern.compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 

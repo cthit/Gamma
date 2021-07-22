@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @RecordBuilder
@@ -12,7 +13,7 @@ public record User(UserId id,
                    Nick nick,
                    FirstName firstName,
                    LastName lastName,
-                   boolean userAgreement,
+                   Instant lastAcceptedUserAgreement,
                    AcceptanceYear acceptanceYear,
                    boolean gdprTrained,
                    boolean locked,

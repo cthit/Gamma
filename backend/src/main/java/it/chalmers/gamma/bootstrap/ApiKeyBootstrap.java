@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.ApiKey;

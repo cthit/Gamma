@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.bootstrap;
+package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.domain.AcceptanceYear;
 import it.chalmers.gamma.app.domain.FirstName;
