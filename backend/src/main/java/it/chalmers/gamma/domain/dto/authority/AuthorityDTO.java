@@ -12,10 +12,10 @@ public class AuthorityDTO {
     private final AuthorityLevelDTO authorityLevel;
 
     public AuthorityDTO(FKITSuperGroupDTO superGroup, PostDTO post,
-                        UUID internalID, AuthorityLevelDTO authorityLevel) {
+                        UUID id, AuthorityLevelDTO authorityLevel) {
         this.superGroup = superGroup;
         this.post = post;
-        this.id = internalID;
+        this.id = id;
         this.authorityLevel = authorityLevel;
     }
 

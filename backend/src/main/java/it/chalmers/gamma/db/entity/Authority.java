@@ -1,41 +1,42 @@
 package it.chalmers.gamma.db.entity;
 
-import it.chalmers.gamma.db.entity.pk.AuthorityPK;
-
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import java.util.Objects;
 import java.util.UUID;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Target;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "authority")
 public class Authority {
 
-    @Target(AuthorityPK.class)
-    @EmbeddedId
-    private AuthorityPK id;
+    @Id
+    private UUID id;
 
-    @Column(name = "id")
-    private UUID internalId;
+    @ManyToOne
+    @JoinColumn(name = "fkit_group_id")
+    private FKITSuperGroup fkitSuperGroup;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @JoinColumn(name = "authority_level")
     @ManyToOne
     private AuthorityLevel authorityLevel;
 
-    public AuthorityPK getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(AuthorityPK id) {
-        this.id = id;
+    public Authority() {
+        id = UUID.randomUUID();
     }
 
     public AuthorityLevel getAuthorityLevel() {
@@ -46,27 +47,22 @@ public class Authority {
         this.authorityLevel = authorityLevel;
     }
 
-    public UUID getInternalID() {
-        return this.internalId;
-    }
-
-    public void setInternalID(UUID internalID) {
-        this.internalId = internalID;
-    }
-
-    public Authority() {
-        this.internalId = UUID.randomUUID();
-    }
-
     public AuthorityDTO toDTO() {
         return new AuthorityDTO(
-                this.id.getFkitSuperGroup().toDTO(),
-                this.id.getPost().toDTO(),
-                this.internalId,
+                this.fkitSuperGroup.toDTO(),
+                this.post.toDTO(),
+                this.id,
                 this.authorityLevel.toDTO()
                 );
     }
 
+    public void setFkitSuperGroup(FKITSuperGroup fkitSuperGroup) {
+        this.fkitSuperGroup = fkitSuperGroup;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
     @Override
     public boolean equals(Object o) {

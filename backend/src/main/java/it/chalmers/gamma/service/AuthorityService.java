@@ -4,7 +4,6 @@ import it.chalmers.gamma.db.entity.Authority;
 import it.chalmers.gamma.db.entity.AuthorityLevel;
 import it.chalmers.gamma.db.entity.FKITSuperGroup;
 import it.chalmers.gamma.db.entity.Post;
-import it.chalmers.gamma.db.entity.pk.AuthorityPK;
 import it.chalmers.gamma.db.repository.AuthorityRepository;
 import it.chalmers.gamma.domain.dto.authority.AuthorityDTO;
 import it.chalmers.gamma.domain.dto.authority.AuthorityLevelDTO;
@@ -53,18 +52,19 @@ public class AuthorityService {
         Post post = this.postService.getPost(postDTO);
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         AuthorityLevel authorityLevel = this.authorityLevelService.getAuthorityLevel(authorityLevelDTO);
-        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(
-                group,
-                post
-        ).orElseGet(() -> {
-            Authority auth = new Authority();
-            AuthorityPK pk = new AuthorityPK();
-            pk.setFkitGroup(group);
-            pk.setPost(post);
-            auth.setId(pk);
-            return auth;
-        });
+        Authority authority = this.authorityRepository.findByFkitSuperGroupAndPostAndAuthorityLevel(
+            group,
+            post,
+            authorityLevel
+        ).orElseGet(() -> null);
+        if(authority != null) {
+            return authority.toDTO();
+        }
+        authority = new Authority();
+        authority.setFkitSuperGroup(group);
+        authority.setPost(post);
         authority.setAuthorityLevel(authorityLevel);
+
         return this.authorityRepository.save(authority).toDTO();
     }
     protected List<GrantedAuthority> getGrantedAuthorities(ITUserDTO details) {
@@ -83,42 +83,39 @@ public class AuthorityService {
 
     // TODO Check for name?
     public boolean authorityExists(String id) {
-        return this.authorityRepository.existsByInternalId(UUID.fromString(id));
+        return this.authorityRepository.existsById(UUID.fromString(id));
     }
 
-    public AuthorityDTO getAuthorityLevel(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
+    public List<AuthorityDTO> getAuthorityLevels(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         Post post = this.postService.getPost(postDTO);
-        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post)
-                .orElse(null);
-        if (authority != null) {
-            return authority.toDTO();
-        }
-        return null;
+        List<Authority> authorities = this.authorityRepository.findByFkitSuperGroupAndPost(group, post);
+        return authorities.stream().map((auth) -> auth.toDTO()).collect(Collectors.toList());
     }
 
-    public void removeAuthority(FKITSuperGroupDTO groupDTO, PostDTO postDTO) {
+    public void removeAuthority(FKITSuperGroupDTO groupDTO, PostDTO postDTO, AuthorityLevelDTO levelDTO) {
         FKITSuperGroup group = this.fkitSuperGroupService.getGroup(groupDTO);
         Post post = this.postService.getPost(postDTO);
-        Authority authority = this.authorityRepository.findById_FkitSuperGroupAndId_Post(group, post)
+        AuthorityLevel level = this.authorityLevelService.getAuthorityLevel(levelDTO);
+        Authority authority = this.authorityRepository.findByFkitSuperGroupAndPostAndAuthorityLevel(group, post, level)
                 .orElseThrow(AuthorityDoesNotExistResponse::new);
         this.authorityRepository.delete(authority);
     }
 
     @Transactional
     public void removeAuthority(UUID id) {
-        this.authorityRepository.deleteByInternalId(id);
+        this.authorityRepository.deleteById(id);
     }
 
     public List<AuthorityLevelDTO> getAuthorities(List<MembershipDTO> memberships) {
         List<AuthorityLevelDTO> authorityLevels = new ArrayList<>();
         for (MembershipDTO membership : memberships) {
-            AuthorityDTO authority = this.getAuthorityLevel(
+            List<AuthorityDTO> authorities = this.getAuthorityLevels(
                     membership.getFkitGroupDTO().getSuperGroup(),
                     membership.getPost()
             );
 
-            if (authority != null) {
+            for(AuthorityDTO authority: authorities) {
                 Calendar start = membership.getFkitGroupDTO().getBecomesActive();
                 Calendar end = membership.getFkitGroupDTO().getBecomesInactive();
                 Calendar now = Calendar.getInstance();
@@ -149,7 +146,7 @@ public class AuthorityService {
     }
 
     public AuthorityDTO getAuthority(UUID id) {
-        return this.authorityRepository.findByInternalId(id)
+        return this.authorityRepository.findById(id)
                 .orElseThrow(AuthorityDoesNotExistResponse::new).toDTO();
     }
 

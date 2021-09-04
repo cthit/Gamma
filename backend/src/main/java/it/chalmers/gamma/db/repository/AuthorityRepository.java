@@ -14,13 +14,18 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthorityRepository extends JpaRepository<Authority, UUID> {
-    Optional<Authority> findById_FkitSuperGroupAndId_Post(FKITSuperGroup superGroup, Post post);
+    List<Authority> findByFkitSuperGroupAndPost(FKITSuperGroup superGroup, Post post);
 
     List<Authority> findAllByAuthorityLevel(AuthorityLevel authorityLevel);
 
-    Optional<Authority> findByInternalId(UUID id);
+    Optional<Authority> findById(UUID id);
 
-    boolean existsByInternalId(UUID id);
+    boolean existsById(UUID id);
 
-    void deleteByInternalId(UUID id);
+    Optional<Authority> findByFkitSuperGroupAndPostAndAuthorityLevel(
+        FKITSuperGroup superGroup,
+        Post post,
+        AuthorityLevel level);
+
+    void deleteById(UUID id);
 }
