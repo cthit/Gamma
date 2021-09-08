@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.settings;
 
-import it.chalmers.gamma.app.domain.Settings;
+import it.chalmers.gamma.domain.Settings;
 
 public interface AppSettingsService {
 

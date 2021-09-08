@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.domain.AuthorityLevel;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -62,9 +61,9 @@ public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName> {
     public AuthorityLevel toDomain() {
         return new AuthorityLevel(
                 AuthorityLevelName.valueOf(this.authorityLevel),
-                this.postEntityList.stream().map(AuthorityPostEntity::toDomain).toList(),
-                this.superGroupEntityList.stream().map(AuthoritySuperGroupEntity::toDomain).toList(),
-                this.userEntityList.stream().map(AuthorityUserEntity::toDomain).toList()
+                this.postEntityList.stream().map(AuthorityPostEntity::getIdentifier).toList(),
+                this.superGroupEntityList.stream().map(AuthoritySuperGroupEntity::getIdentifier).toList(),
+                this.userEntityList.stream().map(AuthorityUserEntity::getIdentifier).toList()
         );
     }
 

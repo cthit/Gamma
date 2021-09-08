@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.client;
 
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.ClientId;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.client.ClientId;
 
 public interface ClientUserApprovalUseCase {
 

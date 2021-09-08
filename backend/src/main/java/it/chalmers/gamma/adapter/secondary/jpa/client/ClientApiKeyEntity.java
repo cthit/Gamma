@@ -1,8 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.app.domain.ApiKeyId;
-import it.chalmers.gamma.app.domain.ClientApiKeyPair;
-import it.chalmers.gamma.app.domain.ClientId;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.EmbeddedId;

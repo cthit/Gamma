@@ -1,16 +1,11 @@
 package it.chalmers.gamma.adapter.primary.api;
 
 import it.chalmers.gamma.app.GroupFacade;
-import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.domain.Membership;
-import it.chalmers.gamma.app.domain.GroupWithMembers;
-import it.chalmers.gamma.app.domain.UserPost;
-import org.springframework.web.bind.annotation.GetMapping;
+import it.chalmers.gamma.domain.group.Group;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Used by cthit/goldapps to sync Google accounts for the student division
@@ -27,30 +22,30 @@ public class GoldappsApiController {
         this.groupFacade = groupFacade;
     }
 
-    private record Goldapps(List<GroupWithMembers> allGroups) { }
+    private record Goldapps(List<Group> allGroups) { }
 
-    @GetMapping
-    public Goldapps get() {
-        return new Goldapps(
-                this.groupService.getAll()
-                        .stream()
-                        .map(this::toGroupWithMembers)
-                        .collect(Collectors.toList())
-        );
-    }
-
-    private GroupWithMembers toGroupWithMembers(Group group) {
-        return new GroupWithMembers(
-                group,
-                toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))
-        );
-    }
-
-    private List<UserPost> toUserPosts(List<Membership> memberships) {
-        return memberships
-                .stream()
-                .map(membership -> new UserPost(membership.user(), membership.post()))
-                .collect(Collectors.toList());
-    }
+//    @GetMapping
+//    public Goldapps get() {
+//        return new Goldapps(
+//                this.groupFacade.getAll()
+//                        .stream()
+//                        .map(this::toGroupWithMembers)
+//                        .collect(Collectors.toList())
+//        );
+//    }
+//
+//    private GroupWithMembers toGroupWithMembers(Group group) {
+//        return new GroupWithMembers(
+//                group,
+//                toUserPosts(this.membershipService.getMembershipsByGroup(group.id()))
+//        );
+//    }
+//
+//    private List<UserPost> toUserPosts(List<Membership> memberships) {
+//        return memberships
+//                .stream()
+//                .map(membership -> new UserPost(membership.user(), membership.post()))
+//                .collect(Collectors.toList());
+//    }
 
 }

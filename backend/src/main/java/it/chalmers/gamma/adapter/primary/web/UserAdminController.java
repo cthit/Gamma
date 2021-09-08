@@ -2,17 +2,16 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.app.UserFacade;
-import it.chalmers.gamma.app.domain.AcceptanceYear;
-import it.chalmers.gamma.app.domain.FirstName;
-import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.Nick;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.Language;
-import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.user.AcceptanceYear;
+import it.chalmers.gamma.domain.user.FirstName;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Nick;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.user.Language;
+import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.User;
 
 import java.util.List;
 
@@ -62,8 +61,9 @@ public final class UserAdminController {
         return new UserDeletedResponse();
     }
 
-    public record GetUserAdminResponse(@JsonUnwrapped User user,
-                                       List<GroupPost> groups) { }
+    public record GetUserAdminResponse(@JsonUnwrapped User user
+//                                       List<GroupPost> groups
+    ) { }
 
     @GetMapping("/{id}")
     public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
@@ -78,7 +78,9 @@ public final class UserAdminController {
             return null;
     }
 
-    record UserWithGroups(@JsonUnwrapped User user, List<GroupPost> groups) { }
+    record UserWithGroups(@JsonUnwrapped User user
+//                          List<GroupPost> groups
+    ) { }
 
     record GetAllUsersResponse(List<UserWithGroups> users) { }
 

@@ -45,7 +45,7 @@ public class GotifyMailService implements MailService {
      *
      * @return true if message was successfully sent false if not
      */
-    public void sendMailViaGotify(String email,  String subject, String body) {
+    private void sendMailViaGotify(String email,  String subject, String body) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);

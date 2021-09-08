@@ -1,8 +1,5 @@
 package it.chalmers.gamma.security.oauth;
 
-import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.domain.Client;
-
 import it.chalmers.gamma.app.client.ClientFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +24,12 @@ public class OAuth2AuthorizeController {
 
     @GetMapping("/oauth/confirm_access")
     public String getConfirmAccess(@ModelAttribute AuthorizationRequest clientAuth, Model model) {
-        try {
-            Client client = this.clientFacade.get(ClientId.valueOf(clientAuth.getClientId())).client();
-            model.addAttribute("clientName", client.prettyName());
-        } catch (ClientFacade.ClientNotFoundException e) {
-            LOGGER.error("Cannot find provided client in authorize", e);
-        }
+//        try {
+//            Client client = this.clientFacade.get(ClientId.valueOf(clientAuth.getClientId())).client();
+//            model.addAttribute("clientName", client.prettyName());
+//        } catch (ClientFacade.ClientNotFoundException e) {
+//            LOGGER.error("Cannot find provided client in authorize", e);
+//        }
 
         return "authorize";
     }

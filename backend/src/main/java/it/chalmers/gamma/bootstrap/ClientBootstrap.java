@@ -1,15 +1,12 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.client.ClientUserApprovalUseCase;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.domain.ClientSecret;
-import it.chalmers.gamma.app.domain.Client;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.client.ClientSecret;
 
-import it.chalmers.gamma.app.domain.PrettyName;
 import it.chalmers.gamma.app.client.ClientFacade;
-import it.chalmers.gamma.app.domain.Text;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.user.User;
 import it.chalmers.gamma.app.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +15,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 
 @DependsOn("mockBootstrap")
 @Component
@@ -57,19 +53,19 @@ public class ClientBootstrap {
         ClientSecret clientSecret = new ClientSecret("secret");
         ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-token");
 
-        this.clientFacade.createWithApiKey(
-                new Client(
-                        clientId,
-                        redirectUri,
-                        true,
-                        new PrettyName("test-client"),
-                        new Text(),
-                        new ArrayList<>(),
-                        new ArrayList<>()
-                ),
-                clientSecret,
-                apiKeyToken,
-                new ArrayList<>());
+//        this.clientFacade.createWithApiKey(
+//                new Client(
+//                        clientId,
+//                        redirectUri,
+//                        true,
+//                        new PrettyName("test-client"),
+//                        new Text(),
+//                        new ArrayList<>(),
+//                        new ArrayList<>()
+//                ),
+//                clientSecret,
+//                apiKeyToken,
+//                new ArrayList<>());
 
         for (User user : this.userRepository.getAll()) {
             this.userApprovalService.approveUserForClient(user.cid(), clientId);

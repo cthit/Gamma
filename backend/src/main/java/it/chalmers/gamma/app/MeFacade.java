@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app;
 
 import it.chalmers.gamma.app.client.ClientRepository;
-import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.client.Client;
+import it.chalmers.gamma.domain.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.domain.ClientSecret;
+import it.chalmers.gamma.domain.client.Client;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.client.ClientSecret;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.PrettyName;
+import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 
 import javax.persistence.*;
@@ -36,18 +36,14 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
 
     protected ClientEntity() { }
 
-    public ClientEntity(Client client) {
+    public ClientEntity(Client client, ClientSecret clientSecret) {
         this.clientId = client.clientId().value();
-        this.clientSecret = client.clientSecret().value();
+        this.clientSecret = clientSecret.value();
         this.description = new TextEntity(client.description());
         this.webServerRedirectUri = client.webServerRedirectUri();
         this.autoApprove = client.autoApprove();
         this.prettyName = client.prettyName().value();
         this.description.apply(client.description());
-    }
-
-    protected void setClientSecret(ClientSecret clientSecret) {
-        this.clientSecret = clientSecret.value();
     }
 
     @Override
@@ -63,7 +59,9 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
                 this.autoApprove,
                 new PrettyName(this.prettyName),
                 this.description.toDomain(),
-                Collections.EMPTY_LIST //TODO: JoinColumn
+                Collections.EMPTY_LIST, //TODO: JoinColumn
+                Collections.EMPTY_LIST,//TODO: JoinColumn
+                null //TODO join potential api key
         );
     }
 }

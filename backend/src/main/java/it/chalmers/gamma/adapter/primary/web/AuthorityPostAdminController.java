@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostPK;
-import it.chalmers.gamma.app.AuthorityFacade;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.PostId;
-import it.chalmers.gamma.app.domain.SuperGroupId;
+import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -15,42 +14,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/internal/admin/authority/post")
 public final class AuthorityPostAdminController {
 
-    private final AuthorityFacade authorityFacade;
+    private final AuthorityLevelFacade authorityLevelFacade;
 
-    public AuthorityPostAdminController(AuthorityFacade authorityFacade) {
-        this.authorityFacade = authorityFacade;
+    public AuthorityPostAdminController(AuthorityLevelFacade authorityLevelFacade) {
+        this.authorityLevelFacade = authorityLevelFacade;
     }
 
     private record CreateAuthorityPostRequest(PostId postId, SuperGroupId superGroupId, AuthorityLevelName authorityLevelName) { }
 
     @PostMapping
     public AuthorityPostCreatedResponse addAuthority(@RequestBody CreateAuthorityPostRequest request) {
-        try {
-            this.authorityPostService.create(
-                    new AuthorityPostDTO(
-                        request.superGroupId,
-                        request.postId,
-                        request.authorityLevelName
-                    )
-            );
-            return new AuthorityPostCreatedResponse();
-        } catch (AuthorityPostService.AuthorityPostNotFoundException e) {
-            throw new AuthorityPostAlreadyExistsResponse();
-        }
+        this.authorityLevelFacade.addToAuthorityLevel(request.authorityLevelName, request.superGroupId);
+        return new AuthorityPostCreatedResponse();
     }
 
     @DeleteMapping
     public AuthorityPostRemovedResponse removeAuthority(@RequestParam("superGroupId") SuperGroupId superGroupId,
                                                         @RequestParam("postId") PostId postId,
                                                         @RequestParam("authorityLevelName") AuthorityLevelName authorityLevelName) {
-        try {
-            this.authorityPostService.delete(
-                    new AuthorityPostPK(superGroupId, postId, authorityLevelName)
-            );
-            return new AuthorityPostRemovedResponse();
-        } catch (AuthorityPostService.AuthorityPostNotFoundException e) {
-            throw new AuthorityPostNotFoundResponse();
-        }
+        this.authorityLevelFacade.removeFromAuthorityLevel(authorityLevelName, superGroupId, postId);
+        return new AuthorityPostRemovedResponse();
     }
 
     private static class AuthorityPostRemovedResponse extends SuccessResponse { }

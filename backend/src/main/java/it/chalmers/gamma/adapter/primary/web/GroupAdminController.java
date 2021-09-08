@@ -1,24 +1,17 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.GroupFacade;
-import it.chalmers.gamma.app.domain.Name;
-import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.GroupWithMembers;
-import it.chalmers.gamma.app.domain.UserPost;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.Membership;
+import it.chalmers.gamma.domain.user.Name;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.group.GroupId;
 
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/internal/admin/groups")

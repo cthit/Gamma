@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.AuthorityLevel;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 
 import javax.persistence.*;
 
@@ -21,6 +21,10 @@ public class AuthorityPostEntity extends ImmutableEntity<AuthorityPostPK> {
     @Override
     protected AuthorityPostPK id() {
         return this.id;
+    }
+
+    public AuthorityLevel.SuperGroupPost getIdentifier() {
+        return null;
     }
 
 }

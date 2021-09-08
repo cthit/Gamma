@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api;
 
-import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.app.whitelist.WhitelistFacade;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
@@ -25,6 +25,10 @@ public class WhitelistApiController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistApiController.class);
 
     private final WhitelistFacade whitelistFacade;
+
+    public WhitelistApiController(WhitelistFacade whitelistFacade) {
+        this.whitelistFacade = whitelistFacade;
+    }
 
     @GetMapping()
     public List<Cid> getWhiteList() {

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.domain.EmailPrefix;
-import it.chalmers.gamma.app.domain.Post;
-import it.chalmers.gamma.app.domain.PostId;
+import it.chalmers.gamma.domain.group.EmailPrefix;
+import it.chalmers.gamma.domain.post.Post;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
@@ -35,7 +35,6 @@ public class PostEntity extends MutableEntity<PostId> {
         apply(p);
     }
 
-    @Override
     public void apply(Post p) {
         assert(this.id == p.id().value());
 
@@ -43,8 +42,7 @@ public class PostEntity extends MutableEntity<PostId> {
         this.emailPrefix = p.emailPrefix().value();
     }
 
-    @Override
-    protected Post toDomain() {
+    public Post toDomain() {
         return new Post(
                 PostId.valueOf(this.id),
                 this.postName.toDomain(),

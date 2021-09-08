@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.AuthorityFacade;
-import it.chalmers.gamma.app.domain.AuthorityLevel;
+import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,10 +12,10 @@ import java.util.List;
 @RequestMapping("/internal/admin/authority")
 public final class AuthorityAdminController {
 
-    private final AuthorityFacade authorityFacade;
+    private final AuthorityLevelFacade authorityLevelFacade;
 
-    public AuthorityAdminController(AuthorityFacade authorityFacade) {
-        this.authorityFacade = authorityFacade;
+    public AuthorityAdminController(AuthorityLevelFacade authorityLevelFacade) {
+        this.authorityLevelFacade = authorityLevelFacade;
     }
 
     @GetMapping

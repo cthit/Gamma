@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
-import it.chalmers.gamma.app.domain.ApiKey;
-import it.chalmers.gamma.app.domain.ApiKeyId;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.domain.ApiKeyType;
-import it.chalmers.gamma.app.domain.PrettyName;
+import it.chalmers.gamma.domain.apikey.ApiKey;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.ApiKeyType;
+import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
@@ -34,19 +34,15 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
 
     protected ApiKeyEntity() { }
 
-    protected ApiKeyEntity(ApiKey apiKey) {
+    public ApiKeyEntity(ApiKey apiKey, ApiKeyToken apiKeyToken) {
         assert(apiKey.id() != null);
-        assert(apiKey.apiKeyToken() != null);
+        assert(apiKeyToken != null);
 
         this.id = apiKey.id().value();
-        this.token = apiKey.apiKeyToken().value();
+        this.token = apiKeyToken.value();
         this.prettyName = apiKey.prettyName().value();
         this.description = new TextEntity(apiKey.description());
         this.keyType = apiKey.keyType();
-    }
-
-    protected void setToken(ApiKeyToken token) {
-        this.token = token.value();
     }
 
     public ApiKey toDomain() {

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.authority;
 
-import it.chalmers.gamma.app.domain.AuthorityLevel;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,7 @@ public interface AuthorityLevelRepository {
     
     void save(AuthorityLevel authorityLevel);
 
-    List<AuthorityLevel> getAuthorityLevels();
-    Optional<AuthorityLevel> getAuthorityLevel(AuthorityLevel authorityLevel);
+    List<AuthorityLevel> getAll();
+    Optional<AuthorityLevel> get(AuthorityLevelName authorityLevelName);
 
 }

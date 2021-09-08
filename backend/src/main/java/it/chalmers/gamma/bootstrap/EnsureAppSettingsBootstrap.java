@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.domain.Settings;
+import it.chalmers.gamma.domain.Settings;
 import it.chalmers.gamma.app.settings.AppSettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

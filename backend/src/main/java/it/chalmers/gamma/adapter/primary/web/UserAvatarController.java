@@ -1,14 +1,11 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.ImageService;
 import it.chalmers.gamma.app.MeFacade;
-import it.chalmers.gamma.app.domain.ImageUri;
-import it.chalmers.gamma.app.domain.UserId;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

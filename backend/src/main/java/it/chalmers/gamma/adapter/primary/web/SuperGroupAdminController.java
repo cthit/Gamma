@@ -1,13 +1,13 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.SuperGroupFacade;
-import it.chalmers.gamma.app.domain.Name;
-import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.app.domain.Text;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.domain.SuperGroup;
+import it.chalmers.gamma.domain.user.Name;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.domain.common.Text;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
 
 import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;

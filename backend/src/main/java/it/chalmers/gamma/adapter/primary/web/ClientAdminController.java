@@ -1,13 +1,13 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.ClientWithRestrictions;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.domain.Text;
-import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.domain.ClientSecret;
-import it.chalmers.gamma.app.domain.Client;
+import it.chalmers.gamma.app.client.ClientRepository;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.common.Text;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.client.ClientSecret;
+import it.chalmers.gamma.domain.client.Client;
 import it.chalmers.gamma.app.client.ClientFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -47,30 +47,30 @@ public final class ClientAdminController {
         ClientSecret clientSecret = ClientSecret.generate();
         ApiKeyToken apiKeyToken = null;
 
-        Client newClient =
-                new Client(
-                        ClientId.generate(),
-                        request.webServerRedirectUri,
-                        request.autoApprove,
-                        request.prettyName,
-                        request.description
-                );
-        if (request.generateApiKey) {
-            apiKeyToken = ApiKeyToken.generate();
-            this.clientFacade.createWithApiKey(newClient, clientSecret, apiKeyToken, request.restrictions);
-        } else {
-            this.clientFacade.create(newClient, clientSecret, request.restrictions);
-        }
+//        Client newClient =
+//                Client.create(
+//                        request.webServerRedirectUri,
+//                        request.autoApprove,
+//                        request.prettyName,
+//                        request.description,
+//                        request.restrictions
+//                );
+//        if (request.generateApiKey) {
+//            apiKeyToken = ApiKeyToken.generate();
+//            this.clientFacade.createWithApiKey(newClient, clientSecret, apiKeyToken);
+//        } else {
+//            this.clientFacade.create(newClient, clientSecret);
+//        }
 
         return new NewClientSecrets(clientSecret, apiKeyToken);
     }
 
     @PostMapping("/{clientId}/reset")
     public ClientSecret resetClientCredentials(@PathVariable("clientId") ClientId clientId) {
-        ClientSecret clientSecret = ClientSecret.generate();
+        ClientSecret clientSecret;
 
         try {
-            this.clientFacade.resetClientSecret(clientId, clientSecret);
+            clientSecret = this.clientFacade.resetClientSecret(clientId);
         } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
@@ -84,12 +84,8 @@ public final class ClientAdminController {
     }
 
     @GetMapping("/{clientId}")
-    public ClientWithRestrictions getClient(@PathVariable("clientId") ClientId id) {
-        try {
-            return this.clientFacade.get(id);
-        } catch (ClientFacade.ClientNotFoundException e) {
-            throw new ClientNotFoundResponse();
-        }
+    public Client getClient(@PathVariable("clientId") ClientId id) {
+        return this.clientFacade.get(id).orElseThrow(ClientNotFoundResponse::new);
     }
 
     @DeleteMapping("/{clientId}")
@@ -97,7 +93,7 @@ public final class ClientAdminController {
         try {
             this.clientFacade.delete(id);
             return new ClientDeletedResponse();
-        } catch (ClientFacade.ClientNotFoundException e) {
+        } catch (ClientRepository.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
     }

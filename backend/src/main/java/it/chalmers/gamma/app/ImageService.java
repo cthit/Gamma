@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app;
 
-import it.chalmers.gamma.app.domain.ImageUri;
+import it.chalmers.gamma.domain.common.ImageUri;
 
 public interface ImageService {
 

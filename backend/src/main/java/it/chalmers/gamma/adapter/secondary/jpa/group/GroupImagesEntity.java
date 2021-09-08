@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.ImageUri;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.common.ImageUri;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.group;
 
-import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.SuperGroupId;
+import it.chalmers.gamma.domain.group.Group;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,7 @@ public interface GroupRepository {
     void save(Group group);
     void delete(GroupId groupId) throws GroupNotFoundException;
 
-    List<Group> getAll(Group group);
+    List<Group> getAll();
     List<Group> getAllBySuperGroup(SuperGroupId superGroupId);
 
     Optional<Group> get(GroupId groupId);

@@ -1,18 +1,19 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.domain.AcceptanceYear;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.FirstName;
-import it.chalmers.gamma.app.domain.Language;
-import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.Nick;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.domain.UserId;
+import it.chalmers.gamma.domain.user.AcceptanceYear;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.user.FirstName;
+import it.chalmers.gamma.domain.user.Language;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Nick;
+import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.domain.Password;
+import it.chalmers.gamma.domain.user.Password;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -45,8 +46,8 @@ public class UserEntity extends MutableEntity<UserId> {
     @Enumerated(EnumType.STRING)
     private Language language;
 
-    @Column(name = "user_agreement")
-    private boolean userAgreement;
+    @Column(name = "user_agreement_accepted")
+    private Instant userAgreementAccepted;
 
     @Column(name = "acceptance_year")
     private int acceptanceYear;
@@ -70,9 +71,10 @@ public class UserEntity extends MutableEntity<UserId> {
                 new Email(this.email),
                 this.language,
                 new Nick(this.nick),
+                new Password(this.password),
                 new FirstName(this.firstName),
                 new LastName(this.lastName),
-                this.userAgreement,
+                this.userAgreementAccepted,
                 new AcceptanceYear(this.acceptanceYear),
                 false,
                 false,
@@ -96,7 +98,7 @@ public class UserEntity extends MutableEntity<UserId> {
         this.lastName = u.lastName().value();
         this.language = u.language();
         this.nick = u.nick().value();
-        this.userAgreement = u.userAgreement();
+//        this.userAgreementAccepted = u.userAgreementAccepted();
         //TODO: Add gdpr locked and imageUri
     }
 
@@ -106,10 +108,6 @@ public class UserEntity extends MutableEntity<UserId> {
 
     protected Password getPassword() {
         return new Password(this.password);
-    }
-
-    protected void resetUserAgreement() {
-        this.userAgreement = false;
     }
 
     protected UserId getId() {

@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.SuperGroupFacade;
-import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.domain.SuperGroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.app.supergroup.SuperGroupTypeRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;

@@ -1,11 +1,10 @@
 package it.chalmers.gamma.app;
 
-import it.chalmers.gamma.app.client.ClientRepository;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.PasswordResetToken;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.PasswordResetToken;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.User;
 import it.chalmers.gamma.app.user.PasswordResetRepository;
 import it.chalmers.gamma.app.user.UserRepository;
 import it.chalmers.gamma.app.user.UserSignInIdentifier;
@@ -18,27 +17,18 @@ import java.util.Optional;
 @Service
 public class ResetPasswordFacade extends Facade {
 
-    private final AuthenticatedService authenticatedService;
-    private final PasswordService passwordService;
     private final MailService mailService;
-    private final ClientRepository clientRepository;
     private final UserRepository userRepository;
     private final PasswordResetRepository passwordResetRepository;
 
     private static Logger LOGGER = LoggerFactory.getLogger(ResetPasswordFacade.class);
 
     public ResetPasswordFacade(AccessGuard accessGuard,
-                               AuthenticatedService authenticatedService,
-                               PasswordService passwordService,
                                MailService mailService,
-                               ClientRepository clientRepository,
                                UserRepository userRepository,
                                PasswordResetRepository passwordResetRepository) {
         super(accessGuard);
-        this.authenticatedService = authenticatedService;
-        this.passwordService = passwordService;
         this.mailService = mailService;
-        this.clientRepository = clientRepository;
         this.userRepository = userRepository;
         this.passwordResetRepository = passwordResetRepository;
     }

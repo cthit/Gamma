@@ -2,7 +2,7 @@ package it.chalmers.gamma.adapter.secondary.image;
 
 import it.chalmers.gamma.app.Image;
 import it.chalmers.gamma.app.ImageService;
-import it.chalmers.gamma.app.domain.ImageUri;
+import it.chalmers.gamma.domain.common.ImageUri;
 
 import java.io.File;
 import java.io.IOException;

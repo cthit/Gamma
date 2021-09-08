@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.user;
 
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.UserActivation;
-import it.chalmers.gamma.app.domain.UserActivationToken;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.useractivation.UserActivation;
+import it.chalmers.gamma.domain.useractivation.UserActivationToken;
 
 import java.util.List;
 

@@ -16,7 +16,7 @@ CREATE TABLE ituser
     last_name       VARCHAR(50) NOT NULL,
     email           VARCHAR(100) NOT NULL UNIQUE,
     LANGUAGE        VARCHAR(15) NULL,
-    user_agreement  BOOLEAN NOT NULL DEFAULT FALSE,
+    user_agreement_accepted  TIME NOT NULL DEFAULT NOW(),
     acceptance_year INTEGER,
     version         INT
 );

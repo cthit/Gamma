@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.Name;
-import it.chalmers.gamma.app.domain.PrettyName;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.group.Group;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.user.Name;
+import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 
@@ -52,12 +52,17 @@ public class GroupEntity extends MutableEntity<GroupId> {
     }
 
     public Group toDomain() {
+        //TODO: link imageuri
+        // TODO: add member
         return new Group(
                 GroupId.valueOf(this.id),
                 new Email(this.email),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
-                this.superGroup.toDomain()
+                this.superGroup.toDomain(),
+                null,
+                null,
+                null
         );
     }
 

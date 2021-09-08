@@ -1,8 +1,8 @@
 package it.chalmers.gamma.security.authentication;
 
+import it.chalmers.gamma.app.UserFacade;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.user.UserService;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -15,15 +15,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
-
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
-    private final UserService userService;
+    private final UserFacade userFacade;
     private final ApiKeyRepository apiKeyRepository;
 
-    public ApiKeyAuthenticationFilter(UserService userService,
+    public ApiKeyAuthenticationFilter(UserFacade userFacade,
                                       ApiKeyRepository apiKeyRepository) {
-        this.userService = userService;
+        this.userFacade = userFacade;
         this.apiKeyRepository = apiKeyRepository;
     }
 

@@ -1,12 +1,13 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.ApiKeyType;
-import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.domain.Text;
-import it.chalmers.gamma.app.domain.ApiKeyId;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.domain.ApiKey;
+import it.chalmers.gamma.domain.apikey.ApiKeyType;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.common.Text;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.ApiKey;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -24,29 +25,18 @@ import java.util.List;
 @RequestMapping("/internal/admin/api_keys")
 public final class ApiKeyAdminController {
 
-    private final ApiKeyRepository apiKeyRepository;
+    private final ApiKeyFacade apiKeyFacade;
 
-    public ApiKeyAdminController(ApiKeyRepository apiKeyRepository) {
-        this.apiKeyRepository = apiKeyRepository;
+    public ApiKeyAdminController(ApiKeyFacade apiKeyFacade) {
+        this.apiKeyFacade = apiKeyFacade;
     }
 
     private record CreateApiKeyRequest(PrettyName prettyName, Text description, ApiKeyType keyType) { }
 
     @PostMapping()
     public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {
-        ApiKeyToken key = ApiKeyToken.generate();
-
-        this.apiKeyRepository.create(
-            new ApiKey(
-                    ApiKeyId.generate(),
-                    request.prettyName,
-                    request.description,
-                    request.keyType,
-                    key
-            )
-        );
-
-        return key;
+        return null;
+//        return this.apiKeyFacade.create(ApiKey.create(request.prettyName, request.description, request.keyType));
     }
 
     @PostMapping("/{id}/reset")
@@ -54,7 +44,7 @@ public final class ApiKeyAdminController {
         ApiKeyToken token;
 
         try {
-            token = this.apiKeyRepository.generateNewToken(id);
+            token = this.apiKeyFacade.resetApiKeyToken(id);
         } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundResponse();
         }
@@ -64,7 +54,7 @@ public final class ApiKeyAdminController {
 
     @GetMapping()
     public List<ApiKey> getAllApiKeys() {
-        return this.apiKeyRepository.getAll();
+        return this.apiKeyFacade.getAll();
     }
 
     @GetMapping("/types")
@@ -74,14 +64,14 @@ public final class ApiKeyAdminController {
 
     @GetMapping("/{id}")
     public ApiKey getApiKey(@PathVariable("id") ApiKeyId id) {
-        return this.apiKeyRepository.getById(id)
+        return this.apiKeyFacade.get(id)
                 .orElseThrow(ApiKeyNotFoundResponse::new);
     }
 
     @DeleteMapping("/{id}")
     public ApiKeyDeletedResponse deleteApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
         try {
-            this.apiKeyRepository.delete(apiKeyId);
+            this.apiKeyFacade.delete(apiKeyId);
             return new ApiKeyDeletedResponse();
         } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundResponse();

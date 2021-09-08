@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app;
 
-import it.chalmers.gamma.app.domain.Post;
-import it.chalmers.gamma.app.domain.PostId;
+import it.chalmers.gamma.domain.post.Post;
+import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.app.post.PostRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,18 @@ public class PostFacade extends Facade {
     public PostFacade(AccessGuard accessGuard, PostRepository postRepository) {
         super(accessGuard);
         this.postRepository = postRepository;
+    }
+
+    public void create(Post post) {
+        this.postRepository.create(post);
+    }
+
+    public void update(Post post) throws PostRepository.PostNotFoundException {
+        this.postRepository.save(post);
+    }
+
+    public void delete(PostId postId) throws PostRepository.PostNotFoundException {
+        this.postRepository.delete(postId);
     }
 
     public Optional<Post> get(PostId postId) {

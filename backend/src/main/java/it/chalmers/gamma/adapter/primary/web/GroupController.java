@@ -1,13 +1,11 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.app.GroupFacade;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.Group;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.group.Group;
 
 import java.util.List;
 
-import it.chalmers.gamma.app.domain.Membership;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,22 +24,12 @@ public final class GroupController {
 
     @GetMapping()
     public List<Group> getGroups() {
-//        return this.groupService.getAll();
-        return null;
+        return this.groupFacade.getAll();
     }
 
-    private record GetGroupResponse(@JsonUnwrapped Group group, List<Membership> members) { }
-
     @GetMapping("/{id}")
-    public GetGroupResponse getGroup(@PathVariable("id") GroupId id) {
-        try {
-            Group group = this.groupService.get(id);
-            List<Membership> members = this.membershipService.getMembershipsInGroup(group.id());
-
-            return new GetGroupResponse(group, members);
-        } catch (GroupService.GroupNotFoundException e) {
-            throw new GroupNotFoundResponse();
-        }
+    public Group getGroup(@PathVariable("id") GroupId id) {
+        return this.groupFacade.get(id).orElseThrow(GroupNotFoundResponse::new);
     }
 
     private static class GroupNotFoundResponse extends NotFoundResponse { }

@@ -1,19 +1,19 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.domain.AcceptanceYear;
-import it.chalmers.gamma.app.domain.FirstName;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.Name;
-import it.chalmers.gamma.app.domain.Nick;
-import it.chalmers.gamma.app.domain.PostId;
-import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.Text;
-import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.domain.user.AcceptanceYear;
+import it.chalmers.gamma.domain.user.FirstName;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Name;
+import it.chalmers.gamma.domain.user.Nick;
+import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.common.Text;
+import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.Cid;
 
 import java.util.List;
 

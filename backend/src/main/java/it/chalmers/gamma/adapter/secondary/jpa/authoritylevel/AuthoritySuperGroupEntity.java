@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -23,4 +23,9 @@ public class AuthoritySuperGroupEntity extends ImmutableEntity<AuthoritySuperGro
     protected AuthoritySuperGroupPK id() {
         return this.id;
     }
+
+    public SuperGroup getIdentifier() {
+        return this.id.value().superGroup();
+    }
+
 }

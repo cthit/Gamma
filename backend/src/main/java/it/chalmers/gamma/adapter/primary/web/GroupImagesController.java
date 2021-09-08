@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.GroupFacade;
-import it.chalmers.gamma.app.ImageService;
-import it.chalmers.gamma.app.domain.GroupId;
-import it.chalmers.gamma.app.domain.ImageUri;
+import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.common.ImageUri;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -68,12 +67,13 @@ public final class GroupImagesController {
 
     @GetMapping("/banner/{id}")
     public ResponseEntity<byte[]> getGroupBanner(@PathVariable("id") GroupId id) throws IOException {
-        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::bannerUri)
-                .orElse(new ImageUri("default_group_banner.jpg"));
-        return ResponseEntity
-                .ok()
-                .contentType(getContentType(uri))
-                .body(imageService.getData(uri));
+//        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::bannerUri)
+//                .orElse(new ImageUri("default_group_banner.jpg"));
+//        return ResponseEntity
+//                .ok()
+//                .contentType(getContentType(uri))
+//                .body(imageService.getData(uri));
+        return null;
     }
 
     private MediaType getContentType(ImageUri uri) {

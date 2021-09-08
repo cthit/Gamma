@@ -6,9 +6,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.security.authentication.response.InvalidJWTTokenResponse;
+import it.chalmers.gamma.app.UserFacade;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.user.User;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,12 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final String secretKey;
     private final String issuer;
-    private final UserService userService;
+    private final UserFacade userFacade;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public JwtAuthenticationFilter(UserService userService, String secretKey, String issuer) {
-        this.userService = userService;
+    public JwtAuthenticationFilter(UserFacade userFacade, String secretKey, String issuer) {
+        this.userFacade = userFacade;
         this.secretKey = secretKey;
         this.issuer = issuer;
     }
@@ -67,12 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(String cid) {
-        User user;
-        try {
-            user = this.userService.get(Cid.valueOf(cid));
-        } catch (UserService.UserNotFoundException e) {
-            throw new InvalidJWTTokenResponse();
-        }
+        User user = this.userFacade.get(Cid.valueOf(cid));
         return new UsernamePasswordAuthenticationToken(
                 user.cid().value(),
                 null,

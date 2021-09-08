@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.supergroup;
 
-import it.chalmers.gamma.app.domain.SuperGroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 
 import java.util.List;
 

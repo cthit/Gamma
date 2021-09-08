@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.UserCreationFacade;
-import it.chalmers.gamma.app.domain.UserActivation;
+import it.chalmers.gamma.domain.useractivation.UserActivation;
 
-import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,17 +26,13 @@ public final class UserActivationAdminController {
 
     @GetMapping()
     public List<UserActivation> getAll() {
-        return this.userActivationService.getAll();
+        return this.userCreationFacade.getAllUserActivations();
     }
 
     @DeleteMapping("/{cid}")
     public UserActivationDeletedResponse removeUserActivation(@PathVariable("cid") Cid cid) {
-        try {
-            this.userActivationService.delete(cid);
-            return new UserActivationDeletedResponse();
-        } catch (UserActivationService.UserActivationNotFoundException e) {
-            throw new UserActivationNotFoundResponse();
-        }
+        this.userCreationFacade.removeUserActivation(cid);
+        return new UserActivationDeletedResponse();
     }
 
     private static class UserActivationDeletedResponse extends SuccessResponse { }

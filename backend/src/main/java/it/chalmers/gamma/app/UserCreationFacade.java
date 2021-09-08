@@ -1,8 +1,10 @@
 package it.chalmers.gamma.app;
 
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.UserActivation;
-import it.chalmers.gamma.app.domain.UserActivationToken;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.useractivation.UserActivation;
+import it.chalmers.gamma.domain.useractivation.UserActivationToken;
 import it.chalmers.gamma.app.user.UserActivationRepository;
 import it.chalmers.gamma.app.whitelist.WhitelistRepository;
 import org.slf4j.Logger;
@@ -39,6 +41,10 @@ public class UserCreationFacade extends Facade {
         } else {
             LOGGER.info("Someone tried to activate the cid: " + cid);
         }
+    }
+
+    public void createUserWithCode(User newUser, UnencryptedPassword password, UserActivationToken token) {
+
     }
 
     public void removeUserActivation(Cid cid) {

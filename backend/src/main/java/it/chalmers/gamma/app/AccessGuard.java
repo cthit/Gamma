@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app;
 
-import it.chalmers.gamma.app.domain.Group;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.group.Group;
+import it.chalmers.gamma.domain.user.User;
 
 public interface AccessGuard {
 

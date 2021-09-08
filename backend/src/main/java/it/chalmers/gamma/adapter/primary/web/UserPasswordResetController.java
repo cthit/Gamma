@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.ResetPasswordFacade;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.PasswordResetToken;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.PasswordResetToken;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
 
 import it.chalmers.gamma.app.user.UserSignInIdentifier;
 import it.chalmers.gamma.util.response.ErrorResponse;

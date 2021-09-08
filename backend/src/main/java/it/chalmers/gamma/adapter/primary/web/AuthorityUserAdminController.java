@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.AuthorityFacade;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.UserId;
+import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/admin/authority/user")
 public final class AuthorityUserAdminController {
 
-    private final AuthorityFacade authorityFacade;
+    private final AuthorityLevelFacade authorityLevelFacade;
 
-    public AuthorityUserAdminController(AuthorityFacade authorityFacade) {
-        this.authorityFacade = authorityFacade;
+    public AuthorityUserAdminController(AuthorityLevelFacade authorityLevelFacade) {
+        this.authorityLevelFacade = authorityLevelFacade;
     }
 
     private record CreateAuthorityUserRequest(UserId userId, AuthorityLevelName authorityLevelName) { }

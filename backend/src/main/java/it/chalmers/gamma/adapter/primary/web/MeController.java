@@ -2,16 +2,14 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.app.MeFacade;
-import it.chalmers.gamma.app.domain.FirstName;
-import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.Nick;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.user.FirstName;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Nick;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.User;
 import it.chalmers.gamma.adapter.secondary.userdetails.GrantedAuthorityProxy;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.Language;
-import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.util.UserUtils;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.user.Language;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping("/internal/users/me")
@@ -37,7 +34,7 @@ public final class MeController {
     }
 
     public record GetMeResponse(@JsonUnwrapped User user,
-                                List<GroupPost> groups,
+//                                List<GroupPost> groups,
                                 Collection<GrantedAuthorityProxy> authorities) { }
 
     @GetMapping()
@@ -84,7 +81,7 @@ public final class MeController {
 
     @PutMapping("/change_password")
     public PasswordChangedResponse changePassword(@RequestBody ChangeUserPassword request) {
-        this.meService.changePassword(request.oldPassword, request.password);
+//        this.meService.changePassword(request.oldPassword, request.password);
         return new PasswordChangedResponse();
     }
 
@@ -92,19 +89,19 @@ public final class MeController {
 
     @DeleteMapping()
     public UserDeletedResponse deleteMe(@RequestBody DeleteMeRequest request) {
-        this.meService.deleteAccount(request.password);
+//        this.meService.deleteAccount(request.password);
         return new UserDeletedResponse();
     }
 
     @PutMapping("/accept-user-agreement")
     public UserAgreementAccepted acceptUserAgreement(Principal principal) {
-        try {
-            User user = UserUtils.getUserDetails().getUser();
-            this.userService.update(user.withUserAgreement(true));
+//        try {
+//            User user = UserUtils.getUserDetails().getUser();
+//            this.userService.update(user.withUserAgreement(true));
             return new UserAgreementAccepted();
-        } catch (UserService.UserNotFoundException e) {
-            throw new UserNotFoundResponse();
-        }
+//        } catch (UserService.UserNotFoundException e) {
+//            throw new UserNotFoundResponse();
+//        }
     }
 
     private static class UserAgreementAccepted extends SuccessResponse { }

@@ -1,13 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.Id;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import java.util.UUID;
 
 @Embeddable
 public class ClientRestrictionPK extends Id<ClientRestrictionPK.ClientRestrictionPKDTO> {

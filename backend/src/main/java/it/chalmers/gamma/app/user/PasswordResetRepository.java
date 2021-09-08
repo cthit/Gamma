@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.user;
 
-import it.chalmers.gamma.app.domain.PasswordResetToken;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.domain.UserId;
+import it.chalmers.gamma.domain.PasswordResetToken;
+import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.Optional;
 

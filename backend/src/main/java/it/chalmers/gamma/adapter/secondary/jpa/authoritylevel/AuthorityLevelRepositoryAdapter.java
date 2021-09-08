@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.app.authority.AuthorityLevelRepository;
-import it.chalmers.gamma.app.domain.AuthorityLevel;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +29,13 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     }
 
     @Override
-    public List<AuthorityLevel> getAuthorityLevels() {
+    public List<AuthorityLevel> getAll() {
         return null;
     }
 
     @Override
-    public Optional<AuthorityLevel> getAuthorityLevel(AuthorityLevel authorityLevel) {
+    public Optional<AuthorityLevel> get(AuthorityLevelName authorityLevelName) {
         return Optional.empty();
     }
+
 }

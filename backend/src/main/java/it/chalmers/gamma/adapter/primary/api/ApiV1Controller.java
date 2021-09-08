@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.app.GroupFacade;
 import it.chalmers.gamma.app.SuperGroupFacade;
 import it.chalmers.gamma.app.UserFacade;
-import it.chalmers.gamma.app.domain.Group;
+import it.chalmers.gamma.domain.group.Group;
 import it.chalmers.gamma.adapter.secondary.userdetails.GrantedAuthorityProxy;
-import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.domain.GroupPost;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,12 +42,12 @@ public class ApiV1Controller {
 
     @GetMapping("/groups")
     public List<Group> getGroups() {
-        return this.groupService.getAll();
+        return this.groupFacade.getAll();
     }
 
     @GetMapping("/superGroups")
     public List<SuperGroup> getSuperGroups() {
-        return this.superGroupService.getAll();
+        return this.superGroupFacade.getAllSuperGroups();
     }
 
     @GetMapping("/users")
@@ -71,7 +70,7 @@ public class ApiV1Controller {
     public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException { }
 
     private record GetMeResponse(@JsonUnwrapped User user,
-                                 List<GroupPost> groups,
+//                                 List<GroupPost> groups,
                                  Collection<GrantedAuthorityProxy> authorities) { }
 
     @GetMapping("/users/me")

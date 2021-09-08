@@ -1,8 +1,8 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.AuthorityFacade;
+import it.chalmers.gamma.app.AuthorityLevelFacade;
 import it.chalmers.gamma.app.UserFacade;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
@@ -17,11 +17,11 @@ public class EnsureAnAdminUserBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(EnsureAnAdminUserBootstrap.class);
 
     private final UserFacade userFacade;
-    private final AuthorityFacade authorityFacade;
+    private final AuthorityLevelFacade authorityLevelFacade;
 
-    public EnsureAnAdminUserBootstrap(UserFacade userFacade, AuthorityFacade authorityFacade) {
+    public EnsureAnAdminUserBootstrap(UserFacade userFacade, AuthorityLevelFacade authorityLevelFacade) {
         this.userFacade = userFacade;
-        this.authorityFacade = authorityFacade;
+        this.authorityLevelFacade = authorityLevelFacade;
     }
 
     @PostConstruct

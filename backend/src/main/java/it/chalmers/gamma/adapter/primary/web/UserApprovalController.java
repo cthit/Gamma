@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.MeFacade;
-import it.chalmers.gamma.app.domain.Client;
+import it.chalmers.gamma.domain.client.Client;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
-import it.chalmers.gamma.app.domain.Name;
-import it.chalmers.gamma.app.domain.PrettyName;
-import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.domain.SuperGroupType;
-import it.chalmers.gamma.app.domain.Email;
+import it.chalmers.gamma.domain.user.Name;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
@@ -34,7 +34,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     @Column(name = "super_group_type_name")
     private String superGroupType;
 
-    @Column(name = "e_name")
+    @Column(name = "email")
     private String email;
 
     public SuperGroupEntity() {}

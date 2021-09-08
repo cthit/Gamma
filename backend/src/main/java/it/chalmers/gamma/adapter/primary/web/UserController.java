@@ -2,18 +2,17 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.app.UserFacade;
-import it.chalmers.gamma.app.domain.AcceptanceYear;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.FirstName;
-import it.chalmers.gamma.app.domain.GroupPost;
-import it.chalmers.gamma.app.domain.Language;
-import it.chalmers.gamma.app.domain.UserActivationToken;
-import it.chalmers.gamma.app.domain.LastName;
-import it.chalmers.gamma.app.domain.Nick;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.user.AcceptanceYear;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.user.FirstName;
+import it.chalmers.gamma.domain.user.Language;
+import it.chalmers.gamma.domain.useractivation.UserActivationToken;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Nick;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.user.User;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -49,7 +48,9 @@ public final class UserController {
 //        return this.userService.getAll();
     }
 
-    public record GetUserRestrictedResponse(@JsonUnwrapped User user, List<GroupPost> groups) { }
+    public record GetUserRestrictedResponse(@JsonUnwrapped User user
+//                                            List<GroupPost> groups
+    ) { }
 
     @GetMapping("/{id}")
     public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
@@ -82,26 +83,27 @@ public final class UserController {
     @PostMapping("/create")
     @ResponseBody
     public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
-        try {
-            this.userCreationService.createUserByCode(new User(
-                            UserId.generate(),
-                            request.cid,
-                            request.email,
-                            request.language,
-                            request.nick,
-                            request.firstName,
-                            request.lastName,
-                            request.userAgreement,
-                            request.acceptanceYear
-                    ),
-                    request.password,
-                    request.token
-            );
-        } catch (CidOrCodeNotMatchException e) {
-            // If anything is wrong, throw generic error
-            throw new CodeOrCidIsWrongResponse();
-        }
-        return new UserCreatedResponse();
+//        try {
+//            this.userCreationService.createUserByCode(new User(
+//                            UserId.generate(),
+//                            request.cid,
+//                            request.email,
+//                            request.language,
+//                            request.nick,
+//                            request.firstName,
+//                            request.lastName,
+//                            request.userAgreement,
+//                            request.acceptanceYear
+//                    ),
+//                    request.password,
+//                    request.token
+//            );
+//        } catch (CidOrCodeNotMatchException e) {
+//             If anything is wrong, throw generic error
+//            throw new CodeOrCidIsWrongResponse();
+//        }
+//        return new UserCreatedResponse();
+        return null;
     }
 
 

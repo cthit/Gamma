@@ -2,44 +2,50 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
-import it.chalmers.gamma.app.domain.Id;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.PostId;
-import it.chalmers.gamma.app.domain.SuperGroupId;
+import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.post.Post;
+import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthorityPostPK extends Id<AuthorityPostPK.AuthorityPostPKDTO> {
+public class AuthorityPostPK extends Id<AuthorityPostPK.AuthorityPostPKRecord> {
 
-    protected record AuthorityPostPKDTO(SuperGroupId superGroupId,
-                                        PostId postId,
+    public record AuthorityPostPKRecord(SuperGroup superGroup,
+                                        Post post,
                                         AuthorityLevelName authorityLevelName) { }
 
-    @Embedded
-    private SuperGroupEntity superGroupId;
+    @JoinColumn(name = "super_group_id")
+    @ManyToOne
+    private SuperGroupEntity superGroupEntity;
 
-    @Embedded
-    private PostEntity postId;
+    @JoinColumn(name = "post_id")
+    @ManyToOne
+    private PostEntity postEntity;
 
-    @Embedded
-    private AuthorityLevelEntity authorityLevelName;
+    @Column(name = "authority_level")
+    private String authorityLevel;
 
     protected AuthorityPostPK() {}
 
-    public AuthorityPostPK(SuperGroupId superGroupId, PostId postId, AuthorityLevelName authorityLevelName) {
-        this.superGroupId = superGroupId;
-        this.postId = postId;
-        this.authorityLevelName = authorityLevelName;
+    public AuthorityPostPK(SuperGroupEntity superGroupEntity, PostEntity postEntity, String authorityLevel) {
+        this.superGroupEntity = superGroupEntity;
+        this.postEntity = postEntity;
+        this.authorityLevel = authorityLevel;
     }
 
     @Override
-    protected AuthorityPostPKDTO value() {
-        return new AuthorityPostPKDTO(
-                this.superGroupId,
-                this.postId,
-                this.authorityLevelName
+    public AuthorityPostPKRecord value() {
+        return new AuthorityPostPKRecord(
+                this.superGroupEntity.toDomain(),
+                this.postEntity.toDomain(),
+                AuthorityLevelName.valueOf(this.authorityLevel)
         );
     }
     

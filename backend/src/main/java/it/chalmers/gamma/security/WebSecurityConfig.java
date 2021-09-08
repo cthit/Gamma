@@ -1,13 +1,9 @@
 package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.ApiKeyType;
-import it.chalmers.gamma.security.authentication.AuthenticationFilterConfigurer;
+import it.chalmers.gamma.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
-import it.chalmers.gamma.app.user.UserService;
-
-import it.chalmers.gamma.app.user.UserPasswordResetService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +38,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String issuer;
 
     private final UserDetailsService userDetailsService;
-    private final UserService userService;
-    private final UserPasswordResetService userPasswordResetService;
     private final PasswordEncoder passwordEncoder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
     private final ApiKeyRepository apiKeyService;
@@ -55,15 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
-                             UserService userService,
-                             UserPasswordResetService userPasswordResetService,
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
                              ApiKeyRepository apiKeyService) {
         this.userDetailsService = userDetailsService;
-        this.userService = userService;
-        this.userPasswordResetService = userPasswordResetService;
         this.passwordEncoder = passwordEncoder;
         this.loginRedirectHandler = loginRedirectHandler;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
@@ -128,15 +118,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addAuthenticationFilter(HttpSecurity http) {
         try {
-            http.apply(
-                    new AuthenticationFilterConfigurer(
-                            this.userService,
-                            this.secretKey,
-                            this.issuer,
-                            this.userPasswordResetService,
-                            this.baseFrontendUrl,
-                            this.apiKeyService)
-            );
+//            http.apply(
+//                    new AuthenticationFilterConfigurer(
+//                            this.userService,
+//                            this.secretKey,
+//                            this.issuer,
+//                            this.userPasswordResetService,
+//                            this.baseFrontendUrl,
+//                            this.apiKeyService)
+//            );
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding JwtAuthenticationFilter", e);
         }

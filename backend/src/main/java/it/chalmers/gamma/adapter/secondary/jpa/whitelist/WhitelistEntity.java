@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.whitelist;
 
-import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
 
 import javax.persistence.EmbeddedId;

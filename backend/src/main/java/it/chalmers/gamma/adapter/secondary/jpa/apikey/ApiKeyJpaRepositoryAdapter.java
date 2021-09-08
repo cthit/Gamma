@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.ApiKey;
-import it.chalmers.gamma.app.domain.ApiKeyId;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.ApiKey;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,7 +21,12 @@ public class ApiKeyJpaRepositoryAdapter implements ApiKeyRepository {
 
     @Override
     public void create(ApiKey apiKey) {
-        this.repository.save(new ApiKeyEntity(apiKey));
+
+    }
+
+    @Override
+    public void save(ApiKey apiKey) {
+
     }
 
     @Override
@@ -46,15 +51,6 @@ public class ApiKeyJpaRepositoryAdapter implements ApiKeyRepository {
     @Override
     public Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken) {
         return this.repository.findByToken(apiKeyToken).map(ApiKeyEntity::toDomain);
-    }
-
-    @Override
-    public ApiKeyToken generateNewToken(ApiKeyId apiKeyId) throws ApiKeyNotFoundException {
-        ApiKeyToken token = ApiKeyToken.generate();
-        ApiKeyEntity entity = this.repository.findById(apiKeyId).orElseThrow(ApiKeyNotFoundException::new);
-        entity.setToken(token);
-        this.repository.save(entity);
-        return token;
     }
 
 }

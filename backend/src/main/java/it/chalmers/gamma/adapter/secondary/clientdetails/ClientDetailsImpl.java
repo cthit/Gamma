@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.domain.ClientSecret;
+import it.chalmers.gamma.domain.client.Client;
+import it.chalmers.gamma.domain.client.ClientSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

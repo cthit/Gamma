@@ -79,7 +79,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(this.clientDetailsService);
+//        clients.withClientDetails(this.clientDetailsService);
     }
 
     @Bean

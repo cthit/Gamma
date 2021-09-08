@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
-import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.domain.Id;
-import it.chalmers.gamma.app.domain.User;
+import it.chalmers.gamma.domain.client.Client;
+import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.domain.user.User;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -26,9 +26,9 @@ public class UserApprovalEntityPK extends Id<UserApprovalEntityPK.UserApprovalPK
 
     protected UserApprovalEntityPK() {}
 
-    public UserApprovalEntityPK(User user, Client client) {
-        this.user = new UserEntity(user);
-        this.client = new ClientEntity(client);
+    public UserApprovalEntityPK(UserEntity user, ClientEntity client) {
+        this.user = user;
+        this.client = client;
     }
 
     @Override

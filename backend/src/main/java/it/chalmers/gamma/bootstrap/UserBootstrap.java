@@ -1,10 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.Language;
+import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.app.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,23 +37,23 @@ public class UserBootstrap {
 
         LOGGER.info("========== USER BOOTSTRAP ==========");
 
-        this.mockData.users().forEach(mockUser -> this.userRepository.create(
-                new User(
-                        mockUser.id(),
-                        mockUser.cid(),
-                        new Email(mockUser.cid() + "@student.chalmers.it"),
-                        Language.EN,
-                        mockUser.nick(),
-                        mockUser.firstName(),
-                        mockUser.lastName(),
-                        true,
-                        mockUser.acceptanceYear(),
-                        false,
-                        false,
-                        null
-                ),
-                UnencryptedPassword.valueOf("password")
-        ));
+//        this.mockData.users().forEach(mockUser -> this.userRepository.create(
+//                new User(
+//                        mockUser.id(),
+//                        mockUser.cid(),
+//                        new Email(mockUser.cid() + "@student.chalmers.it"),
+//                        Language.EN,
+//                        mockUser.nick(),
+//                        mockUser.firstName(),
+//                        mockUser.lastName(),
+//                        Instant.now(),
+//                        mockUser.acceptanceYear(),
+//                        false,
+//                        false,
+//                        null
+//                ),
+//                UnencryptedPassword.valueOf("password")
+//        ));
 
         LOGGER.info("Generated the users: "
                 + this.mockData.users()

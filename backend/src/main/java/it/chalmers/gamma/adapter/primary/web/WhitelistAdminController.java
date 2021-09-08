@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.domain.Cid;
+import it.chalmers.gamma.domain.user.Cid;
 
 import java.util.List;
 

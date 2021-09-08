@@ -2,7 +2,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import java.util.Optional;
 
-import it.chalmers.gamma.app.domain.PostId;
+import it.chalmers.gamma.domain.post.PostId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

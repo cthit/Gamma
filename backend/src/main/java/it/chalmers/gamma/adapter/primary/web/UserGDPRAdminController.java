@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.UserFacade;
-import it.chalmers.gamma.app.domain.UserId;
+import it.chalmers.gamma.domain.user.UserId;
 
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

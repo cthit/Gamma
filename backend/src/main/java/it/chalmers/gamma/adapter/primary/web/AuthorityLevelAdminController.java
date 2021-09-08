@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.AuthorityFacade;
-import it.chalmers.gamma.app.domain.AuthorityLevel;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -14,47 +14,35 @@ import java.util.List;
 @RequestMapping("/internal/admin/authority/level")
 public final class AuthorityLevelAdminController {
 
-    private final AuthorityFacade authorityFacade;
+    private final AuthorityLevelFacade authorityLevelFacade;
 
-    public AuthorityLevelAdminController(AuthorityFacade authorityFacade) {
-        this.authorityFacade = authorityFacade;
+    public AuthorityLevelAdminController(AuthorityLevelFacade authorityLevelFacade) {
+        this.authorityLevelFacade = authorityLevelFacade;
     }
 
     @PostMapping()
     public AuthorityLevelCreatedResponse addAuthorityLevel(@RequestBody CreateAuthorityLevelRequest request) {
-        try {
-            this.authorityLevelService.create(request.authorityLevel);
-        } catch (AuthorityLevelService.AuthorityLevelAlreadyExistsException e) {
-            throw new AuthorityLevelAlreadyExistsResponse();
-        }
-
+        this.authorityLevelFacade.create(request.authorityLevel);
         return new AuthorityLevelCreatedResponse();
     }
 
     private record CreateAuthorityLevelRequest(AuthorityLevelName authorityLevel) { }
 
     @GetMapping
-    public List<AuthorityLevelName> getAllAuthorityLevels() {
-        return this.authorityLevelService.getAll();
+    public List<AuthorityLevel> getAllAuthorityLevels() {
+        return this.authorityLevelFacade.getAll();
     }
 
     @DeleteMapping("/{name}")
     public AuthorityLevelDeletedResponse removeAuthorityLevel(@PathVariable("name") AuthorityLevelName name) {
-        try {
-            this.authorityLevelService.delete(name);
-            return new AuthorityLevelDeletedResponse();
-        } catch (AuthorityLevelService.AuthorityLevelNotFoundException e) {
-            throw new AuthorityLevelNotFoundResponse();
-        }
+        this.authorityLevelFacade.delete(name);
+        return new AuthorityLevelDeletedResponse();
     }
 
     @GetMapping("/{name}")
-    public AuthorityLevel getAuthoritiesWithLevel(@PathVariable("name") AuthorityLevelName name) {
-        try {
-            return this.authorityFinder.getByAuthorityLevel(name);
-        } catch (AuthorityLevelService.AuthorityLevelNotFoundException e) {
-            throw new AuthorityLevelNotFoundResponse();
-        }
+    public AuthorityLevel getAuthorityLevel(@PathVariable("name") AuthorityLevelName name) {
+        return this.authorityLevelFacade.get(name)
+                .orElseThrow(AuthorityLevelNotFoundResponse::new);
     }
 
     private static class AuthorityLevelDeletedResponse extends SuccessResponse { }

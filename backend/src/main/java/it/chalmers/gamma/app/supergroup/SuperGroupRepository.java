@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.supergroup;
 
-import it.chalmers.gamma.app.domain.SuperGroup;
-import it.chalmers.gamma.app.domain.SuperGroupId;
-import it.chalmers.gamma.app.domain.SuperGroupType;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 
 import java.util.List;
 import java.util.Optional;

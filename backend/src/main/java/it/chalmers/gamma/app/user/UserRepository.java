@@ -1,10 +1,10 @@
 package it.chalmers.gamma.app.user;
 
-import it.chalmers.gamma.app.domain.Cid;
-import it.chalmers.gamma.app.domain.Email;
-import it.chalmers.gamma.app.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.domain.User;
-import it.chalmers.gamma.app.domain.UserId;
+import it.chalmers.gamma.domain.user.Cid;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
 
 import java.util.List;
 import java.util.Optional;

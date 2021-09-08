@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.domain.Post;
+import it.chalmers.gamma.domain.post.Post;
 import it.chalmers.gamma.app.post.PostRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,30 +1,18 @@
 package it.chalmers.gamma.app.client;
 
-import it.chalmers.gamma.adapter.secondary.clientdetails.ClientDetailsImpl;
-import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.ClientJpaRepository;
 import it.chalmers.gamma.app.AccessGuard;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.Client;
-import it.chalmers.gamma.app.domain.ClientId;
-import it.chalmers.gamma.app.domain.ClientSecret;
-import it.chalmers.gamma.app.domain.ApiKey;
-import it.chalmers.gamma.app.domain.ApiKeyId;
-import it.chalmers.gamma.app.domain.ClientWithRestrictions;
-import it.chalmers.gamma.app.domain.ApiKeyToken;
-import it.chalmers.gamma.app.domain.ApiKeyType;
-import it.chalmers.gamma.app.domain.ClientApiKeyPair;
-import it.chalmers.gamma.adapter.primary.web.ClientAdminController;
+import it.chalmers.gamma.domain.client.Client;
+import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.domain.client.ClientSecret;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
 
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class ClientFacade extends Facade {
@@ -41,60 +29,41 @@ public class ClientFacade extends Facade {
     }
 
     @Transactional
-    public void create(Client newClient, ClientSecret clientSecret, List<AuthorityLevelName> restrictions) {
-        this.clientRepository.save(new ClientEntity(newClient, clientSecret));
-        this.clientRestrictionService.create(newClient.clientId(), restrictions);
+    public void create(Client newClient, ClientSecret clientSecret) {
+        accessGuard.requireIsAdmin();
+        this.clientRepository.create(newClient, clientSecret);
     }
 
     @Transactional
     public void createWithApiKey(Client newClient,
                                  ClientSecret clientSecret,
-                                 ApiKeyToken apiKeyToken,
-                                 List<AuthorityLevelName> restrictions) {
-        this.create(newClient, clientSecret, restrictions);
+                                 ApiKeyToken apiKeyToken) {
+        accessGuard.requireIsAdmin();
 
-        ApiKeyId apiKeyId = ApiKeyId.generate();
-
-        this.apiKeyRepository.create(
-                new ApiKey(
-                        apiKeyId,
-                        newClient.prettyName(),
-                        newClient.description(),
-                        ApiKeyType.CLIENT,
-                        apiKeyToken
-                )
-        );
-
-        this.clientApiKeyService.create(
-                new ClientApiKeyPair(
-                        newClient.clientId(),
-                        apiKeyId
-                )
-        );
+//        ApiKey apiKey = ApiKey.create(newClient.prettyName(), newClient.description(), ApiKeyType.CLIENT);
+//        this.apiKeyRepository.create(apiKey, apiKeyToken);
+//
+//        newClient = newClient.withApiKey(apiKey);
+//        this.create(newClient, clientSecret);
     }
 
-    public void delete(ClientId clientId) throws ClientNotFoundException {
-        this.clientRepository.deleteById(clientId);
+    public void delete(ClientId clientId) throws ClientRepository.ClientNotFoundException {
+        accessGuard.requireIsAdmin();
+        this.clientRepository.delete(clientId);
+    }
+
+    public Optional<Client> get(ClientId clientId) {
+        return this.clientRepository.get(clientId);
     }
 
     public List<Client> getAll() {
-        return this.clientRepository.findAll().stream().map(ClientEntity::toDomain).collect(Collectors.toList());
+        accessGuard.requireIsAdmin();
+        return this.clientRepository.getAll();
     }
 
-    public ClientWithRestrictions get(ClientId clientId) throws ClientNotFoundException {
-        return new ClientWithRestrictions(
-                this.clientRepository.findById(clientId)
-                        .orElseThrow(ClientNotFoundException::new)
-                        .toDomain(),
-                this.clientRestrictionService.get(clientId)
-                );
-    }
-
-    public void resetClientSecret(ClientId clientId, ClientSecret clientSecret) throws ClientNotFoundException {
-        ClientEntity clientEntity = this.clientRepository.findById(clientId)
-                .orElseThrow(ClientNotFoundException::new);
-        clientEntity.setClientSecret(clientSecret);
-        this.clientRepository.save(clientEntity);
+    public ClientSecret resetClientSecret(ClientId clientId) throws ClientNotFoundException {
+        accessGuard.requireIsAdmin();
+        return this.clientRepository.resetClientSecret(clientId);
     }
 
     public static class ClientNotFoundException extends Exception { }

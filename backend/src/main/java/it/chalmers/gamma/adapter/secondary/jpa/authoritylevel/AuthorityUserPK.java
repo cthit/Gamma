@@ -1,46 +1,42 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
-import it.chalmers.gamma.app.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.UserId;
-import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.domain.Id;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthorityUserPK extends Id<AuthorityUserPK.AuthorityUserPKDTO> {
+public class AuthorityUserPK extends Id<AuthorityUserPK.AuthorityUserPKRecord> {
 
-    @Override
-    protected AuthorityUserPKDTO value() {
-        return new AuthorityUserPKDTO(
-                this.userId,
-                this.authorityLevelName
-        );
-    }
+    protected record AuthorityUserPKRecord(User user, AuthorityLevelName authorityLevelName) { }
 
-    protected record AuthorityUserPKDTO(UserId userId, AuthorityLevelName authorityLevelName) { }
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private UserEntity userEntity;
 
-    @Embedded
-    private UserId userId;
-
-    @Embedded
-    private AuthorityLevelName authorityLevelName;
+    @Column(name = "authority_level")
+    private String authorityLevel;
 
     protected AuthorityUserPK() {
 
     }
 
-    public AuthorityUserPK(UserId userId, AuthorityLevelName authorityLevelName) {
-        this.userId = userId;
-        this.authorityLevelName = authorityLevelName;
+    public AuthorityUserPK(UserEntity userEntity, String authorityLevel) {
+        this.userEntity = userEntity;
+        this.authorityLevel = authorityLevel;
     }
 
-    protected UserId getUserId() {
-        return userId;
+    @Override
+    public AuthorityUserPKRecord value() {
+        return new AuthorityUserPKRecord(
+                this.userEntity.toDomain(),
+                AuthorityLevelName.valueOf(this.authorityLevel)
+        );
     }
-
-    protected AuthorityLevelName getAuthorityLevelName() {
-        return authorityLevelName;
-    }
-
 }
