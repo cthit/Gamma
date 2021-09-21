@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.image;
 
-import it.chalmers.gamma.app.Image;
+import it.chalmers.gamma.app.image.Image;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;

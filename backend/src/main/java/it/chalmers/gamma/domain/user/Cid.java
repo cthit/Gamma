@@ -3,13 +3,12 @@ package it.chalmers.gamma.domain.user;
 import it.chalmers.gamma.domain.Id;
 import it.chalmers.gamma.app.user.UserSignInIdentifier;
 
+import java.io.Serializable;
 import java.util.Locale;
 
-public class Cid extends Id<String> implements UserSignInIdentifier {
+public record Cid(String value) implements Id<String>, UserSignInIdentifier, Serializable {
 
-    private final String value;
-
-    private Cid(String value) {
+    public Cid {
         if (value == null) {
             throw new NullPointerException("Cid cannot be null");
         }
@@ -20,7 +19,6 @@ public class Cid extends Id<String> implements UserSignInIdentifier {
             throw new IllegalArgumentException("Input: " + value + "; Cid length must be between 4 and 12, and only have letters between a - z");
         }
 
-        this.value = value;
     }
 
     public static Cid valueOf(String cid) {
@@ -28,7 +26,7 @@ public class Cid extends Id<String> implements UserSignInIdentifier {
     }
 
     @Override
-    public String value(){
+    public String getValue() {
         return this.value;
     }
 }

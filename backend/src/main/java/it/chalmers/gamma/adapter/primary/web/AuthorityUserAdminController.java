@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.GroupFacade;
+import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.common.ImageUri;
 import it.chalmers.gamma.util.response.ErrorResponse;

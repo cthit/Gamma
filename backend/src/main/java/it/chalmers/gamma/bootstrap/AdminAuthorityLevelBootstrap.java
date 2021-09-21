@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

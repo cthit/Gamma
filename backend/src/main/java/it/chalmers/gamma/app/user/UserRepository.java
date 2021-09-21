@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    void create(User user, UnencryptedPassword unencryptedPassword);
+    void create(User user);
     void save(User user);
     void delete(UserId userId) throws UserNotFoundException;
     void setPassword(UserId userId, UnencryptedPassword password);

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.PostFacade;
+import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.domain.post.Post;
 
 import it.chalmers.gamma.domain.post.PostId;

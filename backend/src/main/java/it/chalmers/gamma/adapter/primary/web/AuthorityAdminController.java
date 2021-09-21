@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

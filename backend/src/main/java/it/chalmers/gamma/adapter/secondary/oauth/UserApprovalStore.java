@@ -48,8 +48,8 @@ public class UserApprovalStore implements ApprovalStore {
         return this.userApprovalRepository.userHaveApprovedClient(cid, clientId)
                 ? Collections.singleton(
                     new Approval(
-                            cid.value(),
-                            clientId.value(),
+                            cid.getValue(),
+                            clientId.getValue(),
                             "access",
                             Integer.MAX_VALUE,
                             Approval.ApprovalStatus.APPROVED

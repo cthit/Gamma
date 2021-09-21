@@ -4,11 +4,9 @@ import it.chalmers.gamma.domain.Id;
 
 import java.util.Locale;
 
-public class SuperGroupType extends Id<String> {
+public record SuperGroupType(String value) implements Id<String> {
 
-    private final String value;
-
-    private SuperGroupType(String value) {
+    public SuperGroupType {
         if (value == null) {
             throw new NullPointerException("Super group type cannot be null");
         }
@@ -19,7 +17,6 @@ public class SuperGroupType extends Id<String> {
             throw new IllegalArgumentException("Super group type: [" + value + "] must be made using letters with length between 5 - 30");
         }
 
-        this.value = value;
     }
 
     public static SuperGroupType valueOf(String name) {
@@ -27,7 +24,7 @@ public class SuperGroupType extends Id<String> {
     }
 
     @Override
-    public String value() {
+    public String getValue() {
         return this.value;
     }
 }

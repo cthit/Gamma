@@ -8,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ClientRestrictionPK extends Id<ClientRestrictionPK.ClientRestrictionPKDTO> {
+public class ClientRestrictionPK implements Id<ClientRestrictionPK.ClientRestrictionPKDTO> {
 
     @Column(name = "client_id")
     private String clientId;
@@ -19,12 +19,12 @@ public class ClientRestrictionPK extends Id<ClientRestrictionPK.ClientRestrictio
     protected ClientRestrictionPK() { }
 
     public ClientRestrictionPK(ClientId clientId, AuthorityLevelName authorityLevelName) {
-        this.clientId = clientId.value();
-        this.authorityLevelName = authorityLevelName.value();
+        this.clientId = clientId.getValue();
+        this.authorityLevelName = authorityLevelName.getValue();
     }
 
     @Override
-    public ClientRestrictionPKDTO value() {
+    public ClientRestrictionPKDTO getValue() {
         return new ClientRestrictionPKDTO(
                 ClientId.valueOf(this.clientId),
                 AuthorityLevelName.valueOf(this.authorityLevelName)

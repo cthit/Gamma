@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.ResetPasswordFacade;
+import it.chalmers.gamma.app.user.UserResetPasswordFacade;
 import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.PasswordResetToken;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/users/reset_password")
 public class UserPasswordResetController {
 
-    private final ResetPasswordFacade resetPasswordFacade;
+    private final UserResetPasswordFacade userResetPasswordFacade;
 
-    public UserPasswordResetController(ResetPasswordFacade resetPasswordFacade) {
-        this.resetPasswordFacade = resetPasswordFacade;
+    public UserPasswordResetController(UserResetPasswordFacade userResetPasswordFacade) {
+        this.userResetPasswordFacade = userResetPasswordFacade;
     }
 
     private record ResetPasswordRequest(String cidOrEmail) { }
@@ -32,8 +32,8 @@ public class UserPasswordResetController {
     @PostMapping()
     public PasswordRestLinkSentResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
         try {
-            this.resetPasswordFacade.startResetPasswordProcess(toSignInIdentifier(request.cidOrEmail));
-        } catch (ResetPasswordFacade.PasswordResetProcessException e) {
+            this.userResetPasswordFacade.startResetPasswordProcess(toSignInIdentifier(request.cidOrEmail));
+        } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
             throw new PasswordResetProcessErrorResponse();
         }
         return new PasswordRestLinkSentResponse();
@@ -46,8 +46,8 @@ public class UserPasswordResetController {
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@RequestBody ResetPasswordFinishRequest request) {
         try {
-            this.resetPasswordFacade.finishResetPasswordProcess(toSignInIdentifier(request.cidOrEmail), request.token, request.password);
-        } catch (ResetPasswordFacade.PasswordResetProcessException e) {
+            this.userResetPasswordFacade.finishResetPasswordProcess(toSignInIdentifier(request.cidOrEmail), request.token, request.password);
+        } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
             throw new PasswordResetProcessErrorResponse();
         }
         return new PasswordChangedResponse();

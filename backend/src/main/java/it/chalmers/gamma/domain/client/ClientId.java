@@ -5,13 +5,7 @@ import it.chalmers.gamma.util.TokenUtils;
 
 import java.io.Serializable;
 
-public class ClientId extends Id<String> implements Serializable {
-
-    private final String value;
-
-    private ClientId(String value) {
-        this.value = value;
-    }
+public record ClientId(String value) implements Id<String>, Serializable {
 
     public static ClientId generate() {
         String id = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
@@ -21,11 +15,11 @@ public class ClientId extends Id<String> implements Serializable {
         return new ClientId(id);
     }
 
-    public static ClientId valueOf(String value)  {
+    public static ClientId valueOf(String value) {
         return new ClientId(value);
     }
 
-    public String value() {
+    public String getValue() {
         return this.value;
     }
 

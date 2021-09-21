@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.UserFacade;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.domain.user.AcceptanceYear;
 import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.domain.common.Email;
@@ -15,7 +15,6 @@ import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.User;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,9 +42,8 @@ public final class UserController {
     }
 
     @GetMapping()
-    public List<User> getAllRestrictedUsers() {
-        return Collections.emptyList();
-//        return this.userService.getAll();
+    public List<UserFacade.UserDTO> getAllRestrictedUsers() {
+        return this.userFacade.getAll();
     }
 
     public record GetUserRestrictedResponse(@JsonUnwrapped User user

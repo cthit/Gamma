@@ -33,7 +33,7 @@ public class ClientDetailsImpl implements ClientDetails {
 
     @Override
     public String getClientId() {
-        return this.client.clientId().value();
+        return this.client.clientId().getValue();
     }
     
     @Override
@@ -44,7 +44,7 @@ public class ClientDetailsImpl implements ClientDetails {
     @Override
     @JsonIgnore
     public Set<String> getResourceIds() {
-        return null;
+        return new HashSet<>();
     }
 
     @Override

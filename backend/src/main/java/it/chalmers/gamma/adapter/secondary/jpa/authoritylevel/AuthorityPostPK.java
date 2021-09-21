@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthorityPostPK extends Id<AuthorityPostPK.AuthorityPostPKRecord> {
+public class AuthorityPostPK implements Id<AuthorityPostPK.AuthorityPostPKRecord> {
 
     public record AuthorityPostPKRecord(SuperGroup superGroup,
                                         Post post,
@@ -29,23 +29,24 @@ public class AuthorityPostPK extends Id<AuthorityPostPK.AuthorityPostPKRecord> {
     @ManyToOne
     private PostEntity postEntity;
 
-    @Column(name = "authority_level")
-    private String authorityLevel;
+    @JoinColumn(name = "authority_level")
+    @ManyToOne
+    private AuthorityLevelEntity authorityLevel;
 
     protected AuthorityPostPK() {}
 
-    public AuthorityPostPK(SuperGroupEntity superGroupEntity, PostEntity postEntity, String authorityLevel) {
+    public AuthorityPostPK(SuperGroupEntity superGroupEntity, PostEntity postEntity, AuthorityLevelEntity authorityLevel) {
         this.superGroupEntity = superGroupEntity;
         this.postEntity = postEntity;
         this.authorityLevel = authorityLevel;
     }
 
     @Override
-    public AuthorityPostPKRecord value() {
+    public AuthorityPostPKRecord getValue() {
         return new AuthorityPostPKRecord(
                 this.superGroupEntity.toDomain(),
                 this.postEntity.toDomain(),
-                AuthorityLevelName.valueOf(this.authorityLevel)
+                this.authorityLevel.id()
         );
     }
     

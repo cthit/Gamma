@@ -18,7 +18,7 @@ import java.util.UUID;
 public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
 
     @Id
-    @Column(name = "fkit_super_group")
+    @Column(name = "super_group_id")
     private UUID id;
 
     @JoinColumn(name = "description")
@@ -42,19 +42,19 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     public SuperGroupEntity(SuperGroup sg) {
         assert(sg.id() != null);
 
-        this.id = sg.id().value();
+        this.id = sg.id().getValue();
         this.description = new TextEntity();
 
         apply(sg);
     }
 
     public void apply(SuperGroup sg)  {
-        assert(this.id == sg.id().value());
+        assert(this.id == sg.id().getValue());
 
         this.email = sg.email().value();
         this.name = sg.name().value();
         this.prettyName = sg.prettyName().value();
-        this.superGroupType = sg.type().value();
+        this.superGroupType = sg.type().getValue();
 
 
         this.description.apply(sg.description());
@@ -62,7 +62,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
 
     public SuperGroup toDomain() {
         return new SuperGroup(
-                SuperGroupId.valueOf(this.id),
+                new SuperGroupId(this.id),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
                 SuperGroupType.valueOf(this.superGroupType),
@@ -73,6 +73,6 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
 
     @Override
     protected SuperGroupId id() {
-        return SuperGroupId.valueOf(this.id);
+        return new SuperGroupId(this.id);
     }
 }

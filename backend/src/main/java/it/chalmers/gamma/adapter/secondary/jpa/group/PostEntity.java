@@ -29,14 +29,14 @@ public class PostEntity extends MutableEntity<PostId> {
     protected PostEntity(Post p) {
         assert(p.id() != null);
 
-        this.id = p.id().value();
+        this.id = p.id().getValue();
         this.postName = new TextEntity();
 
         apply(p);
     }
 
     public void apply(Post p) {
-        assert(this.id == p.id().value());
+        assert(this.id == p.id().getValue());
 
         this.postName.apply(p.name());
         this.emailPrefix = p.emailPrefix().value();
@@ -44,7 +44,7 @@ public class PostEntity extends MutableEntity<PostId> {
 
     public Post toDomain() {
         return new Post(
-                PostId.valueOf(this.id),
+                new PostId(this.id),
                 this.postName.toDomain(),
                 new EmailPrefix(this.emailPrefix)
         );
@@ -52,7 +52,7 @@ public class PostEntity extends MutableEntity<PostId> {
 
     @Override
     protected PostId id() {
-        return PostId.valueOf(this.id);
+        return new PostId(this.id);
     }
 
 }

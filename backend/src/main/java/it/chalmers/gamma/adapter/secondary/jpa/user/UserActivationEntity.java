@@ -27,7 +27,7 @@ public class UserActivationEntity extends ImmutableEntity<Cid> {
 
     protected UserActivationEntity(Cid cid, UserActivationToken token) {
         this.createdAt = Instant.now();
-        this.cid = cid.value();
+        this.cid = cid.getValue();
         this.token = token.value();
     }
 

@@ -1,6 +1,8 @@
 package it.chalmers.gamma.domain.user;
 
-public record Nick(String value) {
+import java.io.Serializable;
+
+public record Nick(String value) implements Serializable {
 
     public Nick {
         if (value == null) {

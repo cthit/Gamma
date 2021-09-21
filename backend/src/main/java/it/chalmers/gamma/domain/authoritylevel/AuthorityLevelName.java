@@ -2,18 +2,15 @@ package it.chalmers.gamma.domain.authoritylevel;
 
 import it.chalmers.gamma.domain.Id;
 
-public class AuthorityLevelName extends Id<String> {
+public record AuthorityLevelName(String value) implements Id<String> {
 
-    private final String value;
-
-    private AuthorityLevelName(String value) {
+    public AuthorityLevelName {
         if (value == null) {
             throw new NullPointerException("Authority level cannot be null");
         } else if (!value.matches("^([0-9a-z]{5,30})$")) {
             throw new IllegalArgumentException("Authority level must have letter ranging a - z, and be between size 5 and 30 to be valid");
         }
 
-        this.value = value;
     }
 
     public static AuthorityLevelName valueOf(String name) {
@@ -21,7 +18,7 @@ public class AuthorityLevelName extends Id<String> {
     }
 
     @Override
-    public String value() {
+    public String getValue() {
         return this.value;
     }
 }

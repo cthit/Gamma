@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.SuperGroupFacade;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
@@ -25,8 +25,7 @@ public class SuperGroupController {
 
     @GetMapping()
     public List<SuperGroup> getAllSuperGroups() {
-        return Collections.emptyList();
-//        return this.superGroupService.getAll();
+        return this.superGroupFacade.getAllSuperGroups();
     }
 
     @GetMapping("/{id}")

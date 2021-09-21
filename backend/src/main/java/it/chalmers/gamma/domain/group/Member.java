@@ -6,7 +6,7 @@ import it.chalmers.gamma.domain.user.User;
 import java.util.Objects;
 
 public record Member(Post post,
-                     String unofficialPostName,
+                     UnofficialPostName unofficialPostName,
                      User user) {
 
     //TODO: Add custom class for unofficialPostName

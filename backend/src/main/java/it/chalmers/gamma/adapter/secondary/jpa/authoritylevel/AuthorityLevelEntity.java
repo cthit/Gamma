@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
@@ -16,41 +18,28 @@ import java.util.List;
 
 @Entity
 @Table(name = "authority_level")
-public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName> {
+public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
 
     @Id
-    @Column(name = "autority_level")
+    @Column(name = "authority_level")
     private String authorityLevel;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "authority_post")
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuthorityPostEntity> postEntityList;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "authority_user")
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuthorityUserEntity> userEntityList;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "authority_super_group")
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuthoritySuperGroupEntity> superGroupEntityList;
 
     protected AuthorityLevelEntity() {}
 
-    protected AuthorityLevelEntity(AuthorityLevelName authorityLevel) {
-        this.authorityLevel = authorityLevel.value();
+    protected AuthorityLevelEntity(String name) {
+        this.authorityLevel = name;
         this.postEntityList = new ArrayList<>();
         this.userEntityList = new ArrayList<>();
         this.superGroupEntityList = new ArrayList<>();
-    }
-
-    protected AuthorityLevelEntity(AuthorityLevel authorityLevel) {
-        this.authorityLevel = authorityLevel.name().value();
-        this.postEntityList = authorityLevel.posts()
-                .stream().map(AuthorityPostEntity::new).toList();
-        this.userEntityList = authorityLevel.users()
-                .stream().map(AuthorityUserEntity::new).toList();
-        this.superGroupEntityList = authorityLevel.superGroups()
-                .stream().map(AuthoritySuperGroupEntity::new).toList();
     }
 
     @Override
@@ -58,13 +47,28 @@ public class AuthorityLevelEntity extends MutableEntity<AuthorityLevelName> {
         return AuthorityLevelName.valueOf(this.authorityLevel);
     }
 
-    public AuthorityLevel toDomain() {
+    //TODO: remove depencency to the converter
+    public AuthorityLevel toDomain(UserEntityConverter userConverter) {
         return new AuthorityLevel(
                 AuthorityLevelName.valueOf(this.authorityLevel),
                 this.postEntityList.stream().map(AuthorityPostEntity::getIdentifier).toList(),
                 this.superGroupEntityList.stream().map(AuthoritySuperGroupEntity::getIdentifier).toList(),
-                this.userEntityList.stream().map(AuthorityUserEntity::getIdentifier).toList()
+                this.userEntityList.stream()
+                        .map(AuthorityUserEntity::getUserEntity)
+                        .map(userConverter::toDomain)
+                        .toList()
         );
     }
 
+    public void setPosts(List<AuthorityPostEntity> postEntityList) {
+        this.postEntityList = postEntityList;
+    }
+
+    public void setUsers(List<AuthorityUserEntity> userEntityList) {
+        this.userEntityList = userEntityList;
+    }
+
+    public void setSuperGroups(List<AuthoritySuperGroupEntity> superGroupEntityList) {
+        this.superGroupEntityList = superGroupEntityList;
+    }
 }

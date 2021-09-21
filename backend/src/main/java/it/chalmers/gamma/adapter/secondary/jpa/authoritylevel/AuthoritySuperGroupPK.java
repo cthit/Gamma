@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthoritySuperGroupPK extends Id<AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
+public class AuthoritySuperGroupPK implements Id<AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
 
     protected record AuthoritySuperGroupPKDTO(SuperGroup superGroup, AuthorityLevelName authorityLevelName) { }
 
@@ -21,23 +21,24 @@ public class AuthoritySuperGroupPK extends Id<AuthoritySuperGroupPK.AuthoritySup
     @ManyToOne
     private SuperGroupEntity superGroupEntity;
 
-    @Column(name = "authority_level")
-    private String authorityLevel;
+    @JoinColumn(name = "authority_level")
+    @ManyToOne
+    private AuthorityLevelEntity authorityLevel;
 
     protected AuthoritySuperGroupPK() {
 
     }
 
-    public AuthoritySuperGroupPK(SuperGroupEntity superGroupEntity, String authorityLevel) {
+    public AuthoritySuperGroupPK(SuperGroupEntity superGroupEntity, AuthorityLevelEntity authorityLevelEntity) {
         this.superGroupEntity = superGroupEntity;
-        this.authorityLevel = authorityLevel;
+        this.authorityLevel = authorityLevelEntity;
     }
 
     @Override
-    public AuthoritySuperGroupPKDTO value() {
+    public AuthoritySuperGroupPKDTO getValue() {
         return new AuthoritySuperGroupPKDTO(
                 this.superGroupEntity.toDomain(),
-                AuthorityLevelName.valueOf(this.authorityLevel)
+                this.authorityLevel.id()
         );
     }
 }

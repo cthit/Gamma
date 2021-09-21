@@ -3,10 +3,11 @@ package it.chalmers.gamma.adapter.secondary.jpa.util;
 import it.chalmers.gamma.domain.Id;
 
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class AbstractEntity<I extends Id<?>> {
+public abstract class AbstractEntity<I extends Id<?>> implements Serializable {
 
     protected abstract I id();
 

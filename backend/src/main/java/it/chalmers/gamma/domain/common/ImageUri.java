@@ -1,6 +1,8 @@
 package it.chalmers.gamma.domain.common;
 
-public record ImageUri(String value) {
+import java.io.Serializable;
+
+public record ImageUri(String value) implements Serializable {
 
     public ImageUri {
         if (value == null) {

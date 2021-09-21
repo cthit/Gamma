@@ -31,7 +31,7 @@ public class UserBootstrap {
 
     @PostConstruct
     public void createUsers() {
-        if (!this.mocking || this.userRepository.getAll().stream().anyMatch(user -> !user.cid().value().contains("admin"))) {
+        if (!this.mocking || this.userRepository.getAll().stream().anyMatch(user -> !user.cid().getValue().contains("admin"))) {
             return;
         }
 
@@ -59,7 +59,7 @@ public class UserBootstrap {
                 + this.mockData.users()
                         .stream()
                         .map(MockData.MockUser::cid)
-                        .map(Cid::value)
+                        .map(Cid::getValue)
                         .collect(Collectors.joining(", "))
         );
         LOGGER.info("Use a cid from the row above and use the password: password to sign in");

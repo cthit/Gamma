@@ -58,14 +58,27 @@ public class UserEntity extends MutableEntity<UserId> {
         assert(user.id() != null);
         assert(user.cid() != null);
 
-        this.id = user.id().value();
-        this.cid = user.cid().value();
+        this.id = user.id().getValue();
+        this.cid = user.cid().getValue();
 
         this.apply(user);
     }
 
-    public User toDomain() {
-        return new User(
+    protected record UserBase(UserId userId,
+                              Cid cid,
+                              Email email,
+                              Language language,
+                              Nick nick,
+                              Password password,
+                              FirstName firstName,
+                              LastName lastName,
+                              Instant userAgreementAccepted,
+                              AcceptanceYear acceptanceYear) {
+
+    }
+
+    protected UserBase toBaseDomain() {
+        return new UserBase(
                 UserId.valueOf(this.id),
                 Cid.valueOf(this.cid),
                 new Email(this.email),
@@ -75,22 +88,17 @@ public class UserEntity extends MutableEntity<UserId> {
                 new FirstName(this.firstName),
                 new LastName(this.lastName),
                 this.userAgreementAccepted,
-                new AcceptanceYear(this.acceptanceYear),
-                false,
-                false,
-                null
-        );
-        //TODO add one to one
+                new AcceptanceYear(this.acceptanceYear));
     }
 
     @Override
-    protected UserId id() {
+    public UserId id() {
         return UserId.valueOf(this.id);
     }
 
     public void apply(User u) {
-        assert(this.id == u.id().value());
-        assert(this.cid.equals(u.cid().value()));
+        assert(this.id == u.id().getValue());
+        assert(this.cid.equals(u.cid().getValue()));
 
         this.acceptanceYear = u.acceptanceYear().value();
         this.email = u.email().value();
@@ -98,7 +106,8 @@ public class UserEntity extends MutableEntity<UserId> {
         this.lastName = u.lastName().value();
         this.language = u.language();
         this.nick = u.nick().value();
-//        this.userAgreementAccepted = u.userAgreementAccepted();
+        this.password = u.password().value();
+        this.userAgreementAccepted = u.lastAcceptedUserAgreement();
         //TODO: Add gdpr locked and imageUri
     }
 

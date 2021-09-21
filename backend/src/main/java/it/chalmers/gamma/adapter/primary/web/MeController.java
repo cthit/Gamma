@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.MeFacade;
+import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.domain.user.FirstName;
 import it.chalmers.gamma.domain.user.LastName;
 import it.chalmers.gamma.domain.user.Nick;
@@ -38,7 +38,7 @@ public final class MeController {
                                 Collection<GrantedAuthorityProxy> authorities) { }
 
     @GetMapping()
-    public GetMeResponse getMe() {
+    public MeFacade.MeDTO getMe() {
 //        UserDetailsImpl userDetails = UserUtils.getUserDetails();
 //        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
 //                .stream()
@@ -46,7 +46,7 @@ public final class MeController {
 //                .collect(Collectors.toList());
 //
 //        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
-        return null;
+        return this.meFacade.getMe();
     }
 
     public record EditMeRequest (Nick nick,

@@ -37,7 +37,7 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
     protected ClientEntity() { }
 
     public ClientEntity(Client client, ClientSecret clientSecret) {
-        this.clientId = client.clientId().value();
+        this.clientId = client.clientId().getValue();
         this.clientSecret = clientSecret.value();
         this.description = new TextEntity(client.description());
         this.webServerRedirectUri = client.webServerRedirectUri();

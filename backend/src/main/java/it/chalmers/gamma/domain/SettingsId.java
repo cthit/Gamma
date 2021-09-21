@@ -2,13 +2,7 @@ package it.chalmers.gamma.domain;
 
 import java.util.UUID;
 
-public class SettingsId extends Id<UUID> {
-
-    private final UUID value;
-
-    private SettingsId(UUID value) {
-        this.value = value;
-    }
+public record SettingsId(UUID value) implements Id<UUID> {
 
     public static SettingsId generate() {
         return new SettingsId(UUID.randomUUID());
@@ -19,7 +13,7 @@ public class SettingsId extends Id<UUID> {
     }
 
     @Override
-    public UUID value() {
+    public UUID getValue() {
         return this.value;
     }
 }

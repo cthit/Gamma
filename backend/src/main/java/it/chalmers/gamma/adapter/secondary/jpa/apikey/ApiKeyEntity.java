@@ -38,7 +38,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
         assert(apiKey.id() != null);
         assert(apiKeyToken != null);
 
-        this.id = apiKey.id().value();
+        this.id = apiKey.id().getValue();
         this.token = apiKeyToken.value();
         this.prettyName = apiKey.prettyName().value();
         this.description = new TextEntity(apiKey.description());
@@ -47,7 +47,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
 
     public ApiKey toDomain() {
         return new ApiKey(
-                ApiKeyId.valueOf(this.id),
+                new ApiKeyId(this.id),
                 new PrettyName(this.prettyName),
                 this.description.toDomain(),
                 this.keyType,
@@ -57,7 +57,7 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
 
     @Override
     protected ApiKeyId id() {
-        return ApiKeyId.valueOf(this.id);
+        return new ApiKeyId(this.id);
     }
 
 }

@@ -37,13 +37,13 @@ public class GroupEntity extends MutableEntity<GroupId> {
     protected GroupEntity(Group g) {
         assert(g.id() != null);
 
-        this.id = g.id().value();
+        this.id = g.id().getValue();
 
         apply(g);
     }
 
     public void apply(Group g) {
-        assert(this.id == g.id().value());
+        assert(this.id == g.id().getValue());
 
         this.name = g.name().value();
         this.prettyName = g.prettyName().value();
@@ -55,7 +55,7 @@ public class GroupEntity extends MutableEntity<GroupId> {
         //TODO: link imageuri
         // TODO: add member
         return new Group(
-                GroupId.valueOf(this.id),
+                new GroupId(this.id),
                 new Email(this.email),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
@@ -68,7 +68,7 @@ public class GroupEntity extends MutableEntity<GroupId> {
 
     @Override
     protected GroupId id() {
-        return GroupId.valueOf(this.id);
+        return new GroupId(this.id);
     }
 
 }

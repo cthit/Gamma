@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.UserCreationFacade;
+import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.domain.useractivation.UserActivation;
 
 import it.chalmers.gamma.domain.user.Cid;

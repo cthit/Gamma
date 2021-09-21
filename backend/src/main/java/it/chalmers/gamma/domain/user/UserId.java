@@ -4,13 +4,7 @@ import it.chalmers.gamma.domain.Id;
 
 import java.util.UUID;
 
-public class UserId extends Id<UUID> {
-
-    private final UUID value;
-
-    private UserId(UUID value) {
-        this.value = value;
-    }
+public record UserId(UUID value) implements Id<UUID> {
 
     public static UserId generate() {
         return new UserId(UUID.randomUUID());
@@ -25,7 +19,7 @@ public class UserId extends Id<UUID> {
     }
 
     @Override
-    public UUID value() {
+    public UUID getValue() {
         return value;
     }
 }

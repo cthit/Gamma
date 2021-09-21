@@ -4,13 +4,7 @@ import it.chalmers.gamma.domain.Id;
 
 import java.util.UUID;
 
-public class PostId extends Id<UUID> {
-
-    private final UUID value;
-
-    private PostId(UUID value) {
-        this.value = value;
-    }
+public record PostId(UUID value) implements Id<UUID> {
 
     public static PostId generate() {
         return new PostId(UUID.randomUUID());
@@ -20,12 +14,8 @@ public class PostId extends Id<UUID> {
         return new PostId(UUID.fromString(value));
     }
 
-    public static PostId valueOf(UUID uuid) {
-        return new PostId(uuid);
-    }
-
     @Override
-    public UUID value() {
+    public UUID getValue() {
         return this.value;
     }
 }

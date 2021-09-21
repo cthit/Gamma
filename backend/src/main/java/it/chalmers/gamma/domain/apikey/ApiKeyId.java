@@ -4,13 +4,7 @@ import it.chalmers.gamma.domain.Id;
 
 import java.util.UUID;
 
-public class ApiKeyId extends Id<UUID> {
-
-    private final UUID value;
-
-    private ApiKeyId(UUID value) {
-        this.value = value;
-    }
+public record ApiKeyId(UUID value) implements Id<UUID> {
 
     public static ApiKeyId generate() {
         return new ApiKeyId(UUID.randomUUID());
@@ -20,12 +14,8 @@ public class ApiKeyId extends Id<UUID> {
         return new ApiKeyId(UUID.fromString(value));
     }
 
-    public static ApiKeyId valueOf(UUID uuid) {
-        return new ApiKeyId(uuid);
-    }
-
     @Override
-    public UUID value() {
+    public UUID getValue() {
         return this.value;
     }
 

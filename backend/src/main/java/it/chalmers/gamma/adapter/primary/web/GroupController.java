@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.GroupFacade;
+import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.Group;
 
@@ -23,12 +23,12 @@ public final class GroupController {
     }
 
     @GetMapping()
-    public List<Group> getGroups() {
+    public List<GroupFacade.GroupDTO> getGroups() {
         return this.groupFacade.getAll();
     }
 
     @GetMapping("/{id}")
-    public Group getGroup(@PathVariable("id") GroupId id) {
+    public GroupFacade.GroupDTO getGroup(@PathVariable("id") GroupId id) {
         return this.groupFacade.get(id).orElseThrow(GroupNotFoundResponse::new);
     }
 

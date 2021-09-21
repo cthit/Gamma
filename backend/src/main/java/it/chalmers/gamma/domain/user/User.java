@@ -4,7 +4,9 @@ import io.soabase.recordbuilder.core.RecordBuilder;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.common.ImageUri;
 
+import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @RecordBuilder
@@ -20,8 +22,10 @@ public record User(UserId id,
                    AcceptanceYear acceptanceYear,
                    boolean gdprTrained,
                    boolean locked,
-                   ImageUri imageUri) //TODO: Add authorities
-        implements UserBuilder.With {
+                   ImageUri imageUri,
+                   List<UserAuthority> authorities,
+                   List<GroupMember> groups)
+    implements UserBuilder.With {
 
     public User {
         Objects.requireNonNull(id);
@@ -32,6 +36,7 @@ public record User(UserId id,
         Objects.requireNonNull(firstName);
         Objects.requireNonNull(lastName);
         Objects.requireNonNull(acceptanceYear);
+        Objects.requireNonNull(authorities);
     }
 
 }

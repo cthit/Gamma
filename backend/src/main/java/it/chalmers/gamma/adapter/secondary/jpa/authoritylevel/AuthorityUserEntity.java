@@ -1,7 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -18,7 +20,8 @@ public class AuthorityUserEntity extends ImmutableEntity<AuthorityUserPK> {
 
     }
 
-    protected AuthorityUserEntity(User user) {
+    public AuthorityUserEntity(UserEntity user, AuthorityLevelEntity authorityLevel) {
+        this.id = new AuthorityUserPK(user, authorityLevel);
     }
 
     @Override
@@ -26,8 +29,8 @@ public class AuthorityUserEntity extends ImmutableEntity<AuthorityUserPK> {
         return this.id;
     }
 
-    public User getIdentifier() {
-        return null;
+    public UserEntity getUserEntity() {
+        return this.id.getUserEntity();
     }
 
 }

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.UserFacade;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.domain.user.AcceptanceYear;
 import it.chalmers.gamma.domain.user.FirstName;
 import it.chalmers.gamma.domain.user.LastName;

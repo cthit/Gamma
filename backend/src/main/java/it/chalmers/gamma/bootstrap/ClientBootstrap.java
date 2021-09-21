@@ -72,7 +72,7 @@ public class ClientBootstrap {
         }
 
         LOGGER.info("Client generated with information:");
-        LOGGER.info("ClientId: " + clientId.value());
+        LOGGER.info("ClientId: " + clientId.getValue());
         LOGGER.info("ClientSecret: " + clientSecret.value());
         LOGGER.info("Client redirect uri: " + this.redirectUri);
         LOGGER.info("An API key was also generated with the client, it has the token: " + apiKeyToken.value());

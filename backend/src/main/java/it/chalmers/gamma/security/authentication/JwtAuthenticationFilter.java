@@ -6,7 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
-import it.chalmers.gamma.app.UserFacade;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.domain.user.User;
 
@@ -67,9 +67,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(String cid) {
-        User user = this.userFacade.get(Cid.valueOf(cid));
+        UserFacade.UserDTO user = this.userFacade.get(cid).orElseThrow(IllegalStateException::new);
         return new UsernamePasswordAuthenticationToken(
-                user.cid().value(),
+                user.cid(),
                 null,
                 Collections.emptyList()
         );

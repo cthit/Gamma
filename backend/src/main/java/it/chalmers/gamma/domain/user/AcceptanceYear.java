@@ -1,6 +1,8 @@
 package it.chalmers.gamma.domain.user;
 
-public record AcceptanceYear(int value) {
+import java.io.Serializable;
+
+public record AcceptanceYear(int value) implements Serializable {
 
     public AcceptanceYear {
         if (value < 2001) {

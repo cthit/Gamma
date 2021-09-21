@@ -10,14 +10,14 @@ import javax.persistence.Embeddable;
 import java.util.UUID;
 
 @Embeddable
-public class MembershipPK extends Id<MembershipPK.MembershipPKDTO> {
+public class MembershipPK implements Id<MembershipPK.MembershipPKDTO> {
 
     @Override
-    public MembershipPKDTO value() {
+    public MembershipPKDTO getValue() {
         return new MembershipPKDTO(
-                PostId.valueOf(this.postId),
-                GroupId.valueOf(this.groupId),
-                UserId.valueOf(this.userId)
+                new PostId(this.postId),
+                new GroupId(this.groupId),
+                new UserId(this.userId)
         );
     }
 
@@ -37,9 +37,9 @@ public class MembershipPK extends Id<MembershipPK.MembershipPKDTO> {
     }
 
     public MembershipPK(PostId postId, GroupId groupId, UserId userId) {
-        this.postId = postId.value();
-        this.groupId = groupId.value();
-        this.userId = userId.value();
+        this.postId = postId.getValue();
+        this.groupId = groupId.getValue();
+        this.userId = userId.getValue();
     }
 
 }

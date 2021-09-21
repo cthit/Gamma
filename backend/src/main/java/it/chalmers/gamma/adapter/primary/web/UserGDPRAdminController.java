@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.UserFacade;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.domain.user.UserId;
 
 import it.chalmers.gamma.util.response.SuccessResponse;

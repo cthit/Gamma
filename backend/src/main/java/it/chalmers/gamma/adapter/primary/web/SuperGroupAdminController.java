@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.SuperGroupFacade;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.domain.user.Name;
 import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.domain.supergroup.SuperGroupType;

@@ -19,7 +19,7 @@ public class SuperGroupTypeEntity extends SingleImmutableEntity<SuperGroupType> 
     protected SuperGroupTypeEntity() { }
 
     protected SuperGroupTypeEntity(SuperGroupType superGroupType) {
-        this.superGroupType = superGroupType.value();
+        this.superGroupType = superGroupType.getValue();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
+import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.domain.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,17 +9,16 @@ import java.util.List;
 
 public class UserDetailsProxy implements UserDetails {
 
-    private final User user;
+    private final Cid cid;
     private final String password;
     private final List<GrantedAuthorityProxy> authorities;
     private final boolean userLocked;
 
     public UserDetailsProxy(User user,
-                            String password,
                             List<GrantedAuthorityProxy> authorities,
                             boolean userLocked) {
-        this.user = user;
-        this.password = password;
+        this.cid = user.cid();
+        this.password = user.password().value();
         this.authorities = authorities;
         this.userLocked = userLocked;
     }
@@ -28,10 +28,6 @@ public class UserDetailsProxy implements UserDetails {
         return authorities;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     @Override
     public String getPassword() {
         return this.password;
@@ -39,7 +35,7 @@ public class UserDetailsProxy implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.user.cid().value();
+        return this.cid.getValue();
     }
 
     @Override

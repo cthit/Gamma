@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.primary.api;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.GroupFacade;
-import it.chalmers.gamma.app.SuperGroupFacade;
-import it.chalmers.gamma.app.UserFacade;
+import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.domain.group.Group;
 import it.chalmers.gamma.adapter.secondary.userdetails.GrantedAuthorityProxy;
 import it.chalmers.gamma.domain.supergroup.SuperGroup;
@@ -41,7 +41,7 @@ public class ApiV1Controller {
     }
 
     @GetMapping("/groups")
-    public List<Group> getGroups() {
+    public List<GroupFacade.GroupDTO> getGroups() {
         return this.groupFacade.getAll();
     }
 

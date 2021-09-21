@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.MeFacade;
-import it.chalmers.gamma.app.ResetPasswordFacade;
+import it.chalmers.gamma.app.user.MeFacade;
+import it.chalmers.gamma.app.user.UserResetPasswordFacade;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -15,13 +15,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class ResetNonActivatedAccountFilter extends OncePerRequestFilter {
 
     private static final String USERNAME_PARAMETER = "username";
-    private final ResetPasswordFacade resetPasswordFacade;
+    private final UserResetPasswordFacade userResetPasswordFacade;
     private final MeFacade meFacade;
     private final String baseFrontendUrl;
 
-    public ResetNonActivatedAccountFilter(ResetPasswordFacade resetPasswordFacade, MeFacade meFacade, @Value("${application.frontend-client-details.successful-login-uri}")
+    public ResetNonActivatedAccountFilter(UserResetPasswordFacade userResetPasswordFacade, MeFacade meFacade, @Value("${application.frontend-client-details.successful-login-uri}")
             String baseFrontendUrl) {
-        this.resetPasswordFacade = resetPasswordFacade;
+        this.userResetPasswordFacade = userResetPasswordFacade;
         this.meFacade = meFacade;
         this.baseFrontendUrl = baseFrontendUrl;
     }
