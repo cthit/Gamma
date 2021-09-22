@@ -3,12 +3,15 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.group.Group;
 import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.group.GroupMember;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.domain.user.Name;
 import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,52 +20,45 @@ public class GroupEntity extends MutableEntity<GroupId> {
 
     @Id
     @Column(name = "group_id")
-    private UUID id;
+    public UUID id;
 
     @Column(name = "e_name")
-    private String name;
+    public String name;
 
     @Column(name = "pretty_name")
-    private String prettyName;
+    public String prettyName;
 
     @Column(name = "email")
-    private String email;
+    public String email;
 
     @ManyToOne
     @JoinColumn(name = "super_group_id")
-    private SuperGroupEntity superGroup;
+    public SuperGroupEntity superGroup;
+
+    @OneToMany(mappedBy = "id.group", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<MembershipEntity> members;
 
     protected GroupEntity() {}
 
-    protected GroupEntity(Group g) {
-        assert(g.id() != null);
-
-        this.id = g.id().getValue();
-
-        apply(g);
+    public List<MembershipEntity> getMembers() {
+        return members;
     }
 
-    public void apply(Group g) {
-        assert(this.id == g.id().getValue());
+    public record GroupBase(
+            GroupId groupId,
+            Email email,
+            Name name,
+            PrettyName prettyName,
+            SuperGroup superGroup
+    ) { }
 
-        this.name = g.name().value();
-        this.prettyName = g.prettyName().value();
-        this.email = g.email().value();
-        this.superGroup = new SuperGroupEntity(g.superGroup());
-    }
-
-    public Group toDomain() {
-        //TODO: link imageuri
-        // TODO: add member
-        return new Group(
+    public GroupBase toDomain() {
+        return new GroupBase(
                 new GroupId(this.id),
                 new Email(this.email),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
-                this.superGroup.toDomain(),
-                null,
-                null,
-                null
+                this.superGroup.toDomain()
         );
     }
 

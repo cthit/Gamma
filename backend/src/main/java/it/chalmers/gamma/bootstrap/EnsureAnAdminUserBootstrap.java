@@ -5,6 +5,7 @@ import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.common.ImageUri;
 import it.chalmers.gamma.domain.user.AcceptanceYear;
 import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.domain.user.FirstName;
@@ -70,9 +71,7 @@ public class EnsureAnAdminUserBootstrap {
                     new AcceptanceYear(2018),
                     true,
                     false,
-                    null,
-                    Collections.emptyList(),
-                    Collections.emptyList()
+                    ImageUri.nothing()
             );
 
             this.userCreationFacade.createUser(adminUser);

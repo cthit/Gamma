@@ -63,7 +63,7 @@ public final class MeController {
 //            this.userService.update(
 //                    user.with()
 //                            .nick(request.nick())
-//                            .firstName(request.firstName())
+//                            .value(request.value())
 //                            .lastName(request.lastName())
 //                            .email(request.email())
 //                            .language(request.language())

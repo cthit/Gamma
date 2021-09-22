@@ -2,6 +2,10 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupTypeRepository;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.common.Text;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,39 +37,40 @@ public class SuperGroupBootstrap {
 
     @PostConstruct
     public void createSuperGroups() {
-//        if (!this.mocking || !this.superGroupRepository.getAll().isEmpty()) {
-//            return;
-//        }
-//
-//        LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
-//
-//        mockData.superGroups().stream().map(MockData.MockSuperGroup::type).forEach(type -> {
-//            try {
-//                this.superGroupTypeRepository.create(type);
-//            } catch (SuperGroupTypeService.SuperGroupAlreadyExistsException e) {
-//                LOGGER.error("Error creating supergroup type: " + type + ";");
-//            }
-//        });
-//
-//        LOGGER.info("Supergroup types created");
-//
-//        mockData.superGroups().forEach(mockSuperGroup -> {
-//            try {
-//                this.superGroupRepository.create(new SuperGroup(
-//                        mockSuperGroup.id(),
-//                        mockSuperGroup.name(),
-//                        mockSuperGroup.prettyName(),
-//                        mockSuperGroup.type(),
-//                        new Email(mockSuperGroup.name() + "@chalmers.it"),
-//                        new Text()));
-//            } catch (SuperGroupService.SuperGroupNotFoundException e) {
-//                LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
-//            }
-//        });
-//
-//        LOGGER.info("Supergroups created");
-//
-//        LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
+        if (!this.mocking || !this.superGroupRepository.getAll().isEmpty()) {
+            return;
+        }
+
+        LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
+
+        mockData.superGroups().stream().map(MockData.MockSuperGroup::type).forEach(type -> {
+            try {
+                this.superGroupTypeRepository.add(type);
+            } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
+                LOGGER.error("Error creating supergroup type: " + type + ";");
+            }
+        });
+
+        LOGGER.info("Supergroup types created");
+
+        mockData.superGroups().forEach(mockSuperGroup -> {
+            try {
+                this.superGroupRepository.create(new SuperGroup(
+                        mockSuperGroup.id(),
+                        mockSuperGroup.name(),
+                        mockSuperGroup.prettyName(),
+                        mockSuperGroup.type(),
+                        new Email(mockSuperGroup.name().value() + "@chalmers.it"),
+                        new Text())
+                );
+            } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
+                LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
+            }
+        });
+
+        LOGGER.info("Supergroups created");
+
+        LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
     }
 
 }

@@ -21,12 +21,12 @@ public class ApiKeyJpaRepositoryAdapter implements ApiKeyRepository {
 
     @Override
     public void create(ApiKey apiKey) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void save(ApiKey apiKey) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override

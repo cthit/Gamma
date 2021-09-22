@@ -5,13 +5,11 @@ import it.chalmers.gamma.domain.user.User;
 
 import java.util.Objects;
 
-public record Member(Post post,
-                     UnofficialPostName unofficialPostName,
-                     User user) {
+public record GroupMember(Post post,
+                          UnofficialPostName unofficialPostName,
+                          User user) {
 
-    //TODO: Add custom class for unofficialPostName
-
-    public Member {
+    public GroupMember {
         Objects.requireNonNull(post);
         Objects.requireNonNull(unofficialPostName);
         Objects.requireNonNull(user);

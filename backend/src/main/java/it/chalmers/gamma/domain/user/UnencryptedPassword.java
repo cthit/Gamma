@@ -7,7 +7,7 @@ public class UnencryptedPassword {
 
     private final String password;
 
-    private UnencryptedPassword(String value) {
+    public UnencryptedPassword(String value) {
         if (value == null) {
             throw new NullPointerException("Password cannot be null");
         } else if (value.length() < 8) {

@@ -1,9 +1,12 @@
 package it.chalmers.gamma.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.io.Serializable;
 
 public record LastName(String value) implements Serializable {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public LastName {
         if (value == null) {
             throw new NullPointerException("Last name cannot be null");

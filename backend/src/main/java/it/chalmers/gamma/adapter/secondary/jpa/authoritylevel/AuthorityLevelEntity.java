@@ -47,19 +47,6 @@ public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
         return AuthorityLevelName.valueOf(this.authorityLevel);
     }
 
-    //TODO: remove depencency to the converter
-    public AuthorityLevel toDomain(UserEntityConverter userConverter) {
-        return new AuthorityLevel(
-                AuthorityLevelName.valueOf(this.authorityLevel),
-                this.postEntityList.stream().map(AuthorityPostEntity::getIdentifier).toList(),
-                this.superGroupEntityList.stream().map(AuthoritySuperGroupEntity::getIdentifier).toList(),
-                this.userEntityList.stream()
-                        .map(AuthorityUserEntity::getUserEntity)
-                        .map(userConverter::toDomain)
-                        .toList()
-        );
-    }
-
     public void setPosts(List<AuthorityPostEntity> postEntityList) {
         this.postEntityList = postEntityList;
     }
@@ -70,5 +57,21 @@ public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
 
     public void setSuperGroups(List<AuthoritySuperGroupEntity> superGroupEntityList) {
         this.superGroupEntityList = superGroupEntityList;
+    }
+
+    public String getAuthorityLevel() {
+        return authorityLevel;
+    }
+
+    public List<AuthorityPostEntity> getPosts() {
+        return postEntityList;
+    }
+
+    public List<AuthorityUserEntity> getUsers() {
+        return userEntityList;
+    }
+
+    public List<AuthoritySuperGroupEntity> getSuperGroups() {
+        return superGroupEntityList;
     }
 }

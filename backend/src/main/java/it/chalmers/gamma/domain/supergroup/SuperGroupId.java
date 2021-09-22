@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.supergroup;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.chalmers.gamma.domain.Id;
 
 import java.util.UUID;
@@ -10,6 +11,7 @@ public record SuperGroupId(UUID value) implements Id<UUID> {
         return new SuperGroupId(UUID.randomUUID());
     }
 
+    @JsonCreator
     public static SuperGroupId valueOf(String value) {
         return new SuperGroupId(UUID.fromString(value));
     }

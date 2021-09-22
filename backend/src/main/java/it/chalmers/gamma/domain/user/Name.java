@@ -1,9 +1,12 @@
 package it.chalmers.gamma.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.Locale;
 
 public record Name(String value) {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public Name {
         if (value == null) {
             throw new NullPointerException("Name cannot be null");

@@ -1,5 +1,8 @@
 package it.chalmers.gamma.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import it.chalmers.gamma.domain.Id;
 import it.chalmers.gamma.app.user.UserSignInIdentifier;
 
@@ -8,6 +11,7 @@ import java.util.Locale;
 
 public record Cid(String value) implements Id<String>, UserSignInIdentifier, Serializable {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public Cid {
         if (value == null) {
             throw new NullPointerException("Cid cannot be null");

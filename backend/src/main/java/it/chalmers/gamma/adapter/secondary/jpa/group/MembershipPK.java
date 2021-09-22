@@ -1,45 +1,62 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.domain.Id;
 import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.user.UserId;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.UUID;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class MembershipPK implements Id<MembershipPK.MembershipPKDTO> {
 
     @Override
-    public MembershipPKDTO getValue() {
+    public MembershipPK.MembershipPKDTO getValue() {
         return new MembershipPKDTO(
-                new PostId(this.postId),
-                new GroupId(this.groupId),
-                new UserId(this.userId)
+                this.post.id(),
+                this.group.id(),
+                this.user.id()
         );
     }
 
-    protected record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) { }
+    public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) { }
 
-    @Column(name = "post_id")
-    private UUID postId;
+    @JoinColumn(name = "post_id")
+    @ManyToOne
+    private PostEntity post;
 
-    @Column(name = "group_id")
-    private UUID groupId;
+    @JoinColumn(name = "group_id")
+    @ManyToOne
+    private GroupEntity group;
 
-    @Column(name = "user_id")
-    private UUID userId;
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private UserEntity user;
 
     protected MembershipPK() {
 
     }
 
-    public MembershipPK(PostId postId, GroupId groupId, UserId userId) {
-        this.postId = postId.getValue();
-        this.groupId = groupId.getValue();
-        this.userId = userId.getValue();
+    public MembershipPK(PostEntity post,
+                        GroupEntity group,
+                        UserEntity user) {
+        this.post = post;
+        this.group = group;
+        this.user = user;
     }
 
+    public PostEntity getPost() {
+        return post;
+    }
+
+    public GroupEntity getGroup() {
+        return group;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
 }

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.domain.post;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.chalmers.gamma.domain.Id;
 
 import java.util.UUID;
@@ -10,6 +11,7 @@ public record PostId(UUID value) implements Id<UUID> {
         return new PostId(UUID.randomUUID());
     }
 
+    @JsonCreator
     public static PostId valueOf(String value) {
         return new PostId(UUID.fromString(value));
     }

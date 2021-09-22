@@ -16,7 +16,7 @@ public record Group(GroupId id,
                     Name name,
                     PrettyName prettyName,
                     SuperGroup superGroup,
-                    List<Member> members,
+                    List<GroupMember> groupMembers,
                     ImageUri avatarUri,
                     ImageUri bannerUri) implements GroupBuilder.With {
 

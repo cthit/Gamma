@@ -39,7 +39,7 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
 
     @Override
     protected UserId id() {
-        return UserId.valueOf(this.userId);
+        return new UserId(this.userId);
     }
 
     public PasswordReset toDomain() {

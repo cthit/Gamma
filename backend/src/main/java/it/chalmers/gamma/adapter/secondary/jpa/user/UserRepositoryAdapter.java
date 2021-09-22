@@ -29,17 +29,17 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public void save(User user) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(UserId userId) throws UserNotFoundException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setPassword(UserId userId, UnencryptedPassword password) {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override

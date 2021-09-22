@@ -12,21 +12,21 @@ public class WhitelistRepositoryAdapter implements WhitelistRepository {
 
     @Override
     public void whitelist(Cid cid) throws AlreadyWhitelistedException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void remove(Cid cid) throws CidIsNotWhitelistedException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean isWhitelisted(Cid cid) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<Cid> getWhitelist() {
-        return Collections.emptyList();
+        throw new UnsupportedOperationException();
     }
 }

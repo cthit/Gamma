@@ -6,10 +6,10 @@ import it.chalmers.gamma.domain.post.Post;
 
 import java.util.Objects;
 
-public record GroupMember(Post post,
-                          Group group,
-                          UnofficialPostName unofficialPostName) {
-    public GroupMember {
+public record UserMembership(Post post,
+                             Group group,
+                             UnofficialPostName unofficialPostName) {
+    public UserMembership {
         Objects.requireNonNull(post);
         Objects.requireNonNull(group);
         Objects.requireNonNull(unofficialPostName);

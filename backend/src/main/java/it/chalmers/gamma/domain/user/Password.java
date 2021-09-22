@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 
-//TODO: password shouldn't be serializable, just to fit in redis
-public record Password(@JsonIgnore String value) implements Serializable {
+public record Password(@JsonIgnore String value) {
 
     public Password {
-        //TODO: Check that the value is encrypted.
+        if (value == null) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

@@ -1,9 +1,11 @@
 package it.chalmers.gamma.domain.authoritylevel;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.chalmers.gamma.domain.Id;
 
 public record AuthorityLevelName(String value) implements Id<String> {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public AuthorityLevelName {
         if (value == null) {
             throw new NullPointerException("Authority level cannot be null");

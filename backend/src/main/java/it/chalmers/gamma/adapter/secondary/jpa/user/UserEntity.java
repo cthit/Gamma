@@ -79,7 +79,7 @@ public class UserEntity extends MutableEntity<UserId> {
 
     protected UserBase toBaseDomain() {
         return new UserBase(
-                UserId.valueOf(this.id),
+                new UserId(this.id),
                 Cid.valueOf(this.cid),
                 new Email(this.email),
                 this.language,
@@ -93,7 +93,7 @@ public class UserEntity extends MutableEntity<UserId> {
 
     @Override
     public UserId id() {
-        return UserId.valueOf(this.id);
+        return new UserId(this.id);
     }
 
     public void apply(User u) {
@@ -120,6 +120,6 @@ public class UserEntity extends MutableEntity<UserId> {
     }
 
     protected UserId getId() {
-        return UserId.valueOf(this.id);
+        return new UserId(this.id);
     }
 }

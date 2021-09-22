@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MembershipJpaRepository extends JpaRepository<MembershipEntity, MembershipPK> {
-    List<MembershipEntity> findAllById_PostId(UUID postId);
-    List<MembershipEntity> findAllById_UserId(UUID userId);
-    List<MembershipEntity> findAllById_GroupId(UUID groupId);
+    List<MembershipEntity> findAllById_Post_Id(UUID postId);
+    List<MembershipEntity> findAllById_User_Id(UUID userId);
+    List<MembershipEntity> findAllById_Group_Id(UUID groupId);
 
     List<MembershipEntity> findAllById_GroupIdAndId_PostId(UUID groupId, UUID postId);
 }

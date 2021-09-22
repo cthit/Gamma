@@ -1,9 +1,12 @@
 package it.chalmers.gamma.domain.common;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.io.Serializable;
 
 public record PrettyName(String value) implements Serializable {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public PrettyName {
         if (value == null) {
             throw new NullPointerException("Pretty name cannot be null");

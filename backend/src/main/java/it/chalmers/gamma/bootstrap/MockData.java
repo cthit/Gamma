@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.group.UnofficialPostName;
 import it.chalmers.gamma.domain.user.AcceptanceYear;
 import it.chalmers.gamma.domain.user.FirstName;
 import it.chalmers.gamma.domain.group.GroupId;
@@ -31,7 +32,7 @@ public record MockData(List<MockUser> users,
 
     public record MockMembership(UserId userId,
                                  PostId postId,
-                                 String unofficialPostName) { }
+                                 UnofficialPostName unofficialPostName) { }
 
 
     public record MockPost(PostId id,

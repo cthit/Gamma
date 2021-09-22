@@ -21,17 +21,17 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public void create(SuperGroup superGroup) throws SuperGroupAlreadyExistsException {
-
+        this.repository.save(new SuperGroupEntity(superGroup));
     }
 
     @Override
     public void save(SuperGroup superGroup) throws SuperGroupNotFoundException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
-
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -41,11 +41,11 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public List<SuperGroup> getAllByType(SuperGroupType superGroupType) {
-        return Collections.emptyList();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Optional<SuperGroup> get(SuperGroupId superGroupId) {
-        return Optional.empty();
+        return this.repository.findById(superGroupId.value()).map(SuperGroupEntity::toDomain);
     }
 }

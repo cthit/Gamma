@@ -14,11 +14,11 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
     @Override
     public UserActivationToken createUserActivationCode(Cid cid) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<UserActivation> getAll() {
-        return Collections.emptyList();
+        throw new UnsupportedOperationException();
     }
 }

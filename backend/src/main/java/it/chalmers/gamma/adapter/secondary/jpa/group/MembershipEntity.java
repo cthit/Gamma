@@ -22,8 +22,11 @@ public class MembershipEntity extends MutableEntity<MembershipPK> {
     }
 
     @Override
-    protected MembershipPK id() {
+    public MembershipPK id() {
         return this.id;
     }
 
+    public String getUnofficialPostName() {
+        return unofficialPostName;
+    }
 }

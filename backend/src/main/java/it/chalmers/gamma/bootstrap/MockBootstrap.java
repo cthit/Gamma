@@ -33,8 +33,7 @@ public class MockBootstrap {
         try {
             return objectMapper.readValue(resource.getInputStream(), MockData.class);
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-            LOGGER.error("Error when trying to read mock.json");
+            LOGGER.error("Error when trying to read mock.json", e);
             return new MockData(
                     Collections.emptyList(),
                     Collections.emptyList(),

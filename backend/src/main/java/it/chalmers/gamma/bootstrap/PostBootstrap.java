@@ -1,7 +1,9 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.group.EmailPrefix;
 import it.chalmers.gamma.domain.post.Post;
 import it.chalmers.gamma.app.post.PostRepository;
+import it.chalmers.gamma.domain.post.PostId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +43,7 @@ public class PostBootstrap {
                         new Post(
                                 mockPost.id(),
                                 mockPost.postName(),
-                                null
+                                EmailPrefix.empty()
                         )
                 )
         );

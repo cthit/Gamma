@@ -5,6 +5,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.group.Group;
 import it.chalmers.gamma.domain.group.GroupId;
+import it.chalmers.gamma.domain.group.GroupMember;
 import it.chalmers.gamma.domain.user.Name;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.domain.common.PrettyName;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class GroupFacade extends Facade {
@@ -45,9 +47,9 @@ public class GroupFacade extends Facade {
 
     }
 
-    public record GroupDTO(String name) {
+    public record GroupDTO(UUID id, String name, List<GroupMember> groupMembers) {
         public GroupDTO(Group group) {
-            this(group.name().value());
+            this(group.id().value(), group.name().value(), group.groupMembers());
         }
     }
 

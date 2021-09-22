@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
+import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
@@ -10,15 +11,19 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelRepository;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityType;
 import it.chalmers.gamma.domain.post.Post;
 import it.chalmers.gamma.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserAuthority;
+import it.chalmers.gamma.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -30,11 +35,9 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     private final AuthoritySuperGroupJpaRepository authoritySuperGroupRepository;
     private final AuthorityUserJpaRepository authorityUserRepository;
 
-    private final SuperGroupJpaRepository superGroupRepository;
-    private final UserJpaRepository userRepository;
-    private final PostJpaRepository postRepository;
+    private final MembershipJpaRepository membershipJpaRepository;
 
-    private final UserEntityConverter userEntityConverter;
+    private final AuthorityLevelEntityConverter authorityLevelEntityConverter;
 
     public AuthorityLevelRepositoryAdapter(AuthorityLevelJpaRepository repository,
                                            AuthorityPostJpaRepository authorityPostRepository,
@@ -43,15 +46,14 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                                            SuperGroupJpaRepository superGroupRepository,
                                            UserJpaRepository userRepository,
                                            PostJpaRepository postRepository,
-                                           UserEntityConverter userEntityConverter) {
+                                           MembershipJpaRepository membershipJpaRepository,
+                                           AuthorityLevelEntityConverter authorityLevelEntityConverter) {
         this.repository = repository;
         this.authorityPostRepository = authorityPostRepository;
         this.authoritySuperGroupRepository = authoritySuperGroupRepository;
         this.authorityUserRepository = authorityUserRepository;
-        this.superGroupRepository = superGroupRepository;
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-        this.userEntityConverter = userEntityConverter;
+        this.membershipJpaRepository = membershipJpaRepository;
+        this.authorityLevelEntityConverter = authorityLevelEntityConverter;
     }
 
     @Override
@@ -61,18 +63,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
 
     @Override
     public void create(AuthorityLevel authorityLevel) {
-        String name = authorityLevel.name().getValue();
-        AuthorityLevelEntity authorityLevelEntity = new AuthorityLevelEntity(name);
-
-        List<AuthorityUserEntity> users = authorityLevel.users().stream().map(user -> new AuthorityUserEntity(toEntity(user), authorityLevelEntity)).toList();
-        List<AuthorityPostEntity> posts = authorityLevel.posts().stream().map(post -> new AuthorityPostEntity(toEntity(post.superGroup()), toEntity(post.post()), authorityLevelEntity)).toList();
-        List<AuthoritySuperGroupEntity> superGroups = authorityLevel.superGroups().stream().map(superGroup -> new AuthoritySuperGroupEntity(toEntity(superGroup), authorityLevelEntity)).toList();
-
-        authorityLevelEntity.setUsers(users);
-        authorityLevelEntity.setPosts(posts);
-        authorityLevelEntity.setSuperGroups(superGroups);
-
-        repository.save(authorityLevelEntity);
+        repository.save(this.authorityLevelEntityConverter.toEntity(authorityLevel));
     }
 
     @Override
@@ -83,6 +74,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     @Override
     public void save(AuthorityLevel authorityLevel) {
         AuthorityLevelName name = authorityLevel.name();
+        throw new UnsupportedOperationException();
         //TODO: Convert authorityLevel to authorityLevelentity with repositories
 //        repository.save(new AuthorityLevelEntity(
 //                authorityLevel.name()
@@ -91,24 +83,67 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
 
     @Override
     public List<AuthorityLevel> getAll() {
-        return Collections.emptyList();
+        return this.repository.findAll()
+                .stream()
+                .map(this.authorityLevelEntityConverter::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<UserAuthority> getByUser(UserId userId) {
+        Set<UserAuthority> names = new HashSet<>();
+
+        this.authorityUserRepository.findAllById_UserEntity_Id(userId.value())
+                .forEach(authorityUserEntity -> names.add(
+                        new UserAuthority(
+                                authorityUserEntity.id().getValue().authorityLevelName(),
+                                AuthorityType.AUTHORITY
+                        )
+                ));
+
+        Set<SuperGroup> userSuperGroups = new HashSet<>();
+
+        this.membershipJpaRepository.findAllById_User_Id(userId.value())
+                .forEach(membershipEntity -> {
+                    names.add(new UserAuthority(
+                            new AuthorityLevelName(membershipEntity.id().getGroup().name),
+                            AuthorityType.GROUP
+                    ));
+                    userSuperGroups.add(membershipEntity.id().getGroup().superGroup.toDomain());
+                    this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(
+                            membershipEntity.id().getGroup().superGroup.toDomain().id().getValue(),
+                            membershipEntity.id().getPost().toDomain().id().value()
+                    ).forEach(authorityPostEntity -> names.add(new UserAuthority(
+                            authorityPostEntity.id().getValue().authorityLevelName(),
+                            AuthorityType.AUTHORITY
+                    )));
+                });
+
+        userSuperGroups.forEach(superGroup -> names.add(new UserAuthority(
+                new AuthorityLevelName(superGroup.name().value()),
+                AuthorityType.SUPERGROUP
+        )));
+
+        userSuperGroups.forEach(superGroupId -> names.addAll(
+                this.authoritySuperGroupRepository
+                        .findAllById_SuperGroupEntity_Id(superGroupId.id().value())
+                        .stream()
+                        .map(AuthoritySuperGroupEntity::id)
+                        .map(AuthoritySuperGroupPK::getValue)
+                        .map(AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO::authorityLevelName)
+                        .map(authorityLevelName -> new UserAuthority(
+                                authorityLevelName,
+                                AuthorityType.AUTHORITY
+                        ))
+                        .toList()
+                ));
+
+        return names.stream().toList();
     }
 
     @Override
     public Optional<AuthorityLevel> get(AuthorityLevelName authorityLevelName) {
-        return this.repository.findById(authorityLevelName.getValue()).map(authorityLevel -> authorityLevel.toDomain(this.userEntityConverter));
-    }
-
-    private UserEntity toEntity(User user) {
-        return this.userRepository.getOne(user.id().getValue());
-    }
-
-    private PostEntity toEntity(Post post) {
-        return this.postRepository.getOne(post.id().getValue());
-    }
-
-    private SuperGroupEntity toEntity(SuperGroup superGroup) {
-        return this.superGroupRepository.getOne(superGroup.id().getValue());
+        return this.repository.findById(authorityLevelName.getValue()).map(this.authorityLevelEntityConverter::toDomain);
     }
 
 }

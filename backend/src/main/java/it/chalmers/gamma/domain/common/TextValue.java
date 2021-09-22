@@ -1,7 +1,10 @@
 package it.chalmers.gamma.domain.common;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public record TextValue(String value) {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public TextValue {
         if (value == null) {
             throw new NullPointerException("Text value cannot be null");

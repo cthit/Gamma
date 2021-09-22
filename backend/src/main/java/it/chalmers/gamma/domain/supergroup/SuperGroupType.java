@@ -1,11 +1,13 @@
 package it.chalmers.gamma.domain.supergroup;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.chalmers.gamma.domain.Id;
 
 import java.util.Locale;
 
 public record SuperGroupType(String value) implements Id<String> {
 
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public SuperGroupType {
         if (value == null) {
             throw new NullPointerException("Super group type cannot be null");

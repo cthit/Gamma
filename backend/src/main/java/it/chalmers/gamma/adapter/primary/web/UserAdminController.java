@@ -113,7 +113,7 @@ public final class UserAdminController {
 //                request.email,
 //                request.language,
 //                request.nick,
-//                request.firstName,
+//                request.value,
 //                request.lastName,
 //                request.userAgreement,
 //                request.acceptanceYear
@@ -135,7 +135,7 @@ public final class UserAdminController {
 //            User user = this.userService.get(id);
 //            this.userService.update(user.with()
 //                    .nick(request.nick)
-//                    .firstName(request.firstName)
+//                    .value(request.value)
 //                    .lastName(request.lastName)
 //                    .email(request.email)
 //                    .language(request.language)
