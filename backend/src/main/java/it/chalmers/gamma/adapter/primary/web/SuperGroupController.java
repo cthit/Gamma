@@ -6,6 +6,7 @@ import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +25,12 @@ public class SuperGroupController {
     }
 
     @GetMapping()
-    public List<SuperGroup> getAllSuperGroups() {
+    public List<SuperGroupFacade.SuperGroupDTO> getAllSuperGroups() {
         return this.superGroupFacade.getAllSuperGroups();
     }
 
     @GetMapping("/{id}")
-    public SuperGroup getSuperGroup(@PathVariable("id") SuperGroupId id) {
+    public SuperGroupFacade.SuperGroupDTO getSuperGroup(@PathVariable("id") UUID id) {
         return this.superGroupFacade.get(id)
                 .orElseThrow(SuperGroupDoesNotExistResponse::new);
     }

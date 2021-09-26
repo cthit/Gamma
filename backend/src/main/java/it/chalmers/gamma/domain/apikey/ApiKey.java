@@ -11,7 +11,7 @@ public record ApiKey(ApiKeyId id,
                      PrettyName prettyName,
                      Text description,
                      ApiKeyType keyType,
-                     ApiKeyToken apiKeyToken) { //implements ApiKeyBuilder.With {
+                     ApiKeyToken apiKeyToken) implements ApiKeyBuilder.With {
     public ApiKey {
         Objects.requireNonNull(id);
         Objects.requireNonNull(prettyName);

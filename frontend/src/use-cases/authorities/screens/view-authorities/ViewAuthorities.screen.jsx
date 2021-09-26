@@ -10,10 +10,7 @@ import {
     DigitLoading
 } from "@cthit/react-digit-components";
 
-import {
-    getAuthorities,
-    getAuthorityLevels
-} from "api/authorities/get.authorities";
+import { getAuthorityLevels } from "api/authorities/get.authorities";
 
 import translations from "../../Authorities.translations";
 import AuthorityLevelCard from "./elements/authority-level-card";
@@ -38,7 +35,7 @@ const ViewAuthorities = () => {
 
     useEffect(() => {
         if (read) {
-            getAuthorities().then(authoritiesResponse =>
+            getAuthorityLevels().then(authoritiesResponse =>
                 setAuthorities(authoritiesResponse.data)
             );
         }

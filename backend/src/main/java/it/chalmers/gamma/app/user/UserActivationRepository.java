@@ -10,5 +10,6 @@ public interface UserActivationRepository {
 
     UserActivationToken createUserActivationCode(Cid cid);
     List<UserActivation> getAll();
+    Cid getByToken(UserActivationToken token);
 
 }

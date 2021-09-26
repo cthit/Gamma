@@ -1,60 +1,60 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 
 import java.io.IOException;
+import java.util.Optional;
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.security.core.Authentication;
+import it.chalmers.gamma.app.apikey.ApiKeyRepository;
+import it.chalmers.gamma.domain.apikey.ApiKey;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 
-public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
+public class ApiKeyAuthenticationFilter implements Filter {
 
-    private final UserFacade userFacade;
     private final ApiKeyRepository apiKeyRepository;
 
-    public ApiKeyAuthenticationFilter(UserFacade userFacade,
-                                      ApiKeyRepository apiKeyRepository) {
-        this.userFacade = userFacade;
+    public ApiKeyAuthenticationFilter(ApiKeyRepository apiKeyRepository) {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    /*
-    Authentication using API keys are not supported natively, so once a recognized API key is sent, the Server
-    authenticates the session by giving the request the Principal and Authorities of the Admin user.
-     */
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-        ApiKeyToken token = new ApiKeyToken(resolveToken(request));
-        if (this.apiKeyRepository.getByToken(token).isPresent()) {
-            Authentication auth = getAdminAuthentication();
-            SecurityContextHolder.getContext().setAuthentication(auth);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if (request instanceof HttpServletRequest httpRequest) {
+            Optional<String> apiKeyToken = resolveToken(httpRequest);
+            if (apiKeyToken.isPresent()) {
+                Optional<ApiKey> maybeApiKey = this.apiKeyRepository.getByToken(new ApiKeyToken(apiKeyToken.get()));
+                if (maybeApiKey.isPresent()) {
+                    ApiKeyAuthentication apiToken = new ApiKeyAuthentication(maybeApiKey.get().apiKeyToken(), AuthorityUtils.NO_AUTHORITIES);
+                    SecurityContextHolder.getContext().setAuthentication(apiToken);
+                    chain.doFilter(request, response);
+                    //Make sure that this isn't saved in redis
+                    //https://github.com/cthit/Gamma/pull/776/files#diff-18e124ccd254a048c4f9a8ab52caae88e7229c007468b1264c07427fbe9e930eR51
+                } else {
+                    HttpServletResponse httpResponse = (HttpServletResponse) response;
+                    httpResponse.setStatus(401);
+                }
+            }
         }
-        filterChain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest req) {
+    private Optional<String> resolveToken(HttpServletRequest req) {
         String basicToken = req.getHeader("Authorization");
         if (basicToken != null && basicToken.startsWith("pre-shared ")) {
-            return removeBasic(basicToken);
+            basicToken = removeBasic(basicToken);
+        } else {
+            basicToken = null;
         }
-        return null;
-    }
-
-    private Authentication getAdminAuthentication() {
-        //UserDetails userDetails = this.userService.loadUserByUsername("admin");
-        //return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
-        return null;
+        return Optional.ofNullable(basicToken);
     }
 
     private String removeBasic(String token) {

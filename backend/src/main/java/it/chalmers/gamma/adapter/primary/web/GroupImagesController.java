@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/groups")
@@ -29,7 +30,7 @@ public final class GroupImagesController {
     }
 
     @PutMapping("/avatar/{id}")
-    public GroupAvatarEdited editGroupAvatar(@RequestParam MultipartFile file, @PathVariable("id") GroupId id) {
+    public GroupAvatarEdited editGroupAvatar(@RequestParam MultipartFile file, @PathVariable("id") UUID id) {
 //        try {
 //            this.groupImagesService.editGroupAvatar(id, file);
 //            return new GroupAvatarEdited();
@@ -42,7 +43,7 @@ public final class GroupImagesController {
     }
 
     @PutMapping("/banner/{id}")
-    public GroupBannerEdited editGroupBanner(@RequestParam MultipartFile file, @PathVariable("id") GroupId id) {
+    public GroupBannerEdited editGroupBanner(@RequestParam MultipartFile file, @PathVariable("id") UUID id) {
 //        try {
 //            this.groupImagesService.editGroupBanner(id, file);
 //            return new GroupBannerEdited();
@@ -55,7 +56,7 @@ public final class GroupImagesController {
     }
 
     @GetMapping("/avatar/{id}")
-    public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") GroupId id) throws IOException {
+    public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") UUID id) throws IOException {
 //        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::avatarUri)
 //                .orElse(new ImageUri("default_group_avatar.jpg"));
 //        return ResponseEntity
@@ -66,7 +67,7 @@ public final class GroupImagesController {
     }
 
     @GetMapping("/banner/{id}")
-    public ResponseEntity<byte[]> getGroupBanner(@PathVariable("id") GroupId id) throws IOException {
+    public ResponseEntity<byte[]> getGroupBanner(@PathVariable("id") UUID id) throws IOException {
 //        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::bannerUri)
 //                .orElse(new ImageUri("default_group_banner.jpg"));
 //        return ResponseEntity

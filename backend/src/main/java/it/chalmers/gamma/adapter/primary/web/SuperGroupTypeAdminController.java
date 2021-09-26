@@ -30,16 +30,16 @@ public class SuperGroupTypeAdminController {
     }
 
     @GetMapping
-    public List<SuperGroupType> getSuperGroupTypes() {
+    public List<String> getSuperGroupTypes() {
         return this.superGroupFacade.getAllTypes();
     }
 
     @GetMapping("/{type}/usage")
-    public List<SuperGroup> getSuperGroupTypeUsage(@PathVariable("type") SuperGroupType type) {
+    public List<SuperGroupFacade.SuperGroupDTO> getSuperGroupTypeUsage(@PathVariable("type") String type) {
         return this.superGroupFacade.getAllSuperGroupsByType(type);
     }
 
-    private record AddSuperGroupType(SuperGroupType type) { }
+    private record AddSuperGroupType(String type) { }
     
     @PostMapping
     public SuperGroupTypeAddedResponse addSuperGroupType(@RequestBody AddSuperGroupType request) {
@@ -52,7 +52,7 @@ public class SuperGroupTypeAdminController {
     }
 
     @DeleteMapping("/{name}")
-    public SuperGroupTypeRemovedResponse removeSuperGroupType(@PathVariable("name") SuperGroupType name) {
+    public SuperGroupTypeRemovedResponse removeSuperGroupType(@PathVariable("name") String name) {
         try {
             this.superGroupFacade.removeType(name);
         } catch (SuperGroupTypeRepository.SuperGroupTypeNotFoundException e) {

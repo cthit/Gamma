@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/internal/admin/authority/user")
 public final class AuthorityUserAdminController {
@@ -23,36 +25,24 @@ public final class AuthorityUserAdminController {
         this.authorityLevelFacade = authorityLevelFacade;
     }
 
-    private record CreateAuthorityUserRequest(UserId userId, AuthorityLevelName authorityLevelName) { }
+    private record CreateAuthorityUserRequest(UUID userId, String authorityLevelName) { }
 
     @PostMapping
     public AuthorityUserCreatedResponse addAuthority(@RequestBody CreateAuthorityUserRequest request) {
-//        try {
-//            this.authorityUserService.create(
-//                    new AuthorityUserShallowDTO(
-//                            request.userId,
-//                            request.authorityLevelName
-//                    )
-//            );
-//        } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
-//            throw new AuthorityUserAlreadyExistsResponse();
-//        }
+        this.authorityLevelFacade.addUserToAuthorityLevel(
+                request.authorityLevelName,
+                request.userId
+        );
         return new AuthorityUserCreatedResponse();
     }
 
     @DeleteMapping
-    public AuthorityUserRemovedResponse removeAuthority(@RequestParam("userId") UserId userId,
-                                                        @RequestParam("authorityLevelName") AuthorityLevelName authorityLevelName) {
-//        try {
-//            this.authorityUserService.delete(
-//                    new AuthorityUserPK(
-//                            userId,
-//                            authorityLevelName
-//                    )
-//            );
-//        } catch (AuthorityUserService.AuthorityUserNotFoundException e) {
-//            throw new AuthorityUserNotFoundResponse();
-//        }
+    public AuthorityUserRemovedResponse removeAuthority(@RequestParam("userId") UUID userId,
+                                                        @RequestParam("authorityLevelName") String authorityLevelName) {
+        this.authorityLevelFacade.removeUserFromAuthorityLevel(
+                authorityLevelName,
+                userId
+        );
         return new AuthorityUserRemovedResponse();
     }
 

@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface AuthorityLevelRepository {
 
     void create(AuthorityLevelName authorityLevelName);
-    void create(AuthorityLevel authorityLevel);
 
     void delete(AuthorityLevelName authorityLevel);
 

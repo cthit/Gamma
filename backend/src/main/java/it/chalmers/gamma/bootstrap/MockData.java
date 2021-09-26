@@ -17,6 +17,7 @@ import it.chalmers.gamma.domain.user.UserId;
 import it.chalmers.gamma.domain.user.Cid;
 
 import java.util.List;
+import java.util.UUID;
 
 public record MockData(List<MockUser> users,
                        List<MockGroup> groups,
@@ -24,40 +25,42 @@ public record MockData(List<MockUser> users,
                        List<MockPost> posts,
                        List<MockPostAuthority> postAuthorities) {
 
-    public record MockGroup(GroupId id,
-                            Name name,
-                            PrettyName prettyName,
+    public record MockGroup(UUID id,
+                            String name,
+                            String prettyName,
                             List<MockMembership> members,
-                            SuperGroupId superGroupId) { }
+                            UUID superGroupId) { }
 
-    public record MockMembership(UserId userId,
-                                 PostId postId,
-                                 UnofficialPostName unofficialPostName) { }
+    public record MockMembership(UUID userId,
+                                 UUID postId,
+                                 String unofficialPostName) { }
 
 
-    public record MockPost(PostId id,
-                           Text postName) { }
+    public record MockText(String sv, String en) { }
 
-    public record MockSuperGroup(SuperGroupId id,
-                                 Name name,
-                                 PrettyName prettyName,
-                                 SuperGroupType type,
-                                 List<AuthorityLevelName> authorities) {
+    public record MockPost(UUID id,
+                           MockText postName) { }
+
+    public record MockSuperGroup(UUID id,
+                                 String name,
+                                 String prettyName,
+                                 String type,
+                                 List<String> authorities) {
     }
 
     public record MockUser(
-            UserId id,
-            Cid cid,
-            Nick nick,
-            FirstName firstName,
-            LastName lastName,
-            AcceptanceYear acceptanceYear,
-            List<AuthorityLevelName> authorities) { }
+            UUID id,
+            String cid,
+            String nick,
+            String firstName,
+            String lastName,
+            int acceptanceYear,
+            List<String> authorities) { }
 
     public record MockPostAuthority(
-            AuthorityLevelName name,
-            SuperGroupId superGroupId,
-            PostId postId
+            String name,
+            UUID superGroupId,
+            UUID postId
     ) { }
 
 }

@@ -1,28 +1,13 @@
 package it.chalmers.gamma.domain.user;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+public record UnencryptedPassword(String password) {
 
-//TODO: whats the purpose?
-public class UnencryptedPassword {
-
-    private final String password;
-
-    public UnencryptedPassword(String value) {
-        if (value == null) {
+    public UnencryptedPassword {
+        if (password == null) {
             throw new NullPointerException("Password cannot be null");
-        } else if (value.length() < 8) {
+        } else if (password.length() < 8) {
             throw new IllegalArgumentException("Password length must be atleast 8");
         }
 
-        this.password = value;
     }
-
-    public static UnencryptedPassword valueOf(String value) {
-        return new UnencryptedPassword(value);
-    }
-
-    public Password encrypt(PasswordEncoder passwordEncoder) {
-        return new Password(passwordEncoder.encode(this.password));
-    }
-
 }

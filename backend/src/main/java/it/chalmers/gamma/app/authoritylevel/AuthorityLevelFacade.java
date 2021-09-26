@@ -3,18 +3,26 @@ package it.chalmers.gamma.app.authoritylevel;
 import it.chalmers.gamma.app.AccessGuard;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.group.GroupRepository;
+import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.PostRepository;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.UserRepository;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.domain.post.Post;
 import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.user.User;
 import it.chalmers.gamma.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthorityLevelFacade extends Facade {
@@ -39,49 +47,88 @@ public class AuthorityLevelFacade extends Facade {
         this.superGroupRepository = superGroupRepository;
     }
 
-    public void create(AuthorityLevelName authorityLevelName) {
+    public void create(String name) {
         accessGuard.requireIsAdmin();
-        this.authorityLevelRepository.create(authorityLevelName);
+        this.authorityLevelRepository.create(new AuthorityLevelName(name));
     }
 
-    public void delete(AuthorityLevelName authorityLevelName) {
+    public void delete(String name) {
         accessGuard.requireIsAdmin();
-        this.authorityLevelRepository.delete(authorityLevelName);
+        this.authorityLevelRepository.delete(new AuthorityLevelName(name));
     }
 
-    public Optional<AuthorityLevel> get(AuthorityLevelName authorityLevelName) {
-        return this.authorityLevelRepository.get(authorityLevelName);
+    public record SuperGroupPostDTO(SuperGroupFacade.SuperGroupDTO superGroup, PostFacade.PostDTO post) {
+        public SuperGroupPostDTO(AuthorityLevel.SuperGroupPost post) {
+            this(new SuperGroupFacade.SuperGroupDTO(post.superGroup()), new PostFacade.PostDTO(post.post()));
+        }
     }
 
-    public List<AuthorityLevel> getAll() {
+    public record AuthorityLevelDTO(
+            String authorityLevelName,
+            List<SuperGroupFacade.SuperGroupDTO> superGroups,
+            List<UserFacade.UserDTO> users,
+            List<SuperGroupPostDTO> posts) {
+        public AuthorityLevelDTO(AuthorityLevel authorityLevel) {
+            this(authorityLevel.name().value(),
+                    authorityLevel.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList(),
+                    authorityLevel.users().stream().map(UserFacade.UserDTO::new).toList(),
+                    authorityLevel.posts().stream().map(SuperGroupPostDTO::new).toList());
+        }
+    }
+
+
+    public Optional<AuthorityLevelDTO> get(String name) {
+        return this.authorityLevelRepository.get(new AuthorityLevelName(name)).map(AuthorityLevelDTO::new);
+    }
+
+    public List<AuthorityLevelDTO> getAll() {
         accessGuard.requireIsAdmin();
-        return this.authorityLevelRepository.getAll();
+        return this.authorityLevelRepository.getAll()
+                .stream()
+                .map(AuthorityLevelDTO::new)
+                .toList();
     }
 
 
-    public void addToAuthorityLevel(AuthorityLevelName authorityLevelName, SuperGroupId superGroupId) {
+    public void addSuperGroupToAuthorityLevel(String name, UUID superGroupId) {
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+
+        List<SuperGroup> superGroups = new ArrayList<>(authorityLevel.superGroups());
+        superGroups.add(this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow());
+
+        this.authorityLevelRepository.save(authorityLevel.withSuperGroups(superGroups));
+    }
+
+    public void addSuperGroupPostToAuthorityLevel(String name, UUID superGroupId, UUID postId) {
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+
+        List<AuthorityLevel.SuperGroupPost> posts = new ArrayList<>(authorityLevel.posts());
+        posts.add(new AuthorityLevel.SuperGroupPost(
+                this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow(),
+                this.postRepository.get(new PostId(postId)).orElseThrow()
+        ));
+
+        this.authorityLevelRepository.save(authorityLevel.withPosts(posts));
+    }
+
+    public void addUserToAuthorityLevel(String name, UUID userId) {
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+
+        List<User> newUsersList = new ArrayList<>(authorityLevel.users());
+        newUsersList.add(this.userRepository.get(new UserId(userId)).orElseThrow());
+
+        this.authorityLevelRepository.save(authorityLevel.withUsers(newUsersList));
+    }
+
+    public void removeSuperGroupFromAuthorityLevel(String name, UUID superGroupId) {
         throw new UnsupportedOperationException();
     }
 
-    public void addToAuthorityLevel(AuthorityLevelName authorityLevelName, SuperGroupId superGroupId, PostId postId) {
+    public void removeSuperGroupPostFromAuthorityLevel(String name, UUID superGroupId, UUID postId) {
         throw new UnsupportedOperationException();
     }
 
-    public void addToAuthorityLevel(AuthorityLevelName authorityLevelName, UserId userId) {
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(authorityLevelName).orElseThrow();
-        authorityLevel.users().add(this.userRepository.get(userId));
-
-    }
-
-    public void removeFromAuthorityLevel(AuthorityLevelName name, SuperGroupId superGroupId) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void removeFromAuthorityLevel(AuthorityLevelName name, SuperGroupId superGroupId, PostId postId) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void removeFromAuthorityLevel(AuthorityLevelName name, UserId userId) {
+    public void removeUserFromAuthorityLevel(String name, UUID userId) {
         throw new UnsupportedOperationException();
     }
 
@@ -99,6 +146,6 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void create(AuthorityLevel authorityLevel) {
-        this.authorityLevelRepository.create(authorityLevel);
+        this.authorityLevelRepository.save(authorityLevel);
     }
 }

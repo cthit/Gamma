@@ -25,12 +25,12 @@ public final class UserActivationAdminController {
     }
 
     @GetMapping()
-    public List<UserActivation> getAll() {
+    public List<UserCreationFacade.UserActivationDTO> getAll() {
         return this.userCreationFacade.getAllUserActivations();
     }
 
     @DeleteMapping("/{cid}")
-    public UserActivationDeletedResponse removeUserActivation(@PathVariable("cid") Cid cid) {
+    public UserActivationDeletedResponse removeUserActivation(@PathVariable("cid") String cid) {
         this.userCreationFacade.removeUserActivation(cid);
         return new UserActivationDeletedResponse();
     }

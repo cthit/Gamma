@@ -33,41 +33,36 @@ public final class ClientAdminController {
     }
 
     private record CreateClientRequest(String webServerRedirectUri,
-                                       PrettyName prettyName,
+                                       String prettyName,
                                        boolean autoApprove,
-                                       Text description,
+                                       String svDescription,
+                                       String enDescription,
                                        boolean generateApiKey,
-                                       List<AuthorityLevelName> restrictions
+                                       List<String> restrictions
     ) { }
 
-    private record NewClientSecrets(ClientSecret clientSecret, ApiKeyToken apiKeyToken) { }
+    private record NewClientSecrets(String clientSecret, String apiKeyToken) { }
 
     @PostMapping()
-    public NewClientSecrets addClient(@RequestBody CreateClientRequest request) {
-        ClientSecret clientSecret = ClientSecret.generate();
-        ApiKeyToken apiKeyToken = null;
+    public ClientFacade.ClientAndApiKeySecrets addClient(@RequestBody CreateClientRequest request) {
+        ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(
+                new ClientFacade.NewClient(
+                        request.webServerRedirectUri,
+                        request.prettyName,
+                        request.autoApprove,
+                        request.svDescription,
+                        request.enDescription,
+                        request.generateApiKey,
+                        request.restrictions
+                )
+        );
 
-//        Client newClient =
-//                Client.create(
-//                        request.webServerRedirectUri,
-//                        request.autoApprove,
-//                        request.prettyName,
-//                        request.description,
-//                        request.restrictions
-//                );
-//        if (request.generateApiKey) {
-//            apiKeyToken = ApiKeyToken.generate();
-//            this.clientFacade.createWithApiKey(newClient, clientSecret, apiKeyToken);
-//        } else {
-//            this.clientFacade.create(newClient, clientSecret);
-//        }
-
-        return new NewClientSecrets(clientSecret, apiKeyToken);
+        return secrets;
     }
 
     @PostMapping("/{clientId}/reset")
-    public ClientSecret resetClientCredentials(@PathVariable("clientId") ClientId clientId) {
-        ClientSecret clientSecret;
+    public String resetClientCredentials(@PathVariable("clientId") String clientId) {
+        String clientSecret;
 
         try {
             clientSecret = this.clientFacade.resetClientSecret(clientId);
@@ -79,17 +74,17 @@ public final class ClientAdminController {
     }
 
     @GetMapping()
-    public List<Client> getClients() {
+    public List<ClientFacade.ClientDTO> getClients() {
         return this.clientFacade.getAll();
     }
 
     @GetMapping("/{clientId}")
-    public Client getClient(@PathVariable("clientId") ClientId id) {
+    public ClientFacade.ClientDTO getClient(@PathVariable("clientId") String id) {
         return this.clientFacade.get(id).orElseThrow(ClientNotFoundResponse::new);
     }
 
     @DeleteMapping("/{clientId}")
-    public ClientDeletedResponse deleteClient(@PathVariable("clientId") ClientId id) {
+    public ClientDeletedResponse deleteClient(@PathVariable("clientId") String id) {
         try {
             this.clientFacade.delete(id);
             return new ClientDeletedResponse();

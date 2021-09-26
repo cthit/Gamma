@@ -19,7 +19,7 @@ public class PostRepositoryAdapter implements PostRepository {
 
     @Override
     public void create(Post post) {
-        this.repository.save(new PostEntity(post));
+        this.repository.saveAndFlush(new PostEntity(post));
     }
 
     @Override

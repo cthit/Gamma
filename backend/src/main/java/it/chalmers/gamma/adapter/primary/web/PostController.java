@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/posts")
@@ -23,14 +24,14 @@ public final class PostController {
     }
 
     @GetMapping("/{id}")
-    public Post getPost(@PathVariable("id") PostId id) {
+    public PostFacade.PostDTO getPost(@PathVariable("id") UUID id) {
         return this.postFacade.get(id)
                 .orElseThrow(PostNotFoundResponse::new);
     }
 
 
     @GetMapping()
-    public List<Post> getPosts() {
+    public List<PostFacade.PostDTO> getPosts() {
         return this.postFacade.getAll();
     }
 

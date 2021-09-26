@@ -1,10 +1,12 @@
 package it.chalmers.gamma.domain.post;
 
+import io.soabase.recordbuilder.core.RecordBuilder;
 import it.chalmers.gamma.domain.group.EmailPrefix;
 import it.chalmers.gamma.domain.common.Text;
 
 import java.util.Objects;
 
+@RecordBuilder
 public record Post(PostId id,
                    Text name,
                    EmailPrefix emailPrefix

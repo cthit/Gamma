@@ -1,12 +1,18 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.app.user.PasswordService;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.common.ImageUri;
+import it.chalmers.gamma.domain.user.AcceptanceYear;
 import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.app.user.UserRepository;
+import it.chalmers.gamma.domain.user.FirstName;
 import it.chalmers.gamma.domain.user.Language;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Nick;
 import it.chalmers.gamma.domain.user.UnencryptedPassword;
 import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.domain.user.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,16 +33,16 @@ public class UserBootstrap {
     private final MockData mockData;
     private final UserRepository userRepository;
     private final boolean mocking;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordService passwordService;
 
     public UserBootstrap(MockData mockData,
                          UserRepository userRepository,
                          @Value("${application.mocking}") boolean mocking,
-                         PasswordEncoder passwordEncoder) {
+                         PasswordService passwordService) {
         this.mockData = mockData;
         this.userRepository = userRepository;
         this.mocking = mocking;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordService = passwordService;
     }
 
     @PostConstruct
@@ -49,16 +55,16 @@ public class UserBootstrap {
 
         this.mockData.users().forEach(mockUser -> this.userRepository.create(
                 new User(
-                        mockUser.id(),
-                        mockUser.cid(),
-                        new Email(mockUser.cid().value() + "@student.chalmers.it"),
+                        new UserId(mockUser.id()),
+                        new Cid(mockUser.cid()),
+                        new Email(mockUser.cid() + "@student.chalmers.it"),
                         Language.EN,
-                        mockUser.nick(),
-                        new UnencryptedPassword("password").encrypt(this.passwordEncoder),
-                        mockUser.firstName(),
-                        mockUser.lastName(),
+                        new Nick(mockUser.nick()),
+                        this.passwordService.encrypt(new UnencryptedPassword("password")),
+                        new FirstName(mockUser.firstName()),
+                        new LastName(mockUser.lastName()),
                         Instant.now(),
-                        mockUser.acceptanceYear(),
+                        new AcceptanceYear(mockUser.acceptanceYear()),
                         false,
                         false,
                         ImageUri.nothing()
@@ -69,7 +75,6 @@ public class UserBootstrap {
                 + this.mockData.users()
                         .stream()
                         .map(MockData.MockUser::cid)
-                        .map(Cid::getValue)
                         .collect(Collectors.joining(", "))
         );
         LOGGER.info("Use a cid from the row above and use the password: password to sign in");

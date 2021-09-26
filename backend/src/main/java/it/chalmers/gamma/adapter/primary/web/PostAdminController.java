@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/internal/admin/posts")
 public final class PostAdminController {
@@ -27,12 +29,12 @@ public final class PostAdminController {
         this.postFacade = postFacade;
     }
 
-    private record CreateOrEditPost(Text post, EmailPrefix emailPrefix) { }
+    private record CreateOrEditPost(String svText, String enText, String emailPrefix) { }
 
     @PostMapping()
     public PostCreatedResponse addPost(@RequestBody CreateOrEditPost request) {
         this.postFacade.create(
-                new Post(PostId.generate(), request.post(), request.emailPrefix())
+                new PostFacade.NewPost(request.svText, request.enText, request.emailPrefix())
         );
         return new PostCreatedResponse();
     }
@@ -40,9 +42,16 @@ public final class PostAdminController {
     @PutMapping("/{id}")
     public PostEditedResponse editPost(
             @RequestBody CreateOrEditPost request,
-            @PathVariable("id") PostId id) {
+            @PathVariable("id") UUID id) {
         try {
-            this.postFacade.update(new Post(id, request.post(), request.emailPrefix()));
+            this.postFacade.update(
+                    new PostFacade.UpdatePost(
+                            id,
+                            request.svText,
+                            request.enText,
+                            request.emailPrefix
+                    )
+            );
             return new PostEditedResponse();
         } catch (PostRepository.PostNotFoundException e) {
             throw new PostNotFoundResponse();
@@ -50,7 +59,7 @@ public final class PostAdminController {
     }
 
     @DeleteMapping("/{id}")
-    public PostDeletedResponse deletePost(@PathVariable("id") PostId id) {
+    public PostDeletedResponse deletePost(@PathVariable("id") UUID id) {
         try {
             this.postFacade.delete(id);
         } catch (PostRepository.PostNotFoundException e) {
@@ -58,11 +67,6 @@ public final class PostAdminController {
         }
         return new PostDeletedResponse();
     }
-
-//    @GetMapping("/{id}/usage")
-//    public List<Group> getPostUsages(@PathVariable("id") PostId postId) {
-//        return this.membershipService.getGroupsWithPost(postId);
-//    }
 
     private static class PostEditedResponse extends SuccessResponse { }
 

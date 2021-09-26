@@ -2,15 +2,21 @@ package it.chalmers.gamma.app.supergroup;
 
 import it.chalmers.gamma.app.AccessGuard;
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.common.Text;
 import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.domain.supergroup.SuperGroupBuilder;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupTypeRepository;
+import it.chalmers.gamma.domain.user.Name;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class SuperGroupFacade extends Facade {
@@ -26,29 +32,73 @@ public class SuperGroupFacade extends Facade {
         this.superGroupTypeRepository = superGroupTypeRepository;
     }
 
-    public void addType(SuperGroupType superGroupType) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
+    public void addType(String type) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
         accessGuard.requireIsAdmin();
-        this.superGroupTypeRepository.add(superGroupType);
+        this.superGroupTypeRepository.add(new SuperGroupType(type));
     }
 
-    public void removeType(SuperGroupType superGroupType) throws SuperGroupTypeRepository.SuperGroupTypeNotFoundException, SuperGroupTypeRepository.SuperGroupTypeHasUsagesException {
+    public void removeType(String type) throws SuperGroupTypeRepository.SuperGroupTypeNotFoundException, SuperGroupTypeRepository.SuperGroupTypeHasUsagesException {
         accessGuard.requireIsAdmin();
-        this.superGroupTypeRepository.delete(superGroupType);
+        this.superGroupTypeRepository.delete(new SuperGroupType(type));
     }
 
-    public List<SuperGroupType> getAllTypes() {
+    public List<String> getAllTypes() {
         accessGuard.requireSignedIn();
-        return this.superGroupTypeRepository.getAll();
+        return this.superGroupTypeRepository.getAll()
+                .stream()
+                .map(SuperGroupType::value)
+                .toList();
     }
 
-    public void createSuperGroup(SuperGroup superGroup) throws SuperGroupRepository.SuperGroupAlreadyExistsException {
+    public record NewSuperGroup(String name,
+                                String prettyName,
+                                String superGroupType,
+                                String email,
+                                String svDescription,
+                                String enDescription) { }
+
+    public void createSuperGroup(NewSuperGroup newSuperGroup) throws SuperGroupRepository.SuperGroupAlreadyExistsException {
         accessGuard.requireIsAdmin();
-        this.superGroupRepository.create(superGroup);
+        this.superGroupRepository.create(
+                new SuperGroup(
+                        SuperGroupId.generate(),
+                        new Name(newSuperGroup.name),
+                        new PrettyName(newSuperGroup.prettyName),
+                        new SuperGroupType(newSuperGroup.superGroupType),
+                        new Email(newSuperGroup.email),
+                        new Text(
+                                newSuperGroup.svDescription,
+                                newSuperGroup.enDescription
+                        )
+                )
+        );
     }
 
-    public void updateSuperGroup(SuperGroup superGroup) throws SuperGroupRepository.SuperGroupNotFoundException {
+    public record UpdateSuperGroup(UUID id,
+                                   String name,
+                                   String prettyName,
+                                   String type,
+                                   String email,
+                                   String svDescription,
+                                   String enDescription) { }
+
+    public void updateSuperGroup(UpdateSuperGroup updateSuperGroup) throws SuperGroupRepository.SuperGroupNotFoundException {
         accessGuard.requireIsAdmin();
-        this.superGroupRepository.save(superGroup);
+        SuperGroup oldSuperGroup = this.superGroupRepository.get(new SuperGroupId(updateSuperGroup.id)).orElseThrow();
+        SuperGroup newSuperGroup = SuperGroupBuilder
+                .builder(oldSuperGroup)
+                .name(new Name(updateSuperGroup.name))
+                .prettyName(new PrettyName(updateSuperGroup.prettyName))
+                .type(new SuperGroupType(updateSuperGroup.type))
+                .email(new Email(updateSuperGroup.email))
+                .description(
+                        new Text(
+                                updateSuperGroup.svDescription,
+                                updateSuperGroup.enDescription
+                        )
+                ).build();
+
+        this.superGroupRepository.save(newSuperGroup);
     }
 
     public void deleteSuperGroup(SuperGroupId superGroupId) throws SuperGroupRepository.SuperGroupNotFoundException {
@@ -56,18 +106,35 @@ public class SuperGroupFacade extends Facade {
         this.superGroupRepository.delete(superGroupId);
     }
 
-    public List<SuperGroup> getAllSuperGroups() {
-        accessGuard.requireSignedIn();
-        return this.superGroupRepository.getAll();
+    public record SuperGroupDTO(UUID id, String name, String prettyName, String type, String email) {
+        public SuperGroupDTO(SuperGroup superGroup) {
+            this(superGroup.id().value(),
+                    superGroup.name().value(),
+                    superGroup.prettyName().value(),
+                    superGroup.type().value(),
+                    superGroup.email().value()
+            );
+        }
     }
 
-    public List<SuperGroup> getAllSuperGroupsByType(SuperGroupType superGroupType) {
+    public List<SuperGroupDTO> getAllSuperGroups() {
         accessGuard.requireSignedIn();
-        return this.superGroupRepository.getAllByType(superGroupType);
+        return this.superGroupRepository.getAll()
+                .stream()
+                .map(SuperGroupDTO::new)
+                .toList();
     }
 
-    public Optional<SuperGroup> get(SuperGroupId superGroupId) {
-        return this.superGroupRepository.get(superGroupId);
+    public List<SuperGroupDTO> getAllSuperGroupsByType(String superGroupType) {
+        accessGuard.requireSignedIn();
+        return this.superGroupRepository.getAllByType(new SuperGroupType(superGroupType))
+                .stream()
+                .map(SuperGroupDTO::new)
+                .toList();
+    }
+
+    public Optional<SuperGroupDTO> get(UUID superGroupId) {
+        return this.superGroupRepository.get(new SuperGroupId(superGroupId)).map(SuperGroupDTO::new);
     }
 
 }

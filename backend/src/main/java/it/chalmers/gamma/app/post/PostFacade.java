@@ -2,6 +2,8 @@ package it.chalmers.gamma.app.post;
 
 import it.chalmers.gamma.app.AccessGuard;
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.domain.common.Text;
+import it.chalmers.gamma.domain.group.EmailPrefix;
 import it.chalmers.gamma.domain.post.Post;
 import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.app.post.PostRepository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PostFacade extends Facade {
@@ -20,26 +23,50 @@ public class PostFacade extends Facade {
         this.postRepository = postRepository;
     }
 
-    public void create(Post post) {
-        this.postRepository.create(post);
+    public record NewPost(String svText, String enText, String emailPrefix) { }
+
+    public void create(NewPost newPost) {
+        this.postRepository.create(
+                new Post(
+                        PostId.generate(),
+                        new Text(newPost.svText, newPost.enText),
+                        new EmailPrefix(newPost.emailPrefix)
+                )
+        );
     }
 
-    public void update(Post post) throws PostRepository.PostNotFoundException {
-        this.postRepository.save(post);
+    public record UpdatePost(UUID postId, String svText, String enText, String emailPrefix) { }
+
+    public void update(UpdatePost updatePost) throws PostRepository.PostNotFoundException {
+        Post post = this.postRepository.get(new PostId(updatePost.postId)).orElseThrow();
+//        this.postRepository.save();
+        throw new UnsupportedOperationException();
     }
 
-    public void delete(PostId postId) throws PostRepository.PostNotFoundException {
-        this.postRepository.delete(postId);
+    public void delete(UUID postId) throws PostRepository.PostNotFoundException {
+        this.postRepository.delete(new PostId(postId));
     }
 
-    public Optional<Post> get(PostId postId) {
+    public record PostDTO(UUID id, String svText, String enText, String emailPrefix) {
+        public PostDTO(Post post) {
+            this(post.id().value(),
+                    post.name().sv().value(),
+                    post.name().en().value(),
+                    post.emailPrefix().value());
+        }
+    }
+
+    public Optional<PostDTO> get(UUID postId) {
         accessGuard.requireSignedIn();
-        return this.postRepository.get(postId);
+        return this.postRepository.get(new PostId(postId)).map(PostDTO::new);
     }
 
-    public List<Post> getAll() {
+    public List<PostDTO> getAll() {
         accessGuard.requireSignedIn();
-        return this.postRepository.getAll();
+        return this.postRepository.getAll()
+                .stream()
+                .map(PostDTO::new)
+                .toList();
     }
 
 }

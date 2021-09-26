@@ -26,7 +26,10 @@ public class AuthorityPostEntity extends ImmutableEntity<AuthorityPostPK> {
     }
 
     public AuthorityLevel.SuperGroupPost getIdentifier() {
-        return null;
+        return new AuthorityLevel.SuperGroupPost(
+                this.id.getValue().superGroup(),
+                this.id.getValue().post()
+        );
     }
 
 }

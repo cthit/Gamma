@@ -1,7 +1,9 @@
 package it.chalmers.gamma.security;
 
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.domain.apikey.ApiKeyType;
+import it.chalmers.gamma.security.authentication.ApiKeyAuthenticationFilter;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;
 
@@ -22,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -40,7 +43,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
-    private final ApiKeyRepository apiKeyService;
+    private final ApiKeyRepository apiKeyRepository;
+
+    private final ApiKeyFacade apiKeyFacade;
 
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
@@ -52,12 +57,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              PasswordEncoder passwordEncoder,
                              LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
-                             ApiKeyRepository apiKeyService) {
+                             ApiKeyRepository apiKeyRepository,
+                             ApiKeyFacade apiKeyFacade) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.loginRedirectHandler = loginRedirectHandler;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
-        this.apiKeyService = apiKeyService;
+        this.apiKeyRepository = apiKeyRepository;
+        this.apiKeyFacade = apiKeyFacade;
     }
 
     @Override
@@ -118,6 +125,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addAuthenticationFilter(HttpSecurity http) {
         try {
+            http.addFilterBefore(new ApiKeyAuthenticationFilter(apiKeyRepository),  UsernamePasswordAuthenticationFilter.class);
 //            http.apply(
 //                    new AuthenticationFilterConfigurer(
 //                            this.userService,

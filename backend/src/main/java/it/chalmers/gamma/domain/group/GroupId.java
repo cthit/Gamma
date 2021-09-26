@@ -11,7 +11,6 @@ public record GroupId(UUID value) implements Id<UUID> {
         return new GroupId(UUID.randomUUID());
     }
 
-    @JsonCreator
     public static GroupId valueOf(String value) {
         return new GroupId(UUID.fromString(value));
     }

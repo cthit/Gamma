@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/internal/admin/superGroups")
 public class SuperGroupAdminController {
@@ -31,23 +33,25 @@ public class SuperGroupAdminController {
         this.superGroupFacade = superGroupFacade;
     }
 
-    private record CreateOrEditSuperGroupRequest(Name name,
-                                                 PrettyName prettyName,
-                                                 SuperGroupType type,
-                                                 Email email,
-                                                 Text description) { }
+    private record Text(String sv, String en) { }
+
+    private record CreateOrEditSuperGroupRequest(String name,
+                                                 String prettyName,
+                                                 String type,
+                                                 String email,
+                                                 SuperGroupAdminController.Text description) { }
 
     @PostMapping()
     public SuperGroupCreatedResponse createSuperGroup(@RequestBody CreateOrEditSuperGroupRequest request) {
         try {
             this.superGroupFacade.createSuperGroup(
-                    new SuperGroup(
-                            SuperGroupId.generate(),
+                    new SuperGroupFacade.NewSuperGroup(
                             request.name,
                             request.prettyName,
                             request.type,
                             request.email,
-                            request.description
+                            request.description.sv,
+                            request.description.en
                     )
             );
         } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
@@ -67,17 +71,20 @@ public class SuperGroupAdminController {
     }
 
     @PutMapping("/{id}")
-    public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") SuperGroupId id,
+    public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") UUID id,
                                                 @RequestBody CreateOrEditSuperGroupRequest request) {
         try {
-            this.superGroupFacade.updateSuperGroup(new SuperGroup(
-                    id,
-                    request.name,
-                    request.prettyName,
-                    request.type,
-                    request.email,
-                    request.description
-            ));
+            this.superGroupFacade.updateSuperGroup(
+                    new SuperGroupFacade.UpdateSuperGroup(
+                            id,
+                            request.name,
+                            request.prettyName,
+                            request.type,
+                            request.email,
+                            request.description.sv,
+                            request.description.en
+                    )
+            );
         } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
             throw new SuperGroupDoesNotExistResponse();
         }

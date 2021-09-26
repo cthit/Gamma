@@ -33,8 +33,9 @@ public class UserResetPasswordFacade extends Facade {
         this.passwordResetRepository = passwordResetRepository;
     }
 
-    public void startResetPasswordProcess(UserSignInIdentifier signInIdentifier) throws PasswordResetProcessException {
+    public void startResetPasswordProcess(String cidOrEmail) throws PasswordResetProcessException {
         accessGuard.requireNotSignedIn();
+        UserSignInIdentifier signInIdentifier = toSignInIdentifier(cidOrEmail);
         Optional<User> maybeUser = getUser(signInIdentifier);
 
         if (maybeUser.isEmpty()) {
@@ -48,8 +49,9 @@ public class UserResetPasswordFacade extends Facade {
         sendPasswordResetTokenMail(user, token);
     }
 
-    public void finishResetPasswordProcess(UserSignInIdentifier signInIdentifier, PasswordResetToken inputToken, UnencryptedPassword newPassword) throws PasswordResetProcessException {
+    public void finishResetPasswordProcess(String cidOrEmail, String inputTokenRaw, String newPassword) throws PasswordResetProcessException {
         accessGuard.requireNotSignedIn();
+        UserSignInIdentifier signInIdentifier = toSignInIdentifier(cidOrEmail);
         Optional<User> maybeUser = getUser(signInIdentifier);
 
         if (maybeUser.isEmpty()) {
@@ -66,15 +68,22 @@ public class UserResetPasswordFacade extends Facade {
         }
 
         PasswordResetToken token = maybeToken.get();
+        PasswordResetToken inputToken = new PasswordResetToken(inputTokenRaw);
 
         if (token.equals(inputToken)) {
             this.passwordResetRepository.removeToken(token);
-            this.userRepository.setPassword(user.id(), newPassword);
+            this.userRepository.setPassword(user.id(), new UnencryptedPassword(newPassword));
         } else {
             LOGGER.debug("Incorrect password reset token for user " + user);
             throw new PasswordResetProcessException();
         }
+    }
 
+    private UserSignInIdentifier toSignInIdentifier(String cidOrEmail) {
+        try {
+            return Cid.valueOf(cidOrEmail);
+        } catch (IllegalArgumentException ignored) { }
+        return new Email(cidOrEmail);
     }
 
     private void sendPasswordResetTokenMail(User user, PasswordResetToken token) {

@@ -1,21 +1,12 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.app.image.ImageService;
+import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.domain.user.AcceptanceYear;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.user.FirstName;
-import it.chalmers.gamma.domain.user.Language;
-import it.chalmers.gamma.domain.useractivation.UserActivationToken;
-import it.chalmers.gamma.domain.user.LastName;
-import it.chalmers.gamma.domain.user.Nick;
-import it.chalmers.gamma.domain.user.UnencryptedPassword;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.User;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,9 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 public final class UserController {
 
     private final UserFacade userFacade;
+    private final UserCreationFacade userCreationFacade;
 
-    public UserController(UserFacade userFacade) {
+    public UserController(UserFacade userFacade,
+                          UserCreationFacade userCreationFacade) {
         this.userFacade = userFacade;
+        this.userCreationFacade = userCreationFacade;
     }
 
     @GetMapping()
@@ -46,84 +40,42 @@ public final class UserController {
         return this.userFacade.getAll();
     }
 
-    public record GetUserRestrictedResponse(@JsonUnwrapped User user
-//                                            List<GroupPost> groups
-    ) { }
-
     @GetMapping("/{id}")
-    public GetUserRestrictedResponse getRestrictedUser(@PathVariable("id") UserId id) {
-//        try {
-//            User user = this.userService.get(id);
-//            List<GroupPost> groups = this.membershipService
-//                    .getMembershipsByUser(id)
-//                    .stream()
-//                    .map(membership -> new GroupPost(membership.post(), membership.group()))
-//                    .collect(Collectors.toList());
-//
-//            return new GetUserRestrictedResponse(user, groups);
-//        } catch (UserService.UserNotFoundException e) {
-//            throw new UserNotFoundResponse();
-//        }
-        return null;
+    public UserFacade.UserExtendedWithGroupsDTO getUser(@PathVariable("id") UUID id) {
+        return this.userFacade.getAsAdmin(id).orElseThrow();
     }
 
-    record CreateUserRequest (UserActivationToken token,
-                              UnencryptedPassword password,
-                              Nick nick,
-                              FirstName firstName,
-                              Email email,
-                              LastName lastName,
-                              boolean userAgreement,
-                              AcceptanceYear acceptanceYear,
-                              Cid cid,
-                              Language language) {}
+    record CreateUserRequest(String token,
+                             String password,
+                             String nick,
+                             String firstName,
+                             String email,
+                             String lastName,
+                             boolean userAgreement,
+                             int acceptanceYear,
+                             String cid,
+                             String language) {}
 
     @PostMapping("/create")
     @ResponseBody
     public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
-//        try {
-//            this.userCreationService.createUserByCode(new User(
-//                            UserId.generate(),
-//                            request.cid,
-//                            request.email,
-//                            request.language,
-//                            request.nick,
-//                            request.value,
-//                            request.lastName,
-//                            request.userAgreement,
-//                            request.acceptanceYear
-//                    ),
-//                    request.password,
-//                    request.token
-//            );
-//        } catch (CidOrCodeNotMatchException e) {
-//             If anything is wrong, throw generic error
-//            throw new CodeOrCidIsWrongResponse();
-//        }
-//        return new UserCreatedResponse();
-        return null;
-    }
+        //TODO: Check userAgreement
 
-
-    @GetMapping("/{id}/avatar")
-    public void getUserAvatar(@PathVariable("id") UserId id, HttpServletResponse response) throws IOException {
-            ///todo fix
-        //        tvcry {
-//            UserDTO user = this.userService.get(id);
-//            response.sendRedirect(user.avatarUrl());
-//        } catch (EntityNotFoundException e) {
-//            throw new UserNotFoundResponse();
-//        }
+        this.userCreationFacade.createUserWithCode(
+                new UserCreationFacade.NewUser(
+                        request.password,
+                        request.nick,
+                        request.firstName,
+                        request.email,
+                        request.lastName,
+                        request.acceptanceYear,
+                        request.cid,
+                        request.language
+                ), request.token
+        );
+        return new UserCreatedResponse();
     }
 
     private static class UserCreatedResponse extends SuccessResponse { }
-
-    private static class CodeOrCidIsWrongResponse extends ErrorResponse {
-        private CodeOrCidIsWrongResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
-
-    private static class UserNotFoundResponse extends NotFoundResponse { }
 
 }

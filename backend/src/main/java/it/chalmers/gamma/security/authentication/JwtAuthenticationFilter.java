@@ -67,9 +67,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Authentication getAuthentication(String cid) {
-        UserFacade.UserDTO user = this.userFacade.get(cid).orElseThrow(IllegalStateException::new);
+        UserFacade.UserWithGroupsDTO user = this.userFacade.get(cid).orElseThrow(IllegalStateException::new);
         return new UsernamePasswordAuthenticationToken(
-                user.cid(),
+                user.user().cid(),
                 null,
                 Collections.emptyList()
         );

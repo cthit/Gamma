@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.client;
 
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.domain.client.Client;
 import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.client.ClientSecret;
@@ -10,7 +12,7 @@ import java.util.Optional;
 
 public interface ClientRepository {
 
-    void create(Client client, ClientSecret clientSecret);
+    void create(Client client);
     void delete(ClientId clientId) throws ClientNotFoundException;
     ClientSecret resetClientSecret(ClientId clientId);
 
@@ -18,6 +20,8 @@ public interface ClientRepository {
     Optional<Client> get(ClientId clientId);
 
     List<Client> getClientsByUserApproved(UserId id);
+
+    Optional<Client> getByApiKey(ApiKeyToken apiKeyToken);
 
     class ClientNotFoundException extends Exception { }
 

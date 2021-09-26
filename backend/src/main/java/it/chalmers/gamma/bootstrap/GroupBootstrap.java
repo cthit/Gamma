@@ -8,10 +8,14 @@ import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.common.ImageUri;
 import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.domain.group.Group;
+import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.GroupMember;
 import it.chalmers.gamma.domain.group.UnofficialPostName;
+import it.chalmers.gamma.domain.post.PostId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.domain.supergroup.SuperGroupType;
 import it.chalmers.gamma.domain.user.Name;
+import it.chalmers.gamma.domain.user.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,27 +77,29 @@ public class GroupBootstrap {
         int inactiveYear = inactiveGroupBecomesActive.get(Calendar.YEAR);
 
         mockData.groups().forEach(mockGroup -> {
-            SuperGroupType type = mockData.superGroups()
+            String type = mockData.superGroups()
                     .stream()
                     .filter(sg -> sg.id().equals(mockGroup.superGroupId()))
                     .findFirst().orElseThrow().type();
-            boolean active = !type.equals(SuperGroupType.valueOf("alumni"));
+            boolean active = !type.equals("alumni");
             int year = active ? activeYear : inactiveYear;
-            Name name = new Name(mockGroup.name().value() + year);
-            PrettyName prettyName = new PrettyName(mockGroup.prettyName().value() + year);
+            Name name = new Name(mockGroup.name() + year);
+            PrettyName prettyName = new PrettyName(mockGroup.prettyName() + year);
 
             Group group = new Group(
-                    mockGroup.id(),
+                    new GroupId(mockGroup.id()),
                     new Email(name.value() + "@chalmers.lol"),
                     name,
                     prettyName,
-                    superGroupRepository.get(mockGroup.superGroupId()).orElseThrow(),
+                    superGroupRepository.get(new SuperGroupId(mockGroup.superGroupId())).orElseThrow(),
                     mockGroup.members()
                             .stream()
                             .map(mockMembership -> new GroupMember(
-                                    postRepository.get(mockMembership.postId()).orElseThrow(),
-                                    Optional.of(mockMembership.unofficialPostName()).orElse(new UnofficialPostName("")),
-                                    userRepository.get(mockMembership.userId()).orElseThrow()
+                                    postRepository.get(new PostId(mockMembership.postId())).orElseThrow(),
+                                    mockMembership.unofficialPostName() == null
+                                            ? new UnofficialPostName("")
+                                            : new UnofficialPostName(mockMembership.unofficialPostName()),
+                                    userRepository.get(new UserId(mockMembership.userId())).orElseThrow()
                             ))
                             .toList(),
                     ImageUri.nothing(),

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public record UnofficialPostName(String value) {
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public UnofficialPostName {
 
     }

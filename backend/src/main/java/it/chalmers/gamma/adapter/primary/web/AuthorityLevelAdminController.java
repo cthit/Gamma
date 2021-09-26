@@ -26,21 +26,21 @@ public final class AuthorityLevelAdminController {
         return new AuthorityLevelCreatedResponse();
     }
 
-    private record CreateAuthorityLevelRequest(AuthorityLevelName authorityLevel) { }
+    private record CreateAuthorityLevelRequest(String authorityLevel) { }
 
     @GetMapping
-    public List<AuthorityLevel> getAllAuthorityLevels() {
+    public List<AuthorityLevelFacade.AuthorityLevelDTO> getAllAuthorityLevels() {
         return this.authorityLevelFacade.getAll();
     }
 
     @DeleteMapping("/{name}")
-    public AuthorityLevelDeletedResponse removeAuthorityLevel(@PathVariable("name") AuthorityLevelName name) {
+    public AuthorityLevelDeletedResponse deleteAuthorityLevel(@PathVariable("name") String name) {
         this.authorityLevelFacade.delete(name);
         return new AuthorityLevelDeletedResponse();
     }
 
     @GetMapping("/{name}")
-    public AuthorityLevel getAuthorityLevel(@PathVariable("name") AuthorityLevelName name) {
+    public AuthorityLevelFacade.AuthorityLevelDTO getAuthorityLevel(@PathVariable("name") String name) {
         return this.authorityLevelFacade.get(name)
                 .orElseThrow(AuthorityLevelNotFoundResponse::new);
     }

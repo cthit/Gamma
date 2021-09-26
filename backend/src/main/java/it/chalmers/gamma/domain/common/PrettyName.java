@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public record PrettyName(String value) implements Serializable {
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public PrettyName {
         if (value == null) {
             throw new NullPointerException("Pretty name cannot be null");

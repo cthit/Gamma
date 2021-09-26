@@ -15,6 +15,7 @@ public record ImageUri(String value) implements Serializable {
         }
     }
 
+    //TODO: remove this
     public static ImageUri nothing() {
         return new ImageUri("lmao.jpg");
     }

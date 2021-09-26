@@ -18,19 +18,22 @@ public class WhitelistFacade extends Facade {
         this.whitelistRepository = whitelistRepository;
     }
 
-    public List<Cid> getWhitelist() {
+    public List<String> getWhitelist() {
         accessGuard.requireIsAdminOrApi();
-        return this.whitelistRepository.getWhitelist();
+        return this.whitelistRepository.getWhitelist()
+                .stream()
+                .map(Cid::value)
+                .toList();
     }
 
-    public void whitelist(Cid cid) throws WhitelistRepository.AlreadyWhitelistedException {
+    public void whitelist(String cid) throws WhitelistRepository.AlreadyWhitelistedException {
         accessGuard.requireIsAdminOrApi();
-        this.whitelistRepository.whitelist(cid);
+        this.whitelistRepository.whitelist(new Cid(cid));
     }
 
-    public void removeFromWhitelist(Cid cid) throws WhitelistRepository.CidIsNotWhitelistedException {
+    public void removeFromWhitelist(String cid) throws WhitelistRepository.CidIsNotWhitelistedException {
         accessGuard.requireIsAdminOrApi();
-        this.whitelistRepository.remove(cid);
+        this.whitelistRepository.remove(new Cid(cid));
     }
 
     public boolean isWhitelisted(Cid cid) {

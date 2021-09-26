@@ -11,7 +11,6 @@ public record SuperGroupId(UUID value) implements Id<UUID> {
         return new SuperGroupId(UUID.randomUUID());
     }
 
-    @JsonCreator
     public static SuperGroupId valueOf(String value) {
         return new SuperGroupId(UUID.fromString(value));
     }

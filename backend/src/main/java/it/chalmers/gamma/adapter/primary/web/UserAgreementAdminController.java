@@ -21,6 +21,7 @@ public class UserAgreementAdminController {
 
     @PostMapping
     public UserAgreementHasBeenResetResponse resetUserAgreement(@RequestBody ConfirmPassword password) {
+        //TODO: Fix
 //        try {
 //            this.resetUserAgreement.resetUserAgreement(password.password);
 //        } catch (ResetUserAgreement.IncorrectPasswordException e) {

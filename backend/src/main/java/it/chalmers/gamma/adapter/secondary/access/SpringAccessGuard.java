@@ -37,4 +37,9 @@ public class SpringAccessGuard implements AccessGuard {
     public void requireNotSignedIn() throws AccessDeniedException {
 
     }
+
+    @Override
+    public void requireIsClientApi() throws AccessDeniedException {
+
+    }
 }

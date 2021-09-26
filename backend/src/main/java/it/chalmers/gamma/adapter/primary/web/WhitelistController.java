@@ -19,7 +19,7 @@ public final class WhitelistController {
         this.userCreationFacade = userCreationFacade;
     }
 
-    private record WhitelistCodeRequest(Cid cid) { }
+    private record WhitelistCodeRequest(String cid) { }
 
     @PostMapping("/activate_cid")
     public WhitelistedCidActivatedResponse createActivationCode(@RequestBody WhitelistCodeRequest request) {

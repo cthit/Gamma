@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import it.chalmers.gamma.app.user.MeFacade;
+import it.chalmers.gamma.domain.client.Client;
 import it.chalmers.gamma.domain.user.FirstName;
 import it.chalmers.gamma.domain.user.LastName;
 import it.chalmers.gamma.domain.user.Nick;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/internal/users/me")
@@ -33,55 +35,41 @@ public final class MeController {
         this.meFacade = meFacade;
     }
 
-    public record GetMeResponse(@JsonUnwrapped User user,
-//                                List<GroupPost> groups,
-                                Collection<GrantedAuthorityProxy> authorities) { }
-
     @GetMapping()
     public MeFacade.MeDTO getMe() {
-//        UserDetailsImpl userDetails = UserUtils.getUserDetails();
-//        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
-//                .stream()
-//                .map(membership -> new GroupPost(membership.post(), membership.group()))
-//                .collect(Collectors.toList());
-//
-//        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
         return this.meFacade.getMe();
     }
 
-    public record EditMeRequest (Nick nick,
-                                 FirstName firstName,
-                                 LastName lastName,
-                                 Email email,
-                                 Language language) { }
+    public record EditMeRequest (String nick,
+                                 String firstName,
+                                 String lastName,
+                                 String email,
+                                 String language) { }
 
     @PutMapping()
     public UserEditedResponse editMe(@RequestBody EditMeRequest request) {
-//        try {
-//            User user = UserUtils.getUserDetails().getUser();
-//
-//            this.userService.update(
-//                    user.with()
-//                            .nick(request.nick())
-//                            .value(request.value())
-//                            .lastName(request.lastName())
-//                            .email(request.email())
-//                            .language(request.language())
-//                            .build()
-//            );
-//
-//        } catch (UserService.UserNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
+        this.meFacade.updateMe(
+                new MeFacade.UpdateMe(
+                        request.nick,
+                        request.firstName,
+                        request.lastName,
+                        request.email,
+                        request.language
+                )
+        );
         return new UserEditedResponse();
     }
 
-    record ChangeUserPassword(String oldPassword, UnencryptedPassword password) { }
+    record ChangeUserPassword(String oldPassword, String password) { }
 
     @PutMapping("/change_password")
     public PasswordChangedResponse changePassword(@RequestBody ChangeUserPassword request) {
-//        this.meService.changePassword(request.oldPassword, request.password);
+        this.meFacade.updatePassword(
+                new MeFacade.UpdatePassword(
+                        request.oldPassword,
+                        request.password
+                )
+        );
         return new PasswordChangedResponse();
     }
 
@@ -89,19 +77,19 @@ public final class MeController {
 
     @DeleteMapping()
     public UserDeletedResponse deleteMe(@RequestBody DeleteMeRequest request) {
-//        this.meService.deleteAccount(request.password);
+        this.meFacade.deleteMe(request.password);
         return new UserDeletedResponse();
     }
 
     @PutMapping("/accept-user-agreement")
-    public UserAgreementAccepted acceptUserAgreement(Principal principal) {
-//        try {
-//            User user = UserUtils.getUserDetails().getUser();
-//            this.userService.update(user.withUserAgreement(true));
-            return new UserAgreementAccepted();
-//        } catch (UserService.UserNotFoundException e) {
-//            throw new UserNotFoundResponse();
-//        }
+    public UserAgreementAccepted acceptUserAgreement() {
+        this.meFacade.acceptUserAgreement();
+        return new UserAgreementAccepted();
+    }
+
+    @GetMapping("/approval")
+    public List<Client> getApprovedClientsByUser() {
+        return this.meFacade.getSignedInUserApprovals();
     }
 
     private static class UserAgreementAccepted extends SuccessResponse { }

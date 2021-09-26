@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.api;
+package it.chalmers.gamma.adapter.primary.api.goldapps;
 
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.domain.group.Group;

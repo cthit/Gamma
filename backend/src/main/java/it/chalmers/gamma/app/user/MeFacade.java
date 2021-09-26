@@ -9,32 +9,46 @@ import it.chalmers.gamma.app.authoritylevel.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.ClientRepository;
 import it.chalmers.gamma.app.group.GroupRepository;
 import it.chalmers.gamma.domain.client.Client;
+import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.user.FirstName;
+import it.chalmers.gamma.domain.user.Language;
+import it.chalmers.gamma.domain.user.LastName;
+import it.chalmers.gamma.domain.user.Nick;
+import it.chalmers.gamma.domain.user.UnencryptedPassword;
 import it.chalmers.gamma.domain.user.UserAuthority;
+import it.chalmers.gamma.domain.user.UserBuilder;
 import it.chalmers.gamma.domain.user.UserMembership;
 import it.chalmers.gamma.domain.user.User;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class MeFacade extends Facade {
 
+    private final UserRepository userRepository;
     private final AuthenticatedService authenticatedService;
     private final ClientRepository clientRepository;
     private final AuthorityLevelRepository authorityLevelRepository;
     private final GroupRepository groupRepository;
+    private final PasswordService passwordService;
 
     public MeFacade(AccessGuard accessGuard,
+                    UserRepository userRepository,
                     AuthenticatedService authenticatedService,
                     ClientRepository clientRepository,
                     AuthorityLevelRepository authorityLevelRepository,
-                    GroupRepository groupRepository) {
+                    GroupRepository groupRepository,
+                    PasswordService passwordService) {
         super(accessGuard);
+        this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
         this.clientRepository = clientRepository;
         this.authorityLevelRepository = authorityLevelRepository;
         this.groupRepository = groupRepository;
+        this.passwordService = passwordService;
     }
 
     public List<Client> getSignedInUserApprovals() {
@@ -88,6 +102,66 @@ public class MeFacade extends Facade {
             return new MeDTO(user, groups, authorities);
         } else {
             throw new IllegalCallerException("Can only be called by signed in sessions");
+        }
+    }
+
+    public record UpdateMe(String nick,
+                           String firstName,
+                           String lastName,
+                           String email,
+                           String language) { }
+
+
+    public void updateMe(UpdateMe updateMe) {
+        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        if (authenticated instanceof UserAuthenticated userAuthenticated) {
+            User oldMe = userAuthenticated.get();
+            User newMe = oldMe.with()
+                    .nick(new Nick(updateMe.nick))
+                    .firstName(new FirstName(updateMe.firstName))
+                    .lastName(new LastName(updateMe.lastName))
+                    .email(new Email(updateMe.email))
+                    .language(Language.valueOf(updateMe.language))
+                    .build();
+
+            this.userRepository.save(newMe);
+        }
+    }
+
+    public record UpdatePassword(String oldPassword, String newPassword) { }
+
+    public void updatePassword(UpdatePassword updatePassword) {
+        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        if (authenticated instanceof UserAuthenticated userAuthenticated) {
+            User oldMe = userAuthenticated.get();
+            User newMe = oldMe
+                    .withPassword(this.passwordService.encrypt(new UnencryptedPassword(updatePassword.newPassword)));
+
+            this.userRepository.save(newMe);
+        }
+    }
+
+    public void deleteMe(String password) {
+        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        if (authenticated instanceof UserAuthenticated userAuthenticated) {
+            User me = userAuthenticated.get();
+            if (this.passwordService.matches(new UnencryptedPassword(password), me.password())) {
+                try {
+                    this.userRepository.delete(me.id());
+                } catch (UserRepository.UserNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void acceptUserAgreement() {
+        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        if (authenticated instanceof UserAuthenticated userAuthenticated) {
+            User oldMe = userAuthenticated.get();
+            User newMe = oldMe.withLastAcceptedUserAgreement(Instant.now());
+
+            this.userRepository.save(newMe);
         }
     }
 }

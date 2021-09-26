@@ -1,19 +1,16 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.domain.user.AcceptanceYear;
 import it.chalmers.gamma.domain.user.FirstName;
 import it.chalmers.gamma.domain.user.LastName;
 import it.chalmers.gamma.domain.user.Nick;
-import it.chalmers.gamma.domain.user.UnencryptedPassword;
-import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.user.Language;
 import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.User;
 
-import java.util.List;
+import java.util.UUID;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -35,117 +32,81 @@ public final class UserAdminController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAdminController.class);
 
     private final UserFacade userFacade;
+    private final UserCreationFacade userCreationFacade;
 
-    public UserAdminController(UserFacade userFacade) {
+    public UserAdminController(UserFacade userFacade, UserCreationFacade userCreationFacade) {
         this.userFacade = userFacade;
+        this.userCreationFacade = userCreationFacade;
     }
 
-    record AdminChangePasswordRequest(UnencryptedPassword password) {}
+    record AdminChangePasswordRequest(String password) {}
 
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
-            @PathVariable("id") UserId id,
+            @PathVariable("id") UUID id,
             @RequestBody AdminChangePasswordRequest request) {
-//        try {
-//            this.userService.setPassword(id, request.password);
-//        } catch (UserService.UserNotFoundException e) {
-//            LOGGER.error("User not found", e);
-//            throw new UserNotFoundResponse();
-//        }
+        this.userFacade.setUserPassword(id, request.password);
         return new PasswordChangedResponse();
     }
 
     @DeleteMapping("/{id}")
-    public UserDeletedResponse deleteUser(@PathVariable("id") UserId id) {
-//        this.userService.delete(id);
+    public UserDeletedResponse deleteUser(@PathVariable("id") UUID id) {
+        this.userFacade.deleteUser(id);
         return new UserDeletedResponse();
     }
 
-    public record GetUserAdminResponse(@JsonUnwrapped User user
-//                                       List<GroupPost> groups
-    ) { }
-
     @GetMapping("/{id}")
-    public GetUserAdminResponse getUser(@PathVariable("id") UserId id) {
-//        try {
-//            User user = this.userService.get(id);
-//            List<GroupPost> groups = this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()));
-//
-//            return new GetUserAdminResponse(user, groups);
-//        } catch (UserService.UserNotFoundException e) {
-//            throw new UserNotFoundResponse();
-//        }
-            return null;
-    }
-
-    record UserWithGroups(@JsonUnwrapped User user
-//                          List<GroupPost> groups
-    ) { }
-
-    record GetAllUsersResponse(List<UserWithGroups> users) { }
-
-    @GetMapping()
-    public GetAllUsersResponse getAllUsers() {
-//        List<UserWithGroups> users = this.userService.getAll()
-//                .stream()
-//                .map(user -> new UserWithGroups(user, this.toGroupPosts(this.membershipService.getMembershipsByUser(user.id()))))
-//                .collect(Collectors.toList());
-//
-//        return new GetAllUsersResponse(users);
+    public UserFacade.UserWithGroupsDTO getUser(@PathVariable("id") UserId id) {
         return null;
     }
 
-    record AdminViewCreateUserRequest(Cid cid,
-                                         UnencryptedPassword password,
-                                         Nick nick,
-                                         FirstName firstName,
-                                         LastName lastName,
-                                         Email email,
-                                         boolean userAgreement,
-                                         AcceptanceYear acceptanceYear,
-                                         Language language) { }
+    record AdminViewCreateUserRequest(String cid,
+                                         String password,
+                                         String nick,
+                                         String firstName,
+                                         String lastName,
+                                         String email,
+                                         int acceptanceYear,
+                                         String language) { }
 
     @PostMapping()
     public UserCreatedResponse addUser(@RequestBody AdminViewCreateUserRequest request) {
-//        this.userCreationService.createUser(new User(
-//                UserId.generate(),
-//                request.cid,
-//                request.email,
-//                request.language,
-//                request.nick,
-//                request.value,
-//                request.lastName,
-//                request.userAgreement,
-//                request.acceptanceYear
-//        ), request.password);
+        this.userCreationFacade.createUser(
+            new UserCreationFacade.NewUser(
+                    request.password,
+                    request.nick,
+                    request.firstName,
+                    request.email,
+                    request.lastName,
+                    request.acceptanceYear,
+                    request.cid,
+                    request.language
+            )
+        );
         return new UserCreatedResponse();
     }
 
-    record EditUserRequest (Nick nick,
-                            FirstName firstName,
-                            LastName lastName,
-                            Email email,
-                            Language language,
-                            AcceptanceYear acceptanceYear) { }
+    record EditUserRequest (String nick,
+                            String firstName,
+                            String lastName,
+                            String email,
+                            String language,
+                            int acceptanceYear) { }
 
     @PutMapping("/{id}")
-    public UserEditedResponse editUser(@PathVariable("id") UserId id,
+    public UserEditedResponse editUser(@PathVariable("id") UUID id,
                                        @RequestBody EditUserRequest request) {
-//        try {
-//            User user = this.userService.get(id);
-//            this.userService.update(user.with()
-//                    .nick(request.nick)
-//                    .value(request.value)
-//                    .lastName(request.lastName)
-//                    .email(request.email)
-//                    .language(request.language)
-//                    .acceptanceYear(request.acceptanceYear)
-//                    .build()
-//            );
-            return new UserEditedResponse();
-//        } catch (UserService.UserNotFoundException e) {
-//            throw new UserNotFoundResponse();
-//        }
+        this.userFacade.updateUser(
+                new UserFacade.UpdateUser(
+                        id,
+                        request.nick,
+                        request.firstName,
+                        request.lastName,
+                        request.email,
+                        request.language
+                )
+        );
+        return new UserEditedResponse();
     }
 
     private static class PasswordChangedResponse extends SuccessResponse { }

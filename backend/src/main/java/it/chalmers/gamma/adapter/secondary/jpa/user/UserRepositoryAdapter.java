@@ -24,7 +24,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public void create(User user) {
-        this.repository.save(new UserEntity(user));
+        this.repository.saveAndFlush(new UserEntity(user));
     }
 
     @Override

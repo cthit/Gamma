@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public interface Id<S> extends Serializable {
 
-    @JsonValue
     S getValue();
 
 }

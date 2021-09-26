@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController()
 @RequestMapping("/internal/admin/gdpr")
 public class UserGDPRAdminController {
@@ -23,9 +25,9 @@ public class UserGDPRAdminController {
     private record ChangeGDPRStatusRequest(boolean gdpr) { }
 
     @PutMapping("/{id}")
-    public GdprStatusEditedResponse editGDPRStatus(@PathVariable("id") UserId id,
+    public GdprStatusEditedResponse editGDPRStatus(@PathVariable("id") UUID id,
                                                    @RequestBody ChangeGDPRStatusRequest request) {
-//        userGDPRTrainingService.editGDPR(id, request.gdpr);
+        this.userFacade.updateGdprTrainedStatus(id, request.gdpr);
         return new GdprStatusEditedResponse();
     }
 

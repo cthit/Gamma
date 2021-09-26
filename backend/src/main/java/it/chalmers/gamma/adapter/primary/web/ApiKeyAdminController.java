@@ -1,5 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.adapter.primary.api.chalmersit.ChalmersitApiController;
+import it.chalmers.gamma.adapter.primary.api.goldapps.GoldappsApiController;
+import it.chalmers.gamma.adapter.primary.api.v1.ClientApiV1Controller;
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
 import it.chalmers.gamma.domain.apikey.ApiKeyType;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/admin/api_keys")
@@ -31,17 +35,28 @@ public final class ApiKeyAdminController {
         this.apiKeyFacade = apiKeyFacade;
     }
 
-    private record CreateApiKeyRequest(PrettyName prettyName, Text description, ApiKeyType keyType) { }
+    private record CreateApiKeyRequest(
+            String prettyName,
+            String svText,
+            String enText,
+            String keyType //client, goldapps, chalmersit
+    ) { }
 
     @PostMapping()
-    public ApiKeyToken createApiKey(@RequestBody CreateApiKeyRequest request) {
-        return null;
-//        return this.apiKeyFacade.create(ApiKey.create(request.prettyName, request.description, request.keyType));
+    public String createApiKey(@RequestBody CreateApiKeyRequest request) {
+        return this.apiKeyFacade.create(
+                new ApiKeyFacade.NewApiKey(
+                        request.prettyName,
+                        request.svText,
+                        request.enText,
+                        request.keyType
+                )
+        );
     }
 
     @PostMapping("/{id}/reset")
-    public ApiKeyToken resetApiKey(@PathVariable("id") ApiKeyId id) {
-        ApiKeyToken token;
+    public String resetApiKey(@PathVariable("id") UUID id) {
+        String token;
 
         try {
             token = this.apiKeyFacade.resetApiKeyToken(id);
@@ -53,23 +68,23 @@ public final class ApiKeyAdminController {
     }
 
     @GetMapping()
-    public List<ApiKey> getAllApiKeys() {
+    public List<ApiKeyFacade.ApiKeyDTO> getAllApiKeys() {
         return this.apiKeyFacade.getAll();
     }
 
     @GetMapping("/types")
-    public ApiKeyType[] getTypes() {
-        return ApiKeyType.values();
+    public String[] getTypes() {
+        return this.apiKeyFacade.getApiKeyTypes();
     }
 
     @GetMapping("/{id}")
-    public ApiKey getApiKey(@PathVariable("id") ApiKeyId id) {
-        return this.apiKeyFacade.get(id)
+    public ApiKeyFacade.ApiKeyDTO getApiKey(@PathVariable("id") String id) {
+        return this.apiKeyFacade.getById(id)
                 .orElseThrow(ApiKeyNotFoundResponse::new);
     }
 
     @DeleteMapping("/{id}")
-    public ApiKeyDeletedResponse deleteApiKey(@PathVariable("id") ApiKeyId apiKeyId) {
+    public ApiKeyDeletedResponse deleteApiKey(@PathVariable("id") UUID apiKeyId) {
         try {
             this.apiKeyFacade.delete(apiKeyId);
             return new ApiKeyDeletedResponse();

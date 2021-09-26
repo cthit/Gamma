@@ -31,7 +31,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     @Override
     public void create(Group group) {
-        this.groupRepository.save(groupEntityConverter.toEntity(group));
+        this.groupRepository.saveAndFlush(groupEntityConverter.toEntity(group));
     }
 
     @Override

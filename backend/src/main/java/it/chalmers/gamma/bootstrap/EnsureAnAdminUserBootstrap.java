@@ -1,7 +1,9 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
+import it.chalmers.gamma.app.user.PasswordService;
 import it.chalmers.gamma.app.user.UserCreationFacade;
+import it.chalmers.gamma.app.user.UserRepository;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.common.Email;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 
 @DependsOn("adminAuthorityLevelBootstrap")
 @Component
@@ -33,14 +34,16 @@ public class EnsureAnAdminUserBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EnsureAnAdminUserBootstrap.class);
 
-    private final UserCreationFacade userCreationFacade;
+    private final UserRepository userRepository;
     private final AuthorityLevelFacade authorityLevelFacade;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordService passwordService;
 
-    public EnsureAnAdminUserBootstrap(UserCreationFacade userCreationFacade, AuthorityLevelFacade authorityLevelFacade, PasswordEncoder passwordEncoder) {
-        this.userCreationFacade = userCreationFacade;
+    public EnsureAnAdminUserBootstrap(AuthorityLevelFacade authorityLevelFacade,
+                                      UserRepository userRepository,
+                                      PasswordService passwordService) {
         this.authorityLevelFacade = authorityLevelFacade;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordService = passwordService;
+        this.userRepository = userRepository;
     }
 
     @PostConstruct
@@ -49,6 +52,11 @@ public class EnsureAnAdminUserBootstrap {
         AuthorityLevelName adminAuthorityLevel = AuthorityLevelName.valueOf(admin);
 
         if (!this.authorityLevelFacade.authorityLevelUsed(adminAuthorityLevel)) {
+            if (this.userRepository.get(new Cid(admin)).isPresent()) {
+                LOGGER.error("There's no user that is admin right now, but there is a user that is named admin. Doing nothing about this...");
+                return;
+            }
+
             String password = TokenUtils.generateToken(
                     75,
                     TokenUtils.CharacterTypes.LOWERCASE,
@@ -64,7 +72,7 @@ public class EnsureAnAdminUserBootstrap {
                     new Email(name + "@chalmers.it"),
                     Language.EN,
                     new Nick(name),
-                    UnencryptedPassword.valueOf("password").encrypt(passwordEncoder),
+                    this.passwordService.encrypt(new UnencryptedPassword("password")),
                     new FirstName(name),
                     new LastName(name),
                     Instant.now(),
@@ -74,7 +82,7 @@ public class EnsureAnAdminUserBootstrap {
                     ImageUri.nothing()
             );
 
-            this.userCreationFacade.createUser(adminUser);
+            this.userRepository.create(adminUser);
 
             LOGGER.info("Admin user created!");
             LOGGER.info("cid: " + name);
@@ -84,7 +92,7 @@ public class EnsureAnAdminUserBootstrap {
                     adminAuthorityLevel,
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    List.of(adminUser)
+                    Collections.singletonList(adminUser)
             ));
         }
     }

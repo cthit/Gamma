@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
+import it.chalmers.gamma.app.authoritylevel.AuthorityLevelRepository;
 import it.chalmers.gamma.app.user.UserRepository;
 import it.chalmers.gamma.domain.common.Email;
 import it.chalmers.gamma.domain.user.Cid;
@@ -10,14 +11,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository repository;
+    private final AuthorityLevelRepository authorityLevelRepository;
 
-    public UserDetailsServiceImpl(UserRepository repository) {
+    public UserDetailsServiceImpl(UserRepository repository,
+                                  AuthorityLevelRepository authorityLevelRepository) {
         this.repository = repository;
+        this.authorityLevelRepository = authorityLevelRepository;
     }
 
     @Override
@@ -38,15 +43,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
 
-//        List<GrantedAuthorityProxy> authorities = this.authorityFinder.getGrantedAuthorities(user.getId());
-//        boolean userLocked = this.userLockedService.isLocked(user.id());
+        List<GrantedAuthorityProxy> authorities = this.authorityLevelRepository.getByUser(user.id())
+                .stream()
+                .map(userAuthority -> new GrantedAuthorityProxy(
+                        userAuthority.authorityLevelName(),
+                        userAuthority.authorityType()
+                )).toList();
 
-        //TODO: add authorities and userLocked
+        //TODO: add userLocked
 
+        //TODO: Set up inteceptor to update security context
         return new UserDetailsProxy(
                 user,
-                Collections.emptyList(),
-                false
+                authorities,
+                user.locked()
         );
     }
 

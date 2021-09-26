@@ -11,7 +11,6 @@ import java.util.Locale;
 
 public record Cid(String value) implements Id<String>, UserSignInIdentifier, Serializable {
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public Cid {
         if (value == null) {
             throw new NullPointerException("Cid cannot be null");

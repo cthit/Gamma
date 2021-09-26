@@ -1,6 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.app.client.ClientRepository;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.domain.client.Client;
 import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.client.ClientSecret;
@@ -14,13 +16,16 @@ import java.util.Optional;
 public class ClientRepositoryAdapter implements ClientRepository {
 
     private final ClientJpaRepository repository;
+    private final ClientApiKeyJpaRepository clientApiKeyJpaRepository;
 
-    public ClientRepositoryAdapter(ClientJpaRepository repository) {
+    public ClientRepositoryAdapter(ClientJpaRepository repository,
+                                   ClientApiKeyJpaRepository clientApiKeyJpaRepository) {
         this.repository = repository;
+        this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
     }
 
     @Override
-    public void create(Client client, ClientSecret clientSecret) {
+    public void create(Client client) {
         throw new UnsupportedOperationException();
     }
 
@@ -47,5 +52,12 @@ public class ClientRepositoryAdapter implements ClientRepository {
     @Override
     public List<Client> getClientsByUserApproved(UserId id) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<Client> getByApiKey(ApiKeyToken apiKeyToken) {
+        return this.clientApiKeyJpaRepository
+                .findByApiKey_Token(apiKeyToken.value())
+                .map(ClientEntity::toDomain);
     }
 }

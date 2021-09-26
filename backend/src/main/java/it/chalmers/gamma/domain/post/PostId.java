@@ -11,7 +11,6 @@ public record PostId(UUID value) implements Id<UUID> {
         return new PostId(UUID.randomUUID());
     }
 
-    @JsonCreator
     public static PostId valueOf(String value) {
         return new PostId(UUID.fromString(value));
     }

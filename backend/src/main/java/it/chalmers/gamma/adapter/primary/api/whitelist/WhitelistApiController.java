@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.api;
+package it.chalmers.gamma.adapter.primary.api.whitelist;
 
 import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.app.whitelist.WhitelistFacade;
@@ -31,17 +31,17 @@ public class WhitelistApiController {
     }
 
     @GetMapping()
-    public List<Cid> getWhiteList() {
+    public List<String> getWhiteList() {
         return this.whitelistFacade.getWhitelist();
     }
 
-    private record AddListOfWhitelistedRequest(List<Cid> cids) { }
+    private record AddListOfWhitelistedRequest(List<String> cids) { }
 
     @PostMapping()
     public ResponseEntity<?> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request) {
-        List<Cid> failedToAdd = new ArrayList<>();
+        List<String> failedToAdd = new ArrayList<>();
 
-        for (Cid cid : request.cids) {
+        for (String cid : request.cids) {
             try {
                 this.whitelistFacade.whitelist(cid);
                 LOGGER.info("Added user " + cid + " to whitelist");

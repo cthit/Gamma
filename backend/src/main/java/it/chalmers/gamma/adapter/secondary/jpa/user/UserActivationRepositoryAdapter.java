@@ -21,4 +21,9 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
     public List<UserActivation> getAll() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public Cid getByToken(UserActivationToken token) {
+        throw new UnsupportedOperationException();
+    }
 }

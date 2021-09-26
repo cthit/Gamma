@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/internal/admin/authority/supergroup")
 public final class AuthoritySuperGroupAdminController {
@@ -23,36 +25,25 @@ public final class AuthoritySuperGroupAdminController {
         this.authorityLevelFacade = authorityLevelFacade;
     }
 
-    private record CreateAuthoritySuperGroupRequest(SuperGroupId superGroupId, AuthorityLevelName authorityLevelName) { }
+    private record CreateAuthoritySuperGroupRequest(UUID superGroupId, String authorityLevelName) { }
 
     @PostMapping
     public AuthoritySuperGroupCreatedResponse addAuthority(@RequestBody CreateAuthoritySuperGroupRequest request) {
-//        try {
-//            this.authoritySuperGroupService.create(
-//                    new AuthoritySuperGroupDTO(
-//                            request.superGroupId,
-//                            request.authorityLevelName
-//                    )
-//            );
-//            return new AuthoritySuperGroupCreatedResponse();
-//        } catch (AuthoritySuperGroupService.AuthoritySuperGroupAlreadyExistsException e) {
-//            throw new AuthoritySuperGroupAlreadyExistsResponse();
-//        }
-        return null;
+        this.authorityLevelFacade.addSuperGroupToAuthorityLevel(
+                request.authorityLevelName,
+                request.superGroupId
+        );
+        return new AuthoritySuperGroupCreatedResponse();
     }
 
     @DeleteMapping
-    public AuthoritySuperGroupRemovedResponse removeAuthority(@RequestParam("superGroupId") SuperGroupId superGroupId,
-                                                              @RequestParam("authorityLevelName") AuthorityLevelName authorityLevelName) {
-//        try {
-//            this.authoritySuperGroupService.delete(
-//                    new AuthoritySuperGroupPK(superGroupId, authorityLevelName)
-//            );
-//            return new AuthoritySuperGroupRemovedResponse();
-//        } catch (AuthoritySuperGroupService.AuthoritySuperGroupNotFoundException e) {
-//            throw new AuthoritySuperGroupNotFoundResponse();
-//        }
-        return null;
+    public AuthoritySuperGroupRemovedResponse removeAuthority(@RequestParam("superGroupId") UUID superGroupId,
+                                                              @RequestParam("authorityLevelName") String authorityLevelName) {
+        this.authorityLevelFacade.removeSuperGroupFromAuthorityLevel(
+                authorityLevelName,
+                superGroupId
+        );
+        return new AuthoritySuperGroupRemovedResponse();
     }
 
     private static class AuthoritySuperGroupRemovedResponse extends SuccessResponse { }

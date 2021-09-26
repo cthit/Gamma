@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public record FirstName(String value) implements Serializable {
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public FirstName {
         if (value == null) {
             throw new NullPointerException("First name cannot be null");

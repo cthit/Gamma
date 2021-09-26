@@ -20,6 +20,7 @@ import it.chalmers.gamma.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -58,12 +59,9 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
 
     @Override
     public void create(AuthorityLevelName authorityLevelName) {
-        repository.save(new AuthorityLevelEntity(authorityLevelName.getValue()));
-    }
-
-    @Override
-    public void create(AuthorityLevel authorityLevel) {
-        repository.save(this.authorityLevelEntityConverter.toEntity(authorityLevel));
+        if (!this.repository.existsById(authorityLevelName.value())) {
+            repository.saveAndFlush(new AuthorityLevelEntity(authorityLevelName.getValue()));
+        }
     }
 
     @Override
@@ -73,12 +71,9 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
 
     @Override
     public void save(AuthorityLevel authorityLevel) {
-        AuthorityLevelName name = authorityLevel.name();
-        throw new UnsupportedOperationException();
-        //TODO: Convert authorityLevel to authorityLevelentity with repositories
-//        repository.save(new AuthorityLevelEntity(
-//                authorityLevel.name()
-//        ));
+        AuthorityLevelEntity entity = this.authorityLevelEntityConverter.toEntity(authorityLevel);
+        entity.getUsers().stream().map(AuthorityUserEntity::getUserEntity).map(UserEntity::id).forEach(System.out::println);
+        this.repository.saveAndFlush(entity);
     }
 
     @Override
@@ -138,7 +133,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                         .toList()
                 ));
 
-        return names.stream().toList();
+        return new ArrayList<>(names);
     }
 
     @Override

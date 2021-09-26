@@ -32,21 +32,21 @@ public class UserPasswordResetController {
     @PostMapping()
     public PasswordRestLinkSentResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
         try {
-            this.userResetPasswordFacade.startResetPasswordProcess(toSignInIdentifier(request.cidOrEmail));
+            this.userResetPasswordFacade.startResetPasswordProcess(request.cidOrEmail);
         } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
             throw new PasswordResetProcessErrorResponse();
         }
         return new PasswordRestLinkSentResponse();
     }
 
-    private record ResetPasswordFinishRequest(UnencryptedPassword password,
+    private record ResetPasswordFinishRequest(String password,
                                               String cidOrEmail,
-                                              PasswordResetToken token) { }
+                                              String token) { }
 
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@RequestBody ResetPasswordFinishRequest request) {
         try {
-            this.userResetPasswordFacade.finishResetPasswordProcess(toSignInIdentifier(request.cidOrEmail), request.token, request.password);
+            this.userResetPasswordFacade.finishResetPasswordProcess(request.cidOrEmail, request.token, request.password);
         } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
             throw new PasswordResetProcessErrorResponse();
         }
@@ -63,12 +63,5 @@ public class UserPasswordResetController {
         }
     }
 
-    private UserSignInIdentifier toSignInIdentifier(String identifier) {
-        try {
-            return Cid.valueOf(identifier);
-        } catch (IllegalArgumentException ignored) { }
-
-        return new Email(identifier);
-    }
 
 }

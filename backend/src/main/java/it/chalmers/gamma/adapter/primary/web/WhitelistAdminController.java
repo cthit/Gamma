@@ -32,11 +32,11 @@ public final class WhitelistAdminController {
     }
 
     @GetMapping()
-    public List<Cid> getWhiteList() {
+    public List<String> getWhiteList() {
         return this.whitelistFacade.getWhitelist();
     }
 
-    private record AddToWhitelist(Cid cid) { }
+    private record AddToWhitelist(String cid) { }
 
     @PostMapping()
     public WhitelistAddedResponse addWhitelistedUser(@RequestBody AddToWhitelist request) {
@@ -50,7 +50,7 @@ public final class WhitelistAdminController {
     }
 
     @DeleteMapping("/{cid}")
-    public CidRemovedFromWhitelistResponse removeWhitelist(@PathVariable("cid") Cid cid) {
+    public CidRemovedFromWhitelistResponse removeWhitelist(@PathVariable("cid") String cid) {
         try {
             this.whitelistFacade.removeFromWhitelist(cid);
         } catch (WhitelistRepository.CidIsNotWhitelistedException e) {

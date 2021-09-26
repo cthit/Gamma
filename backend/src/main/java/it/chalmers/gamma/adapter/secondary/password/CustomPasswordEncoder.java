@@ -1,4 +1,4 @@
-package it.chalmers.gamma.security;
+package it.chalmers.gamma.adapter.secondary.password;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

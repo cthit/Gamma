@@ -7,13 +7,12 @@ import java.util.UUID;
 
 public record ApiKeyId(UUID value) implements Id<UUID> {
 
-    public static ApiKeyId generate() {
-        return new ApiKeyId(UUID.randomUUID());
+    public ApiKeyId(String value) {
+        this(UUID.fromString(value));
     }
 
-    @JsonCreator
-    public static ApiKeyId valueOf(String value) {
-        return new ApiKeyId(UUID.fromString(value));
+    public static ApiKeyId generate() {
+        return new ApiKeyId(UUID.randomUUID());
     }
 
     @Override

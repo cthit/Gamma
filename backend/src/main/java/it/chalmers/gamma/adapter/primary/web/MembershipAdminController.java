@@ -9,6 +9,8 @@ import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/internal/admin/groups")
 public final class MembershipAdminController {
@@ -19,52 +21,40 @@ public final class MembershipAdminController {
         this.groupFacade = groupFacade;
     }
 
-    private record AddUserGroupRequest(UserId userId, PostId postId, String unofficialName) { }
+    private record AddUserGroupRequest(UUID userId, UUID postId, String unofficialName) { }
 
     @PostMapping("/{id}/members")
     public MemberAddedToGroupResponse addUserToGroup(
             @RequestBody AddUserGroupRequest request,
-            @PathVariable("id") GroupId groupId) {
-//        this.membershipService.create(
-//                new MembershipShallowDTO(
-//                        request.postId,
-//                        groupId,
-//                        request.unofficialName,
-//                        request.userId
-//                )
-//        );
+            @PathVariable("id") UUID groupId) {
 
+        this.groupFacade.addMember(groupId, request.userId, request.postId, request.unofficialName);
         return new MemberAddedToGroupResponse();
     }
 
     @DeleteMapping("/{groupId}/members")
-    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") GroupId groupId,
-                                                              @RequestParam("userId") UserId userId,
-                                                              @RequestParam("postId") PostId postId) {
-//        this.membershipService.delete(new MembershipPK(postId, groupId, userId));
+    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") UUID groupId,
+                                                              @RequestParam("userId") UUID userId,
+                                                              @RequestParam("postId") UUID postId) {
+        this.groupFacade.removeMember(groupId, userId, postId);
         return new MemberRemovedFromGroupResponse();
     }
 
     private record EditMembershipRequest(String unofficialName) { }
 
     @PutMapping("/{groupId}/members")
-    public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") GroupId groupId,
-                                                    @RequestParam("userId") UserId userId,
-                                                    @RequestParam("postId") PostId postId,
+    public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") UUID groupId,
+                                                    @RequestParam("userId") UUID userId,
+                                                    @RequestParam("postId") UUID postId,
                                                     @RequestBody EditMembershipRequest request) {
-//        try {
-//            this.membershipService.update(
-//                    new MembershipShallowDTO(
-//                            postId,
-//                            groupId,
-//                            request.unofficialName,
-//                            userId
-//                    )
-//            );
-//        } catch (MembershipService.MembershipNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
+        this.groupFacade.updateMember(
+                groupId,
+                userId,
+                postId,
+                new GroupFacade.UpdateMember(
+                        request.unofficialName
+                )
+        );
         return new EditedMembershipResponse();
     }
 

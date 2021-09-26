@@ -19,9 +19,8 @@ public final class AuthorityAdminController {
     }
 
     @GetMapping
-    public List<AuthorityLevel> getAuthorities() {
-        return null;
-//        return this.authorityFinder.getAuthorities();
+    public List<AuthorityLevelFacade.AuthorityLevelDTO> getAuthorities() {
+        return this.authorityLevelFacade.getAll();
     }
 
 }

@@ -5,10 +5,15 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.domain.apikey.ApiKey;
 import it.chalmers.gamma.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.domain.apikey.ApiKeyType;
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.common.Text;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class ApiKeyFacade extends Facade {
@@ -20,31 +25,65 @@ public class ApiKeyFacade extends Facade {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    public ApiKeyToken create(ApiKey apiKey) {
+    public String[] getApiKeyTypes() {
+        return (String[]) Arrays.stream(ApiKeyType.values()).map(ApiKeyType::name).toArray();
+    }
+
+    public record NewApiKey(
+            String prettyName,
+            String svText,
+            String enText,
+            String keyType) {
+    }
+
+    public String create(NewApiKey newApiKey) {
         accessGuard.requireIsAdmin();
         ApiKeyToken apiKeyToken = ApiKeyToken.generate();
-//        apiKeyRepository.create(apiKey, apiKeyToken);
-        return apiKeyToken;
+        apiKeyRepository.create(
+                new ApiKey(
+                        ApiKeyId.generate(),
+                        new PrettyName(newApiKey.prettyName),
+                        new Text(newApiKey.svText, newApiKey.enText),
+                        ApiKeyType.valueOf(newApiKey.keyType),
+                        apiKeyToken
+                )
+        );
+        return apiKeyToken.value();
     }
 
-    public void delete(ApiKeyId apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
+    public void delete(UUID apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
         accessGuard.requireIsAdmin();
-        apiKeyRepository.delete(apiKeyId);
+        apiKeyRepository.delete(new ApiKeyId(apiKeyId));
     }
 
-    public Optional<ApiKey> get(ApiKeyId apiKeyId) {
-        return this.apiKeyRepository.getById(apiKeyId);
+    public record ApiKeyDTO(UUID id, String prettyName, String svText, String enText) {
+        public ApiKeyDTO(ApiKey apiKey) {
+            this(apiKey.id().value(), apiKey.prettyName().value(), apiKey.description().sv().value(), apiKey.description().en().value());
+        }
     }
 
-    public List<ApiKey> getAll() {
+    public Optional<ApiKeyDTO> getByToken(String token) {
+        return this.apiKeyRepository.getByToken(new ApiKeyToken(token)).map(ApiKeyDTO::new);
+    }
+
+    public Optional<ApiKeyDTO> getById(String apiKeyId) {
+        return this.apiKeyRepository.getById(new ApiKeyId(apiKeyId)).map(ApiKeyDTO::new);
+    }
+
+    public List<ApiKeyDTO> getAll() {
         accessGuard.requireIsAdmin();
-        return this.apiKeyRepository.getAll();
+        return this.apiKeyRepository.getAll()
+                .stream()
+                .map(ApiKeyDTO::new)
+                .toList();
     }
 
-    public ApiKeyToken resetApiKeyToken(ApiKeyId apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
+    public String resetApiKeyToken(UUID apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
         accessGuard.requireIsAdmin();
-        return null;
-//        return this.apiKeyRepository.resetApiKeyToken(apiKeyId);
+        ApiKeyToken token = ApiKeyToken.generate();
+        ApiKey apiKey = this.apiKeyRepository.getById(new ApiKeyId(apiKeyId)).orElseThrow();
+        this.apiKeyRepository.save(apiKey.withApiKeyToken(token));
+        return token.value();
     }
 
 }

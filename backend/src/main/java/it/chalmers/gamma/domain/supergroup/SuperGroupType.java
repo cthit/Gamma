@@ -7,7 +7,6 @@ import java.util.Locale;
 
 public record SuperGroupType(String value) implements Id<String> {
 
-    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
     public SuperGroupType {
         if (value == null) {
             throw new NullPointerException("Super group type cannot be null");

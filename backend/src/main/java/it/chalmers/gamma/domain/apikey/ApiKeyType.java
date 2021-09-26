@@ -1,11 +1,11 @@
 package it.chalmers.gamma.domain.apikey;
 
-import it.chalmers.gamma.adapter.primary.api.ApiV1Controller;
-import it.chalmers.gamma.adapter.primary.api.ChalmersitApiController;
-import it.chalmers.gamma.adapter.primary.api.GoldappsApiController;
+import it.chalmers.gamma.adapter.primary.api.v1.ClientApiV1Controller;
+import it.chalmers.gamma.adapter.primary.api.chalmersit.ChalmersitApiController;
+import it.chalmers.gamma.adapter.primary.api.goldapps.GoldappsApiController;
 
 public enum ApiKeyType {
-    CLIENT(ApiV1Controller.URI), GOLDAPPS(GoldappsApiController.URI), CHALMERSIT(ChalmersitApiController.API);
+    CLIENT(ClientApiV1Controller.URI), GOLDAPPS(GoldappsApiController.URI), CHALMERSIT(ChalmersitApiController.API);
 
     ApiKeyType(String uri) {
         this.URI = uri;

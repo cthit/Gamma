@@ -39,7 +39,7 @@ public class AuthorityLevelBootstrap {
             if (mockUser.authorities() != null) {
                 mockUser.authorities().forEach(authorityLevelName -> {
                     this.authorityLevelFacade.create(authorityLevelName);
-                    this.authorityLevelFacade.addToAuthorityLevel(authorityLevelName, mockUser.id());
+                    this.authorityLevelFacade.addUserToAuthorityLevel(authorityLevelName, mockUser.id());
                 });
             }
         });
@@ -48,14 +48,14 @@ public class AuthorityLevelBootstrap {
             if (mockSuperGroup.authorities() != null) {
                 mockSuperGroup.authorities().forEach(authorityLevelName -> {
                     this.authorityLevelFacade.create(authorityLevelName);
-                    this.authorityLevelFacade.addToAuthorityLevel(authorityLevelName, mockSuperGroup.id());
+                    this.authorityLevelFacade.addSuperGroupToAuthorityLevel(authorityLevelName, mockSuperGroup.id());
                 });
             }
         });
 
         this.mockData.postAuthorities().forEach(mockPostAuthority -> {
             this.authorityLevelFacade.create(mockPostAuthority.name());
-            this.authorityLevelFacade.addToAuthorityLevel(
+            this.authorityLevelFacade.addSuperGroupPostToAuthorityLevel(
                     mockPostAuthority.name(),
                     mockPostAuthority.superGroupId(),
                     mockPostAuthority.postId()

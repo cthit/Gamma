@@ -5,6 +5,7 @@ import it.chalmers.gamma.domain.group.GroupId;
 import it.chalmers.gamma.domain.group.Group;
 
 import java.util.List;
+import java.util.UUID;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public final class GroupController {
     }
 
     @GetMapping("/{id}")
-    public GroupFacade.GroupDTO getGroup(@PathVariable("id") GroupId id) {
+    public GroupFacade.GroupDTO getGroup(@PathVariable("id") UUID id) {
         return this.groupFacade.get(id).orElseThrow(GroupNotFoundResponse::new);
     }
 

@@ -2,9 +2,7 @@ package it.chalmers.gamma.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.io.Serializable;
-
-public record Password(@JsonIgnore String value) {
+public record Password(String value) {
 
     public Password {
         if (value == null) {

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.domain.common.Text;
 import it.chalmers.gamma.domain.group.EmailPrefix;
 import it.chalmers.gamma.domain.post.Post;
 import it.chalmers.gamma.app.post.PostRepository;
@@ -19,30 +20,33 @@ public class PostBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(PostBootstrap.class);
 
     private final MockData mockData;
-    private final PostRepository postService;
+    private final PostRepository postRepository;
     private final boolean mocking;
 
     public PostBootstrap(MockData mockData,
                          PostRepository postRepository,
                          @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
-        this.postService = postRepository;
+        this.postRepository = postRepository;
         this.mocking = mocking;
     }
 
     @PostConstruct
     public void createPosts() {
-        if (!this.mocking || !this.postService.getAll().isEmpty()) {
+        if (!this.mocking || !this.postRepository.getAll().isEmpty()) {
             return;
         }
 
         LOGGER.info("========== POST BOOTSTRAP ==========");
 
         mockData.posts().forEach(mockPost ->
-                this.postService.create(
+                this.postRepository.create(
                         new Post(
-                                mockPost.id(),
-                                mockPost.postName(),
+                                new PostId(mockPost.id()),
+                                new Text(
+                                        mockPost.postName().sv(),
+                                        mockPost.postName().en()
+                                ),
                                 EmailPrefix.empty()
                         )
                 )

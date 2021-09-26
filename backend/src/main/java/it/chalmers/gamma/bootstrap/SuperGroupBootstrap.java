@@ -3,9 +3,12 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.app.supergroup.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupTypeRepository;
 import it.chalmers.gamma.domain.common.Email;
+import it.chalmers.gamma.domain.common.PrettyName;
 import it.chalmers.gamma.domain.common.Text;
 import it.chalmers.gamma.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.domain.user.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +48,7 @@ public class SuperGroupBootstrap {
 
         mockData.superGroups().stream().map(MockData.MockSuperGroup::type).forEach(type -> {
             try {
-                this.superGroupTypeRepository.add(type);
+                this.superGroupTypeRepository.add(new SuperGroupType(type));
             } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
                 LOGGER.error("Error creating supergroup type: " + type + ";");
             }
@@ -56,11 +59,11 @@ public class SuperGroupBootstrap {
         mockData.superGroups().forEach(mockSuperGroup -> {
             try {
                 this.superGroupRepository.create(new SuperGroup(
-                        mockSuperGroup.id(),
-                        mockSuperGroup.name(),
-                        mockSuperGroup.prettyName(),
-                        mockSuperGroup.type(),
-                        new Email(mockSuperGroup.name().value() + "@chalmers.it"),
+                        new SuperGroupId(mockSuperGroup.id()),
+                        new Name(mockSuperGroup.name()),
+                        new PrettyName(mockSuperGroup.prettyName()),
+                        new SuperGroupType(mockSuperGroup.type()),
+                        new Email(mockSuperGroup.name() + "@chalmers.it"),
                         new Text())
                 );
             } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {

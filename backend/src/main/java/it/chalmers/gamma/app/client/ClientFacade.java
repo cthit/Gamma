@@ -3,14 +3,21 @@ package it.chalmers.gamma.app.client;
 import it.chalmers.gamma.app.AccessGuard;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.ApiKeyRepository;
+import it.chalmers.gamma.domain.apikey.ApiKey;
+import it.chalmers.gamma.domain.apikey.ApiKeyId;
+import it.chalmers.gamma.domain.apikey.ApiKeyType;
+import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.domain.client.Client;
 import it.chalmers.gamma.domain.client.ClientId;
 import it.chalmers.gamma.domain.client.ClientSecret;
 import it.chalmers.gamma.domain.apikey.ApiKeyToken;
 
+import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.domain.common.Text;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,42 +35,88 @@ public class ClientFacade extends Facade {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    @Transactional
-    public void create(Client newClient, ClientSecret clientSecret) {
-        accessGuard.requireIsAdmin();
-        this.clientRepository.create(newClient, clientSecret);
+    public record NewClient(String webServerRedirectUri,
+                            String prettyName,
+                            boolean autoApprove,
+                            String svDescription,
+                            String enDescription,
+                            boolean generateApiKey,
+                            List<String> restrictions) {
     }
 
-    @Transactional
-    public void createWithApiKey(Client newClient,
-                                 ClientSecret clientSecret,
-                                 ApiKeyToken apiKeyToken) {
-        accessGuard.requireIsAdmin();
+    public record ClientAndApiKeySecrets(String clientSecret, String apiKeyToken) {
 
-//        ApiKey apiKey = ApiKey.create(newClient.prettyName(), newClient.description(), ApiKeyType.CLIENT);
-//        this.apiKeyRepository.create(apiKey, apiKeyToken);
-//
-//        newClient = newClient.withApiKey(apiKey);
-//        this.create(newClient, clientSecret);
     }
 
-    public void delete(ClientId clientId) throws ClientRepository.ClientNotFoundException {
+    /**
+     * @return The client secret for the client
+     */
+    public ClientAndApiKeySecrets create(NewClient newClient) {
         accessGuard.requireIsAdmin();
-        this.clientRepository.delete(clientId);
+        ClientSecret clientSecret = ClientSecret.generate();
+        Optional<ApiKey> apiKey = Optional.empty();
+        ApiKeyToken apiKeyToken = null;
+
+        if (newClient.generateApiKey) {
+            apiKeyToken = ApiKeyToken.generate();
+
+            apiKey = Optional.of(
+                    new ApiKey(
+                        ApiKeyId.generate(),
+                        new PrettyName(newClient.prettyName),
+                        new Text(
+                                "Api nyckel för klienten: " + newClient.prettyName,
+                                "Api key for client: " + newClient.prettyName
+                        ),
+                        ApiKeyType.CLIENT,
+                        apiKeyToken
+                    )
+            );
+        }
+
+        this.clientRepository.create(new Client(
+                ClientId.generate(),
+                clientSecret,
+                newClient.webServerRedirectUri,
+                newClient.autoApprove,
+                new PrettyName(newClient.prettyName),
+                new Text(
+                        newClient.svDescription,
+                        newClient.enDescription
+                ),
+                newClient.restrictions.stream().map(AuthorityLevelName::new).toList(),
+                Collections.emptyList(),
+                apiKey
+        ));
+        return new ClientAndApiKeySecrets(clientSecret.value(), apiKeyToken == null ? null : apiKeyToken.value());
     }
 
-    public Optional<Client> get(ClientId clientId) {
-        return this.clientRepository.get(clientId);
+    public void delete(String clientId) throws ClientRepository.ClientNotFoundException {
+        accessGuard.requireIsAdmin();
+        this.clientRepository.delete(new ClientId(clientId));
     }
 
-    public List<Client> getAll() {
-        accessGuard.requireIsAdmin();
-        return this.clientRepository.getAll();
+    public record ClientDTO() {
+        public ClientDTO(Client client) {
+            this();
+        }
     }
 
-    public ClientSecret resetClientSecret(ClientId clientId) throws ClientNotFoundException {
+    public Optional<ClientDTO> get(String clientId) {
+        return this.clientRepository.get(new ClientId(clientId)).map(ClientDTO::new);
+    }
+
+    public List<ClientDTO> getAll() {
         accessGuard.requireIsAdmin();
-        return this.clientRepository.resetClientSecret(clientId);
+        return this.clientRepository.getAll()
+                .stream()
+                .map(ClientDTO::new)
+                .toList();
+    }
+
+    public String resetClientSecret(String clientId) throws ClientNotFoundException {
+        accessGuard.requireIsAdmin();
+        return this.clientRepository.resetClientSecret(new ClientId(clientId)).value();
     }
 
     public static class ClientNotFoundException extends Exception { }

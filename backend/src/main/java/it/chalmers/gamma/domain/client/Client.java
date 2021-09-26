@@ -9,6 +9,7 @@ import it.chalmers.gamma.domain.user.User;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RecordBuilder
 public record Client(ClientId clientId,
@@ -19,7 +20,7 @@ public record Client(ClientId clientId,
                      Text description,
                      List<AuthorityLevelName> restrictions,
                      List<User> approvedUsers,
-                     ApiKey clientApiKey) implements ClientBuilder.With {
+                     Optional<ApiKey> clientApiKey) implements ClientBuilder.With {
 
     public Client {
         //TODO Create Webserverredirecturi class instead of using string
