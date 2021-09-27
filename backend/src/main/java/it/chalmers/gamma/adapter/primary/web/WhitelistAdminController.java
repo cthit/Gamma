@@ -1,11 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.domain.user.Cid;
-
 import java.util.List;
 
-import it.chalmers.gamma.app.whitelist.WhitelistFacade;
-import it.chalmers.gamma.app.whitelist.WhitelistRepository;
+import it.chalmers.gamma.app.facade.WhitelistFacade;
+import it.chalmers.gamma.app.port.repository.WhitelistRepository;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;

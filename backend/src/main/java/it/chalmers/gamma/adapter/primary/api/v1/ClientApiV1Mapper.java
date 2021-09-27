@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.primary.api.v1;
 
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import it.chalmers.gamma.app.user.MeFacade;
-import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.facade.GroupFacade;
+import it.chalmers.gamma.app.facade.SuperGroupFacade;
+import it.chalmers.gamma.app.facade.MeFacade;
+import it.chalmers.gamma.app.facade.UserFacade;
 import org.springframework.stereotype.Component;
 
 @Component

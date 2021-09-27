@@ -1,12 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.group.Group;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.GroupMember;
-import it.chalmers.gamma.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.domain.user.Name;
-import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.app.domain.common.Email;
+import it.chalmers.gamma.app.domain.group.GroupId;
+import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.app.domain.user.Name;
+import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 

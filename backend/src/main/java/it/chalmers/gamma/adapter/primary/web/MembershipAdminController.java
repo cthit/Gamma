@@ -1,9 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.facade.GroupFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

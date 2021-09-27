@@ -1,8 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.Group;
+import it.chalmers.gamma.app.facade.GroupFacade;
 
 import java.util.List;
 import java.util.UUID;

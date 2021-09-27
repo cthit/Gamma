@@ -1,9 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.domain.post.Post;
+import it.chalmers.gamma.app.facade.PostFacade;
 
-import it.chalmers.gamma.domain.post.PostId;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

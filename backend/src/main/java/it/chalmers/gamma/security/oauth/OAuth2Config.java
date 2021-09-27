@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security.oauth;
 
 import it.chalmers.gamma.adapter.secondary.oauth.UserApprovalStore;
-import it.chalmers.gamma.app.client.ClientFacade;
+import it.chalmers.gamma.app.facade.ClientFacade;
 
 import java.net.MalformedURLException;
 import java.net.URL;

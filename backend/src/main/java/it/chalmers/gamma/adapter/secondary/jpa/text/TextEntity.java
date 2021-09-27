@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.text;
 
-import it.chalmers.gamma.domain.common.Text;
-import it.chalmers.gamma.domain.TextId;
+import it.chalmers.gamma.app.domain.common.Text;
+import it.chalmers.gamma.app.domain.common.TextId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.*;

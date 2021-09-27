@@ -3,7 +3,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
 
 import javax.persistence.*;
 

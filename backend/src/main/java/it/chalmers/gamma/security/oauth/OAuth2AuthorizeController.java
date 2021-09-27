@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.oauth;
 
-import it.chalmers.gamma.app.client.ClientFacade;
+import it.chalmers.gamma.app.facade.ClientFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;

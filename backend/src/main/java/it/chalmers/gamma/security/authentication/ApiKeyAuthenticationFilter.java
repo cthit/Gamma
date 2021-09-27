@@ -1,7 +1,5 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.apikey.ApiKeyFacade;
-
 import java.io.IOException;
 import java.util.Optional;
 import javax.servlet.Filter;
@@ -12,9 +10,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.ApiKey;
-import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.domain.apikey.ApiKey;
+import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 

@@ -2,7 +2,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

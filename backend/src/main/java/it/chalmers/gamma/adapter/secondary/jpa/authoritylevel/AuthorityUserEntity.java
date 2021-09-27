@@ -2,8 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.domain.user.UserId;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

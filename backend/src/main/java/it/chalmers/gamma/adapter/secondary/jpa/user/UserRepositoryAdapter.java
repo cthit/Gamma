@@ -1,11 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.user.UserRepository;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.user.UnencryptedPassword;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.domain.common.Email;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.app.domain.user.User;
+import it.chalmers.gamma.app.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.domain.client.Client;
-import it.chalmers.gamma.domain.client.ClientId;
-import it.chalmers.gamma.domain.client.ClientSecret;
+import it.chalmers.gamma.app.domain.client.Client;
+import it.chalmers.gamma.app.domain.client.ClientId;
+import it.chalmers.gamma.app.domain.client.ClientSecret;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.domain.common.PrettyName;
+import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 
 import javax.persistence.*;

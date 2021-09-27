@@ -1,19 +1,12 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.image.ImageService;
-import it.chalmers.gamma.app.user.UserCreationFacade;
-import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.facade.UserCreationFacade;
+import it.chalmers.gamma.app.facade.UserFacade;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletResponse;
-
-import it.chalmers.gamma.util.response.ErrorResponse;
-import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

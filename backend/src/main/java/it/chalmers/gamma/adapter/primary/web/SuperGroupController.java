@@ -1,10 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import it.chalmers.gamma.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.app.facade.SuperGroupFacade;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

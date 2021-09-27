@@ -1,14 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.client.ClientRepository;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.domain.apikey.ApiKeyToken;
-import it.chalmers.gamma.domain.common.PrettyName;
-import it.chalmers.gamma.domain.common.Text;
-import it.chalmers.gamma.domain.client.ClientId;
-import it.chalmers.gamma.domain.client.ClientSecret;
-import it.chalmers.gamma.domain.client.Client;
-import it.chalmers.gamma.app.client.ClientFacade;
+import it.chalmers.gamma.app.port.repository.ClientRepository;
+import it.chalmers.gamma.app.facade.ClientFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

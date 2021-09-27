@@ -1,12 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.group.GroupRepository;
-import it.chalmers.gamma.domain.group.Group;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.group.UnofficialPostName;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.user.UserId;
-import it.chalmers.gamma.domain.user.UserMembership;
+import it.chalmers.gamma.app.port.repository.GroupRepository;
+import it.chalmers.gamma.app.domain.group.Group;
+import it.chalmers.gamma.app.domain.group.GroupId;
+import it.chalmers.gamma.app.domain.group.UnofficialPostName;
+import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.domain.user.UserMembership;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

@@ -1,16 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.adapter.primary.api.chalmersit.ChalmersitApiController;
-import it.chalmers.gamma.adapter.primary.api.goldapps.GoldappsApiController;
-import it.chalmers.gamma.adapter.primary.api.v1.ClientApiV1Controller;
-import it.chalmers.gamma.app.apikey.ApiKeyFacade;
-import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.ApiKeyType;
-import it.chalmers.gamma.domain.common.PrettyName;
-import it.chalmers.gamma.domain.common.Text;
-import it.chalmers.gamma.domain.apikey.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.ApiKeyToken;
-import it.chalmers.gamma.domain.apikey.ApiKey;
+import it.chalmers.gamma.app.facade.ApiKeyFacade;
+import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

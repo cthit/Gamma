@@ -1,8 +1,8 @@
 package it.chalmers.gamma.security;
 
-import it.chalmers.gamma.app.apikey.ApiKeyFacade;
-import it.chalmers.gamma.app.apikey.ApiKeyRepository;
-import it.chalmers.gamma.domain.apikey.ApiKeyType;
+import it.chalmers.gamma.app.facade.ApiKeyFacade;
+import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.security.authentication.ApiKeyAuthenticationFilter;
 import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
 import it.chalmers.gamma.security.login.LoginRedirectHandler;

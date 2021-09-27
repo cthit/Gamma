@@ -1,16 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevel;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;

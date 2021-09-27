@@ -1,18 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityPostJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthoritySuperGroupJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityUserJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipJpaRepository;
-import it.chalmers.gamma.app.authoritylevel.AuthorityLevelRepository;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.domain.common.ImageUri;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.domain.user.UserAuthority;
+import it.chalmers.gamma.app.domain.common.ImageUri;
+import it.chalmers.gamma.app.domain.user.User;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class UserEntityConverter {

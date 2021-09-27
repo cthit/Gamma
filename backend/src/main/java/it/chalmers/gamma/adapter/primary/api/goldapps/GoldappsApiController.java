@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.api.goldapps;
 
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.domain.group.Group;
+import it.chalmers.gamma.app.facade.GroupFacade;
+import it.chalmers.gamma.app.domain.group.Group;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

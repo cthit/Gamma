@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.facade.UserFacade;
 
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.PathVariable;

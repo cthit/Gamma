@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.whitelist;
 
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.app.whitelist.WhitelistFacade;
+import it.chalmers.gamma.app.facade.WhitelistFacade;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

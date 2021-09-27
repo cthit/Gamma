@@ -1,7 +1,6 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.domain.apikey.ApiKey;
-import it.chalmers.gamma.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Transient;

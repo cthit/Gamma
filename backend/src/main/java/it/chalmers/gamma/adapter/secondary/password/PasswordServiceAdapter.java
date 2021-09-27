@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.password;
 
-import it.chalmers.gamma.app.user.PasswordService;
-import it.chalmers.gamma.domain.user.Password;
-import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.app.port.service.PasswordService;
+import it.chalmers.gamma.app.domain.user.Password;
+import it.chalmers.gamma.app.domain.user.UnencryptedPassword;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

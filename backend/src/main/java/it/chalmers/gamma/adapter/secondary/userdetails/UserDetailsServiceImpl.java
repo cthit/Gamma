@@ -1,16 +1,15 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
-import it.chalmers.gamma.app.authoritylevel.AuthorityLevelRepository;
-import it.chalmers.gamma.app.user.UserRepository;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.app.port.repository.AuthorityLevelRepository;
+import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.domain.common.Email;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service("userDetailsService")

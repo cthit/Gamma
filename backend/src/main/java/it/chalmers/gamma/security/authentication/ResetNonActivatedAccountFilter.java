@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.user.MeFacade;
-import it.chalmers.gamma.app.user.UserResetPasswordFacade;
+import it.chalmers.gamma.app.facade.MeFacade;
+import it.chalmers.gamma.app.facade.UserResetPasswordFacade;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;

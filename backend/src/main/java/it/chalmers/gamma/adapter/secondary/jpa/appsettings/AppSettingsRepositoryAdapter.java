@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.appsettings;
 
-import it.chalmers.gamma.app.settings.AppSettingsRepository;
-import it.chalmers.gamma.domain.Settings;
+import it.chalmers.gamma.app.port.repository.AppSettingsRepository;
+import it.chalmers.gamma.app.domain.settings.Settings;
 import org.springframework.stereotype.Service;
 
 @Service

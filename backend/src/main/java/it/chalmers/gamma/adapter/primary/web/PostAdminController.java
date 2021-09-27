@@ -1,12 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.domain.group.EmailPrefix;
-import it.chalmers.gamma.domain.common.Text;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.post.Post;
+import it.chalmers.gamma.app.facade.PostFacade;
 
-import it.chalmers.gamma.app.post.PostRepository;
+import it.chalmers.gamma.app.port.repository.PostRepository;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;

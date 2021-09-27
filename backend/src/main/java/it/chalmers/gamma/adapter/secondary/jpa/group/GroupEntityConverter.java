@@ -3,10 +3,10 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.domain.common.ImageUri;
-import it.chalmers.gamma.domain.group.Group;
-import it.chalmers.gamma.domain.group.GroupMember;
-import it.chalmers.gamma.domain.group.UnofficialPostName;
+import it.chalmers.gamma.app.domain.common.ImageUri;
+import it.chalmers.gamma.app.domain.group.Group;
+import it.chalmers.gamma.app.domain.group.GroupMember;
+import it.chalmers.gamma.app.domain.group.UnofficialPostName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

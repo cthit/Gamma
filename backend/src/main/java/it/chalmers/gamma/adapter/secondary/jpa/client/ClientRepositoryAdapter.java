@@ -1,12 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.app.client.ClientRepository;
-import it.chalmers.gamma.domain.apikey.ApiKeyId;
-import it.chalmers.gamma.domain.apikey.ApiKeyToken;
-import it.chalmers.gamma.domain.client.Client;
-import it.chalmers.gamma.domain.client.ClientId;
-import it.chalmers.gamma.domain.client.ClientSecret;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.port.repository.ClientRepository;
+import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.app.domain.client.Client;
+import it.chalmers.gamma.app.domain.client.ClientId;
+import it.chalmers.gamma.app.domain.client.ClientSecret;
+import it.chalmers.gamma.app.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

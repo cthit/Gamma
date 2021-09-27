@@ -1,16 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import it.chalmers.gamma.app.user.MeFacade;
-import it.chalmers.gamma.domain.client.Client;
-import it.chalmers.gamma.domain.user.FirstName;
-import it.chalmers.gamma.domain.user.LastName;
-import it.chalmers.gamma.domain.user.Nick;
-import it.chalmers.gamma.domain.user.UnencryptedPassword;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.adapter.secondary.userdetails.GrantedAuthorityProxy;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.user.Language;
+import it.chalmers.gamma.app.facade.MeFacade;
+import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -19,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 @RestController

@@ -1,14 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.domain.Id;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
+import it.chalmers.gamma.app.domain.Id;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 

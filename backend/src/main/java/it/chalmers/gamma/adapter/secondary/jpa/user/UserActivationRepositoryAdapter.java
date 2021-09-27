@@ -1,12 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.user.UserActivationRepository;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.useractivation.UserActivation;
-import it.chalmers.gamma.domain.useractivation.UserActivationToken;
+import it.chalmers.gamma.app.port.repository.UserActivationRepository;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.useractivation.UserActivation;
+import it.chalmers.gamma.app.domain.useractivation.UserActivationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service

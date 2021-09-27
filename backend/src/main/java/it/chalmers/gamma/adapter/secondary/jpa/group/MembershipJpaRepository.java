@@ -3,9 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 import java.util.List;
 import java.util.UUID;
 
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.post.PostId;
-import it.chalmers.gamma.domain.user.UserId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

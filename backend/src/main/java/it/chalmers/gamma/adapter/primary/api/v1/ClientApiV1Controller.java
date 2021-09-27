@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.primary.api.v1;
 
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.facade.GroupFacade;
+import it.chalmers.gamma.app.facade.SuperGroupFacade;
+import it.chalmers.gamma.app.facade.UserFacade;
+import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

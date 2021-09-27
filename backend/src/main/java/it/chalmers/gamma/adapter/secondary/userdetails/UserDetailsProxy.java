@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.user.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;

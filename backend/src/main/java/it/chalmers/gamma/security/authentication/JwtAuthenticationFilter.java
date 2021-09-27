@@ -6,9 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.app.facade.UserFacade;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

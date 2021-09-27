@@ -1,14 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.user.UserCreationFacade;
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.domain.user.AcceptanceYear;
-import it.chalmers.gamma.domain.user.FirstName;
-import it.chalmers.gamma.domain.user.LastName;
-import it.chalmers.gamma.domain.user.Nick;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.user.Language;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.facade.UserCreationFacade;
+import it.chalmers.gamma.app.facade.UserFacade;
+import it.chalmers.gamma.app.domain.user.UserId;
 
 import java.util.UUID;
 

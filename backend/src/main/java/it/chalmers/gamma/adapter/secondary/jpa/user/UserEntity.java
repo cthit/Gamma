@@ -1,16 +1,16 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.domain.user.AcceptanceYear;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.user.FirstName;
-import it.chalmers.gamma.domain.user.Language;
-import it.chalmers.gamma.domain.user.LastName;
-import it.chalmers.gamma.domain.user.Nick;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.domain.user.AcceptanceYear;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.common.Email;
+import it.chalmers.gamma.app.domain.user.FirstName;
+import it.chalmers.gamma.app.domain.user.Language;
+import it.chalmers.gamma.app.domain.user.LastName;
+import it.chalmers.gamma.app.domain.user.Nick;
+import it.chalmers.gamma.app.domain.user.User;
+import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.domain.user.Password;
+import it.chalmers.gamma.app.domain.user.Password;
 
 import javax.persistence.*;
 import java.time.Instant;

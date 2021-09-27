@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
-import it.chalmers.gamma.domain.client.Client;
-import it.chalmers.gamma.domain.Id;
-import it.chalmers.gamma.domain.user.User;
-import it.chalmers.gamma.domain.user.UserId;
+import it.chalmers.gamma.app.domain.client.Client;
+import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.app.domain.user.UserId;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;

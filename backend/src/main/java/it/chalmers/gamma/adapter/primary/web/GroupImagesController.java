@@ -1,8 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.domain.group.GroupId;
-import it.chalmers.gamma.domain.common.ImageUri;
+import it.chalmers.gamma.app.facade.GroupFacade;
+import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;

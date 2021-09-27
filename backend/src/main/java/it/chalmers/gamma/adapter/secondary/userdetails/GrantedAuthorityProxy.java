@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
-import it.chalmers.gamma.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.domain.authoritylevel.AuthorityType;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityType;
 import org.springframework.security.core.GrantedAuthority;
 
 public class GrantedAuthorityProxy implements GrantedAuthority {

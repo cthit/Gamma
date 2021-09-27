@@ -1,12 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.user.UserResetPasswordFacade;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.common.Email;
-import it.chalmers.gamma.domain.PasswordResetToken;
-import it.chalmers.gamma.domain.user.UnencryptedPassword;
+import it.chalmers.gamma.app.facade.UserResetPasswordFacade;
 
-import it.chalmers.gamma.app.user.UserSignInIdentifier;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;

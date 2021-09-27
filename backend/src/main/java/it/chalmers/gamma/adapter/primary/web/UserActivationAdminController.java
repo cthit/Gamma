@@ -1,9 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.user.UserCreationFacade;
-import it.chalmers.gamma.domain.useractivation.UserActivation;
+import it.chalmers.gamma.app.facade.UserCreationFacade;
 
-import it.chalmers.gamma.domain.user.Cid;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;

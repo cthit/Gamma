@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.oauth;
 
-import it.chalmers.gamma.app.client.ClientUserApprovalUseCase;
-import it.chalmers.gamma.domain.user.Cid;
-import it.chalmers.gamma.domain.client.ClientId;
+import it.chalmers.gamma.app.usecase.ClientUserApprovalUseCase;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.client.ClientId;
 import org.springframework.security.oauth2.provider.approval.Approval;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.stereotype.Service;

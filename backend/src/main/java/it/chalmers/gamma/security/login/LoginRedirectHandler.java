@@ -28,6 +28,7 @@ public class LoginRedirectHandler implements AuthenticationSuccessHandler {
         }
         response.sendRedirect(redirectUrl(request));
     }
+
     private String redirectUrl(HttpServletRequest request) {
         String setRedirect = (String) request.getSession().getAttribute("redirect");
         return setRedirect == null ? frontendUrl : setRedirect;

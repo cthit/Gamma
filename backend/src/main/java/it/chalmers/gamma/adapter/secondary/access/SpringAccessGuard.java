@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.access;
 
 import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.domain.group.Group;
-import it.chalmers.gamma.domain.user.User;
+import it.chalmers.gamma.app.domain.group.Group;
+import it.chalmers.gamma.app.domain.user.User;
 import org.springframework.stereotype.Component;
 
 @Component
