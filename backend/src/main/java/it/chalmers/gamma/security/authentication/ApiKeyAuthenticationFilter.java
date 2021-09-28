@@ -34,14 +34,11 @@ public class ApiKeyAuthenticationFilter implements Filter {
                 if (maybeApiKey.isPresent()) {
                     ApiKeyAuthentication apiToken = new ApiKeyAuthentication(maybeApiKey.get().apiKeyToken(), AuthorityUtils.NO_AUTHORITIES);
                     SecurityContextHolder.getContext().setAuthentication(apiToken);
-                    chain.doFilter(request, response);
                     //Make sure that this isn't saved in redis
                     //https://github.com/cthit/Gamma/pull/776/files#diff-18e124ccd254a048c4f9a8ab52caae88e7229c007468b1264c07427fbe9e930eR51
-                } else {
-                    HttpServletResponse httpResponse = (HttpServletResponse) response;
-                    httpResponse.setStatus(401);
-                }
+                } 
             }
+            chain.doFilter(request, response);
         }
     }
 

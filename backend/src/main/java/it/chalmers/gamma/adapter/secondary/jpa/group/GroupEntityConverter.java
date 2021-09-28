@@ -10,25 +10,20 @@ import it.chalmers.gamma.app.domain.group.UnofficialPostName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GroupEntityConverter {
 
     private final UserEntityConverter userEntityConverter;
-    private final MembershipJpaRepository membershipJpaRepository;
     private final UserJpaRepository userJpaRepository;
-    private final GroupJpaRepository groupJpaRepository;
     private final PostJpaRepository postJpaRepository;
 
     public GroupEntityConverter(UserEntityConverter userEntityConverter,
-                                MembershipJpaRepository membershipJpaRepository,
                                 UserJpaRepository userJpaRepository,
-                                GroupJpaRepository groupJpaRepository,
                                 PostJpaRepository postJpaRepository) {
         this.userEntityConverter = userEntityConverter;
-        this.membershipJpaRepository = membershipJpaRepository;
         this.userJpaRepository = userJpaRepository;
-        this.groupJpaRepository = groupJpaRepository;
         this.postJpaRepository = postJpaRepository;
     }
 
@@ -70,8 +65,8 @@ public class GroupEntityConverter {
                 b.prettyName(),
                 b.superGroup(),
                 members,
-                ImageUri.nothing(),
-                ImageUri.nothing()
+                Optional.empty(),
+                Optional.empty()
         );
     }
 

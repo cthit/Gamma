@@ -3,10 +3,7 @@ package it.chalmers.gamma.app.bootstrap;
 import it.chalmers.gamma.app.facade.AuthorityLevelFacade;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 public class AuthorityLevelBootstrap {

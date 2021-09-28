@@ -34,12 +34,12 @@ public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
 
     protected ApiKeyEntity() { }
 
-    public ApiKeyEntity(ApiKey apiKey, ApiKeyToken apiKeyToken) {
+    public ApiKeyEntity(ApiKey apiKey) {
         assert(apiKey.id() != null);
-        assert(apiKeyToken != null);
+        assert(apiKey.apiKeyToken() != null);
 
         this.id = apiKey.id().getValue();
-        this.token = apiKeyToken.value();
+        this.token = apiKey.apiKeyToken().value();
         this.prettyName = apiKey.prettyName().value();
         this.description = new TextEntity(apiKey.description());
         this.keyType = apiKey.keyType();

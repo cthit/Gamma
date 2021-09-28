@@ -6,7 +6,10 @@ public interface ImageService {
 
     ImageUri saveImage(Image image) throws ImageCouldNotBeSavedException;
     void removeImage(ImageUri imageUri) throws ImageCouldNotBeRemovedException;
-    String toUrl(ImageUri imageUri);
+
+    record ImageDetails(byte[] data, String type) { }
+
+    ImageDetails getImage(ImageUri imageUri);
 
     class ImageCouldNotBeRemovedException extends Exception { }
 
@@ -21,5 +24,4 @@ public interface ImageService {
     }
 
     interface Image { }
-
 }

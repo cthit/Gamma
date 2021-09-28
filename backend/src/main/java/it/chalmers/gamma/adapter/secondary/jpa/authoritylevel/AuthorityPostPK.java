@@ -3,6 +3,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.post.Post;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
@@ -12,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthorityPostPK implements Id<AuthorityPostPK.AuthorityPostPKRecord> {
+public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord> {
 
     public record AuthorityPostPKRecord(SuperGroup superGroup,
                                         Post post,

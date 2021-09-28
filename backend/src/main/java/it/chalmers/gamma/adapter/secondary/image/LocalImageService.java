@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -80,12 +81,22 @@ public class LocalImageService implements ImageService {
         }
     }
 
-    public String toUrl(ImageUri imageUri) {
-        return this.absoluteBasePath + this.relativePath + imageUri;
+    @Override
+    public ImageDetails getImage(ImageUri imageUri) {
+        try {
+            return new ImageDetails(
+                    StreamUtils.copyToByteArray(Files.newInputStream(Paths.get(this.relativePath + imageUri.value()))),
+                    getType(imageUri)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public byte[] getData(ImageUri uri) throws IOException {
-        return StreamUtils.copyToByteArray(Files.newInputStream(Paths.get(this.relativePath + uri)));
+    private String getType(ImageUri imageUri) {
+        String[] split = imageUri.value().split("\\.");
+        return split[split.length - 1];
     }
 
     private void checkIfValidImageContent(MultipartFile file) throws ImageCouldNotBeSavedException {

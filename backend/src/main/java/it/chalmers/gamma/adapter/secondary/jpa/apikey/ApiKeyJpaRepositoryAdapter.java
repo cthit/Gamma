@@ -21,7 +21,11 @@ public class ApiKeyJpaRepositoryAdapter implements ApiKeyRepository {
 
     @Override
     public void create(ApiKey apiKey) {
-        throw new UnsupportedOperationException();
+        this.repository.save(
+                new ApiKeyEntity(
+                        apiKey
+                )
+        );
     }
 
     @Override

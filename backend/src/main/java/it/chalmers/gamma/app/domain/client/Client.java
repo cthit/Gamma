@@ -14,7 +14,7 @@ import java.util.Optional;
 @RecordBuilder
 public record Client(ClientId clientId,
                      ClientSecret clientSecret,
-                     String webServerRedirectUri,
+                     WebServerRedirectUrl webServerRedirectUrl,
                      boolean autoApprove,
                      PrettyName prettyName,
                      Text description,
@@ -25,7 +25,7 @@ public record Client(ClientId clientId,
     public Client {
         //TODO Create Webserverredirecturi class instead of using string
         Objects.requireNonNull(clientId);
-        Objects.requireNonNull(webServerRedirectUri);
+        Objects.requireNonNull(webServerRedirectUrl);
         Objects.requireNonNull(prettyName);
         Objects.requireNonNull(description);
         Objects.requireNonNull(restrictions);

@@ -80,7 +80,7 @@ public class ClientDetailsImpl implements ClientDetails {
     @Override
     public Set<String> getRegisteredRedirectUri() {
         Set<String> authorized = new HashSet<>();
-        authorized.add(this.client.webServerRedirectUri());
+        authorized.add(this.client.webServerRedirectUrl().value());
         return authorized;
     }
 

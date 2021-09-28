@@ -9,6 +9,7 @@ import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RecordBuilder
 public record Group(GroupId id,
@@ -17,8 +18,8 @@ public record Group(GroupId id,
                     PrettyName prettyName,
                     SuperGroup superGroup,
                     List<GroupMember> groupMembers,
-                    ImageUri avatarUri,
-                    ImageUri bannerUri) implements GroupBuilder.With {
+                    Optional<ImageUri> avatarUri,
+                    Optional<ImageUri> bannerUri) implements GroupBuilder.With {
 
     public Group {
         Objects.requireNonNull(id);

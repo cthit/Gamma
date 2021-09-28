@@ -18,17 +18,9 @@ CREATE TABLE ituser
     LANGUAGE        VARCHAR(15) NULL,
     user_agreement_accepted  TIME NOT NULL DEFAULT NOW(),
     acceptance_year INTEGER,
-    version         INT
-);
-
-CREATE TABLE ituser_gdpr_training
-(
-    user_id UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE
-);
-
-CREATE TABLE ituser_account_locked
-(
-    user_id UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE
+    version         INT,
+    gdpr_training   BOOLEAN DEFAULT FALSE,
+    locked          BOOLEAN DEFAULT FALSE
 );
 
 

@@ -17,20 +17,24 @@ public class UserAvatarEntity extends MutableEntity<UserId> {
 
     @Id
     @Column(name = "user_id")
-    private UUID userId;
+    protected UUID userId;
 
     @OneToOne
     @PrimaryKeyJoinColumn(name = "user_id")
-    private UserEntity user;
+    protected UserEntity user;
 
     @Column(name = "avatar_uri")
-    private String avatarUri;
+    protected String avatarUri;
 
     protected UserAvatarEntity() { }
 
     @Override
     protected UserId id() {
         return this.user.id();
+    }
+
+    protected String getAvatarUri() {
+        return this.avatarUri;
     }
 
 }

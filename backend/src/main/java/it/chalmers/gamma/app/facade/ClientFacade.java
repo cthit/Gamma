@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.facade;
 
 import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
 import it.chalmers.gamma.app.port.repository.ClientRepository;
 import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
@@ -34,7 +35,7 @@ public class ClientFacade extends Facade {
         this.apiKeyRepository = apiKeyRepository;
     }
 
-    public record NewClient(String webServerRedirectUri,
+    public record NewClient(String webServerRedirectUrl,
                             String prettyName,
                             boolean autoApprove,
                             String svDescription,
@@ -76,7 +77,7 @@ public class ClientFacade extends Facade {
         this.clientRepository.create(new Client(
                 ClientId.generate(),
                 clientSecret,
-                newClient.webServerRedirectUri,
+                new WebServerRedirectUrl(newClient.webServerRedirectUrl),
                 newClient.autoApprove,
                 new PrettyName(newClient.prettyName),
                 new Text(

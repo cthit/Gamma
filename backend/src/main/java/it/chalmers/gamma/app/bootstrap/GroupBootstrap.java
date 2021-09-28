@@ -18,16 +18,15 @@ import it.chalmers.gamma.app.domain.user.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 
 @Component
 public class GroupBootstrap {
@@ -76,8 +75,11 @@ public class GroupBootstrap {
             String type = mockData.superGroups()
                     .stream()
                     .filter(sg -> sg.id().equals(mockGroup.superGroupId()))
-                    .findFirst().orElseThrow().type();
-            boolean active = !type.equals("alumni");
+                    .findFirst()
+                    .orElseThrow()
+                    .type();
+            System.out.println(type);
+            boolean active = !type.equalsIgnoreCase("alumni");
             int year = active ? activeYear : inactiveYear;
             Name name = new Name(mockGroup.name() + year);
             PrettyName prettyName = new PrettyName(mockGroup.prettyName() + year);
@@ -98,8 +100,8 @@ public class GroupBootstrap {
                                     userRepository.get(new UserId(mockMembership.userId())).orElseThrow()
                             ))
                             .toList(),
-                    ImageUri.nothing(),
-                    ImageUri.nothing()
+                    Optional.empty(),
+                    Optional.empty()
             );
 
             this.groupRepository.create(group);

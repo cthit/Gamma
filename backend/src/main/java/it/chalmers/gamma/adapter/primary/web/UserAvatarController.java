@@ -1,11 +1,13 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.facade.MeFacade;
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.facade.ImageFacade;
+import it.chalmers.gamma.app.facade.UserFacade;
+import it.chalmers.gamma.app.port.service.ImageService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,32 +18,33 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/users/avatar")
 public class UserAvatarController {
 
     //TODO: I think here that UserAvatarService would be nice
-    private final MeFacade meFacade;
+    private final UserFacade userFacade;
+    private final ImageFacade imageFacade;
 
-    public UserAvatarController(MeFacade meFacade) {
-        this.meFacade = meFacade;
+    public UserAvatarController(UserFacade userFacade,
+                                ImageFacade imageFacade) {
+        this.userFacade = userFacade;
+        this.imageFacade = imageFacade;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getUserAvatar(@PathVariable("id") UserId id) throws IOException {
-//        ImageUri uri = userAvatarService.getUserAvatar(id).map(UserAvatar::avatarUri).orElse(new ImageUri("default_user_avatar.jpg"));
-//        String[] uriData = uri.toString().split("\\.");
-//        String type = uriData[uriData.length - 1];
-//        byte[] data = imageService.getData(uri);
-//        return ResponseEntity
-//                .ok()
-//                .contentType((type.equals("jpg") || type.equals("jpeg") ? MediaType.IMAGE_JPEG
-//                        : type.equals("png") ? MediaType.IMAGE_PNG
-//                        : MediaType.IMAGE_GIF)
-//                )
-//                .body(data);
-        return null;
+    public ResponseEntity<byte[]> getUserAvatar(@PathVariable("id") UUID id) {
+        ImageFacade.ImageDetails imageDetails = this.imageFacade.getAvatar(id);
+        String type = imageDetails.imageType();
+        return ResponseEntity
+                .ok()
+                .contentType((type.equals("jpg") || type.equals("jpeg") ? MediaType.IMAGE_JPEG
+                        : type.equals("png") ? MediaType.IMAGE_PNG
+                        : MediaType.IMAGE_GIF)
+                )
+                .body(imageDetails.data());
     }
 
     @PutMapping

@@ -13,6 +13,7 @@ import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.port.service.ImageService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,19 +29,22 @@ public class AuthorityLevelFacade extends Facade {
     private final GroupRepository groupRepository;
     private final PostRepository postRepository;
     private final SuperGroupRepository superGroupRepository;
+    private final ImageService imageService;
 
     public AuthorityLevelFacade(AccessGuard accessGuard,
                                 AuthorityLevelRepository authorityLevelRepository,
                                 UserRepository userRepository,
                                 GroupRepository groupRepository,
                                 PostRepository postRepository,
-                                SuperGroupRepository superGroupRepository) {
+                                SuperGroupRepository superGroupRepository,
+                                ImageService imageService) {
         super(accessGuard);
         this.authorityLevelRepository = authorityLevelRepository;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.postRepository = postRepository;
         this.superGroupRepository = superGroupRepository;
+        this.imageService = imageService;
     }
 
     public void create(String name) {

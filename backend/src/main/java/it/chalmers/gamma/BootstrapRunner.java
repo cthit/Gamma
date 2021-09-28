@@ -14,7 +14,9 @@ import it.chalmers.gamma.app.bootstrap.SuperGroupBootstrap;
 import it.chalmers.gamma.app.bootstrap.UserBootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BootstrapRunner {
 
     @Bean

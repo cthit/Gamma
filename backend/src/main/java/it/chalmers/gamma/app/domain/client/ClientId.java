@@ -1,11 +1,12 @@
 package it.chalmers.gamma.app.domain.client;
 
 import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.util.TokenUtils;
 
 import java.io.Serializable;
 
-public record ClientId(String value) implements Id<String>, Serializable {
+public record ClientId(String value) implements Id<String> {
 
     public static ClientId generate() {
         String id = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,

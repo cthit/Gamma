@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
+import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.user.UserId;
@@ -10,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthorityUserPK implements Id<AuthorityUserPK.AuthorityUserPKRecord> {
+public class AuthorityUserPK extends PKId<AuthorityUserPK.AuthorityUserPKRecord> {
 
     protected record AuthorityUserPKRecord(UserId userId, AuthorityLevelName authorityLevelName) { }
 

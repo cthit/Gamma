@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.group.GroupId;
 import it.chalmers.gamma.app.domain.post.PostId;
 import it.chalmers.gamma.app.domain.user.UserId;
@@ -11,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class MembershipPK implements Id<MembershipPK.MembershipPKDTO> {
+public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
 
     @Override
     public MembershipPK.MembershipPKDTO getValue() {

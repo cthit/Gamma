@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
+import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.user.UserId;
@@ -11,11 +12,11 @@ import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Embeddable
-public class UserApprovalEntityPK implements Id<UserApprovalEntityPK.UserApprovalPKDTO>, Serializable {
+public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApprovalPKDTO> {
 
     protected record UserApprovalPKDTO(UserId userId, Client client) {
-    }
 
+    }
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -29,6 +30,10 @@ public class UserApprovalEntityPK implements Id<UserApprovalEntityPK.UserApprova
     public UserApprovalEntityPK(UserEntity user, ClientEntity client) {
         this.user = user;
         this.client = client;
+    }
+
+    public UserEntity getUserEntity() {
+        return this.user;
     }
 
     @Override

@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.domain.common.ImageUri;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 @RecordBuilder
 public record User(UserId id,
@@ -20,7 +21,7 @@ public record User(UserId id,
                    AcceptanceYear acceptanceYear,
                    boolean gdprTrained,
                    boolean locked,
-                   ImageUri imageUri)
+                   Optional<ImageUri> avatarUri)
     implements UserBuilder.With {
 
     public User {
@@ -32,7 +33,7 @@ public record User(UserId id,
         Objects.requireNonNull(firstName);
         Objects.requireNonNull(lastName);
         Objects.requireNonNull(acceptanceYear);
-        Objects.requireNonNull(imageUri);
+        Objects.requireNonNull(avatarUri);
     }
 
 }

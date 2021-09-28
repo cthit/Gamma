@@ -1,6 +1,8 @@
 package it.chalmers.gamma.app.facade;
 
 import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.domain.common.ImageUri;
+import it.chalmers.gamma.app.port.service.ImageService;
 import it.chalmers.gamma.app.port.service.PasswordService;
 import it.chalmers.gamma.app.port.repository.UserRepository;
 import it.chalmers.gamma.app.port.authentication.ApiAuthenticated;
@@ -31,17 +33,20 @@ public class UserFacade extends Facade {
     private final AuthenticatedService authenticatedService;
     private final PasswordService passwordService;
     private final GroupRepository groupRepository;
+    private final ImageService imageService;
 
     public UserFacade(AccessGuard accessGuard,
                       UserRepository userRepository,
                       AuthenticatedService authenticatedService,
                       PasswordService passwordService,
-                      GroupRepository groupRepository) {
+                      GroupRepository groupRepository,
+                      ImageService imageService) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
         this.passwordService = passwordService;
         this.groupRepository = groupRepository;
+        this.imageService = imageService;
     }
 
     public record UserDTO(String cid,
@@ -49,20 +54,19 @@ public class UserFacade extends Facade {
                           String firstName,
                           String lastName,
                           UUID id,
-                          int acceptanceYear,
-                          String imageUri) {
+                          int acceptanceYear) {
+
         public UserDTO(User user) {
             this(user.cid().value(),
                     user.nick().value(),
                     user.firstName().value(),
                     user.lastName().value(),
                     user.id().value(),
-                    user.acceptanceYear().value(),
-                    user.imageUri().value());
+                    user.acceptanceYear().value());
         }
     }
-
     public record UserGroupDTO(GroupFacade.GroupDTO group, PostFacade.PostDTO post) {
+
         public UserGroupDTO(UserMembership userMembership) {
             this(
                     new GroupFacade.GroupDTO(userMembership.group()),
@@ -71,7 +75,6 @@ public class UserFacade extends Facade {
         }
     }
     public record UserWithGroupsDTO(UserDTO user, List<UserGroupDTO> groups) { }
-
     public Optional<UserWithGroupsDTO> get(String cid) {
         this.accessGuard.requireSignedIn();
         Optional<UserDTO> maybeUser = this.userRepository.get(new Cid(cid)).map(UserDTO::new);
@@ -154,6 +157,7 @@ public class UserFacade extends Facade {
                                   String email,
                                   boolean gdprTrained,
                                   boolean locked) {
+
         public UserExtendedDTO(User user) {
             this(user.cid().value(),
                     user.nick().value(),
@@ -166,7 +170,6 @@ public class UserFacade extends Facade {
                     user.locked());
         }
     }
-
     public record UserExtendedWithGroupsDTO(UserExtendedDTO user, List<UserGroupDTO> groups) { }
 
     public Optional<UserExtendedWithGroupsDTO> getAsAdmin(UUID id) {
@@ -210,9 +213,6 @@ public class UserFacade extends Facade {
     public void updateGdprTrainedStatus(UUID userId, boolean gdprTrained) {
         accessGuard.requireIsAdmin();
         User oldUser = this.userRepository.get(new UserId(userId)).orElseThrow();
-        this.userRepository.save(
-                oldUser.withGdprTrained(gdprTrained)
-        );
+        this.userRepository.save(oldUser.withGdprTrained(gdprTrained));
     }
-
 }

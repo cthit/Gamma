@@ -1,6 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,12 +17,15 @@ public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK
 
     protected ClientRestrictionEntity() { }
 
-    protected ClientRestrictionEntity(ClientRestrictionPK id) {
-        this.id = id;
+    protected ClientRestrictionEntity(ClientEntity clientEntity, AuthorityLevelEntity authorityLevelEntity) {
+        this.id = new ClientRestrictionPK(clientEntity, authorityLevelEntity);
     }
 
     protected ClientRestrictionPK id() {
         return this.id;
     }
 
+    public AuthorityLevelName getAuthorityLevelName() {
+        return this.id.getValue().authorityLevelName();
+    }
 }

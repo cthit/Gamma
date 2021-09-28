@@ -3,7 +3,6 @@ package it.chalmers.gamma.app.bootstrap;
 import it.chalmers.gamma.app.facade.AuthorityLevelFacade;
 import it.chalmers.gamma.app.port.service.PasswordService;
 import it.chalmers.gamma.app.port.repository.UserRepository;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.common.ImageUri;
@@ -19,12 +18,10 @@ import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
-import java.util.Collections;
+import java.util.Optional;
 
 @Component
 public class EnsureAnAdminUserBootstrap {
@@ -75,7 +72,7 @@ public class EnsureAnAdminUserBootstrap {
                     new AcceptanceYear(2018),
                     true,
                     false,
-                    ImageUri.nothing()
+                    Optional.empty()
             );
 
             this.userRepository.create(adminUser);

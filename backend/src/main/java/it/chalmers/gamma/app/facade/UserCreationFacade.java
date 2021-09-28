@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserCreationFacade extends Facade {
@@ -89,7 +90,7 @@ public class UserCreationFacade extends Facade {
                         new AcceptanceYear(newUser.acceptanceYear),
                         false,
                         false,
-                        ImageUri.nothing()
+                        Optional.empty()
                 )
         );
     }
@@ -115,7 +116,7 @@ public class UserCreationFacade extends Facade {
                             new AcceptanceYear(data.acceptanceYear),
                             false,
                             false,
-                            ImageUri.nothing()
+                            Optional.empty()
                     )
             );
         }

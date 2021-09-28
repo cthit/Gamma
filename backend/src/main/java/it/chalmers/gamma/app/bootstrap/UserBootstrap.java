@@ -16,11 +16,10 @@ import it.chalmers.gamma.app.domain.user.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -64,7 +63,7 @@ public class UserBootstrap {
                         new AcceptanceYear(mockUser.acceptanceYear()),
                         false,
                         false,
-                        ImageUri.nothing()
+                        Optional.empty()
                 )
         ));
 

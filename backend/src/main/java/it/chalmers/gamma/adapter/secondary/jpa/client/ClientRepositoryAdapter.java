@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.port.repository.ClientRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.Client;
@@ -14,18 +16,27 @@ import java.util.Optional;
 @Service
 public class ClientRepositoryAdapter implements ClientRepository {
 
-    private final ClientJpaRepository repository;
+    private final ClientJpaRepository clientJpaRepository;
     private final ClientApiKeyJpaRepository clientApiKeyJpaRepository;
+    private final UserApprovalJpaRepository userApprovalJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final ClientEntityConverter clientEntityConverter;
 
-    public ClientRepositoryAdapter(ClientJpaRepository repository,
-                                   ClientApiKeyJpaRepository clientApiKeyJpaRepository) {
-        this.repository = repository;
+    public ClientRepositoryAdapter(ClientJpaRepository clientJpaRepository,
+                                   ClientApiKeyJpaRepository clientApiKeyJpaRepository,
+                                   UserApprovalJpaRepository userApprovalJpaRepository,
+                                   UserJpaRepository userJpaRepository,
+                                   ClientEntityConverter clientEntityConverter) {
+        this.clientJpaRepository = clientJpaRepository;
         this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
+        this.userApprovalJpaRepository = userApprovalJpaRepository;
+        this.userJpaRepository = userJpaRepository;
+        this.clientEntityConverter = clientEntityConverter;
     }
 
     @Override
     public void create(Client client) {
-        throw new UnsupportedOperationException();
+        this.clientJpaRepository.save(this.clientEntityConverter.toEntity(client));
     }
 
     @Override
@@ -40,7 +51,7 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public List<Client> getAll() {
-        return this.repository.findAll().stream().map(ClientEntity::toDomain).toList();
+        return this.clientJpaRepository.findAll().stream().map(ClientEntity::toDomain).toList();
     }
 
     @Override

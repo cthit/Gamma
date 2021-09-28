@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
+import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.app.domain.Id;
@@ -10,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class AuthoritySuperGroupPK implements Id<AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
+public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
 
     protected record AuthoritySuperGroupPKDTO(SuperGroup superGroup, AuthorityLevelName authorityLevelName) { }
 

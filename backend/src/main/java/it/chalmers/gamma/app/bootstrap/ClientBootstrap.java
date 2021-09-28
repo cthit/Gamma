@@ -4,6 +4,7 @@ import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.app.domain.client.Client;
+import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
 import it.chalmers.gamma.app.port.repository.ClientRepository;
@@ -20,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -29,7 +30,7 @@ public class ClientBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrap.class);
 
-    private final String redirectUri;
+    private final String redirectUrl;
     private final ClientFacade clientFacade;
     private final ClientUserApprovalUseCase userApprovalService;
     private final UserRepository userRepository;
@@ -38,11 +39,11 @@ public class ClientBootstrap {
 
     public ClientBootstrap(ClientFacade clientFacade,
                            @Value("${application.mocking}") boolean mocking,
-                           @Value("${application.default-oauth2-client.redirect-uri}") String redirectUri,
+                           @Value("${application.default-oauth2-client.redirect-url}") String redirectUrl,
                            ClientUserApprovalUseCase userApprovalService,
                            UserRepository userRepository,
                            ClientRepository clientRepository) {
-        this.redirectUri = redirectUri;
+        this.redirectUrl = redirectUrl;
         this.clientFacade = clientFacade;
         this.mocking = mocking;
         this.userApprovalService = userApprovalService;
@@ -57,22 +58,23 @@ public class ClientBootstrap {
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
         LOGGER.info("Creating test client...");
 
-
         ClientId clientId = ClientId.valueOf("test");
         ClientSecret clientSecret = new ClientSecret("secret");
         ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-token");
         PrettyName prettyName = new PrettyName("test-client");
 
+        List<User> allUsers = this.userRepository.getAll();
+
         this.clientRepository.create(
                 new Client(
                         clientId,
                         clientSecret,
-                        redirectUri,
+                        new WebServerRedirectUrl(redirectUrl),
                         true,
                         prettyName,
                         new Text(),
                         new ArrayList<>(),
-                        new ArrayList<>(),
+                        allUsers,
                         Optional.of(
                                 new ApiKey(
                                         ApiKeyId.generate(),
@@ -85,14 +87,10 @@ public class ClientBootstrap {
                 )
         );
 
-        for (User user : this.userRepository.getAll()) {
-            this.userApprovalService.approveUserForClient(user.cid(), clientId);
-        }
-
         LOGGER.info("Client generated with information:");
         LOGGER.info("ClientId: " + clientId.getValue());
         LOGGER.info("ClientSecret: " + clientSecret.value());
-        LOGGER.info("Client redirect uri: " + this.redirectUri);
+        LOGGER.info("Client redirect uri: " + this.redirectUrl);
         LOGGER.info("An API key was also generated with the client, it has the token: " + apiKeyToken.value());
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
     }

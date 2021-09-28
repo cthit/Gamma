@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.facade.GroupFacade;
 import it.chalmers.gamma.app.domain.common.ImageUri;
+import it.chalmers.gamma.app.facade.ImageFacade;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -22,10 +22,10 @@ import java.util.UUID;
 @RequestMapping("/internal/groups")
 public final class GroupImagesController {
 
-    private final GroupFacade groupFacade;
+    private final ImageFacade imageFacade;
 
-    public GroupImagesController(GroupFacade groupFacade) {
-        this.groupFacade = groupFacade;
+    public GroupImagesController(ImageFacade imageFacade) {
+        this.imageFacade = imageFacade;
     }
 
     @PutMapping("/avatar/{id}")
@@ -56,7 +56,7 @@ public final class GroupImagesController {
 
     @GetMapping("/avatar/{id}")
     public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") UUID id) throws IOException {
-//        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::avatarUri)
+//        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::avatarUrl)
 //                .orElse(new ImageUri("default_group_avatar.jpg"));
 //        return ResponseEntity
 //                .ok()
@@ -67,13 +67,15 @@ public final class GroupImagesController {
 
     @GetMapping("/banner/{id}")
     public ResponseEntity<byte[]> getGroupBanner(@PathVariable("id") UUID id) throws IOException {
-//        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::bannerUri)
-//                .orElse(new ImageUri("default_group_banner.jpg"));
-//        return ResponseEntity
-//                .ok()
-//                .contentType(getContentType(uri))
-//                .body(imageService.getData(uri));
-        return null;
+        ImageFacade.ImageDetails imageDetails = this.imageFacade.getGroupBanner(id);
+        String type = imageDetails.imageType();
+        return ResponseEntity
+                .ok()
+                .contentType((type.equals("jpg") || type.equals("jpeg") ? MediaType.IMAGE_JPEG
+                        : type.equals("png") ? MediaType.IMAGE_PNG
+                        : MediaType.IMAGE_GIF)
+                )
+                .body(imageDetails.data());
     }
 
     private MediaType getContentType(ImageUri uri) {
