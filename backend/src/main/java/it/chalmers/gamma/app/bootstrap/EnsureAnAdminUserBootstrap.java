@@ -75,7 +75,7 @@ public class EnsureAnAdminUserBootstrap {
                     Optional.empty()
             );
 
-            this.userRepository.create(adminUser);
+            this.userRepository.save(adminUser);
 
             LOGGER.info("Admin user created!");
             LOGGER.info("cid: " + name);

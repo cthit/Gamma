@@ -1,7 +1,9 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.facade.ImageFacade;
+import it.chalmers.gamma.app.port.service.ImageService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -30,39 +32,35 @@ public final class GroupImagesController {
 
     @PutMapping("/avatar/{id}")
     public GroupAvatarEdited editGroupAvatar(@RequestParam MultipartFile file, @PathVariable("id") UUID id) {
-//        try {
-//            this.groupImagesService.editGroupAvatar(id, file);
-//            return new GroupAvatarEdited();
-//        } catch (ImageService.ImageCouldNotBeRemovedException
-//                | ImageService.ImageContentNotValidException
-//                | ImageService.ImageCouldNotBeSavedException e) {
-//            throw new FileIssueResponse();
-//        }
-        return null;
+        try {
+            this.imageFacade.setGroupAvatar(id, new ImageFile(file));
+        } catch (ImageService.ImageCouldNotBeSavedException e) {
+            throw new FileIssueResponse();
+        }
+        return new GroupAvatarEdited();
     }
 
     @PutMapping("/banner/{id}")
     public GroupBannerEdited editGroupBanner(@RequestParam MultipartFile file, @PathVariable("id") UUID id) {
-//        try {
-//            this.groupImagesService.editGroupBanner(id, file);
-//            return new GroupBannerEdited();
-//        } catch (ImageService.ImageCouldNotBeRemovedException
-//                | ImageService.ImageContentNotValidException
-//                | ImageService.ImageCouldNotBeSavedException e) {
-//            throw new FileIssueResponse();
-//        }
-        return null;
+        try {
+            this.imageFacade.setGroupBanner(id, new ImageFile(file));
+        } catch (ImageService.ImageCouldNotBeSavedException e) {
+            throw new FileIssueResponse();
+        }
+        return new GroupBannerEdited();
     }
 
     @GetMapping("/avatar/{id}")
     public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") UUID id) throws IOException {
-//        ImageUri uri = groupImagesService.getGroupImages(id).map(GroupImages::avatarUrl)
-//                .orElse(new ImageUri("default_group_avatar.jpg"));
-//        return ResponseEntity
-//                .ok()
-//                .contentType(getContentType(uri))
-//                .body(imageService.getData(uri));
-        return null;
+        ImageFacade.ImageDetails imageDetails = this.imageFacade.getGroupAvatar(id);
+        String type = imageDetails.imageType();
+        return ResponseEntity
+                .ok()
+                .contentType((type.equals("jpg") || type.equals("jpeg") ? MediaType.IMAGE_JPEG
+                        : type.equals("png") ? MediaType.IMAGE_PNG
+                        : MediaType.IMAGE_GIF)
+                )
+                .body(imageDetails.data());
     }
 
     @GetMapping("/banner/{id}")

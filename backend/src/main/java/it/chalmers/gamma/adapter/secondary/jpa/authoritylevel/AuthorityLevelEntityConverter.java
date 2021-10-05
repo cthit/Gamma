@@ -23,15 +23,18 @@ public class AuthorityLevelEntityConverter {
     private final SuperGroupJpaRepository superGroupRepository;
     private final UserJpaRepository userRepository;
     private final PostJpaRepository postRepository;
+    private final AuthorityLevelJpaRepository authorityLevelJpaRepository;
 
     public AuthorityLevelEntityConverter(UserEntityConverter userEntityConverter,
                                          SuperGroupJpaRepository superGroupRepository,
                                          UserJpaRepository userRepository,
-                                         PostJpaRepository postRepository) {
+                                         PostJpaRepository postRepository,
+                                         AuthorityLevelJpaRepository authorityLevelJpaRepository) {
         this.userEntityConverter = userEntityConverter;
         this.superGroupRepository = superGroupRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.authorityLevelJpaRepository = authorityLevelJpaRepository;
     }
 
     public AuthorityLevel toDomain(AuthorityLevelEntity authorityLevelEntity) {
@@ -48,15 +51,21 @@ public class AuthorityLevelEntityConverter {
 
     public AuthorityLevelEntity toEntity(AuthorityLevel authorityLevel) {
         String name = authorityLevel.name().getValue();
-        AuthorityLevelEntity authorityLevelEntity = new AuthorityLevelEntity(name);
+        AuthorityLevelEntity authorityLevelEntity = this.authorityLevelJpaRepository.findById(name)
+                .orElse(new AuthorityLevelEntity(name));
 
         List<AuthorityUserEntity> users = authorityLevel.users().stream().map(user -> new AuthorityUserEntity(toEntity(user), authorityLevelEntity)).toList();
         List<AuthorityPostEntity> posts = authorityLevel.posts().stream().map(post -> new AuthorityPostEntity(toEntity(post.superGroup()), toEntity(post.post()), authorityLevelEntity)).toList();
         List<AuthoritySuperGroupEntity> superGroups = authorityLevel.superGroups().stream().map(superGroup -> new AuthoritySuperGroupEntity(toEntity(superGroup), authorityLevelEntity)).toList();
 
-        authorityLevelEntity.setUsers(users);
-        authorityLevelEntity.setPosts(posts);
-        authorityLevelEntity.setSuperGroups(superGroups);
+        authorityLevelEntity.postEntityList.clear();
+        authorityLevelEntity.postEntityList.addAll(posts);
+
+        authorityLevelEntity.userEntityList.clear();
+        authorityLevelEntity.userEntityList.addAll(users);
+
+        authorityLevelEntity.superGroupEntityList.clear();
+        authorityLevelEntity.superGroupEntityList.addAll(superGroups);
 
         return authorityLevelEntity;
     }

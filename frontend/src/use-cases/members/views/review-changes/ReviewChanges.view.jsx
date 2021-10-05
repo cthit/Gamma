@@ -14,7 +14,7 @@ import {
 
 import { removeUserFromGroup } from "api/groups/delete.groups.api";
 import { addUserToGroup } from "api/groups/post.groups.api";
-import { editUserInGroup } from "api/groups/put.groups.api";
+import { editUserInGroup, setMembersRequest } from "api/groups/put.groups.api";
 
 import DisplayMembersTable from "common/elements/display-members-table";
 
@@ -22,7 +22,8 @@ import translations from "./ReviewChanges.view.translations";
 
 function getAdditions(previousMembers, newMembers) {
     return newMembers.filter(
-        newMember => _.findIndex(previousMembers, ["id", newMember.id]) === -1
+        newMember =>
+            _.findIndex(previousMembers, ["user.id", newMember.id]) === -1
     );
 }
 
@@ -49,31 +50,14 @@ const save = (
     queueToast,
     text
 ) => {
-    const additions = getAdditions(previousMembers, newMembersData).map(
-        member =>
-            addUserToGroup(groupId, {
-                userId: member.id,
-                post: member.postId,
-                unofficialName: member.unofficialPostName
-            })
-    );
-
-    const deletions = getDeletions(
-        previousMembers,
-        newMembersData
-    ).map(previousMember => removeUserFromGroup(groupId, previousMember.id));
-
-    const edits = getEdits(previousMembers, newMembersData).map(member => {
-        const newMemberData = _.find(newMembersData, { id: member.id });
-
-        return editUserInGroup(groupId, member.id, {
-            userId: newMemberData.id,
-            post: newMemberData.postId,
-            unofficialName: newMemberData.unofficialPostName
-        });
-    });
-
-    Promise.all([...additions, ...deletions, ...edits])
+    setMembersRequest(
+        groupId,
+        newMembersData.map(member => ({
+            postId: member.postId,
+            userId: member.id,
+            unofficialPostName: member.unofficialPostName
+        }))
+    )
         .then(() => {
             onFinished();
             queueToast({

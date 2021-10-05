@@ -15,6 +15,7 @@ import {
 } from "api/users/props.users.api";
 
 import translations from "./CreateMembership.view.translations";
+import { act } from "react-dom/test-utils";
 
 const CustomRow = styled.div`
     display: flex;
@@ -31,13 +32,13 @@ const CustomRow = styled.div`
 function getDifferentPostNames(posts, activeLanguage) {
     const output = {};
     posts.forEach(post => {
-        output[post.id] = post[activeLanguage];
+        output[post.id] = post[activeLanguage + "Text"];
     });
 
     return output;
 }
 
-const CreateMembership = ({ posts, value, onChange, innerInputs }) => {
+const CreateMembership = ({ posts, value, innerInputs }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (

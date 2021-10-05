@@ -20,13 +20,13 @@ public final class GroupAdminController {
         this.groupFacade = groupFacade;
     }
 
-    private record CreateOrEditGroupRequest(String name,
-                                            String prettyName,
-                                            UUID superGroup,
-                                            String email) { }
+    private record CreateGroupRequest(String name,
+                                      String prettyName,
+                                      UUID superGroup,
+                                      String email) { }
 
     @PostMapping()
-    public GroupCreatedResponse addNewGroup(@RequestBody CreateOrEditGroupRequest request) {
+    public GroupCreatedResponse addNewGroup(@RequestBody CreateGroupRequest request) {
         this.groupFacade.createGroup(
                 new GroupFacade.NewGroup(
                         request.name,
@@ -38,12 +38,20 @@ public final class GroupAdminController {
         return new GroupCreatedResponse();
     }
 
+    private record EditGroupRequest(int version,
+                                    String name,
+                                    String prettyName,
+                                    UUID superGroup,
+                                    String email) { }
+
+
     @PutMapping("/{id}")
-    public GroupUpdatedResponse editGroup(@RequestBody CreateOrEditGroupRequest request,
+    public GroupUpdatedResponse editGroup(@RequestBody EditGroupRequest request,
                                           @PathVariable("id") UUID id) {
         this.groupFacade.updateGroup(
                 new GroupFacade.UpdateGroup(
                         id,
+                        request.version,
                         request.name,
                         request.prettyName,
                         request.superGroup,

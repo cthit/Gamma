@@ -16,7 +16,10 @@ const GammaUserSingletonProvider = ({ children }) => {
             return new Promise((resolve, reject) => {
                 getRequest("/users/me", null, redirect)
                     .then(response => {
-                        const user = response.data;
+                        const user = {
+                            ...response.data,
+                            language: response.data.language.toLowerCase()
+                        };
                         setUser(user);
                         setStatus([false, false]);
                         resolve(response);

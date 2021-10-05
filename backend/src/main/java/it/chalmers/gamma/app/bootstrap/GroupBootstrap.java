@@ -86,6 +86,7 @@ public class GroupBootstrap {
 
             Group group = new Group(
                     new GroupId(mockGroup.id()),
+                    0,
                     new Email(name.value() + "@chalmers.lol"),
                     name,
                     prettyName,
@@ -104,7 +105,7 @@ public class GroupBootstrap {
                     Optional.empty()
             );
 
-            this.groupRepository.create(group);
+            this.groupRepository.save(group);
         });
 
         LOGGER.info("========== GROUP BOOTSTRAP ==========");

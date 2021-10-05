@@ -20,7 +20,7 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public void create(SuperGroup superGroup) throws SuperGroupAlreadyExistsException {
-        this.repository.saveAndFlush(new SuperGroupEntity(superGroup));
+        this.repository.save(new SuperGroupEntity(superGroup));
     }
 
     @Override

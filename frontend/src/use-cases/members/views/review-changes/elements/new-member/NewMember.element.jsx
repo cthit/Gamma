@@ -18,7 +18,7 @@ const NewMember = ({
             "' " +
             lastName +
             ": " +
-            (activeLanguage === "sv" ? post.sv : post.en) +
+            (activeLanguage === "sv" ? post.svText : post.enText) +
             " / " +
             unofficialPostName
         }

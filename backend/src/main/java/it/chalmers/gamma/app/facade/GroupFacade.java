@@ -1,6 +1,9 @@
 package it.chalmers.gamma.app.facade;
 
 import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.domain.group.UnofficialPostName;
+import it.chalmers.gamma.app.domain.post.PostId;
+import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.app.port.repository.GroupRepository;
 import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
 import it.chalmers.gamma.app.domain.common.Email;
@@ -15,6 +18,7 @@ import it.chalmers.gamma.app.port.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,21 +49,34 @@ public class GroupFacade extends Facade {
                            String email) { }
 
     public void createGroup(NewGroup newGroup) {
-        throw new UnsupportedOperationException();
+        Group group = new Group(
+                GroupId.generate(),
+                0,
+                new Email(newGroup.email),
+                new Name(newGroup.name),
+                new PrettyName(newGroup.prettyName),
+                this.superGroupRepository.get(new SuperGroupId(newGroup.superGroup)).orElseThrow(),
+                new ArrayList<>(),
+                Optional.empty(),
+                Optional.empty()
+        );
+        this.groupRepository.save(group);
     }
 
     public record UpdateGroup(UUID id,
+                              int version,
                               String name,
                               String prettyName,
                               UUID superGroup,
                               String email) {
 
     }
-    @Transactional
+
     public void updateGroup(UpdateGroup updateGroup) {
         GroupId groupId = new GroupId(updateGroup.id);
         Group oldGroup = this.groupRepository.get(groupId).orElseThrow();
         Group newGroup = oldGroup.with()
+                .version(updateGroup.version)
                 .name(new Name(updateGroup.name))
                 .prettyName(new PrettyName(updateGroup.prettyName))
                 .superGroup(this.superGroupRepository.get(new SuperGroupId(updateGroup.superGroup)).orElseThrow())
@@ -69,14 +86,42 @@ public class GroupFacade extends Facade {
         this.groupRepository.save(newGroup);
     }
 
+    public record ShallowMember(UUID userId, UUID postId, String unofficialPostName) {
+    }
+
+    public void setGroupMembers(UUID groupId, List<ShallowMember> newMembers) {
+        Group oldGroup = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
+        this.groupRepository.save(oldGroup.withGroupMembers(
+                newMembers.stream().map(shallowMember ->
+                        new GroupMember(
+                                this.postRepository.get(new PostId(shallowMember.postId)).orElseThrow(),
+                                new UnofficialPostName(shallowMember.unofficialPostName),
+                                this.userRepository.get(new UserId(shallowMember.userId)).orElseThrow()
+                        )
+                ).toList()
+        ));
+    }
+
     public void delete(UUID id) throws GroupRepository.GroupNotFoundException {
         this.groupRepository.delete(new GroupId(id));
     }
 
-    public record GroupDTO(UUID id, String name, List<GroupMember> groupMembers) {
+    public record GroupMemberDTO(UserFacade.UserDTO user, PostFacade.PostDTO post, String unofficialPostName) {
+        public GroupMemberDTO(GroupMember groupMember) {
+            this(new UserFacade.UserDTO(groupMember.user()), new PostFacade.PostDTO(groupMember.post()), groupMember.unofficialPostName().value());
+        }
+    }
 
+    public record GroupDTO(UUID id, int version, String name, String email, String prettyName, List<GroupMemberDTO> groupMembers, SuperGroupFacade.SuperGroupDTO superGroup) {
         public GroupDTO(Group group) {
-            this(group.id().value(), group.name().value(), group.groupMembers());
+            this(group.id().value(),
+                    group.version(),
+                    group.name().value(),
+                    group.email().value(),
+                    group.prettyName().value(),
+                    group.groupMembers().stream().map(GroupMemberDTO::new).toList(),
+                    new SuperGroupFacade.SuperGroupDTO(group.superGroup())
+            );
         }
     }
     public Optional<GroupDTO> get(UUID groupId) {
@@ -93,20 +138,6 @@ public class GroupFacade extends Facade {
                 .stream()
                 .map(GroupDTO::new)
                 .toList();
-    }
-
-    public void addMember(UUID groupId, UUID userId, UUID postId, String unofficialPostName) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void removeMember(UUID groupId, UUID userId, UUID postId) {
-        throw new UnsupportedOperationException();
-    }
-
-    public record UpdateMember(String unofficialPostName) { }
-
-    public void updateMember(UUID groupId, UUID userId, UUID postId, UpdateMember updateMember) {
-        throw new UnsupportedOperationException();
     }
 
 }

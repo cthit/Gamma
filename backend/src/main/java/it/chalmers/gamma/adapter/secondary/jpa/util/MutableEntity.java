@@ -13,4 +13,14 @@ public abstract class MutableEntity<I extends Id<?>> extends AbstractEntity<I> {
     @Column(name = "version")
     private int version;
 
+    //TODO: Better exception
+    public void throwIfNotValidVersion(int version) {
+        if (this.version != version) {
+            throw new IllegalStateException();
+        }
+    }
+
+    public int getVersion() {
+        return this.version;
+    }
 }

@@ -8,7 +8,7 @@ export function getUsersMinified() {
 export function getUser(id) {
     return getRequest(USERS_ENDPOINT + id, response => {
         const user = response.data;
-        return { data: user };
+        return { data: { ...user.user, groups: user.groups } };
     });
 }
 

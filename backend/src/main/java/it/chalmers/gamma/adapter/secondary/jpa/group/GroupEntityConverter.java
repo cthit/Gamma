@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupMember;
 import it.chalmers.gamma.app.domain.group.UnofficialPostName;
@@ -18,23 +17,36 @@ public class GroupEntityConverter {
     private final UserEntityConverter userEntityConverter;
     private final UserJpaRepository userJpaRepository;
     private final PostJpaRepository postJpaRepository;
+    private final GroupJpaRepository groupJpaRepository;
+    private final SuperGroupJpaRepository superGroupJpaRepository;
 
     public GroupEntityConverter(UserEntityConverter userEntityConverter,
                                 UserJpaRepository userJpaRepository,
-                                PostJpaRepository postJpaRepository) {
+                                PostJpaRepository postJpaRepository,
+                                GroupJpaRepository groupJpaRepository,
+                                SuperGroupJpaRepository superGroupJpaRepository) {
         this.userEntityConverter = userEntityConverter;
         this.userJpaRepository = userJpaRepository;
         this.postJpaRepository = postJpaRepository;
+        this.groupJpaRepository = groupJpaRepository;
+        this.superGroupJpaRepository = superGroupJpaRepository;
     }
 
     public GroupEntity toEntity(Group group) {
-        GroupEntity entity = new GroupEntity();
+        GroupEntity entity = this.groupJpaRepository.findById(group.id().value())
+                .orElse(new GroupEntity());
+
+        //TODO: Use this everywhere when converting to an entity
+        //Is this even the correct place? Maybe should be in adapters
+        entity.throwIfNotValidVersion(group.version());
+
         entity.id = group.id().getValue();
         entity.name = group.name().value();
         entity.prettyName = group.prettyName().value();
         entity.email = group.email().value();
-        entity.superGroup = new SuperGroupEntity(group.superGroup());
-        entity.members = group.groupMembers()
+        entity.superGroup = superGroupJpaRepository.getOne(group.superGroup().id().value());
+        entity.members.clear();
+        entity.members.addAll(group.groupMembers()
                 .stream()
                 .map(groupMember -> new MembershipEntity(
                         new MembershipPK(
@@ -42,7 +54,8 @@ public class GroupEntityConverter {
                                 entity,
                                 this.userJpaRepository.getOne(groupMember.user().id().value())),
                         groupMember.unofficialPostName().value()
-                )).toList();
+                )).toList());
+
         return entity;
     }
 
@@ -60,6 +73,7 @@ public class GroupEntityConverter {
 
         return new Group(
                 b.groupId(),
+                groupEntity.getVersion(),
                 b.email(),
                 b.name(),
                 b.prettyName(),

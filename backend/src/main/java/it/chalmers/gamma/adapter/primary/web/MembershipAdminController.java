@@ -6,6 +6,7 @@ import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,46 +21,21 @@ public final class MembershipAdminController {
 
     private record AddUserGroupRequest(UUID userId, UUID postId, String unofficialName) { }
 
-    @PostMapping("/{id}/members")
-    public MemberAddedToGroupResponse addUserToGroup(
-            @RequestBody AddUserGroupRequest request,
-            @PathVariable("id") UUID groupId) {
-
-        this.groupFacade.addMember(groupId, request.userId, request.postId, request.unofficialName);
-        return new MemberAddedToGroupResponse();
+    private record Member(UUID userId, UUID postId, String unofficialPostName) {
     }
 
-    @DeleteMapping("/{groupId}/members")
-    public MemberRemovedFromGroupResponse deleteUserFromGroup(@PathVariable("groupId") UUID groupId,
-                                                              @RequestParam("userId") UUID userId,
-                                                              @RequestParam("postId") UUID postId) {
-        this.groupFacade.removeMember(groupId, userId, postId);
-        return new MemberRemovedFromGroupResponse();
-    }
-
-    private record EditMembershipRequest(String unofficialName) { }
+    private record EditMembers() { }
 
     @PutMapping("/{groupId}/members")
-    public EditedMembershipResponse editUserInGroup(@PathVariable("groupId") UUID groupId,
-                                                    @RequestParam("userId") UUID userId,
-                                                    @RequestParam("postId") UUID postId,
-                                                    @RequestBody EditMembershipRequest request) {
-        this.groupFacade.updateMember(
-                groupId,
-                userId,
-                postId,
-                new GroupFacade.UpdateMember(
-                        request.unofficialName
-                )
-        );
+    public EditedMembershipResponse editMembers(@PathVariable("groupId") UUID groupId,
+                                                    @RequestBody List<Member> members) {
+        this.groupFacade.setGroupMembers(groupId, members.stream().map(member -> new GroupFacade.ShallowMember(
+                member.userId, member.postId, member.unofficialPostName
+        )).toList());
         return new EditedMembershipResponse();
     }
 
     private static class EditedMembershipResponse extends SuccessResponse { }
-
-    private static class MemberAddedToGroupResponse extends SuccessResponse { }
-
-    private static class MemberRemovedFromGroupResponse extends SuccessResponse { }
 
     private static class MembershipNotFoundResponse extends NotFoundResponse { }
 }

@@ -14,8 +14,9 @@ import translations from "./LanguageSelection.element.translations";
 
 const LanguageSelection = () => {
     const user = useGammaUser();
-    const [text, activeLanguage, setActiveLanguage] =
-        useDigitTranslations(translations);
+    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
+        translations
+    );
     const [queueToast] = useDigitToast();
     const [language, setLanguage] = useState(user.language);
     const [firstRender, setFirstRender] = useState(true);
@@ -24,7 +25,10 @@ const LanguageSelection = () => {
 
     useEffect(() => {
         setActiveLanguage(language);
-        if (activeLanguage !== language && !firstRender) {
+        if (
+            activeLanguage.toLowerCase() !== language.toLowerCase() &&
+            !firstRender
+        ) {
             queueToast({ text: languageUpdatedText });
         }
         setFirstRender(false);
@@ -41,11 +45,11 @@ const LanguageSelection = () => {
     return (
         <DigitSelect
             alignSelf={"center"}
-            value={language}
+            value={language.toUpperCase()}
             onChange={e => {
                 editMe({ ...user, language: e.target.value })
                     .then(() => {
-                        setLanguage(e.target.value);
+                        setLanguage(e.target.value.toLowerCase());
                     })
                     .catch(() => {
                         queueToast({
@@ -53,7 +57,7 @@ const LanguageSelection = () => {
                         });
                     });
             }} //update me
-            valueToTextMap={{ sv: text.Swedish, en: text.English }}
+            valueToTextMap={{ SV: text.Swedish, EN: text.English }}
             outlined
             upperLabel={text.YourLanguage}
         />

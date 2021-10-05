@@ -53,7 +53,9 @@ const DisplayMembersTable = ({
             headerTexts={generateHeaderTexts(text)}
             data={users.map(user => {
                 const officialPostName =
-                    activeLanguage === "sv" ? user.post.sv : user.post.en;
+                    activeLanguage === "sv"
+                        ? user.post.svText
+                        : user.post.enText;
 
                 const unofficialPostName =
                     user.unofficialPostName === officialPostName ||

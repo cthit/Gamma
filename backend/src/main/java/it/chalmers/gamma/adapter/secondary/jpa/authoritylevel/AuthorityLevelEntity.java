@@ -21,13 +21,13 @@ public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
     private String authorityLevel;
 
     @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AuthorityPostEntity> postEntityList;
+    protected List<AuthorityPostEntity> postEntityList;
 
     @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AuthorityUserEntity> userEntityList;
+    protected List<AuthorityUserEntity> userEntityList;
 
     @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AuthoritySuperGroupEntity> superGroupEntityList;
+    protected List<AuthoritySuperGroupEntity> superGroupEntityList;
 
     protected AuthorityLevelEntity() {}
 
@@ -41,18 +41,6 @@ public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
     @Override
     protected AuthorityLevelName id() {
         return AuthorityLevelName.valueOf(this.authorityLevel);
-    }
-
-    public void setPosts(List<AuthorityPostEntity> postEntityList) {
-        this.postEntityList = postEntityList;
-    }
-
-    public void setUsers(List<AuthorityUserEntity> userEntityList) {
-        this.userEntityList = userEntityList;
-    }
-
-    public void setSuperGroups(List<AuthoritySuperGroupEntity> superGroupEntityList) {
-        this.superGroupEntityList = superGroupEntityList;
     }
 
     public String getAuthorityLevel() {

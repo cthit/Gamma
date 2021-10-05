@@ -105,7 +105,6 @@ CREATE TABLE membership
     group_id             UUID REFERENCES fkit_group ON DELETE CASCADE,
     post_id              UUID REFERENCES post ON DELETE CASCADE,
     unofficial_post_name VARCHAR(100),
-    version              INT,
     PRIMARY KEY (user_id, group_id, post_id)
 );
 

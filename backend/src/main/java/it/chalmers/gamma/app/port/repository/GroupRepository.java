@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public interface GroupRepository {
 
-    void create(Group group);
     void save(Group group);
     void delete(GroupId groupId) throws GroupNotFoundException;
 

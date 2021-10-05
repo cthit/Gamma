@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @RecordBuilder
 public record Group(GroupId id,
+                    int version,
                     Email email,
                     Name name,
                     PrettyName prettyName,

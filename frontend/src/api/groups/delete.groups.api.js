@@ -5,8 +5,13 @@ export function deleteGroup(groupId) {
     return deleteRequest(ADMIN_GROUPS_ENDPOINT + groupId);
 }
 
-export function removeUserFromGroup(groupId, userId) {
+export function removeUserFromGroup(groupId, userId, postId) {
     return deleteRequest(
-        ADMIN_GROUPS_ENDPOINT + groupId + "/members/" + userId
+        ADMIN_GROUPS_ENDPOINT +
+            groupId +
+            "/members/?userId=" +
+            userId +
+            "&postId=" +
+            postId
     );
 }

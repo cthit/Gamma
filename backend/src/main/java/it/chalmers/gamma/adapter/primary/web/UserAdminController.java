@@ -50,8 +50,8 @@ public final class UserAdminController {
     }
 
     @GetMapping("/{id}")
-    public UserFacade.UserWithGroupsDTO getUser(@PathVariable("id") UserId id) {
-        return null;
+    public UserFacade.UserExtendedWithGroupsDTO getUser(@PathVariable("id") UUID id) {
+        return this.userFacade.getAsAdmin(id).orElseThrow();
     }
 
     record AdminViewCreateUserRequest(String cid,

@@ -76,7 +76,7 @@ public class UserCreationFacade extends Facade {
                                   String language) { }
 
     public void createUser(NewUser newUser) {
-        this.userRepository.create(
+        this.userRepository.save(
                 new User(
                         UserId.generate(),
                         new Cid(newUser.cid),
@@ -102,7 +102,7 @@ public class UserCreationFacade extends Facade {
         //TODO: Check if email is not student@chalmers.se
 
         if (tokenCid.value().equals(data.cid)) {
-            this.userRepository.create(
+            this.userRepository.save(
                     new User(
                             UserId.generate(),
                             new Cid(data.cid),

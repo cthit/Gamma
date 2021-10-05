@@ -65,9 +65,6 @@ export const App = () => {
             ignore();
         }
     }, [loading, error, pathname, update, user, ignore]);
-
-    console.log(user);
-
     if (user && !user.userAgreement) {
         return <EnforceUserAgreement />;
     }

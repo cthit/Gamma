@@ -9,6 +9,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +37,9 @@ public class GroupEntity extends MutableEntity<GroupId> {
     @OneToMany(mappedBy = "id.group", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<MembershipEntity> members;
 
-    protected GroupEntity() {}
+    protected GroupEntity() {
+        this.members = new ArrayList<>();
+    }
 
     public List<MembershipEntity> getMembers() {
         return members;

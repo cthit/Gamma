@@ -55,7 +55,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     @Override
     public void create(AuthorityLevelName authorityLevelName) {
         if (!this.repository.existsById(authorityLevelName.value())) {
-            repository.saveAndFlush(new AuthorityLevelEntity(authorityLevelName.getValue()));
+            repository.save(new AuthorityLevelEntity(authorityLevelName.getValue()));
         }
     }
 
@@ -68,7 +68,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     public void save(AuthorityLevel authorityLevel) {
         AuthorityLevelEntity entity = this.authorityLevelEntityConverter.toEntity(authorityLevel);
         entity.getUsers().stream().map(AuthorityUserEntity::getUserEntity).map(UserEntity::id).forEach(System.out::println);
-        this.repository.saveAndFlush(entity);
+        this.repository.save(entity);
     }
 
     @Override

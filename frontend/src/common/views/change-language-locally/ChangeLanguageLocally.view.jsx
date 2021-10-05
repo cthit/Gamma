@@ -9,8 +9,9 @@ import {
 import translations from "./ChangeLanguageLocally.view.translations";
 
 const ChangeLanguageLocally = () => {
-    const [text, activeLanguage, setActiveLanguage] =
-        useDigitTranslations(translations);
+    const [text, activeLanguage, setActiveLanguage] = useDigitTranslations(
+        translations
+    );
 
     return (
         <DigitDesign.Card margin={{ bottom: "16px" }}>
@@ -20,11 +21,11 @@ const ChangeLanguageLocally = () => {
             <DigitDesign.CardBody>
                 <DigitSelect
                     alignSelf={"center"}
-                    value={activeLanguage}
+                    value={activeLanguage.toUpperCase()}
                     onChange={e => {
-                        setActiveLanguage(e.target.value);
+                        setActiveLanguage(e.target.value.toUpperCase());
                     }}
-                    valueToTextMap={{ sv: text.Swedish, en: text.English }}
+                    valueToTextMap={{ SV: text.Swedish, EN: text.English }}
                     outlined
                     upperLabel={text.YourLanguage}
                 />

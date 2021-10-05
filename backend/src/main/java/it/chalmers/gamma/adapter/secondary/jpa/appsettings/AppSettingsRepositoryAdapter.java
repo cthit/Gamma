@@ -20,6 +20,6 @@ public class AppSettingsRepositoryAdapter implements AppSettingsRepository {
 
     @Override
     public void setSettings(Settings settings) {
-        this.repository.saveAndFlush(new AppSettingsEntity(settings));
+        this.repository.save(new AppSettingsEntity(settings));
     }
 }

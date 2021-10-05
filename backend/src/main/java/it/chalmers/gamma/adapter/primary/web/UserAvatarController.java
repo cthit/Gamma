@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.facade.ImageFacade;
 import it.chalmers.gamma.app.facade.UserFacade;
 import it.chalmers.gamma.app.port.service.ImageService;
@@ -49,16 +50,15 @@ public class UserAvatarController {
 
     @PutMapping
     public EditedProfilePictureResponse editProfileImage(@RequestParam MultipartFile file) {
-//        try {
-//            this.meService.editAvatar(file);
-//        } catch (ImageService.ImageCouldNotBeSavedException | ImageService.ImageCouldNotBeRemovedException | ImageService.ImageContentNotValidException e) {
-//            throw new FileIssueResponse();
-//        }
+        try {
+            this.imageFacade.setMeAvatar(new ImageFile(file));
+        } catch (ImageService.ImageCouldNotBeSavedException e) {
+            throw new FileIssueResponse();
+        }
         return new EditedProfilePictureResponse();
     }
 
     private static class EditedProfilePictureResponse extends SuccessResponse { }
-    private static class UserNotFoundResponse extends NotFoundResponse { }
 
     private static class FileIssueResponse extends ErrorResponse {
         public FileIssueResponse() {

@@ -79,7 +79,8 @@ const GroupsCrud = () => {
                     name: data.name,
                     email: data.email,
                     superGroup: data.superGroup,
-                    prettyName: data.prettyName
+                    prettyName: data.prettyName,
+                    version: data.version
                 })
             }
             createRequest={
@@ -175,7 +176,8 @@ const GroupsCrud = () => {
                         noUsersText={text.NoGroupMembers}
                         users={data[GROUP_MEMBERS].map(member => ({
                             ...member.user,
-                            post: member.post
+                            post: member.post,
+                            unofficialPostName: member.unofficialPostName
                         }))}
                         group={data}
                     />

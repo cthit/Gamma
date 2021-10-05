@@ -111,7 +111,7 @@ const Members = () => {
                             selectedMemberIds={selectedMemberIds}
                             groupId={groupId}
                             posts={posts}
-                            currentMembers={group.members}
+                            currentMembers={group.groupMembers}
                             users={users}
                             onNewMembers={value => {
                                 setNewMembersData(value.members);
@@ -127,7 +127,7 @@ const Members = () => {
                         <ReviewChanges
                             groupName={group[GROUP_NAME]}
                             posts={posts}
-                            previousMembers={group.members}
+                            previousMembers={group.groupMembers}
                             newMembersData={newMembersData}
                             groupId={groupId}
                             onFinished={() => {

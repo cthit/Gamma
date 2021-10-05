@@ -75,7 +75,8 @@ public class MeFacade extends Facade {
                         boolean gdprTrained,
                         boolean userAgreement,
                         List<UserMembership> groups,
-                        List<MyAuthority> authorities) {
+                        List<MyAuthority> authorities,
+                        String language) {
         public MeDTO(User user, List<UserMembership> groups, List<UserAuthority> authorities) {
             //TODO: Find a good way to calculate userAgreement
             this(user.nick().value(),
@@ -88,7 +89,9 @@ public class MeFacade extends Facade {
                     user.gdprTrained(),
                     true,
                     groups,
-                    authorities.stream().map(a -> new MyAuthority(a.authorityLevelName().value(), a.authorityType().name())).toList());
+                    authorities.stream().map(a -> new MyAuthority(a.authorityLevelName().value(), a.authorityType().name())).toList(),
+                    user.language().name()
+            );
         }
     }
 

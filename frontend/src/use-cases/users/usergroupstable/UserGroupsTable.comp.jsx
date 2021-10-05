@@ -13,11 +13,11 @@ function modifyData(groups, activeLanguage) {
     groups.forEach(({ group, post }) => {
         const groupId = group[GROUP_ID];
         if (groupId in newGroups) {
-            newGroups[groupId].posts.push(post[activeLanguage]);
+            newGroups[groupId].posts.push(post[activeLanguage + "Text"]);
         } else {
             newGroups[groupId] = {
                 ...group,
-                posts: [post[activeLanguage]]
+                posts: [post[activeLanguage + "Text"]]
             };
         }
     });

@@ -1,12 +1,13 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "membership")
-public class MembershipEntity extends MutableEntity<MembershipPK> {
+public class MembershipEntity extends ImmutableEntity<MembershipPK> {
 
     @EmbeddedId
     private MembershipPK id;
@@ -29,4 +30,5 @@ public class MembershipEntity extends MutableEntity<MembershipPK> {
     public String getUnofficialPostName() {
         return unofficialPostName;
     }
+
 }

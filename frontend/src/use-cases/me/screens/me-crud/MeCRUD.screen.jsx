@@ -83,12 +83,17 @@ const MeCRUD = () => {
             updatePath={"/edit"}
             readOneRequest={() =>
                 new Promise(resolve => {
-                    resolve({ data: user });
+                    resolve({
+                        data: { ...user, language: user.language.toLowerCase() }
+                    });
                 })
             }
             updateRequest={(id, newData) =>
                 new Promise((resolve, reject) =>
-                    editMe(newData)
+                    editMe({
+                        ...newData,
+                        language: newData.language.toUpperCase()
+                    })
                         .then(response => {
                             resolve(response);
                             update().then(() => {

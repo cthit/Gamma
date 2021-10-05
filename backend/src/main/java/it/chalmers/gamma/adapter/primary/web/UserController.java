@@ -34,8 +34,8 @@ public final class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserFacade.UserExtendedWithGroupsDTO getUser(@PathVariable("id") UUID id) {
-        return this.userFacade.getAsAdmin(id).orElseThrow();
+    public UserFacade.UserWithGroupsDTO getUser(@PathVariable("id") UUID id) {
+        return this.userFacade.get(id).orElseThrow();
     }
 
     record CreateUserRequest(String token,

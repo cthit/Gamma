@@ -59,7 +59,7 @@ const AuthoritiesList = ({
                             text:
                                 superGroup.prettyName +
                                 " - " +
-                                post[activeLanguage],
+                                post[activeLanguage + "Text"],
                             actionIcon: itemOnClick == null ? null : DeleteIcon,
                             actionOnClick:
                                 itemOnClick == null

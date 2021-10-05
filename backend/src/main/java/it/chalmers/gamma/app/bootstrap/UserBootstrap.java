@@ -49,7 +49,7 @@ public class UserBootstrap {
 
         LOGGER.info("========== USER BOOTSTRAP ==========");
 
-        this.mockData.users().forEach(mockUser -> this.userRepository.create(
+        this.mockData.users().forEach(mockUser -> this.userRepository.save(
                 new User(
                         new UserId(mockUser.id()),
                         new Cid(mockUser.cid()),
