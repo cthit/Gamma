@@ -2,11 +2,11 @@ import * as _ from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 
 import {
-    DigitSelectMultipleTable,
-    useDigitTranslations,
-    useDigitToast,
+    DigitLayout,
     DigitLoading,
-    DigitLayout
+    DigitSelectMultipleTable,
+    useDigitToast,
+    useDigitTranslations
 } from "@cthit/react-digit-components";
 
 import { getUsersWithGDPRMinified } from "api/gdpr/get.gdpr.api";
@@ -18,8 +18,6 @@ import {
     USER_LAST_NAME,
     USER_NICK
 } from "api/users/props.users.api";
-
-import useGammaHasAuthority from "common/hooks/use-gamma-has-authority/use-gamma-has-authority";
 import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import InsufficientAccess from "common/views/insufficient-access";
 
@@ -44,9 +42,7 @@ const Gdpr = () => {
     const [users, setUsers] = useState(null);
 
     const [lastSelected, setLastSelected] = useState([]);
-    const admin = useGammaIsAdmin();
-    const gdpr = useGammaHasAuthority("gdpr");
-    const access = admin || gdpr;
+    const access = useGammaIsAdmin();
     const getUsersWithGDPRCallback = useCallback(getUsersWithGDPRMinified, []);
 
     useEffect(() => {

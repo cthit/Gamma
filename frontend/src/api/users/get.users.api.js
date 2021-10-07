@@ -15,6 +15,6 @@ export function getUser(id) {
 export function getUserAdmin(id) {
     return getRequest(ADMIN_USERS_ENDPOINT + id, response => {
         const user = response.data;
-        return { data: user };
+        return { data: { ...user.user, groups: user.groups } };
     });
 }

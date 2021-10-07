@@ -11,18 +11,39 @@ import java.util.List;
 @Service
 public class UserActivationRepositoryAdapter implements UserActivationRepository {
 
+    private final UserActivationJpaRepository userActivationJpaRepository;
+
+    public UserActivationRepositoryAdapter(UserActivationJpaRepository userActivationJpaRepository) {
+        this.userActivationJpaRepository = userActivationJpaRepository;
+    }
+
     @Override
     public UserActivationToken createUserActivationCode(Cid cid) {
-        throw new UnsupportedOperationException();
+        UserActivationToken userActivationToken = UserActivationToken.generate();
+        this.userActivationJpaRepository.save(
+                new UserActivationEntity(
+                        cid,
+                        userActivationToken
+                )
+        );
+        return userActivationToken;
     }
 
     @Override
     public List<UserActivation> getAll() {
-        throw new UnsupportedOperationException();
+        return this.userActivationJpaRepository.findAll()
+                .stream()
+                .map(UserActivationEntity::toDomain)
+                .toList();
     }
 
     @Override
     public Cid getByToken(UserActivationToken token) {
-        throw new UnsupportedOperationException();
+        return this.userActivationJpaRepository.findByToken(token.value()).orElseThrow().id();
+    }
+
+    @Override
+    public void removeActivation(Cid cid) {
+        this.userActivationJpaRepository.deleteById(cid.value());
     }
 }

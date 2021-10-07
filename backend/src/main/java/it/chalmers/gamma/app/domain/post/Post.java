@@ -8,9 +8,10 @@ import java.util.Objects;
 
 @RecordBuilder
 public record Post(PostId id,
+                   int version,
                    Text name,
                    EmailPrefix emailPrefix
-) {
+) implements PostBuilder.With {
 
     public Post {
         Objects.requireNonNull(id);
@@ -19,11 +20,8 @@ public record Post(PostId id,
     }
 
     public static Post create(Text name, EmailPrefix emailPrefix) {
-        return new Post(PostId.generate(), name, emailPrefix);
+        return new Post(PostId.generate(), 0, name, emailPrefix);
     }
 
-    public Post update(Text name, EmailPrefix emailPrefix) {
-        return new Post(id, name, emailPrefix);
-    }
 }
 

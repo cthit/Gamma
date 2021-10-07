@@ -58,9 +58,10 @@ public class SuperGroupFacade extends Facade {
 
     public void createSuperGroup(NewSuperGroup newSuperGroup) throws SuperGroupRepository.SuperGroupAlreadyExistsException {
         accessGuard.requireIsAdmin();
-        this.superGroupRepository.create(
+        this.superGroupRepository.save(
                 new SuperGroup(
                         SuperGroupId.generate(),
+                        0,
                         new Name(newSuperGroup.name),
                         new PrettyName(newSuperGroup.prettyName),
                         new SuperGroupType(newSuperGroup.superGroupType),
@@ -74,6 +75,7 @@ public class SuperGroupFacade extends Facade {
     }
 
     public record UpdateSuperGroup(UUID id,
+                                   int version,
                                    String name,
                                    String prettyName,
                                    String type,
@@ -105,13 +107,23 @@ public class SuperGroupFacade extends Facade {
         this.superGroupRepository.delete(superGroupId);
     }
 
-    public record SuperGroupDTO(UUID id, String name, String prettyName, String type, String email) {
+    public record SuperGroupDTO(UUID id,
+                                int version,
+                                String name,
+                                String prettyName,
+                                String type,
+                                String email,
+                                String svText,
+                                String enText) {
         public SuperGroupDTO(SuperGroup superGroup) {
             this(superGroup.id().value(),
+                    superGroup.version(),
                     superGroup.name().value(),
                     superGroup.prettyName().value(),
                     superGroup.type().value(),
-                    superGroup.email().value()
+                    superGroup.email().value(),
+                    superGroup.description().sv().value(),
+                    superGroup.description().en().value()
             );
         }
     }

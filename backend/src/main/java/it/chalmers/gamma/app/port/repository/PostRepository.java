@@ -8,8 +8,7 @@ import java.util.Optional;
 
 public interface PostRepository {
 
-    void create(Post post);
-    void save(Post post) throws PostNotFoundException;
+    void save(Post post);
     void delete(PostId postId) throws PostNotFoundException;
 
     List<Post> getAll();

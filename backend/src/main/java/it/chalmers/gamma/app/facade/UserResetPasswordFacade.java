@@ -65,7 +65,7 @@ public class UserResetPasswordFacade extends Facade {
         Optional<PasswordResetToken> maybeToken = this.passwordResetRepository.getToken(user.id());
 
         if (maybeToken.isEmpty()) {
-            LOGGER.debug("No token exists for the user " + user);
+            LOGGER.debug("No code exists for the user " + user);
             throw new PasswordResetProcessException();
         }
 
@@ -76,7 +76,7 @@ public class UserResetPasswordFacade extends Facade {
             this.passwordResetRepository.removeToken(token);
             this.userRepository.setPassword(user.id(), new UnencryptedPassword(newPassword));
         } else {
-            LOGGER.debug("Incorrect password reset token for user " + user);
+            LOGGER.debug("Incorrect password reset code for user " + user);
             throw new PasswordResetProcessException();
         }
     }

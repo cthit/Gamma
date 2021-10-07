@@ -19,13 +19,11 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
     }
 
     @Override
-    public void create(SuperGroup superGroup) throws SuperGroupAlreadyExistsException {
-        this.repository.save(new SuperGroupEntity(superGroup));
-    }
-
-    @Override
-    public void save(SuperGroup superGroup) throws SuperGroupNotFoundException {
-        throw new UnsupportedOperationException();
+    public void save(SuperGroup superGroup) {
+        SuperGroupEntity superGroupEntity = this.repository.findById(superGroup.id().value())
+                .orElse(new SuperGroupEntity(superGroup.id().value()));
+        superGroupEntity.apply(superGroup);
+        this.repository.save(superGroupEntity);
     }
 
     @Override

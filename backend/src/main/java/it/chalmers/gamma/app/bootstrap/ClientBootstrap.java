@@ -60,7 +60,7 @@ public class ClientBootstrap {
 
         ClientId clientId = ClientId.valueOf("test");
         ClientSecret clientSecret = new ClientSecret("secret");
-        ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-token");
+        ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-code");
         PrettyName prettyName = new PrettyName("test-client");
 
         List<User> allUsers = this.userRepository.getAll();
@@ -91,7 +91,7 @@ public class ClientBootstrap {
         LOGGER.info("ClientId: " + clientId.getValue());
         LOGGER.info("ClientSecret: " + clientSecret.value());
         LOGGER.info("Client redirect uri: " + this.redirectUrl);
-        LOGGER.info("An API key was also generated with the client, it has the token: " + apiKeyToken.value());
+        LOGGER.info("An API key was also generated with the client, it has the code: " + apiKeyToken.value());
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
     }
 }

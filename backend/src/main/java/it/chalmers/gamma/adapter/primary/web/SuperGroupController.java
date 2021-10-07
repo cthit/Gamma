@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.facade.GroupFacade;
 import it.chalmers.gamma.app.facade.SuperGroupFacade;
 
 import java.util.List;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class SuperGroupController {
 
     private final SuperGroupFacade superGroupFacade;
+    private final GroupFacade groupFacade;
 
-    public SuperGroupController(SuperGroupFacade superGroupFacade) {
+    public SuperGroupController(SuperGroupFacade superGroupFacade,
+                                GroupFacade groupFacade) {
         this.superGroupFacade = superGroupFacade;
+        this.groupFacade = groupFacade;
     }
 
     @GetMapping()
@@ -30,6 +34,11 @@ public class SuperGroupController {
     public SuperGroupFacade.SuperGroupDTO getSuperGroup(@PathVariable("id") UUID id) {
         return this.superGroupFacade.get(id)
                 .orElseThrow(SuperGroupDoesNotExistResponse::new);
+    }
+
+    @GetMapping("/{id}/subgroups")
+    public List<GroupFacade.GroupDTO> getSubgroups(@PathVariable("id") UUID id) {
+        return this.groupFacade.getGroupsBySuperGroup(id);
     }
 
     private static class SuperGroupDoesNotExistResponse extends NotFoundResponse { }

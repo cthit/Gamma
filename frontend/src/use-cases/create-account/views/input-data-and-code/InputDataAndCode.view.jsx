@@ -90,12 +90,9 @@ const InputDataAndCode = () => {
                     onClick: () => history.goBack()
                 }}
                 onSubmit={(values, actions) => {
-                    const cid = values.cid;
                     const user = {
-                        whitelist: {
-                            cid: cid
-                        },
-                        ...values
+                        ...values,
+                        language: activeLanguage.toUpperCase()
                     };
                     createAccount(user)
                         .then(() => {

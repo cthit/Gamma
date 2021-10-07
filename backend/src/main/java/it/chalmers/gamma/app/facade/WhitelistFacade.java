@@ -36,9 +36,9 @@ public class WhitelistFacade extends Facade {
         this.whitelistRepository.remove(new Cid(cid));
     }
 
-    public boolean isWhitelisted(Cid cid) {
+    public boolean isWhitelisted(String cid) {
         accessGuard.requireIsAdminOrApi();
-        return this.whitelistRepository.isWhitelisted(cid);
+        return this.whitelistRepository.isWhitelisted(new Cid(cid));
     }
 
 }

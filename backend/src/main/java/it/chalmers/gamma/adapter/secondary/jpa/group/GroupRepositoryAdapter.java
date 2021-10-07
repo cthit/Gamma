@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
+import it.chalmers.gamma.app.domain.post.PostId;
 import it.chalmers.gamma.app.port.repository.GroupRepository;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupId;
@@ -17,21 +18,21 @@ import java.util.Optional;
 @Transactional
 public class GroupRepositoryAdapter implements GroupRepository {
 
-    private final GroupJpaRepository groupRepository;
+    private final GroupJpaRepository groupJpaRepository;
     private final GroupEntityConverter groupEntityConverter;
     private final MembershipJpaRepository membershipJpaRepository;
 
-    public GroupRepositoryAdapter(GroupJpaRepository groupRepository,
+    public GroupRepositoryAdapter(GroupJpaRepository groupJpaRepository,
                                   GroupEntityConverter groupEntityConverter,
                                   MembershipJpaRepository membershipJpaRepository) {
-        this.groupRepository = groupRepository;
+        this.groupJpaRepository = groupJpaRepository;
         this.groupEntityConverter = groupEntityConverter;
         this.membershipJpaRepository = membershipJpaRepository;
     }
 
     @Override
     public void save(Group group) {
-        this.groupRepository.save(groupEntityConverter.toEntity(group));
+        this.groupJpaRepository.save(groupEntityConverter.toEntity(group));
     }
 
     @Override
@@ -41,12 +42,25 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     @Override
     public List<Group> getAll() {
-        return this.groupRepository.findAll().stream().map(this.groupEntityConverter::toDomain).toList();
+        return this.groupJpaRepository.findAll().stream().map(this.groupEntityConverter::toDomain).toList();
     }
 
     @Override
     public List<Group> getAllBySuperGroup(SuperGroupId superGroupId) {
-        throw new UnsupportedOperationException();
+        return this.groupJpaRepository.findAllBySuperGroupId(superGroupId.value())
+                .stream()
+                .map(this.groupEntityConverter::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Group> getAllByPost(PostId postId) {
+        return this.membershipJpaRepository.findAllById_Post_Id(postId.value())
+                .stream()
+                .map(membershipEntity -> membershipEntity.id().getGroup())
+                .map(this.groupEntityConverter::toDomain)
+                .distinct()
+                .toList();
     }
 
     @Override
@@ -63,6 +77,6 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     @Override
     public Optional<Group> get(GroupId groupId) {
-        return this.groupRepository.findById(groupId.value()).map(this.groupEntityConverter::toDomain);
+        return this.groupJpaRepository.findById(groupId.value()).map(this.groupEntityConverter::toDomain);
     }
 }

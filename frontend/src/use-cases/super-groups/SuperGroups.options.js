@@ -4,8 +4,10 @@ import { DigitSelect, DigitTextField } from "@cthit/react-digit-components";
 
 import {
     SG_EMAIL,
+    SG_EN_TEXT,
     SG_NAME,
     SG_PRETTY_NAME,
+    SG_SV_TEXT,
     SG_TYPE,
     SG_TYPE_ADMIN,
     SG_TYPE_ALUMNI,
@@ -26,6 +28,8 @@ export const validationSchema = text => {
         .string()
         .email(text.FieldNotEmail)
         .required(text.Email + text.IsRequired);
+    schema[SG_SV_TEXT] = yup.string();
+    schema[SG_EN_TEXT] = yup.string();
 
     return yup.object().shape(schema);
 };
@@ -37,6 +41,8 @@ export const initialValues = () => {
     output[SG_PRETTY_NAME] = "";
     output[SG_TYPE] = SG_TYPE_SOCIETY;
     output[SG_EMAIL] = "";
+    output[SG_SV_TEXT] = "";
+    output[SG_EN_TEXT] = "";
 
     return output;
 };
@@ -47,7 +53,6 @@ export const keysComponentData = text => {
     componentData[SG_NAME] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.Name,
             outlined: true,
             maxLength: 50
         }
@@ -56,7 +61,6 @@ export const keysComponentData = text => {
     componentData[SG_PRETTY_NAME] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.PrettyName,
             outlined: true,
             maxLength: 50
         }
@@ -65,7 +69,6 @@ export const keysComponentData = text => {
     componentData[SG_EMAIL] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.Email,
             outlined: true,
             maxLength: 100
         }
@@ -82,9 +85,24 @@ export const keysComponentData = text => {
     componentData[SG_TYPE] = {
         component: DigitSelect,
         componentProps: {
-            upperLabel: text.Type,
             valueToTextMap: typeValueToTextMap,
             outlined: true
+        }
+    };
+
+    componentData[SG_SV_TEXT] = {
+        component: DigitTextField,
+        componentProps: {
+            outlined: true,
+            maxLength: 100
+        }
+    };
+
+    componentData[SG_EN_TEXT] = {
+        component: DigitTextField,
+        componentProps: {
+            outlined: true,
+            maxLength: 100
         }
     };
 
@@ -98,8 +116,17 @@ export const keysText = text => {
     keysText[SG_PRETTY_NAME] = text.PrettyName;
     keysText[SG_TYPE] = text.Type;
     keysText[SG_EMAIL] = text.Email;
+    keysText[SG_SV_TEXT] = text.DescriptionSv;
+    keysText[SG_EN_TEXT] = text.DescriptionEn;
 
     return keysText;
 };
 
-export const keysOrder = () => [SG_NAME, SG_PRETTY_NAME, SG_TYPE, SG_EMAIL];
+export const keysOrder = () => [
+    SG_NAME,
+    SG_PRETTY_NAME,
+    SG_TYPE,
+    SG_EMAIL,
+    SG_SV_TEXT,
+    SG_EN_TEXT
+];

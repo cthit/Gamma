@@ -35,9 +35,10 @@ public class PostBootstrap {
         LOGGER.info("========== POST BOOTSTRAP ==========");
 
         mockData.posts().forEach(mockPost ->
-                this.postRepository.create(
+                this.postRepository.save(
                         new Post(
                                 new PostId(mockPost.id()),
+                                0,
                                 new Text(
                                         mockPost.postName().sv(),
                                         mockPost.postName().en()

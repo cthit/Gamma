@@ -9,23 +9,32 @@ import java.util.List;
 @Service
 public class WhitelistRepositoryAdapter implements WhitelistRepository {
 
+    private final WhitelistJpaRepository whitelistJpaRepository;
+
+    public WhitelistRepositoryAdapter(WhitelistJpaRepository whitelistJpaRepository) {
+        this.whitelistJpaRepository = whitelistJpaRepository;
+    }
+
     @Override
     public void whitelist(Cid cid) throws AlreadyWhitelistedException {
-        throw new UnsupportedOperationException();
+        this.whitelistJpaRepository.save(new WhitelistEntity(cid.value()));
     }
 
     @Override
     public void remove(Cid cid) throws CidIsNotWhitelistedException {
-        throw new UnsupportedOperationException();
+        this.whitelistJpaRepository.deleteById(cid.value());
     }
 
     @Override
     public boolean isWhitelisted(Cid cid) {
-        throw new UnsupportedOperationException();
+        return this.whitelistJpaRepository.existsById(cid.value());
     }
 
     @Override
     public List<Cid> getWhitelist() {
-        throw new UnsupportedOperationException();
+        return this.whitelistJpaRepository.findAll()
+                .stream()
+                .map(WhitelistEntity::get)
+                .toList();
     }
 }

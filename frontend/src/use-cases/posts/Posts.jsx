@@ -44,6 +44,7 @@ const Posts = () => {
 
     return (
         <DigitCRUD
+            useKeyTextsInUpperLabel
             formComponentData={keysComponentData(text)}
             formValidationSchema={validationSchema(text)}
             keysText={keysText(text)}
@@ -51,18 +52,8 @@ const Posts = () => {
             keysOrder={keysOrder()}
             path={"/posts"}
             name={"posts"}
-            updateRequest={(id, data) =>
-                editPost(id, {
-                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] },
-                    emailPrefix: data[EMAIL_PREFIX]
-                })
-            }
-            createRequest={data =>
-                addPost({
-                    post: { sv: data[POST_SWEDISH], en: data[POST_ENGLISH] },
-                    emailPrefix: data[EMAIL_PREFIX]
-                })
-            }
+            updateRequest={(id, data) => editPost(id, data)}
+            createRequest={data => addPost(data)}
             readAllRequest={getPosts}
             readOneRequest={id => Promise.all([getPost(id), getPostUsage(id)])}
             createTitle={text.AddNewPost}
@@ -102,42 +93,42 @@ const Posts = () => {
             backButtonText={text.Back}
             updateButtonText={() => text.Update}
             toastCreateSuccessful={data =>
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE] +
+                data[POST_ENGLISH] +
                 " " +
                 text.WasCreatedSuccessfully
             }
             toastCreateFailed={() => text.FailedCreatingPostt}
             toastDeleteSuccessful={data =>
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE] +
+                data[POST_ENGLISH] +
                 " " +
                 text.WasDeletedSuccessfully
             }
             toastDeleteFailed={data =>
                 text.PostDeletionFailed1 +
                 " " +
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE] +
+                data[POST_ENGLISH] +
                 " " +
                 text.PostDeletionFailed2
             }
             toastUpdateSuccessful={data =>
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE] +
+                data[POST_ENGLISH] +
                 " " +
                 text.WasUpdatedSuccessfully
             }
             toastUpdateFailed={data =>
                 text.PostUpdateFailed1 +
                 " " +
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE] +
+                data[POST_ENGLISH] +
                 " " +
                 text.PostUpdateFailed2
             }
@@ -147,17 +138,17 @@ const Posts = () => {
             dialogDeleteDescription={data =>
                 text.AreYouSureYouWantToDelete +
                 " " +
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE] +
+                data[POST_ENGLISH] +
                 "?"
             }
             updateTitle={data =>
                 text.Update +
                 " " +
-                data[SWEDISH_LANGUAGE] +
+                data[POST_SWEDISH] +
                 "/" +
-                data[ENGLISH_LANGUAGE]
+                data[POST_ENGLISH]
             }
             deleteButtonText={() => text.DeletePost}
             canDelete={data => !data.usages || data.usages.length === 0}

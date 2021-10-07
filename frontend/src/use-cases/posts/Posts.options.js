@@ -36,19 +36,17 @@ export const initialValues = () => {
 export const keysComponentData = text => {
     const componentData = {};
 
-    componentData[SWEDISH_LANGUAGE] = {
+    componentData[POST_SWEDISH] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.SwedishInput,
             outlined: true,
             maxLength: 50
         }
     };
 
-    componentData[ENGLISH_LANGUAGE] = {
+    componentData[POST_ENGLISH] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.EnglishInput,
             outlined: true,
             maxLength: 50
         }
@@ -57,7 +55,6 @@ export const keysComponentData = text => {
     componentData[EMAIL_PREFIX] = {
         component: DigitTextField,
         componentProps: {
-            upperLabel: text.EmailPrefix,
             outlined: true,
             maxLength: 20
         }

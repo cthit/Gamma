@@ -29,6 +29,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableResourceServer
 @Order(2)
@@ -166,18 +168,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             String[] permittedPaths = {
                     "/login",
                     "/oauth/authorize",
-                    "/oauth/token",
-                    "/users/create",
-                    "/whitelist/activate_cid",
-                    "/users/reset_password",
-                    "/users/reset_password/finish",
+                    "/oauth/code",
+                    "/internal/users/create",
+                    "/internal/whitelist/activate_cid",
+                    "/internal/users/reset_password",
+                    "/internal/users/reset_password/finish",
                     "/css/**",
                     "/js/**",
                     "/auth/valid_token",
-                    "/img/**",
-                    "/uploads/**"
+                    "/img/**"
             };
-
 
             http
                     .authorizeRequests()

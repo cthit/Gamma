@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /*
-     * If this doesn't crash, then the JWT token is valid.
+     * If this doesn't crash, then the JWT code is valid.
      */
     private Jws<Claims> decodeToken(String token) {
         try {

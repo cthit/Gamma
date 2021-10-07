@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserActivationJpaRepository extends JpaRepository<UserActivationEntity, Cid> {
+public interface UserActivationJpaRepository extends JpaRepository<UserActivationEntity, String> {
 
-    Optional<UserActivationEntity> findUserActivationByCidAndToken(Cid cid, UserActivationToken token);
+    Optional<UserActivationEntity> findByToken(String token);
 
 }

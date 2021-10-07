@@ -39,23 +39,23 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
 
     public SuperGroupEntity() {}
 
-    public SuperGroupEntity(SuperGroup sg) {
-        assert(sg.id() != null);
-
-        this.id = sg.id().getValue();
-        this.description = new TextEntity();
-
-        apply(sg);
+    public SuperGroupEntity(UUID superGroupId) {
+        this.id = superGroupId;
     }
 
     public void apply(SuperGroup sg)  {
         assert(this.id == sg.id().getValue());
+
+        this.throwIfNotValidVersion(sg.version());
 
         this.email = sg.email().value();
         this.name = sg.name().value();
         this.prettyName = sg.prettyName().value();
         this.superGroupType = sg.type().getValue();
 
+        if (this.description == null) {
+            this.description = new TextEntity();
+        }
 
         this.description.apply(sg.description());
     }
@@ -63,6 +63,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     public SuperGroup toDomain() {
         return new SuperGroup(
                 new SuperGroupId(this.id),
+                this.getVersion(),
                 new Name(this.name),
                 new PrettyName(this.prettyName),
                 SuperGroupType.valueOf(this.superGroupType),

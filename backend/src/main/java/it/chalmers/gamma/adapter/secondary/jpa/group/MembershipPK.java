@@ -60,5 +60,5 @@ public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
     public UserEntity getUser() {
         return user;
     }
-    
+
 }

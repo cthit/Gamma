@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface SuperGroupRepository {
 
-    void create(SuperGroup superGroup) throws SuperGroupAlreadyExistsException;
-    void save(SuperGroup superGroup) throws SuperGroupNotFoundException;
+    void save(SuperGroup superGroup);
     void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException;
 
     List<SuperGroup> getAll();

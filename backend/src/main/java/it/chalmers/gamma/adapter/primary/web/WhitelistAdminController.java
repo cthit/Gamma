@@ -5,6 +5,7 @@ import java.util.List;
 import it.chalmers.gamma.app.facade.WhitelistFacade;
 import it.chalmers.gamma.app.port.repository.WhitelistRepository;
 import it.chalmers.gamma.util.response.ErrorResponse;
+import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,14 @@ public final class WhitelistAdminController {
 
     public WhitelistAdminController(WhitelistFacade whitelistFacade) {
         this.whitelistFacade = whitelistFacade;
+    }
+
+    @GetMapping("/{cid}/activated")
+    public CidIsWhitelistedResponse getWhitelistItem(@PathVariable("cid") String cid) {
+        if (!this.whitelistFacade.isWhitelisted(cid)) {
+            throw new CidNotWhitelistedResponse();
+        }
+        return new CidIsWhitelistedResponse();
     }
 
     @GetMapping()
@@ -61,11 +70,7 @@ public final class WhitelistAdminController {
 
     private static class WhitelistAddedResponse extends SuccessResponse { }
 
-    private static class CidNotWhitelistedResponse extends ErrorResponse {
-        private CidNotWhitelistedResponse() {
-            super(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
+    private static class CidNotWhitelistedResponse extends NotFoundResponse { }
 
     private static class CidAlreadyWhitelistedResponse extends ErrorResponse {
         private CidAlreadyWhitelistedResponse() {
@@ -73,5 +78,6 @@ public final class WhitelistAdminController {
         }
     }
 
+    private static class CidIsWhitelistedResponse extends SuccessResponse { }
 
 }

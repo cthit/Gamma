@@ -38,6 +38,7 @@ const Whitelist = () => {
             keysText={keysText(text)}
             name={"whitelist"}
             path={"/whitelist"}
+            readOneRequest={getWhitelistItem}
             readAllRequest={getWhitelist}
             createRequest={data =>
                 addUserToWhitelist({ cid: data[WHITELIST_CID] })

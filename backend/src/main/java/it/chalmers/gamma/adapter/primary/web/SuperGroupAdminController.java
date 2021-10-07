@@ -27,16 +27,15 @@ public class SuperGroupAdminController {
         this.superGroupFacade = superGroupFacade;
     }
 
-    private record Text(String sv, String en) { }
-
-    private record CreateOrEditSuperGroupRequest(String name,
-                                                 String prettyName,
-                                                 String type,
-                                                 String email,
-                                                 SuperGroupAdminController.Text description) { }
+    private record CreateSuperGroupRequest(String name,
+                                           String prettyName,
+                                           String type,
+                                           String email,
+                                           String svText,
+                                           String enText) { }
 
     @PostMapping()
-    public SuperGroupCreatedResponse createSuperGroup(@RequestBody CreateOrEditSuperGroupRequest request) {
+    public SuperGroupCreatedResponse createSuperGroup(@RequestBody CreateSuperGroupRequest request) {
         try {
             this.superGroupFacade.createSuperGroup(
                     new SuperGroupFacade.NewSuperGroup(
@@ -44,8 +43,8 @@ public class SuperGroupAdminController {
                             request.prettyName,
                             request.type,
                             request.email,
-                            request.description.sv,
-                            request.description.en
+                            request.svText,
+                            request.enText
                     )
             );
         } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
@@ -64,19 +63,28 @@ public class SuperGroupAdminController {
         return new SuperGroupDeletedResponse();
     }
 
+    private record EditSuperGroupRequest(int version,
+                                         String name,
+                                         String prettyName,
+                                         String type,
+                                         String email,
+                                         String svText,
+                                         String enText) { }
+
     @PutMapping("/{id}")
     public SuperGroupUpdatedResponse updateSuperGroup(@PathVariable("id") UUID id,
-                                                @RequestBody CreateOrEditSuperGroupRequest request) {
+                                                @RequestBody EditSuperGroupRequest request) {
         try {
             this.superGroupFacade.updateSuperGroup(
                     new SuperGroupFacade.UpdateSuperGroup(
                             id,
+                            request.version,
                             request.name,
                             request.prettyName,
                             request.type,
                             request.email,
-                            request.description.sv,
-                            request.description.en
+                            request.svText,
+                            request.enText
                     )
             );
         } catch (SuperGroupRepository.SuperGroupNotFoundException e) {

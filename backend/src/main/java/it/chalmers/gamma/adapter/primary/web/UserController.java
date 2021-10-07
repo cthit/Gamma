@@ -38,7 +38,7 @@ public final class UserController {
         return this.userFacade.get(id).orElseThrow();
     }
 
-    record CreateUserRequest(String token,
+    record CreateUserRequest(String code,
                              String password,
                              String nick,
                              String firstName,
@@ -64,7 +64,7 @@ public final class UserController {
                         request.acceptanceYear,
                         request.cid,
                         request.language
-                ), request.token
+                ), request.code
         );
         return new UserCreatedResponse();
     }

@@ -116,7 +116,7 @@ CREATE TABLE whitelist_cid
 CREATE TABLE user_activation
 (
     cid        VARCHAR(10) PRIMARY KEY REFERENCES whitelist_cid,
-    token       VARCHAR(10) NOT NULL,
+    token       VARCHAR(10) UNIQUE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 

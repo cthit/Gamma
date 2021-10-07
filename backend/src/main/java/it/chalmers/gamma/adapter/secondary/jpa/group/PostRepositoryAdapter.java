@@ -18,13 +18,11 @@ public class PostRepositoryAdapter implements PostRepository {
     }
 
     @Override
-    public void create(Post post) {
-        this.repository.save(new PostEntity(post));
-    }
-
-    @Override
-    public void save(Post post) throws PostNotFoundException {
-        throw new UnsupportedOperationException();
+    public void save(Post post) {
+        PostEntity postEntity = this.repository.findById(post.id().value())
+                .orElse(new PostEntity(post.id().value()));
+        postEntity.apply(post);
+        this.repository.save(postEntity);
     }
 
     @Override

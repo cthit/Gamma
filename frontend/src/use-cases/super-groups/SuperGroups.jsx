@@ -34,6 +34,7 @@ const SuperGroups = () => {
 
     return (
         <DigitCRUD
+            useKeyTextsInUpperLabel
             keysOrder={keysOrder()}
             keysText={keysText(text)}
             formInitialValues={initialValues()}

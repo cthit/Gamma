@@ -18,8 +18,8 @@ public class WhitelistEntity extends SingleImmutableEntity<Cid> {
 
     protected WhitelistEntity() {}
 
-    protected WhitelistEntity(Cid cid) {
-        this.cid = cid.getValue();
+    protected WhitelistEntity(String cid) {
+        this.cid = cid;
     }
 
     @Override

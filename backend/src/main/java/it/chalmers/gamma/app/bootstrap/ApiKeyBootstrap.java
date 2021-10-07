@@ -36,7 +36,7 @@ public class ApiKeyBootstrap {
 
         for (ApiKeyType apiKeyType : ApiKeyType.values()) {
             if (apiKeyType != ApiKeyType.CLIENT) {
-                ApiKeyToken apiKeyToken = new ApiKeyToken(apiKeyType.name() + "-super-secret-token");
+                ApiKeyToken apiKeyToken = new ApiKeyToken(apiKeyType.name() + "-super-secret-code");
                 this.apiKeyRepository.create(
                         new ApiKey(
                                 ApiKeyId.generate(),
@@ -47,7 +47,7 @@ public class ApiKeyBootstrap {
                         )
                 );
 
-                LOGGER.info("Api key of type " + apiKeyType.name() + " has been generated with token: " + apiKeyToken.value());
+                LOGGER.info("Api key of type " + apiKeyType.name() + " has been generated with code: " + apiKeyToken.value());
             }
         }
         LOGGER.info("========== API BOOTSTRAP ==========");

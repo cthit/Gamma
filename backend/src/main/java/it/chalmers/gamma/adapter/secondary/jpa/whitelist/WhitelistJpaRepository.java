@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WhitelistJpaRepository extends JpaRepository<WhitelistEntity, Cid> {
+public interface WhitelistJpaRepository extends JpaRepository<WhitelistEntity, String> {
 }

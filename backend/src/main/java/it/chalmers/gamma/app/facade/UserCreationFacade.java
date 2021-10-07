@@ -123,7 +123,8 @@ public class UserCreationFacade extends Facade {
     }
 
     public void removeUserActivation(String cid) {
-        throw new UnsupportedOperationException();
+        accessGuard.requireIsAdmin();
+        this.userActivationRepository.removeActivation(new Cid(cid));
     }
 
     public record UserActivationDTO(String cid,
@@ -137,6 +138,7 @@ public class UserCreationFacade extends Facade {
     }
 
     public List<UserActivationDTO> getAllUserActivations() {
+        accessGuard.requireIsAdmin();
         return this.userActivationRepository.getAll()
                 .stream()
                 .map(UserActivationDTO::new)

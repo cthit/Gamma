@@ -10,6 +10,7 @@ import java.util.Objects;
 
 @RecordBuilder
 public record SuperGroup(SuperGroupId id,
+                         int version,
                          Name name,
                          PrettyName prettyName,
                          SuperGroupType type,

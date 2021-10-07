@@ -210,9 +210,4 @@ public class UserFacade extends Facade {
         );
     }
 
-    public void updateGdprTrainedStatus(UUID userId, boolean gdprTrained) {
-        accessGuard.requireIsAdmin();
-        User oldUser = this.userRepository.get(new UserId(userId)).orElseThrow();
-        this.userRepository.save(oldUser.withGdprTrained(gdprTrained));
-    }
 }

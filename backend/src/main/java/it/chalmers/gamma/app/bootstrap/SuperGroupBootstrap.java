@@ -52,18 +52,16 @@ public class SuperGroupBootstrap {
         LOGGER.info("Supergroup types created");
 
         mockData.superGroups().forEach(mockSuperGroup -> {
-            try {
-                this.superGroupRepository.create(new SuperGroup(
-                        new SuperGroupId(mockSuperGroup.id()),
-                        new Name(mockSuperGroup.name()),
-                        new PrettyName(mockSuperGroup.prettyName()),
-                        new SuperGroupType(mockSuperGroup.type()),
-                        new Email(mockSuperGroup.name() + "@chalmers.it"),
-                        new Text())
-                );
-            } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
-                LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
-            }
+            this.superGroupRepository.save(new SuperGroup(
+                    new SuperGroupId(mockSuperGroup.id()),
+                    0,
+                    new Name(mockSuperGroup.name()),
+                    new PrettyName(mockSuperGroup.prettyName()),
+                    new SuperGroupType(mockSuperGroup.type()),
+                    new Email(mockSuperGroup.name() + "@chalmers.it"),
+                    new Text())
+            );
+            // LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
         });
 
         LOGGER.info("Supergroups created");
