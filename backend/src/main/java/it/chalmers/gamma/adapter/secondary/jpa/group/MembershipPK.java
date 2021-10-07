@@ -14,17 +14,6 @@ import javax.persistence.ManyToOne;
 @Embeddable
 public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
 
-    @Override
-    public MembershipPK.MembershipPKDTO getValue() {
-        return new MembershipPKDTO(
-                this.post.id(),
-                this.group.id(),
-                this.user.id()
-        );
-    }
-
-    public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) { }
-
     @JoinColumn(name = "post_id")
     @ManyToOne
     private PostEntity post;
@@ -61,4 +50,14 @@ public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
         return user;
     }
 
+    public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) { }
+
+    @Override
+    public MembershipPK.MembershipPKDTO getValue() {
+        return new MembershipPKDTO(
+                this.post.id(),
+                this.group.id(),
+                this.user.id()
+        );
+    }
 }

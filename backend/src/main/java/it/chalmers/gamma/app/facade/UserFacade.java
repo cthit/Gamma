@@ -153,10 +153,12 @@ public class UserFacade extends Facade {
                                   String firstName,
                                   String lastName,
                                   UUID id,
+                                  int version,
                                   int acceptanceYear,
                                   String email,
                                   boolean gdprTrained,
-                                  boolean locked) {
+                                  boolean locked,
+                                  String language) {
 
         public UserExtendedDTO(User user) {
             this(user.cid().value(),
@@ -164,10 +166,13 @@ public class UserFacade extends Facade {
                     user.firstName().value(),
                     user.lastName().value(),
                     user.id().value(),
+                    user.version(),
                     user.acceptanceYear().value(),
                     user.email().value(),
                     user.gdprTrained(),
-                    user.locked());
+                    user.locked(),
+                    user.language().name()
+            );
         }
     }
     public record UserExtendedWithGroupsDTO(UserExtendedDTO user, List<UserGroupDTO> groups) { }

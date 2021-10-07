@@ -43,7 +43,7 @@ const UserClientApprovals = ({ client }) => {
                 __link: text.Details
             }}
             columnsOrder={["firstName", "nick", "lastName"]}
-            titleText={text.UsersThatApproved + client.name}
+            titleText={text.UsersThatApproved + client.prettyName}
             margin={{
                 bottom: "calc(56px + 16px)"
             }}

@@ -65,7 +65,7 @@ public class ClientBootstrap {
 
         List<User> allUsers = this.userRepository.getAll();
 
-        this.clientRepository.create(
+        this.clientRepository.save(
                 new Client(
                         clientId,
                         clientSecret,

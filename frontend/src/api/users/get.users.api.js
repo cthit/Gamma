@@ -15,6 +15,12 @@ export function getUser(id) {
 export function getUserAdmin(id) {
     return getRequest(ADMIN_USERS_ENDPOINT + id, response => {
         const user = response.data;
-        return { data: { ...user.user, groups: user.groups } };
+        return {
+            data: {
+                ...user.user,
+                language: user.user.language.toLowerCase(),
+                groups: user.groups
+            }
+        };
     });
 }

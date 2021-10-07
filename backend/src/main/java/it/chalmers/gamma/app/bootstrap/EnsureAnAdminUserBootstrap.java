@@ -61,6 +61,7 @@ public class EnsureAnAdminUserBootstrap {
             String name = "admin";
             User adminUser = new User(
                     adminId,
+                    0,
                     Cid.valueOf(name),
                     new Email(name + "@chalmers.it"),
                     Language.EN,

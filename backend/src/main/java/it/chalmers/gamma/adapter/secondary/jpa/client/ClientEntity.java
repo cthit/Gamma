@@ -48,26 +48,11 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
     protected ClientApiKeyEntity clientsApiKey;
 
     protected ClientEntity() {
-        //TODO: Will a loading of the entity override this?
-        this.description = new TextEntity();
     }
 
     @Override
-    protected ClientId id() {
+    public ClientId id() {
         return ClientId.valueOf(this.clientId);
     }
 
-    public Client toDomain() {
-        return new Client(
-                ClientId.valueOf(this.clientId),
-                new ClientSecret(this.clientSecret),
-                new WebServerRedirectUrl(this.webServerRedirectUri),
-                this.autoApprove,
-                new PrettyName(this.prettyName),
-                this.description.toDomain(),
-                new ArrayList<>(), //TODO: JoinColumn
-                new ArrayList<>(),//TODO: JoinColumn
-                null //TODO join potential api key
-        );
-    }
 }

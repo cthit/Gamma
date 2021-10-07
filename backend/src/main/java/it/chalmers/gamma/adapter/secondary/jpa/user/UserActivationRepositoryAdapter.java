@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.domain.useractivation.UserActivationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserActivationRepositoryAdapter implements UserActivationRepository {
@@ -27,6 +28,12 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
                 )
         );
         return userActivationToken;
+    }
+
+    @Override
+    public Optional<UserActivation> get(Cid cid) {
+        return this.userActivationJpaRepository.findById(cid.value())
+                .map(UserActivationEntity::toDomain);
     }
 
     @Override

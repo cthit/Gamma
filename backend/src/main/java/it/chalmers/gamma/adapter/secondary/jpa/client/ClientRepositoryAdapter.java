@@ -1,73 +1,72 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.port.repository.ClientRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.client.ClientId;
-import it.chalmers.gamma.app.domain.client.ClientSecret;
 import it.chalmers.gamma.app.domain.user.UserId;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ClientRepositoryAdapter implements ClientRepository {
 
     private final ClientJpaRepository clientJpaRepository;
     private final ClientApiKeyJpaRepository clientApiKeyJpaRepository;
-    private final UserApprovalJpaRepository userApprovalJpaRepository;
-    private final UserJpaRepository userJpaRepository;
     private final ClientEntityConverter clientEntityConverter;
+    private final UserApprovalJpaRepository userApprovalJpaRepository;
 
     public ClientRepositoryAdapter(ClientJpaRepository clientJpaRepository,
                                    ClientApiKeyJpaRepository clientApiKeyJpaRepository,
-                                   UserApprovalJpaRepository userApprovalJpaRepository,
-                                   UserJpaRepository userJpaRepository,
-                                   ClientEntityConverter clientEntityConverter) {
+                                   ClientEntityConverter clientEntityConverter,
+                                   UserApprovalJpaRepository userApprovalJpaRepository) {
         this.clientJpaRepository = clientJpaRepository;
         this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
-        this.userApprovalJpaRepository = userApprovalJpaRepository;
-        this.userJpaRepository = userJpaRepository;
         this.clientEntityConverter = clientEntityConverter;
+        this.userApprovalJpaRepository = userApprovalJpaRepository;
     }
 
     @Override
-    public void create(Client client) {
+    public void save(Client client) {
         this.clientJpaRepository.save(this.clientEntityConverter.toEntity(client));
     }
 
     @Override
     public void delete(ClientId clientId) throws ClientNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ClientSecret resetClientSecret(ClientId clientId) {
-        throw new UnsupportedOperationException();
+        this.clientJpaRepository.deleteById(clientId.value());
     }
 
     @Override
     public List<Client> getAll() {
-        return this.clientJpaRepository.findAll().stream().map(ClientEntity::toDomain).toList();
+        return this.clientJpaRepository.findAll()
+                .stream()
+                .map(clientEntityConverter::toDomain)
+                .toList();
     }
 
     @Override
     public Optional<Client> get(ClientId clientId) {
-        throw new UnsupportedOperationException();
+        return this.clientJpaRepository.findById(clientId.value())
+                .map(this.clientEntityConverter::toDomain);
     }
 
     @Override
     public List<Client> getClientsByUserApproved(UserId id) {
-        throw new UnsupportedOperationException();
+        return this.userApprovalJpaRepository.findAllById_User_Id(id.value())
+                .stream()
+                .map(this.clientEntityConverter::toDomain)
+                .toList();
     }
 
     @Override
     public Optional<Client> getByApiKey(ApiKeyToken apiKeyToken) {
         return this.clientApiKeyJpaRepository
                 .findByApiKey_Token(apiKeyToken.value())
-                .map(ClientEntity::toDomain);
+                .map(this.clientEntityConverter::toDomain);
     }
 }

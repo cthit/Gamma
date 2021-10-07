@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @RecordBuilder
 public record User(UserId id,
+                   int version,
                    Cid cid,
                    Email email,
                    Language language,

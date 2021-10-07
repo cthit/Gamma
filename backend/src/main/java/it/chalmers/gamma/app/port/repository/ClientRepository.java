@@ -11,9 +11,8 @@ import java.util.Optional;
 
 public interface ClientRepository {
 
-    void create(Client client);
+    void save(Client client);
     void delete(ClientId clientId) throws ClientNotFoundException;
-    ClientSecret resetClientSecret(ClientId clientId);
 
     List<Client> getAll();
     Optional<Client> get(ClientId clientId);

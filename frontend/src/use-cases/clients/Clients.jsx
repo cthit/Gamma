@@ -85,7 +85,7 @@ const Clients = () => {
                             sv: client[CLIENT_DESCRIPTION_SWEDISH],
                             en: client[CLIENT_DESCRIPTION_ENGLISH]
                         },
-                        webServerRedirectUri: client[CLIENT_REDIRECT],
+                        webServerRedirectUrl: client[CLIENT_REDIRECT],
                         autoApprove: client.autoApprove,
                         generateApiKey: client.generateApiKey,
                         restrictions: client.restrictions

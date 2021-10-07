@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +80,7 @@ public class UserCreationFacade extends Facade {
         this.userRepository.save(
                 new User(
                         UserId.generate(),
+                        0,
                         new Cid(newUser.cid),
                         new Email(newUser.email),
                         Language.valueOf(newUser.language),
@@ -95,6 +97,7 @@ public class UserCreationFacade extends Facade {
         );
     }
 
+    @Transactional
     public void createUserWithCode(NewUser data, String token) {
         this.accessGuard.requireNotSignedIn();
         Cid tokenCid = this.userActivationRepository.getByToken(new UserActivationToken(token));
@@ -102,10 +105,13 @@ public class UserCreationFacade extends Facade {
         //TODO: Check if email is not student@chalmers.se
 
         if (tokenCid.value().equals(data.cid)) {
+            Cid cid = new Cid(data.cid);
+
             this.userRepository.save(
                     new User(
                             UserId.generate(),
-                            new Cid(data.cid),
+                            0,
+                            cid,
                             new Email(data.email),
                             Language.valueOf(data.language),
                             new Nick(data.nick),
@@ -119,30 +125,9 @@ public class UserCreationFacade extends Facade {
                             Optional.empty()
                     )
             );
+
+            this.userActivationRepository.removeActivation(cid);
         }
-    }
-
-    public void removeUserActivation(String cid) {
-        accessGuard.requireIsAdmin();
-        this.userActivationRepository.removeActivation(new Cid(cid));
-    }
-
-    public record UserActivationDTO(String cid,
-                                    String token,
-                                    Instant createdAt) {
-        public UserActivationDTO(UserActivation userActivation) {
-            this(userActivation.cid().value(),
-                    userActivation.token().value(),
-                    userActivation.createdAt());
-        }
-    }
-
-    public List<UserActivationDTO> getAllUserActivations() {
-        accessGuard.requireIsAdmin();
-        return this.userActivationRepository.getAll()
-                .stream()
-                .map(UserActivationDTO::new)
-                .toList();
     }
 
     private void sendEmail(Cid cid, UserActivationToken userActivationToken) {

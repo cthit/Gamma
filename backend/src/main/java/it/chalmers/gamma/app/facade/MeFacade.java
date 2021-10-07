@@ -51,11 +51,24 @@ public class MeFacade extends Facade {
         this.passwordService = passwordService;
     }
 
-    public List<Client> getSignedInUserApprovals() {
+    public record UserApprovedClientDTO(String prettyName,
+                                        String svDescription,
+                                        String enDescription) {
+        public UserApprovedClientDTO(Client client) {
+            this(client.prettyName().value(),
+                    client.description().sv().value(),
+                    client.description().en().value());
+        }
+    }
+
+    public List<UserApprovedClientDTO> getSignedInUserApprovals() {
         accessGuard.requireSignedIn();
         if (authenticatedService.getAuthenticated() instanceof UserAuthenticated userAuthenticated) {
             User user = userAuthenticated.get();
-            return this.clientRepository.getClientsByUserApproved(user.id());
+            return this.clientRepository.getClientsByUserApproved(user.id())
+                    .stream()
+                    .map(UserApprovedClientDTO::new)
+                    .toList();
         } else {
             return null;
         }

@@ -74,7 +74,7 @@ public class ClientFacade extends Facade {
             );
         }
 
-        this.clientRepository.create(new Client(
+        this.clientRepository.save(new Client(
                 ClientId.generate(),
                 clientSecret,
                 new WebServerRedirectUrl(newClient.webServerRedirectUrl),
@@ -96,9 +96,32 @@ public class ClientFacade extends Facade {
         this.clientRepository.delete(new ClientId(clientId));
     }
 
-    public record ClientDTO() {
+    public record ClientDTO(String clientId,
+                            String webServerRedirectUrl,
+                            boolean autoApprove,
+                            String prettyName,
+                            String svDescription,
+                            String enDescription,
+                            List<String> restrictions,
+                            List<UserFacade.UserDTO> approvedUsers,
+                            boolean hasApiKey) {
         public ClientDTO(Client client) {
-            this();
+            this(client.clientId().value(),
+                    client.webServerRedirectUrl().value(),
+                    client.autoApprove(),
+                    client.prettyName().value(),
+                    client.description().sv().value(),
+                    client.description().en().value(),
+                    client.restrictions()
+                            .stream()
+                            .map(AuthorityLevelName::value)
+                            .toList(),
+                    client.approvedUsers()
+                            .stream()
+                            .map(UserFacade.UserDTO::new)
+                            .toList(),
+                    client.clientApiKey().isPresent()
+            );
         }
     }
 
@@ -116,7 +139,12 @@ public class ClientFacade extends Facade {
 
     public String resetClientSecret(String clientId) throws ClientNotFoundException {
         accessGuard.requireIsAdmin();
-        return this.clientRepository.resetClientSecret(new ClientId(clientId)).value();
+        Client client = this.clientRepository.get(new ClientId(clientId))
+                .orElseThrow(ClientNotFoundException::new);
+        ClientSecret newSecret = ClientSecret.generate();
+
+        this.clientRepository.save(client.withClientSecret(newSecret));
+        return newSecret.value();
     }
 
     public static class ClientNotFoundException extends Exception { }

@@ -29,6 +29,9 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
         this.authorityLevel = authorityLevelEntity;
     }
 
+    protected record ClientRestrictionPKDTO(ClientId clientId,
+                                            AuthorityLevelName authorityLevelName) { }
+
     @Override
     public ClientRestrictionPKDTO getValue() {
         return new ClientRestrictionPKDTO(
@@ -36,8 +39,5 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
                 AuthorityLevelName.valueOf(this.authorityLevel.getAuthorityLevel())
         );
     }
-
-    protected record ClientRestrictionPKDTO(ClientId clientId,
-                                          AuthorityLevelName authorityLevelName) { }
 
 }

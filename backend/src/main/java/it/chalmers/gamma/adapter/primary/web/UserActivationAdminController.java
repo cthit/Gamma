@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.facade.ActivationCodeFacade;
 import it.chalmers.gamma.app.facade.UserCreationFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -16,20 +17,26 @@ import java.util.List;
 @RequestMapping("/internal/admin/user-activation")
 public final class UserActivationAdminController {
 
-    private final UserCreationFacade userCreationFacade;
+    private final ActivationCodeFacade activationCodeFacade;
 
-    public UserActivationAdminController(UserCreationFacade userCreationFacade) {
-        this.userCreationFacade = userCreationFacade;
+    public UserActivationAdminController(ActivationCodeFacade activationCodeFacade) {
+        this.activationCodeFacade = activationCodeFacade;
     }
 
     @GetMapping()
-    public List<UserCreationFacade.UserActivationDTO> getAll() {
-        return this.userCreationFacade.getAllUserActivations();
+    public List<ActivationCodeFacade.UserActivationDTO> getAll() {
+        return this.activationCodeFacade.getAllUserActivations();
+    }
+
+    @GetMapping("/{cid}")
+    public ActivationCodeFacade.UserActivationDTO get(@PathVariable("cid") String cid) {
+        return this.activationCodeFacade.get(cid)
+                .orElseThrow(UserActivationNotFoundResponse::new);
     }
 
     @DeleteMapping("/{cid}")
     public UserActivationDeletedResponse removeUserActivation(@PathVariable("cid") String cid) {
-        this.userCreationFacade.removeUserActivation(cid);
+        this.activationCodeFacade.removeUserActivation(cid);
         return new UserActivationDeletedResponse();
     }
 

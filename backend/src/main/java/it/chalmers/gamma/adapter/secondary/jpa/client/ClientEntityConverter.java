@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
@@ -13,6 +14,7 @@ import it.chalmers.gamma.app.domain.common.Text;
 import it.chalmers.gamma.app.domain.user.User;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,6 +72,10 @@ public class ClientEntityConverter {
         clientEntity.autoApprove = client.autoApprove();
         clientEntity.prettyName = client.prettyName().value();
         clientEntity.webServerRedirectUri = client.webServerRedirectUrl().value();
+
+        if (clientEntity.description == null) {
+            clientEntity.description = new TextEntity();
+        }
 
         clientEntity.description.apply(client.description());
 

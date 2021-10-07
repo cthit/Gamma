@@ -34,11 +34,9 @@ public final class ClientAdminController {
                                        List<String> restrictions
     ) { }
 
-    private record NewClientSecrets(String clientSecret, String apiKeyToken) { }
-
     @PostMapping()
     public ClientFacade.ClientAndApiKeySecrets addClient(@RequestBody CreateClientRequest request) {
-        ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(
+        return this.clientFacade.create(
                 new ClientFacade.NewClient(
                         request.webServerRedirectUri,
                         request.prettyName,
@@ -49,8 +47,6 @@ public final class ClientAdminController {
                         request.restrictions
                 )
         );
-
-        return secrets;
     }
 
     @PostMapping("/{clientId}/reset")

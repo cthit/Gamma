@@ -30,6 +30,7 @@ public record Client(ClientId clientId,
         Objects.requireNonNull(description);
         Objects.requireNonNull(restrictions);
         Objects.requireNonNull(approvedUsers);
+        Objects.requireNonNull(clientApiKey);
     }
 
 }

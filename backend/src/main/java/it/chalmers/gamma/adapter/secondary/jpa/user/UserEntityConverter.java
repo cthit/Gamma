@@ -32,6 +32,7 @@ public class UserEntityConverter {
                 : Optional.of(new ImageUri(entity.userAvatar.getAvatarUri()));
 
         return new User(new UserId(entity.id),
+                        entity.getVersion(),
                         Cid.valueOf(entity.cid),
                         new Email(entity.email),
                         entity.language,

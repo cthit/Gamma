@@ -77,7 +77,7 @@ public final class MeController {
     }
 
     @GetMapping("/approval")
-    public List<Client> getApprovedClientsByUser() {
+    public List<MeFacade.UserApprovedClientDTO> getApprovedClientsByUser() {
         return this.meFacade.getSignedInUserApprovals();
     }
 

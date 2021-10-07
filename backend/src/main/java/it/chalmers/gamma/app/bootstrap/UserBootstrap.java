@@ -52,6 +52,7 @@ public class UserBootstrap {
         this.mockData.users().forEach(mockUser -> this.userRepository.save(
                 new User(
                         new UserId(mockUser.id()),
+                        0,
                         new Cid(mockUser.cid()),
                         new Email(mockUser.cid() + "@student.chalmers.it"),
                         Language.EN,
