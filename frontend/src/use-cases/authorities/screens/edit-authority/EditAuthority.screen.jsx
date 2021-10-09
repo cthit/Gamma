@@ -81,7 +81,8 @@ const EditAuthority = () => {
                 const posts = postsResponse.data;
                 const postMap = {};
                 for (let i = 0; i < posts.length; i++) {
-                    postMap[posts[i][POST_ID]] = posts[i][activeLanguage];
+                    postMap[posts[i][POST_ID]] =
+                        posts[i][activeLanguage + "Text"];
                 }
 
                 setPosts(postMap);

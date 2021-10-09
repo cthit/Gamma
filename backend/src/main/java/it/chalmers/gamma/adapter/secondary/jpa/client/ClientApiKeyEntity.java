@@ -5,6 +5,7 @@ import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,7 +26,7 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
     @PrimaryKeyJoinColumn(name = "client_id")
     private ClientEntity client;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "api_key_id")
     private ApiKeyEntity apiKey;
 
@@ -35,6 +36,7 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
 
     protected ClientApiKeyEntity(ClientEntity clientEntity, ApiKeyEntity apiKeyEntity) {
         this.client = clientEntity;
+        this.clientId = clientEntity.clientId;
         this.apiKey = apiKeyEntity;
     }
 
@@ -43,8 +45,8 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
         return this.client.id();
     }
 
-    public ApiKey getApiKey() {
-        return this.apiKey.toDomain();
+    public ApiKeyEntity getApiKeyEntity() {
+        return this.apiKey;
     }
 
 }

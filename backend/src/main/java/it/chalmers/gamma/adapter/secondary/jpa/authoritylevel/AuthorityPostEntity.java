@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class AuthorityPostEntity extends ImmutableEntity<AuthorityPostPK> {
 
     @EmbeddedId
-    private AuthorityPostPK id;
+    protected AuthorityPostPK id;
 
     protected AuthorityPostEntity() {}
 
@@ -23,13 +23,6 @@ public class AuthorityPostEntity extends ImmutableEntity<AuthorityPostPK> {
     @Override
     protected AuthorityPostPK id() {
         return this.id;
-    }
-
-    public AuthorityLevel.SuperGroupPost getIdentifier() {
-        return new AuthorityLevel.SuperGroupPost(
-                this.id.getValue().superGroup(),
-                this.id.getValue().post()
-        );
     }
 
 }

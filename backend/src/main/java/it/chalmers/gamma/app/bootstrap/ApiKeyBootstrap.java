@@ -37,7 +37,7 @@ public class ApiKeyBootstrap {
         for (ApiKeyType apiKeyType : ApiKeyType.values()) {
             if (apiKeyType != ApiKeyType.CLIENT) {
                 ApiKeyToken apiKeyToken = new ApiKeyToken(apiKeyType.name() + "-super-secret-code");
-                this.apiKeyRepository.create(
+                this.apiKeyRepository.save(
                         new ApiKey(
                                 ApiKeyId.generate(),
                                 new PrettyName(apiKeyType.name() + "-mock"),

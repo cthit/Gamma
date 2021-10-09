@@ -14,15 +14,7 @@ export function getApiKeys() {
 }
 
 export function getApiKey(apiKeyId) {
-    return getRequest(ADMIN_API_KEYS_ENDPOINT + apiKeyId, ({ data }) => ({
-        data: {
-            id: data.id,
-            prettyName: data.prettyName,
-            descriptionSv: data.description != null ? data.description.sv : "",
-            descriptionEn: data.description != null ? data.description.en : "",
-            keyType: data.keyType
-        }
-    }));
+    return getRequest(ADMIN_API_KEYS_ENDPOINT + apiKeyId);
 }
 
 export const getApiKeyTypes = () =>

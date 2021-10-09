@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface ApiKeyRepository {
 
-    void create(ApiKey apiKey);
     void save(ApiKey apiKey);
     void delete(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
 

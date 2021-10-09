@@ -113,8 +113,8 @@ export const keysComponentData = (text, authorityLevels) => {
         componentProps: {
             outlined: true,
             options: authorityLevels.map(level => ({
-                text: level,
-                value: level
+                text: level.authorityLevelName,
+                value: level.authorityLevelName
             }))
         }
     };

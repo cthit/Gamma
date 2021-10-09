@@ -3,15 +3,11 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.client.ClientId;
-import it.chalmers.gamma.app.domain.client.ClientSecret;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
-import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -26,7 +22,7 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
     protected String clientSecret;
 
     @Column(name = "web_server_redirect_uri")
-    protected String webServerRedirectUri;
+    protected String webServerRedirectUrl;
 
     @Column(name = "auto_approve")
     protected boolean autoApprove;
@@ -48,6 +44,8 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
     protected ClientApiKeyEntity clientsApiKey;
 
     protected ClientEntity() {
+        this.approvals = new ArrayList<>();
+        this.restrictions = new ArrayList<>();
     }
 
     @Override

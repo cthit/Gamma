@@ -78,7 +78,7 @@ public class GroupBootstrap {
                     .findFirst()
                     .orElseThrow()
                     .type();
-            System.out.println(type);
+
             boolean active = !type.equalsIgnoreCase("alumni");
             int year = active ? activeYear : inactiveYear;
             Name name = new Name(mockGroup.name() + year);

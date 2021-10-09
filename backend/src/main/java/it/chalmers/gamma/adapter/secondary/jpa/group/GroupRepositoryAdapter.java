@@ -21,13 +21,16 @@ public class GroupRepositoryAdapter implements GroupRepository {
     private final GroupJpaRepository groupJpaRepository;
     private final GroupEntityConverter groupEntityConverter;
     private final MembershipJpaRepository membershipJpaRepository;
+    private final PostEntityConverter postEntityConverter;
 
     public GroupRepositoryAdapter(GroupJpaRepository groupJpaRepository,
                                   GroupEntityConverter groupEntityConverter,
-                                  MembershipJpaRepository membershipJpaRepository) {
+                                  MembershipJpaRepository membershipJpaRepository,
+                                  PostEntityConverter postEntityConverter) {
         this.groupJpaRepository = groupJpaRepository;
         this.groupEntityConverter = groupEntityConverter;
         this.membershipJpaRepository = membershipJpaRepository;
+        this.postEntityConverter = postEntityConverter;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
         return this.membershipJpaRepository.findAllById_User_Id(userId.value())
                 .stream()
                 .map(membershipEntity -> new UserMembership(
-                        membershipEntity.id().getPost().toDomain(),
+                        postEntityConverter.toDomain(membershipEntity.id().getPost()),
                         this.groupEntityConverter.toDomain(membershipEntity.id().getGroup()),
                         new UnofficialPostName(membershipEntity.getUnofficialPostName())
                 ))

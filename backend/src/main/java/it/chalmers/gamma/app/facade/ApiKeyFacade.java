@@ -26,7 +26,12 @@ public class ApiKeyFacade extends Facade {
     }
 
     public String[] getApiKeyTypes() {
-        return (String[]) Arrays.stream(ApiKeyType.values()).map(ApiKeyType::name).toArray();
+        ApiKeyType[] types = ApiKeyType.values();
+        String[] s = new String[types.length];
+        for (int i = 0; i < s.length; i++) {
+            s[i] = types[i].name();
+        }
+        return s;
     }
 
     public record NewApiKey(
@@ -39,7 +44,7 @@ public class ApiKeyFacade extends Facade {
     public String create(NewApiKey newApiKey) {
         accessGuard.requireIsAdmin();
         ApiKeyToken apiKeyToken = ApiKeyToken.generate();
-        apiKeyRepository.create(
+        apiKeyRepository.save(
                 new ApiKey(
                         ApiKeyId.generate(),
                         new PrettyName(newApiKey.prettyName),
@@ -56,9 +61,18 @@ public class ApiKeyFacade extends Facade {
         apiKeyRepository.delete(new ApiKeyId(apiKeyId));
     }
 
-    public record ApiKeyDTO(UUID id, String prettyName, String svText, String enText) {
+    public record ApiKeyDTO(UUID id,
+                            String prettyName,
+                            String svDescription,
+                            String enDescription,
+                            String keyType) {
         public ApiKeyDTO(ApiKey apiKey) {
-            this(apiKey.id().value(), apiKey.prettyName().value(), apiKey.description().sv().value(), apiKey.description().en().value());
+            this(apiKey.id().value(),
+                    apiKey.prettyName().value(),
+                    apiKey.description().sv().value(),
+                    apiKey.description().en().value(),
+                    apiKey.keyType().name()
+            );
         }
     }
 

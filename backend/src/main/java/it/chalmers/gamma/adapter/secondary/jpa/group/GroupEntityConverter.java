@@ -1,11 +1,15 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
+import it.chalmers.gamma.app.domain.common.Email;
+import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupMember;
 import it.chalmers.gamma.app.domain.group.UnofficialPostName;
+import it.chalmers.gamma.app.domain.user.Name;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,19 +21,25 @@ public class GroupEntityConverter {
     private final UserEntityConverter userEntityConverter;
     private final UserJpaRepository userJpaRepository;
     private final PostJpaRepository postJpaRepository;
+    private final PostEntityConverter postEntityConverter;
     private final GroupJpaRepository groupJpaRepository;
     private final SuperGroupJpaRepository superGroupJpaRepository;
+    private final SuperGroupEntityConverter superGroupEntityConverter;
 
     public GroupEntityConverter(UserEntityConverter userEntityConverter,
                                 UserJpaRepository userJpaRepository,
                                 PostJpaRepository postJpaRepository,
+                                PostEntityConverter postEntityConverter,
                                 GroupJpaRepository groupJpaRepository,
-                                SuperGroupJpaRepository superGroupJpaRepository) {
+                                SuperGroupJpaRepository superGroupJpaRepository,
+                                SuperGroupEntityConverter superGroupEntityConverter) {
         this.userEntityConverter = userEntityConverter;
         this.userJpaRepository = userJpaRepository;
         this.postJpaRepository = postJpaRepository;
+        this.postEntityConverter = postEntityConverter;
         this.groupJpaRepository = groupJpaRepository;
         this.superGroupJpaRepository = superGroupJpaRepository;
+        this.superGroupEntityConverter = superGroupEntityConverter;
     }
 
     public GroupEntity toEntity(Group group) {
@@ -59,25 +69,24 @@ public class GroupEntityConverter {
         return entity;
     }
 
-    public Group toDomain(GroupEntity groupEntity) {
+    public Group toDomain(GroupEntity entity) {
         //TODO: add imageuri and members
-        GroupEntity.GroupBase b = groupEntity.toDomain();
-        List<GroupMember> members = groupEntity.getMembers()
+        List<GroupMember> members = entity.getMembers()
                 .stream()
                 .map(membershipEntity -> new GroupMember(
-                        membershipEntity.id().getPost().toDomain(),
+                        this.postEntityConverter.toDomain(membershipEntity.id().getPost()),
                         new UnofficialPostName(membershipEntity.getUnofficialPostName()),
                         this.userEntityConverter.toDomain(membershipEntity.id().getUser())
                 ))
                 .toList();
 
         return new Group(
-                b.groupId(),
-                groupEntity.getVersion(),
-                b.email(),
-                b.name(),
-                b.prettyName(),
-                b.superGroup(),
+                entity.id(),
+                entity.getVersion(),
+                new Email(entity.email),
+                new Name(entity.name),
+                new PrettyName(entity.prettyName),
+                this.superGroupEntityConverter.toDomain(entity.superGroup),
                 members,
                 Optional.empty(),
                 Optional.empty()

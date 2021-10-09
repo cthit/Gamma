@@ -2,8 +2,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.port.repository.AuthorityLevelRepository;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
@@ -34,6 +34,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     private final MembershipJpaRepository membershipJpaRepository;
 
     private final AuthorityLevelEntityConverter authorityLevelEntityConverter;
+    private final SuperGroupEntityConverter superGroupEntityConverter;
 
     public AuthorityLevelRepositoryAdapter(AuthorityLevelJpaRepository repository,
                                            AuthorityPostJpaRepository authorityPostRepository,
@@ -43,13 +44,15 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                                            UserJpaRepository userRepository,
                                            PostJpaRepository postRepository,
                                            MembershipJpaRepository membershipJpaRepository,
-                                           AuthorityLevelEntityConverter authorityLevelEntityConverter) {
+                                           AuthorityLevelEntityConverter authorityLevelEntityConverter,
+                                           SuperGroupEntityConverter superGroupEntityConverter) {
         this.repository = repository;
         this.authorityPostRepository = authorityPostRepository;
         this.authoritySuperGroupRepository = authoritySuperGroupRepository;
         this.authorityUserRepository = authorityUserRepository;
         this.membershipJpaRepository = membershipJpaRepository;
         this.authorityLevelEntityConverter = authorityLevelEntityConverter;
+        this.superGroupEntityConverter = superGroupEntityConverter;
     }
 
     @Override
@@ -67,7 +70,6 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     @Override
     public void save(AuthorityLevel authorityLevel) {
         AuthorityLevelEntity entity = this.authorityLevelEntityConverter.toEntity(authorityLevel);
-        entity.getUsers().stream().map(AuthorityUserEntity::getUserEntity).map(UserEntity::id).forEach(System.out::println);
         this.repository.save(entity);
     }
 
@@ -96,10 +98,10 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.membershipJpaRepository.findAllById_User_Id(userId.value())
                 .forEach(membershipEntity -> {
                     names.add(new UserAuthority(
-                            new AuthorityLevelName(membershipEntity.id().getGroup().name),
+                            new AuthorityLevelName(membershipEntity.id().getGroup().getName()),
                             AuthorityType.GROUP
                     ));
-                    userSuperGroups.add(membershipEntity.id().getGroup().superGroup.toDomain());
+                    userSuperGroups.add(membershipEntity.id().getGroup().getSuperGroup());
                     this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(
                             membershipEntity.id().getGroup().superGroup.toDomain().id().getValue(),
                             membershipEntity.id().getPost().toDomain().id().value()

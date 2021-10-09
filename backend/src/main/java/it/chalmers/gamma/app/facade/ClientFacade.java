@@ -74,20 +74,22 @@ public class ClientFacade extends Facade {
             );
         }
 
-        this.clientRepository.save(new Client(
-                ClientId.generate(),
-                clientSecret,
-                new WebServerRedirectUrl(newClient.webServerRedirectUrl),
-                newClient.autoApprove,
-                new PrettyName(newClient.prettyName),
-                new Text(
-                        newClient.svDescription,
-                        newClient.enDescription
-                ),
-                newClient.restrictions.stream().map(AuthorityLevelName::new).toList(),
-                Collections.emptyList(),
-                apiKey
-        ));
+        this.clientRepository.save(
+                new Client(
+                        ClientId.generate(),
+                        clientSecret,
+                        new WebServerRedirectUrl(newClient.webServerRedirectUrl),
+                        newClient.autoApprove,
+                        new PrettyName(newClient.prettyName),
+                        new Text(
+                                newClient.svDescription,
+                                newClient.enDescription
+                        ),
+                        newClient.restrictions.stream().map(AuthorityLevelName::new).toList(),
+                        Collections.emptyList(),
+                        apiKey
+                )
+        );
         return new ClientAndApiKeySecrets(clientSecret.value(), apiKeyToken == null ? null : apiKeyToken.value());
     }
 
@@ -139,11 +141,15 @@ public class ClientFacade extends Facade {
 
     public String resetClientSecret(String clientId) throws ClientNotFoundException {
         accessGuard.requireIsAdmin();
+
         Client client = this.clientRepository.get(new ClientId(clientId))
                 .orElseThrow(ClientNotFoundException::new);
         ClientSecret newSecret = ClientSecret.generate();
 
-        this.clientRepository.save(client.withClientSecret(newSecret));
+        Client newClient = client.withClientSecret(newSecret);
+
+        this.clientRepository.save(newClient);
+
         return newSecret.value();
     }
 

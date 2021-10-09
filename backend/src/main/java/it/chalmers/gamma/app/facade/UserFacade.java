@@ -75,6 +75,7 @@ public class UserFacade extends Facade {
         }
     }
     public record UserWithGroupsDTO(UserDTO user, List<UserGroupDTO> groups) { }
+
     public Optional<UserWithGroupsDTO> get(String cid) {
         this.accessGuard.requireSignedIn();
         Optional<UserDTO> maybeUser = this.userRepository.get(new Cid(cid)).map(UserDTO::new);

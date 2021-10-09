@@ -19,61 +19,32 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
 
     @Id
     @Column(name = "super_group_id")
-    private UUID id;
+    protected UUID id;
 
     @JoinColumn(name = "description")
     @OneToOne(cascade = CascadeType.MERGE)
-    private TextEntity description;
+    protected TextEntity description;
 
     @Column(name = "e_name")
-    private String name;
+    protected String name;
 
     @Column(name = "pretty_name")
-    private String prettyName;
+    protected String prettyName;
 
     @Column(name = "super_group_type_name")
-    private String superGroupType;
+    protected String superGroupType;
 
     @Column(name = "email")
-    private String email;
+    protected String email;
 
-    public SuperGroupEntity() {}
+    protected SuperGroupEntity() {}
 
-    public SuperGroupEntity(UUID superGroupId) {
+    protected SuperGroupEntity(UUID superGroupId) {
         this.id = superGroupId;
     }
 
-    public void apply(SuperGroup sg)  {
-        assert(this.id == sg.id().getValue());
-
-        this.throwIfNotValidVersion(sg.version());
-
-        this.email = sg.email().value();
-        this.name = sg.name().value();
-        this.prettyName = sg.prettyName().value();
-        this.superGroupType = sg.type().getValue();
-
-        if (this.description == null) {
-            this.description = new TextEntity();
-        }
-
-        this.description.apply(sg.description());
-    }
-
-    public SuperGroup toDomain() {
-        return new SuperGroup(
-                new SuperGroupId(this.id),
-                this.getVersion(),
-                new Name(this.name),
-                new PrettyName(this.prettyName),
-                SuperGroupType.valueOf(this.superGroupType),
-                new Email(this.email),
-                this.description.toDomain()
-        );
-    }
-
     @Override
-    protected SuperGroupId id() {
+    public SuperGroupId id() {
         return new SuperGroupId(this.id);
     }
 }

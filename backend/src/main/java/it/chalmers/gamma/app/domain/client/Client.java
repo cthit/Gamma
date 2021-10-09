@@ -23,7 +23,6 @@ public record Client(ClientId clientId,
                      Optional<ApiKey> clientApiKey) implements ClientBuilder.With {
 
     public Client {
-        //TODO Create Webserverredirecturi class instead of using string
         Objects.requireNonNull(clientId);
         Objects.requireNonNull(webServerRedirectUrl);
         Objects.requireNonNull(prettyName);

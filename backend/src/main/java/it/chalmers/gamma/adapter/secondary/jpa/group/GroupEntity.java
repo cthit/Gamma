@@ -19,53 +19,45 @@ public class GroupEntity extends MutableEntity<GroupId> {
 
     @Id
     @Column(name = "group_id")
-    public UUID id;
+    protected UUID id;
 
     @Column(name = "e_name")
-    public String name;
+    protected String name;
 
     @Column(name = "pretty_name")
-    public String prettyName;
+    protected String prettyName;
 
     @Column(name = "email")
-    public String email;
+    protected String email;
 
     @ManyToOne
     @JoinColumn(name = "super_group_id")
-    public SuperGroupEntity superGroup;
+    protected SuperGroupEntity superGroup;
 
     @OneToMany(mappedBy = "id.group", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<MembershipEntity> members;
+    protected List<MembershipEntity> members;
+
+    //TODO Add avatar and banner
 
     protected GroupEntity() {
         this.members = new ArrayList<>();
     }
 
-    public List<MembershipEntity> getMembers() {
+    protected List<MembershipEntity> getMembers() {
         return members;
     }
 
-    public record GroupBase(
-            GroupId groupId,
-            Email email,
-            Name name,
-            PrettyName prettyName,
-            SuperGroup superGroup
-    ) { }
-
-    public GroupBase toDomain() {
-        return new GroupBase(
-                new GroupId(this.id),
-                new Email(this.email),
-                new Name(this.name),
-                new PrettyName(this.prettyName),
-                this.superGroup.toDomain()
-        );
+    @Override
+    public GroupId id() {
+        return new GroupId(this.id);
     }
 
-    @Override
-    protected GroupId id() {
-        return new GroupId(this.id);
+    public SuperGroupEntity getSuperGroup() {
+        return this.superGroup;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
 }

@@ -15,45 +15,23 @@ public class PostEntity extends MutableEntity<PostId> {
 
     @Id
     @Column(name = "post_id")
-    private UUID id;
+    protected UUID id;
 
     @JoinColumn(name = "post_name")
     @OneToOne(cascade = CascadeType.MERGE)
-    private TextEntity postName;
+    protected TextEntity postName;
 
     @Column(name = "email_prefix")
-    private String emailPrefix;
+    protected String emailPrefix;
 
     protected PostEntity() { }
 
-    public PostEntity(UUID id) {
+    protected PostEntity(UUID id) {
         this.id = id;
     }
 
-    public void apply(Post p) {
-        assert(this.id == p.id().getValue());
-
-        throwIfNotValidVersion(p.version());
-
-        if (this.postName == null) {
-            this.postName = new TextEntity();
-        }
-
-        this.postName.apply(p.name());
-        this.emailPrefix = p.emailPrefix().value();
-    }
-
-    public Post toDomain() {
-        return new Post(
-                new PostId(this.id),
-                this.getVersion(),
-                this.postName.toDomain(),
-                new EmailPrefix(this.emailPrefix)
-        );
-    }
-
     @Override
-    protected PostId id() {
+    public PostId id() {
         return new PostId(this.id);
     }
 

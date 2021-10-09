@@ -12,17 +12,17 @@ import java.util.Optional;
 public class PostRepositoryAdapter implements PostRepository {
 
     private final PostJpaRepository repository;
+    private final PostEntityConverter postEntityConverter;
 
-    public PostRepositoryAdapter(PostJpaRepository repository) {
+    public PostRepositoryAdapter(PostJpaRepository repository,
+                                 PostEntityConverter postEntityConverter) {
         this.repository = repository;
+        this.postEntityConverter = postEntityConverter;
     }
 
     @Override
     public void save(Post post) {
-        PostEntity postEntity = this.repository.findById(post.id().value())
-                .orElse(new PostEntity(post.id().value()));
-        postEntity.apply(post);
-        this.repository.save(postEntity);
+        this.repository.save(this.postEntityConverter.toEntity(post));
     }
 
     @Override
@@ -32,11 +32,11 @@ public class PostRepositoryAdapter implements PostRepository {
 
     @Override
     public List<Post> getAll() {
-        return this.repository.findAll().stream().map(PostEntity::toDomain).toList();
+        return this.repository.findAll().stream().map(this.postEntityConverter::toDomain).toList();
     }
 
     @Override
     public Optional<Post> get(PostId postId) {
-        return this.repository.findById(postId.value()).map(PostEntity::toDomain);
+        return this.repository.findById(postId.value()).map(this.postEntityConverter::toDomain);
     }
 }

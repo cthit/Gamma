@@ -25,7 +25,7 @@ public final class ClientAdminController {
         this.clientFacade = clientFacade;
     }
 
-    private record CreateClientRequest(String webServerRedirectUri,
+    private record CreateClientRequest(String webServerRedirectUrl,
                                        String prettyName,
                                        boolean autoApprove,
                                        String svDescription,
@@ -38,7 +38,7 @@ public final class ClientAdminController {
     public ClientFacade.ClientAndApiKeySecrets addClient(@RequestBody CreateClientRequest request) {
         return this.clientFacade.create(
                 new ClientFacade.NewClient(
-                        request.webServerRedirectUri,
+                        request.webServerRedirectUrl,
                         request.prettyName,
                         request.autoApprove,
                         request.svDescription,

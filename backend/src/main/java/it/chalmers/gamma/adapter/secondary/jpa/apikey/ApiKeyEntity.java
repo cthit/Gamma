@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
@@ -13,47 +14,26 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "apikey")
-public class ApiKeyEntity extends ImmutableEntity<ApiKeyId> {
+public class ApiKeyEntity extends MutableEntity<ApiKeyId> {
 
     @Id
     @Column(name = "api_key_id")
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "token")
-    private String token;
+    protected String token;
 
     @Column(name = "pretty_name")
-    private String prettyName;
+    protected String prettyName;
 
     @Enumerated(EnumType.STRING)
-    private ApiKeyType keyType;
+    protected ApiKeyType keyType;
 
     @JoinColumn(name = "description")
     @OneToOne(cascade = CascadeType.MERGE)
-    private TextEntity description;
+    protected TextEntity description;
 
     protected ApiKeyEntity() { }
-
-    public ApiKeyEntity(ApiKey apiKey) {
-        assert(apiKey.id() != null);
-        assert(apiKey.apiKeyToken() != null);
-
-        this.id = apiKey.id().getValue();
-        this.token = apiKey.apiKeyToken().value();
-        this.prettyName = apiKey.prettyName().value();
-        this.description = new TextEntity(apiKey.description());
-        this.keyType = apiKey.keyType();
-    }
-
-    public ApiKey toDomain() {
-        return new ApiKey(
-                new ApiKeyId(this.id),
-                new PrettyName(this.prettyName),
-                this.description.toDomain(),
-                this.keyType,
-                new ApiKeyToken(this.token)
-        );
-    }
 
     @Override
     protected ApiKeyId id() {

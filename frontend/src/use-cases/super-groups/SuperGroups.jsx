@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-import { useDigitTranslations, DigitCRUD } from "@cthit/react-digit-components";
+import {
+    useDigitTranslations,
+    DigitCRUD,
+    DigitLoading
+} from "@cthit/react-digit-components";
 
 import { deleteSuperGroup } from "api/super-groups/delete.super-groups.api";
 import {
@@ -26,11 +30,23 @@ import {
 } from "./SuperGroups.options";
 import translations from "./SuperGroups.translations";
 import ShowSubGroups from "./elements/show-sub-groups";
+import { getSuperGroupTypes } from "../../api/super-group-types/get.super-group-types.api";
 
 const SuperGroups = () => {
     const [text] = useDigitTranslations(translations);
+    const [superGroupTypes, setSuperGroupTypes] = useState(null);
+
+    useEffect(() => {
+        getSuperGroupTypes().then(types => {
+            setSuperGroupTypes(types);
+        });
+    }, []);
 
     const admin = useGammaIsAdmin();
+
+    if (superGroupTypes == null) {
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
+    }
 
     return (
         <DigitCRUD
@@ -38,7 +54,7 @@ const SuperGroups = () => {
             keysOrder={keysOrder()}
             keysText={keysText(text)}
             formInitialValues={initialValues()}
-            formComponentData={keysComponentData(text)}
+            formComponentData={keysComponentData(text, superGroupTypes)}
             formValidationSchema={validationSchema(text)}
             name={"superGroups"}
             path={"/super-groups"}

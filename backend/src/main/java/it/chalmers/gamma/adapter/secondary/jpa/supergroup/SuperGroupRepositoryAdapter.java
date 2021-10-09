@@ -13,17 +13,17 @@ import java.util.Optional;
 public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     private final SuperGroupJpaRepository repository;
+    private final SuperGroupEntityConverter superGroupEntityConverter;
 
-    public SuperGroupRepositoryAdapter(SuperGroupJpaRepository repository) {
+    public SuperGroupRepositoryAdapter(SuperGroupJpaRepository repository,
+                                       SuperGroupEntityConverter superGroupEntityConverter) {
         this.repository = repository;
+        this.superGroupEntityConverter = superGroupEntityConverter;
     }
 
     @Override
     public void save(SuperGroup superGroup) {
-        SuperGroupEntity superGroupEntity = this.repository.findById(superGroup.id().value())
-                .orElse(new SuperGroupEntity(superGroup.id().value()));
-        superGroupEntity.apply(superGroup);
-        this.repository.save(superGroupEntity);
+        this.repository.save(this.superGroupEntityConverter.toEntity(superGroup));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public List<SuperGroup> getAll() {
-        return this.repository.findAll().stream().map(SuperGroupEntity::toDomain).toList();
+        return this.repository.findAll().stream().map(this.superGroupEntityConverter::toDomain).toList();
     }
 
     @Override
@@ -43,6 +43,6 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public Optional<SuperGroup> get(SuperGroupId superGroupId) {
-        return this.repository.findById(superGroupId.value()).map(SuperGroupEntity::toDomain);
+        return this.repository.findById(superGroupId.value()).map(this.superGroupEntityConverter::toDomain);
     }
 }

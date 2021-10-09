@@ -47,7 +47,7 @@ export const initialValues = () => {
     return output;
 };
 
-export const keysComponentData = text => {
+export const keysComponentData = (text, superGroupTypes) => {
     const componentData = {};
 
     componentData[SG_NAME] = {
@@ -75,12 +75,11 @@ export const keysComponentData = text => {
     };
 
     const typeValueToTextMap = {};
-    typeValueToTextMap[SG_TYPE_SOCIETY] = text.Society;
-    typeValueToTextMap[SG_TYPE_COMMITTEE] = text.Committee;
-    typeValueToTextMap[SG_TYPE_BOARD] = text.Board;
-    typeValueToTextMap[SG_TYPE_ADMIN] = text.Admin;
-    typeValueToTextMap[SG_TYPE_FUNCTIONARIES] = text.Functionaries;
-    typeValueToTextMap[SG_TYPE_ALUMNI] = text.Alumni;
+
+    for (let i = 0; i < superGroupTypes.length; i++) {
+        let { type } = superGroupTypes[i];
+        typeValueToTextMap[type] = type;
+    }
 
     componentData[SG_TYPE] = {
         component: DigitSelect,

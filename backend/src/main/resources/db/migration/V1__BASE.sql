@@ -143,7 +143,8 @@ CREATE TABLE apikey
     pretty_name VARCHAR(30) NOT NULL,
     description UUID REFERENCES internal_text ON DELETE CASCADE,
     token       VARCHAR(150) UNIQUE,
-    key_type    VARCHAR(30) NOT NULL
+    key_type    VARCHAR(30) NOT NULL,
+    version     INT
     --     origin           varchar(256) not null
 );
 

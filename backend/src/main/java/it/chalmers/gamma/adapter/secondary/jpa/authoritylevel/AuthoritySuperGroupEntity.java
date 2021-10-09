@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class AuthoritySuperGroupEntity extends ImmutableEntity<AuthoritySuperGroupPK> {
 
     @EmbeddedId
-    private AuthoritySuperGroupPK id;
+    protected AuthoritySuperGroupPK id;
 
     protected AuthoritySuperGroupEntity() { }
 
@@ -24,10 +24,6 @@ public class AuthoritySuperGroupEntity extends ImmutableEntity<AuthoritySuperGro
     @Override
     protected AuthoritySuperGroupPK id() {
         return this.id;
-    }
-
-    public SuperGroup getIdentifier() {
-        return this.id.getValue().superGroup();
     }
 
 }

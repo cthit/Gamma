@@ -79,17 +79,7 @@ const Clients = () => {
             deleteRequest={deleteClient}
             createRequest={client =>
                 new Promise((resolve, reject) =>
-                    addClient({
-                        name: client[CLIENT_NAME],
-                        description: {
-                            sv: client[CLIENT_DESCRIPTION_SWEDISH],
-                            en: client[CLIENT_DESCRIPTION_ENGLISH]
-                        },
-                        webServerRedirectUrl: client[CLIENT_REDIRECT],
-                        autoApprove: client.autoApprove,
-                        generateApiKey: client.generateApiKey,
-                        restrictions: client.restrictions
-                    })
+                    addClient(client)
                         .then(response => {
                             openCustomDialog({
                                 title: text.YourClientSecret,
