@@ -1,0 +1,19 @@
+server:
+    port: 3001
+spring:
+    security:
+        oauth2:
+            client:
+                registration:
+                    gamma:
+                        client-id: test
+                        client-secret: secret
+                        authorization-grant-type: authorization_code
+                        redirect-uri: http://localhost:3001/auth/account/callback
+                provider:
+                    gamma:
+                        token-uri: http://localhost:8081/api/oauth/token
+                        authorization-uri: http://localhost:8081/api/oauth/authorize
+                        user-info-endpoint: http://localhost:8081/api/client/v1/users/me
+                        user-name-attribute: nick
+                        client-name: Gamma

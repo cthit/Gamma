@@ -22,7 +22,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     protected UUID id;
 
     @JoinColumn(name = "description")
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
     protected TextEntity description;
 
     @Column(name = "e_name")
@@ -44,7 +44,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     }
 
     @Override
-    public SuperGroupId id() {
+    public SuperGroupId domainId() {
         return new SuperGroupId(this.id);
     }
 }

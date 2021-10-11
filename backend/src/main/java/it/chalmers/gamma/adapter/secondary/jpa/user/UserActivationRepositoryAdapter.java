@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.port.repository.UserActivationRepository;
+import it.chalmers.gamma.app.repository.UserActivationRepository;
 import it.chalmers.gamma.app.domain.user.Cid;
 import it.chalmers.gamma.app.domain.useractivation.UserActivation;
 import it.chalmers.gamma.app.domain.useractivation.UserActivationToken;
@@ -46,7 +46,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
     @Override
     public Cid getByToken(UserActivationToken token) {
-        return this.userActivationJpaRepository.findByToken(token.value()).orElseThrow().id();
+        return this.userActivationJpaRepository.findByToken(token.value()).orElseThrow().domainId();
     }
 
     @Override

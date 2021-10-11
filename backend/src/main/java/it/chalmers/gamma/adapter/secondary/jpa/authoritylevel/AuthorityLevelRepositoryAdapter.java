@@ -1,11 +1,13 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.app.port.repository.AuthorityLevelRepository;
+import it.chalmers.gamma.app.repository.AuthorityLevelRepository;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityType;
@@ -88,7 +90,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.authorityUserRepository.findAllById_UserEntity_Id(userId.value())
                 .forEach(authorityUserEntity -> names.add(
                         new UserAuthority(
-                                authorityUserEntity.id().getValue().authorityLevelName(),
+                                authorityUserEntity.domainId().getValue().authorityLevelName(),
                                 AuthorityType.AUTHORITY
                         )
                 ));
@@ -98,15 +100,20 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.membershipJpaRepository.findAllById_User_Id(userId.value())
                 .forEach(membershipEntity -> {
                     names.add(new UserAuthority(
-                            new AuthorityLevelName(membershipEntity.id().getGroup().getName()),
+                            new AuthorityLevelName(membershipEntity.domainId().getGroup().getName()),
                             AuthorityType.GROUP
                     ));
-                    userSuperGroups.add(membershipEntity.id().getGroup().getSuperGroup());
+
+                    SuperGroupEntity superGroupEntity = membershipEntity.domainId().getGroup().getSuperGroup();
+                    userSuperGroups.add(this.superGroupEntityConverter.toDomain(superGroupEntity));
+
+                    PostEntity postEntity = membershipEntity.domainId().getPost();
+
                     this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(
-                            membershipEntity.id().getGroup().superGroup.toDomain().id().getValue(),
-                            membershipEntity.id().getPost().toDomain().id().value()
+                            superGroupEntity.domainId().getValue(),
+                            postEntity.domainId().value()
                     ).forEach(authorityPostEntity -> names.add(new UserAuthority(
-                            authorityPostEntity.id().getValue().authorityLevelName(),
+                            authorityPostEntity.domainId().getValue().authorityLevelName(),
                             AuthorityType.AUTHORITY
                     )));
                 });
@@ -120,7 +127,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                 this.authoritySuperGroupRepository
                         .findAllById_SuperGroupEntity_Id(superGroupId.id().value())
                         .stream()
-                        .map(AuthoritySuperGroupEntity::id)
+                        .map(AuthoritySuperGroupEntity::domainId)
                         .map(AuthoritySuperGroupPK::getValue)
                         .map(AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO::authorityLevelName)
                         .map(authorityLevelName -> new UserAuthority(

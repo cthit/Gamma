@@ -3,7 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.user.UserId;
 
 import javax.persistence.Embeddable;
@@ -35,8 +34,8 @@ public class AuthorityUserPK extends PKId<AuthorityUserPK.AuthorityUserPKRecord>
     @Override
     public AuthorityUserPKRecord getValue() {
         return new AuthorityUserPKRecord(
-                this.userEntity.id(),
-                this.authorityLevel.id()
+                this.userEntity.domainId(),
+                this.authorityLevel.domainId()
         );
     }
 

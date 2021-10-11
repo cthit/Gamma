@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.user.Cid;
-import it.chalmers.gamma.app.domain.user.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
 import org.springframework.stereotype.Service;
@@ -29,12 +28,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public void delete(UserId userId) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setPassword(UserId userId, UnencryptedPassword password) {
-        throw new UnsupportedOperationException();
+        this.repository.deleteById(userId.value());
     }
 
     @Override

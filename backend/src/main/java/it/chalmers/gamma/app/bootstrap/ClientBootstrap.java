@@ -7,15 +7,14 @@ import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
-import it.chalmers.gamma.app.port.repository.ClientRepository;
+import it.chalmers.gamma.app.repository.ClientRepository;
 import it.chalmers.gamma.app.usecase.ClientUserApprovalUseCase;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.app.domain.client.ClientSecret;
 
-import it.chalmers.gamma.app.facade.ClientFacade;
 import it.chalmers.gamma.app.domain.user.User;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,20 +30,17 @@ public class ClientBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrap.class);
 
     private final String redirectUrl;
-    private final ClientFacade clientFacade;
     private final ClientUserApprovalUseCase userApprovalService;
     private final UserRepository userRepository;
     private final boolean mocking;
     private final ClientRepository clientRepository;
 
-    public ClientBootstrap(ClientFacade clientFacade,
-                           @Value("${application.mocking}") boolean mocking,
+    public ClientBootstrap(@Value("${application.mocking}") boolean mocking,
                            @Value("${application.default-oauth2-client.redirect-url}") String redirectUrl,
                            ClientUserApprovalUseCase userApprovalService,
                            UserRepository userRepository,
                            ClientRepository clientRepository) {
         this.redirectUrl = redirectUrl;
-        this.clientFacade = clientFacade;
         this.mocking = mocking;
         this.userApprovalService = userApprovalService;
         this.userRepository = userRepository;
@@ -52,7 +48,7 @@ public class ClientBootstrap {
     }
 
     public void runOauthClient() {
-        if(!this.mocking || !this.clientFacade.getAll().isEmpty()) {
+        if(!this.mocking || !this.clientRepository.getAll().isEmpty()) {
             return;
         }
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");

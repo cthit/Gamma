@@ -1,13 +1,11 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.app.domain.common.ImageUri;
-import it.chalmers.gamma.app.port.service.ImageService;
-import it.chalmers.gamma.app.port.service.PasswordService;
-import it.chalmers.gamma.app.port.repository.UserRepository;
-import it.chalmers.gamma.app.port.authentication.ApiAuthenticated;
-import it.chalmers.gamma.app.port.authentication.AuthenticatedService;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.service.PasswordService;
+import it.chalmers.gamma.app.repository.UserRepository;
+import it.chalmers.gamma.app.authentication.ApiAuthenticated;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.repository.GroupRepository;
 import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.user.Cid;
@@ -19,6 +17,7 @@ import it.chalmers.gamma.app.domain.user.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.app.domain.user.UserMembership;
+import it.chalmers.gamma.app.usecase.UserAgreementCheckUseCase;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -33,20 +32,20 @@ public class UserFacade extends Facade {
     private final AuthenticatedService authenticatedService;
     private final PasswordService passwordService;
     private final GroupRepository groupRepository;
-    private final ImageService imageService;
+    private final UserAgreementCheckUseCase userAgreementCheckUseCase;
 
-    public UserFacade(AccessGuard accessGuard,
+    public UserFacade(AccessGuardUseCase accessGuard,
                       UserRepository userRepository,
                       AuthenticatedService authenticatedService,
                       PasswordService passwordService,
                       GroupRepository groupRepository,
-                      ImageService imageService) {
+                      UserAgreementCheckUseCase userAgreementCheckUseCase) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
         this.passwordService = passwordService;
         this.groupRepository = groupRepository;
-        this.imageService = imageService;
+        this.userAgreementCheckUseCase = userAgreementCheckUseCase;
     }
 
     public record UserDTO(String cid,
@@ -159,9 +158,10 @@ public class UserFacade extends Facade {
                                   String email,
                                   boolean gdprTrained,
                                   boolean locked,
+                                  boolean userAgreement,
                                   String language) {
 
-        public UserExtendedDTO(User user) {
+        public UserExtendedDTO(User user, boolean userAgreement) {
             this(user.cid().value(),
                     user.nick().value(),
                     user.firstName().value(),
@@ -172,6 +172,7 @@ public class UserFacade extends Facade {
                     user.email().value(),
                     user.gdprTrained(),
                     user.locked(),
+                    userAgreement,
                     user.language().name()
             );
         }
@@ -182,7 +183,12 @@ public class UserFacade extends Facade {
         this.accessGuard.requireIsAdmin();
         UserId userId = new UserId(id);
 
-        Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
+        Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(
+                user -> new UserExtendedDTO(
+                        user,
+                        this.userAgreementCheckUseCase.hasAcceptedLatestUserAgreement(user)
+                )
+        );
         if (maybeUser.isEmpty()) {
             return Optional.empty();
         }

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.app.port.repository.WhitelistRepository;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.repository.WhitelistRepository;
 import it.chalmers.gamma.app.domain.user.Cid;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ public class WhitelistFacade extends Facade {
 
     private final WhitelistRepository whitelistRepository;
 
-    public WhitelistFacade(AccessGuard accessGuard,
+    public WhitelistFacade(AccessGuardUseCase accessGuard,
                            WhitelistRepository whitelistRepository) {
         super(accessGuard);
         this.whitelistRepository = whitelistRepository;

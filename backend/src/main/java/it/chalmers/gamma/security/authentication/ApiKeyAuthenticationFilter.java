@@ -2,19 +2,21 @@ package it.chalmers.gamma.security.authentication;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.domain.apikey.ApiKey;
+import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
+
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.apikey.ApiKey;
-import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 
 public class ApiKeyAuthenticationFilter implements Filter {
@@ -23,6 +25,11 @@ public class ApiKeyAuthenticationFilter implements Filter {
 
     public ApiKeyAuthenticationFilter(ApiKeyRepository apiKeyRepository) {
         this.apiKeyRepository = apiKeyRepository;
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+
     }
 
     @Override
@@ -40,6 +47,11 @@ public class ApiKeyAuthenticationFilter implements Filter {
             }
             chain.doFilter(request, response);
         }
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     private Optional<String> resolveToken(HttpServletRequest req) {

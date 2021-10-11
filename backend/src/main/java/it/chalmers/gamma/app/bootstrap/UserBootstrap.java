@@ -1,11 +1,10 @@
 package it.chalmers.gamma.app.bootstrap;
 
-import it.chalmers.gamma.app.port.service.PasswordService;
+import it.chalmers.gamma.app.service.PasswordService;
 import it.chalmers.gamma.app.domain.common.Email;
-import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.domain.user.AcceptanceYear;
 import it.chalmers.gamma.app.domain.user.Cid;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.user.FirstName;
 import it.chalmers.gamma.app.domain.user.Language;
 import it.chalmers.gamma.app.domain.user.LastName;

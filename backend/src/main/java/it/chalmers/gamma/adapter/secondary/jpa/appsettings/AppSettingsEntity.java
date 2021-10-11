@@ -18,24 +18,18 @@ public class AppSettingsEntity extends MutableEntity<SettingsId> {
     @Id
     private UUID id;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @Column(name = "last_updated_user_agreement")
     private Instant lastUpdatedUserAgreement;
 
     protected AppSettingsEntity() {
-
-    }
-
-    protected AppSettingsEntity(Settings settings) {
-        this.id = SettingsId.generate().getValue();
-        this.createdAt = Instant.now();
-        this.apply(settings);
+        this.id = UUID.randomUUID();
     }
 
     @Override
-    protected SettingsId id() {
+    protected SettingsId domainId() {
         return new SettingsId(this.id);
     }
 
@@ -44,6 +38,7 @@ public class AppSettingsEntity extends MutableEntity<SettingsId> {
     }
 
     protected void apply(Settings settings) {
+        this.updatedAt = Instant.now();
         this.lastUpdatedUserAgreement = settings.lastUpdatedUserAgreement();
     }
 }

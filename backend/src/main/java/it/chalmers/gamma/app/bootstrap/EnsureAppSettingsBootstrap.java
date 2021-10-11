@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.bootstrap;
 
 import it.chalmers.gamma.app.domain.settings.Settings;
-import it.chalmers.gamma.app.port.repository.AppSettingsRepository;
+import it.chalmers.gamma.app.repository.AppSettingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

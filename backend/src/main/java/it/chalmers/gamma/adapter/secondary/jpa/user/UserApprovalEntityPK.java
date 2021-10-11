@@ -2,15 +2,12 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.app.domain.PKId;
-import it.chalmers.gamma.app.domain.client.Client;
-import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.app.domain.user.UserId;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.io.Serializable;
 
 @Embeddable
 public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApprovalPKDTO> {
@@ -40,8 +37,8 @@ public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApproval
     @Override
     public UserApprovalPKDTO getValue() {
         return new UserApprovalPKDTO(
-                this.user.id(),
-                this.client.id()
+                this.user.domainId(),
+                this.client.domainId()
         );
     }
 }

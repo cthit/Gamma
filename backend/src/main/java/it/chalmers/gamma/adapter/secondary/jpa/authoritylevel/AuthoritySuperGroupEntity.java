@@ -22,8 +22,12 @@ public class AuthoritySuperGroupEntity extends ImmutableEntity<AuthoritySuperGro
     }
 
     @Override
-    protected AuthoritySuperGroupPK id() {
+    protected AuthoritySuperGroupPK domainId() {
         return this.id;
+    }
+
+    protected SuperGroupEntity getSuperGroup() {
+        return this.id.superGroupEntity;
     }
 
 }

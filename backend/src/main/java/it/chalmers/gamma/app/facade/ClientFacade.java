@@ -1,9 +1,9 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
-import it.chalmers.gamma.app.port.repository.ClientRepository;
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.repository.ClientRepository;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
@@ -27,7 +27,7 @@ public class ClientFacade extends Facade {
     private final ClientRepository clientRepository;
     private final ApiKeyRepository apiKeyRepository;
 
-    public ClientFacade(AccessGuard accessGuard,
+    public ClientFacade(AccessGuardUseCase accessGuard,
                         ClientRepository clientRepository,
                         ApiKeyRepository apiKeyRepository) {
         super(accessGuard);

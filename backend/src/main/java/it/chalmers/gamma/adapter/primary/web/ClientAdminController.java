@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.port.repository.ClientRepository;
+import it.chalmers.gamma.app.repository.ClientRepository;
 import it.chalmers.gamma.app.facade.ClientFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;

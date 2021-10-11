@@ -16,11 +16,13 @@ public abstract class MutableEntity<I extends Id<?>> extends AbstractEntity<I> {
     //TODO: Better exception
     public void throwIfNotValidVersion(int version) {
         if (this.version != version) {
-            throw new IllegalStateException();
+            throw new StaleDomainObjectException();
         }
     }
 
     public int getVersion() {
         return this.version;
     }
+
+    public static class StaleDomainObjectException extends RuntimeException { }
 }

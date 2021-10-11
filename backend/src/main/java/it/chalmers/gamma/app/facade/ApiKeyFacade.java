@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
@@ -10,7 +10,6 @@ import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public class ApiKeyFacade extends Facade {
 
     private final ApiKeyRepository apiKeyRepository;
 
-    public ApiKeyFacade(AccessGuard accessGuard, ApiKeyRepository apiKeyRepository) {
+    public ApiKeyFacade(AccessGuardUseCase accessGuard, ApiKeyRepository apiKeyRepository) {
         super(accessGuard);
         this.apiKeyRepository = apiKeyRepository;
     }
@@ -36,8 +35,8 @@ public class ApiKeyFacade extends Facade {
 
     public record NewApiKey(
             String prettyName,
-            String svText,
-            String enText,
+            String svDescription,
+            String enDescription,
             String keyType) {
     }
 
@@ -48,7 +47,7 @@ public class ApiKeyFacade extends Facade {
                 new ApiKey(
                         ApiKeyId.generate(),
                         new PrettyName(newApiKey.prettyName),
-                        new Text(newApiKey.svText, newApiKey.enText),
+                        new Text(newApiKey.svDescription, newApiKey.enDescription),
                         ApiKeyType.valueOf(newApiKey.keyType),
                         apiKeyToken
                 )

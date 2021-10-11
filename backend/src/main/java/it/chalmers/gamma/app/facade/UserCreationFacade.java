@@ -1,12 +1,11 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.app.port.service.PasswordService;
-import it.chalmers.gamma.app.port.repository.UserActivationRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
-import it.chalmers.gamma.app.port.service.MailService;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.service.PasswordService;
+import it.chalmers.gamma.app.repository.UserActivationRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
+import it.chalmers.gamma.app.service.MailService;
 import it.chalmers.gamma.app.domain.common.Email;
-import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.domain.user.AcceptanceYear;
 import it.chalmers.gamma.app.domain.user.Cid;
 import it.chalmers.gamma.app.domain.user.FirstName;
@@ -16,16 +15,14 @@ import it.chalmers.gamma.app.domain.user.Nick;
 import it.chalmers.gamma.app.domain.user.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
-import it.chalmers.gamma.app.domain.useractivation.UserActivation;
 import it.chalmers.gamma.app.domain.useractivation.UserActivationToken;
-import it.chalmers.gamma.app.port.repository.WhitelistRepository;
+import it.chalmers.gamma.app.repository.WhitelistRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,7 +38,7 @@ public class UserCreationFacade extends Facade {
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserCreationFacade.class);
 
-    public UserCreationFacade(AccessGuard accessGuard,
+    public UserCreationFacade(AccessGuardUseCase accessGuard,
                               MailService mailService,
                               WhitelistRepository whitelistRepository,
                               UserActivationRepository userActivationRepository,
@@ -77,6 +74,7 @@ public class UserCreationFacade extends Facade {
                                   String language) { }
 
     public void createUser(NewUser newUser) {
+        this.accessGuard.requireIsAdmin();
         this.userRepository.save(
                 new User(
                         UserId.generate(),

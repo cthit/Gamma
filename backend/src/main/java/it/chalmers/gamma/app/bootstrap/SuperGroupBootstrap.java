@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.bootstrap;
 
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
-import it.chalmers.gamma.app.port.repository.SuperGroupTypeRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;

@@ -29,8 +29,8 @@ public class UserAvatarEntity extends MutableEntity<UserId> {
     protected UserAvatarEntity() { }
 
     @Override
-    protected UserId id() {
-        return this.user.id();
+    protected UserId domainId() {
+        return this.user.domainId();
     }
 
     protected String getAvatarUri() {

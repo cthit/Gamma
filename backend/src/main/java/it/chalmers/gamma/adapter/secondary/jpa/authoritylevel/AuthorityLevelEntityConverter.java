@@ -1,8 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
@@ -20,17 +22,24 @@ import java.util.List;
 public class AuthorityLevelEntityConverter {
 
     private final UserEntityConverter userEntityConverter;
+    private final SuperGroupEntityConverter superGroupEntityConverter;
+    private final PostEntityConverter postEntityConverter;
+
     private final SuperGroupJpaRepository superGroupRepository;
     private final UserJpaRepository userRepository;
     private final PostJpaRepository postRepository;
     private final AuthorityLevelJpaRepository authorityLevelJpaRepository;
 
     public AuthorityLevelEntityConverter(UserEntityConverter userEntityConverter,
+                                         SuperGroupEntityConverter superGroupEntityConverter,
+                                         PostEntityConverter postEntityConverter,
                                          SuperGroupJpaRepository superGroupRepository,
                                          UserJpaRepository userRepository,
                                          PostJpaRepository postRepository,
                                          AuthorityLevelJpaRepository authorityLevelJpaRepository) {
         this.userEntityConverter = userEntityConverter;
+        this.superGroupEntityConverter = superGroupEntityConverter;
+        this.postEntityConverter = postEntityConverter;
         this.superGroupRepository = superGroupRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -40,9 +49,20 @@ public class AuthorityLevelEntityConverter {
     public AuthorityLevel toDomain(AuthorityLevelEntity authorityLevelEntity) {
         return new AuthorityLevel(
                 AuthorityLevelName.valueOf(authorityLevelEntity.getAuthorityLevel()),
-                authorityLevelEntity.getPosts().stream().map(AuthorityPostEntity::getIdentifier).toList(),
-                authorityLevelEntity.getSuperGroups().stream().map(AuthoritySuperGroupEntity::getIdentifier).toList(),
-                authorityLevelEntity.getUsers().stream()
+                authorityLevelEntity.getPosts()
+                        .stream()
+                        .map(authorityPostEntity -> new AuthorityLevel.SuperGroupPost(
+                                this.superGroupEntityConverter.toDomain(authorityPostEntity.getSuperGroupEntity()),
+                                this.postEntityConverter.toDomain(authorityPostEntity.getPost())
+                        ))
+                        .toList(),
+                authorityLevelEntity.getSuperGroups()
+                        .stream()
+                        .map(AuthoritySuperGroupEntity::getSuperGroup)
+                        .map(this.superGroupEntityConverter::toDomain)
+                        .toList(),
+                authorityLevelEntity.getUsers()
+                        .stream()
                         .map(AuthorityUserEntity::getUserEntity)
                         .map(this.userEntityConverter::toDomain)
                         .toList()

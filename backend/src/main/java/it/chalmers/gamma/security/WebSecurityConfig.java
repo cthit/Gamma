@@ -1,39 +1,57 @@
 package it.chalmers.gamma.security;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import it.chalmers.gamma.app.facade.ApiKeyFacade;
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.security.authentication.ApiKeyAuthenticationFilter;
-import it.chalmers.gamma.security.oauth.OAuthRedirectFilter;
-import it.chalmers.gamma.security.login.LoginRedirectHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeAuthenticationProvider;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.Arrays;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.UUID;
 
 @Configuration
-@EnableResourceServer
-@Order(2)
+@Order(Ordered.HIGHEST_PRECEDENCE)
+@EnableWebSecurity
+//@Import(OAuth2AuthorizationServerConfiguration.class)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${security.jwt.token.secret-key}")
@@ -47,26 +65,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CookieCsrfTokenRepository cookieCsrfTokenRepository;
     private final ApiKeyRepository apiKeyRepository;
 
-    private final ApiKeyFacade apiKeyFacade;
-
     @Value("${application.frontend-client-details.successful-login-uri}")
     private String baseFrontendUrl;
-    private final LoginRedirectHandler loginRedirectHandler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     public WebSecurityConfig(UserDetailsService userDetailsService,
                              PasswordEncoder passwordEncoder,
-                             LoginRedirectHandler loginRedirectHandler,
                              CookieCsrfTokenRepository cookieCsrfTokenRepository,
-                             ApiKeyRepository apiKeyRepository,
-                             ApiKeyFacade apiKeyFacade) {
+                             ApiKeyRepository apiKeyRepository) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
-        this.loginRedirectHandler = loginRedirectHandler;
         this.cookieCsrfTokenRepository = cookieCsrfTokenRepository;
         this.apiKeyRepository = apiKeyRepository;
-        this.apiKeyFacade = apiKeyFacade;
     }
 
     @Override
@@ -78,8 +89,60 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         setPermittedPaths(http);
         setAdminPaths(http);
         setTheRestOfPathsToAuthenticatedOnly(http);
-        addRedirectFilter(http);
+
+        try {
+            http
+                    .oauth2Client()
+                    .authorizationCodeGrant();
+
+            http
+                    .oauth2ResourceServer()
+                    .jwt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    @Bean
+    public OAuth2AuthorizationCodeAuthenticationProvider oAuth2AuthorizationCodeAuthenticationProvider() {
+//        return new OAuth2AuthorizationCodeAuthenticationProvider()
+        return null;
+    }
+
+
+//
+//
+//    @Bean
+//    public OAuth2AuthorizedClientManager authorizedClientManager(
+//            ClientRegistrationRepository clientRegistrationRepository,
+//            OAuth2AuthorizedClientRepository authorizedClientRepository) {
+//
+//        OAuth2AuthorizedClientProvider authorizedClientProvider =
+//                OAuth2AuthorizedClientProviderBuilder.builder()
+//                        .authorizationCode()
+//                        .refreshToken()
+//                        .clientCredentials()
+//                        .password()
+//                        .build();
+//
+//        DefaultOAuth2AuthorizedClientManager authorizedClientManager =
+//                new DefaultOAuth2AuthorizedClientManager(
+//                        clientRegistrationRepository, authorizedClientRepository);
+//        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+//
+//        return authorizedClientManager;
+//    }
+
+    @Bean
+    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
+    }
+
+    @Bean
+    public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
+    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -108,15 +171,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 
-    private void addRedirectFilter(HttpSecurity http) {
-        try {
-            OAuthRedirectFilter oauthRedirectFilter = new OAuthRedirectFilter();
-            http.addFilterBefore(oauthRedirectFilter, BasicAuthenticationFilter.class);
-        } catch (Exception e) {
-            LOGGER.error("Something went wrong when adding redirects", e);
-        }
-    }
-
     private void setSessionManagementToIfRequired(HttpSecurity http) {
         try {
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
@@ -127,16 +181,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void addAuthenticationFilter(HttpSecurity http) {
         try {
-            http.addFilterBefore(new ApiKeyAuthenticationFilter(apiKeyRepository),  UsernamePasswordAuthenticationFilter.class);
-//            http.apply(
-//                    new AuthenticationFilterConfigurer(
-//                            this.userService,
-//                            this.secretKey,
-//                            this.issuer,
-//                            this.userPasswordResetService,
-//                            this.baseFrontendUrl,
-//                            this.apiKeyService)
-//            );
+//            http.addFilterBefore(new ApiKeyAuthenticationFilter(apiKeyRepository),  UsernamePasswordAuthenticationFilter.class);
         } catch (Exception e) {
             LOGGER.error("Something went wrong when adding JwtAuthenticationFilter", e);
         }
@@ -147,7 +192,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .formLogin()
                     .loginPage("/login")
-                    .successHandler(this.loginRedirectHandler)
                     .permitAll()
                     .and()
                     .logout()
@@ -211,10 +255,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-            ;
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
         } catch (Exception e) {
             LOGGER.error("Something went wrong when setting paths to authenticated only.", e);
         }
     }
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException {
+        RSAKey rsaKey = generateRsa();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+    }
+
+    private static RSAKey generateRsa() throws NoSuchAlgorithmException {
+        KeyPair keyPair = generateRsaKey();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        return new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .keyID(UUID.randomUUID().toString())
+                .build();
+    }
+
+    private static KeyPair generateRsaKey() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
 }

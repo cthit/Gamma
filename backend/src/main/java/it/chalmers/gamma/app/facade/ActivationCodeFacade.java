@@ -1,9 +1,9 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.user.Cid;
 import it.chalmers.gamma.app.domain.useractivation.UserActivation;
-import it.chalmers.gamma.app.port.repository.UserActivationRepository;
+import it.chalmers.gamma.app.repository.UserActivationRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,7 +15,7 @@ public class ActivationCodeFacade extends Facade {
 
     private final UserActivationRepository userActivationRepository;
 
-    public ActivationCodeFacade(AccessGuard accessGuard,
+    public ActivationCodeFacade(AccessGuardUseCase accessGuard,
                                 UserActivationRepository userActivationRepository) {
         super(accessGuard);
         this.userActivationRepository = userActivationRepository;

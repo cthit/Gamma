@@ -1,9 +1,9 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class UserGdprTrainingFacade extends Facade {
 
     private final UserRepository userRepository;
 
-    public UserGdprTrainingFacade(AccessGuard accessGuard,
+    public UserGdprTrainingFacade(AccessGuardUseCase accessGuard,
                                   UserRepository userRepository) {
         super(accessGuard);
         this.userRepository = userRepository;

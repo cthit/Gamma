@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
-import it.chalmers.gamma.app.port.repository.SuperGroupTypeRepository;
+import it.chalmers.gamma.app.repository.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupType;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class SuperGroupTypeRepositoryAdapter implements SuperGroupTypeRepository
 
     @Override
     public void delete(SuperGroupType superGroupType) throws SuperGroupTypeNotFoundException, SuperGroupTypeHasUsagesException {
-        throw new UnsupportedOperationException();
+        this.repository.deleteById(superGroupType.value());
     }
 
     @Override

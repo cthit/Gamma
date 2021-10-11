@@ -29,9 +29,9 @@ const ResetPasswordInitialize = () => {
             <DigitEditDataCard
                 centerFields
                 validationSchema={yup.object().shape({
-                    cid: yup.string().required(text.FieldRequired)
+                    cidOrEmail: yup.string().required(text.FieldRequired)
                 })}
-                initialValues={{ cid: "" }}
+                initialValues={{ cidOrEmail: "" }}
                 onSubmit={(values, actions) => {
                     resetPasswordInitialize(values)
                         .then(() => {
@@ -59,7 +59,7 @@ const ResetPasswordInitialize = () => {
                 submitText={text.ResetPassword}
                 size={{ width: "300px", height: "300px" }}
                 keysComponentData={{
-                    cid: {
+                    cidOrEmail: {
                         component: DigitTextField,
                         componentProps: {
                             upperLabel: text.Cid,
@@ -67,7 +67,7 @@ const ResetPasswordInitialize = () => {
                         }
                     }
                 }}
-                keysOrder={["cid"]}
+                keysOrder={["cidOrEmail"]}
             />
         </DigitLayout.Center>
     );

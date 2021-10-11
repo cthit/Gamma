@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.port.repository.PostRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
 import it.chalmers.gamma.app.domain.post.Post;
 import it.chalmers.gamma.app.domain.post.PostId;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class PostRepositoryAdapter implements PostRepository {
 
     @Override
     public void delete(PostId postId) throws PostNotFoundException {
-        throw new UnsupportedOperationException();
+        this.repository.deleteById(postId.value());
     }
 
     @Override

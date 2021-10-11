@@ -4,9 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEnti
 import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.client.ClientId;
-import it.chalmers.gamma.app.domain.Id;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -35,7 +33,7 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
     @Override
     public ClientRestrictionPKDTO getValue() {
         return new ClientRestrictionPKDTO(
-                this.client.id(),
+                this.client.domainId(),
                 AuthorityLevelName.valueOf(this.authorityLevel.getAuthorityLevel())
         );
     }

@@ -1,17 +1,16 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.adapter.secondary.image.ImageFile;
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupId;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
-import it.chalmers.gamma.app.port.authentication.AuthenticatedService;
-import it.chalmers.gamma.app.port.authentication.UserAuthenticated;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
-import it.chalmers.gamma.app.port.service.ImageService;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.app.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
+import it.chalmers.gamma.app.service.ImageService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -25,7 +24,7 @@ public class ImageFacade extends Facade {
     private final GroupRepository groupRepository;
     private final AuthenticatedService authenticatedService;
 
-    public ImageFacade(AccessGuard accessGuard,
+    public ImageFacade(AccessGuardUseCase accessGuard,
                        ImageService imageService,
                        UserRepository userRepository,
                        GroupRepository groupRepository,
@@ -79,8 +78,8 @@ public class ImageFacade extends Facade {
     }
 
     public void setMeAvatar(ImageService.Image image) throws ImageService.ImageCouldNotBeSavedException {
-        if (authenticatedService.getAuthenticated() instanceof UserAuthenticated userAuthenticated) {
-            User user = userAuthenticated.get();
+        if (authenticatedService.getAuthenticated() instanceof InternalUserAuthenticated internalUserAuthenticated) {
+            User user = internalUserAuthenticated.get();
             ImageUri imageUri = this.imageService.saveImage(image);
             this.userRepository.save(user.withAvatarUri(Optional.of(imageUri)));
         }

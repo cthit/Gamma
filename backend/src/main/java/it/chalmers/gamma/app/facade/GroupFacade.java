@@ -1,11 +1,11 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.group.UnofficialPostName;
 import it.chalmers.gamma.app.domain.post.PostId;
 import it.chalmers.gamma.app.domain.user.UserId;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupId;
@@ -13,11 +13,10 @@ import it.chalmers.gamma.app.domain.group.GroupMember;
 import it.chalmers.gamma.app.domain.user.Name;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.app.port.repository.PostRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class GroupFacade extends Facade {
     private final PostRepository postRepository;
     private final SuperGroupRepository superGroupRepository;
 
-    public GroupFacade(AccessGuard accessGuard,
+    public GroupFacade(AccessGuardUseCase accessGuard,
                        GroupRepository groupRepository,
                        UserRepository userRepository,
                        PostRepository postRepository,

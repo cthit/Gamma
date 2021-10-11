@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
@@ -53,7 +52,7 @@ public class ClientEntityConverter {
                 .toList();
 
         return new Client(
-                clientEntity.id(),
+                clientEntity.domainId(),
                 new ClientSecret(clientEntity.clientSecret),
                 new WebServerRedirectUrl(clientEntity.webServerRedirectUrl),
                 clientEntity.autoApprove,

@@ -72,16 +72,7 @@ const ApiKeys = () => {
             readOneRequest={getApiKey}
             readAllRequest={getApiKeys}
             deleteRequest={deleteApiKey}
-            createRequest={newApi =>
-                addApiKey({
-                    prettyName: newApi.prettyName,
-                    keyType: newApi.keyType,
-                    description: {
-                        sv: newApi.descriptionSv,
-                        en: newApi.descriptionEn
-                    }
-                })
-            }
+            createRequest={newApi => addApiKey(newApi)}
             onCreate={response => {
                 const secret = response.data;
                 showCustomDialog({

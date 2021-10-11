@@ -3,7 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.facade.ImageFacade;
-import it.chalmers.gamma.app.port.service.ImageService;
+import it.chalmers.gamma.app.service.ImageService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;

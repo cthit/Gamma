@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.facade.ApiKeyFacade;
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -28,8 +28,8 @@ public final class ApiKeyAdminController {
 
     private record CreateApiKeyRequest(
             String prettyName,
-            String svText,
-            String enText,
+            String svDescription,
+            String enDescription,
             String keyType //client, goldapps, chalmersit
     ) { }
 
@@ -38,8 +38,8 @@ public final class ApiKeyAdminController {
         return this.apiKeyFacade.create(
                 new ApiKeyFacade.NewApiKey(
                         request.prettyName,
-                        request.svText,
-                        request.enText,
+                        request.svDescription,
+                        request.enDescription,
                         request.keyType
                 )
         );

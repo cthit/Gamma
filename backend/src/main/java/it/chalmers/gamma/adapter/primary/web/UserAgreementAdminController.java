@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.facade.UserAgreementFacade;
 import it.chalmers.gamma.util.response.BadRequestResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,22 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/admin/useragreement")
 public class UserAgreementAdminController {
 
-//    private final ResetUserAgreement resetUserAgreement;
-//
-//    public UserAgreementAdminController(ResetUserAgreement resetUserAgreement) {
-//        this.resetUserAgreement = resetUserAgreement;
-//    }
+    private final UserAgreementFacade userAgreementFacade;
+
+    public UserAgreementAdminController(UserAgreementFacade userAgreementFacade) {
+        this.userAgreementFacade = userAgreementFacade;
+    }
 
     private record ConfirmPassword(String password) { }
 
     @PostMapping
     public UserAgreementHasBeenResetResponse resetUserAgreement(@RequestBody ConfirmPassword password) {
-        //TODO: Fix
-//        try {
-//            this.resetUserAgreement.resetUserAgreement(password.password);
-//        } catch (ResetUserAgreement.IncorrectPasswordException e) {
-//            throw new IncorrectPasswordResponse();
-//        }
+        this.userAgreementFacade.resetUserAgreement(password.password);
         return new UserAgreementHasBeenResetResponse();
     }
 

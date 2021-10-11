@@ -1,11 +1,11 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.app.port.repository.AuthorityLevelRepository;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
-import it.chalmers.gamma.app.port.repository.PostRepository;
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.repository.AuthorityLevelRepository;
+import it.chalmers.gamma.app.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.post.PostId;
@@ -13,7 +13,7 @@ import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
-import it.chalmers.gamma.app.port.service.ImageService;
+import it.chalmers.gamma.app.service.ImageService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class AuthorityLevelFacade extends Facade {
     private final SuperGroupRepository superGroupRepository;
     private final ImageService imageService;
 
-    public AuthorityLevelFacade(AccessGuard accessGuard,
+    public AuthorityLevelFacade(AccessGuardUseCase accessGuard,
                                 AuthorityLevelRepository authorityLevelRepository,
                                 UserRepository userRepository,
                                 GroupRepository groupRepository,
@@ -121,15 +121,47 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void removeSuperGroupFromAuthorityLevel(String name, UUID superGroupId) {
-        throw new UnsupportedOperationException();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+
+        List<SuperGroup> newSuperGroups = new ArrayList<>(authorityLevel.superGroups());
+        for (int i = 0; i < newSuperGroups.size(); i++) {
+            if (newSuperGroups.get(i).id().value().equals(superGroupId)) {
+                newSuperGroups.remove(i);
+                break;
+            }
+        }
+
+        this.authorityLevelRepository.save(authorityLevel.withSuperGroups(newSuperGroups));
     }
 
     public void removeSuperGroupPostFromAuthorityLevel(String name, UUID superGroupId, UUID postId) {
-        throw new UnsupportedOperationException();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+
+        List<AuthorityLevel.SuperGroupPost> newPosts = new ArrayList<>(authorityLevel.posts());
+        for (int i = 0; i < newPosts.size(); i++) {
+            AuthorityLevel.SuperGroupPost superGroupPost = newPosts.get(i);
+            if (superGroupPost.post().id().value().equals(postId)
+                    && superGroupPost.superGroup().id().value().equals(superGroupId)) {
+                newPosts.remove(i);
+                break;
+            }
+        }
+
+        this.authorityLevelRepository.save(authorityLevel.withPosts(newPosts));
     }
 
     public void removeUserFromAuthorityLevel(String name, UUID userId) {
-        throw new UnsupportedOperationException();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+
+        List<User> newUsers = new ArrayList<>(authorityLevel.users());
+        for (int i = 0; i < newUsers.size(); i++) {
+            if (newUsers.get(i).id().value().equals(userId)) {
+                newUsers.remove(i);
+                break;
+            }
+        }
+
+        this.authorityLevelRepository.save(authorityLevel.withUsers(newUsers));
     }
 
     public boolean authorityLevelUsed(AuthorityLevelName adminAuthorityLevel) {

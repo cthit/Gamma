@@ -3,7 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import it.chalmers.gamma.app.facade.SuperGroupFacade;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

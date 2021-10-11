@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.userdetails;
 
-import it.chalmers.gamma.app.port.repository.AuthorityLevelRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.AuthorityLevelRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.user.Cid;
 import it.chalmers.gamma.app.domain.user.User;

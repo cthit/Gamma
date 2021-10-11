@@ -1,14 +1,14 @@
 package it.chalmers.gamma.adapter.secondary.authenticated;
 
 import it.chalmers.gamma.adapter.secondary.userdetails.UserDetailsProxy;
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
-import it.chalmers.gamma.app.port.authentication.ApiAuthenticated;
-import it.chalmers.gamma.app.port.authentication.Authenticated;
-import it.chalmers.gamma.app.port.authentication.AuthenticatedService;
-import it.chalmers.gamma.app.port.authentication.Unauthenticated;
-import it.chalmers.gamma.app.port.authentication.UserAuthenticated;
-import it.chalmers.gamma.app.port.repository.ClientRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.authentication.ApiAuthenticated;
+import it.chalmers.gamma.app.authentication.Authenticated;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.authentication.Unauthenticated;
+import it.chalmers.gamma.app.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.app.repository.ClientRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.Client;
@@ -36,10 +36,14 @@ public class AuthenticatedServiceAdapter implements AuthenticatedService {
 
     @Override
     public Authenticated getAuthenticated() {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return new Unauthenticated() {};
+        }
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetailsProxy userDetailsProxy) {
             User user = this.userRepository.get(Cid.valueOf(userDetailsProxy.getUsername())).orElseThrow(IllegalStateException::new);
-            return (UserAuthenticated) () -> user;
+            return (InternalUserAuthenticated) () -> user;
         }
 
         if (principal instanceof ApiKeyToken apiKeyToken) {

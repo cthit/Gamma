@@ -3,8 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 
 import javax.persistence.Embeddable;
@@ -38,8 +36,8 @@ public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthorityS
     @Override
     public AuthoritySuperGroupPKDTO getValue() {
         return new AuthoritySuperGroupPKDTO(
-                this.superGroupEntity.id(),
-                this.authorityLevel.id()
+                this.superGroupEntity.domainId(),
+                this.authorityLevel.domainId()
         );
     }
 }

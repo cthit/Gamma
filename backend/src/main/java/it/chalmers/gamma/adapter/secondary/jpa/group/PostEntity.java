@@ -18,7 +18,7 @@ public class PostEntity extends MutableEntity<PostId> {
     protected UUID id;
 
     @JoinColumn(name = "post_name")
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
     protected TextEntity postName;
 
     @Column(name = "email_prefix")
@@ -31,7 +31,7 @@ public class PostEntity extends MutableEntity<PostId> {
     }
 
     @Override
-    public PostId id() {
+    public PostId domainId() {
         return new PostId(this.id);
     }
 

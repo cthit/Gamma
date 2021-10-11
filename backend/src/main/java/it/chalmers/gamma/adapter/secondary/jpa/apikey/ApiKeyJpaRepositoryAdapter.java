@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;

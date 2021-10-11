@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.whitelist;
 
-import it.chalmers.gamma.app.port.repository.WhitelistRepository;
+import it.chalmers.gamma.app.repository.WhitelistRepository;
 import it.chalmers.gamma.app.domain.user.Cid;
 import org.springframework.stereotype.Service;
 

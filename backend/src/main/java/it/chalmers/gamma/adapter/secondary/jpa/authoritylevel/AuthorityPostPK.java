@@ -2,12 +2,9 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
-import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.post.Post;
 import it.chalmers.gamma.app.domain.post.PostId;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 
 import javax.persistence.Embeddable;
@@ -40,9 +37,9 @@ public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord>
     @Override
     public AuthorityPostPKRecord getValue() {
         return new AuthorityPostPKRecord(
-                this.superGroupEntity.id(),
-                this.postEntity.id(),
-                this.authorityLevel.id()
+                this.superGroupEntity.domainId(),
+                this.postEntity.domainId(),
+                this.authorityLevel.domainId()
         );
     }
 

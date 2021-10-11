@@ -21,7 +21,7 @@ public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK> {
     }
 
     @Override
-    protected UserApprovalEntityPK id() {
+    protected UserApprovalEntityPK domainId() {
         return this.id;
     }
 

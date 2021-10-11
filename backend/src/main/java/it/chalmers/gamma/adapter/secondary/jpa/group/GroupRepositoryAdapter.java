@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.app.domain.post.PostId;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.GroupRepository;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupId;
 import it.chalmers.gamma.app.domain.group.UnofficialPostName;
@@ -40,7 +40,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     @Override
     public void delete(GroupId groupId) throws GroupNotFoundException {
-        throw new UnsupportedOperationException();
+        this.groupJpaRepository.deleteById(groupId.value());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
     public List<Group> getAllByPost(PostId postId) {
         return this.membershipJpaRepository.findAllById_Post_Id(postId.value())
                 .stream()
-                .map(membershipEntity -> membershipEntity.id().getGroup())
+                .map(membershipEntity -> membershipEntity.domainId().getGroup())
                 .map(this.groupEntityConverter::toDomain)
                 .distinct()
                 .toList();
@@ -71,8 +71,8 @@ public class GroupRepositoryAdapter implements GroupRepository {
         return this.membershipJpaRepository.findAllById_User_Id(userId.value())
                 .stream()
                 .map(membershipEntity -> new UserMembership(
-                        postEntityConverter.toDomain(membershipEntity.id().getPost()),
-                        this.groupEntityConverter.toDomain(membershipEntity.id().getGroup()),
+                        postEntityConverter.toDomain(membershipEntity.domainId().getPost()),
+                        this.groupEntityConverter.toDomain(membershipEntity.domainId().getGroup()),
                         new UnofficialPostName(membershipEntity.getUnofficialPostName())
                 ))
                 .toList();

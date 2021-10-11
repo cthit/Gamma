@@ -3,7 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import java.util.List;
 
 import it.chalmers.gamma.app.facade.WhitelistFacade;
-import it.chalmers.gamma.app.port.repository.WhitelistRepository;
+import it.chalmers.gamma.app.repository.WhitelistRepository;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

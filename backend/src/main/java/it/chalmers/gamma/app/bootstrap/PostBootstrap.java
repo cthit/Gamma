@@ -3,7 +3,7 @@ package it.chalmers.gamma.app.bootstrap;
 import it.chalmers.gamma.app.domain.common.Text;
 import it.chalmers.gamma.app.domain.group.EmailPrefix;
 import it.chalmers.gamma.app.domain.post.Post;
-import it.chalmers.gamma.app.port.repository.PostRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
 import it.chalmers.gamma.app.domain.post.PostId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

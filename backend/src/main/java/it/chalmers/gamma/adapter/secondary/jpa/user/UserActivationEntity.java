@@ -40,7 +40,7 @@ public class UserActivationEntity extends ImmutableEntity<Cid> {
     }
 
     @Override
-    protected Cid id() {
+    protected Cid domainId() {
         return Cid.valueOf(this.cid);
     }
 }

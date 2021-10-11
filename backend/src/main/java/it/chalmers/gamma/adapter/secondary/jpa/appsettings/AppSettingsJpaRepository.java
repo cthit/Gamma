@@ -8,6 +8,6 @@ import java.util.Optional;
 @Repository
 public interface AppSettingsJpaRepository extends JpaRepository<AppSettingsEntity, Integer> {
 
-    Optional<AppSettingsEntity> findTopByOrderByIdDesc();
+    Optional<AppSettingsEntity> findTopByOrderByVersionDesc();
 
 }

@@ -1,20 +1,21 @@
 package it.chalmers.gamma.app.bootstrap;
 
-import it.chalmers.gamma.app.facade.AuthorityLevelFacade;
+import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.app.repository.AuthorityLevelRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdminAuthorityLevelBootstrap {
 
-    private final AuthorityLevelFacade authorityLevelFacade;
+    private final AuthorityLevelRepository authorityLevelRepository;
 
-    public AdminAuthorityLevelBootstrap(AuthorityLevelFacade authorityLevelFacade) {
-        this.authorityLevelFacade = authorityLevelFacade;
+    public AdminAuthorityLevelBootstrap(AuthorityLevelRepository authorityLevelRepository) {
+        this.authorityLevelRepository = authorityLevelRepository;
     }
 
     public void ensureAdminAuthorityLevel() {
         String admin = "admin";
-        this.authorityLevelFacade.create(admin);
+        this.authorityLevelRepository.create(new AuthorityLevelName(admin));
     }
 
 }

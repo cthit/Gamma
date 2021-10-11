@@ -1,12 +1,12 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 
 public abstract class Facade {
 
-    protected AccessGuard accessGuard;
+    protected AccessGuardUseCase accessGuard;
 
-    public Facade(AccessGuard accessGuard) {
+    public Facade(AccessGuardUseCase accessGuard) {
         this.accessGuard = accessGuard;
     }
 

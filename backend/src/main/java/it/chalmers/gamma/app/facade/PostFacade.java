@@ -1,12 +1,12 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.common.Text;
 import it.chalmers.gamma.app.domain.group.EmailPrefix;
 import it.chalmers.gamma.app.domain.post.Post;
 import it.chalmers.gamma.app.domain.post.PostId;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
-import it.chalmers.gamma.app.port.repository.PostRepository;
+import it.chalmers.gamma.app.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class PostFacade extends Facade {
     private final PostRepository postRepository;
     private final GroupRepository groupRepository;
 
-    public PostFacade(AccessGuard accessGuard,
+    public PostFacade(AccessGuardUseCase accessGuard,
                       PostRepository postRepository,
                       GroupRepository groupRepository) {
         super(accessGuard);
@@ -55,7 +55,6 @@ public class PostFacade extends Facade {
                 .build();
 
         this.postRepository.save(newPost);
-        throw new UnsupportedOperationException();
     }
 
     public void delete(UUID postId) throws PostRepository.PostNotFoundException {

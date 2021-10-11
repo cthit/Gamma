@@ -16,7 +16,7 @@ CREATE TABLE ituser
     last_name       VARCHAR(50) NOT NULL,
     email           VARCHAR(100) NOT NULL UNIQUE,
     LANGUAGE        VARCHAR(15) NULL,
-    user_agreement_accepted  TIME NOT NULL DEFAULT NOW(),
+    user_agreement_accepted  TIMESTAMP NOT NULL DEFAULT NOW(),
     acceptance_year INTEGER,
     version         INT,
     gdpr_training   BOOLEAN DEFAULT FALSE,
@@ -33,7 +33,7 @@ CREATE TABLE user_avatar_uri
 
 CREATE TABLE password_reset
 (
-    token      VARCHAR(100) NOT NULL,
+    token      VARCHAR(100) UNIQUE,
     user_id    UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
@@ -171,7 +171,7 @@ CREATE TABLE group_images_uri
 
 CREATE TABLE settings (
     id UUID PRIMARY KEY ,
-    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    updated_at TIMESTAMP NOT NULL,
     last_updated_user_agreement TIMESTAMP,
     version    INT
 );

@@ -6,7 +6,7 @@ import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
-import it.chalmers.gamma.app.port.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

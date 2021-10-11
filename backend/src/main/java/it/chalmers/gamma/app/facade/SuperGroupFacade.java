@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
@@ -8,8 +8,8 @@ import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupBuilder;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupType;
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
-import it.chalmers.gamma.app.port.repository.SuperGroupTypeRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.domain.user.Name;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class SuperGroupFacade extends Facade {
     private final SuperGroupRepository superGroupRepository;
     private final SuperGroupTypeRepository superGroupTypeRepository;
 
-    public SuperGroupFacade(AccessGuard accessGuard,
+    public SuperGroupFacade(AccessGuardUseCase accessGuard,
                             SuperGroupRepository superGroupRepository,
                             SuperGroupTypeRepository superGroupTypeRepository) {
         super(accessGuard);

@@ -30,13 +30,13 @@ public class ApiKeyEntity extends MutableEntity<ApiKeyId> {
     protected ApiKeyType keyType;
 
     @JoinColumn(name = "description")
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
     protected TextEntity description;
 
     protected ApiKeyEntity() { }
 
     @Override
-    protected ApiKeyId id() {
+    protected ApiKeyId domainId() {
         return new ApiKeyId(this.id);
     }
 

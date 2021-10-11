@@ -1,15 +1,16 @@
 package it.chalmers.gamma.app.facade;
 
-import it.chalmers.gamma.app.AccessGuard;
-import it.chalmers.gamma.app.port.repository.PasswordResetRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
-import it.chalmers.gamma.app.port.service.MailService;
+import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.repository.PasswordResetRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
+import it.chalmers.gamma.app.service.MailService;
 import it.chalmers.gamma.app.domain.user.UserSignInIdentifier;
 import it.chalmers.gamma.app.domain.user.Cid;
 import it.chalmers.gamma.app.domain.common.Email;
 import it.chalmers.gamma.app.domain.user.passwordreset.PasswordResetToken;
 import it.chalmers.gamma.app.domain.user.UnencryptedPassword;
 import it.chalmers.gamma.app.domain.user.User;
+import it.chalmers.gamma.app.service.PasswordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,17 +23,20 @@ public class UserResetPasswordFacade extends Facade {
     private final MailService mailService;
     private final UserRepository userRepository;
     private final PasswordResetRepository passwordResetRepository;
+    private final PasswordService passwordService;
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserResetPasswordFacade.class);
 
-    public UserResetPasswordFacade(AccessGuard accessGuard,
+    public UserResetPasswordFacade(AccessGuardUseCase accessGuard,
                                    MailService mailService,
                                    UserRepository userRepository,
-                                   PasswordResetRepository passwordResetRepository) {
+                                   PasswordResetRepository passwordResetRepository,
+                                   PasswordService passwordService) {
         super(accessGuard);
         this.mailService = mailService;
         this.userRepository = userRepository;
         this.passwordResetRepository = passwordResetRepository;
+        this.passwordService = passwordService;
     }
 
     public void startResetPasswordProcess(String cidOrEmail) throws PasswordResetProcessException {
@@ -74,7 +78,11 @@ public class UserResetPasswordFacade extends Facade {
 
         if (token.equals(inputToken)) {
             this.passwordResetRepository.removeToken(token);
-            this.userRepository.setPassword(user.id(), new UnencryptedPassword(newPassword));
+            this.userRepository.save(
+                    user.withPassword(
+                            this.passwordService.encrypt(new UnencryptedPassword(newPassword))
+                    )
+            );
         } else {
             LOGGER.debug("Incorrect password reset code for user " + user);
             throw new PasswordResetProcessException();
@@ -84,14 +92,14 @@ public class UserResetPasswordFacade extends Facade {
     private UserSignInIdentifier toSignInIdentifier(String cidOrEmail) {
         try {
             return Cid.valueOf(cidOrEmail);
-        } catch (IllegalArgumentException ignored) { }
+        } catch (NullPointerException | IllegalArgumentException ignored) { }
         return new Email(cidOrEmail);
     }
 
     private void sendPasswordResetTokenMail(User user, PasswordResetToken token) {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
-                + "this mail, feel free to ignore it. \n Your reset code : " + token;
+                + "this mail, feel free to ignore it. \n Your reset code : " + token.value();
         this.mailService.sendMail(user.email().value(), subject, message);
     }
 

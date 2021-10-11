@@ -39,7 +39,7 @@ public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
     }
 
     @Override
-    protected AuthorityLevelName id() {
+    protected AuthorityLevelName domainId() {
         return AuthorityLevelName.valueOf(this.authorityLevel);
     }
 

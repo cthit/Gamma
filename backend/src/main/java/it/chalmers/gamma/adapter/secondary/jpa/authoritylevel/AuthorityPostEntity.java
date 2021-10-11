@@ -21,8 +21,16 @@ public class AuthorityPostEntity extends ImmutableEntity<AuthorityPostPK> {
     }
 
     @Override
-    protected AuthorityPostPK id() {
+    protected AuthorityPostPK domainId() {
         return this.id;
+    }
+
+    public PostEntity getPost() {
+        return this.id.postEntity;
+    }
+
+    public SuperGroupEntity getSuperGroupEntity() {
+        return this.id.superGroupEntity;
     }
 
 }

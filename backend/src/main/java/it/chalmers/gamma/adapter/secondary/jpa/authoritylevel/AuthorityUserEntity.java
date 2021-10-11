@@ -23,7 +23,7 @@ public class AuthorityUserEntity extends ImmutableEntity<AuthorityUserPK> {
     }
 
     @Override
-    protected AuthorityUserPK id() {
+    protected AuthorityUserPK domainId() {
         return this.id;
     }
 

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
-import it.chalmers.gamma.app.port.repository.ClientRepository;
+import it.chalmers.gamma.app.repository.ClientRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.client.ClientId;

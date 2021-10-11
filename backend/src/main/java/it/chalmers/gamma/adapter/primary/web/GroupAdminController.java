@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.facade.GroupFacade;
-import it.chalmers.gamma.app.port.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.GroupRepository;
 
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;

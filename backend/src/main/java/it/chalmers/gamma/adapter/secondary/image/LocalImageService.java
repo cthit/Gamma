@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.image;
 
-import it.chalmers.gamma.app.port.service.ImageService;
+import it.chalmers.gamma.app.service.ImageService;
 import it.chalmers.gamma.app.domain.common.ImageUri;
 
 import java.io.File;
@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

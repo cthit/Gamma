@@ -193,7 +193,7 @@ const GroupsCrud = () => {
                 500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             toastCreateSuccessful={() => text.GroupWasCreated}
-            toastCreateFailed={() => text.GroupCreateFailed}
+            toastCreateFailed={() => text.GroupDeleteFailed}
             toastDeleteSuccessful={() => text.GroupWasDeleted}
             toastDeleteFailed={() => text.GroupDeleteFailed}
             toastUpdateSuccessful={one =>

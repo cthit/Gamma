@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
-import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
@@ -41,8 +40,8 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
     }
 
     @Override
-    protected ClientId id() {
-        return this.client.id();
+    protected ClientId domainId() {
+        return this.client.domainId();
     }
 
     public ApiKeyEntity getApiKeyEntity() {

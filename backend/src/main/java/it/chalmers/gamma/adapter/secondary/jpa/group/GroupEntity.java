@@ -37,18 +37,17 @@ public class GroupEntity extends MutableEntity<GroupId> {
     @OneToMany(mappedBy = "id.group", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<MembershipEntity> members;
 
-    //TODO Add avatar and banner
+    @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    protected GroupImagesEntity groupImages;
 
-    protected GroupEntity() {
-        this.members = new ArrayList<>();
-    }
+    protected GroupEntity() { }
 
     protected List<MembershipEntity> getMembers() {
         return members;
     }
 
     @Override
-    public GroupId id() {
+    public GroupId domainId() {
         return new GroupId(this.id);
     }
 

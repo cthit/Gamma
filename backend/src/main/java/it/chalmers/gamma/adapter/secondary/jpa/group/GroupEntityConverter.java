@@ -5,6 +5,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepositor
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.domain.common.Email;
+import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupMember;
@@ -12,6 +13,7 @@ import it.chalmers.gamma.app.domain.group.UnofficialPostName;
 import it.chalmers.gamma.app.domain.user.Name;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +57,11 @@ public class GroupEntityConverter {
         entity.prettyName = group.prettyName().value();
         entity.email = group.email().value();
         entity.superGroup = superGroupJpaRepository.getOne(group.superGroup().id().value());
+
+        if (entity.members == null) {
+            entity.members = new ArrayList<>();
+        }
+
         entity.members.clear();
         entity.members.addAll(group.groupMembers()
                 .stream()
@@ -66,6 +73,15 @@ public class GroupEntityConverter {
                         groupMember.unofficialPostName().value()
                 )).toList());
 
+        if (entity.groupImages == null) {
+            entity.groupImages = new GroupImagesEntity();
+        }
+
+        entity.groupImages.group = entity;
+        entity.groupImages.groupId = entity.id;
+        entity.groupImages.avatarUri = group.avatarUri().map(ImageUri::value).orElse(null);
+        entity.groupImages.bannerUri = group.bannerUri().map(ImageUri::value).orElse(null);
+
         return entity;
     }
 
@@ -74,22 +90,30 @@ public class GroupEntityConverter {
         List<GroupMember> members = entity.getMembers()
                 .stream()
                 .map(membershipEntity -> new GroupMember(
-                        this.postEntityConverter.toDomain(membershipEntity.id().getPost()),
+                        this.postEntityConverter.toDomain(membershipEntity.domainId().getPost()),
                         new UnofficialPostName(membershipEntity.getUnofficialPostName()),
-                        this.userEntityConverter.toDomain(membershipEntity.id().getUser())
+                        this.userEntityConverter.toDomain(membershipEntity.domainId().getUser())
                 ))
                 .toList();
 
+        Optional<ImageUri> avatarUri = Optional.empty();
+        Optional<ImageUri> bannerUri = Optional.empty();
+
+        if (entity.groupImages != null) {
+            avatarUri = Optional.ofNullable(entity.groupImages.avatarUri).map(ImageUri::new);
+            bannerUri = Optional.ofNullable(entity.groupImages.bannerUri).map(ImageUri::new);
+        }
+
         return new Group(
-                entity.id(),
+                entity.domainId(),
                 entity.getVersion(),
                 new Email(entity.email),
                 new Name(entity.name),
                 new PrettyName(entity.prettyName),
                 this.superGroupEntityConverter.toDomain(entity.superGroup),
                 members,
-                Optional.empty(),
-                Optional.empty()
+                avatarUri,
+                bannerUri
         );
     }
 

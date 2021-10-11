@@ -21,7 +21,7 @@ public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK
         this.id = new ClientRestrictionPK(clientEntity, authorityLevelEntity);
     }
 
-    protected ClientRestrictionPK id() {
+    protected ClientRestrictionPK domainId() {
         return this.id;
     }
 

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupType;
@@ -28,7 +28,7 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
-        throw new UnsupportedOperationException();
+        this.repository.deleteById(superGroupId.value());
     }
 
     @Override
@@ -38,7 +38,10 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public List<SuperGroup> getAllByType(SuperGroupType superGroupType) {
-        throw new UnsupportedOperationException();
+        return this.repository.findAllBySuperGroupType(superGroupType.value())
+                .stream()
+                .map(this.superGroupEntityConverter::toDomain)
+                .toList();
     }
 
     @Override

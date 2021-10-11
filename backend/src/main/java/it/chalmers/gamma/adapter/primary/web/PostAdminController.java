@@ -3,7 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import it.chalmers.gamma.app.facade.GroupFacade;
 import it.chalmers.gamma.app.facade.PostFacade;
 
-import it.chalmers.gamma.app.port.repository.PostRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;

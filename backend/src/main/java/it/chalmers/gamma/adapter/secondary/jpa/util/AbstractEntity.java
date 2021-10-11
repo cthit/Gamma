@@ -9,18 +9,18 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class AbstractEntity<I extends Id<?>> implements Serializable {
 
-    protected abstract I id();
+    protected abstract I domainId();
 
     @Override
     public final int hashCode() {
-        assert(id() != null);
+        assert(domainId() != null);
 
-        return Objects.hash(id().hashCode());
+        return Objects.hash(domainId().hashCode());
     }
 
     @Override
     public final boolean equals(Object o) {
-        assert(id() != null);
+        assert(domainId() != null);
 
         if (this == o) {
             return true;
@@ -30,6 +30,6 @@ public abstract class AbstractEntity<I extends Id<?>> implements Serializable {
             return false;
         }
 
-        return this.id().equals(((AbstractEntity<?>) o).id());
+        return this.domainId().equals(((AbstractEntity<?>) o).domainId());
     }
 }

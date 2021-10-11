@@ -31,7 +31,7 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
     protected String prettyName;
 
     @JoinColumn(name = "description")
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.ALL)
     protected TextEntity description;
 
     @OneToMany(mappedBy = "id.client", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -49,7 +49,7 @@ public class ClientEntity extends ImmutableEntity<ClientId> {
     }
 
     @Override
-    public ClientId id() {
+    public ClientId domainId() {
         return ClientId.valueOf(this.clientId);
     }
 

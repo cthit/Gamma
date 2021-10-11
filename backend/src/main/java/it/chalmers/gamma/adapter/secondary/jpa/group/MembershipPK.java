@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
-import it.chalmers.gamma.app.domain.Id;
 import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.group.GroupId;
 import it.chalmers.gamma.app.domain.post.PostId;
@@ -55,9 +54,9 @@ public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
     @Override
     public MembershipPK.MembershipPKDTO getValue() {
         return new MembershipPKDTO(
-                this.post.id(),
-                this.group.id(),
-                this.user.id()
+                this.post.domainId(),
+                this.group.domainId(),
+                this.user.domainId()
         );
     }
 }

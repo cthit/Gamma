@@ -1,11 +1,10 @@
 package it.chalmers.gamma.app.bootstrap;
 
-import it.chalmers.gamma.app.port.repository.GroupRepository;
-import it.chalmers.gamma.app.port.repository.PostRepository;
-import it.chalmers.gamma.app.port.repository.SuperGroupRepository;
-import it.chalmers.gamma.app.port.repository.UserRepository;
+import it.chalmers.gamma.app.repository.GroupRepository;
+import it.chalmers.gamma.app.repository.PostRepository;
+import it.chalmers.gamma.app.repository.SuperGroupRepository;
+import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.common.Email;
-import it.chalmers.gamma.app.domain.common.ImageUri;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.group.Group;
 import it.chalmers.gamma.app.domain.group.GroupId;
