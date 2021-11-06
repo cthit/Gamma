@@ -44,6 +44,10 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
         return this.client.domainId();
     }
 
+    public ClientEntity getClient() {
+        return this.client;
+    }
+
     public ApiKeyEntity getApiKeyEntity() {
         return this.apiKey;
     }

@@ -107,7 +107,7 @@ public class GroupBootstrap {
             this.groupRepository.save(group);
         });
 
-        LOGGER.info("========== GROUP BOOTSTRAP ==========");
+        LOGGER.info("==========                 ==========");
     }
 
     private Calendar toCalendar(Instant i) {

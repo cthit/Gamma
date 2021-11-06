@@ -1,6 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.authenticated;
 
 import it.chalmers.gamma.adapter.secondary.userdetails.UserDetailsProxy;
+import it.chalmers.gamma.app.authentication.ExternalUserAuthenticated;
+import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.authentication.ApiAuthenticated;
 import it.chalmers.gamma.app.authentication.Authenticated;
@@ -14,10 +16,14 @@ import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.Client;
 import it.chalmers.gamma.app.domain.user.Cid;
 import it.chalmers.gamma.app.domain.user.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthenticatedServiceAdapter implements AuthenticatedService {
@@ -36,7 +42,8 @@ public class AuthenticatedServiceAdapter implements AuthenticatedService {
 
     @Override
     public Authenticated getAuthenticated() {
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
             return new Unauthenticated() {};
         }
 
@@ -46,9 +53,18 @@ public class AuthenticatedServiceAdapter implements AuthenticatedService {
             return (InternalUserAuthenticated) () -> user;
         }
 
+        if (principal instanceof Jwt jwt) {
+            Optional<User> maybeUser = this.userRepository.get(new Cid(jwt.getSubject()));
+            if (maybeUser.isPresent()) {
+                return (ExternalUserAuthenticated) maybeUser::get;
+            } else {
+                return new Unauthenticated() {};
+            }
+        }
+
         if (principal instanceof ApiKeyToken apiKeyToken) {
-            ApiKey apiKey = this.apiKeyRepository.getByToken(apiKeyToken).orElseThrow(IllegalStateException::new);
-            Optional<Client> maybeClient = this.clientRepository.getByApiKey(apiKeyToken);
+            final ApiKey apiKey = this.apiKeyRepository.getByToken(apiKeyToken).orElseThrow(IllegalStateException::new);
+            final Optional<Client> maybeClient = this.clientRepository.getByApiKey(apiKeyToken);
             return new ApiAuthenticated() {
                 @Override
                 public ApiKey get() {
@@ -62,6 +78,7 @@ public class AuthenticatedServiceAdapter implements AuthenticatedService {
             };
         }
 
-        return new Unauthenticated() {};
+        return new Unauthenticated() {
+        };
     }
 }

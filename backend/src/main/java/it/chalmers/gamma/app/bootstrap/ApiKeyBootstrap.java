@@ -50,7 +50,7 @@ public class ApiKeyBootstrap {
                 LOGGER.info("Api key of type " + apiKeyType.name() + " has been generated with code: " + apiKeyToken.value());
             }
         }
-        LOGGER.info("========== API BOOTSTRAP ==========");
+        LOGGER.info("==========               ==========");
     }
 
 }

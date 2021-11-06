@@ -4,6 +4,8 @@ import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.post.PostId;
 import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.domain.user.User;
 import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.app.repository.AuthorityLevelRepository;
 import it.chalmers.gamma.app.repository.PostRepository;
@@ -86,6 +88,12 @@ public class AuthorityLevelBootstrap {
             ));
         });
 
+        // Make sure admin user isn't overwritten
+        if (authorityLevelMap.containsKey(new AuthorityLevelName("admin"))) {
+            User adminUser = this.userRepository.get(new Cid("admin")).orElseThrow();
+            authorityLevelMap.get(new AuthorityLevelName("admin")).users.add(adminUser.id());
+        }
+
         authorityLevelMap.forEach((authorityLevelName, authorities) -> this.authorityLevelRepository.save(
                 new AuthorityLevel(
                         authorityLevelName,
@@ -106,7 +114,7 @@ public class AuthorityLevelBootstrap {
                 )
         ));
 
-        LOGGER.info("========== AUTHORITY BOOTSTRAP ==========");
+        LOGGER.info("==========                     ==========");
     }
 
     public static class Authorities {

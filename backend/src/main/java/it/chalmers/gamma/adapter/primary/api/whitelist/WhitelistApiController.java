@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.whitelist;
 
-import it.chalmers.gamma.app.facade.WhitelistFacade;
+import it.chalmers.gamma.app.facade.internal.WhitelistFacade;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping(WhitelistApiController.URI)
 public class WhitelistApiController {
 
-    public static final String URI = "/whitelist";
+    public static final String URI = "/external/whitelist";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhitelistApiController.class);
 

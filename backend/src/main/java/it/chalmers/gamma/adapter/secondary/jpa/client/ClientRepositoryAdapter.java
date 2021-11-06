@@ -67,6 +67,7 @@ public class ClientRepositoryAdapter implements ClientRepository {
     public Optional<Client> getByApiKey(ApiKeyToken apiKeyToken) {
         return this.clientApiKeyJpaRepository
                 .findByApiKey_Token(apiKeyToken.value())
+                .map(ClientApiKeyEntity::getClient)
                 .map(this.clientEntityConverter::toDomain);
     }
 }

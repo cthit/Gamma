@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.bootstrap;
 
-import it.chalmers.gamma.app.facade.AuthorityLevelFacade;
+import it.chalmers.gamma.app.facade.internal.AuthorityLevelFacade;
 import it.chalmers.gamma.app.service.PasswordService;
 import it.chalmers.gamma.app.repository.UserRepository;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
@@ -44,6 +44,8 @@ public class EnsureAnAdminUserBootstrap {
         AuthorityLevelName adminAuthorityLevel = AuthorityLevelName.valueOf(admin);
 
         if (!this.authorityLevelFacade.authorityLevelUsed(adminAuthorityLevel)) {
+            LOGGER.info("========== ENSURE AN ADMIN BOOTSTRAP ==========");
+
             if (this.userRepository.get(new Cid(admin)).isPresent()) {
                 LOGGER.error("There's no user that is admin right now, but there is a user that is named admin. Doing nothing about this...");
                 return;
@@ -85,6 +87,8 @@ public class EnsureAnAdminUserBootstrap {
                     admin,
                     adminUser.id().value()
             );
+
+            LOGGER.info("==========                           ==========");
         }
     }
 

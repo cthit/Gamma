@@ -66,7 +66,7 @@ public class SuperGroupBootstrap {
 
         LOGGER.info("Supergroups created");
 
-        LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
+        LOGGER.info("==========                      ==========");
     }
 
 }

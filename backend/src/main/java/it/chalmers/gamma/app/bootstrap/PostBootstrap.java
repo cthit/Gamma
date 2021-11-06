@@ -48,7 +48,7 @@ public class PostBootstrap {
                 )
         );
         LOGGER.info("Posts created");
-        LOGGER.info("========== POST BOOTSTRAP ==========");
+        LOGGER.info("==========                ==========");
     }
 
 }

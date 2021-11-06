@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.goldapps;
 
-import it.chalmers.gamma.app.facade.GroupFacade;
+import it.chalmers.gamma.app.facade.internal.GroupFacade;
 import it.chalmers.gamma.app.domain.group.Group;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping(GoldappsApiController.URI)
 public class GoldappsApiController {
 
-    public static final String URI = "/goldapps";
+    public static final String URI = "/external/goldapps";
 
     private final GroupFacade groupFacade;
 

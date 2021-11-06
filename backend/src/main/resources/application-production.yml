@@ -57,7 +57,7 @@ security:
 
 
 application:
-  base-uri: ${BACKEND_URI:http://localhost:9090/api}
+  base-uri: ${BACKEND_URI:http://localhost:9090}
   production: ${PRODUCTION:true}
   cookie:
     domain: ${COOKIE_DOMAIN:https://gamma.chalmers.it}

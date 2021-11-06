@@ -52,12 +52,12 @@
 
         <div class="padding"></div>
 
-        <form id="confirmationForm" name="confirmationForm" action="/api/oauth/authorize" method="post">
+        <form id="confirmationForm" name="confirmationForm" action="/oauth/authorize" method="post">
             <input name="user_oauth_approval" value="true" type="hidden"/>
             <label><input id="confirmButton" name="authorize" value="Authorize" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
         </form>
 
-        <form id="denialForm" name="denialForm" action="/api/oauth/authorize" method="post">
+        <form id="denialForm" name="denialForm" action="/oauth/authorize" method="post">
             <input name="user_oauth_approval" value="false" type="hidden"/>
             <label><input id="denialButton" name="deny" value="Deny" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
         </form>

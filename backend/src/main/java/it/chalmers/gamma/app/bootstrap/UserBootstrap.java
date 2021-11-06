@@ -74,6 +74,6 @@ public class UserBootstrap {
                         .collect(Collectors.joining(", "))
         );
         LOGGER.info("Use a cid from the row above and use the password: password to sign in");
-        LOGGER.info("========== USER BOOTSTRAP ==========");
+        LOGGER.info("==========                ==========");
     }
 }

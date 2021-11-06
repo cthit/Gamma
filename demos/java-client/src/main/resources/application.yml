@@ -9,11 +9,14 @@ spring:
                         client-id: test
                         client-secret: secret
                         authorization-grant-type: authorization_code
-                        redirect-uri: http://localhost:3001/auth/account/callback
+                        scope: access
+                        redirect-uri: http://client:3001/login/oauth2/code/gamma
+                        provider: gamma
                 provider:
                     gamma:
-                        token-uri: http://localhost:8081/api/oauth/token
-                        authorization-uri: http://localhost:8081/api/oauth/authorize
-                        user-info-endpoint: http://localhost:8081/api/client/v1/users/me
+                        token-uri: http://gamma:8081/oauth2/token
+                        authorization-uri: http://gamma:8081/oauth2/authorize
+                        user-info-uri: http://gamma:8081/client/v1/users/me
                         user-name-attribute: nick
-                        client-name: Gamma
+                        client-name: gamma
+                        authorization-grant-type: authorization_code

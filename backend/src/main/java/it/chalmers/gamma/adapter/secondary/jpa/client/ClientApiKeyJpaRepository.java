@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ClientApiKeyJpaRepository extends JpaRepository<ClientApiKeyEntity, ClientId> {
-    Optional<ClientEntity> findByApiKey_Token(String apiKeyToken);
+    Optional<ClientApiKeyEntity> findByApiKey_Token(String apiKeyToken);
 }

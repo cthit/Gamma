@@ -42,9 +42,6 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                                            AuthorityPostJpaRepository authorityPostRepository,
                                            AuthoritySuperGroupJpaRepository authoritySuperGroupRepository,
                                            AuthorityUserJpaRepository authorityUserRepository,
-                                           SuperGroupJpaRepository superGroupRepository,
-                                           UserJpaRepository userRepository,
-                                           PostJpaRepository postRepository,
                                            MembershipJpaRepository membershipJpaRepository,
                                            AuthorityLevelEntityConverter authorityLevelEntityConverter,
                                            SuperGroupEntityConverter superGroupEntityConverter) {

@@ -88,6 +88,6 @@ public class ClientBootstrap {
         LOGGER.info("ClientSecret: " + clientSecret.value());
         LOGGER.info("Client redirect uri: " + this.redirectUrl);
         LOGGER.info("An API key was also generated with the client, it has the code: " + apiKeyToken.value());
-        LOGGER.info("========== CLIENT BOOTSTRAP ==========");
+        LOGGER.info("==========                  ==========");
     }
 }

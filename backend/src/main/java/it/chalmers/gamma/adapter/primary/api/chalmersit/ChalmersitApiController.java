@@ -1,14 +1,14 @@
 package it.chalmers.gamma.adapter.primary.api.chalmersit;
 
-import it.chalmers.gamma.app.facade.GroupFacade;
+import it.chalmers.gamma.app.facade.internal.GroupFacade;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ChalmersitApiController.API)
+@RequestMapping(ChalmersitApiController.URI)
 public class ChalmersitApiController {
 
-    public static final String API = "/chalmersit";
+    public static final String URI = "/external/chalmersit";
 
     private final GroupFacade groupFacade;
 

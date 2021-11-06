@@ -14,7 +14,7 @@ public class DemoWebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/webjars/**").permitAll()
+                        .antMatchers("/", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e

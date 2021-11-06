@@ -1,10 +1,12 @@
 package it.chalmers.gamma.adapter.primary.api.v1;
 
-import it.chalmers.gamma.app.facade.GroupFacade;
-import it.chalmers.gamma.app.facade.SuperGroupFacade;
-import it.chalmers.gamma.app.facade.UserFacade;
+import it.chalmers.gamma.app.facade.internal.GroupFacade;
+import it.chalmers.gamma.app.facade.internal.MeFacade;
+import it.chalmers.gamma.app.facade.internal.SuperGroupFacade;
+import it.chalmers.gamma.app.facade.internal.UserFacade;
 import it.chalmers.gamma.app.domain.user.UserId;
 import it.chalmers.gamma.util.response.NotFoundResponse;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,27 +23,29 @@ import java.util.List;
 @RequestMapping(ClientApiV1Controller.URI)
 public class ClientApiV1Controller {
 
-    public static final String URI = "/client/v1";
+    public static final String URI = "/external/client/v1";
 
     private final ClientApiV1Mapper mapper;
 
     private final UserFacade userFacade;
     private final GroupFacade groupFacade;
     private final SuperGroupFacade superGroupFacade;
+    private final MeFacade meFacade;
 
     public ClientApiV1Controller(ClientApiV1Mapper mapper,
                                  UserFacade userFacade,
                                  GroupFacade groupFacade,
-                                 SuperGroupFacade superGroupFacade) {
+                                 SuperGroupFacade superGroupFacade,
+                                 MeFacade meFacade) {
         this.mapper = mapper;
         this.userFacade = userFacade;
         this.groupFacade = groupFacade;
         this.superGroupFacade = superGroupFacade;
+        this.meFacade = meFacade;
     }
 
     public record Group() {
     }
-
 
     @GetMapping("/groups")
     public List<Group> getGroups() {
@@ -81,19 +85,12 @@ public class ClientApiV1Controller {
     @GetMapping("/users/{id}/avatar")
     public void getUserAvatar(@PathVariable("id") UserId id) throws IOException { }
 
-    public record Me() {
+    public record Me(String nick) {
     }
 
-    @GetMapping("/users/me")
+    @GetMapping(value = "/users/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public Me getMe() {
-//        UserDetailsImpl userDetails = UserUtils.getUserDetails();
-//        List<GroupPost> groups = this.membershipService.getMembershipsByUser(userDetails.getUser().id())
-//                .stream()
-//                .map(membership -> new GroupPost(membership.post(), membership.group()))
-//                .collect(Collectors.toList());
-//
-//        return new GetMeResponse(userDetails.getUser(), groups, userDetails.getAuthorities());
-        return null;
+        return this.mapper.map(this.meFacade.getMe());
     }
 
     private static class UserNotFoundResponse extends NotFoundResponse { }

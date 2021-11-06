@@ -54,40 +54,27 @@ server:
   error:
     whitelabel:
       enabled: false
-    path: /error
   servlet:
     context-path: /api
-
-
 
 logging:
   level:
     root: ${ROOT_DEBUG_LEVEL:INFO}
-    org:
-      springframework:
-        web: ${WEB_DEBUG_LEVEL:INFO}
-      hibernate: ${HIBERNATE_DEBUG_LEVEL:INFO}
-
-security:
-  jwt:
-    token:
-      secret-key: xJqKgDuIikgjkvOXI71j8LKkBlKg3bdr7/WYN6Q0uDs= # This is only for Development, should also be a secret one for Production
-      expire-length: 2629746 #One Month. Subject to change.
-      issuer: http://localhost:8081
-      audience: http://localhost:3000
+    org.springframework.security: TRACE
+    org.springframework.security.access: INFO
 
 application:
-  base-uri: http://localhost:8081/api/
+  base-uri: http://gamma:8081
   production: false
   files:
     path: uploads/
   cookie:
-    domain: ${COOKIE_DOMAIN:localhost}
+    domain: ${COOKIE_DOMAIN:gamma}
     path: ${COOKIE_PATH:/}
     validity-time: 31536000
   pre-populate-database: true
   frontend-client-details:
-    successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:3000}
+    successful-login-uri: ${SUCCESSFUL_LOGIN:http://gamma:3000}
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   mocking: ${IS_MOCKING:true}
@@ -95,12 +82,12 @@ application:
     client-name: ${DEFAULT_CLIENT_NAME:type}
     client-id: ${DEFAULT_CLIENT_ID:id}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}
-    redirect-url: ${DEFAULT_REDIRECT_URL:http://localhost:3001/auth/account/callback}
+    redirect-url: ${DEFAULT_REDIRECT_URL:http://client:3001/authorized}
     api-key: ${DEFAULT_API_KEY:key}
   gotify:
     key: "key"                  # This is not needed, but application crashes since it looks for these values.
     url: "https://gotify.chalmers.it"
-  allowed-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:3000}
+  allowed-origin: ${CORS_ALLOWED_ORIGIN:http://gamma:3000}
   auth:
     accessTokenValidityTime: 3600
     refreshTokenValidityTime: 500000000
