@@ -60,8 +60,9 @@ server:
 logging:
   level:
     root: ${ROOT_DEBUG_LEVEL:INFO}
-    org.springframework.security: TRACE
+    org.springframework.security: INFO
     org.springframework.security.access: INFO
+    org.springframework.security.oauth2.server.authorization: INFO
 
 application:
   base-uri: http://gamma:8081

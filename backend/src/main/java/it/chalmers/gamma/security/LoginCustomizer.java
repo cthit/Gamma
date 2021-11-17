@@ -30,12 +30,15 @@ public class LoginCustomizer implements Customizer<FormLoginConfigurer<HttpSecur
         formLogin
                 .loginPage("/login")
                 .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(this.authenticationSuccessHandler());
+                .passwordParameter("password");
+        //Problemet är att i aouth2 scenarios så returneras consent required fil.
+        //Kanske löser sig med en egen consent sida? för då används sendRedirect, och då kanske jag kan se om committed?
+//                .successHandler(this.authenticationSuccessHandler());
     }
 
     private AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
+            boolean commited = response.isCommitted();
             response.sendRedirect(frontendUrl);
         };
     }

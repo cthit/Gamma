@@ -14,8 +14,8 @@ spring:
                         provider: gamma
                 provider:
                     gamma:
-                        token-uri: http://gamma:8081/oauth2/token
-                        authorization-uri: http://gamma:8081/oauth2/authorize
+                        token-uri: http://gamma:8081/api/oauth2/token
+                        authorization-uri: http://gamma:8081/api/oauth2/authorize
                         user-info-uri: http://gamma:8081/client/v1/users/me
                         user-name-attribute: nick
                         client-name: gamma
