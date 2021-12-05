@@ -24,6 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.authorityLevelRepository = authorityLevelRepository;
     }
 
+    //TODO: Check with patterns.
     @Override
     public UserDetails loadUserByUsername(String cidOrEmail) {
         User user;
@@ -39,8 +40,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UsernameNotFoundException("User not found");
             }
         }
-
-
 
         List<GrantedAuthorityProxy> authorities = this.authorityLevelRepository.getByUser(user.id())
                 .stream()

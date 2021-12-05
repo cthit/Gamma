@@ -1,5 +1,6 @@
 package it.chalmers.gamma.security;
 
+import it.chalmers.gamma.adapter.secondary.userdetails.UserDetailsProxy;
 import it.chalmers.gamma.app.facade.internal.MeFacade;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +12,10 @@ import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -24,8 +27,11 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -56,16 +62,31 @@ public class OAuth2AuthorizationServerSecurityConfig {
             JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
             MeFacade.MeDTO me = meFacade.getMe();
 
-            /**
-             * Available scopes are profile, email. 
+            /*
+             * Available scopes are profile, email.
+             * The prefix that spring-authorization-server adds in SCOPE_
              */
+            String profileScope = "SCOPE_profile";
+            String emailScope = "SCOPE_email";
 
             Map<String, Object> claims = new HashMap<>(principal.getToken().getClaims());
             Collection<GrantedAuthority> scopes = principal.getAuthorities();
 
             for (GrantedAuthority scope : scopes) {
-                if (scope.getAuthority().equals("SCOPE_profile")) {
-                    claims.put("profile", me);
+                if (scope.getAuthority().equals(profileScope)) {
+                    //https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+                    claims.put("name", me.firstName() + " '" + me.nick() + "' " + me.lastName());
+                    claims.put("given_name", me.firstName());
+                    claims.put("family_name", me.lastName());
+                    claims.put("nickname", me.nick());
+                    //TODO:
+                    //claims.put("picture")
+
+                    // Non-standard claims.
+                    claims.put("cid", me.cid());
+                    claims.put("language", me.language());
+                } else if (scope.getAuthority().equals(emailScope)) {
+                    claims.put("email", me.email());
                 }
             }
 
@@ -105,6 +126,7 @@ public class OAuth2AuthorizationServerSecurityConfig {
                 .redirectUri("http://client:3001/login/oauth2/code/gamma")
                 .scope("openid")
                 .scope("profile")
+                .scope("email")
                 .clientSettings(
                         ClientSettings
                                 .builder()

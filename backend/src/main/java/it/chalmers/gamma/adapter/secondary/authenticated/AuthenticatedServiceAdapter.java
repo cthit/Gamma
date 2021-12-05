@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthenticatedServiceAdapter implements AuthenticatedService {
@@ -52,7 +53,8 @@ public class AuthenticatedServiceAdapter implements AuthenticatedService {
         }
 
         if (principal instanceof Jwt jwt) {
-            Optional<User> maybeUser = this.userRepository.get(new Cid(jwt.getSubject()));
+            //"sub" from the JWT is the UserId.
+            Optional<User> maybeUser = this.userRepository.get(new UserId(UUID.fromString(jwt.getSubject())));
             if (maybeUser.isPresent()) {
                 return (ExternalUserAuthenticated) maybeUser::get;
             } else {

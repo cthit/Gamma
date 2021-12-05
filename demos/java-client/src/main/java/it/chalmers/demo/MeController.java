@@ -15,7 +15,7 @@ public class MeController {
 
     @GetMapping("/me")
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
-        return Collections.singletonMap("name", principal.getAttribute("nick"));
+        return principal.getAttributes();
     }
 
     @GetMapping("/lol")
