@@ -43,7 +43,7 @@ dependencies {
             "org.springframework.security:spring-security-core:5.5.1",
             "org.springframework.security:spring-security-web:5.5.1",
             "org.springframework.boot:spring-boot-starter-security:2.5.5",
-            "org.springframework.security:spring-security-oauth2-authorization-server:0.2.0",
+            "org.springframework.security:spring-security-oauth2-authorization-server:0.2.1",
             "org.springframework:spring-beans:5.3.10",
             "org.springframework.data:spring-data-jpa:2.5.4",
             "org.springframework:spring-core:5.3.10",

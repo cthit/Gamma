@@ -26,33 +26,6 @@ public class SecurityFiltersConfig {
     }
 
     /**
-     * This SecurityFilterChain setups the security for the endpoints that is used for OAuth 2.1.
-     */
-    @Bean
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
-                new OAuth2AuthorizationServerConfigurer<>();
-
-        RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
-
-        http
-                // This SecurityFilterChain shall match the endpoints that spring-authorization-server
-                // has for OAuth 2.1 such as /oauth2/authorize or /oauth2/token.
-                .requestMatcher(endpointsMatcher)
-                // All access has to be authenticated.
-                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
-                // Ignore csrf with all OAuth2.1 actions.
-                .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
-                // Apply specific OAuth 2.1 settings, which is specified above, such as custom consent page.
-                .apply(authorizationServerConfigurer)
-                .and()
-                // If a client has to authorize, but isn't authenticated, then the user is directed to the login page.
-                .formLogin(loginCustomizer);
-
-        return http.build();
-    }
-
-    /**
      * Sets up the security for the api that is used by the frontend.
      */
     @Bean
