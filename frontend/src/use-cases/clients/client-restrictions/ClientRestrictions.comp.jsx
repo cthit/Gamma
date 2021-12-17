@@ -16,7 +16,10 @@ const ClientRestrictions = ({ client }) => {
             </DigitDesign.CardHeader>
             <DigitDesign.CardBody>
                 {client.restrictions.map(authorityLevel => (
-                    <Link to={"/authorities/edit/" + authorityLevel}>
+                    <Link
+                        key={authorityLevel}
+                        to={"/authorities/edit/" + authorityLevel}
+                    >
                         <DigitText.Text text={authorityLevel} />
                     </Link>
                 ))}

@@ -106,7 +106,7 @@ const MeCRUD = () => {
             detailsRenderCardStart={data => (
                 <>
                     <UserImage
-                        src={"/api/internal/users/avatar/" + data.id}
+                        src={"/api/images/user/avatar/" + data.id}
                         alt={"Profile picture"}
                     />
                     <NoStyleLink to={"/me/avatar"}>

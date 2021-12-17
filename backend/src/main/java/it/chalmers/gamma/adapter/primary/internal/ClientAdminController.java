@@ -27,11 +27,11 @@ public final class ClientAdminController {
 
     private record CreateClientRequest(String webServerRedirectUrl,
                                        String prettyName,
-                                       boolean autoApprove,
                                        String svDescription,
                                        String enDescription,
                                        boolean generateApiKey,
-                                       List<String> restrictions
+                                       List<String> restrictions,
+                                       boolean emailScope
     ) { }
 
     @PostMapping()
@@ -40,15 +40,16 @@ public final class ClientAdminController {
                 new ClientFacade.NewClient(
                         request.webServerRedirectUrl,
                         request.prettyName,
-                        request.autoApprove,
                         request.svDescription,
                         request.enDescription,
                         request.generateApiKey,
-                        request.restrictions
+                        request.restrictions,
+                        request.emailScope
                 )
         );
     }
 
+    //TODO: Reflect that clientUid is used and not clientId in the frontend
     @PostMapping("/{clientId}/reset")
     public String resetClientCredentials(@PathVariable("clientId") String clientId) {
         String clientSecret;
@@ -72,8 +73,9 @@ public final class ClientAdminController {
         return this.clientFacade.get(id).orElseThrow(ClientNotFoundResponse::new);
     }
 
-    @DeleteMapping("/{clientId}")
-    public ClientDeletedResponse deleteClient(@PathVariable("clientId") String id) {
+    //TODO: Reflect that clientUid is used and not clientId in the frontend
+    @DeleteMapping("/{clientUid}")
+    public ClientDeletedResponse deleteClient(@PathVariable("clientUid") String id) {
         try {
             this.clientFacade.delete(id);
             return new ClientDeletedResponse();

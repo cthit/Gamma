@@ -10,6 +10,12 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableWebSecurity
 public class DemoWebSecurity extends WebSecurityConfigurerAdapter {
 
+    private final GammaAuthoritiesMapper gammaAuthoritiesMapper;
+
+    public DemoWebSecurity(GammaAuthoritiesMapper gammaAuthoritiesMapper) {
+        this.gammaAuthoritiesMapper = gammaAuthoritiesMapper;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -28,5 +34,4 @@ public class DemoWebSecurity extends WebSecurityConfigurerAdapter {
                 )
                 .oauth2Login();
     }
-
 }

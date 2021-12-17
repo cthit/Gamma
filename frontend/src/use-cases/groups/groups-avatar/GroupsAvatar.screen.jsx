@@ -12,7 +12,7 @@ const GroupsAvatar = ({ match }) => {
 
     return (
         <PutImage
-            imageSrc={"/api/internal/groups/avatar/" + match.params.id}
+            imageSrc={"/api/images/group/avatar/" + match.params.id}
             title={text.GroupAvatarTitle}
             uploadFile={file => uploadGroupAvatar(file, match.params.id)}
         />

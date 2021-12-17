@@ -9,7 +9,7 @@ const GroupsBanner = ({ match }) => {
 
     return (
         <PutImage
-            imageSrc={"/api/internal/groups/banner/" + match.params.id}
+            imageSrc={"/api/images/group/banner/" + match.params.id}
             title={text.GroupBannerTitle}
             uploadFile={file => uploadGroupBanner(file, match.params.id)}
         />

@@ -15,7 +15,7 @@ const MeAvatar = () => {
 
     return (
         <PutImage
-            imageSrc={"/api/internal/users/avatar/" + user.id}
+            imageSrc={"/api/images/user/avatar/" + user.id}
             title={text.MeAvatarTitle}
             uploadFile={uploadUserAvatar}
         />

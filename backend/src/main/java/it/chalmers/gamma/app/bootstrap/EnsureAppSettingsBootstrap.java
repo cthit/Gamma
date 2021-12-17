@@ -23,7 +23,7 @@ public class EnsureAppSettingsBootstrap {
         if (!this.appSettingsRepository.hasSettings()) {
             LOGGER.info("========== ENSURE APP SETTINGS BOOTSTRAP ==========");
 
-            Settings settings = new Settings(Instant.ofEpochSecond(0));
+            Settings settings = new Settings(Instant.now());
             this.appSettingsRepository.setSettings(settings);
             LOGGER.info("Adding default settings");
             LOGGER.info(String.valueOf(settings));

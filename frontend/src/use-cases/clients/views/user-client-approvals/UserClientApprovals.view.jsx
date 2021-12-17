@@ -12,15 +12,7 @@ import translations from "./UserClientApprovals.translations.view";
 
 const UserClientApprovals = ({ client }) => {
     const [text] = useDigitTranslations(translations);
-    const [users, setUsers] = useState(null);
-
-    const clientId = client.clientId;
-
-    useEffect(() => {
-        getAllApprovalsbyClientId(clientId).then(response => {
-            setUsers(response.data);
-        });
-    }, [clientId]);
+    const users = client.approvedUsers;
 
     if (users == null) {
         return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
@@ -34,6 +26,7 @@ const UserClientApprovals = ({ client }) => {
                 firstName,
                 nick,
                 lastName,
+                id,
                 __link: "/users/" + id
             }))}
             headerTexts={{
@@ -45,7 +38,7 @@ const UserClientApprovals = ({ client }) => {
             columnsOrder={["firstName", "nick", "lastName"]}
             titleText={text.UsersThatApproved + client.prettyName}
             margin={{
-                bottom: "calc(56px + 16px)"
+                top: "32px"
             }}
             search
             searchText={text.Search}

@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
+import it.chalmers.gamma.app.domain.client.ClientUid;
 import it.chalmers.gamma.app.repository.ClientRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 import it.chalmers.gamma.app.domain.client.Client;
@@ -37,8 +38,8 @@ public class ClientRepositoryAdapter implements ClientRepository {
     }
 
     @Override
-    public void delete(ClientId clientId) throws ClientNotFoundException {
-        this.clientJpaRepository.deleteById(clientId.value());
+    public void delete(ClientUid clientUid) throws ClientNotFoundException {
+        this.clientJpaRepository.deleteById(clientUid.value());
     }
 
     @Override
@@ -50,8 +51,14 @@ public class ClientRepositoryAdapter implements ClientRepository {
     }
 
     @Override
+    public Optional<Client> get(ClientUid clientUid) {
+        return this.clientJpaRepository.findById(clientUid.value())
+                .map(this.clientEntityConverter::toDomain);
+    }
+
+    @Override
     public Optional<Client> get(ClientId clientId) {
-        return this.clientJpaRepository.findById(clientId.value())
+        return this.clientJpaRepository.findByClientId(clientId.value())
                 .map(this.clientEntityConverter::toDomain);
     }
 

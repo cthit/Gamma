@@ -141,6 +141,7 @@ public class UserFacade extends Facade {
                     .map(UserDTO::new)
                     .toList();
         }
+
         return Collections.emptyList();
     }
 

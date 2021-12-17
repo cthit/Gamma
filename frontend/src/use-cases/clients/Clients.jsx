@@ -15,10 +15,7 @@ import { deleteClient } from "api/clients/delete.clients.api";
 import { getClient, getClients } from "api/clients/get.clients.api";
 import { addClient, resetClientSecret } from "api/clients/post.clients.api";
 import {
-    CLIENT_DESCRIPTION_ENGLISH,
-    CLIENT_DESCRIPTION_SWEDISH,
     CLIENT_NAME,
-    CLIENT_REDIRECT,
     CLIENT_SECRET,
     CLIENT_ID
 } from "api/clients/props.clients.api";
@@ -210,13 +207,11 @@ const Clients = () => {
             )}
             detailsRenderEnd={client => (
                 <>
-                    {String(client.autoApprove) === "false" ? (
-                        <UserClientApprovals client={client} />
-                    ) : null}
                     {client.restrictions != null &&
                         client.restrictions.length > 0 && (
                             <ClientRestrictions client={client} />
                         )}
+                    <UserClientApprovals client={client} />
                 </>
             )}
             readOneProps={{

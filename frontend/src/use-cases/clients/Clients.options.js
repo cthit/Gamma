@@ -12,10 +12,10 @@ import {
     CLIENT_DESCRIPTION_SWEDISH,
     CLIENT_NAME,
     CLIENT_REDIRECT,
-    CLIENT_AUTO_APPROVE,
     CLIENT_ID,
     CLIENT_GENERATE_API_KEY,
-    CLIENT_RESTRICTIONS
+    CLIENT_RESTRICTIONS,
+    CLIENT_EMAIL_SCOPE
 } from "api/clients/props.clients.api";
 
 export const validationSchema = text => {
@@ -34,8 +34,8 @@ export const validationSchema = text => {
         .string()
         .required(text.EnglishDescription + text.IsRequired);
 
-    schema[CLIENT_AUTO_APPROVE] = yup.bool().required();
     schema[CLIENT_GENERATE_API_KEY] = yup.bool().required();
+    schema[CLIENT_EMAIL_SCOPE] = yup.bool().required();
     schema[CLIENT_RESTRICTIONS] = yup.array().of(yup.string());
 
     return yup.object().shape(schema);
@@ -47,9 +47,9 @@ export const initialValues = () => {
     initialValues[CLIENT_REDIRECT] = "";
     initialValues[CLIENT_DESCRIPTION_SWEDISH] = "";
     initialValues[CLIENT_DESCRIPTION_ENGLISH] = "";
-    initialValues[CLIENT_AUTO_APPROVE] = false;
     initialValues[CLIENT_GENERATE_API_KEY] = false;
     initialValues[CLIENT_RESTRICTIONS] = [];
+    initialValues[CLIENT_EMAIL_SCOPE] = false;
 
     return initialValues;
 };
@@ -92,11 +92,11 @@ export const keysComponentData = (text, authorityLevels) => {
         }
     };
 
-    keysComponentData[CLIENT_AUTO_APPROVE] = {
+    keysComponentData[CLIENT_EMAIL_SCOPE] = {
         component: DigitCheckbox,
         componentProps: {
             primary: true,
-            label: text.AutoApprove
+            label: text.EmailScope
         }
     };
 
@@ -130,9 +130,9 @@ export const keysText = text => {
     keysText[CLIENT_DESCRIPTION_SWEDISH] = text.SwedishDescription;
     keysText[CLIENT_DESCRIPTION_ENGLISH] = text.EnglishDescription;
     keysText[CLIENT_ID] = text.ClientId;
-    keysText[CLIENT_AUTO_APPROVE] = text.AutoApprove;
     keysText[CLIENT_GENERATE_API_KEY] = text.GenerateApiKey;
     keysText[CLIENT_RESTRICTIONS] = text.Restrictions;
+    keysText[CLIENT_EMAIL_SCOPE] = text.EmailScope;
 
     return keysText;
 };
@@ -141,8 +141,7 @@ export const keysOrder = () => [
     CLIENT_NAME,
     CLIENT_REDIRECT,
     CLIENT_DESCRIPTION_SWEDISH,
-    CLIENT_DESCRIPTION_ENGLISH,
-    CLIENT_AUTO_APPROVE
+    CLIENT_DESCRIPTION_ENGLISH
 ];
 
 export const createKeysOrder = () => [
@@ -150,9 +149,9 @@ export const createKeysOrder = () => [
     CLIENT_REDIRECT,
     CLIENT_DESCRIPTION_SWEDISH,
     CLIENT_DESCRIPTION_ENGLISH,
-    CLIENT_AUTO_APPROVE,
     CLIENT_GENERATE_API_KEY,
-    CLIENT_RESTRICTIONS
+    CLIENT_RESTRICTIONS,
+    CLIENT_EMAIL_SCOPE
 ];
 
 export const readAllKeysOrder = () => [CLIENT_NAME, CLIENT_REDIRECT];

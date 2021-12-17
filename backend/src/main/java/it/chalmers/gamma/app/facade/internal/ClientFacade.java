@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.facade.internal;
 
+import it.chalmers.gamma.app.domain.client.ClientUid;
+import it.chalmers.gamma.app.domain.client.Scope;
 import it.chalmers.gamma.app.facade.Facade;
 import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
 import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
@@ -18,9 +20,11 @@ import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ClientFacade extends Facade {
@@ -38,11 +42,11 @@ public class ClientFacade extends Facade {
 
     public record NewClient(String webServerRedirectUrl,
                             String prettyName,
-                            boolean autoApprove,
                             String svDescription,
                             String enDescription,
                             boolean generateApiKey,
-                            List<String> restrictions) {
+                            List<String> restrictions,
+                            boolean emailScope) {
     }
 
     public record ClientAndApiKeySecrets(String clientSecret, String apiKeyToken) {
@@ -78,18 +82,25 @@ public class ClientFacade extends Facade {
             );
         }
 
+        List<Scope> scopes = new ArrayList<>();
+        scopes.add(Scope.PROFILE);
+        if (newClient.emailScope) {
+            scopes.add(Scope.EMAIL);
+        }
+
         this.clientRepository.save(
                 new Client(
+                        ClientUid.generate(),
                         ClientId.generate(),
                         clientSecret,
                         new WebServerRedirectUrl(newClient.webServerRedirectUrl),
-                        newClient.autoApprove,
                         new PrettyName(newClient.prettyName),
                         new Text(
                                 newClient.svDescription,
                                 newClient.enDescription
                         ),
                         newClient.restrictions.stream().map(AuthorityLevelName::new).toList(),
+                        scopes,
                         Collections.emptyList(),
                         apiKey
                 )
@@ -97,17 +108,17 @@ public class ClientFacade extends Facade {
         return new ClientAndApiKeySecrets(clientSecret.value(), apiKeyToken == null ? null : apiKeyToken.value());
     }
 
-    public void delete(String clientId) throws ClientRepository.ClientNotFoundException {
+    public void delete(String clientUid) throws ClientRepository.ClientNotFoundException {
         this.accessGuard.require()
                 .isAdmin()
                 .ifNotThrow();
 
-        this.clientRepository.delete(new ClientId(clientId));
+        this.clientRepository.delete(ClientUid.valueOf(clientUid));
     }
 
-    public record ClientDTO(String clientId,
+    public record ClientDTO(UUID clientUid,
+                            String clientId,
                             String webServerRedirectUrl,
-                            boolean autoApprove,
                             String prettyName,
                             String svDescription,
                             String enDescription,
@@ -115,9 +126,9 @@ public class ClientFacade extends Facade {
                             List<UserFacade.UserDTO> approvedUsers,
                             boolean hasApiKey) {
         public ClientDTO(Client client) {
-            this(client.clientId().value(),
+            this(client.clientUid().value(),
+                    client.clientId().value(),
                     client.webServerRedirectUrl().value(),
-                    client.autoApprove(),
                     client.prettyName().value(),
                     client.description().sv().value(),
                     client.description().en().value(),
@@ -149,12 +160,12 @@ public class ClientFacade extends Facade {
                 .toList();
     }
 
-    public String resetClientSecret(String clientId) throws ClientNotFoundException {
+    public String resetClientSecret(String clientUid) throws ClientNotFoundException {
         this.accessGuard.require()
                 .isAdmin()
                 .ifNotThrow();
 
-        Client client = this.clientRepository.get(new ClientId(clientId))
+        Client client = this.clientRepository.get(ClientUid.valueOf(clientUid))
                 .orElseThrow(ClientNotFoundException::new);
         ClientSecret newSecret = ClientSecret.generate();
 

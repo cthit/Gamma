@@ -6,7 +6,10 @@ import it.chalmers.gamma.util.TokenUtils;
 
 import java.io.Serializable;
 
-public record ClientId(String value) implements Id<String> {
+/**
+ * Id for the client that is used in the OAuth2 flow.
+ */
+public record ClientId(String value) {
 
     public static ClientId generate() {
         String id = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
@@ -14,14 +17,6 @@ public record ClientId(String value) implements Id<String> {
                 TokenUtils.CharacterTypes.NUMBERS
         );
         return new ClientId(id);
-    }
-
-    public static ClientId valueOf(String value) {
-        return new ClientId(value);
-    }
-
-    public String getValue() {
-        return this.value;
     }
 
 }

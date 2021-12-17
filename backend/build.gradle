@@ -91,14 +91,14 @@ dependencies {
             "org.springframework.security:spring-security-test:5.5.1",
             "org.springframework.boot:spring-boot-test-autoconfigure:2.5.5",
             "org.springframework.boot:spring-boot-starter-test:2.5.5",
-            "com.tngtech.archunit:archunit:0.21.0"
-//            'org.junit.jupiter:junit-jupiter-engine:5.7.1',
-//            'org.mockito:mockito-junit-jupiter:3.8.0'
+            "com.tngtech.archunit:archunit:0.21.0",
     )
 
+    /*
     testRuntimeOnly(
             "com.h2database:h2:1.4.200",
     )
+     */
 }
 
 test {

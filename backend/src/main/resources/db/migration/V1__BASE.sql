@@ -122,19 +122,26 @@ CREATE TABLE user_activation
 
 CREATE TABLE itclient
 (
-    client_id               VARCHAR(100) PRIMARY KEY,
+    client_uid              UUID         PRIMARY KEY,
+    client_id               VARCHAR(100) UNIQUE,
     client_secret           VARCHAR(100) NOT NULL,
     web_server_redirect_uri VARCHAR(256) NOT NULL,
-    auto_approve            BOOLEAN DEFAULT FALSE,
     pretty_name             VARCHAR(30) NOT NULL,
     description             UUID REFERENCES internal_text ON DELETE CASCADE
 );
 
+CREATE TABLE itclient_scope
+(
+    client_uid UUID REFERENCES itclient,
+    scope     VARCHAR(30) NOT NULL,
+    PRIMARY KEY (client_uid, scope)
+);
+
 CREATE TABLE itclient_authority_level_restriction
 (
-    client_id VARCHAR(75) REFERENCES itclient,
+    client_uid UUID REFERENCES itclient,
     authority_level VARCHAR(30) REFERENCES authority_level,
-    PRIMARY KEY(client_id, authority_level)
+    PRIMARY KEY(client_uid, authority_level)
 );
 
 CREATE TABLE apikey
@@ -145,20 +152,19 @@ CREATE TABLE apikey
     token       VARCHAR(150) UNIQUE,
     key_type    VARCHAR(30) NOT NULL,
     version     INT
-    --     origin           varchar(256) not null
 );
 
 CREATE TABLE itclient_apikey
 (
-    client_id  VARCHAR(75) PRIMARY KEY REFERENCES itclient ON DELETE CASCADE,
+    client_uid  UUID PRIMARY KEY REFERENCES itclient ON DELETE CASCADE,
     api_key_id UUID REFERENCES apikey ON DELETE CASCADE
 );
 
 CREATE TABLE it_user_approval
 (
     user_id   UUID REFERENCES ituser ON DELETE CASCADE,
-    client_id VARCHAR(75) REFERENCES itclient ON DELETE CASCADE,
-    PRIMARY KEY(user_id, client_id)
+    client_uid UUID REFERENCES itclient ON DELETE CASCADE,
+    PRIMARY KEY(user_id, client_uid)
 );
 
 CREATE TABLE group_images_uri

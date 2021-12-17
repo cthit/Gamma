@@ -12,13 +12,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RecordBuilder
-public record Client(ClientId clientId,
+public record Client(ClientUid clientUid,
+                     ClientId clientId,
                      ClientSecret clientSecret,
                      WebServerRedirectUrl webServerRedirectUrl,
-                     boolean autoApprove,
                      PrettyName prettyName,
                      Text description,
                      List<AuthorityLevelName> restrictions,
+                     List<Scope> scopes,
                      List<User> approvedUsers,
                      Optional<ApiKey> clientApiKey) implements ClientBuilder.With {
 
@@ -28,6 +29,7 @@ public record Client(ClientId clientId,
         Objects.requireNonNull(prettyName);
         Objects.requireNonNull(description);
         Objects.requireNonNull(restrictions);
+        Objects.requireNonNull(scopes);
         Objects.requireNonNull(approvedUsers);
         Objects.requireNonNull(clientApiKey);
     }

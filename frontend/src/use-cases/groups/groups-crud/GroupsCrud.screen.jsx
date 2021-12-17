@@ -117,7 +117,7 @@ const GroupsCrud = () => {
                             height: "auto",
                             objectFit: "contain"
                         }}
-                        src={"/api/internal/groups/avatar/" + data.id}
+                        src={"/api/images/group/avatar/" + data.id}
                     />
                     <img
                         style={{
@@ -126,7 +126,7 @@ const GroupsCrud = () => {
                             height: "auto",
                             objectFit: "contain"
                         }}
-                        src={"/api/internal/groups/banner/" + data.id}
+                        src={"/api/images/group/banner/" + data.id}
                     />
                 </DigitLayout.Row>
             )}

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security;
 
-import it.chalmers.gamma.adapter.secondary.userdetails.UserDetailsProxy;
 import it.chalmers.gamma.app.facade.internal.MeFacade;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,11 +11,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -27,11 +23,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -40,9 +33,15 @@ import java.util.function.Function;
 public class OAuth2AuthorizationServerSecurityConfig {
 
     private final LoginCustomizer loginCustomizer;
+    private final String baseUrl;
+    private final String contextPath;
 
-    public OAuth2AuthorizationServerSecurityConfig(LoginCustomizer loginCustomizer) {
+    public OAuth2AuthorizationServerSecurityConfig(LoginCustomizer loginCustomizer,
+                                                   @Value("${application.base-uri}") String baseUrl,
+                                                   @Value("${server.servlet.context-path}") String contextPath) {
         this.loginCustomizer = loginCustomizer;
+        this.baseUrl = baseUrl;
+        this.contextPath = contextPath;
     }
 
     //TODO: Don't use the temp solution of InMemory...
@@ -55,6 +54,10 @@ public class OAuth2AuthorizationServerSecurityConfig {
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
                 new OAuth2AuthorizationServerConfigurer<>();
 
+        authorizationServerConfigurer
+                .authorizationEndpoint(authorizationEndpoint ->
+                        authorizationEndpoint.consentPage("/oauth2/consent"));
+
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
         Function<OidcUserInfoAuthenticationContext, OidcUserInfo> userInfoMapper = context -> {
@@ -66,26 +69,32 @@ public class OAuth2AuthorizationServerSecurityConfig {
              * Available scopes are profile, email.
              * The prefix that spring-authorization-server adds in SCOPE_
              */
-            String profileScope = "SCOPE_profile";
-            String emailScope = "SCOPE_email";
+            final String PROFILE_SCOPE = "SCOPE_profile";
+            final String EMAIL_SCOPE = "SCOPE_email";
 
             Map<String, Object> claims = new HashMap<>(principal.getToken().getClaims());
             Collection<GrantedAuthority> scopes = principal.getAuthorities();
 
             for (GrantedAuthority scope : scopes) {
-                if (scope.getAuthority().equals(profileScope)) {
+                if (scope.getAuthority().equals(PROFILE_SCOPE)) {
                     //https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
                     claims.put("name", me.firstName() + " '" + me.nick() + "' " + me.lastName());
                     claims.put("given_name", me.firstName());
                     claims.put("family_name", me.lastName());
                     claims.put("nickname", me.nick());
-                    //TODO:
-                    //claims.put("picture")
+                    claims.put("locale", me.language().toLowerCase());
+
+                    //TODO: Should the avatar uri be a final variable
+                    claims.put("picture", this.baseUrl
+                            + this.contextPath
+                            + "/images/user/avatar/"
+                            + me.id().toString()
+                    );
 
                     // Non-standard claims.
                     claims.put("cid", me.cid());
-                    claims.put("language", me.language());
-                } else if (scope.getAuthority().equals(emailScope)) {
+                    claims.put("authorities", me.authorities());
+                } else if (scope.getAuthority().equals(EMAIL_SCOPE)) {
                     claims.put("email", me.email());
                 }
             }
@@ -114,33 +123,6 @@ public class OAuth2AuthorizationServerSecurityConfig {
                 .oauth2ResourceServer(oauth2Resource -> oauth2Resource.jwt());
 
         return http.build();
-    }
-
-    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("test")
-                .clientSecret("{noop}secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://client:3001/login/oauth2/code/gamma")
-                .scope("openid")
-                .scope("profile")
-                .scope("email")
-                .clientSettings(
-                        ClientSettings
-                                .builder()
-                                .requireAuthorizationConsent(true)
-                                .build()
-                )
-                .build();
-
-        return new InMemoryRegisteredClientRepository(registeredClient);
-    }
-
-    @Bean
-    public OAuth2AuthorizationService oAuth2AuthorizationService() {
-        return new InMemoryOAuth2AuthorizationService();
     }
 
     @Bean

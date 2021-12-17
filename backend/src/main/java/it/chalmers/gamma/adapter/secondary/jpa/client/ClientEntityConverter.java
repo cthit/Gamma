@@ -8,7 +8,9 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.client.Client;
+import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.app.domain.client.ClientSecret;
+import it.chalmers.gamma.app.domain.client.Scope;
 import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.user.User;
@@ -45,6 +47,11 @@ public class ClientEntityConverter {
                 .map(ClientRestrictionEntity::getAuthorityLevelName)
                 .toList();
 
+        List<Scope> scopes = clientEntity.scopes
+                .stream()
+                .map(ClientScopeEntity::getScope)
+                .toList();
+
         List<User> users = clientEntity.approvals
                 .stream()
                 .map(UserApprovalEntity::getUserEntity)
@@ -53,12 +60,13 @@ public class ClientEntityConverter {
 
         return new Client(
                 clientEntity.domainId(),
+                new ClientId(clientEntity.clientId),
                 new ClientSecret(clientEntity.clientSecret),
                 new WebServerRedirectUrl(clientEntity.webServerRedirectUrl),
-                clientEntity.autoApprove,
                 new PrettyName(clientEntity.prettyName),
                 clientEntity.description.toDomain(),
                 restrictions,
+                scopes,
                 users,
                 Optional.ofNullable(clientEntity.clientsApiKey)
                         .map(ClientApiKeyEntity::getApiKeyEntity)
@@ -68,12 +76,12 @@ public class ClientEntityConverter {
 
     protected ClientEntity toEntity(Client client) {
         ClientEntity clientEntity = this.clientJpaRepository
-                .findById(client.clientId().value())
+                .findById(client.clientUid().value())
                 .orElse(new ClientEntity());
 
+        clientEntity.clientUid = client.clientUid().value();
         clientEntity.clientId = client.clientId().value();
         clientEntity.clientSecret = client.clientSecret().value();
-        clientEntity.autoApprove = client.autoApprove();
         clientEntity.prettyName = client.prettyName().value();
         clientEntity.webServerRedirectUrl = client.webServerRedirectUrl().value();
 
@@ -84,7 +92,6 @@ public class ClientEntityConverter {
         clientEntity.description.apply(client.description());
 
         clientEntity.restrictions.clear();
-
         clientEntity.restrictions.addAll(
                 client.restrictions()
                         .stream()
@@ -102,10 +109,21 @@ public class ClientEntityConverter {
                 client.approvedUsers()
                         .stream()
                         .map(user -> new UserApprovalEntity(
+                                //TODO: Remove all getOne
                                 this.userJpaRepository.getOne(user.id().value()),
                                 clientEntity
                         ))
                         .toList()
+        );
+
+        clientEntity.scopes.clear();
+        clientEntity.scopes.addAll(
+                client.scopes()
+                        .stream()
+                        .map(scope -> new ClientScopeEntity(
+                                clientEntity,
+                                scope)
+                        ).toList()
         );
 
         client.clientApiKey().ifPresent(

@@ -4,6 +4,8 @@ import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.app.domain.client.Client;
+import it.chalmers.gamma.app.domain.client.ClientUid;
+import it.chalmers.gamma.app.domain.client.Scope;
 import it.chalmers.gamma.app.domain.client.WebServerRedirectUrl;
 import it.chalmers.gamma.app.domain.common.PrettyName;
 import it.chalmers.gamma.app.domain.common.Text;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +57,8 @@ public class ClientBootstrap {
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
         LOGGER.info("Creating test client...");
 
-        ClientId clientId = ClientId.valueOf("test");
+        ClientUid clientUid = ClientUid.generate();
+        ClientId clientId = new ClientId("test");
         ClientSecret clientSecret = new ClientSecret("secret");
         ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-code");
         PrettyName prettyName = new PrettyName("test-client");
@@ -63,13 +67,14 @@ public class ClientBootstrap {
 
         this.clientRepository.save(
                 new Client(
+                        clientUid,
                         clientId,
                         clientSecret,
                         new WebServerRedirectUrl(redirectUrl),
-                        true,
                         prettyName,
                         new Text(),
                         new ArrayList<>(),
+                        Arrays.asList(Scope.values()),
                         allUsers,
                         Optional.of(
                                 new ApiKey(
@@ -84,7 +89,7 @@ public class ClientBootstrap {
         );
 
         LOGGER.info("Client generated with information:");
-        LOGGER.info("ClientId: " + clientId.getValue());
+        LOGGER.info("ClientId: " + clientId.value());
         LOGGER.info("ClientSecret: " + clientSecret.value());
         LOGGER.info("Client redirect uri: " + this.redirectUrl);
         LOGGER.info("An API key was also generated with the client, it has the code: " + apiKeyToken.value());

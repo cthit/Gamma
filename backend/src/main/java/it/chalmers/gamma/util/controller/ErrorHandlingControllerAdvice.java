@@ -16,7 +16,6 @@ public class ErrorHandlingControllerAdvice {
             AccessGuardUseCase.AccessDeniedException.class,
             AccessDeniedException.class
     })
-    @GetMapping("/error")
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public Error no() {

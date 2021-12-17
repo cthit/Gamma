@@ -3,19 +3,22 @@ package it.chalmers.gamma.security;
 import java.io.IOException;
 import java.util.Optional;
 
+import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
 import it.chalmers.gamma.app.repository.ApiKeyRepository;
 import it.chalmers.gamma.app.domain.apikey.ApiKey;
 import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -28,15 +31,16 @@ public class ApiKeyAuthenticationFilter implements Filter {
 
     private final ApiKeyRepository apiKeyRepository;
 
-    public ApiKeyAuthenticationFilter(ApiKeyRepository apiKeyRepository) {
+    // For example, that all URI:s start with /api
+    private final String contextPath;
+
+    public ApiKeyAuthenticationFilter(ApiKeyRepository apiKeyRepository,
+                                      @Value("${server.servlet.context-path}") String contextPath) {
         this.apiKeyRepository = apiKeyRepository;
+        this.contextPath = contextPath;
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
-
+    //TODO: Handle exceptions better than throwing a 500 error...
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (request instanceof HttpServletRequest httpRequest) {
@@ -46,7 +50,23 @@ public class ApiKeyAuthenticationFilter implements Filter {
                 Optional<ApiKey> maybeApiKey = this.apiKeyRepository.getByToken(new ApiKeyToken(apiKeyToken.get()));
                 if (maybeApiKey.isPresent()) {
                     LOGGER.trace("Authentication with a token was a successs! The Api Key "
-                            + maybeApiKey.get().prettyName() + " was successfully authenticated");
+                            + maybeApiKey.get().prettyName()
+                            + " was successfully authenticated");
+
+                    LOGGER.trace("Checking if the api key is used in the correct end point...");
+                    ApiKeyType type = maybeApiKey.get().keyType();
+                    if (!matchesUri(httpRequest.getRequestURI(), type.URI)) {
+                        LOGGER.trace("Api key with token: "
+                                + apiKeyToken.get()
+                                + " tried to access "
+                                + httpRequest.getRequestURI()
+                                + " but it is only allowed to access "
+                                + type.URI
+                        );
+
+                        throw new AccessDeniedException("Api key type not valid for this endpoint");
+                    }
+
                     ApiKeyAuthentication apiToken = new ApiKeyAuthentication(maybeApiKey.get().apiKeyToken(), AuthorityUtils.NO_AUTHORITIES);
                     SecurityContextHolder.getContext().setAuthentication(apiToken);
                     //Make sure that this isn't saved in redis
@@ -54,15 +74,21 @@ public class ApiKeyAuthenticationFilter implements Filter {
                 } else {
                     //It's safe to post the attempt since you cannot ever specify a key when generating one (except mock)
                     LOGGER.trace("Failed to authenticate with the api key token: " + apiKeyToken.get());
+                    throw new AccessDeniedException("Failed to authenticate api key token");
                 }
             }
             chain.doFilter(request, response);
         }
     }
 
-    @Override
-    public void destroy() {
+    private boolean matchesUri(String requestUri, String allowedUri) {
+        //TODO: Should throw something more serious
+        if (!contextPath.equals(requestUri.substring(0, contextPath.length()))) {
+            return false;
+        }
+        requestUri = requestUri.substring(contextPath.length());
 
+        return requestUri.startsWith(allowedUri);
     }
 
     private Optional<String> resolveToken(HttpServletRequest req) {

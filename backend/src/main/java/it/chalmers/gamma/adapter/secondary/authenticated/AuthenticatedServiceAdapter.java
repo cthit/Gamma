@@ -48,7 +48,8 @@ public class AuthenticatedServiceAdapter implements AuthenticatedService {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetailsProxy userDetailsProxy) {
-            User user = this.userRepository.get(Cid.valueOf(userDetailsProxy.getUsername())).orElseThrow(IllegalStateException::new);
+            User user = this.userRepository.get(new UserId(UUID.fromString(userDetailsProxy.getUsername())))
+                    .orElseThrow(IllegalStateException::new);
             return (InternalUserAuthenticated) () -> user;
         }
 

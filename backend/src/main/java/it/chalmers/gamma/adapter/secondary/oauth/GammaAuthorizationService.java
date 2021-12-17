@@ -1,38 +1,58 @@
 package it.chalmers.gamma.adapter.secondary.oauth;
 
-import it.chalmers.gamma.app.repository.UserApprovalRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.stereotype.Component;
 
-//@Component
+import java.util.Collection;
+
+@Component
 public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
-//    private final UserApprovalRepository userApprovalRepository;
+    private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationService.class);
+    private final InMemoryOAuth2AuthorizationService inMemoryOAuth2AuthorizationService;
 
-//    public GammaAuthorizationService(UserApprovalRepository userApprovalRepository) {
-//        this.userApprovalRepository = userApprovalRepository;
-//    }
+    public GammaAuthorizationService() {
+        inMemoryOAuth2AuthorizationService = new InMemoryOAuth2AuthorizationService();
+    }
 
     @Override
     public void save(OAuth2Authorization authorization) {
-        throw new UnsupportedOperationException();
+        LOGGER.info("Save: " + authorization.getId() + " = " + authorization.getAttributes());
+        inMemoryOAuth2AuthorizationService.save(authorization);
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                authorization.getAttribute("java.security.Principal");
+
+        //TODO: Here, or somewhere else, check restricted clients
+        Collection<GrantedAuthority> authorities = authenticationToken.getAuthorities();
+
+
     }
 
     @Override
     public void remove(OAuth2Authorization authorization) {
-        throw new UnsupportedOperationException();
-
+        LOGGER.info("Remove: " + authorization.toString());
+        inMemoryOAuth2AuthorizationService.remove(authorization);
     }
 
     @Override
     public OAuth2Authorization findById(String id) {
-        throw new UnsupportedOperationException();
+        LOGGER.info("findById - " + id);
+        return inMemoryOAuth2AuthorizationService.findById(id);
     }
 
     @Override
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
-        throw new UnsupportedOperationException();
+        LOGGER.info("findByToken - " + token + "; " + tokenType.getValue());
+        OAuth2Authorization authorization = inMemoryOAuth2AuthorizationService.findByToken(token, tokenType);
+        return authorization;
     }
+
 }

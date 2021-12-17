@@ -4,6 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEnti
 import it.chalmers.gamma.app.domain.PKId;
 import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
 import it.chalmers.gamma.app.domain.client.ClientId;
+import it.chalmers.gamma.app.domain.client.ClientUid;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -13,7 +14,7 @@ import javax.persistence.ManyToOne;
 public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrictionPKDTO> {
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_uid")
     private ClientEntity client;
 
     @ManyToOne
@@ -27,7 +28,7 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
         this.authorityLevel = authorityLevelEntity;
     }
 
-    protected record ClientRestrictionPKDTO(ClientId clientId,
+    protected record ClientRestrictionPKDTO(ClientUid clientUid,
                                             AuthorityLevelName authorityLevelName) { }
 
     @Override

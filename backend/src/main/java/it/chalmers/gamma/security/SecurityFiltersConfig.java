@@ -5,15 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 
 @Configuration
@@ -24,6 +20,9 @@ public class SecurityFiltersConfig {
     public SecurityFiltersConfig(LoginCustomizer loginCustomizer) {
         this.loginCustomizer = loginCustomizer;
     }
+
+
+    //TODO: Add filter checking if a user has accepted user-agreement
 
     /**
      * Sets up the security for the api that is used by the frontend.
@@ -50,38 +49,14 @@ public class SecurityFiltersConfig {
         return http.build();
     }
 
-    //TODO: Check for the ApiKeyType and make sure that the URI specified there.
+    //TODO: Add filter checking if ApiKeyType and the url matches ApiKeyType.URL
 
-    /**
-     * Complemented with ApiUsersMeSecurityConfig
-     */
     @Bean
     SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,
-                                                    ApiKeyAuthenticationFilter apiKeyAuthenticationFilter) throws Exception {
+                                                    ApiKeyAuthenticationFilter apiKeyAuthenticationFilter)
+            throws Exception {
         http
-                //Matches on everything except /users/me, since they are going to use Bearer authentication
-                .regexMatcher("^\\/external\\/(?!.*(users\\/me)).+")
-                .addFilterBefore(apiKeyAuthenticationFilter, BasicAuthenticationFilter.class)
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().authenticated()
-                )
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                //Since only backends will call the /external
-                .csrf(csrf -> csrf.disable());
-        return http.build();
-    }
-
-    /**
-     * This is separated to ensure that /users/me is the only endpoint that can be accessed with a Bearer token.
-     */
-    @Bean
-    SecurityFilterChain externalUsersMeSecurityFilterChain(HttpSecurity http,
-                                                           ApiKeyAuthenticationFilter apiKeyAuthenticationFilter) throws Exception {
-        http
-                //Matches everything that has /users/me, since they are going to use Bearer authentication
-                .regexMatcher("^\\/external.*\\b\\/users\\/me\\b.*")
+                .regexMatcher("^\\/external.+")
                 .addFilterBefore(apiKeyAuthenticationFilter, BasicAuthenticationFilter.class)
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests.anyRequest().authenticated()
@@ -91,10 +66,23 @@ public class SecurityFiltersConfig {
                 )
                 //Since only backends will call the /external
                 .csrf(csrf -> csrf.disable())
-                .oauth2ResourceServer(oauth2Resource -> oauth2Resource.jwt());
+                .exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
         return http.build();
     }
 
-    //TODO: Add a FilterSecurityChain for LegacyApiController
+    @Bean
+    SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .regexMatcher("^\\/images.+")
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests.anyRequest().permitAll()
+                )
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .csrf(csrf -> csrf.disable());
+        return http.build();
+    }
 
 }

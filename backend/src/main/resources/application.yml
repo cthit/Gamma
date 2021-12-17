@@ -83,7 +83,7 @@ application:
     client-name: ${DEFAULT_CLIENT_NAME:type}
     client-id: ${DEFAULT_CLIENT_ID:id}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}
-    redirect-url: ${DEFAULT_REDIRECT_URL:http://client:3001/authorized}
+    redirect-url: ${DEFAULT_REDIRECT_URL:http://client:3001/login/oauth2/code/gamma}
     api-key: ${DEFAULT_API_KEY:key}
   gotify:
     key: "key"                  # This is not needed, but application crashes since it looks for these values.

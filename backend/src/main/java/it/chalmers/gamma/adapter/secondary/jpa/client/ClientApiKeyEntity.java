@@ -3,6 +3,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
 import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import it.chalmers.gamma.app.domain.client.ClientUid;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,17 +13,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name = "itclient_apikey")
-public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
+public class ClientApiKeyEntity extends ImmutableEntity<ClientUid> {
 
     @Id
-    @Column(name = "client_id")
-    private String clientId;
+    @Column(name = "client_uid")
+    private UUID clientUid;
 
     @OneToOne
-    @PrimaryKeyJoinColumn(name = "client_id")
+    @PrimaryKeyJoinColumn(name = "client_uid")
     private ClientEntity client;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,12 +37,12 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientId> {
 
     protected ClientApiKeyEntity(ClientEntity clientEntity, ApiKeyEntity apiKeyEntity) {
         this.client = clientEntity;
-        this.clientId = clientEntity.clientId;
+        this.clientUid = clientEntity.clientUid;
         this.apiKey = apiKeyEntity;
     }
 
     @Override
-    protected ClientId domainId() {
+    protected ClientUid domainId() {
         return this.client.domainId();
     }
 
