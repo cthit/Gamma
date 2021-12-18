@@ -6,4 +6,4 @@ export const CLIENT_REDIRECT = "webServerRedirectUrl";
 export const CLIENT_SECRET = "clientSecret";
 export const CLIENT_GENERATE_API_KEY = "generateApiKey";
 export const CLIENT_RESTRICTIONS = "restrictions";
-export const CLIENT_EMAIL_SCOPE = "email";
+export const CLIENT_EMAIL_SCOPE = "emailScope";

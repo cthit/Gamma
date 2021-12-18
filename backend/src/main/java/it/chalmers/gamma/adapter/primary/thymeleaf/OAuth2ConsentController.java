@@ -32,8 +32,12 @@ public class OAuth2ConsentController {
             return null;
         }
 
+        model.addAttribute("clientId", clientId);
         model.addAttribute("clientName", client.getClientName());
         model.addAttribute("state", state);
+        model.addAttribute("hasEmailScope", scope.contains("email"));
+        model.addAttribute("scopes", scope.split(" "));
+
 
         return "consent";
     }

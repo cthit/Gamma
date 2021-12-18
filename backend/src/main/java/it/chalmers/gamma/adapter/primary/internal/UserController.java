@@ -50,7 +50,6 @@ public final class UserController {
                              String language) {}
 
     @PostMapping("/create")
-    @ResponseBody
     public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
         //TODO: Check userAgreement
 

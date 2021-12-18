@@ -52,16 +52,35 @@
 
         <div class="row">
             <h2 th:text="'Do you want to authorize ' + ${clientName} + ' to access:'" class="text text--roboto center-vertical"></h2>
+        </div>
 
+        <div class="row">
+            <ul>
+                <li class="text text--roboto">First and last name</li>
+                <li class="text text--roboto" th:if="${hasEmailScope}">Email</li>
+                <li class="text text--roboto">Nickname</li>
+                <li class="text text--roboto">Preferred language</li>
+                <li class="text text--roboto">Cid</li>
+                <li class="text text--roboto">Authorities, such as your groups</li>
+            </ul>
         </div>
 
         <div class="padding"></div>
 
-        <form id="confirmationForm" name="confirmationForm" action="/oauth2/authorize" method="post">
-            <label><input id="confirmButton" name="authorize" value="Authorize" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
-        </form>
+        <form id="confirmationForm" name="confirmationForm" action="/api/oauth2/authorize" method="post">
+            <input type="hidden" name="client_id" th:value="${clientId}">
+            <input type="hidden" name="state" th:value="${state}">
 
-        <form id="denialForm" name="denialForm" action="/oauth/authorize" method="post">
+            <div th:each="scope: ${scopes}" style="display: none;">
+                <input class="form-check-input"
+                       type="checkbox"
+                       name="scope"
+                       checked
+                       th:value="${scope}"
+                       th:id="${scope}">
+            </div>
+            <label><input id="confirmButton" name="authorize" value="Authorize" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
+            <div class="padding"></div>
             <label><input id="denialButton" name="deny" value="Deny" type="button" onclick="cancelConsent()" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
         </form>
     </div>

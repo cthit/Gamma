@@ -2,10 +2,16 @@ package it.chalmers.gamma.app.domain.client;
 
 import it.chalmers.gamma.util.TokenUtils;
 
+import java.util.Objects;
+
 public record ClientSecret(String value) {
 
     public ClientSecret {
-        //TODO: add validation
+        Objects.requireNonNull(value);
+        //Should I not encode this?
+        if (!value.startsWith("{noop}")) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public static ClientSecret generate() {

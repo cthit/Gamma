@@ -44,8 +44,6 @@ public class OAuth2AuthorizationServerSecurityConfig {
         this.contextPath = contextPath;
     }
 
-    //TODO: Don't use the temp solution of InMemory...
-
     /**
      * This SecurityFilterChain setups the security for the endpoints that is used for OAuth 2.1.
      */
@@ -123,11 +121,6 @@ public class OAuth2AuthorizationServerSecurityConfig {
                 .oauth2ResourceServer(oauth2Resource -> oauth2Resource.jwt());
 
         return http.build();
-    }
-
-    @Bean
-    public OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService() {
-        return new InMemoryOAuth2AuthorizationConsentService();
     }
 
     @Bean

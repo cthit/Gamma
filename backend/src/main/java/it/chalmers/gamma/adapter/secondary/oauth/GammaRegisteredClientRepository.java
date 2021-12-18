@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.server.authorization.config.ClientSet
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class GammaRegisteredClientRepository implements RegisteredClientReposito
     }
 
     private RegisteredClient toRegisteredClient(Client client) {
-        return RegisteredClient
+        RegisteredClient.Builder builder = RegisteredClient
                 .withId(client.clientUid().getValue())
                 .clientId(client.clientId().value())
                 .clientSecret(client.clientSecret().value())
@@ -62,12 +63,13 @@ public class GammaRegisteredClientRepository implements RegisteredClientReposito
                                 .requireAuthorizationConsent(true)
                                 .build()
                 )
-                .scope(client.scopes().stream()
-                        .map(Scope::name)
-                        .map(String::toLowerCase)
-                        .collect(Collectors.joining(" "))
-                )
-                .build();
+                .scope("openid");
+
+        for (Scope scope : client.scopes()) {
+            builder.scope(scope.name().toLowerCase());
+        }
+
+        return builder.build();
     }
 
 }

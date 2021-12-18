@@ -45,13 +45,17 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     @Override
     public OAuth2Authorization findById(String id) {
         LOGGER.info("findById - " + id);
-        return inMemoryOAuth2AuthorizationService.findById(id);
+        final var byId = inMemoryOAuth2AuthorizationService.findById(id);
+        LOGGER.info(byId.hashCode() + "");
+        return byId;
     }
 
+    //TODO: Implement this with a connection to a redis server
     @Override
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
         LOGGER.info("findByToken - " + token + "; " + tokenType.getValue());
         OAuth2Authorization authorization = inMemoryOAuth2AuthorizationService.findByToken(token, tokenType);
+        LOGGER.info(authorization.hashCode() + "");
         return authorization;
     }
 
