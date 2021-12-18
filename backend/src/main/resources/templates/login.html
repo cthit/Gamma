@@ -60,6 +60,14 @@
 
             <div class="padding"></div>
 
+            <div th:if="${authorizing}">
+                <h2 class="text text--roboto center-vertical">
+                    Before deciding on authorizing the client, please verify your identity
+                </h2>
+            </div>
+
+            <div class="padding"></div>
+
             <!-- Cid -->
             <div id="username" class="mdc-text-field mdc-text-field--outlined">
                 <input name="username" type="text" id="tf-cid" class="mdc-text-field__input">

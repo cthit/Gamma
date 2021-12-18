@@ -15,23 +15,18 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 @Configuration
 public class SecurityFiltersConfig {
 
-    private final LoginCustomizer loginCustomizer;
-
-    public SecurityFiltersConfig(LoginCustomizer loginCustomizer) {
-        this.loginCustomizer = loginCustomizer;
-    }
-
-
     //TODO: Add filter checking if a user has accepted user-agreement
 
     /**
      * Sets up the security for the api that is used by the frontend.
      */
     @Bean
-    SecurityFilterChain internalSecurityFilterChain(HttpSecurity http, CsrfTokenRepository csrfTokenRepository) throws Exception {
+    SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
+                                                    CsrfTokenRepository csrfTokenRepository,
+                                                    GammaRequestCache requestCache) throws Exception {
         http
                 //Either /internal/**, /login or /logout
-                .regexMatcher("^\\/internal.+|\\/login|\\/logout")
+                .regexMatcher("^\\/internal.+|\\/login.*|\\/logout")
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .antMatchers("/login").permitAll()
@@ -42,14 +37,13 @@ public class SecurityFiltersConfig {
                 )
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository))
                 .cors(Customizer.withDefaults())
-                .formLogin(loginCustomizer)
+                .formLogin(Customizer.withDefaults())
                 .logout(new LogoutCustomizer())
+                .requestCache(cache -> cache.requestCache(requestCache))
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
         return http.build();
     }
-
-    //TODO: Add filter checking if ApiKeyType and the url matches ApiKeyType.URL
 
     @Bean
     SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,

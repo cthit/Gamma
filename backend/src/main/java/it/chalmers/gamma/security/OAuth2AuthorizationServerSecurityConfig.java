@@ -1,52 +1,31 @@
 package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.app.facade.internal.MeFacade;
-import org.springframework.beans.factory.annotation.Value;
+import it.chalmers.gamma.security.oauth2.UserInfoMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
-import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationContext;
-import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationToken;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
 
 @Configuration
 public class OAuth2AuthorizationServerSecurityConfig {
 
-    private final LoginCustomizer loginCustomizer;
-    private final String baseUrl;
-    private final String contextPath;
+    private final UserInfoMapper userInfoMapper;
 
-    public OAuth2AuthorizationServerSecurityConfig(LoginCustomizer loginCustomizer,
-                                                   @Value("${application.base-uri}") String baseUrl,
-                                                   @Value("${server.servlet.context-path}") String contextPath) {
-        this.loginCustomizer = loginCustomizer;
-        this.baseUrl = baseUrl;
-        this.contextPath = contextPath;
+    public OAuth2AuthorizationServerSecurityConfig(UserInfoMapper userInfoMapper) {
+        this.userInfoMapper = userInfoMapper;
     }
 
     /**
      * This SecurityFilterChain setups the security for the endpoints that is used for OAuth 2.1.
      */
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, MeFacade meFacade) throws Exception {
         OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer =
@@ -57,48 +36,6 @@ public class OAuth2AuthorizationServerSecurityConfig {
                         authorizationEndpoint.consentPage("/oauth2/consent"));
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
-
-        Function<OidcUserInfoAuthenticationContext, OidcUserInfo> userInfoMapper = context -> {
-            OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
-            JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
-            MeFacade.MeDTO me = meFacade.getMe();
-
-            /*
-             * Available scopes are profile, email.
-             * The prefix that spring-authorization-server adds in SCOPE_
-             */
-            final String PROFILE_SCOPE = "SCOPE_profile";
-            final String EMAIL_SCOPE = "SCOPE_email";
-
-            Map<String, Object> claims = new HashMap<>(principal.getToken().getClaims());
-            Collection<GrantedAuthority> scopes = principal.getAuthorities();
-
-            for (GrantedAuthority scope : scopes) {
-                if (scope.getAuthority().equals(PROFILE_SCOPE)) {
-                    //https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-                    claims.put("name", me.firstName() + " '" + me.nick() + "' " + me.lastName());
-                    claims.put("given_name", me.firstName());
-                    claims.put("family_name", me.lastName());
-                    claims.put("nickname", me.nick());
-                    claims.put("locale", me.language().toLowerCase());
-
-                    //TODO: Should the avatar uri be a final variable
-                    claims.put("picture", this.baseUrl
-                            + this.contextPath
-                            + "/images/user/avatar/"
-                            + me.id().toString()
-                    );
-
-                    // Non-standard claims.
-                    claims.put("cid", me.cid());
-                    claims.put("authorities", me.authorities());
-                } else if (scope.getAuthority().equals(EMAIL_SCOPE)) {
-                    claims.put("email", me.email());
-                }
-            }
-
-            return new OidcUserInfo(claims);
-        };
 
         http
                 // This SecurityFilterChain shall match the endpoints that spring-authorization-server
@@ -117,8 +54,10 @@ public class OAuth2AuthorizationServerSecurityConfig {
                         )
                 .and()
                 // If a client has to authorize, but isn't authenticated, then the user is directed to the login page.
-                .formLogin(loginCustomizer)
-                .oauth2ResourceServer(oauth2Resource -> oauth2Resource.jwt());
+                .formLogin(login -> login
+                        .loginPage("/login?authorizing")
+                )
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
         return http.build();
     }
@@ -127,6 +66,7 @@ public class OAuth2AuthorizationServerSecurityConfig {
     public ProviderSettings providerSettings() {
         return ProviderSettings
                 .builder()
+                //TODO: Fix
                 .issuer("http://gamma:8081")
                 .build();
     }
