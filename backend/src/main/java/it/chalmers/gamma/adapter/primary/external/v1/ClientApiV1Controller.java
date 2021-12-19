@@ -25,73 +25,47 @@ public class ClientApiV1Controller {
 
     public static final String URI = "/external/client/v1";
 
-    private final ClientApiV1Mapper mapper;
 
     private final UserFacade userFacade;
     private final GroupFacade groupFacade;
     private final SuperGroupFacade superGroupFacade;
     private final MeFacade meFacade;
 
-    public ClientApiV1Controller(ClientApiV1Mapper mapper,
-                                 UserFacade userFacade,
+    public ClientApiV1Controller(UserFacade userFacade,
                                  GroupFacade groupFacade,
                                  SuperGroupFacade superGroupFacade,
                                  MeFacade meFacade) {
-        this.mapper = mapper;
         this.userFacade = userFacade;
         this.groupFacade = groupFacade;
         this.superGroupFacade = superGroupFacade;
         this.meFacade = meFacade;
     }
 
-    public record Group() {
-    }
-
     @GetMapping("/groups")
-    public List<Group> getGroups() {
-        return this.groupFacade.getAll()
-                .stream()
-                .map(this.mapper::map)
-                .toList();
+    public List<GroupFacade.GroupDTO> getGroups() {
+        return this.groupFacade.getAll();
     }
 
     public record SuperGroup() {
     }
 
     @GetMapping("/superGroups")
-    public List<SuperGroup> getSuperGroups() {
-        return this.superGroupFacade.getAllSuperGroups()
-                .stream()
-                .map(this.mapper::map)
-                .toList();
-    }
-
-    public record User() {
+    public List<SuperGroupFacade.SuperGroupDTO> getSuperGroups() {
+        return this.superGroupFacade.getAllSuperGroups();
     }
 
     @GetMapping("/users")
-    public List<User> getUsersForClient() {
-        return this.userFacade.getAllByClientAccepting()
-                .stream()
-                .map(this.mapper::map)
-                .toList();
+    public List<UserFacade.UserDTO> getUsersForClient() {
+        return this.userFacade.getAllByClientAccepting();
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable("id") UserId id) {
+    public UserFacade.UserDTO getUser(@PathVariable("id") UserId id) {
         return null;
     }
 
     @GetMapping("/users/{id}/avatar")
     public void getUserAvatar(@PathVariable("id") UserId id) throws IOException { }
-
-    public record Me(String nick) {
-    }
-
-    @GetMapping(value = "/users/me", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Me getMe() {
-        return this.mapper.map(this.meFacade.getMe());
-    }
 
     private static class UserNotFoundResponse extends NotFoundResponse { }
 

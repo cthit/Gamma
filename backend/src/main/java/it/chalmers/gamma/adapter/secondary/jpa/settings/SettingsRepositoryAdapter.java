@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.appsettings;
+package it.chalmers.gamma.adapter.secondary.jpa.settings;
 
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.settings.domain.Settings;
@@ -9,9 +9,9 @@ import javax.transaction.Transactional;
 @Service
 public class SettingsRepositoryAdapter implements SettingsRepository {
 
-    private final AppSettingsJpaRepository repository;
+    private final SettingsJpaRepository repository;
 
-    public SettingsRepositoryAdapter(AppSettingsJpaRepository repository) {
+    public SettingsRepositoryAdapter(SettingsJpaRepository repository) {
         this.repository = repository;
     }
 
@@ -23,15 +23,19 @@ public class SettingsRepositoryAdapter implements SettingsRepository {
     @Transactional
     @Override
     public void setSettings(Settings settings) {
-        AppSettingsEntity settingsEntity = this.repository.findTopByOrderByVersionDesc()
-                .orElse(new AppSettingsEntity());
+        SettingsEntity settingsEntity = this.repository.findTopByOrderByVersionDesc()
+                .orElse(new SettingsEntity());
         settingsEntity.apply(settings);
         this.repository.save(settingsEntity);
     }
 
+    /**
+     * Assumes that there's always one settings entity available.
+     */
     @Override
     public Settings getSettings() {
-        AppSettingsEntity appSettingsEntity = repository.findTopByOrderByVersionDesc().orElseThrow();
-        return appSettingsEntity.toDomain();
+        SettingsEntity settingsEntity = repository.findTopByOrderByVersionDesc()
+                .orElseThrow(IllegalStateException::new);
+        return settingsEntity.toDomain();
     }
 }

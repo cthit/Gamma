@@ -6,7 +6,7 @@ import it.chalmers.gamma.bootstrap.ApiKeyBootstrap;
 import it.chalmers.gamma.bootstrap.AuthorityLevelBootstrap;
 import it.chalmers.gamma.bootstrap.ClientBootstrap;
 import it.chalmers.gamma.bootstrap.EnsureAnAdminUserBootstrap;
-import it.chalmers.gamma.bootstrap.EnsureAppSettingsBootstrap;
+import it.chalmers.gamma.bootstrap.EnsureSettingsBootstrap;
 import it.chalmers.gamma.bootstrap.GroupBootstrap;
 import it.chalmers.gamma.bootstrap.MiscBootstrap;
 import it.chalmers.gamma.bootstrap.PostBootstrap;
@@ -25,7 +25,7 @@ public class BootstrapRunner {
                                           AuthorityLevelBootstrap authorityLevelBootstrap,
                                           ClientBootstrap clientBootstrap,
                                           EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
-                                          EnsureAppSettingsBootstrap ensureAppSettingsBootstrap,
+                                          EnsureSettingsBootstrap ensureSettingsBootstrap,
                                           GroupBootstrap groupBootstrap,
                                           MiscBootstrap miscBootstrap,
                                           PostBootstrap postBootstrap,
@@ -34,7 +34,7 @@ public class BootstrapRunner {
         return (args) -> {
             miscBootstrap.runImageBootstrap();
 
-            ensureAppSettingsBootstrap.ensureAppSettings();
+            ensureSettingsBootstrap.ensureAppSettings();
 
             adminAuthorityLevelBootstrap.ensureAdminAuthorityLevel();
             ensureAnAdminUserBootstrap.ensureAnAdminUser();

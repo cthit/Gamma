@@ -33,6 +33,7 @@ import Drawer from "./views/drawer";
 import SuperGroupTypes from "../use-cases/super-group-types";
 import EnforceUserAgreement from "./enforce-user-agreement";
 import UserAgreement from "../use-cases/useragreement";
+import InfoApiSettings from "../use-cases/info-api-settings";
 
 export const App = () => {
     const [user, update, [loading, error], ignore] = useContext(
@@ -104,6 +105,11 @@ export const App = () => {
                         path="/user-agreement"
                         exact
                         component={UserAgreement}
+                    />
+                    <Route
+                        path="/info-api-settings"
+                        exact
+                        component={InfoApiSettings}
                     />
                     <Route path="/" exact component={Home} />
                     <Route component={FourOFour} />

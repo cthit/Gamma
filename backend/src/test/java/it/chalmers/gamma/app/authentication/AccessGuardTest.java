@@ -210,7 +210,7 @@ class AccessGuardTest {
                     "chalmers.it api nyckel",
                     "chalmers.it api key"
             ),
-            ApiKeyType.CHALMERSIT,
+            ApiKeyType.INFO,
             ApiKeyToken.generate()
     );
 
@@ -479,7 +479,7 @@ class AccessGuardTest {
                 .willReturn(chalmersitApiAuthenticated);
 
         assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.CHALMERSIT)));
+                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.INFO)));
 
         given(authenticatedService.getAuthenticated())
                 .willReturn(goldappsApiAuthenticated);
@@ -512,7 +512,7 @@ class AccessGuardTest {
                 .willReturn(goldappsApiAuthenticated);
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.CHALMERSIT)));
+                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.INFO)));
 
         given(authenticatedService.getAuthenticated())
                 .willReturn(whitelistApiAuthenticated);

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ChalmersitApiControllerTest {
+class InfoApiControllerTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

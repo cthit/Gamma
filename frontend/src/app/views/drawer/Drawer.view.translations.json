@@ -12,5 +12,6 @@
     "ApiKeys": ["API keys", "API nycklar"],
     "Authorities": ["Authorities", "Rättigheter"],
     "SuperGroupTypes": ["Super group types", "Supergruppstyper"],
-    "UserAgreement": ["User agreement", "Användaravtal"]
+    "UserAgreement": ["User agreement", "Användaravtal"],
+    "InfoApiSettings": ["Info api settings", "Info api inställningar"]
 }

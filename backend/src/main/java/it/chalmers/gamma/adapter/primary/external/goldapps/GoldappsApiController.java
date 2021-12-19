@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Used by cthit/goldapps to sync Google accounts for the student division
+ * Used by cthit/goldapps to sync Google accounts for the student division.
  */
 @RestController
 @RequestMapping(GoldappsApiController.URI)

@@ -49,7 +49,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.*;
@@ -122,7 +121,7 @@ class AuthenticatedServiceTest {
                     "chalmers.it api nyckel",
                     "chalmers.it api key"
             ),
-            ApiKeyType.CHALMERSIT,
+            ApiKeyType.INFO,
             ApiKeyToken.generate()
     );
 

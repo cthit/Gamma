@@ -91,6 +91,11 @@ const Drawer = ({ closeDrawer }) => {
                     onClick={closeDrawer}
                     link={"/user-agreement"}
                 />
+                <DigitNavLink
+                    text={text.InfoApiSettings}
+                    onClick={closeDrawer}
+                    link={"/info-api-settings"}
+                />
                 <LanguageSelection />
             </DigitLayout.Column>
         );

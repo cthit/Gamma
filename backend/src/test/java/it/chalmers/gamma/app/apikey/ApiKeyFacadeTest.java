@@ -49,7 +49,7 @@ class ApiKeyFacadeTest {
         String[] expected = new String[]{
                 "CLIENT",
                 "GOLDAPPS",
-                "CHALMERSIT",
+                "INFO",
                 "WHITELIST"
         };
 
@@ -247,7 +247,7 @@ class ApiKeyFacadeTest {
                         "Det här är en test api nyckel 2",
                         "This is my test api key 2"
                 ),
-                ApiKeyType.CHALMERSIT,
+                ApiKeyType.INFO,
                 ApiKeyToken.generate()
         );
 
