@@ -1,11 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
-import it.chalmers.gamma.app.domain.PKId;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.client.ClientId;
-import it.chalmers.gamma.app.domain.client.ClientUid;
-import it.chalmers.gamma.app.domain.client.Scope;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
+import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.Scope;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

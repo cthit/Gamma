@@ -1,10 +1,10 @@
 package it.chalmers.gamma.app.authentication;
 
-import it.chalmers.gamma.app.domain.user.User;
+import it.chalmers.gamma.app.user.domain.User;
 
 /**
  * See InternalUserAuthenticated to see the difference between the two classes.
  */
-public interface ExternalUserAuthenticated extends Authenticated {
+public non-sealed interface ExternalUserAuthenticated extends Authenticated {
     User get();
 }

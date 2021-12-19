@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.password;
 
-import it.chalmers.gamma.app.domain.user.passwordreset.PasswordReset;
-import it.chalmers.gamma.app.domain.user.passwordreset.PasswordResetToken;
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordReset;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
+import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import java.time.Instant;

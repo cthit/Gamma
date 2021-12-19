@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.facade.internal.PostFacade;
+import it.chalmers.gamma.app.post.PostFacade;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;

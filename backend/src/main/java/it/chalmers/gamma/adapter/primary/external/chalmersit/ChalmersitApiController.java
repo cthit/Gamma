@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.external.chalmersit;
 
-import it.chalmers.gamma.app.facade.internal.GroupFacade;
+import it.chalmers.gamma.app.group.GroupFacade;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

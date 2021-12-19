@@ -1,15 +1,15 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.domain.common.Email;
-import it.chalmers.gamma.app.domain.common.ImageUri;
-import it.chalmers.gamma.app.domain.user.AcceptanceYear;
-import it.chalmers.gamma.app.domain.user.Cid;
-import it.chalmers.gamma.app.domain.user.FirstName;
-import it.chalmers.gamma.app.domain.user.LastName;
-import it.chalmers.gamma.app.domain.user.Nick;
-import it.chalmers.gamma.app.domain.user.Password;
-import it.chalmers.gamma.app.domain.user.User;
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.user.domain.AcceptanceYear;
+import it.chalmers.gamma.app.user.domain.Cid;
+import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.LastName;
+import it.chalmers.gamma.app.user.domain.Nick;
+import it.chalmers.gamma.app.user.domain.Password;
+import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserId;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

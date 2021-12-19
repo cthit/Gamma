@@ -4,13 +4,13 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConver
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.app.domain.common.Email;
-import it.chalmers.gamma.app.domain.common.ImageUri;
-import it.chalmers.gamma.app.domain.common.PrettyName;
-import it.chalmers.gamma.app.domain.group.Group;
-import it.chalmers.gamma.app.domain.group.GroupMember;
-import it.chalmers.gamma.app.domain.group.UnofficialPostName;
-import it.chalmers.gamma.app.domain.user.Name;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.common.PrettyName;
+import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.group.domain.GroupMember;
+import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.user.domain.Name;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

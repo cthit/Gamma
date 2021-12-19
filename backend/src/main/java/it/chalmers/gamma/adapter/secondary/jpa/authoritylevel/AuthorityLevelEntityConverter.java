@@ -9,11 +9,11 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepositor
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.post.Post;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.app.domain.user.User;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.post.domain.Post;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
+import it.chalmers.gamma.app.user.domain.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

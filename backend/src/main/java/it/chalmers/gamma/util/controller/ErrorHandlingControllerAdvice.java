@@ -1,11 +1,10 @@
 package it.chalmers.gamma.util.controller;
 
-import it.chalmers.gamma.app.usecase.AccessGuardUseCase;
+import it.chalmers.gamma.app.authentication.AccessGuard;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ErrorHandlingControllerAdvice {
 
     @ExceptionHandler({
-            AccessGuardUseCase.AccessDeniedException.class,
+            AccessGuard.AccessDeniedException.class,
             AccessDeniedException.class
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)

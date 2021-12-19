@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.repository.PostRepository;
-import it.chalmers.gamma.app.domain.post.Post;
-import it.chalmers.gamma.app.domain.post.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.post.domain.Post;
+import it.chalmers.gamma.app.post.domain.PostId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

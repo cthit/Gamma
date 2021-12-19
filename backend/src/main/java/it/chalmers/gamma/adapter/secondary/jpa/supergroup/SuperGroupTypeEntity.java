@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
-import it.chalmers.gamma.app.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
 
 import javax.persistence.Column;

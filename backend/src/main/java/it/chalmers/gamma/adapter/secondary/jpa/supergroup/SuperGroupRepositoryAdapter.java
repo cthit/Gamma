@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
-import it.chalmers.gamma.app.repository.SuperGroupRepository;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroupType;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

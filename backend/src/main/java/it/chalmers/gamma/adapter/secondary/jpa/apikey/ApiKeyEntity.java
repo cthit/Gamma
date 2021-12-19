@@ -1,13 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.domain.apikey.ApiKey;
-import it.chalmers.gamma.app.domain.apikey.ApiKeyId;
-import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
-import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
-import it.chalmers.gamma.app.domain.common.PrettyName;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 import javax.persistence.*;
 import java.util.UUID;

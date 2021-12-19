@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.authentication;
 
-import it.chalmers.gamma.app.domain.user.User;
+import it.chalmers.gamma.app.user.domain.User;
 
 /**
  * Only used when interacting with the Gamma Client.
@@ -11,6 +11,6 @@ import it.chalmers.gamma.app.domain.user.User;
  * Separating these two scenarios helps the domain to guarantee that an external client cannot act as the user and edit
  * their information for example.
  */
-public interface InternalUserAuthenticated extends Authenticated {
+public non-sealed interface InternalUserAuthenticated extends Authenticated {
     User get();
 }

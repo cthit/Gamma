@@ -1,8 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.domain.group.EmailPrefix;
-import it.chalmers.gamma.app.domain.post.Post;
-import it.chalmers.gamma.app.domain.post.PostId;
+import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 

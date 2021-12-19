@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.facade.internal.SuperGroupFacade;
-import it.chalmers.gamma.app.repository.SuperGroupTypeRepository;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;

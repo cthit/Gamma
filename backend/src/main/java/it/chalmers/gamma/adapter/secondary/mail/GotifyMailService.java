@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.mail;
 
-import it.chalmers.gamma.app.service.MailService;
+import it.chalmers.gamma.app.mail.domain.MailService;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.facade.internal.ApiKeyFacade;
-import it.chalmers.gamma.app.repository.ApiKeyRepository;
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -70,7 +70,7 @@ public final class ApiKeyAdminController {
 
     @GetMapping("/{id}")
     public ApiKeyFacade.ApiKeyDTO getApiKey(@PathVariable("id") String id) {
-        return this.apiKeyFacade.getById(id)
+        return this.apiKeyFacade.getById(UUID.fromString(id))
                 .orElseThrow(ApiKeyNotFoundResponse::new);
     }
 

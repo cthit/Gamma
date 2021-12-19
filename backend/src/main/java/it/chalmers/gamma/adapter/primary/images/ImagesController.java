@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.images;
 
-import it.chalmers.gamma.app.facade.internal.ImageFacade;
+import it.chalmers.gamma.app.image.ImageFacade;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

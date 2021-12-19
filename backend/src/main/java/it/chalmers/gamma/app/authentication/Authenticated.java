@@ -1,4 +1,5 @@
 package it.chalmers.gamma.app.authentication;
 
-public interface Authenticated {
+public sealed interface Authenticated
+        permits ApiAuthenticated, ExternalUserAuthenticated, InternalUserAuthenticated, Unauthenticated {
 }

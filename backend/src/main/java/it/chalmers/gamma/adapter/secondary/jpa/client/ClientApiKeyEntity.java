@@ -1,9 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
-import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.client.ClientUid;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

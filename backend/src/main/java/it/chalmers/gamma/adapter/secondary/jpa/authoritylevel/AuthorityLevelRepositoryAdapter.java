@@ -2,18 +2,15 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.app.repository.AuthorityLevelRepository;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevel;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityType;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.app.domain.user.UserAuthority;
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
+import it.chalmers.gamma.app.user.domain.UserAuthority;
+import it.chalmers.gamma.app.user.domain.UserId;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.external.whitelist;
 
-import it.chalmers.gamma.app.facade.internal.WhitelistFacade;
+import it.chalmers.gamma.app.user.whitelist.WhitelistFacade;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,10 +3,10 @@ package it.chalmers.gamma.security;
 import java.io.IOException;
 import java.util.Optional;
 
-import it.chalmers.gamma.app.domain.apikey.ApiKeyType;
-import it.chalmers.gamma.app.repository.ApiKeyRepository;
-import it.chalmers.gamma.app.domain.apikey.ApiKey;
-import it.chalmers.gamma.app.domain.apikey.ApiKeyToken;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
+import it.chalmers.gamma.app.apikey.domain.ApiKey;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;

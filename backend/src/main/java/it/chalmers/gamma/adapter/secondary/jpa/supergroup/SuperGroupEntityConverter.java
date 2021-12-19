@@ -1,12 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
-import it.chalmers.gamma.app.domain.common.Email;
-import it.chalmers.gamma.app.domain.common.PrettyName;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroup;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroupType;
-import it.chalmers.gamma.app.domain.user.Name;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.common.PrettyName;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
+import it.chalmers.gamma.app.user.domain.Name;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.facade.internal.UserAgreementFacade;
+import it.chalmers.gamma.app.user.UserAgreementFacade;
 import it.chalmers.gamma.util.response.BadRequestResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -4,9 +4,9 @@ import java.time.Instant;
 
 import javax.persistence.*;
 
-import it.chalmers.gamma.app.domain.useractivation.UserActivation;
-import it.chalmers.gamma.app.domain.useractivation.UserActivationToken;
-import it.chalmers.gamma.app.domain.user.Cid;
+import it.chalmers.gamma.app.user.activation.domain.UserActivation;
+import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
+import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 @Entity

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

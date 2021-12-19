@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.primary.external.v1;
 
-import it.chalmers.gamma.app.facade.internal.GroupFacade;
-import it.chalmers.gamma.app.facade.internal.MeFacade;
-import it.chalmers.gamma.app.facade.internal.SuperGroupFacade;
-import it.chalmers.gamma.app.facade.internal.UserFacade;
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.user.MeFacade;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

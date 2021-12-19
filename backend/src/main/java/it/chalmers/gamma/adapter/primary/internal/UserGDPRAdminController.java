@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.facade.internal.UserGdprTrainingFacade;
+import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
 
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.appsettings;
 
-import it.chalmers.gamma.app.domain.settings.Settings;
-import it.chalmers.gamma.app.domain.settings.SettingsId;
+import it.chalmers.gamma.app.settings.domain.Settings;
+import it.chalmers.gamma.app.settings.domain.SettingsId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.Column;

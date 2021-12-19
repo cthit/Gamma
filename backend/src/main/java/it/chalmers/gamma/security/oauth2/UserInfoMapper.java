@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.oauth2;
 
-import it.chalmers.gamma.app.facade.internal.MeFacade;
+import it.chalmers.gamma.app.user.MeFacade;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;

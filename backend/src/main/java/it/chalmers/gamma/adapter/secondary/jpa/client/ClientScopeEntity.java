@@ -1,9 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.client.Scope;
+import it.chalmers.gamma.app.client.domain.Scope;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

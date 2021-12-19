@@ -1,4 +1,4 @@
 package it.chalmers.gamma.app.authentication;
 
-public interface Unauthenticated extends Authenticated {
+public non-sealed interface Unauthenticated extends Authenticated {
 }

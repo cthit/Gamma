@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 
 import javax.persistence.Column;

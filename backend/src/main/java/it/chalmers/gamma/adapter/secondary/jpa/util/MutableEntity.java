@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
-import it.chalmers.gamma.app.domain.Id;
+import it.chalmers.gamma.app.common.Id;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security;
 
-import it.chalmers.gamma.app.facade.internal.MeFacade;
+import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.security.oauth2.UserInfoMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

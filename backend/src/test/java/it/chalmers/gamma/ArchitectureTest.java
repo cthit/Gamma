@@ -23,6 +23,8 @@ public class ArchitectureTest {
     public void testArchitecture() {
     }
 
+    //Add test checking that primary adapter only uses *Facade.
+
     @Test
     public void layersShouldBeFreeOfCycles() {
         SliceRule rule = SlicesRuleDefinition.slices()

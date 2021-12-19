@@ -1,11 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
-import it.chalmers.gamma.app.domain.client.Client;
-import it.chalmers.gamma.app.domain.client.ClientId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
-import it.chalmers.gamma.app.domain.client.ClientUid;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 
 import javax.persistence.*;
 import java.util.ArrayList;

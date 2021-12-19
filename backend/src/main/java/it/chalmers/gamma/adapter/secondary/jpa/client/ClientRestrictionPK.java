@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
-import it.chalmers.gamma.app.domain.PKId;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.client.ClientId;
-import it.chalmers.gamma.app.domain.client.ClientUid;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;

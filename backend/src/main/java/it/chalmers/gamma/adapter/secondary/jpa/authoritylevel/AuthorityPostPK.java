@@ -2,10 +2,10 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
-import it.chalmers.gamma.app.domain.PKId;
-import it.chalmers.gamma.app.domain.authoritylevel.AuthorityLevelName;
-import it.chalmers.gamma.app.domain.post.PostId;
-import it.chalmers.gamma.app.domain.supergroup.SuperGroupId;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;

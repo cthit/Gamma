@@ -1,10 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
-import it.chalmers.gamma.app.domain.PKId;
-import it.chalmers.gamma.app.domain.group.GroupId;
-import it.chalmers.gamma.app.domain.post.PostId;
-import it.chalmers.gamma.app.domain.user.UserId;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
+import it.chalmers.gamma.app.group.domain.GroupId;
+import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.user.domain.UserId;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
