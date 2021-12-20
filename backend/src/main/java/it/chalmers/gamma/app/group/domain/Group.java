@@ -14,7 +14,6 @@ import java.util.Optional;
 @RecordBuilder
 public record Group(GroupId id,
                     int version,
-                    Email email,
                     Name name,
                     PrettyName prettyName,
                     SuperGroup superGroup,
@@ -24,7 +23,6 @@ public record Group(GroupId id,
 
     public Group {
         Objects.requireNonNull(id);
-        Objects.requireNonNull(email);
         Objects.requireNonNull(prettyName);
         Objects.requireNonNull(superGroup);
         Objects.requireNonNull(avatarUri);

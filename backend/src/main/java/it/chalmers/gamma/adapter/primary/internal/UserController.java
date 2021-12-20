@@ -28,7 +28,7 @@ public final class UserController {
     }
 
     @GetMapping()
-    public List<UserFacade.UserDTO> getAllRestrictedUsers() {
+    public List<UserFacade.UserDTO> getAllUsers() {
         return this.userFacade.getAll();
     }
 

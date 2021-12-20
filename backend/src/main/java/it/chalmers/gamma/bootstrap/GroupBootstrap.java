@@ -86,7 +86,6 @@ public class GroupBootstrap {
             Group group = new Group(
                     new GroupId(mockGroup.id()),
                     0,
-                    new Email(name.value() + "@chalmers.lol"),
                     name,
                     prettyName,
                     superGroupRepository.get(new SuperGroupId(mockGroup.superGroupId())).orElseThrow(),

@@ -3,7 +3,6 @@ import * as yup from "yup";
 import { DigitSelect, DigitTextField } from "@cthit/react-digit-components";
 
 import {
-    GROUP_EMAIL,
     GROUP_ID,
     GROUP_NAME,
     GROUP_PRETTY_NAME,
@@ -18,7 +17,6 @@ export const validationSchema = text => {
     schema[GROUP_PRETTY_NAME] = yup
         .string()
         .required(text.PrettyName + text.IsRequired);
-    schema[GROUP_EMAIL] = yup.string().required(text.Email + text.IsRequired);
 
     schema[GROUP_SUPER_GROUP] = yup
         .string()
@@ -32,7 +30,6 @@ export const initialValues = () => {
 
     output[GROUP_ID] = "";
     output[GROUP_NAME] = "";
-    output[GROUP_EMAIL] = "";
     output[GROUP_SUPER_GROUP] = "";
     output[GROUP_PRETTY_NAME] = "";
 
@@ -60,15 +57,6 @@ export const keysComponentData = (text, superGroups = []) => {
         }
     };
 
-    componentData[GROUP_EMAIL] = {
-        component: DigitTextField,
-        componentProps: {
-            upperLabel: text.Email,
-            maxLength: 100,
-            outlined: true
-        }
-    };
-
     const superGroupMap = {};
     for (let i = 0; i < superGroups.length; i++) {
         superGroupMap[superGroups[i].id] = superGroups[i].prettyName;
@@ -91,7 +79,6 @@ export const keysText = text => {
 
     keysText[GROUP_ID] = text.Id;
     keysText[GROUP_NAME] = text.Name;
-    keysText[GROUP_EMAIL] = text.Email;
     keysText[GROUP_SUPER_GROUP] = text.SuperGroup;
     keysText[GROUP_SUPER_GROUP_PRETTY_NAME] = text.SuperGroup;
     keysText[GROUP_PRETTY_NAME] = text.PrettyName;
@@ -102,25 +89,15 @@ export const keysText = text => {
 export const keysOrder = () => [
     GROUP_PRETTY_NAME,
     GROUP_NAME,
-    GROUP_EMAIL,
     GROUP_SUPER_GROUP
 ];
 
 export const readOneKeysOrder = () => [
     GROUP_PRETTY_NAME,
     GROUP_NAME,
-    GROUP_EMAIL,
     GROUP_SUPER_GROUP_PRETTY_NAME
 ];
 
-export const readAllKeysOrder = () => [
-    GROUP_NAME,
-    GROUP_PRETTY_NAME,
-    GROUP_EMAIL
-];
+export const readAllKeysOrder = () => [GROUP_NAME, GROUP_PRETTY_NAME];
 
-export const updateKeysOrder = () => [
-    GROUP_PRETTY_NAME,
-    GROUP_EMAIL,
-    GROUP_SUPER_GROUP
-];
+export const updateKeysOrder = () => [GROUP_PRETTY_NAME, GROUP_SUPER_GROUP];

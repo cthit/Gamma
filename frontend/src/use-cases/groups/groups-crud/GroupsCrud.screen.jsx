@@ -17,8 +17,7 @@ import {
     GROUP_ID,
     GROUP_NAME,
     GROUP_PRETTY_NAME,
-    GROUP_SUPER_GROUP,
-    GROUP_EMAIL
+    GROUP_SUPER_GROUP
 } from "api/groups/props.groups.api";
 import { editGroup } from "api/groups/put.groups.api";
 import { getSuperGroups } from "api/super-groups/get.super-groups.api";
@@ -77,7 +76,6 @@ const GroupsCrud = () => {
             updateRequest={(id, data) =>
                 editGroup(id, {
                     name: data.name,
-                    email: data.email,
                     superGroup: data.superGroup,
                     prettyName: data.prettyName,
                     version: data.version
@@ -88,7 +86,6 @@ const GroupsCrud = () => {
                     ? data =>
                           addGroup({
                               name: data[GROUP_NAME],
-                              email: data[GROUP_EMAIL],
                               superGroup: data[GROUP_SUPER_GROUP],
                               prettyName: data[GROUP_PRETTY_NAME]
                           })

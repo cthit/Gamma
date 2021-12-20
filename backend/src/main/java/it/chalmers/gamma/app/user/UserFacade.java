@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.group.GroupFacade;
@@ -11,7 +12,6 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
-import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 import static it.chalmers.gamma.app.authentication.AccessGuard.userHasAcceptedClient;
@@ -72,38 +73,23 @@ public class UserFacade extends Facade {
                     user.acceptanceYear().value());
         }
     }
-    public record UserGroupDTO(GroupFacade.GroupDTO group, PostFacade.PostDTO post) {
 
+    public record UserGroupDTO(GroupFacade.GroupWithMembersDTO group, PostFacade.PostDTO post) {
         public UserGroupDTO(UserMembership userMembership) {
             this(
-                    new GroupFacade.GroupDTO(userMembership.group()),
+                    new GroupFacade.GroupWithMembersDTO(userMembership.group()),
                     new PostFacade.PostDTO(userMembership.post())
             );
         }
     }
     public record UserWithGroupsDTO(UserDTO user, List<UserGroupDTO> groups) { }
 
-    public Optional<UserWithGroupsDTO> get(String cid) {
-        accessGuard.require(isSignedIn());
-
-        Optional<UserDTO> maybeUser = this.userRepository.get(new Cid(cid)).map(UserDTO::new);
-        if (maybeUser.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                new UserWithGroupsDTO(
-                        maybeUser.get(),
-                        getUserGroups(new UserId(maybeUser.get().id))
-                )
-        );
-    }
-
     public Optional<UserWithGroupsDTO> get(UUID id) {
         UserId userId = new UserId(id);
         accessGuard.requireEither(
                 isSignedIn(),
-                userHasAcceptedClient(userId)
+                userHasAcceptedClient(userId),
+                isApi(ApiKeyType.INFO)
         );
 
         Optional<UserDTO> maybeUser = this.userRepository.get(userId).map(UserDTO::new);

@@ -29,9 +29,6 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     @Column(name = "super_group_type_name")
     protected String superGroupType;
 
-    @Column(name = "email")
-    protected String email;
-
     protected SuperGroupEntity() {}
 
     protected SuperGroupEntity(UUID superGroupId) {

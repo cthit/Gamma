@@ -95,12 +95,12 @@ public class PostFacade extends Facade {
                 .toList();
     }
 
-    public List<GroupFacade.GroupDTO> getPostUsages(UUID postId) {
+    public List<GroupFacade.GroupWithMembersDTO> getPostUsages(UUID postId) {
         this.accessGuard.require(isAdmin());
 
         return this.groupRepository.getAllByPost(new PostId(postId))
                 .stream()
-                .map(GroupFacade.GroupDTO::new)
+                .map(GroupFacade.GroupWithMembersDTO::new)
                 .toList();
     }
 

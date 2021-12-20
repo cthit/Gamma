@@ -22,9 +22,6 @@ public class GroupEntity extends MutableEntity<GroupId> {
     @Column(name = "pretty_name")
     protected String prettyName;
 
-    @Column(name = "email")
-    protected String email;
-
     @ManyToOne
     @JoinColumn(name = "super_group_id")
     protected SuperGroupEntity superGroup;

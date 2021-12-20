@@ -123,7 +123,6 @@ class AccessGuardTest {
             new Name("digit"),
             new PrettyName("digIT"),
             committee,
-            new Email("digit@chalmers.it"),
             new Text(
                     "Hanterar sektionens digitala system",
                     "Manages the student divisions digital systems"
@@ -133,7 +132,6 @@ class AccessGuardTest {
     private static final Group digIT18 = new Group(
             GroupId.generate(),
             0,
-            new Email("digit18@chalmers.it"),
             new Name("digit18"),
             new PrettyName("digIT' 18"),
             digIT,
@@ -151,7 +149,6 @@ class AccessGuardTest {
     private static final Group digIT19 = new Group(
             GroupId.generate(),
             0,
-            new Email("digit19@chalmers.it"),
             new Name("digit19"),
             new PrettyName("digIT' 19"),
             digIT,

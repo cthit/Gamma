@@ -58,7 +58,6 @@ public class SuperGroupBootstrap {
                     new Name(mockSuperGroup.name()),
                     new PrettyName(mockSuperGroup.prettyName()),
                     new SuperGroupType(mockSuperGroup.type()),
-                    new Email(mockSuperGroup.name() + "@chalmers.it"),
                     new Text())
             );
             // LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");

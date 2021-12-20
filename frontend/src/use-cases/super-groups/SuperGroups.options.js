@@ -3,17 +3,11 @@ import * as yup from "yup";
 import { DigitSelect, DigitTextField } from "@cthit/react-digit-components";
 
 import {
-    SG_EMAIL,
     SG_EN_TEXT,
     SG_NAME,
     SG_PRETTY_NAME,
     SG_SV_TEXT,
     SG_TYPE,
-    SG_TYPE_ADMIN,
-    SG_TYPE_ALUMNI,
-    SG_TYPE_BOARD,
-    SG_TYPE_COMMITTEE,
-    SG_TYPE_FUNCTIONARIES,
     SG_TYPE_SOCIETY
 } from "api/super-groups/props.super-groups.api";
 
@@ -24,10 +18,6 @@ export const validationSchema = text => {
         .string()
         .required(text.PrettyName + text.IsRequired);
     schema[SG_TYPE] = yup.string().required(text.Type + text.IsRequired);
-    schema[SG_EMAIL] = yup
-        .string()
-        .email(text.FieldNotEmail)
-        .required(text.Email + text.IsRequired);
     schema[SG_SV_TEXT] = yup.string();
     schema[SG_EN_TEXT] = yup.string();
 
@@ -40,7 +30,6 @@ export const initialValues = () => {
     output[SG_NAME] = "";
     output[SG_PRETTY_NAME] = "";
     output[SG_TYPE] = SG_TYPE_SOCIETY;
-    output[SG_EMAIL] = "";
     output[SG_SV_TEXT] = "";
     output[SG_EN_TEXT] = "";
 
@@ -63,14 +52,6 @@ export const keysComponentData = (text, superGroupTypes) => {
         componentProps: {
             outlined: true,
             maxLength: 50
-        }
-    };
-
-    componentData[SG_EMAIL] = {
-        component: DigitTextField,
-        componentProps: {
-            outlined: true,
-            maxLength: 100
         }
     };
 
@@ -114,7 +95,6 @@ export const keysText = text => {
     keysText[SG_NAME] = text.Name;
     keysText[SG_PRETTY_NAME] = text.PrettyName;
     keysText[SG_TYPE] = text.Type;
-    keysText[SG_EMAIL] = text.Email;
     keysText[SG_SV_TEXT] = text.DescriptionSv;
     keysText[SG_EN_TEXT] = text.DescriptionEn;
 
@@ -125,7 +105,6 @@ export const keysOrder = () => [
     SG_NAME,
     SG_PRETTY_NAME,
     SG_TYPE,
-    SG_EMAIL,
     SG_SV_TEXT,
     SG_EN_TEXT
 ];

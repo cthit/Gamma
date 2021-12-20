@@ -71,7 +71,7 @@ public final class PostAdminController {
     }
 
     @GetMapping("/{id}/usage")
-    public List<GroupFacade.GroupDTO> getUsages(@PathVariable("id") UUID id) {
+    public List<GroupFacade.GroupWithMembersDTO> getUsages(@PathVariable("id") UUID id) {
         return this.postFacade.getPostUsages(id);
     }
 

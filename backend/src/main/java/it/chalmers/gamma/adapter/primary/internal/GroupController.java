@@ -22,13 +22,13 @@ public final class GroupController {
     }
 
     @GetMapping()
-    public List<GroupFacade.GroupDTO> getGroups() {
-        return this.groupFacade.getAll();
+    public List<GroupFacade.GroupWithMembersDTO> getGroups() {
+        return this.groupFacade.getAllWithMembers();
     }
 
     @GetMapping("/{id}")
-    public GroupFacade.GroupDTO getGroup(@PathVariable("id") UUID id) {
-        return this.groupFacade.get(id).orElseThrow(GroupNotFoundResponse::new);
+    public GroupFacade.GroupWithMembersDTO getGroup(@PathVariable("id") UUID id) {
+        return this.groupFacade.getWithMembers(id).orElseThrow(GroupNotFoundResponse::new);
     }
 
     private static class GroupNotFoundResponse extends NotFoundResponse { }

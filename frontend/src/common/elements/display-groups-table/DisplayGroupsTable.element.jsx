@@ -6,7 +6,6 @@ import {
 } from "@cthit/react-digit-components";
 
 import {
-    GROUP_EMAIL,
     GROUP_ID,
     GROUP_NAME,
     GROUP_PRETTY_NAME
@@ -19,7 +18,6 @@ function generateHeaderTexts(text) {
 
     output[GROUP_ID] = text.Id;
     output[GROUP_NAME] = text.Name;
-    output[GROUP_EMAIL] = text.Email;
     output[GROUP_PRETTY_NAME] = text.PrettyName;
     output["__link"] = text.Details;
 
@@ -32,7 +30,6 @@ function modifyData(groups, superGroup) {
 
         newGroup[GROUP_ID] = group[GROUP_ID];
         newGroup[GROUP_NAME] = group[GROUP_NAME];
-        newGroup[GROUP_EMAIL] = group[GROUP_EMAIL];
         newGroup["__link"] =
             (superGroup ? "/super-groups/" : "/groups/") + group[GROUP_ID];
 
@@ -72,7 +69,7 @@ const DisplayGroupsTable = ({
 };
 
 DisplayGroupsTable.defaultProps = {
-    columnsOrder: [GROUP_NAME, GROUP_EMAIL]
+    columnsOrder: [GROUP_NAME]
 };
 
 export default DisplayGroupsTable;

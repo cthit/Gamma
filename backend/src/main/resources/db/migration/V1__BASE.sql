@@ -8,20 +8,21 @@ CREATE TABLE internal_text
 
 CREATE TABLE ituser
 (
-    user_id         UUID PRIMARY KEY,
-    cid             VARCHAR(12) NOT NULL UNIQUE,
-    password        VARCHAR(255) NOT NULL,
-    nick            VARCHAR(50) NOT NULL,
-    first_name      VARCHAR(50) NOT NULL,
-    last_name       VARCHAR(50) NOT NULL,
-    email           VARCHAR(100) NOT NULL UNIQUE,
-    LANGUAGE        VARCHAR(15) NULL,
-    user_agreement_accepted  TIMESTAMP NOT NULL DEFAULT NOW(),
-    acceptance_year INTEGER,
-    version         INT,
-    gdpr_training   BOOLEAN DEFAULT FALSE,
-    locked          BOOLEAN DEFAULT FALSE
+    user_id                 UUID PRIMARY KEY,
+    cid                     VARCHAR(12)  NOT NULL UNIQUE,
+    password                VARCHAR(255) NOT NULL,
+    nick                    VARCHAR(50)  NOT NULL,
+    first_name              VARCHAR(50)  NOT NULL,
+    last_name               VARCHAR(50)  NOT NULL,
+    email                   VARCHAR(100) NOT NULL UNIQUE,
+    LANGUAGE                VARCHAR(15)  NULL,
+    user_agreement_accepted TIMESTAMP    NOT NULL DEFAULT NOW(),
+    acceptance_year         INTEGER,
+    version                 INT,
+    gdpr_training           BOOLEAN               DEFAULT FALSE,
+    locked                  BOOLEAN               DEFAULT FALSE
 );
+
 
 
 CREATE TABLE user_avatar_uri
@@ -48,7 +49,6 @@ CREATE TABLE fkit_super_group
     super_group_id        UUID PRIMARY KEY,
     e_name                VARCHAR(50) NOT NULL UNIQUE,
     pretty_name           VARCHAR(50) NOT NULL,
-    email                 VARCHAR(100) NOT NULL,
     super_group_type_name VARCHAR(30) NOT NULL REFERENCES super_group_type,
     description           UUID REFERENCES internal_text ON DELETE CASCADE,
     version               INT
@@ -60,7 +60,6 @@ CREATE TABLE fkit_group
     e_name         VARCHAR(50) NOT NULL UNIQUE,
     pretty_name    VARCHAR(50) NOT NULL,
     super_group_id UUID NOT NULL REFERENCES fkit_super_group,
-    email          VARCHAR(100) NULL,
     version        INT
 );
 
@@ -116,7 +115,7 @@ CREATE TABLE whitelist_cid
 CREATE TABLE user_activation
 (
     cid        VARCHAR(10) PRIMARY KEY REFERENCES whitelist_cid,
-    token       VARCHAR(10) UNIQUE NOT NULL,
+    token      VARCHAR(10) UNIQUE NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 

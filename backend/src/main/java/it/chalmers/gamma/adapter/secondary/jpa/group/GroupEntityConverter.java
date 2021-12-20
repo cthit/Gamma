@@ -55,7 +55,6 @@ public class GroupEntityConverter {
         entity.id = group.id().getValue();
         entity.name = group.name().value();
         entity.prettyName = group.prettyName().value();
-        entity.email = group.email().value();
         entity.superGroup = superGroupJpaRepository.getOne(group.superGroup().id().value());
 
         if (entity.members == null) {
@@ -107,7 +106,6 @@ public class GroupEntityConverter {
         return new Group(
                 entity.domainId(),
                 entity.getVersion(),
-                new Email(entity.email),
                 new Name(entity.name),
                 new PrettyName(entity.prettyName),
                 this.superGroupEntityConverter.toDomain(entity.superGroup),

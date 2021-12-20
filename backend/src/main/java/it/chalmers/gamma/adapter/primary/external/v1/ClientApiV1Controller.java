@@ -4,16 +4,14 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.util.response.NotFoundResponse;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The API must not be altered since it's used by a lot of different clients.
@@ -46,9 +44,6 @@ public class ClientApiV1Controller {
         return this.groupFacade.getAll();
     }
 
-    public record SuperGroup() {
-    }
-
     @GetMapping("/superGroups")
     public List<SuperGroupFacade.SuperGroupDTO> getSuperGroups() {
         return this.superGroupFacade.getAllSuperGroups();
@@ -60,12 +55,10 @@ public class ClientApiV1Controller {
     }
 
     @GetMapping("/users/{id}")
-    public UserFacade.UserDTO getUser(@PathVariable("id") UserId id) {
-        return null;
+    public UserFacade.UserWithGroupsDTO getUser(@PathVariable("id") UUID id) {
+        return this.userFacade.get(id)
+                .orElseThrow(UserNotFoundResponse::new);
     }
-
-    @GetMapping("/users/{id}/avatar")
-    public void getUserAvatar(@PathVariable("id") UserId id) throws IOException { }
 
     private static class UserNotFoundResponse extends NotFoundResponse { }
 

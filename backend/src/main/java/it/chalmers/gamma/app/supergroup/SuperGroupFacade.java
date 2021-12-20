@@ -72,7 +72,6 @@ public class SuperGroupFacade extends Facade {
                         new Name(newSuperGroup.name),
                         new PrettyName(newSuperGroup.prettyName),
                         new SuperGroupType(newSuperGroup.superGroupType),
-                        new Email(newSuperGroup.email),
                         new Text(
                                 newSuperGroup.svDescription,
                                 newSuperGroup.enDescription
@@ -99,7 +98,6 @@ public class SuperGroupFacade extends Facade {
                 .name(new Name(updateSuperGroup.name))
                 .prettyName(new PrettyName(updateSuperGroup.prettyName))
                 .type(new SuperGroupType(updateSuperGroup.type))
-                .email(new Email(updateSuperGroup.email))
                 .description(
                         new Text(
                                 updateSuperGroup.svDescription,
@@ -121,7 +119,6 @@ public class SuperGroupFacade extends Facade {
                                 String name,
                                 String prettyName,
                                 String type,
-                                String email,
                                 String svText,
                                 String enText) {
         public SuperGroupDTO(SuperGroup superGroup) {
@@ -130,7 +127,6 @@ public class SuperGroupFacade extends Facade {
                     superGroup.name().value(),
                     superGroup.prettyName().value(),
                     superGroup.type().value(),
-                    superGroup.email().value(),
                     superGroup.description().sv().value(),
                     superGroup.description().en().value()
             );

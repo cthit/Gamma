@@ -26,7 +26,6 @@ public class SuperGroupEntityConverter {
 
         superGroupEntity.id = superGroup.id().value();
         superGroupEntity.superGroupType = superGroup.type().value();
-        superGroupEntity.email = superGroup.email().value();
         superGroupEntity.name = superGroup.name().value();
         superGroupEntity.prettyName = superGroup.prettyName().value();
 
@@ -46,7 +45,6 @@ public class SuperGroupEntityConverter {
                 new Name(entity.name),
                 new PrettyName(entity.prettyName),
                 new SuperGroupType(entity.superGroupType),
-                new Email(entity.email),
                 entity.description.toDomain()
         );
     }
