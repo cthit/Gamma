@@ -76,7 +76,6 @@ public class AuthorityLevelFacade extends Facade {
         }
     }
 
-
     public Optional<AuthorityLevelDTO> get(String name) {
         return this.authorityLevelRepository.get(new AuthorityLevelName(name)).map(AuthorityLevelDTO::new);
     }
@@ -178,7 +177,4 @@ public class AuthorityLevelFacade extends Facade {
                 || !authorityLevel.superGroups().isEmpty();
     }
 
-    public void create(AuthorityLevel authorityLevel) {
-        this.authorityLevelRepository.save(authorityLevel);
-    }
 }
