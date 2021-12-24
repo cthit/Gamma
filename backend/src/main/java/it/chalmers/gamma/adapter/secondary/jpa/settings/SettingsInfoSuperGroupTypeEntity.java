@@ -22,7 +22,7 @@ public class SettingsInfoSuperGroupTypeEntity extends ImmutableEntity<SettingsIn
     }
 
     @Override
-    protected SettingsInfoSuperGroupTypePK domainId() {
+    public SettingsInfoSuperGroupTypePK getId() {
         return this.id;
     }
 

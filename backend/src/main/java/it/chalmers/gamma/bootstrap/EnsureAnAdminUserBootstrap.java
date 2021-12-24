@@ -1,6 +1,8 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
@@ -29,12 +31,15 @@ public class EnsureAnAdminUserBootstrap {
 
     private final UserRepository userRepository;
     private final AuthorityLevelFacade authorityLevelFacade;
+    private final AuthorityLevelRepository authorityLevelRepository;
     private final PasswordService passwordService;
 
     public EnsureAnAdminUserBootstrap(AuthorityLevelFacade authorityLevelFacade,
                                       UserRepository userRepository,
+                                      AuthorityLevelRepository authorityLevelRepository,
                                       PasswordService passwordService) {
         this.authorityLevelFacade = authorityLevelFacade;
+        this.authorityLevelRepository = authorityLevelRepository;
         this.passwordService = passwordService;
         this.userRepository = userRepository;
     }
@@ -43,7 +48,7 @@ public class EnsureAnAdminUserBootstrap {
         String admin = "admin";
         AuthorityLevelName adminAuthorityLevel = AuthorityLevelName.valueOf(admin);
 
-        if (!this.authorityLevelFacade.authorityLevelUsed(adminAuthorityLevel)) {
+        if (!authorityLevelUsed(adminAuthorityLevel)) {
             LOGGER.info("========== ENSURE AN ADMIN BOOTSTRAP ==========");
 
             if (this.userRepository.get(new Cid(admin)).isPresent()) {
@@ -90,6 +95,19 @@ public class EnsureAnAdminUserBootstrap {
 
             LOGGER.info("==========                           ==========");
         }
+    }
+
+    public boolean authorityLevelUsed(AuthorityLevelName adminAuthorityLevel) {
+        Optional<AuthorityLevel> maybeAuthorityLevel = this.authorityLevelRepository.get(adminAuthorityLevel);
+        if (maybeAuthorityLevel.isEmpty()) {
+            return false;
+        }
+
+        AuthorityLevel authorityLevel = maybeAuthorityLevel.get();
+
+        return !authorityLevel.posts().isEmpty()
+                || !authorityLevel.users().isEmpty()
+                || !authorityLevel.superGroups().isEmpty();
     }
 
 }

@@ -2,7 +2,6 @@ package it.chalmers.gamma.app.supergroup;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
@@ -119,8 +118,8 @@ public class SuperGroupFacade extends Facade {
                                 String name,
                                 String prettyName,
                                 String type,
-                                String svText,
-                                String enText) {
+                                String svDescription,
+                                String enDescription) {
         public SuperGroupDTO(SuperGroup superGroup) {
             this(superGroup.id().value(),
                     superGroup.version(),

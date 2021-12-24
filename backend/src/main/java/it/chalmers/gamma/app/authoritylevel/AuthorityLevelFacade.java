@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
 
 @Service
 public class AuthorityLevelFacade extends Facade {
@@ -77,7 +78,10 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public Optional<AuthorityLevelDTO> get(String name) {
-        return this.authorityLevelRepository.get(new AuthorityLevelName(name)).map(AuthorityLevelDTO::new);
+        this.accessGuard.require(isAdmin());
+
+        return this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .map(AuthorityLevelDTO::new);
     }
 
     public List<AuthorityLevelDTO> getAll() {
@@ -89,8 +93,9 @@ public class AuthorityLevelFacade extends Facade {
                 .toList();
     }
 
-
     public void addSuperGroupToAuthorityLevel(String name, UUID superGroupId) {
+        this.accessGuard.require(isAdmin());
+
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
 
         List<SuperGroup> superGroups = new ArrayList<>(authorityLevel.superGroups());
@@ -100,6 +105,8 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void addSuperGroupPostToAuthorityLevel(String name, UUID superGroupId, UUID postId) {
+        this.accessGuard.require(isAdmin());
+
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
 
         List<AuthorityLevel.SuperGroupPost> posts = new ArrayList<>(authorityLevel.posts());
@@ -112,6 +119,11 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void addUserToAuthorityLevel(String name, UUID userId) {
+        this.accessGuard.requireEither(
+                isAdmin(),
+                isLocalRunner()
+        );
+
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
 
         List<User> newUsersList = new ArrayList<>(authorityLevel.users());
@@ -121,6 +133,8 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void removeSuperGroupFromAuthorityLevel(String name, UUID superGroupId) {
+        this.accessGuard.require(isAdmin());
+
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
 
         List<SuperGroup> newSuperGroups = new ArrayList<>(authorityLevel.superGroups());
@@ -135,6 +149,8 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void removeSuperGroupPostFromAuthorityLevel(String name, UUID superGroupId, UUID postId) {
+        this.accessGuard.require(isAdmin());
+
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
 
         List<AuthorityLevel.SuperGroupPost> newPosts = new ArrayList<>(authorityLevel.posts());
@@ -151,6 +167,8 @@ public class AuthorityLevelFacade extends Facade {
     }
 
     public void removeUserFromAuthorityLevel(String name, UUID userId) {
+        this.accessGuard.require(isAdmin());
+
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
 
         List<User> newUsers = new ArrayList<>(authorityLevel.users());
@@ -164,17 +182,6 @@ public class AuthorityLevelFacade extends Facade {
         this.authorityLevelRepository.save(authorityLevel.withUsers(newUsers));
     }
 
-    public boolean authorityLevelUsed(AuthorityLevelName adminAuthorityLevel) {
-        Optional<AuthorityLevel> maybeAuthorityLevel = this.authorityLevelRepository.get(adminAuthorityLevel);
-        if (maybeAuthorityLevel.isEmpty()) {
-            return false;
-        }
 
-        AuthorityLevel authorityLevel = maybeAuthorityLevel.get();
-
-        return !authorityLevel.posts().isEmpty()
-                || !authorityLevel.users().isEmpty()
-                || !authorityLevel.superGroups().isEmpty();
-    }
 
 }

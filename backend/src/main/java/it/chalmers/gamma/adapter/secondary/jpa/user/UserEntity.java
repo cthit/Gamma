@@ -56,7 +56,7 @@ public class UserEntity extends MutableEntity<UserId> {
     protected UserEntity() { }
 
     @Override
-    public UserId domainId() {
+    public UserId getId() {
         return new UserId(this.id);
     }
 

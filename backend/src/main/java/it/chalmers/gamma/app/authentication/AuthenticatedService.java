@@ -9,6 +9,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -72,7 +73,10 @@ public class AuthenticatedService {
             };
         }
 
-        return new Unauthenticated() {
-        };
+        if (authentication instanceof BootstrapAuthenticated) {
+            return new LocalRunnerAuthenticated() { };
+        }
+
+        return new Unauthenticated() { };
     }
 }

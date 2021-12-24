@@ -39,7 +39,7 @@ public class SettingsEntity extends MutableEntity<SettingsId> {
     }
 
     @Override
-    protected SettingsId domainId() {
+    public SettingsId getId() {
         return new SettingsId(this.id);
     }
 

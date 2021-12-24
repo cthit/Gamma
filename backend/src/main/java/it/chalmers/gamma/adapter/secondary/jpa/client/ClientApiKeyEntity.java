@@ -41,8 +41,8 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientUid> {
     }
 
     @Override
-    protected ClientUid domainId() {
-        return this.client.domainId();
+    public ClientUid getId() {
+        return this.client.getId();
     }
 
     public ClientEntity getClient() {

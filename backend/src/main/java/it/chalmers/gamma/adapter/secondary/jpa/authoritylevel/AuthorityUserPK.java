@@ -34,8 +34,8 @@ public class AuthorityUserPK extends PKId<AuthorityUserPK.AuthorityUserPKRecord>
     @Override
     public AuthorityUserPKRecord getValue() {
         return new AuthorityUserPKRecord(
-                this.userEntity.domainId(),
-                this.authorityLevel.domainId()
+                this.userEntity.getId(),
+                this.authorityLevel.getId()
         );
     }
 

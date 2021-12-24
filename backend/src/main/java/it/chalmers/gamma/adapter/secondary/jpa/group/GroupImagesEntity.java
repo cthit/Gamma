@@ -32,7 +32,7 @@ public class GroupImagesEntity extends MutableEntity<GroupId> {
     protected GroupImagesEntity() { }
 
     @Override
-    protected GroupId domainId() {
+    public GroupId getId() {
         return new GroupId(this.groupId);
     }
 

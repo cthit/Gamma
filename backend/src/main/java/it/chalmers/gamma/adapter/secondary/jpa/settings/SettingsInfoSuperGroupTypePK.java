@@ -5,7 +5,6 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.settings.domain.SettingsId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,7 +33,7 @@ public class SettingsInfoSuperGroupTypePK extends PKId<SettingsInfoSuperGroupTyp
     @Override
     public SettingsInfoSuperGroupTypePKDTO getValue() {
         return new SettingsInfoSuperGroupTypePKDTO(
-                settings.domainId(),
+                settings.getId(),
                 superGroupType.get()
         );
     }

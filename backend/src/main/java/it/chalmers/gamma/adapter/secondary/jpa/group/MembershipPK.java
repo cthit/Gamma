@@ -54,9 +54,9 @@ public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
     @Override
     public MembershipPK.MembershipPKDTO getValue() {
         return new MembershipPKDTO(
-                this.post.domainId(),
-                this.group.domainId(),
-                this.user.domainId()
+                this.post.getId(),
+                this.group.getId(),
+                this.user.getId()
         );
     }
 }

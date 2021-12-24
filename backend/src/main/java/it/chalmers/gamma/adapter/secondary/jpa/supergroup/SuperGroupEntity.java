@@ -36,7 +36,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     }
 
     @Override
-    public SuperGroupId domainId() {
+    public SuperGroupId getId() {
         return new SuperGroupId(this.id);
     }
 }

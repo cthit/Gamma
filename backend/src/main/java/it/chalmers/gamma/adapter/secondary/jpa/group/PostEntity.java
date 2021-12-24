@@ -29,7 +29,7 @@ public class PostEntity extends MutableEntity<PostId> {
     }
 
     @Override
-    public PostId domainId() {
+    public PostId getId() {
         return new PostId(this.id);
     }
 

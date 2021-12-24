@@ -27,18 +27,12 @@ public class ApiKeyEntityConverter {
     }
 
     public ApiKeyEntity toEntity(ApiKey apiKey) {
-        ApiKeyEntity entity = this.apiKeyJpaRepository.findById(apiKey.id().value())
-                .orElse(new ApiKeyEntity());
+        ApiKeyEntity entity = new ApiKeyEntity();
 
         entity.id = apiKey.id().getValue();
         entity.token = apiKey.apiKeyToken().value();
         entity.prettyName = apiKey.prettyName().value();
         entity.keyType = apiKey.keyType();
-
-        if (entity.description == null) {
-            entity.description = new TextEntity();
-        }
-
         entity.description.apply(apiKey.description());
 
         return entity;

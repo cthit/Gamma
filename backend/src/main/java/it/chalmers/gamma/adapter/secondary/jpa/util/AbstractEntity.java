@@ -1,26 +1,30 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
 import it.chalmers.gamma.app.common.Id;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class AbstractEntity<I extends Id<?>> implements Serializable {
+public abstract class AbstractEntity<I extends Id<?>> implements Serializable, Persistable<I> {
 
-    protected abstract I domainId();
+    @Override
+    public boolean isNew() {
+        return true;
+    }
 
     @Override
     public final int hashCode() {
-        assert(domainId() != null);
+        assert(getId() != null);
 
-        return Objects.hash(domainId().hashCode());
+        return Objects.hash(getId().hashCode());
     }
 
     @Override
     public final boolean equals(Object o) {
-        assert(domainId() != null);
+        assert(getId() != null);
 
         if (this == o) {
             return true;
@@ -30,6 +34,6 @@ public abstract class AbstractEntity<I extends Id<?>> implements Serializable {
             return false;
         }
 
-        return this.domainId().equals(((AbstractEntity<?>) o).domainId());
+        return this.getId().equals(((AbstractEntity<?>) o).getId());
     }
 }

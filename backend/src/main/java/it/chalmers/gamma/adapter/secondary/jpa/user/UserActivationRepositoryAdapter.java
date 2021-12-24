@@ -46,7 +46,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
     @Override
     public Cid getByToken(UserActivationToken token) {
-        return this.userActivationJpaRepository.findByToken(token.value()).orElseThrow().domainId();
+        return this.userActivationJpaRepository.findByToken(token.value()).orElseThrow().getId();
     }
 
     @Override

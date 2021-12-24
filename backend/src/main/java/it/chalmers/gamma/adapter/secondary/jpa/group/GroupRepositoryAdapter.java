@@ -60,7 +60,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
     public List<Group> getAllByPost(PostId postId) {
         return this.membershipJpaRepository.findAllById_Post_Id(postId.value())
                 .stream()
-                .map(membershipEntity -> membershipEntity.domainId().getGroup())
+                .map(membershipEntity -> membershipEntity.getId().getGroup())
                 .map(this.groupEntityConverter::toDomain)
                 .distinct()
                 .toList();
@@ -71,8 +71,8 @@ public class GroupRepositoryAdapter implements GroupRepository {
         return this.membershipJpaRepository.findAllById_User_Id(userId.value())
                 .stream()
                 .map(membershipEntity -> new UserMembership(
-                        postEntityConverter.toDomain(membershipEntity.domainId().getPost()),
-                        this.groupEntityConverter.toDomain(membershipEntity.domainId().getGroup()),
+                        postEntityConverter.toDomain(membershipEntity.getId().getPost()),
+                        this.groupEntityConverter.toDomain(membershipEntity.getId().getGroup()),
                         new UnofficialPostName(membershipEntity.getUnofficialPostName())
                 ))
                 .toList();

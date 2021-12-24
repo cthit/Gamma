@@ -26,6 +26,7 @@ import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.user.userdetails.UserDetailsProxy;
+import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.ApiKeyAuthentication;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -193,6 +194,13 @@ class AuthenticatedServiceTest {
     }
 
     @Test
+    @WithMockBootstrapAuthenticated
+    public void Given_BootstrapAuthenticated_Expect_getAuthentication_ToReturn_LocalRunnerAuthenticated() {
+        assertThat(this.authenticatedService.getAuthenticated())
+                .isInstanceOf(LocalRunnerAuthenticated.class);
+    }
+
+    @Test
     @WithAnonymousUser
     public void Given_AnonymousUser_Expect_getAuthentication_ToReturn_Unauthenticated() {
         assertThat(this.authenticatedService.getAuthenticated())
@@ -274,5 +282,19 @@ class AuthenticatedServiceTest {
         }
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @WithSecurityContext(factory = WithBootstrapSecurityContextFactory.class)
+    private @interface WithMockBootstrapAuthenticated { }
+
+    private static class WithBootstrapSecurityContextFactory implements WithSecurityContextFactory<WithMockBootstrapAuthenticated> {
+        @Override
+        public SecurityContext createSecurityContext(WithMockBootstrapAuthenticated annotation) {
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+            context.setAuthentication(new BootstrapAuthenticated());
+
+            return context;
+        }
+    }
 
 }

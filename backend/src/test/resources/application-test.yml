@@ -1,0 +1,21 @@
+spring:
+    datasource:
+        url: jdbc:h2:mem:test
+        username: sa
+        password: password
+        driver-class-name: org.h2.Driver
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.H2Dialect
+            database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl-auto: create
+    flyway:
+        locations: classpath:/db/migration
+#    main:
+#        web-application-type: none
+    session:
+        store-type: none
+application:
+    mocking: false

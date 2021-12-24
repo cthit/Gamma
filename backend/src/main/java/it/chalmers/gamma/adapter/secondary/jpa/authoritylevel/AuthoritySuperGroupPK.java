@@ -36,8 +36,8 @@ public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthorityS
     @Override
     public AuthoritySuperGroupPKDTO getValue() {
         return new AuthoritySuperGroupPKDTO(
-                this.superGroupEntity.domainId(),
-                this.authorityLevel.domainId()
+                this.superGroupEntity.getId(),
+                this.authorityLevel.getId()
         );
     }
 }

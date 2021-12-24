@@ -59,7 +59,7 @@ public class ClientEntityConverter {
                 .toList();
 
         return new Client(
-                clientEntity.domainId(),
+                clientEntity.getId(),
                 new ClientId(clientEntity.clientId),
                 new ClientSecret(clientEntity.clientSecret),
                 new WebServerRedirectUrl(clientEntity.webServerRedirectUrl),

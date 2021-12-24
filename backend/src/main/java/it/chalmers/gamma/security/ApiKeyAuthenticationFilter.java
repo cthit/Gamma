@@ -48,7 +48,7 @@ public class ApiKeyAuthenticationFilter implements Filter {
                 LOGGER.trace("Authentication with a token has been attempted");
                 Optional<ApiKey> maybeApiKey = this.apiKeyRepository.getByToken(new ApiKeyToken(apiKeyToken.get()));
                 if (maybeApiKey.isPresent()) {
-                    LOGGER.trace("Authentication with a token was a successs! The Api Key "
+                    LOGGER.trace("Authentication with a token was a success! The Api Key "
                             + maybeApiKey.get().prettyName()
                             + " was successfully authenticated");
 

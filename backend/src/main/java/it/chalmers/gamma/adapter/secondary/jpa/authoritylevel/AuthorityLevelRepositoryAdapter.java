@@ -84,7 +84,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.authorityUserRepository.findAllById_UserEntity_Id(userId.value())
                 .forEach(authorityUserEntity -> names.add(
                         new UserAuthority(
-                                authorityUserEntity.domainId().getValue().authorityLevelName(),
+                                authorityUserEntity.getId().getValue().authorityLevelName(),
                                 AuthorityType.AUTHORITY
                         )
                 ));
@@ -94,20 +94,20 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.membershipJpaRepository.findAllById_User_Id(userId.value())
                 .forEach(membershipEntity -> {
                     names.add(new UserAuthority(
-                            new AuthorityLevelName(membershipEntity.domainId().getGroup().getName()),
+                            new AuthorityLevelName(membershipEntity.getId().getGroup().getName()),
                             AuthorityType.GROUP
                     ));
 
-                    SuperGroupEntity superGroupEntity = membershipEntity.domainId().getGroup().getSuperGroup();
+                    SuperGroupEntity superGroupEntity = membershipEntity.getId().getGroup().getSuperGroup();
                     userSuperGroups.add(this.superGroupEntityConverter.toDomain(superGroupEntity));
 
-                    PostEntity postEntity = membershipEntity.domainId().getPost();
+                    PostEntity postEntity = membershipEntity.getId().getPost();
 
                     this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(
-                            superGroupEntity.domainId().getValue(),
-                            postEntity.domainId().value()
+                            superGroupEntity.getId().getValue(),
+                            postEntity.getId().value()
                     ).forEach(authorityPostEntity -> names.add(new UserAuthority(
-                            authorityPostEntity.domainId().getValue().authorityLevelName(),
+                            authorityPostEntity.getId().getValue().authorityLevelName(),
                             AuthorityType.AUTHORITY
                     )));
                 });
@@ -121,7 +121,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                 this.authoritySuperGroupRepository
                         .findAllById_SuperGroupEntity_Id(superGroupId.id().value())
                         .stream()
-                        .map(AuthoritySuperGroupEntity::domainId)
+                        .map(AuthoritySuperGroupEntity::getId)
                         .map(AuthoritySuperGroupPK::getValue)
                         .map(AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO::authorityLevelName)
                         .map(authorityLevelName -> new UserAuthority(

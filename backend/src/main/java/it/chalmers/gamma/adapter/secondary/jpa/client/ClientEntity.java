@@ -53,7 +53,7 @@ public class ClientEntity extends ImmutableEntity<ClientUid> {
     }
 
     @Override
-    public ClientUid domainId() {
+    public ClientUid getId() {
         return new ClientUid(this.clientUid);
     }
 

@@ -20,7 +20,7 @@ public class ClientScopeEntity extends ImmutableEntity<ClientScopePK> {
         this.id = new ClientScopePK(clientEntity, scope);
     }
 
-    protected ClientScopePK domainId() {
+    public ClientScopePK getId() {
         return this.id;
     }
 

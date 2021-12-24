@@ -36,13 +36,13 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
     }
 
     @Override
-    protected UserId domainId() {
+    public UserId getId() {
         return new UserId(this.userId);
     }
 
     public PasswordReset toDomain() {
         return new PasswordReset(
-                this.domainId(),
+                this.getId(),
                 new PasswordResetToken(this.token),
                 this.createdAt
         );

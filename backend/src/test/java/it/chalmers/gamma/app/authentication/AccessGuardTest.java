@@ -597,4 +597,13 @@ class AccessGuardTest {
                 .isThrownBy(() -> this.accessGuard.require(userHasAcceptedClient(adminUser.id())));
     }
 
+    @Test
+    public void Given_BootstrapAuthenticatedAdmin_Expect_isLocalRunner_To_NotThrow() {
+        given(authenticatedService.getAuthenticated())
+                .willReturn(new LocalRunnerAuthenticated() { });
+
+        assertThatNoException()
+                .isThrownBy(() -> this.accessGuard.require(isLocalRunner()));
+    }
+
 }

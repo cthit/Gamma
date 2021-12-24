@@ -43,7 +43,7 @@ public class TextEntity extends MutableEntity<TextId> {
     }
 
     @Override
-    protected TextId domainId() {
+    public TextId getId() {
         return new TextId(this.id);
     }
 

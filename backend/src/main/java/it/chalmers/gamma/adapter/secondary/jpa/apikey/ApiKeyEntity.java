@@ -29,10 +29,12 @@ public class ApiKeyEntity extends MutableEntity<ApiKeyId> {
     @OneToOne(cascade = CascadeType.ALL)
     protected TextEntity description;
 
-    protected ApiKeyEntity() { }
+    protected ApiKeyEntity() {
+        description = new TextEntity();
+    }
 
     @Override
-    protected ApiKeyId domainId() {
+    public ApiKeyId getId() {
         return new ApiKeyId(this.id);
     }
 

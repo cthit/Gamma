@@ -33,7 +33,7 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
     @Override
     public ClientRestrictionPKDTO getValue() {
         return new ClientRestrictionPKDTO(
-                this.client.domainId(),
+                this.client.getId(),
                 AuthorityLevelName.valueOf(this.authorityLevel.getAuthorityLevel())
         );
     }

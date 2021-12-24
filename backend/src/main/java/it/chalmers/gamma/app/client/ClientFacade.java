@@ -33,14 +33,11 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 public class ClientFacade extends Facade {
 
     private final ClientRepository clientRepository;
-    private final ApiKeyRepository apiKeyRepository;
 
     public ClientFacade(AccessGuard accessGuard,
-                        ClientRepository clientRepository,
-                        ApiKeyRepository apiKeyRepository) {
+                        ClientRepository clientRepository) {
         super(accessGuard);
         this.clientRepository = clientRepository;
-        this.apiKeyRepository = apiKeyRepository;
     }
 
     public record NewClient(String webServerRedirectUrl,
@@ -49,12 +46,9 @@ public class ClientFacade extends Facade {
                             String enDescription,
                             boolean generateApiKey,
                             List<String> restrictions,
-                            boolean emailScope) {
-    }
+                            boolean emailScope) { }
 
-    public record ClientAndApiKeySecrets(String clientSecret, String apiKeyToken) {
-
-    }
+    public record ClientAndApiKeySecrets(String clientSecret, String apiKeyToken) { }
 
     /**
      * @return The client secret for the client
@@ -172,6 +166,5 @@ public class ClientFacade extends Facade {
     }
 
     public static class ClientNotFoundException extends Exception { }
-
 
 }

@@ -144,6 +144,14 @@ public class AccessGuard {
         };
     }
 
+    /**
+     * Such as Bootstrap
+     */
+    public static AccessChecker isLocalRunner() {
+        return (authenticatedService, passwordService, authorityLevelRepository) ->
+                authenticatedService.getAuthenticated() instanceof LocalRunnerAuthenticated;
+    }
+
     public interface AccessChecker {
         boolean validate(AuthenticatedService authenticatedService,
                          PasswordService passwordService,

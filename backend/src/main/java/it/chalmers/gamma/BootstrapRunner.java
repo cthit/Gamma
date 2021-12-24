@@ -4,6 +4,7 @@ package it.chalmers.gamma;
 import it.chalmers.gamma.bootstrap.AdminAuthorityLevelBootstrap;
 import it.chalmers.gamma.bootstrap.ApiKeyBootstrap;
 import it.chalmers.gamma.bootstrap.AuthorityLevelBootstrap;
+import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.bootstrap.ClientBootstrap;
 import it.chalmers.gamma.bootstrap.EnsureAnAdminUserBootstrap;
 import it.chalmers.gamma.bootstrap.EnsureSettingsBootstrap;
@@ -14,6 +15,7 @@ import it.chalmers.gamma.bootstrap.SuperGroupBootstrap;
 import it.chalmers.gamma.bootstrap.UserBootstrap;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,6 +34,9 @@ public class BootstrapRunner {
                                           SuperGroupBootstrap superGroupBootstrap,
                                           UserBootstrap userBootstrap) {
         return (args) -> {
+            SecurityContextHolder.createEmptyContext();
+            SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
+
             miscBootstrap.runImageBootstrap();
 
             ensureSettingsBootstrap.ensureAppSettings();
@@ -47,6 +52,8 @@ public class BootstrapRunner {
 
             clientBootstrap.runOauthClient();
             apiKeyBootstrap.ensureApiKeys();
+
+            SecurityContextHolder.clearContext();
         };
     }
 

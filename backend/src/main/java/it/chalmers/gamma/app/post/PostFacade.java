@@ -68,8 +68,8 @@ public class PostFacade extends Facade {
 
     public record PostDTO(UUID id,
                           int version,
-                          String svText,
-                          String enText,
+                          String svName,
+                          String enName,
                           String emailPrefix) {
         public PostDTO(Post post) {
             this(post.id().value(),

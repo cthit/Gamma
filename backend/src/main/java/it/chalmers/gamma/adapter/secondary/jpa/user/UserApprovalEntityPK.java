@@ -38,8 +38,8 @@ public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApproval
     @Override
     public UserApprovalPKDTO getValue() {
         return new UserApprovalPKDTO(
-                this.user.domainId(),
-                this.client.domainId()
+                this.user.getId(),
+                this.client.getId()
         );
     }
 }

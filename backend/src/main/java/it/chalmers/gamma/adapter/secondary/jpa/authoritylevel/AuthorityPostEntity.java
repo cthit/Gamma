@@ -20,7 +20,7 @@ public class AuthorityPostEntity extends ImmutableEntity<AuthorityPostPK> {
     }
 
     @Override
-    protected AuthorityPostPK domainId() {
+    public AuthorityPostPK getId() {
         return this.id;
     }
 

@@ -47,7 +47,7 @@ public class ApiKeyFacade extends Facade {
         this.accessGuard.require(isAdmin());
 
         ApiKeyToken apiKeyToken = ApiKeyToken.generate();
-        apiKeyRepository.save(
+        apiKeyRepository.create(
                 new ApiKey(
                         ApiKeyId.generate(),
                         new PrettyName(newApiKey.prettyName),
@@ -100,7 +100,7 @@ public class ApiKeyFacade extends Facade {
 
         ApiKeyToken token = ApiKeyToken.generate();
         ApiKey apiKey = this.apiKeyRepository.getById(new ApiKeyId(apiKeyId)).orElseThrow();
-        this.apiKeyRepository.save(apiKey.withApiKeyToken(token));
+        this.apiKeyRepository.create(apiKey.withApiKeyToken(token));
         return token.value();
     }
 

@@ -23,7 +23,7 @@ public class MembershipEntity extends ImmutableEntity<MembershipPK> {
     }
 
     @Override
-    public MembershipPK domainId() {
+    public MembershipPK getId() {
         return this.id;
     }
 

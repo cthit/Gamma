@@ -94,11 +94,9 @@ dependencies {
             "com.tngtech.archunit:archunit:0.21.0",
     )
 
-    /*
     testRuntimeOnly(
             "com.h2database:h2:1.4.200",
     )
-     */
 }
 
 test {

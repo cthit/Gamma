@@ -39,7 +39,7 @@ public class GroupEntity extends MutableEntity<GroupId> {
     }
 
     @Override
-    public GroupId domainId() {
+    public GroupId getId() {
         return new GroupId(this.id);
     }
 

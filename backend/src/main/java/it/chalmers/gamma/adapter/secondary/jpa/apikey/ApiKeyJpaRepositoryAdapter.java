@@ -23,7 +23,7 @@ public class ApiKeyJpaRepositoryAdapter implements ApiKeyRepository {
     }
 
     @Override
-    public void save(ApiKey apiKey) {
+    public void create(ApiKey apiKey) {
         this.repository.save(this.apiKeyEntityConverter.toEntity(apiKey));
     }
 

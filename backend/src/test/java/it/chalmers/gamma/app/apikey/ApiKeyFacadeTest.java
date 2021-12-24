@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
-class ApiKeyFacadeTest {
+class  ApiKeyFacadeTest {
 
     @Mock
     private AccessGuard accessGuard;
@@ -72,7 +72,7 @@ class ApiKeyFacadeTest {
         String apiKeyTokenRaw = apiKeyFacade.create(newApiKey);
 
         ArgumentCaptor<ApiKey> captor = ArgumentCaptor.forClass(ApiKey.class);
-        verify(apiKeyRepository).save(captor.capture());
+        verify(apiKeyRepository).create(captor.capture());
         ApiKey capturedApiKey = captor.getValue();
 
         //If not null, then they are valid.
@@ -104,7 +104,7 @@ class ApiKeyFacadeTest {
 
         //Makes sure that isAdmin is called first.
         inOrder.verify(accessGuard).require(isAdmin());
-        inOrder.verify(apiKeyRepository).save(any());
+        inOrder.verify(apiKeyRepository).create(any());
         inOrder.verifyNoMoreInteractions();
     }
 
@@ -314,7 +314,7 @@ class ApiKeyFacadeTest {
         //Makes sure that isAdmin is called first.
         inOrder.verify(accessGuard).require(isAdmin());
         inOrder.verify(apiKeyRepository).getById(apiKeyId);
-        inOrder.verify(apiKeyRepository).save(newApiKey);
+        inOrder.verify(apiKeyRepository).create(newApiKey);
         inOrder.verifyNoMoreInteractions();
     }
 
