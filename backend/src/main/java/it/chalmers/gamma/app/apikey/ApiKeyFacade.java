@@ -98,9 +98,7 @@ public class ApiKeyFacade extends Facade {
     public String resetApiKeyToken(UUID apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        ApiKeyToken token = ApiKeyToken.generate();
-        ApiKey apiKey = this.apiKeyRepository.getById(new ApiKeyId(apiKeyId)).orElseThrow();
-        this.apiKeyRepository.create(apiKey.withApiKeyToken(token));
+        ApiKeyToken token = this.apiKeyRepository.resetApiKeyToken(new ApiKeyId(apiKeyId));
         return token.value();
     }
 

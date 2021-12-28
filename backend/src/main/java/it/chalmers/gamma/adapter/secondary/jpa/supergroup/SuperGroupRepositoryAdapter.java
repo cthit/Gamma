@@ -23,7 +23,7 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public void save(SuperGroup superGroup) {
-        this.repository.save(this.superGroupEntityConverter.toEntity(superGroup));
+        this.repository.saveAndFlush(this.superGroupEntityConverter.toEntity(superGroup));
     }
 
     @Override

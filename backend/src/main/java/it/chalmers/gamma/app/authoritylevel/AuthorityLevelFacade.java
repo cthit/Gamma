@@ -16,8 +16,11 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,8 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
 
 @Service
 public class AuthorityLevelFacade extends Facade {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorityLevelFacade.class);
 
     private final AuthorityLevelRepository authorityLevelRepository;
     private final UserRepository userRepository;
@@ -46,16 +51,20 @@ public class AuthorityLevelFacade extends Facade {
         this.superGroupRepository = superGroupRepository;
     }
 
-    public void create(String name) {
+    public void create(String name) throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
         this.accessGuard.require(isAdmin());
 
         this.authorityLevelRepository.create(new AuthorityLevelName(name));
     }
 
-    public void delete(String name) {
+    public void delete(String name) throws AuthorityLevelNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        this.authorityLevelRepository.delete(new AuthorityLevelName(name));
+        try {
+            this.authorityLevelRepository.delete(new AuthorityLevelName(name));
+        } catch (AuthorityLevelRepository.AuthorityLevelNotFoundException e) {
+            throw new AuthorityLevelNotFoundException();
+        }
     }
 
     public record SuperGroupPostDTO(SuperGroupFacade.SuperGroupDTO superGroup, PostFacade.PostDTO post) {
@@ -93,49 +102,65 @@ public class AuthorityLevelFacade extends Facade {
                 .toList();
     }
 
-    public void addSuperGroupToAuthorityLevel(String name, UUID superGroupId) {
+    @Transactional
+    public void addSuperGroupToAuthorityLevel(String name, UUID superGroupId)
+            throws AuthorityLevelNotFoundException, SuperGroupNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .orElseThrow(AuthorityLevelNotFoundException::new);
 
         List<SuperGroup> superGroups = new ArrayList<>(authorityLevel.superGroups());
-        superGroups.add(this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow());
+        superGroups.add(this.superGroupRepository.get(new SuperGroupId(superGroupId))
+                .orElseThrow(SuperGroupNotFoundException::new));
 
         this.authorityLevelRepository.save(authorityLevel.withSuperGroups(superGroups));
     }
 
-    public void addSuperGroupPostToAuthorityLevel(String name, UUID superGroupId, UUID postId) {
+    @Transactional
+    public void addSuperGroupPostToAuthorityLevel(String name, UUID superGroupId, UUID postId)
+            throws AuthorityLevelNotFoundException, SuperGroupNotFoundException, PostNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .orElseThrow(AuthorityLevelNotFoundException::new);
 
         List<AuthorityLevel.SuperGroupPost> posts = new ArrayList<>(authorityLevel.posts());
         posts.add(new AuthorityLevel.SuperGroupPost(
-                this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow(),
-                this.postRepository.get(new PostId(postId)).orElseThrow()
+                this.superGroupRepository.get(new SuperGroupId(superGroupId))
+                        .orElseThrow(SuperGroupNotFoundException::new),
+                this.postRepository.get(new PostId(postId))
+                        .orElseThrow(PostNotFoundException::new)
         ));
 
         this.authorityLevelRepository.save(authorityLevel.withPosts(posts));
     }
 
-    public void addUserToAuthorityLevel(String name, UUID userId) {
+    @Transactional
+    public void addUserToAuthorityLevel(String name, UUID userId) throws AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException, AuthorityLevelNotFoundException, UserNotFoundException {
         this.accessGuard.requireEither(
                 isAdmin(),
                 isLocalRunner()
         );
 
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .orElseThrow(AuthorityLevelNotFoundException::new);
 
         List<User> newUsersList = new ArrayList<>(authorityLevel.users());
-        newUsersList.add(this.userRepository.get(new UserId(userId)).orElseThrow());
+        User newUser = this.userRepository.get(new UserId(userId))
+                .orElseThrow(UserNotFoundException::new);
+        newUsersList.add(newUser);
 
         this.authorityLevelRepository.save(authorityLevel.withUsers(newUsersList));
     }
 
-    public void removeSuperGroupFromAuthorityLevel(String name, UUID superGroupId) {
+    @Transactional
+    public void removeSuperGroupFromAuthorityLevel(String name, UUID superGroupId)
+            throws AuthorityLevelNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .orElseThrow(AuthorityLevelNotFoundException::new);
 
         List<SuperGroup> newSuperGroups = new ArrayList<>(authorityLevel.superGroups());
         for (int i = 0; i < newSuperGroups.size(); i++) {
@@ -148,10 +173,13 @@ public class AuthorityLevelFacade extends Facade {
         this.authorityLevelRepository.save(authorityLevel.withSuperGroups(newSuperGroups));
     }
 
-    public void removeSuperGroupPostFromAuthorityLevel(String name, UUID superGroupId, UUID postId) {
+    @Transactional
+    public void removeSuperGroupPostFromAuthorityLevel(String name, UUID superGroupId, UUID postId)
+            throws AuthorityLevelNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .orElseThrow(AuthorityLevelNotFoundException::new);
 
         List<AuthorityLevel.SuperGroupPost> newPosts = new ArrayList<>(authorityLevel.posts());
         for (int i = 0; i < newPosts.size(); i++) {
@@ -166,10 +194,12 @@ public class AuthorityLevelFacade extends Facade {
         this.authorityLevelRepository.save(authorityLevel.withPosts(newPosts));
     }
 
-    public void removeUserFromAuthorityLevel(String name, UUID userId) {
+    @Transactional
+    public void removeUserFromAuthorityLevel(String name, UUID userId) throws AuthorityLevelNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name)).orElseThrow();
+        AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
+                .orElseThrow(AuthorityLevelNotFoundException::new);
 
         List<User> newUsers = new ArrayList<>(authorityLevel.users());
         for (int i = 0; i < newUsers.size(); i++) {
@@ -182,6 +212,9 @@ public class AuthorityLevelFacade extends Facade {
         this.authorityLevelRepository.save(authorityLevel.withUsers(newUsers));
     }
 
-
+    public static class AuthorityLevelNotFoundException extends Exception { }
+    public static class SuperGroupNotFoundException extends Exception { }
+    public static class UserNotFoundException extends Exception { }
+    public static class PostNotFoundException extends Exception { }
 
 }

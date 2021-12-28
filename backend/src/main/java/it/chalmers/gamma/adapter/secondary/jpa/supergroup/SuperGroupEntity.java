@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fkit_super_group")
-public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
+public class SuperGroupEntity extends MutableEntity<UUID> {
 
     @Id
     @Column(name = "super_group_id")
@@ -36,7 +36,7 @@ public class SuperGroupEntity extends MutableEntity<SuperGroupId> {
     }
 
     @Override
-    public SuperGroupId getId() {
-        return new SuperGroupId(this.id);
+    public UUID getId() {
+        return this.id;
     }
 }

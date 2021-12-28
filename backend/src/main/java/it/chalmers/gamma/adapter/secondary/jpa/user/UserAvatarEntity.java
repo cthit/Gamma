@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "user_avatar_uri")
-public class UserAvatarEntity extends MutableEntity<UserId> {
+public class UserAvatarEntity extends MutableEntity<UUID> {
 
     @Id
     @Column(name = "user_id")
@@ -29,7 +29,7 @@ public class UserAvatarEntity extends MutableEntity<UserId> {
     protected UserAvatarEntity() { }
 
     @Override
-    public UserId getId() {
+    public UUID getId() {
         return this.user.getId();
     }
 

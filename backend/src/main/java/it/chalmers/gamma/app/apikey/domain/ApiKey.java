@@ -6,6 +6,9 @@ import it.chalmers.gamma.app.common.Text;
 
 import java.util.Objects;
 
+/**
+ * id and apiKeyToken must both be unique from all other api key tokens.
+ */
 @RecordBuilder
 public record ApiKey(ApiKeyId id,
                      PrettyName prettyName,

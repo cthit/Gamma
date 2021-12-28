@@ -10,32 +10,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApiKeyEntityConverter {
 
-    private final ApiKeyJpaRepository apiKeyJpaRepository;
-
-    public ApiKeyEntityConverter(ApiKeyJpaRepository apiKeyJpaRepository) {
-        this.apiKeyJpaRepository = apiKeyJpaRepository;
-    }
-
     public ApiKey toDomain(ApiKeyEntity entity) {
         return new ApiKey(
-                new ApiKeyId(entity.id),
-                new PrettyName(entity.prettyName),
-                entity.description.toDomain(),
-                entity.keyType,
-                new ApiKeyToken(entity.token)
+                new ApiKeyId(entity.getId()),
+                new PrettyName(entity.getPrettyName()),
+                entity.getDescription().toDomain(),
+                entity.getKeyType(),
+                new ApiKeyToken(entity.getToken())
         );
     }
 
     public ApiKeyEntity toEntity(ApiKey apiKey) {
-        ApiKeyEntity entity = new ApiKeyEntity();
-
-        entity.id = apiKey.id().getValue();
-        entity.token = apiKey.apiKeyToken().value();
-        entity.prettyName = apiKey.prettyName().value();
-        entity.keyType = apiKey.keyType();
-        entity.description.apply(apiKey.description());
-
-        return entity;
+        return new ApiKeyEntity(
+                apiKey.id().value(),
+                apiKey.apiKeyToken().value(),
+                apiKey.prettyName().value(),
+                apiKey.keyType(),
+                new TextEntity(apiKey.description())
+        );
     }
 
 }

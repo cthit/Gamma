@@ -37,9 +37,9 @@ public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord>
     @Override
     public AuthorityPostPKRecord getValue() {
         return new AuthorityPostPKRecord(
-                this.superGroupEntity.getId(),
-                this.postEntity.getId(),
-                this.authorityLevel.getId()
+                new SuperGroupId(this.superGroupEntity.getId()),
+                new PostId(this.postEntity.getId()),
+                new AuthorityLevelName(this.authorityLevel.getId())
         );
     }
 

@@ -7,7 +7,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class MutableEntity<I extends Id<?>> extends AbstractEntity<I> {
+public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
 
     @Version
     @Column(name = "version")

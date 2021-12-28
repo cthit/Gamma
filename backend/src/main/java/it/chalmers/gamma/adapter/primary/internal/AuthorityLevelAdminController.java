@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -20,7 +21,11 @@ public final class AuthorityLevelAdminController {
 
     @PostMapping()
     public AuthorityLevelCreatedResponse addAuthorityLevel(@RequestBody CreateAuthorityLevelRequest request) {
-        this.authorityLevelFacade.create(request.authorityLevel);
+        try {
+            this.authorityLevelFacade.create(request.authorityLevel);
+        } catch (AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
+            throw new AuthorityLevelAlreadyExistsResponse();
+        }
         return new AuthorityLevelCreatedResponse();
     }
 
@@ -33,7 +38,11 @@ public final class AuthorityLevelAdminController {
 
     @DeleteMapping("/{name}")
     public AuthorityLevelDeletedResponse deleteAuthorityLevel(@PathVariable("name") String name) {
-        this.authorityLevelFacade.delete(name);
+        try {
+            this.authorityLevelFacade.delete(name);
+        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+            throw new AuthorityLevelAlreadyExistsResponse();
+        }
         return new AuthorityLevelDeletedResponse();
     }
 

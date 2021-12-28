@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "post")
-public class PostEntity extends MutableEntity<PostId> {
+public class PostEntity extends MutableEntity<UUID> {
 
     @Id
     @Column(name = "post_id")
@@ -29,8 +29,8 @@ public class PostEntity extends MutableEntity<PostId> {
     }
 
     @Override
-    public PostId getId() {
-        return new PostId(this.id);
+    public UUID getId() {
+        return this.id;
     }
 
 }

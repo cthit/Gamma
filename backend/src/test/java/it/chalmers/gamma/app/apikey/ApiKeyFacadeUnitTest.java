@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
-class  ApiKeyFacadeTest {
+class ApiKeyFacadeUnitTest {
 
     @Mock
     private AccessGuard accessGuard;
@@ -61,7 +61,7 @@ class  ApiKeyFacadeTest {
      * Main test for create() that checks that isAdmin is called and that the generated token is also returned properly.
      */
     @Test
-    public void Given_AValidApiKey_Expect_create_To_CreateValidApiKey() {
+    public void Given_AValidApiKey_Expect_create_To_CreateValidApiKey() throws ApiKeyRepository.ApiKeyAlreadyExistRuntimeException {
         ApiKeyFacade.NewApiKey newApiKey = new ApiKeyFacade.NewApiKey(
                 "My Api Key",
                 "Det här är en test api nyckel",
@@ -278,7 +278,7 @@ class  ApiKeyFacadeTest {
     }
 
     @Test
-    public void Given_AValidApiKeyId_Expect_resetApiKeyToken_To_ResetSuccessfully() throws ApiKeyRepository.ApiKeyNotFoundException {
+    public void Given_AValidApiKeyId_Expect_resetApiKeyToken_To_ResetSuccessfully() throws ApiKeyRepository.ApiKeyNotFoundException, ApiKeyRepository.ApiKeyAlreadyExistRuntimeException {
         ApiKeyId apiKeyId = ApiKeyId.generate();
         ApiKeyToken previousToken = ApiKeyToken.generate();
         ApiKey apiKey = new ApiKey(
@@ -294,27 +294,22 @@ class  ApiKeyFacadeTest {
 
         given(this.apiKeyRepository.getById(apiKeyId))
                 .willReturn(Optional.of(apiKey));
+        ApiKeyToken generatedToken = ApiKeyToken.generate();
+        given(this.apiKeyRepository.resetApiKeyToken(apiKeyId))
+                .willReturn(generatedToken);
+
 
         String newToken = this.apiKeyFacade.resetApiKeyToken(apiKeyId.value());
         ApiKeyToken newApiKeyToken = new ApiKeyToken(newToken);
 
-        ApiKey newApiKey = new ApiKey(
-                apiKeyId,
-                new PrettyName("My Api Key"),
-                new Text(
-                        "Det här är en test api nyckel",
-                        "This is my test api key"
-                ),
-                ApiKeyType.CLIENT,
-                newApiKeyToken
-        );
+        assertThat(newApiKeyToken)
+                .isEqualTo(generatedToken);
 
         InOrder inOrder = inOrder(accessGuard, apiKeyRepository);
 
         //Makes sure that isAdmin is called first.
         inOrder.verify(accessGuard).require(isAdmin());
-        inOrder.verify(apiKeyRepository).getById(apiKeyId);
-        inOrder.verify(apiKeyRepository).create(newApiKey);
+        inOrder.verify(apiKeyRepository).resetApiKeyToken(apiKeyId);
         inOrder.verifyNoMoreInteractions();
     }
 

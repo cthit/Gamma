@@ -10,32 +10,63 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "apikey")
-public class ApiKeyEntity extends MutableEntity<ApiKeyId> {
+public class ApiKeyEntity extends MutableEntity<UUID> {
 
     @Id
     @Column(name = "api_key_id")
-    protected UUID id;
+    private UUID id;
 
     @Column(name = "token")
-    protected String token;
+    private String token;
 
     @Column(name = "pretty_name")
-    protected String prettyName;
+    private String prettyName;
 
     @Enumerated(EnumType.STRING)
-    protected ApiKeyType keyType;
+    private ApiKeyType keyType;
 
     @JoinColumn(name = "description")
     @OneToOne(cascade = CascadeType.ALL)
-    protected TextEntity description;
+    private TextEntity description;
 
-    protected ApiKeyEntity() {
+    ApiKeyEntity() {
         description = new TextEntity();
     }
 
-    @Override
-    public ApiKeyId getId() {
-        return new ApiKeyId(this.id);
+    public ApiKeyEntity(UUID id,
+                        String token,
+                        String prettyName,
+                        ApiKeyType keyType,
+                        TextEntity description) {
+        this.id = id;
+        this.token = token;
+        this.prettyName = prettyName;
+        this.keyType = keyType;
+        this.description = description;
     }
 
+    @Override
+    public UUID getId() {
+        return this.id;
+    }
+
+    public void setApiKeyToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getPrettyName() {
+        return prettyName;
+    }
+
+    public ApiKeyType getKeyType() {
+        return keyType;
+    }
+
+    public TextEntity getDescription() {
+        return description;
+    }
 }

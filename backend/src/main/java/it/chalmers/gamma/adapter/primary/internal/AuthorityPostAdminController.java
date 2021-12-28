@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
 
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -23,11 +24,17 @@ public final class AuthorityPostAdminController {
 
     @PostMapping
     public AuthorityPostCreatedResponse addAuthority(@RequestBody CreateAuthorityPostRequest request) {
-        this.authorityLevelFacade.addSuperGroupPostToAuthorityLevel(
-                request.authorityLevelName,
-                request.superGroupId,
-                request.postId
-        );
+        try {
+            this.authorityLevelFacade.addSuperGroupPostToAuthorityLevel(
+                    request.authorityLevelName,
+                    request.superGroupId,
+                    request.postId
+            );
+        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+            throw new AuthorityLevelNotFoundResponse();
+        } catch (AuthorityLevelFacade.SuperGroupNotFoundException | AuthorityLevelFacade.PostNotFoundException e) {
+            throw new AuthorityPostNotFoundResponse();
+        }
         return new AuthorityPostCreatedResponse();
     }
 
@@ -35,9 +42,15 @@ public final class AuthorityPostAdminController {
     public AuthorityPostRemovedResponse removeAuthority(@RequestParam("superGroupId") UUID superGroupId,
                                                         @RequestParam("postId") UUID postId,
                                                         @RequestParam("authorityLevelName") String authorityLevelName) {
-        this.authorityLevelFacade.removeSuperGroupPostFromAuthorityLevel(authorityLevelName, superGroupId, postId);
+        try {
+            this.authorityLevelFacade.removeSuperGroupPostFromAuthorityLevel(authorityLevelName, superGroupId, postId);
+        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+            throw new AuthorityPostNotFoundResponse();
+        }
         return new AuthorityPostRemovedResponse();
     }
+
+    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse { }
 
     private static class AuthorityPostRemovedResponse extends SuccessResponse { }
 

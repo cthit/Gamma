@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "authority_level")
-public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
+public class AuthorityLevelEntity extends ImmutableEntity<String> {
 
     @Id
     @Column(name = "authority_level")
@@ -39,8 +39,8 @@ public class AuthorityLevelEntity extends ImmutableEntity<AuthorityLevelName> {
     }
 
     @Override
-    public AuthorityLevelName getId() {
-        return AuthorityLevelName.valueOf(this.authorityLevel);
+    public String getId() {
+        return this.authorityLevel;
     }
 
     public String getAuthorityLevel() {

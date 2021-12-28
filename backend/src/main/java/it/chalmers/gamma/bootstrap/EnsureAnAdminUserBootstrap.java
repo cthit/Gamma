@@ -88,10 +88,14 @@ public class EnsureAnAdminUserBootstrap {
             LOGGER.info("cid: " + name);
             LOGGER.info("password: " + password);
 
-            this.authorityLevelFacade.addUserToAuthorityLevel(
-                    admin,
-                    adminUser.id().value()
-            );
+            try {
+                this.authorityLevelFacade.addUserToAuthorityLevel(
+                        admin,
+                        adminUser.id().value()
+                );
+            } catch (AuthorityLevelFacade.UserNotFoundException | AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+                e.printStackTrace();
+            }
 
             LOGGER.info("==========                           ==========");
         }

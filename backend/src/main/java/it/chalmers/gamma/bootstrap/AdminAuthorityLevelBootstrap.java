@@ -15,7 +15,11 @@ public class AdminAuthorityLevelBootstrap {
 
     public void ensureAdminAuthorityLevel() {
         String admin = "admin";
-        this.authorityLevelRepository.create(new AuthorityLevelName(admin));
+        try {
+            this.authorityLevelRepository.create(new AuthorityLevelName(admin));
+        } catch (AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
+            e.printStackTrace();
+        }
     }
 
 }

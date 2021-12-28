@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -27,20 +28,30 @@ public final class AuthorityUserAdminController {
 
     @PostMapping
     public AuthorityUserCreatedResponse addAuthority(@RequestBody CreateAuthorityUserRequest request) {
-        this.authorityLevelFacade.addUserToAuthorityLevel(
-                request.authorityLevelName,
-                request.userId
-        );
+        try {
+            this.authorityLevelFacade.addUserToAuthorityLevel(
+                    request.authorityLevelName,
+                    request.userId
+            );
+        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+            throw new AuthorityLevelNotFoundResponse();
+        } catch (AuthorityLevelFacade.UserNotFoundException e) {
+            throw new AuthorityUserNotFoundResponse();
+        }
         return new AuthorityUserCreatedResponse();
     }
 
     @DeleteMapping
     public AuthorityUserRemovedResponse removeAuthority(@RequestParam("userId") UUID userId,
                                                         @RequestParam("authorityLevelName") String authorityLevelName) {
-        this.authorityLevelFacade.removeUserFromAuthorityLevel(
-                authorityLevelName,
-                userId
-        );
+        try {
+            this.authorityLevelFacade.removeUserFromAuthorityLevel(
+                    authorityLevelName,
+                    userId
+            );
+        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+            throw new AuthorityUserNotFoundResponse();
+        }
         return new AuthorityUserRemovedResponse();
     }
 
@@ -49,6 +60,8 @@ public final class AuthorityUserAdminController {
     private static class AuthorityUserCreatedResponse extends SuccessResponse { }
 
     private static class AuthorityUserNotFoundResponse extends NotFoundResponse { }
+
+    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse { }
 
     private static class AuthorityUserAlreadyExistsResponse extends AlreadyExistsResponse { }
 

@@ -11,9 +11,13 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityExistsException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,8 +25,9 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Transactional
 public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorityLevelRepositoryAdapter.class);
 
     private final AuthorityLevelJpaRepository repository;
 
@@ -52,21 +57,38 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     }
 
     @Override
-    public void create(AuthorityLevelName authorityLevelName) {
-        if (!this.repository.existsById(authorityLevelName.value())) {
+    public void create(AuthorityLevelName authorityLevelName) throws AuthorityLevelAlreadyExistsException {
+        try{
             repository.save(new AuthorityLevelEntity(authorityLevelName.getValue()));
+        } catch (Exception e) {
+            if (e.getCause() instanceof EntityExistsException) {
+                throw new AuthorityLevelRepository.AuthorityLevelAlreadyExistsException();
+            }
+            throw e;
         }
     }
 
     @Override
-    public void delete(AuthorityLevelName authorityLevelName) {
-        repository.deleteById(authorityLevelName.getValue());
+    public void delete(AuthorityLevelName authorityLevelName) throws AuthorityLevelNotFoundException {
+        try {
+            repository.deleteById(authorityLevelName.getValue());
+        } catch (EmptyResultDataAccessException e) {
+            throw new AuthorityLevelNotFoundException();
+        }
     }
 
     @Override
-    public void save(AuthorityLevel authorityLevel) {
+    public void save(AuthorityLevel authorityLevel)
+            throws AuthorityLevelNotFoundRuntimeException, AuthorityLevelConstraintViolationRuntimeException {
         AuthorityLevelEntity entity = this.authorityLevelEntityConverter.toEntity(authorityLevel);
-        this.repository.save(entity);
+
+        //Flush to ensure that constraint are valid
+        try {
+            this.repository.saveAndFlush(entity);
+        } catch (DataIntegrityViolationException e) {
+            LOGGER.error("DataIntegrityViolationException: ", e);
+            throw new AuthorityLevelConstraintViolationRuntimeException();
+        }
     }
 
     @Override
@@ -104,8 +126,8 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
                     PostEntity postEntity = membershipEntity.getId().getPost();
 
                     this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(
-                            superGroupEntity.getId().getValue(),
-                            postEntity.getId().value()
+                            superGroupEntity.getId(),
+                            postEntity.getId()
                     ).forEach(authorityPostEntity -> names.add(new UserAuthority(
                             authorityPostEntity.getId().getValue().authorityLevelName(),
                             AuthorityType.AUTHORITY

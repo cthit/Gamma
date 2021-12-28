@@ -11,6 +11,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.User;
@@ -69,10 +70,10 @@ public class AuthorityLevelEntityConverter {
         );
     }
 
-    public AuthorityLevelEntity toEntity(AuthorityLevel authorityLevel) {
+    public AuthorityLevelEntity toEntity(AuthorityLevel authorityLevel) throws AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException {
         String name = authorityLevel.name().getValue();
         AuthorityLevelEntity authorityLevelEntity = this.authorityLevelJpaRepository.findById(name)
-                .orElse(new AuthorityLevelEntity(name));
+                .orElseThrow(AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException::new);
 
         List<AuthorityUserEntity> users = authorityLevel.users().stream().map(user -> new AuthorityUserEntity(toEntity(user), authorityLevelEntity)).toList();
         List<AuthorityPostEntity> posts = authorityLevel.posts().stream().map(post -> new AuthorityPostEntity(toEntity(post.superGroup()), toEntity(post.post()), authorityLevelEntity)).toList();

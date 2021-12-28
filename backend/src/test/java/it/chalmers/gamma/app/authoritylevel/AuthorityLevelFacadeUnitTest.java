@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
-class AuthorityLevelFacadeTest {
+class AuthorityLevelFacadeUnitTest {
 
     @Mock
     private AccessGuard accessGuard;
@@ -55,7 +55,7 @@ class AuthorityLevelFacadeTest {
     private AuthorityLevelFacade authorityLevelFacade;
 
     @Test
-    public void Given_AValidName_Expect_create_To_CreateValidAuthorityLevel() {
+    public void Given_AValidName_Expect_create_To_CreateValidAuthorityLevel() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
         String adminAuthorityLevelName = "admin";
 
         authorityLevelFacade.create(adminAuthorityLevelName);
@@ -94,7 +94,9 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_AValidName_Expect_delete_To_DeleteAuthorityLevel() {
+    public void Given_AValidName_Expect_delete_To_DeleteAuthorityLevel()
+            throws AuthorityLevelFacade.AuthorityLevelNotFoundException,
+            AuthorityLevelRepository.AuthorityLevelNotFoundException {
         String adminAuthorityLevelName = "admin";
 
         authorityLevelFacade.delete(adminAuthorityLevelName);
@@ -237,7 +239,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_EmptyAuthorityLevel_Expect_addSuperGroupToAuthorityLevel_To_Work() {
+    public void Given_EmptyAuthorityLevel_Expect_addSuperGroupToAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException, AuthorityLevelFacade.SuperGroupNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),
@@ -276,7 +278,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_FilledAuthorityLevel_Expect_addSuperGroupToAuthorityLevel_To_Work() {
+    public void Given_FilledAuthorityLevel_Expect_addSuperGroupToAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException, AuthorityLevelFacade.SuperGroupNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 List.of(sgp(styrit, chair), sgp(emeritus, chair)),
@@ -306,7 +308,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_EmptyAuthorityLevel_Expect_addSuperGroupPostToAuthorityLevel_To_Work() {
+    public void Given_EmptyAuthorityLevel_Expect_addSuperGroupPostToAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException, AuthorityLevelFacade.PostNotFoundException, AuthorityLevelFacade.SuperGroupNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),
@@ -358,7 +360,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_FilledAuthorityLevel_Expect_addSuperGroupPostToAuthorityLevel_To_Work() {
+    public void Given_FilledAuthorityLevel_Expect_addSuperGroupPostToAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException, AuthorityLevelFacade.PostNotFoundException, AuthorityLevelFacade.SuperGroupNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 List.of(sgp(styrit, chair), sgp(emeritus, chair)),
@@ -395,7 +397,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_EmptyAuthorityLevel_Expect_addUserToAuthorityLevel_To_Work() {
+    public void Given_EmptyAuthorityLevel_Expect_addUserToAuthorityLevel_To_Work() throws AuthorityLevelFacade.UserNotFoundException, AuthorityLevelFacade.AuthorityLevelNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),
@@ -438,7 +440,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_FilledAuthorityLevel_Expect_addUserToAuthorityLevel_To_Work() {
+    public void Given_FilledAuthorityLevel_Expect_addUserToAuthorityLevel_To_Work() throws AuthorityLevelFacade.UserNotFoundException, AuthorityLevelFacade.AuthorityLevelNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 List.of(sgp(styrit, chair), sgp(emeritus, chair)),
@@ -468,7 +470,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_AuthorityLevelWithSuperGroup_Expect_removeSuperGroupFromAuthorityLevel_To_Work() {
+    public void Given_AuthorityLevelWithSuperGroup_Expect_removeSuperGroupFromAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),
@@ -503,7 +505,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_AuthorityLevelWithSuperGroupPost_Expect_removeSuperGroupPostFromAuthorityLevel_To_Work() {
+    public void Given_AuthorityLevelWithSuperGroupPost_Expect_removeSuperGroupPostFromAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 List.of(sgp(digit, chair)),
@@ -538,7 +540,7 @@ class AuthorityLevelFacadeTest {
     }
 
     @Test
-    public void Given_AuthorityLevelWithUser_Expect_removeUserFromAuthorityLevel_To_Work() {
+    public void Given_AuthorityLevelWithUser_Expect_removeUserFromAuthorityLevel_To_Work() throws AuthorityLevelFacade.AuthorityLevelNotFoundException {
         AuthorityLevel adminAuthorityLevel = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),

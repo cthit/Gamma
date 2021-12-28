@@ -1,18 +1,28 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
-import it.chalmers.gamma.app.common.Id;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class AbstractEntity<I extends Id<?>> implements Serializable, Persistable<I> {
+public abstract class AbstractEntity<ID> implements Persistable<ID> {
+
+    @Transient
+    private boolean persisted = false;
+
+    @PostPersist
+    @PostLoad
+    void setPersisted() {
+        persisted = true;
+    }
 
     @Override
     public boolean isNew() {
-        return true;
+        return !persisted;
     }
 
     @Override
@@ -24,8 +34,6 @@ public abstract class AbstractEntity<I extends Id<?>> implements Serializable, P
 
     @Override
     public final boolean equals(Object o) {
-        assert(getId() != null);
-
         if (this == o) {
             return true;
         }
@@ -34,6 +42,6 @@ public abstract class AbstractEntity<I extends Id<?>> implements Serializable, P
             return false;
         }
 
-        return this.getId().equals(((AbstractEntity<?>) o).getId());
+        return Objects.equals(this.getId(), ((AbstractEntity<?>) o).getId());
     }
 }

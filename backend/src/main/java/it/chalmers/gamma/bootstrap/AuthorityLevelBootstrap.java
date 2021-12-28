@@ -94,25 +94,31 @@ public class AuthorityLevelBootstrap {
             authorityLevelMap.get(new AuthorityLevelName("admin")).users.add(adminUser.id());
         }
 
-        authorityLevelMap.forEach((authorityLevelName, authorities) -> this.authorityLevelRepository.save(
-                new AuthorityLevel(
-                        authorityLevelName,
-                        authorities.posts
-                                .stream()
-                                .map(superGroupPost -> new AuthorityLevel.SuperGroupPost(
-                                        this.superGroupRepository.get(superGroupPost.superGroupId).orElseThrow(),
-                                        this.postRepository.get(superGroupPost.postId).orElseThrow()
-                                )).toList(),
-                        authorities.superGroups
-                                .stream()
-                                .map(superGroupId -> this.superGroupRepository.get(superGroupId).orElseThrow())
-                                .toList(),
-                        authorities.users
-                                .stream()
-                                .map(userId -> this.userRepository.get(userId).orElseThrow())
-                                .toList()
-                )
-        ));
+        authorityLevelMap.forEach((authorityLevelName, authorities) -> {
+            try {
+                this.authorityLevelRepository.save(
+                        new AuthorityLevel(
+                                authorityLevelName,
+                                authorities.posts
+                                        .stream()
+                                        .map(superGroupPost -> new AuthorityLevel.SuperGroupPost(
+                                                this.superGroupRepository.get(superGroupPost.superGroupId).orElseThrow(),
+                                                this.postRepository.get(superGroupPost.postId).orElseThrow()
+                                        )).toList(),
+                                authorities.superGroups
+                                        .stream()
+                                        .map(superGroupId -> this.superGroupRepository.get(superGroupId).orElseThrow())
+                                        .toList(),
+                                authorities.users
+                                        .stream()
+                                        .map(userId -> this.userRepository.get(userId).orElseThrow())
+                                        .toList()
+                        )
+                );
+            } catch (AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException e) {
+                e.printStackTrace();
+            }
+        });
 
         LOGGER.info("==========                     ==========");
     }

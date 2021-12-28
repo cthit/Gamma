@@ -4,6 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConver
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
+import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
@@ -103,7 +104,7 @@ public class GroupEntityConverter {
         }
 
         return new Group(
-                entity.getId(),
+                new GroupId(entity.getId()),
                 entity.getVersion(),
                 new Name(entity.name),
                 new PrettyName(entity.prettyName),

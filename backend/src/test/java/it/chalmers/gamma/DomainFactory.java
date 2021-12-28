@@ -23,6 +23,7 @@ import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 
 import java.time.Instant;
 import java.util.List;
@@ -89,7 +90,7 @@ public final class DomainFactory {
     }
 
     public static final SuperGroupType committee = new SuperGroupType("committee");
-    public static final SuperGroupType board = new SuperGroupType("committee");
+    public static final SuperGroupType board = new SuperGroupType("board");
     public static final SuperGroupType alumni = new SuperGroupType("alumni");
     public static final SuperGroupType society = new SuperGroupType("society");
 
@@ -129,9 +130,10 @@ public final class DomainFactory {
     public static SuperGroup sprit = sg("sprit", alumni);
     public static SuperGroup drawit = sg("drawit", society);
     public static SuperGroup dragit = sg("dragit", alumni);
-    public static SuperGroup styrit = sg("board", board);
+    public static SuperGroup styrit = sg("styrit", board);
     public static SuperGroup emeritus = sg("emeritus", alumni);
 
+    public static User u0 = u("abcaa");
     public static User u1 = u("abca");
     public static User  u2 = u("abcb", true, true);
     public static User u3 = u("abcc", false, false);
@@ -152,6 +154,12 @@ public final class DomainFactory {
     public static Group drawit19 = g("drawit19", drawit, List.of(gm(u1, chair), gm(u11, member)));
     public static Group styrit18 = g("styrit18", emeritus, List.of(gm(u7, chair), gm(u8, member), gm(u9, member)));
     public static Group styrit19 = g("styrit19", styrit, List.of(gm(u10, chair), gm(u11, treasurer)));
+
+    public static void addAll(UserRepository userRepository, User... users) {
+        for (User user : users) {
+            userRepository.save(user);
+        }
+    }
 
     public static Post p() {
         PostId postId = PostId.generate();
