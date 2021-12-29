@@ -30,7 +30,7 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
-class ClientFacadeTest {
+class ClientFacadeUnitTest {
 
     @Mock
     private AccessGuard accessGuard;

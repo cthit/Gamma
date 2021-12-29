@@ -21,13 +21,15 @@ public class ApiKeyEntityConverter {
     }
 
     public ApiKeyEntity toEntity(ApiKey apiKey) {
-        return new ApiKeyEntity(
-                apiKey.id().value(),
-                apiKey.apiKeyToken().value(),
-                apiKey.prettyName().value(),
-                apiKey.keyType(),
-                new TextEntity(apiKey.description())
-        );
+        ApiKeyEntity apiKeyEntity = new ApiKeyEntity();
+
+        apiKeyEntity.id = apiKey.id().value();
+        apiKeyEntity.token = apiKey.apiKeyToken().value();
+        apiKeyEntity.prettyName = apiKey.prettyName().value();
+        apiKeyEntity.keyType = apiKey.keyType();
+        apiKeyEntity.description.apply(apiKey.description());
+
+        return apiKeyEntity;
     }
 
 }

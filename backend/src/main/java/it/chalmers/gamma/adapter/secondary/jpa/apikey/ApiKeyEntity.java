@@ -14,35 +14,23 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
 
     @Id
     @Column(name = "api_key_id")
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "token")
-    private String token;
+    protected String token;
 
     @Column(name = "pretty_name")
-    private String prettyName;
+    protected String prettyName;
 
     @Enumerated(EnumType.STRING)
-    private ApiKeyType keyType;
+    protected ApiKeyType keyType;
 
     @JoinColumn(name = "description")
     @OneToOne(cascade = CascadeType.ALL)
-    private TextEntity description;
+    protected TextEntity description;
 
-    ApiKeyEntity() {
+    public ApiKeyEntity() {
         description = new TextEntity();
-    }
-
-    public ApiKeyEntity(UUID id,
-                        String token,
-                        String prettyName,
-                        ApiKeyType keyType,
-                        TextEntity description) {
-        this.id = id;
-        this.token = token;
-        this.prettyName = prettyName;
-        this.keyType = keyType;
-        this.description = description;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
@@ -105,34 +106,19 @@ public class AuthorityLevelEntityIntegrationTests {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AuthorityLevelEntityConverter authorityLevelEntityConverter;
+
     /**
      * This is a very important test! If it fails, please stop.
      */
     @Test
     public void getByUser_SuperTest() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
         addAll(userRepository, u0, u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, u11);
-
-        superGroupTypeRepository.add(committee);
-        superGroupTypeRepository.add(alumni);
-        superGroupTypeRepository.add(board);
-
-        postRepository.save(chair);
-        postRepository.save(treasurer);
-        postRepository.save(member);
-
-        superGroupRepository.save(digit);
-        superGroupRepository.save(didit);
-        superGroupRepository.save(prit);
-        superGroupRepository.save(sprit);
-        superGroupRepository.save(styrit);
-        superGroupRepository.save(emeritus);
-
-        groupRepository.save(digit18);
-        groupRepository.save(digit19);
-        groupRepository.save(prit18);
-        groupRepository.save(prit19);
-        groupRepository.save(styrit18);
-        groupRepository.save(styrit19);
+        addAll(superGroupTypeRepository, committee, alumni, board);
+        addAll(postRepository, chair, treasurer, member);
+        addAll(superGroupRepository, digit, didit, prit, sprit, styrit, emeritus);
+        addAll(groupRepository, digit18, digit19, prit18, prit19, styrit18, styrit19);
 
         AuthorityLevelName adminName = new AuthorityLevelName("admin");
         AuthorityLevel adminLevel = new AuthorityLevel(
@@ -280,7 +266,7 @@ public class AuthorityLevelEntityIntegrationTests {
 
         assertThat(authorityLevelRepositoryAdapter.getAll().stream())
                 .extracting(AuthorityLevel::name)
-                .contains(admin, mat);
+                .containsExactlyInAnyOrder(admin, mat);
     }
 
     @Test
@@ -391,6 +377,48 @@ public class AuthorityLevelEntityIntegrationTests {
 
         assertThatExceptionOfType(AuthorityLevelRepository.AuthorityLevelNotFoundException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.delete(admin));
+    }
+
+    @Test
+    public void TestAuthorityLevelEntityEqualsAndHashcode() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
+        AuthorityLevel a1 = new AuthorityLevel(
+                new AuthorityLevelName("admin"),
+                List.of(new AuthorityLevel.SuperGroupPost(digit, chair)),
+                List.of(sprit, emeritus),
+                List.of(u8, u9)
+        );
+
+        AuthorityLevel a2 = new AuthorityLevel(
+                new AuthorityLevelName("mat"),
+                Collections.emptyList(),
+                List.of(digit, didit),
+                List.of(u1, u2)
+        );
+
+        addAll(superGroupRepository, digit, didit, sprit, emeritus);
+        addAll(userRepository, u1, u2, u8, u9);
+
+        postRepository.save(chair);
+
+        authorityLevelRepositoryAdapter.create(new AuthorityLevelName("admin"));
+        authorityLevelRepositoryAdapter.save(a1);
+
+        authorityLevelRepositoryAdapter.create(new AuthorityLevelName("mat"));
+        authorityLevelRepositoryAdapter.save(a2);
+
+        AuthorityLevelEntity e1 = authorityLevelEntityConverter.toEntity(a1);
+        AuthorityLevelEntity e2 = authorityLevelEntityConverter.toEntity(a1);
+        AuthorityLevelEntity e3 = authorityLevelEntityConverter.toEntity(a2);
+
+        assertThat(e1)
+                .isEqualTo(e2);
+        assertThat(e1)
+                .isNotEqualTo(e3);
+
+        assertThat(e1.hashCode())
+                .isEqualTo(e2.hashCode());
+        assertThat(e1.hashCode())
+                .isNotEqualTo(e3.hashCode());
     }
 
 }

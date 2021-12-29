@@ -7,12 +7,16 @@ import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.group.domain.GroupMember;
+import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -158,6 +162,30 @@ public final class DomainFactory {
     public static void addAll(UserRepository userRepository, User... users) {
         for (User user : users) {
             userRepository.save(user);
+        }
+    }
+
+    public static void addAll(SuperGroupRepository superGroupRepository, SuperGroup... superGroups) {
+        for (SuperGroup superGroup : superGroups) {
+            superGroupRepository.save(superGroup);
+        }
+    }
+
+    public static void addAll(GroupRepository groupRepository, Group... groups) {
+        for (Group group : groups) {
+            groupRepository.save(group);
+        }
+    }
+
+    public static void addAll(PostRepository postRepository, Post... posts) {
+        for (Post post : posts) {
+            postRepository.save(post);
+        }
+    }
+
+    public static void addAll(SuperGroupTypeRepository superGroupTypeRepository, SuperGroupType... types) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
+        for (SuperGroupType type : types) {
+            superGroupTypeRepository.add(type);
         }
     }
 

@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.user.domain.UserId;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -39,7 +40,11 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public void delete(ClientUid clientUid) throws ClientNotFoundException {
-        this.clientJpaRepository.deleteById(clientUid.value());
+        try {
+            this.clientJpaRepository.deleteById(clientUid.value());
+        } catch (EmptyResultDataAccessException e) {
+            throw new ClientNotFoundException();
+        }
     }
 
     @Override
