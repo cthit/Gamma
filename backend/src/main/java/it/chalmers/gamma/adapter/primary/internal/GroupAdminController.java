@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.app.group.domain.GroupRepository;
 
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
@@ -22,42 +21,48 @@ public final class GroupAdminController {
 
     private record CreateGroupRequest(String name,
                                       String prettyName,
-                                      UUID superGroup,
-                                      String email) { }
+                                      UUID superGroup) { }
 
     @PostMapping()
     public GroupCreatedResponse addNewGroup(@RequestBody CreateGroupRequest request) {
-        this.groupFacade.createGroup(
-                new GroupFacade.NewGroup(
-                        request.name,
-                        request.prettyName,
-                        request.superGroup,
-                        request.email
-                )
-        );
+        try {
+            this.groupFacade.create(
+                    new GroupFacade.NewGroup(
+                            request.name,
+                            request.prettyName,
+                            request.superGroup
+                    )
+            );
+        } catch (GroupFacade.SuperGroupNotFoundRuntimeException e) {
+            throw new SuperGroupNotFoundResponse();
+        } catch (GroupFacade.GroupAlreadyExistsException e) {
+            throw new GroupAlreadyExistsResponse();
+        }
         return new GroupCreatedResponse();
     }
 
     private record EditGroupRequest(int version,
                                     String name,
                                     String prettyName,
-                                    UUID superGroup,
-                                    String email) { }
+                                    UUID superGroup) { }
 
 
     @PutMapping("/{id}")
     public GroupUpdatedResponse editGroup(@RequestBody EditGroupRequest request,
                                           @PathVariable("id") UUID id) {
-        this.groupFacade.updateGroup(
-                new GroupFacade.UpdateGroup(
-                        id,
-                        request.version,
-                        request.name,
-                        request.prettyName,
-                        request.superGroup,
-                        request.email
-                )
-        );
+        try {
+            this.groupFacade.update(
+                    new GroupFacade.UpdateGroup(
+                            id,
+                            request.version,
+                            request.name,
+                            request.prettyName,
+                            request.superGroup
+                    )
+            );
+        } catch (GroupFacade.GroupAlreadyExistsException e) {
+            throw new GroupAlreadyExistsResponse();
+        }
         return new GroupUpdatedResponse();
     }
 
@@ -66,7 +71,7 @@ public final class GroupAdminController {
         try {
             this.groupFacade.delete(id);
             return new GroupDeletedResponse();
-        } catch (GroupRepository.GroupNotFoundException e) {
+        } catch (GroupFacade.GroupNotFoundRuntimeException e) {
             throw new GroupNotFoundResponse();
         }
     }
@@ -78,6 +83,8 @@ public final class GroupAdminController {
     private static class GroupUpdatedResponse extends SuccessResponse { }
 
     private static class GroupNotFoundResponse extends NotFoundResponse { }
+
+    private static class SuperGroupNotFoundResponse extends NotFoundResponse { }
 
     private static class GroupAlreadyExistsResponse extends AlreadyExistsResponse { }
 

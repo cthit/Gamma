@@ -52,7 +52,11 @@ public class ImageFacade extends Facade {
         accessGuard.require(isSignedInUserMemberOfGroup(group));
 
         ImageUri imageUri = this.imageService.saveImage(image);
-        this.groupRepository.save(group.withBannerUri(Optional.of(imageUri)));
+        try {
+            this.groupRepository.save(group.withBannerUri(Optional.of(imageUri)));
+        } catch (GroupRepository.GroupAlreadyExistsException e) {
+            e.printStackTrace();
+        }
     }
 
     public ImageDetails getGroupBanner(UUID groupId) {
@@ -69,7 +73,11 @@ public class ImageFacade extends Facade {
         accessGuard.require(isSignedInUserMemberOfGroup(group));
 
         ImageUri imageUri = this.imageService.saveImage(image);
-        this.groupRepository.save(group.withAvatarUri(Optional.of(imageUri)));
+        try {
+            this.groupRepository.save(group.withAvatarUri(Optional.of(imageUri)));
+        } catch (GroupRepository.GroupAlreadyExistsException e) {
+            e.printStackTrace();
+        }
     }
 
     public ImageDetails getGroupAvatar(UUID groupId) {

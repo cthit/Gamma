@@ -38,7 +38,7 @@ public class SuperGroupController {
 
     @GetMapping("/{id}/subgroups")
     public List<GroupFacade.GroupWithMembersDTO> getSubgroups(@PathVariable("id") UUID id) {
-        return this.groupFacade.getGroupsBySuperGroup(id);
+        return this.groupFacade.getAllBySuperGroup(id);
     }
 
     private static class SuperGroupDoesNotExistResponse extends NotFoundResponse { }

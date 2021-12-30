@@ -39,7 +39,7 @@ public class InfoApiController {
 
     @GetMapping("/groups")
     GroupsResponse getGroups() {
-        return new GroupsResponse(this.groupFacade.getAllForInfo());
+        return new GroupsResponse(this.groupFacade.getAllForInfoApi());
     }
 
     private static class UserNotFoundResponse extends NotFoundResponse { }

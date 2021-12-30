@@ -15,7 +15,7 @@ import java.util.Optional;
 public record Client(ClientUid clientUid,
                      ClientId clientId,
                      ClientSecret clientSecret,
-                     WebServerRedirectUrl webServerRedirectUrl,
+                     RedirectUrl redirectUrl,
                      PrettyName prettyName,
                      Text description,
                      List<AuthorityLevelName> restrictions,
@@ -25,7 +25,7 @@ public record Client(ClientUid clientUid,
 
     public Client {
         Objects.requireNonNull(clientId);
-        Objects.requireNonNull(webServerRedirectUrl);
+        Objects.requireNonNull(redirectUrl);
         Objects.requireNonNull(prettyName);
         Objects.requireNonNull(description);
         Objects.requireNonNull(restrictions);

@@ -171,7 +171,8 @@ class ApiKeyFacadeUnitTest {
     }
 
     @Test
-    public void Given_AValidApiKeyId_Expect_delete_To_DeleteApiKey() throws ApiKeyRepository.ApiKeyNotFoundException {
+    public void Given_AValidApiKeyId_Expect_delete_To_DeleteApiKey()
+            throws ApiKeyRepository.ApiKeyNotFoundException, ApiKeyFacade.ApiKeyNotFoundException {
         UUID id = UUID.randomUUID();
 
         apiKeyFacade.delete(id);
@@ -182,6 +183,15 @@ class ApiKeyFacadeUnitTest {
         inOrder.verify(accessGuard).require(isAdmin());
         inOrder.verify(apiKeyRepository).delete(new ApiKeyId(id));
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void Given_InvalidApiKey_Expect_delete_To_Throw() throws ApiKeyRepository.ApiKeyNotFoundException {
+        doThrow(ApiKeyRepository.ApiKeyNotFoundException.class)
+                .when(apiKeyRepository).delete(any());
+
+        assertThatExceptionOfType(ApiKeyFacade.ApiKeyNotFoundException.class)
+                .isThrownBy(() -> apiKeyFacade.delete(UUID.randomUUID()));
     }
 
     @Test
@@ -278,7 +288,7 @@ class ApiKeyFacadeUnitTest {
     }
 
     @Test
-    public void Given_AValidApiKeyId_Expect_resetApiKeyToken_To_ResetSuccessfully() throws ApiKeyRepository.ApiKeyNotFoundException, ApiKeyRepository.ApiKeyAlreadyExistRuntimeException {
+    public void Given_AValidApiKeyId_Expect_resetApiKeyToken_To_ResetSuccessfully() throws ApiKeyFacade.ApiKeyNotFoundException, ApiKeyRepository.ApiKeyAlreadyExistRuntimeException, ApiKeyRepository.ApiKeyNotFoundException {
         ApiKeyId apiKeyId = ApiKeyId.generate();
         ApiKeyToken previousToken = ApiKeyToken.generate();
         ApiKey apiKey = new ApiKey(

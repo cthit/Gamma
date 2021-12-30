@@ -23,8 +23,6 @@ CREATE TABLE ituser
     locked                  BOOLEAN               DEFAULT FALSE
 );
 
-
-
 CREATE TABLE user_avatar_uri
 (
     user_id    UUID REFERENCES ituser ON DELETE CASCADE,

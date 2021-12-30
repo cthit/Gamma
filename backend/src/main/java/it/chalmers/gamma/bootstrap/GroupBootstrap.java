@@ -94,7 +94,7 @@ public class GroupBootstrap {
                             .map(mockMembership -> new GroupMember(
                                     postRepository.get(new PostId(mockMembership.postId())).orElseThrow(),
                                     mockMembership.unofficialPostName() == null
-                                            ? new UnofficialPostName("")
+                                            ? UnofficialPostName.none()
                                             : new UnofficialPostName(mockMembership.unofficialPostName()),
                                     userRepository.get(new UserId(mockMembership.userId())).orElseThrow()
                             ))
@@ -103,7 +103,11 @@ public class GroupBootstrap {
                     Optional.empty()
             );
 
-            this.groupRepository.save(group);
+            try {
+                this.groupRepository.save(group);
+            } catch (GroupRepository.GroupAlreadyExistsException e) {
+                e.printStackTrace();
+            }
         });
 
         LOGGER.info("==========                 ==========");

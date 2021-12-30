@@ -10,8 +10,9 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.client.domain.WebServerRedirectUrl;
+import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.user.domain.User;
 import org.springframework.stereotype.Service;
@@ -59,10 +60,10 @@ public class ClientEntityConverter {
                 .toList();
 
         return new Client(
-                clientEntity.getId(),
+                new ClientUid(clientEntity.getId()),
                 new ClientId(clientEntity.clientId),
                 new ClientSecret(clientEntity.clientSecret),
-                new WebServerRedirectUrl(clientEntity.webServerRedirectUrl),
+                new RedirectUrl(clientEntity.webServerRedirectUrl),
                 new PrettyName(clientEntity.prettyName),
                 clientEntity.description.toDomain(),
                 restrictions,
@@ -83,7 +84,7 @@ public class ClientEntityConverter {
         clientEntity.clientId = client.clientId().value();
         clientEntity.clientSecret = client.clientSecret().value();
         clientEntity.prettyName = client.prettyName().value();
-        clientEntity.webServerRedirectUrl = client.webServerRedirectUrl().value();
+        clientEntity.webServerRedirectUrl = client.redirectUrl().value();
 
         if (clientEntity.description == null) {
             clientEntity.description = new TextEntity();

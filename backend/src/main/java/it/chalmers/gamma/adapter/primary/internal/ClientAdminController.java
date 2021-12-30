@@ -79,7 +79,7 @@ public final class ClientAdminController {
         try {
             this.clientFacade.delete(id);
             return new ClientDeletedResponse();
-        } catch (ClientRepository.ClientNotFoundException e) {
+        } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
     }

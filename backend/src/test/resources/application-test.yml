@@ -1,21 +1,16 @@
 spring:
     datasource:
-        url: jdbc:h2:mem:test
-        username: sa
-        password: password
-        driver-class-name: org.h2.Driver
+        # Flyway migration settings => FlywayMigrationConfig.java
+        url: jdbc:tc:postgresql:13:///?TC_INITFUNCTION=it.chalmers.gamma.FlywayMigrationConfig::initFlywayFromTC
     jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
         properties:
             hibernate:
-                dialect: org.hibernate.dialect.H2Dialect
-            database-platform: org.hibernate.dialect.H2Dialect
+                globally_quoted_identifiers: true
+                temp:
+                    use_jdbc_metadata_defaults: false
         hibernate:
-            ddl-auto: create
-    flyway:
-        locations: classpath:/db/migration
-#    main:
-#        web-application-type: none
+            ddl-auto: validate
+        open-in-view: false
     session:
         store-type: none
-application:
-    mocking: false

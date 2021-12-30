@@ -19,9 +19,5 @@ public record Post(PostId id,
         Objects.requireNonNull(emailPrefix);
     }
 
-    public static Post create(Text name, EmailPrefix emailPrefix) {
-        return new Post(PostId.generate(), 0, name, emailPrefix);
-    }
-
 }
 

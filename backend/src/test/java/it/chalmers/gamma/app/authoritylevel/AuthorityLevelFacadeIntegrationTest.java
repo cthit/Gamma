@@ -12,10 +12,12 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.UUID;
 
@@ -34,6 +36,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         UserRepositoryAdapter.class,
         PostRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class})
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AuthorityLevelFacadeIntegrationTest {
 
     @MockBean
@@ -43,7 +47,8 @@ public class AuthorityLevelFacadeIntegrationTest {
     private AuthorityLevelFacade authorityLevelFacade;
 
     @Test
-    public void help() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
+    public void Given_ValidAuthorityLevel_Expect_addUserToAuthorityLevel_With_InvalidUser_To_Throw()
+            throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
         authorityLevelFacade.create("hello");
 
         assertThatExceptionOfType(AuthorityLevelFacade.UserNotFoundException.class)

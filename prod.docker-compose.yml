@@ -4,7 +4,7 @@ networks:
 
 services:
   db: 
-    image: postgres:10
+    image: postgres:13
     restart: always
     environment:
       POSTGRES_USER: user   # These should all be changed

@@ -14,7 +14,7 @@ public record SuperGroup(SuperGroupId id,
                          Name name,
                          PrettyName prettyName,
                          SuperGroupType type,
-                         Text description) {
+                         Text description) implements SuperGroupBuilder.With {
 
     public SuperGroup {
         Objects.requireNonNull(id);

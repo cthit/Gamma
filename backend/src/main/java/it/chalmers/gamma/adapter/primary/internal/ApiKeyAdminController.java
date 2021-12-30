@@ -51,7 +51,7 @@ public final class ApiKeyAdminController {
 
         try {
             token = this.apiKeyFacade.resetApiKeyToken(id);
-        } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
+        } catch (ApiKeyFacade.ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundResponse();
         }
 
@@ -79,7 +79,7 @@ public final class ApiKeyAdminController {
         try {
             this.apiKeyFacade.delete(apiKeyId);
             return new ApiKeyDeletedResponse();
-        } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
+        } catch (ApiKeyFacade.ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundResponse();
         }
     }

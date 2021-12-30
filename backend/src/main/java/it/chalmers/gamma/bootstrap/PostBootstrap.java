@@ -43,7 +43,7 @@ public class PostBootstrap {
                                         mockPost.postName().sv(),
                                         mockPost.postName().en()
                                 ),
-                                EmailPrefix.empty()
+                                EmailPrefix.none()
                         )
                 )
         );

@@ -17,11 +17,11 @@ import java.util.List;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 import static org.assertj.core.api.Assertions.assertThat;
-import static it.chalmers.gamma.DomainFactory.*;
+import static it.chalmers.gamma.DomainUtils.*;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
-class GoldappsFacadeTest {
+class GoldappsFacadeUnitTest {
 
     @Mock
     private AccessGuard accessGuard;

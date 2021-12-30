@@ -1,8 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.DataIntegrityErrorState;
+import it.chalmers.gamma.adapter.secondary.jpa.util.DataIntegrityViolationHelper;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +25,15 @@ public class PostRepositoryAdapter implements PostRepository {
 
     @Override
     public void save(Post post) {
-        this.repository.save(this.postEntityConverter.toEntity(post));
+        try {
+            this.repository.save(this.postEntityConverter.toEntity(post));
+        } catch (DataIntegrityViolationException e) {
+            DataIntegrityErrorState state = DataIntegrityViolationHelper.getState(e);
+
+            System.out.println(state);
+
+            throw e;
+        }
     }
 
     @Override

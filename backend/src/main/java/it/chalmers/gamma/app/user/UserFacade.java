@@ -106,7 +106,7 @@ public class UserFacade extends Facade {
     }
 
     private List<UserGroupDTO> getUserGroups(UserId userId) {
-        return this.groupRepository.getGroupsByUser(userId)
+        return this.groupRepository.getAllByUser(userId)
                 .stream()
                 .map(UserGroupDTO::new)
                 .toList();

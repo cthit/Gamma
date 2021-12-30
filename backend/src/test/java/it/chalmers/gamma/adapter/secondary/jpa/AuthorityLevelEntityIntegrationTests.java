@@ -24,45 +24,46 @@ import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static it.chalmers.gamma.DomainFactory.addAll;
-import static it.chalmers.gamma.DomainFactory.alumni;
-import static it.chalmers.gamma.DomainFactory.board;
-import static it.chalmers.gamma.DomainFactory.chair;
-import static it.chalmers.gamma.DomainFactory.committee;
-import static it.chalmers.gamma.DomainFactory.didit;
-import static it.chalmers.gamma.DomainFactory.digit;
-import static it.chalmers.gamma.DomainFactory.digit18;
-import static it.chalmers.gamma.DomainFactory.digit19;
-import static it.chalmers.gamma.DomainFactory.emeritus;
-import static it.chalmers.gamma.DomainFactory.member;
-import static it.chalmers.gamma.DomainFactory.prit;
-import static it.chalmers.gamma.DomainFactory.prit18;
-import static it.chalmers.gamma.DomainFactory.prit19;
-import static it.chalmers.gamma.DomainFactory.sprit;
-import static it.chalmers.gamma.DomainFactory.styrit;
-import static it.chalmers.gamma.DomainFactory.styrit18;
-import static it.chalmers.gamma.DomainFactory.styrit19;
-import static it.chalmers.gamma.DomainFactory.treasurer;
-import static it.chalmers.gamma.DomainFactory.u0;
-import static it.chalmers.gamma.DomainFactory.u1;
-import static it.chalmers.gamma.DomainFactory.u10;
-import static it.chalmers.gamma.DomainFactory.u11;
-import static it.chalmers.gamma.DomainFactory.u2;
-import static it.chalmers.gamma.DomainFactory.u3;
-import static it.chalmers.gamma.DomainFactory.u4;
-import static it.chalmers.gamma.DomainFactory.u5;
-import static it.chalmers.gamma.DomainFactory.u6;
-import static it.chalmers.gamma.DomainFactory.u7;
-import static it.chalmers.gamma.DomainFactory.u8;
-import static it.chalmers.gamma.DomainFactory.u9;
+import static it.chalmers.gamma.DomainUtils.addAll;
+import static it.chalmers.gamma.DomainUtils.alumni;
+import static it.chalmers.gamma.DomainUtils.board;
+import static it.chalmers.gamma.DomainUtils.chair;
+import static it.chalmers.gamma.DomainUtils.committee;
+import static it.chalmers.gamma.DomainUtils.didit;
+import static it.chalmers.gamma.DomainUtils.digit;
+import static it.chalmers.gamma.DomainUtils.digit18;
+import static it.chalmers.gamma.DomainUtils.digit19;
+import static it.chalmers.gamma.DomainUtils.emeritus;
+import static it.chalmers.gamma.DomainUtils.member;
+import static it.chalmers.gamma.DomainUtils.prit;
+import static it.chalmers.gamma.DomainUtils.prit18;
+import static it.chalmers.gamma.DomainUtils.prit19;
+import static it.chalmers.gamma.DomainUtils.sprit;
+import static it.chalmers.gamma.DomainUtils.styrit;
+import static it.chalmers.gamma.DomainUtils.styrit18;
+import static it.chalmers.gamma.DomainUtils.styrit19;
+import static it.chalmers.gamma.DomainUtils.treasurer;
+import static it.chalmers.gamma.DomainUtils.u0;
+import static it.chalmers.gamma.DomainUtils.u1;
+import static it.chalmers.gamma.DomainUtils.u10;
+import static it.chalmers.gamma.DomainUtils.u11;
+import static it.chalmers.gamma.DomainUtils.u2;
+import static it.chalmers.gamma.DomainUtils.u3;
+import static it.chalmers.gamma.DomainUtils.u4;
+import static it.chalmers.gamma.DomainUtils.u5;
+import static it.chalmers.gamma.DomainUtils.u6;
+import static it.chalmers.gamma.DomainUtils.u7;
+import static it.chalmers.gamma.DomainUtils.u8;
+import static it.chalmers.gamma.DomainUtils.u9;
 import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.AUTHORITY;
 import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.GROUP;
 import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.SUPERGROUP;
@@ -86,6 +87,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         SuperGroupEntityConverter.class,
         UserEntityConverter.class,
         PostEntityConverter.class})
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AuthorityLevelEntityIntegrationTests {
 
     @Autowired
@@ -113,7 +116,7 @@ public class AuthorityLevelEntityIntegrationTests {
      * This is a very important test! If it fails, please stop.
      */
     @Test
-    public void getByUser_SuperTest() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
+    public void getByUser_SuperTest() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
         addAll(userRepository, u0, u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, u11);
         addAll(superGroupTypeRepository, committee, alumni, board);
         addAll(postRepository, chair, treasurer, member);
@@ -380,7 +383,7 @@ public class AuthorityLevelEntityIntegrationTests {
     }
 
     @Test
-    public void TestAuthorityLevelEntityEqualsAndHashcode() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
+    public void TestAuthorityLevelEntityEqualsAndHashcode() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
         AuthorityLevel a1 = new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 List.of(new AuthorityLevel.SuperGroupPost(digit, chair)),
@@ -395,6 +398,7 @@ public class AuthorityLevelEntityIntegrationTests {
                 List.of(u1, u2)
         );
 
+        addAll(superGroupTypeRepository, committee, alumni);
         addAll(superGroupRepository, digit, didit, sprit, emeritus);
         addAll(userRepository, u1, u2, u8, u9);
 

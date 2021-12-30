@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "itclient")
-public class ClientEntity extends ImmutableEntity<ClientUid> {
+public class ClientEntity extends ImmutableEntity<UUID> {
 
     @Id
     @Column(name = "client_uid")
@@ -53,8 +53,8 @@ public class ClientEntity extends ImmutableEntity<ClientUid> {
     }
 
     @Override
-    public ClientUid getId() {
-        return new ClientUid(this.clientUid);
+    public UUID getId() {
+        return this.clientUid;
     }
 
 }

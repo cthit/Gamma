@@ -10,17 +10,24 @@ import java.util.Optional;
 
 public interface GroupRepository {
 
-    void save(Group group);
+    void save(Group group)
+            throws GroupAlreadyExistsException, SuperGroupNotFoundRuntimeException,
+            UserNotFoundRuntimeException, PostNotFoundRuntimeException;
     void delete(GroupId groupId) throws GroupNotFoundException;
 
     List<Group> getAll();
     List<Group> getAllBySuperGroup(SuperGroupId superGroupId);
     List<Group> getAllByPost(PostId postId);
 
-    List<UserMembership> getGroupsByUser(UserId userId);
+    List<UserMembership> getAllByUser(UserId userId);
 
     Optional<Group> get(GroupId groupId);
 
     class GroupNotFoundException extends Exception { }
+    class GroupAlreadyExistsException extends Exception { }
+
+    class SuperGroupNotFoundRuntimeException extends RuntimeException { }
+    class UserNotFoundRuntimeException extends RuntimeException { }
+    class PostNotFoundRuntimeException extends RuntimeException { }
 
 }

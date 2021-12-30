@@ -59,10 +59,14 @@ public class ApiKeyFacade extends Facade {
         return apiKeyToken.value();
     }
 
-    public void delete(UUID apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
+    public void delete(UUID apiKeyId) throws ApiKeyNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        apiKeyRepository.delete(new ApiKeyId(apiKeyId));
+        try {
+            apiKeyRepository.delete(new ApiKeyId(apiKeyId));
+        } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundException();
+        }
     }
 
     public record ApiKeyDTO(UUID id,
@@ -95,11 +99,18 @@ public class ApiKeyFacade extends Facade {
                 .toList();
     }
 
-    public String resetApiKeyToken(UUID apiKeyId) throws ApiKeyRepository.ApiKeyNotFoundException {
+    public String resetApiKeyToken(UUID apiKeyId) throws ApiKeyNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        ApiKeyToken token = this.apiKeyRepository.resetApiKeyToken(new ApiKeyId(apiKeyId));
+        ApiKeyToken token;
+        try {
+            token = this.apiKeyRepository.resetApiKeyToken(new ApiKeyId(apiKeyId));
+        } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
+            throw new ApiKeyNotFoundException();
+        }
         return token.value();
     }
+
+    public static class ApiKeyNotFoundException extends Exception { }
 
 }

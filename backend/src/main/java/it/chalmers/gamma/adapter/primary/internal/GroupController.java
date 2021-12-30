@@ -22,8 +22,8 @@ public final class GroupController {
     }
 
     @GetMapping()
-    public List<GroupFacade.GroupWithMembersDTO> getGroups() {
-        return this.groupFacade.getAllWithMembers();
+    public List<GroupFacade.GroupDTO> getGroups() {
+        return this.groupFacade.getAll();
     }
 
     @GetMapping("/{id}")

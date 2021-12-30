@@ -8,7 +8,7 @@ public record EmailPrefix(String value) {
         }
     }
 
-    public static EmailPrefix empty() {
+    public static EmailPrefix none() {
         return new EmailPrefix("");
     }
 }

@@ -130,7 +130,7 @@ public class MeFacade extends Facade {
             throw new IllegalCallerException("Can only be called by signed in sessions");
         }
 
-        List<UserMembership> groups = this.groupRepository.getGroupsByUser(user.id());
+        List<UserMembership> groups = this.groupRepository.getAllByUser(user.id());
         List<UserAuthority> authorities = this.authorityLevelRepository.getByUser(user.id());
 
         return new MeDTO(user, groups, authorities, settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user));

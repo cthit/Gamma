@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.client.domain;
 
-public record WebServerRedirectUrl(String value) {
+public record RedirectUrl(String value) {
 
-    public WebServerRedirectUrl {
+    public RedirectUrl {
         if (value == null) {
             throw new NullPointerException();
         }

@@ -1,13 +1,14 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.domain.Name;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class SuperGroupEntityConverter {
@@ -19,10 +20,14 @@ public class SuperGroupEntityConverter {
     }
 
     public SuperGroupEntity toEntity(SuperGroup superGroup) {
-        SuperGroupEntity superGroupEntity = this.superGroupJpaRepository.findById(superGroup.id().value())
-                .orElse(new SuperGroupEntity());
-
-        superGroupEntity.throwIfNotValidVersion(superGroup.version());
+        Optional<SuperGroupEntity> maybeSuperGroupEntity = this.superGroupJpaRepository.findById(superGroup.id().value());
+        SuperGroupEntity superGroupEntity;
+        if (maybeSuperGroupEntity.isPresent()) {
+            superGroupEntity = maybeSuperGroupEntity.get();
+            superGroupEntity.increaseVersion(superGroup.version());
+        } else {
+            superGroupEntity = new SuperGroupEntity();
+        }
 
         superGroupEntity.id = superGroup.id().value();
         superGroupEntity.superGroupType = superGroup.type().value();

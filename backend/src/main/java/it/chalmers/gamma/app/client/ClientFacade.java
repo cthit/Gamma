@@ -5,12 +5,11 @@ import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.client.domain.WebServerRedirectUrl;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
@@ -48,7 +47,12 @@ public class ClientFacade extends Facade {
                             List<String> restrictions,
                             boolean emailScope) { }
 
-    public record ClientAndApiKeySecrets(String clientSecret, String apiKeyToken) { }
+    public record ClientAndApiKeySecrets(
+            UUID clientUid,
+            String clientId,
+            String clientSecret,
+            String apiKeyToken
+    ) { }
 
     /**
      * @return The client secret for the client
@@ -83,12 +87,15 @@ public class ClientFacade extends Facade {
             scopes.add(Scope.EMAIL);
         }
 
+        ClientUid clientUid = ClientUid.generate();
+        ClientId clientId = ClientId.generate();
+
         this.clientRepository.save(
                 new Client(
-                        ClientUid.generate(),
-                        ClientId.generate(),
+                        clientUid,
+                        clientId,
                         clientSecret,
-                        new WebServerRedirectUrl(newClient.webServerRedirectUrl),
+                        new RedirectUrl(newClient.webServerRedirectUrl),
                         new PrettyName(newClient.prettyName),
                         new Text(
                                 newClient.svDescription,
@@ -100,13 +107,22 @@ public class ClientFacade extends Facade {
                         apiKey
                 )
         );
-        return new ClientAndApiKeySecrets(clientSecret.value(), apiKeyToken == null ? null : apiKeyToken.value());
+        return new ClientAndApiKeySecrets(
+                clientUid.value(),
+                clientId.value(),
+                clientSecret.value(),
+                apiKeyToken == null ? null : apiKeyToken.value()
+        );
     }
 
-    public void delete(String clientUid) throws ClientRepository.ClientNotFoundException {
+    public void delete(String clientUid) throws ClientFacade.ClientNotFoundException {
         this.accessGuard.require(isAdmin());
 
-        this.clientRepository.delete(ClientUid.valueOf(clientUid));
+        try {
+            this.clientRepository.delete(ClientUid.valueOf(clientUid));
+        } catch (ClientRepository.ClientNotFoundException e) {
+            throw new ClientFacade.ClientNotFoundException();
+        }
     }
 
     public record ClientDTO(UUID clientUid,
@@ -121,7 +137,7 @@ public class ClientFacade extends Facade {
         public ClientDTO(Client client) {
             this(client.clientUid().value(),
                     client.clientId().value(),
-                    client.webServerRedirectUrl().value(),
+                    client.redirectUrl().value(),
                     client.prettyName().value(),
                     client.description().sv().value(),
                     client.description().en().value(),

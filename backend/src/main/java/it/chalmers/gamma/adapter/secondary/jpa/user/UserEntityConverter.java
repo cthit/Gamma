@@ -52,6 +52,8 @@ public class UserEntityConverter {
         UserEntity e = this.userJpaRepository.findById(d.id().value())
                 .orElse(new UserEntity());
 
+//        e.increaseVersion(d.version());
+
         e.id = d.id().value();
         e.cid = d.cid().value();
         e.acceptanceYear = d.acceptanceYear().value();

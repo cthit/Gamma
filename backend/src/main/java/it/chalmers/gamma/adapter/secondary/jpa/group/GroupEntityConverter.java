@@ -45,17 +45,20 @@ public class GroupEntityConverter {
     }
 
     public GroupEntity toEntity(Group group) {
-        GroupEntity entity = this.groupJpaRepository.findById(group.id().value())
-                .orElse(new GroupEntity());
+        Optional<GroupEntity> maybeEntity = this.groupJpaRepository.findById(group.id().value());
+        GroupEntity entity;
 
-        //TODO: Use this everywhere when converting to an entity
-        //Is this even the correct place? Maybe should be in adapters
-        entity.throwIfNotValidVersion(group.version());
+        if (maybeEntity.isPresent()) {
+            entity = maybeEntity.get();
+            entity.increaseVersion(group.version());
+        } else {
+            entity = new GroupEntity();
+        }
 
         entity.id = group.id().getValue();
         entity.name = group.name().value();
         entity.prettyName = group.prettyName().value();
-        entity.superGroup = superGroupJpaRepository.getOne(group.superGroup().id().value());
+        entity.superGroup = superGroupJpaRepository.getById(group.superGroup().id().value());
 
         if (entity.members == null) {
             entity.members = new ArrayList<>();
@@ -66,9 +69,9 @@ public class GroupEntityConverter {
                 .stream()
                 .map(groupMember -> new MembershipEntity(
                         new MembershipPK(
-                                this.postJpaRepository.getOne(groupMember.post().id().value()),
+                                this.postJpaRepository.getById(groupMember.post().id().value()),
                                 entity,
-                                this.userJpaRepository.getOne(groupMember.user().id().value())),
+                                this.userJpaRepository.getById(groupMember.user().id().value())),
                         groupMember.unofficialPostName().value()
                 )).toList());
 

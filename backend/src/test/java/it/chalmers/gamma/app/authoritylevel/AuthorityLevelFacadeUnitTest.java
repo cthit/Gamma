@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.DomainFactory.*;
+import static it.chalmers.gamma.DomainUtils.*;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
@@ -117,7 +117,7 @@ class AuthorityLevelFacadeUnitTest {
     }
 
     @Test
-    public void Given_VariousInvalidNames_Expect_delete_To_Throw() {
+    public void Given_VariousInvalidNames_Expect_delete_To_Throw() throws AuthorityLevelRepository.AuthorityLevelNotFoundException {
         assertThatNullPointerException()
                 .isThrownBy(() -> authorityLevelFacade.delete(null));
 
@@ -136,6 +136,14 @@ class AuthorityLevelFacadeUnitTest {
         //Illegal characters
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> authorityLevelFacade.delete("ö$a"));
+
+        //Legal name, but doesn't exist
+
+        doThrow(AuthorityLevelRepository.AuthorityLevelNotFoundException.class)
+                .when(authorityLevelRepository).delete(any());
+
+        assertThatExceptionOfType(AuthorityLevelFacade.AuthorityLevelNotFoundException.class)
+                .isThrownBy(() -> authorityLevelFacade.delete("hello"));
     }
 
     @Test

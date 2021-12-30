@@ -1,23 +1,36 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
-import it.chalmers.gamma.app.common.Id;
+
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 
 @MappedSuperclass
 public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
 
-    @Version
+    protected MutableEntity() {
+        this.version = 0;
+    }
+
+    /**
+     * It is the responsibility of each entity converter to manage the version.
+     * Not using @javax.persistence.Version since it doesn't handle foreign keys
+     * such as members for a group.
+     */
     @Column(name = "version")
     private int version;
 
-    //TODO: Better exception
-    public void throwIfNotValidVersion(int version) {
-        if (this.version != version) {
+    /**
+     * If not the correct version is provided, then the data
+     * that is being tried to be converted is outdated.
+     */
+    public void increaseVersion(int currentVersion) {
+        if (this.version != currentVersion) {
             throw new StaleDomainObjectException();
         }
+
+        this.version++;
     }
 
     public int getVersion() {

@@ -30,13 +30,15 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Helper functions
  */
-public final class DomainFactory {
+public final class DomainUtils {
 
     public static SuperGroup sg(String name, SuperGroupType type) {
         return new SuperGroup(
@@ -63,9 +65,13 @@ public final class DomainFactory {
     }
 
     public static GroupMember gm(User u, Post p) {
+        return gm(u, p, UnofficialPostName.none());
+    }
+
+    public static GroupMember gm(User u, Post p, UnofficialPostName unofficialPostName) {
         return new GroupMember(
                 p,
-                new UnofficialPostName(""),
+                unofficialPostName,
                 u
         );
     }
@@ -125,7 +131,7 @@ public final class DomainFactory {
                     "Ledamot",
                     "Member"
             ),
-            EmailPrefix.empty()
+            EmailPrefix.none()
     );
 
     public static SuperGroup digit = sg("digit", committee);
@@ -150,16 +156,21 @@ public final class DomainFactory {
     public static User u10 = u("abcj");
     public static User u11 = u("abck");
 
-    public static Group digit18 = g("digit18", didit, List.of(gm(u1, chair), gm(u2, treasurer)));
+    public static Group digit17 = g("digit17", didit, List.of(gm(u11, chair), gm(u2, treasurer), gm(u4, member)));
+    public static Group digit18 = g("digit18", didit, List.of(gm(u1, chair, new UnofficialPostName("root")), gm(u2, treasurer)));
     public static Group digit19 = g("digit19", digit, List.of(gm(u3, chair), gm(u4, member), gm(u2, member)));
-    public static Group prit18 = g("prit18", sprit, List.of(gm(u1, chair), gm(u1, treasurer), gm(u2, member)));
-    public static Group prit19 = g("prit19", prit, List.of(gm(u5, chair), gm(u6, treasurer), gm(u6, member)));
+    public static Group prit18 = g("prit18", sprit, List.of(gm(u1, chair, new UnofficialPostName("ChefChef")), gm(u1, treasurer), gm(u2, member)));
+    public static Group prit19 = g("prit19", prit, List.of(gm(u5, chair), gm(u6, treasurer, new UnofficialPostName("Kas$$Chef")), gm(u6, member)));
     public static Group drawit18 = g("drawit18", dragit, List.of(gm(u6, chair)));
     public static Group drawit19 = g("drawit19", drawit, List.of(gm(u1, chair), gm(u11, member)));
     public static Group styrit18 = g("styrit18", emeritus, List.of(gm(u7, chair), gm(u8, member), gm(u9, member)));
     public static Group styrit19 = g("styrit19", styrit, List.of(gm(u10, chair), gm(u11, treasurer)));
 
     public static void addAll(UserRepository userRepository, User... users) {
+        addAll(userRepository, List.of(users));
+    }
+
+    public static void addAll(UserRepository userRepository, List<User> users) {
         for (User user : users) {
             userRepository.save(user);
         }
@@ -167,17 +178,22 @@ public final class DomainFactory {
 
     public static void addAll(SuperGroupRepository superGroupRepository, SuperGroup... superGroups) {
         for (SuperGroup superGroup : superGroups) {
+            System.out.println(superGroup);
             superGroupRepository.save(superGroup);
         }
     }
 
-    public static void addAll(GroupRepository groupRepository, Group... groups) {
+    public static void addAll(GroupRepository groupRepository, Group... groups) throws GroupRepository.GroupAlreadyExistsException {
         for (Group group : groups) {
             groupRepository.save(group);
         }
     }
 
     public static void addAll(PostRepository postRepository, Post... posts) {
+        addAll(postRepository, List.of(posts));
+    }
+
+    public static void addAll(PostRepository postRepository, List<Post> posts) {
         for (Post post : posts) {
             postRepository.save(post);
         }
@@ -186,6 +202,44 @@ public final class DomainFactory {
     public static void addAll(SuperGroupTypeRepository superGroupTypeRepository, SuperGroupType... types) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
         for (SuperGroupType type : types) {
             superGroupTypeRepository.add(type);
+        }
+    }
+
+    public static void addGroup(SuperGroupTypeRepository superGroupTypeRepository,
+                                SuperGroupRepository superGroupRepository,
+                                UserRepository userRepository,
+                                PostRepository postRepository,
+                                GroupRepository groupRepository,
+                                Group... groups)
+            throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+        Set<SuperGroupType> types = new HashSet<>();
+        Set<SuperGroup> superGroups = new HashSet<>();
+        Set<Post> posts = new HashSet<>();
+        Set<User> users = new HashSet<>();
+
+        for (Group group : groups) {
+            types.add(group.superGroup().type());
+            superGroups.add(group.superGroup());
+            group.groupMembers().forEach(groupMember -> {
+                posts.add(groupMember.post());
+                users.add(groupMember.user());
+            });
+        }
+
+        for (SuperGroupType type : types) {
+            superGroupTypeRepository.add(type);
+        }
+        for (SuperGroup superGroup : superGroups) {
+            superGroupRepository.save(superGroup);
+        }
+        for (Post post : posts) {
+            postRepository.save(post);
+        }
+        for (User user : users) {
+            userRepository.save(user);
+        }
+        for (Group group : groups) {
+            groupRepository.save(group);
         }
     }
 

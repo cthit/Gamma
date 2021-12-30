@@ -11,7 +11,7 @@ import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.client.domain.WebServerRedirectUrl;
+import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -188,7 +188,7 @@ class AccessGuardTest {
             ClientUid.generate(),
             ClientId.generate(),
             ClientSecret.generate(),
-            new WebServerRedirectUrl("https://mat.chalmers.it"),
+            new RedirectUrl("https://mat.chalmers.it"),
             new PrettyName("Mat client"),
             new Text(
                     "Det här är mat klienten",

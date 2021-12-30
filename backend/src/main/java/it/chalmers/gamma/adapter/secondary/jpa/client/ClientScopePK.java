@@ -35,7 +35,7 @@ public class ClientScopePK extends PKId<ClientScopePK.ClientScopePKDTO> {
     @Override
     public ClientScopePKDTO getValue() {
         return new ClientScopePKDTO(
-                this.client.getId(),
+                new ClientUid(this.client.getId()),
                 this.scope
         );
     }

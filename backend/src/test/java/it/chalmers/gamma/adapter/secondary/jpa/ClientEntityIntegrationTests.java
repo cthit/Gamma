@@ -15,24 +15,26 @@ import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.client.domain.WebServerRedirectUrl;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.DomainFactory.addAll;
-import static it.chalmers.gamma.DomainFactory.u1;
-import static it.chalmers.gamma.DomainFactory.u2;
+import static it.chalmers.gamma.DomainUtils.addAll;
+import static it.chalmers.gamma.DomainUtils.u1;
+import static it.chalmers.gamma.DomainUtils.u2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -43,6 +45,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         UserRepositoryAdapter.class,
         UserEntityConverter.class,
         ApiKeyEntityConverter.class})
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ClientEntityIntegrationTests {
 
     @Autowired
@@ -58,7 +62,7 @@ public class ClientEntityIntegrationTests {
                 uid,
                 ClientId.generate(),
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",
@@ -85,7 +89,7 @@ public class ClientEntityIntegrationTests {
                 uid,
                 ClientId.generate(),
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",
@@ -123,7 +127,7 @@ public class ClientEntityIntegrationTests {
                 uid,
                 ClientId.generate(),
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",
@@ -150,7 +154,7 @@ public class ClientEntityIntegrationTests {
                 uid,
                 ClientId.generate(),
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",
@@ -177,7 +181,7 @@ public class ClientEntityIntegrationTests {
                 uid,
                 ClientId.generate(),
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",
@@ -215,7 +219,7 @@ public class ClientEntityIntegrationTests {
                 uid,
                 ClientId.generate(),
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",
@@ -251,7 +255,7 @@ public class ClientEntityIntegrationTests {
                 ClientUid.generate(),
                 clientId,
                 ClientSecret.generate(),
-                new WebServerRedirectUrl("https://mat.chalmers.it"),
+                new RedirectUrl("https://mat.chalmers.it"),
                 new PrettyName("Mat"),
                 new Text(
                         "Klient för mat",

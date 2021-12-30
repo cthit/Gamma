@@ -72,7 +72,8 @@ dependencies {
             "org.apache.httpcomponents:httpmime:4.5.12",
             "io.soabase.record-builder:record-builder-core:${recordBuilderVersion}",
              "javax.servlet:servlet-api:2.5",
-             "javax.servlet:javax.servlet-api:4.0.1"
+             "javax.servlet:javax.servlet-api:4.0.1",
+             "org.postgresql:postgresql:42.2.24"
     )
 
     runtimeOnly(
@@ -82,21 +83,23 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-data-redis:2.5.5",
             "org.springframework.session:spring-session-data-redis:2.5.2",
             "org.springframework.boot:spring-boot-starter-thymeleaf:2.5.5",
-            "org.postgresql:postgresql:42.2.24",
             "org.flywaydb:flyway-core:7.14.1"
     )
 
     testImplementation(
-            "org.springframework:spring-test:5.3.10",
+            "org.springframework.boot:spring-boot-starter-test:2.6.1",
             "org.springframework.security:spring-security-test:5.5.1",
-            "org.springframework.boot:spring-boot-test-autoconfigure:2.5.5",
-            "org.springframework.boot:spring-boot-starter-test:2.5.5",
-            "com.tngtech.archunit:archunit:0.21.0",
+            "org.testcontainers:junit-jupiter:1.16.2",
+            "org.testcontainers:postgresql",
+            "com.tngtech.archunit:archunit:0.22.0",
+            "org.flywaydb:flyway-core:7.14.1"
     )
+}
 
-    testRuntimeOnly(
-            "com.h2database:h2:1.4.200",
-    )
+dependencyManagement {
+    imports {
+        mavenBom "org.testcontainers:testcontainers-bom:1.16.2"
+    }
 }
 
 test {

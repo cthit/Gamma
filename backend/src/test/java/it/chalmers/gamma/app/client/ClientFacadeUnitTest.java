@@ -9,8 +9,8 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.client.domain.WebServerRedirectUrl;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import org.assertj.core.api.Assertions;
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -72,7 +73,7 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new WebServerRedirectUrl(newClient.webServerRedirectUrl()),
+                new RedirectUrl(newClient.webServerRedirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
@@ -126,7 +127,7 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new WebServerRedirectUrl(newClient.webServerRedirectUrl()),
+                new RedirectUrl(newClient.webServerRedirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
@@ -188,7 +189,7 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new WebServerRedirectUrl(newClient.webServerRedirectUrl()),
+                new RedirectUrl(newClient.webServerRedirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
@@ -235,7 +236,7 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new WebServerRedirectUrl(newClient.webServerRedirectUrl()),
+                new RedirectUrl(newClient.webServerRedirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
@@ -252,7 +253,7 @@ class ClientFacadeUnitTest {
     }
 
     @Test
-    public void Given_AValidClientUID_Expect_delete_To_NotThrow() throws ClientRepository.ClientNotFoundException {
+    public void Given_AValidClientUID_Expect_delete_To_NotThrow() throws ClientFacade.ClientNotFoundException, ClientRepository.ClientNotFoundException {
         ClientUid clientUid = ClientUid.generate();
 
         this.clientFacade.delete(clientUid.value().toString());
@@ -270,6 +271,15 @@ class ClientFacadeUnitTest {
         inOrder.verify(accessGuard).require(isAdmin());
         inOrder.verify(clientRepository).delete(any());
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void Given_InvalidClient_Expect_delete_To_Throw() throws ClientRepository.ClientNotFoundException {
+        doThrow(ClientRepository.ClientNotFoundException.class)
+                .when(clientRepository).delete(any());
+
+        assertThatExceptionOfType(ClientFacade.ClientNotFoundException.class)
+                .isThrownBy(() -> this.clientFacade.delete(ClientUid.generate().getValue()));
     }
 
 }

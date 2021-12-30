@@ -13,9 +13,11 @@ import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -23,6 +25,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @ActiveProfiles("test")
 @DataJpaTest
 @Import({ApiKeyRepositoryAdapter.class, ApiKeyEntityConverter.class})
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ApiKeyEntityIntegrationTests {
 
     @Autowired
@@ -136,9 +140,8 @@ class ApiKeyEntityIntegrationTests {
 
     @Test
     public void Given_NoApiKeys_Expect_resetApiKeyToken_To_Throw() {
-        ApiKeyId id = ApiKeyId.generate();
         assertThatExceptionOfType(ApiKeyRepository.ApiKeyNotFoundException.class)
-                .isThrownBy(() -> apiKeyRepositoryAdapter.resetApiKeyToken(id));
+                .isThrownBy(() -> apiKeyRepositoryAdapter.resetApiKeyToken(ApiKeyId.generate()));
     }
 
     @Test

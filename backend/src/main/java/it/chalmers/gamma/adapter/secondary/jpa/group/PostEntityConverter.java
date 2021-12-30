@@ -6,6 +6,8 @@ import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PostEntityConverter {
 
@@ -16,10 +18,15 @@ public class PostEntityConverter {
     }
 
     public PostEntity toEntity(Post post) {
-        PostEntity postEntity = this.postJpaRepository.findById(post.id().value())
-                .orElse(new PostEntity());
+        Optional<PostEntity> maybePostEntity = this.postJpaRepository.findById(post.id().value());
+        PostEntity postEntity;
 
-        postEntity.throwIfNotValidVersion(post.version());
+        if (maybePostEntity.isPresent()) {
+            postEntity = maybePostEntity.get();
+            postEntity.increaseVersion(post.version());
+        } else {
+            postEntity = new PostEntity();
+        }
 
         postEntity.id = post.id().value();
         postEntity.emailPrefix = post.emailPrefix().value();

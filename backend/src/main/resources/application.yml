@@ -2,7 +2,7 @@ spring:
   datasource:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:example}
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}
+    url: jdbc:postgresql://${embedded.postgresql.host}:${embedded.postgresql.port}/${embedded.postgresql.schema}
   flyway:
     baseline-on-migrate: true
     locations: classpath:/db/migration

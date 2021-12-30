@@ -32,7 +32,7 @@ public class GroupEntity extends MutableEntity<UUID> {
     @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     protected GroupImagesEntity groupImages;
 
-    protected GroupEntity() { }
+    protected GroupEntity() {}
 
     protected List<MembershipEntity> getMembers() {
         return members;

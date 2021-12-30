@@ -5,8 +5,8 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.client.domain.WebServerRedirectUrl;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -66,7 +66,7 @@ public class ClientBootstrap {
                         clientUid,
                         clientId,
                         clientSecret,
-                        new WebServerRedirectUrl(redirectUrl),
+                        new RedirectUrl(redirectUrl),
                         prettyName,
                         new Text(),
                         new ArrayList<>(),

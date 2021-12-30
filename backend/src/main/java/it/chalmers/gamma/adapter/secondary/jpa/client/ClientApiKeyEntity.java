@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "itclient_apikey")
-public class ClientApiKeyEntity extends ImmutableEntity<ClientUid> {
+public class ClientApiKeyEntity extends ImmutableEntity<UUID> {
 
     @Id
     @Column(name = "client_uid")
@@ -41,8 +41,8 @@ public class ClientApiKeyEntity extends ImmutableEntity<ClientUid> {
     }
 
     @Override
-    public ClientUid getId() {
-        return this.client.getId();
+    public UUID getId() {
+        return this.clientUid;
     }
 
     public ClientEntity getClient() {

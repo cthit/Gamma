@@ -29,13 +29,22 @@ public final class MembershipAdminController {
     @PutMapping("/{groupId}/members")
     public EditedMembershipResponse editMembers(@PathVariable("groupId") UUID groupId,
                                                     @RequestBody List<Member> members) {
-        this.groupFacade.setGroupMembers(groupId, members.stream().map(member -> new GroupFacade.ShallowMember(
-                member.userId, member.postId, member.unofficialPostName
-        )).toList());
+        try {
+            this.groupFacade.setMembers(groupId, members.stream().map(member -> new GroupFacade.ShallowMember(
+                    member.userId, member.postId, member.unofficialPostName
+            )).toList());
+        } catch (GroupFacade.GroupNotFoundRuntimeException e) {
+            throw new GroupNotFoundResponse();
+        }
+
         return new EditedMembershipResponse();
     }
 
+    private static class GroupNotFoundResponse extends NotFoundResponse { }
+
     private static class EditedMembershipResponse extends SuccessResponse { }
 
-    private static class MembershipNotFoundResponse extends NotFoundResponse { }
+    private static class PostNotFoundResponse extends NotFoundResponse { }
+
+    private static class UserNotFoundResponse extends NotFoundResponse { }
 }

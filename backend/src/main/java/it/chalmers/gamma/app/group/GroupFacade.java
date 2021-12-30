@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.group;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.UnexpectedRuntimeException;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
@@ -21,8 +22,11 @@ import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +39,8 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 
 @Service
 public class GroupFacade extends Facade {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GroupFacade.class);
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
@@ -57,10 +63,10 @@ public class GroupFacade extends Facade {
 
     public record NewGroup(String name,
                            String prettyName,
-                           UUID superGroup,
-                           String email) { }
+                           UUID superGroup) { }
 
-    public void createGroup(NewGroup newGroup) {
+    @Transactional
+    public void create(NewGroup newGroup) throws GroupAlreadyExistsException {
         accessGuard.require(isAdmin());
 
         Group group = new Group(
@@ -68,60 +74,88 @@ public class GroupFacade extends Facade {
                 0,
                 new Name(newGroup.name),
                 new PrettyName(newGroup.prettyName),
-                this.superGroupRepository.get(new SuperGroupId(newGroup.superGroup)).orElseThrow(),
+                this.superGroupRepository.get(new SuperGroupId(newGroup.superGroup))
+                        .orElseThrow(SuperGroupNotFoundRuntimeException::new),
                 new ArrayList<>(),
                 Optional.empty(),
                 Optional.empty()
         );
-        this.groupRepository.save(group);
+
+        try {
+            this.groupRepository.save(group);
+        } catch (GroupRepository.GroupAlreadyExistsException e) {
+            throw new GroupAlreadyExistsException();
+        }
     }
 
     public record UpdateGroup(UUID id,
                               int version,
                               String name,
                               String prettyName,
-                              UUID superGroup,
-                              String email) {
+                              UUID superGroup) { }
 
-    }
-
-    public void updateGroup(UpdateGroup updateGroup) {
+    @Transactional
+    public void update(UpdateGroup updateGroup) throws GroupAlreadyExistsException {
         accessGuard.require(isAdmin());
 
         GroupId groupId = new GroupId(updateGroup.id);
-        Group oldGroup = this.groupRepository.get(groupId).orElseThrow();
+        Group oldGroup = this.groupRepository.get(groupId)
+                .orElseThrow(GroupNotFoundRuntimeException::new);
         Group newGroup = oldGroup.with()
                 .version(updateGroup.version)
                 .name(new Name(updateGroup.name))
                 .prettyName(new PrettyName(updateGroup.prettyName))
-                .superGroup(this.superGroupRepository.get(new SuperGroupId(updateGroup.superGroup)).orElseThrow())
+                .superGroup(this.superGroupRepository.get(new SuperGroupId(updateGroup.superGroup))
+                        .orElseThrow(SuperGroupNotFoundRuntimeException::new))
                 .build();
 
-        this.groupRepository.save(newGroup);
+        try {
+            this.groupRepository.save(newGroup);
+        } catch (GroupRepository.GroupAlreadyExistsException e) {
+            throw new GroupAlreadyExistsException();
+        }
     }
 
-    public record ShallowMember(UUID userId, UUID postId, String unofficialPostName) {
-    }
+    public record ShallowMember(UUID userId, UUID postId, String unofficialPostName) { }
 
-    public void setGroupMembers(UUID groupId, List<ShallowMember> newMembers) {
+    @Transactional
+    public void setMembers(UUID groupId, List<ShallowMember> newMembers) throws GroupNotFoundRuntimeException {
         accessGuard.require(isAdmin());
 
-        Group oldGroup = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
-        this.groupRepository.save(oldGroup.withGroupMembers(
-                newMembers.stream().map(shallowMember ->
-                        new GroupMember(
-                                this.postRepository.get(new PostId(shallowMember.postId)).orElseThrow(),
-                                new UnofficialPostName(shallowMember.unofficialPostName),
-                                this.userRepository.get(new UserId(shallowMember.userId)).orElseThrow()
-                        )
-                ).toList()
-        ));
+        Group oldGroup = this.groupRepository.get(new GroupId(groupId))
+                .orElseThrow(GroupNotFoundRuntimeException::new);
+
+        List<GroupMember> newGroupMembers = new ArrayList<>();
+
+        for (ShallowMember shallowMember : newMembers) {
+            newGroupMembers.add(new GroupMember(
+                            this.postRepository.get(new PostId(shallowMember.postId))
+                                    .orElseThrow(PostNotFoundRuntimeException::new),
+                            new UnofficialPostName(shallowMember.unofficialPostName == null ? "" : shallowMember.unofficialPostName),
+                            this.userRepository.get(new UserId(shallowMember.userId))
+                                    .orElseThrow(UserNotFoundRuntimeException::new)
+                    )
+            );
+        }
+
+        try {
+            this.groupRepository.save(oldGroup.withGroupMembers(newGroupMembers));
+        } catch (GroupRepository.GroupAlreadyExistsException e) {
+            //Unexpected error since it can only be thrown if id or name is the same as any other group.
+            LOGGER.error("GroupAlreadyExistsException when just trying to update withGroupMembers", e);
+            throw new UnexpectedRuntimeException();
+        }
     }
 
-    public void delete(UUID id) throws GroupRepository.GroupNotFoundException {
+    @Transactional
+    public void delete(UUID id) throws GroupNotFoundRuntimeException {
         accessGuard.require(isAdmin());
 
-        this.groupRepository.delete(new GroupId(id));
+        try {
+            this.groupRepository.delete(new GroupId(id));
+        } catch (GroupRepository.GroupNotFoundException e) {
+            throw new GroupNotFoundRuntimeException();
+        }
     }
 
     public record GroupMemberDTO(UserFacade.UserDTO user, PostFacade.PostDTO post, String unofficialPostName) {
@@ -159,18 +193,12 @@ public class GroupFacade extends Facade {
     }
 
     public List<GroupDTO> getAll() {
-        accessGuard.require(isClientApi());
+        accessGuard.requireEither(isSignedIn(), isClientApi());
 
         return this.groupRepository.getAll().stream().map(GroupDTO::new).toList();
     }
 
-    public List<GroupWithMembersDTO> getAllWithMembers() {
-        accessGuard.require(isSignedIn());
-
-        return this.groupRepository.getAll().stream().map(GroupWithMembersDTO::new).toList();
-    }
-
-    public List<GroupWithMembersDTO> getAllForInfo() {
+    public List<GroupWithMembersDTO> getAllForInfoApi() {
         accessGuard.require(isApi(ApiKeyType.INFO));
 
         List<SuperGroupType> allowedSuperGroupType = this.settingsRepository.getSettings().infoSuperGroupTypes();
@@ -182,7 +210,7 @@ public class GroupFacade extends Facade {
                 .toList();
     }
 
-    public List<GroupWithMembersDTO> getGroupsBySuperGroup(UUID superGroupId) {
+    public List<GroupWithMembersDTO> getAllBySuperGroup(UUID superGroupId) {
         accessGuard.require(isSignedIn());
 
         return this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId))
@@ -190,5 +218,12 @@ public class GroupFacade extends Facade {
                 .map(GroupWithMembersDTO::new)
                 .toList();
     }
+
+    public static class GroupAlreadyExistsException extends Exception { }
+
+    public static class UserNotFoundRuntimeException extends RuntimeException { }
+    public static class PostNotFoundRuntimeException extends RuntimeException { }
+    public static class GroupNotFoundRuntimeException extends RuntimeException { }
+    public static class SuperGroupNotFoundRuntimeException extends RuntimeException { }
 
 }
