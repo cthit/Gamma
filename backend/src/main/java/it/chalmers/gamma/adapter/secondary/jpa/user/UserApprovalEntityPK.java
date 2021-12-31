@@ -14,8 +14,8 @@ public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApproval
 
     protected record UserApprovalPKDTO(UserId userId, ClientUid clientUid) {
 
-    }
 
+    }
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -33,6 +33,10 @@ public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApproval
 
     public UserEntity getUserEntity() {
         return this.user;
+    }
+
+    public ClientEntity getClientEntity() {
+        return this.client;
     }
 
     @Override

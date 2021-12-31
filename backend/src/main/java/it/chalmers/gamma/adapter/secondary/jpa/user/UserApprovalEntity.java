@@ -28,5 +28,9 @@ public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK> {
     public UserEntity getUserEntity() {
         return this.id.getUserEntity();
     }
+
+    public ClientEntity getClientEntity() {
+        return this.id.getClientEntity();
+    }
 }
 

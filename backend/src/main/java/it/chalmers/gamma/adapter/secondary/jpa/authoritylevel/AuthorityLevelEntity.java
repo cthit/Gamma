@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,7 +30,7 @@ public class AuthorityLevelEntity extends ImmutableEntity<String> {
 
     protected AuthorityLevelEntity() {}
 
-    protected AuthorityLevelEntity(String name) {
+    public AuthorityLevelEntity(String name) {
         this.authorityLevel = name;
         this.postEntityList = new ArrayList<>();
         this.userEntityList = new ArrayList<>();

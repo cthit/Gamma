@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
-public record DataIntegrityErrorState(String constraint, Type type) {
+
+public record PersistenceErrorState(String constraint, Type type) {
 
     public enum Type {
         NOT_UNIQUE("23505"), NOT_FOUND("23503"), IS_NULL("23502");

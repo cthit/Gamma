@@ -25,10 +25,10 @@ public class SettingsEntity extends MutableEntity<SettingsId> {
     private UUID id;
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    protected Instant updatedAt;
 
     @Column(name = "last_updated_user_agreement")
-    private Instant lastUpdatedUserAgreement;
+    protected Instant lastUpdatedUserAgreement;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "id.settings", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<SettingsInfoSuperGroupTypeEntity> infoSuperGroupTypeEntities;
@@ -49,21 +49,6 @@ public class SettingsEntity extends MutableEntity<SettingsId> {
                 this.infoSuperGroupTypeEntities
                         .stream()
                         .map(SettingsInfoSuperGroupTypeEntity::getSuperGroupType)
-                        .toList()
-        );
-    }
-
-    protected void apply(Settings settings) {
-        this.updatedAt = Instant.now();
-        this.lastUpdatedUserAgreement = settings.lastUpdatedUserAgreement();
-        this.infoSuperGroupTypeEntities.clear();
-        this.infoSuperGroupTypeEntities.addAll(
-                settings.infoSuperGroupTypes()
-                        .stream()
-                        .map(superGroupType -> new SettingsInfoSuperGroupTypeEntity(
-                                this,
-                                new SuperGroupTypeEntity(superGroupType)
-                        ))
                         .toList()
         );
     }

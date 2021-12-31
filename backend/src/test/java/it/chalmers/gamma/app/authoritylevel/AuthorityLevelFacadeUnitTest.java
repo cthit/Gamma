@@ -1,16 +1,16 @@
 package it.chalmers.gamma.app.authoritylevel;
 
-import it.chalmers.gamma.app.PostDTOAssert;
-import it.chalmers.gamma.app.SuperGroupDTOAssert;
-import it.chalmers.gamma.app.UserDTOAssert;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
@@ -611,20 +611,20 @@ class AuthorityLevelFacadeUnitTest {
                     .isEqualTo(authorityLevel.name().value());
 
             Assertions.assertThat(actual.superGroups()).zipSatisfy(authorityLevel.superGroups(), (actual, expected) ->
-                    SuperGroupDTOAssert.assertThat(actual)
-                            .isEqualTo(expected)
+                    Assertions.assertThat(actual)
+                            .isEqualTo(new SuperGroupFacade.SuperGroupDTO(expected))
             );
 
             Assertions.assertThat(actual.users()).zipSatisfy(authorityLevel.users(), (actual, expected) ->
-                    UserDTOAssert.assertThat(actual)
-                            .isEqualTo(expected)
+                    Assertions.assertThat(actual)
+                            .isEqualTo(new UserFacade.UserDTO(expected))
             );
 
             Assertions.assertThat(actual.posts()).zipSatisfy(authorityLevel.posts(), (actual, expected) -> {
-                SuperGroupDTOAssert.assertThat(actual.superGroup())
-                        .isEqualTo(expected.superGroup());
-                PostDTOAssert.assertThat(actual.post())
-                        .isEqualTo(expected.post());
+                Assertions.assertThat(actual.superGroup())
+                        .isEqualTo(new SuperGroupFacade.SuperGroupDTO(expected.superGroup()));
+                Assertions.assertThat(actual.post())
+                        .isEqualTo(new PostFacade.PostDTO(expected.post()));
             });
 
             return this;

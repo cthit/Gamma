@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.settings.domain.SettingsId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -17,18 +18,20 @@ public class SettingsInfoSuperGroupTypePK extends PKId<SettingsInfoSuperGroupTyp
     @JoinColumn(name = "settings_id")
     private SettingsEntity settings;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "super_group_type_name")
     private SuperGroupTypeEntity superGroupType;
 
-    protected SettingsInfoSuperGroupTypePK() {}
+    protected SettingsInfoSuperGroupTypePK() {
+    }
 
     protected SettingsInfoSuperGroupTypePK(SettingsEntity settingsEntity, SuperGroupTypeEntity superGroupTypeEntity) {
         this.settings = settingsEntity;
         this.superGroupType = superGroupTypeEntity;
     }
 
-    protected record SettingsInfoSuperGroupTypePKDTO(SettingsId settingsId, SuperGroupType superGroupType) { }
+    protected record SettingsInfoSuperGroupTypePKDTO(SettingsId settingsId, SuperGroupType superGroupType) {
+    }
 
     @Override
     public SettingsInfoSuperGroupTypePKDTO getValue() {
@@ -37,7 +40,6 @@ public class SettingsInfoSuperGroupTypePK extends PKId<SettingsInfoSuperGroupTyp
                 superGroupType.get()
         );
     }
-
 
 
 }

@@ -238,45 +238,4 @@ class ApiKeyEntityIntegrationTests {
                 .isEqualTo(apiKey);
     }
 
-    @Test
-    public void TestApiKeyEntityEqualsAndHashcode() {
-        ApiKey a1 = new ApiKey(
-                ApiKeyId.generate(),
-                new PrettyName("what"),
-                new Text(
-                        "lmao",
-                        "lmao"
-                ),
-                ApiKeyType.CLIENT,
-                ApiKeyToken.generate()
-        );
-
-        ApiKey a2 = new ApiKey(
-                ApiKeyId.generate(),
-                new PrettyName("hmmm"),
-                new Text(
-                        "lmao",
-                        "lmao"
-                ),
-                ApiKeyType.GOLDAPPS,
-                ApiKeyToken.generate()
-        );
-
-        ApiKeyEntity ake1 = this.apiKeyEntityConverter.toEntity(a1);
-        ApiKeyEntity ake2 = this.apiKeyEntityConverter.toEntity(a1);
-        ApiKeyEntity ake3 = this.apiKeyEntityConverter.toEntity(a2);
-
-        assertThat(ake1)
-                .isEqualTo(ake2);
-
-        assertThat(ake1)
-                .isNotEqualTo(ake3);
-
-        assertThat(ake1.hashCode())
-                .isEqualTo(ake2.hashCode());
-
-        assertThat(ake1.hashCode())
-                .isNotEqualTo(ake3.hashCode());
-    }
-
 }

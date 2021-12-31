@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.text;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.common.TextId;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
@@ -9,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "internal_text")
-public class TextEntity extends MutableEntity<TextId> {
+public class TextEntity extends ImmutableEntity<TextId> {
 
     @Id
     @Column(name = "text_id")
@@ -48,6 +49,7 @@ public class TextEntity extends MutableEntity<TextId> {
     }
 
     public void apply(Text newText) {
+
         this.sv = newText.sv().value();
         this.en = newText.en().value();
     }

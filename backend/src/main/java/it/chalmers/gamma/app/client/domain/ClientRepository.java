@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface ClientRepository {
 
-    void save(Client client);
+    void save(Client client)
+            throws AuthorityLevelNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
     void delete(ClientUid clientId) throws ClientNotFoundException;
 
     List<Client> getAll();
@@ -20,5 +21,9 @@ public interface ClientRepository {
     Optional<Client> getByApiKey(ApiKeyToken apiKeyToken);
 
     class ClientNotFoundException extends Exception { }
+
+    class ClientIdAlreadyExistsRuntimeException extends RuntimeException { }
+    class AuthorityLevelNotFoundRuntimeException extends RuntimeException { }
+    class UserNotFoundRuntimeException extends RuntimeException { }
 
 }

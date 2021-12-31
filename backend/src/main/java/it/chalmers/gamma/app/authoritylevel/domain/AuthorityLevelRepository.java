@@ -11,7 +11,8 @@ public interface AuthorityLevelRepository {
     void create(AuthorityLevelName authorityLevelName) throws AuthorityLevelAlreadyExistsException;
     void delete(AuthorityLevelName authorityLevel) throws AuthorityLevelNotFoundException;
     void save(AuthorityLevel authorityLevel)
-            throws AuthorityLevelNotFoundRuntimeException, AuthorityLevelConstraintViolationRuntimeException;
+            throws AuthorityLevelNotFoundRuntimeException, SuperGroupNotFoundRuntimeException,
+            SuperGroupPostNotFoundRuntimeException, UserNotFoundRuntimeException;
 
     List<AuthorityLevel> getAll();
     List<UserAuthority> getByUser(UserId userId);
@@ -27,7 +28,9 @@ public interface AuthorityLevelRepository {
      * Can be avoided if you check that supergroups, posts, and users actually exists.
      * It happens when linking an authority level with one of the above, and it is not found in database.
      */
-    class AuthorityLevelConstraintViolationRuntimeException extends RuntimeException { }
+    class SuperGroupNotFoundRuntimeException extends RuntimeException { }
+    class SuperGroupPostNotFoundRuntimeException extends RuntimeException { }
+    class UserNotFoundRuntimeException extends RuntimeException { }
 
 
 }

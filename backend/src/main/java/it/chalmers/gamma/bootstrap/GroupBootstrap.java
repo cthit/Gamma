@@ -4,7 +4,6 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
@@ -105,7 +104,7 @@ public class GroupBootstrap {
 
             try {
                 this.groupRepository.save(group);
-            } catch (GroupRepository.GroupAlreadyExistsException e) {
+            } catch (GroupRepository.GroupNameAlreadyExistsException e) {
                 e.printStackTrace();
             }
         });

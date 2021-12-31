@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.user.domain.UserId;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -15,7 +16,7 @@ public class AuthorityUserPK extends PKId<AuthorityUserPK.AuthorityUserPKRecord>
     protected record AuthorityUserPKRecord(UserId userId, AuthorityLevelName authorityLevelName) { }
 
     @JoinColumn(name = "user_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity userEntity;
 
     @JoinColumn(name = "authority_level")

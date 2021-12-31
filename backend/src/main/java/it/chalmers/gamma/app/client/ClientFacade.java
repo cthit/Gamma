@@ -1,5 +1,12 @@
 package it.chalmers.gamma.app.client;
 
+import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.domain.ApiKey;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -7,19 +14,12 @@ import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.Facade;
-import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.user.UserFacade;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +57,7 @@ public class ClientFacade extends Facade {
     /**
      * @return The client secret for the client
      */
+    @Transactional
     public ClientAndApiKeySecrets create(NewClient newClient) {
         this.accessGuard.require(isAdmin());
 
@@ -124,7 +125,6 @@ public class ClientFacade extends Facade {
             throw new ClientFacade.ClientNotFoundException();
         }
     }
-
     public record ClientDTO(UUID clientUid,
                             String clientId,
                             String webServerRedirectUrl,
@@ -134,6 +134,7 @@ public class ClientFacade extends Facade {
                             List<String> restrictions,
                             List<UserFacade.UserDTO> approvedUsers,
                             boolean hasApiKey) {
+
         public ClientDTO(Client client) {
             this(client.clientUid().value(),
                     client.clientId().value(),

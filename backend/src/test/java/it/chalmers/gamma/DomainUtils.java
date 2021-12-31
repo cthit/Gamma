@@ -1,5 +1,6 @@
 package it.chalmers.gamma;
 
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -166,6 +167,49 @@ public final class DomainUtils {
     public static Group styrit18 = g("styrit18", emeritus, List.of(gm(u7, chair), gm(u8, member), gm(u9, member)));
     public static Group styrit19 = g("styrit19", styrit, List.of(gm(u10, chair), gm(u11, treasurer)));
 
+    /**
+     * Basically adds 1 to each version since they all have been saved
+     */
+    public static Group asSaved(Group group) {
+        return new Group(
+                group.id(),
+                group.version() + 1,
+                group.name(),
+                group.prettyName(),
+                group.superGroup().withVersion(1),
+                group.groupMembers()
+                        .stream()
+                        .map(groupMember -> new GroupMember(
+                                groupMember.post().withVersion(1),
+                                groupMember.unofficialPostName(),
+                                groupMember.user().withVersion(1)))
+                        .toList(),
+                group.avatarUri(),
+                group.bannerUri()
+        );
+    }
+
+    public static AuthorityLevel asSaved(AuthorityLevel authorityLevel) {
+        return new AuthorityLevel(
+                authorityLevel.name(),
+                authorityLevel.posts()
+                        .stream()
+                        .map(superGroupPost -> new AuthorityLevel.SuperGroupPost(
+                                superGroupPost.superGroup().withVersion(1),
+                                superGroupPost.post().withVersion(1)
+                        ))
+                        .toList(),
+                authorityLevel.superGroups()
+                        .stream()
+                        .map(superGroup -> superGroup.withVersion(1))
+                        .toList(),
+                authorityLevel.users()
+                        .stream()
+                        .map(user -> user.withVersion(1))
+                        .toList()
+        );
+    }
+
     public static void addAll(UserRepository userRepository, User... users) {
         addAll(userRepository, List.of(users));
     }
@@ -183,7 +227,7 @@ public final class DomainUtils {
         }
     }
 
-    public static void addAll(GroupRepository groupRepository, Group... groups) throws GroupRepository.GroupAlreadyExistsException {
+    public static void addAll(GroupRepository groupRepository, Group... groups) throws GroupRepository.GroupNameAlreadyExistsException {
         for (Group group : groups) {
             groupRepository.save(group);
         }
@@ -211,7 +255,7 @@ public final class DomainUtils {
                                 PostRepository postRepository,
                                 GroupRepository groupRepository,
                                 Group... groups)
-            throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+            throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         Set<SuperGroupType> types = new HashSet<>();
         Set<SuperGroup> superGroups = new HashSet<>();
         Set<Post> posts = new HashSet<>();

@@ -14,6 +14,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.post.domain.PostRepository;
@@ -35,7 +36,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static it.chalmers.gamma.DomainUtils.addAll;
+import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.chair;
 import static it.chalmers.gamma.DomainUtils.committee;
 import static it.chalmers.gamma.DomainUtils.digit;
@@ -44,7 +45,6 @@ import static it.chalmers.gamma.DomainUtils.gm;
 import static it.chalmers.gamma.DomainUtils.member;
 import static it.chalmers.gamma.DomainUtils.treasurer;
 import static it.chalmers.gamma.DomainUtils.u1;
-import static it.chalmers.gamma.DomainUtils.u2;
 import static it.chalmers.gamma.DomainUtils.u3;
 import static it.chalmers.gamma.DomainUtils.u4;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,7 +114,7 @@ public class GroupFacadeIntegrationTest {
     }
 
     @Test
-    public void Given_Group_Expect_update_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException, GroupFacade.GroupAlreadyExistsException {
+    public void Given_Group_Expect_update_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException, GroupFacade.GroupAlreadyExistsException {
         Group group = digit18;
         SuperGroup newSuperGroup = digit;
 
@@ -125,7 +125,7 @@ public class GroupFacadeIntegrationTest {
 
         GroupFacade.UpdateGroup updateGroup = new GroupFacade.UpdateGroup(
                 group.id().value(),
-                group.version(),
+                group.version() + 1,
                 "newdigit18",
                 "new digIT'18",
                 newSuperGroup.id().value()
@@ -139,14 +139,22 @@ public class GroupFacadeIntegrationTest {
                         group.with()
                                 .name(new Name("newdigit18"))
                                 .prettyName(new PrettyName("new digIT'18"))
-                                .superGroup(newSuperGroup)
-                                .version(1)
+                                .superGroup(newSuperGroup.withVersion(1))
+                                .version(2)
+                                .groupMembers(group.groupMembers()
+                                        .stream()
+                                        .map(groupMember -> new GroupMember(
+                                                groupMember.post().withVersion(1),
+                                                groupMember.unofficialPostName(),
+                                                groupMember.user().withVersion(1))
+                                        ).toList()
+                                )
                                 .build()
                 ));
     }
 
     @Test
-    public void Given_GroupWithNewMembers_Expect_setMembers_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_GroupWithNewMembers_Expect_setMembers_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         postRepository.save(member);
         userRepository.save(u3);
         userRepository.save(u4);
@@ -169,6 +177,9 @@ public class GroupFacadeIntegrationTest {
                         gm(u4, treasurer, new UnofficialPostName("DubbelAnsvarig")),
                         gm(u4, member)
                 )).build();
+
+        //setMembers increases by one.
+        expectedGroup = asSaved(expectedGroup);
         GroupFacade.GroupWithMembersDTO expectedGroupDTO = new GroupFacade.GroupWithMembersDTO(expectedGroup);
 
         assertThat(this.groupFacade.getWithMembers(digit18.id().value()))
@@ -176,7 +187,7 @@ public class GroupFacadeIntegrationTest {
                 .isEqualTo(expectedGroupDTO);
     }
 
-    private void addGroup(Group... groups) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    private void addGroup(Group... groups) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         DomainUtils.addGroup(
                 superGroupTypeRepository,
                 superGroupRepository,

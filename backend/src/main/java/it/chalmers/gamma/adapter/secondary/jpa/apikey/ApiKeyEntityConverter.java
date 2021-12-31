@@ -20,16 +20,4 @@ public class ApiKeyEntityConverter {
         );
     }
 
-    public ApiKeyEntity toEntity(ApiKey apiKey) {
-        ApiKeyEntity apiKeyEntity = new ApiKeyEntity();
-
-        apiKeyEntity.id = apiKey.id().value();
-        apiKeyEntity.token = apiKey.apiKeyToken().value();
-        apiKeyEntity.prettyName = apiKey.prettyName().value();
-        apiKeyEntity.keyType = apiKey.keyType();
-        apiKeyEntity.description.apply(apiKey.description());
-
-        return apiKeyEntity;
-    }
-
 }

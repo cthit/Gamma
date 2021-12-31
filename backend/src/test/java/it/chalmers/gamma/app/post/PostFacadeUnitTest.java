@@ -1,4 +1,4 @@
 package it.chalmers.gamma.app.post;
 
-public class GroupFacadeUnitTest {
+public class PostFacadeUnitTest {
 }

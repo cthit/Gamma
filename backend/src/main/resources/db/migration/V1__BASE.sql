@@ -2,8 +2,7 @@ CREATE TABLE internal_text
 (
     text_id UUID PRIMARY KEY,
     sv      VARCHAR(2048) NOT NULL,
-    en      VARCHAR(2048) NOT NULL,
-    version INT
+    en      VARCHAR(2048) NOT NULL
 );
 
 CREATE TABLE ituser
@@ -15,7 +14,7 @@ CREATE TABLE ituser
     first_name              VARCHAR(50)  NOT NULL,
     last_name               VARCHAR(50)  NOT NULL,
     email                   VARCHAR(100) NOT NULL UNIQUE,
-    LANGUAGE                VARCHAR(15)  NULL,
+    language                VARCHAR(15)  NULL,
     user_agreement_accepted TIMESTAMP    NOT NULL DEFAULT NOW(),
     acceptance_year         INTEGER,
     version                 INT,
@@ -57,7 +56,7 @@ CREATE TABLE fkit_group
     group_id       UUID PRIMARY KEY,
     e_name         VARCHAR(50) NOT NULL UNIQUE,
     pretty_name    VARCHAR(50) NOT NULL,
-    super_group_id UUID NOT NULL REFERENCES fkit_super_group,
+    super_group_id UUID        NOT NULL REFERENCES fkit_super_group,
     version        INT
 );
 
@@ -114,7 +113,7 @@ CREATE TABLE user_activation
 (
     cid        VARCHAR(10) PRIMARY KEY REFERENCES whitelist_cid,
     token      VARCHAR(10) UNIQUE NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
+    created_at TIMESTAMP          NOT NULL DEFAULT current_timestamp
 );
 
 CREATE TABLE itclient
@@ -183,8 +182,8 @@ CREATE TABLE settings
 
 CREATE TABLE settings_info_api_super_group_types
 (
-    settings_id           UUID,
-    super_group_type_name VARCHAR(30),
+    settings_id           UUID REFERENCES settings,
+    super_group_type_name VARCHAR(30) REFERENCES super_group_type,
     PRIMARY KEY (settings_id, super_group_type_name)
 );
 

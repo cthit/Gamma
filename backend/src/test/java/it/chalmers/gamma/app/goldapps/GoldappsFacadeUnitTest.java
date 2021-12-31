@@ -4,7 +4,6 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.user.domain.User;
-import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -15,10 +14,30 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.chalmers.gamma.DomainUtils.alumni;
+import static it.chalmers.gamma.DomainUtils.board;
+import static it.chalmers.gamma.DomainUtils.chair;
+import static it.chalmers.gamma.DomainUtils.committee;
+import static it.chalmers.gamma.DomainUtils.digit18;
+import static it.chalmers.gamma.DomainUtils.digit19;
+import static it.chalmers.gamma.DomainUtils.drawit18;
+import static it.chalmers.gamma.DomainUtils.drawit19;
+import static it.chalmers.gamma.DomainUtils.g;
+import static it.chalmers.gamma.DomainUtils.gm;
+import static it.chalmers.gamma.DomainUtils.member;
+import static it.chalmers.gamma.DomainUtils.prit18;
+import static it.chalmers.gamma.DomainUtils.prit19;
+import static it.chalmers.gamma.DomainUtils.sg;
+import static it.chalmers.gamma.DomainUtils.society;
+import static it.chalmers.gamma.DomainUtils.styrit18;
+import static it.chalmers.gamma.DomainUtils.styrit19;
+import static it.chalmers.gamma.DomainUtils.treasurer;
+import static it.chalmers.gamma.DomainUtils.u;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 import static org.assertj.core.api.Assertions.assertThat;
-import static it.chalmers.gamma.DomainUtils.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.inOrder;
 
 @ExtendWith(SpringExtension.class)
 class GoldappsFacadeUnitTest {
@@ -32,18 +51,18 @@ class GoldappsFacadeUnitTest {
     @InjectMocks
     private GoldappsFacade goldappsFacade;
 
-    @Test
-    public void getActiveSuperGroupsTest() throws JSONException {
-        ActiveSuperGroupsTestCase testCase = getActiveSuperGroupTestCase();
-        given(groupRepository.getAll())
-                .willReturn(testCase.groups);
-
-        List<GoldappsFacade.GoldappsSuperGroupDTO> activeSuperGroups = goldappsFacade.getActiveSuperGroups(
-                List.of("committee", "board")
-        );
-
-        assertThat(false).isTrue();
-    }
+//    @Test
+//    public void getActiveSuperGroupsTest() throws JSONException {
+//        ActiveSuperGroupsTestCase testCase = getActiveSuperGroupTestCase();
+//        given(groupRepository.getAll())
+//                .willReturn(testCase.groups);
+//
+//        List<GoldappsFacade.GoldappsSuperGroupDTO> activeSuperGroups = goldappsFacade.getActiveSuperGroups(
+//                List.of("committee", "board")
+//        );
+//
+//        assertThat(false).isTrue();
+//    }
 
     @Test
     public void getActiveUsersTest() {

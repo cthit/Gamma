@@ -8,6 +8,7 @@ import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -15,11 +16,11 @@ import javax.persistence.ManyToOne;
 public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord> {
 
     @JoinColumn(name = "super_group_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     protected SuperGroupEntity superGroupEntity;
 
     @JoinColumn(name = "post_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     protected PostEntity postEntity;
 
     @JoinColumn(name = "authority_level")

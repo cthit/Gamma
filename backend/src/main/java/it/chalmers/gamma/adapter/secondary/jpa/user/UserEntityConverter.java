@@ -48,45 +48,4 @@ public class UserEntityConverter {
         );
     }
 
-    protected UserEntity toEntity(User d) {
-        UserEntity e = this.userJpaRepository.findById(d.id().value())
-                .orElse(new UserEntity());
-
-//        e.increaseVersion(d.version());
-
-        e.id = d.id().value();
-        e.cid = d.cid().value();
-        e.acceptanceYear = d.acceptanceYear().value();
-        e.email = d.email().value();
-        e.firstName = d.firstName().value();
-        e.lastName = d.lastName().value();
-        e.nick = d.nick().value();
-        e.password = d.password().value();
-        e.userAgreementAccepted = d.lastAcceptedUserAgreement();
-        e.gdprTraining = d.gdprTrained();
-        e.locked = d.locked();
-        e.language = d.language();
-
-        d.avatarUri().ifPresent(
-                imageUri -> {
-                    e.userAvatar = this.userAvatarJpaRepository.findById(d.id().value())
-                            .orElse(new UserAvatarEntity());
-                    e.userAvatar.userId = e.id;
-                    e.userAvatar.user = e;
-                    e.userAvatar.avatarUri = imageUri.value();
-                }
-        );
-
-        Optional<UserAvatarEntity> maybeUserAvatarEntity = this.userAvatarJpaRepository.findById(d.id().value());
-        maybeUserAvatarEntity.ifPresent(
-                userAvatarEntity -> {
-
-                }
-        );
-
-        return e;
-    }
-
-
-
 }

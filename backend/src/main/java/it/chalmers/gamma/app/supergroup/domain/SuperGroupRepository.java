@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface SuperGroupRepository {
 
-    void save(SuperGroup superGroup);
+    void save(SuperGroup superGroup) throws NameAlreadyExistsRuntimeException, TypeNotFoundRuntimeException;
     void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException;
 
     List<SuperGroup> getAll();
@@ -16,5 +16,7 @@ public interface SuperGroupRepository {
     class SuperGroupAlreadyExistsException extends Exception { }
     class SuperGroupNotFoundException extends Exception { }
 
+    class NameAlreadyExistsRuntimeException extends RuntimeException { }
+    class TypeNotFoundRuntimeException extends RuntimeException { }
 
 }

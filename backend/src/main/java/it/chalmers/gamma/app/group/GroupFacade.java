@@ -83,7 +83,7 @@ public class GroupFacade extends Facade {
 
         try {
             this.groupRepository.save(group);
-        } catch (GroupRepository.GroupAlreadyExistsException e) {
+        } catch (GroupRepository.GroupNameAlreadyExistsException e) {
             throw new GroupAlreadyExistsException();
         }
     }
@@ -111,7 +111,7 @@ public class GroupFacade extends Facade {
 
         try {
             this.groupRepository.save(newGroup);
-        } catch (GroupRepository.GroupAlreadyExistsException e) {
+        } catch (GroupRepository.GroupNameAlreadyExistsException e) {
             throw new GroupAlreadyExistsException();
         }
     }
@@ -140,7 +140,7 @@ public class GroupFacade extends Facade {
 
         try {
             this.groupRepository.save(oldGroup.withGroupMembers(newGroupMembers));
-        } catch (GroupRepository.GroupAlreadyExistsException e) {
+        } catch (GroupRepository.GroupNameAlreadyExistsException e) {
             //Unexpected error since it can only be thrown if id or name is the same as any other group.
             LOGGER.error("GroupAlreadyExistsException when just trying to update withGroupMembers", e);
             throw new UnexpectedRuntimeException();

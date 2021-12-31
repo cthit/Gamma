@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static it.chalmers.gamma.DomainUtils.addAll;
+import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.chair;
 import static it.chalmers.gamma.DomainUtils.didit;
 import static it.chalmers.gamma.DomainUtils.digit;
@@ -53,7 +54,6 @@ import static it.chalmers.gamma.DomainUtils.styrit19;
 import static it.chalmers.gamma.DomainUtils.treasurer;
 import static it.chalmers.gamma.DomainUtils.u0;
 import static it.chalmers.gamma.DomainUtils.u1;
-import static it.chalmers.gamma.DomainUtils.u2;
 import static it.chalmers.gamma.DomainUtils.u3;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -86,26 +86,30 @@ public class GroupEntityIntegrationTests {
     private PostRepository postRepository;
 
     @Test
-    public void Given_ValidGroup_Expect_save_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_ValidGroup_Expect_save_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         Group groupToSave = digit18;
         addGroup(groupToSave);
 
-        Group savedGroup = groupRepositoryAdapter.get(groupToSave.id()).orElseThrow();
+        Group savedGroup = groupRepositoryAdapter.get(groupToSave.id())
+                .orElseThrow();
 
         assertThat(savedGroup)
-                .isEqualTo(groupToSave);
+                .isEqualTo(asSaved(groupToSave));
     }
 
     @Test
-    public void Given_SameGroupIdTwice_Expect_save_To_Throw() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
-        assertThatExceptionOfType(GroupRepository.GroupAlreadyExistsException.class)
+    public void Given_SameGroupIdTwice_Expect_save_To_Throw() {
+        assertThatExceptionOfType(MutableEntity.StaleDomainObjectException.class)
                 .isThrownBy(() -> addGroup(digit18, digit18));
+
+        assertThat(groupRepositoryAdapter.getAll())
+                .containsExactlyInAnyOrder(asSaved(digit18));
     }
 
     @Test
-    public void Given_SameGroupNameTwice_Expect_save_To_Throw() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_SameGroupNameTwice_Expect_save_To_Throw() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         addGroup(digit18);
-        assertThatExceptionOfType(GroupRepository.GroupAlreadyExistsException.class)
+        assertThatExceptionOfType(GroupRepository.GroupNameAlreadyExistsException.class)
                 .isThrownBy(() -> this.groupRepositoryAdapter.save(digit18.withId(GroupId.generate())));
     }
 
@@ -142,7 +146,7 @@ public class GroupEntityIntegrationTests {
     }
 
     @Test
-    public void Given_ValidGroup_Expect_delete_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_ValidGroup_Expect_delete_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         Group group = digit18;
 
         addGroup(group);
@@ -154,7 +158,7 @@ public class GroupEntityIntegrationTests {
     }
 
     @Test
-    public void Given_GroupWithInvalidVersion_Expect_save_To_Throw() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_GroupWithInvalidVersion_Expect_save_To_Throw() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         superGroupTypeRepository.add(digit.type());
         superGroupRepository.save(digit);
 
@@ -212,7 +216,7 @@ public class GroupEntityIntegrationTests {
 
         assertThatNoException()
                 .isThrownBy(() -> groupRepositoryAdapter.save(group1
-                        .withVersion(4) //Expect version after 4 saves.
+                        .withVersion(5) //Expect version after 4 saves.
                         .withPrettyName(new PrettyName("new digIT'18")))
                 );
     }
@@ -224,55 +228,60 @@ public class GroupEntityIntegrationTests {
     }
 
     @Test
-    public void Given_MultipleValidGroups_Expect_getAll_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_MultipleValidGroups_Expect_getAll_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         addGroup(digit18, digit19, prit19, styrit19);
 
         assertThat(groupRepositoryAdapter.getAll())
-                .containsExactlyInAnyOrder(digit18, digit19, prit19, styrit19);
+                .containsExactlyInAnyOrder(
+                        asSaved(digit18),
+                        asSaved(digit19),
+                        asSaved(prit19),
+                        asSaved(styrit19)
+                );
     }
 
     @Test
-    public void Given_MultipleValidGroups_Expect_getAllBySuperGroup_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_MultipleValidGroups_Expect_getAllBySuperGroup_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         addGroup(digit17, digit18, digit19, prit18, prit19, styrit18, styrit19, drawit18);
 
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(digit.id()))
-                .containsExactlyInAnyOrder(digit19);
+                .containsExactlyInAnyOrder(asSaved(digit19));
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(didit.id()))
-                .containsExactlyInAnyOrder(digit17, digit18);
+                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit18));
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(drawit.id()))
                 .isEmpty();
     }
 
     @Test
-    public void Given_MultipleValidGroups_Expect_getAllByPost_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_MultipleValidGroups_Expect_getAllByPost_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         addGroup(digit17, digit18, digit19, prit18);
 
         assertThat(groupRepositoryAdapter.getAllByPost(chair.id()))
-                .containsExactlyInAnyOrder(digit17, digit18, digit19, prit18);
+                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit18), asSaved(digit19), asSaved(prit18));
         assertThat(groupRepositoryAdapter.getAllByPost(member.id()))
-                .containsExactlyInAnyOrder(digit17, digit19, prit18);
+                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit19), asSaved(prit18));
     }
 
     @Test
-    public void Given_MultipleValidGroups_Expect_getAllByUser_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_MultipleValidGroups_Expect_getAllByUser_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         addGroup(digit17, digit18, digit19, prit18, prit19, styrit18, styrit19, drawit18, drawit19);
 
         assertThat(groupRepositoryAdapter.getAllByUser(u0.id()))
                 .isEmpty();
         assertThat(groupRepositoryAdapter.getAllByUser(u1.id()))
                 .containsExactlyInAnyOrder(
-                        new UserMembership(chair, digit18, new UnofficialPostName("root")),
-                        new UserMembership(chair, prit18, new UnofficialPostName("ChefChef")),
-                        new UserMembership(treasurer, prit18, UnofficialPostName.none()),
-                        new UserMembership(chair, drawit19, UnofficialPostName.none())
+                        new UserMembership(chair.withVersion(1), asSaved(digit18), new UnofficialPostName("root")),
+                        new UserMembership(chair.withVersion(1), asSaved(prit18), new UnofficialPostName("ChefChef")),
+                        new UserMembership(treasurer.withVersion(1), asSaved(prit18), UnofficialPostName.none()),
+                        new UserMembership(chair.withVersion(1), asSaved(drawit19), UnofficialPostName.none())
                 );
         assertThat(groupRepositoryAdapter.getAllByUser(u3.id()))
                 .containsExactlyInAnyOrder(
-                        new UserMembership(chair, digit19, UnofficialPostName.none())
+                        new UserMembership(chair.withVersion(1), asSaved(digit19), UnofficialPostName.none())
                 );
     }
 
-    private void addGroup(Group... groups) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    private void addGroup(Group... groups) throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         DomainUtils.addGroup(
                 superGroupTypeRepository,
                 superGroupRepository,

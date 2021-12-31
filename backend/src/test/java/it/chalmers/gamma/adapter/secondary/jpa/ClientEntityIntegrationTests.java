@@ -1,15 +1,23 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -44,16 +52,25 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         ClientEntityConverter.class,
         UserRepositoryAdapter.class,
         UserEntityConverter.class,
-        ApiKeyEntityConverter.class})
+        ApiKeyRepositoryAdapter.class,
+        ApiKeyEntityConverter.class,
+        AuthorityLevelRepositoryAdapter.class,
+        AuthorityLevelEntityConverter.class,
+        SuperGroupEntityConverter.class,
+        PostEntityConverter.class,
+        UserEntityConverter.class})
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ClientEntityIntegrationTests {
 
     @Autowired
     private ClientRepositoryAdapter clientRepositoryAdapter;
-
+    @Autowired
+    private ApiKeyRepository apiKeyRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthorityLevelRepository authorityLevelRepository;
 
     @Test
     public void Given_AValidClient_Expect_save_To_Work() {
@@ -148,7 +165,16 @@ public class ClientEntityIntegrationTests {
     }
 
     @Test
-    public void Given_AValidClientWithRestrictions_Expect_save_To_Work() {
+    public void Given_AValidClientWithRestrictions_Expect_save_To_Work() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
+        userRepository.save(u1);
+        authorityLevelRepository.create(new AuthorityLevelName("admin"));
+        authorityLevelRepository.save(new AuthorityLevel(
+                new AuthorityLevelName("admin"),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                List.of(u1.withVersion(1))
+        ));
+
         ClientUid uid = ClientUid.generate();
         Client newClient = new Client(
                 uid,
@@ -172,6 +198,14 @@ public class ClientEntityIntegrationTests {
 
         assertThat(savedClient)
                 .isEqualTo(newClient);
+        assertThat(authorityLevelRepository.get(new AuthorityLevelName("admin")))
+                .get().isEqualTo(new AuthorityLevel(
+                        new AuthorityLevelName("admin"),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        List.of(u1.withVersion(1)))
+                );
+
     }
 
     @Test
@@ -202,7 +236,9 @@ public class ClientEntityIntegrationTests {
 
         addAll(userRepository, u1, u2);
 
-        Client newClient2 = newClient.withApprovedUsers(List.of(u1, u2));
+        Client newClient2 = newClient.withApprovedUsers(
+                List.of(u1.withVersion(1), u2.withVersion(1))
+        );
 
         this.clientRepositoryAdapter.save(newClient2);
 
@@ -243,6 +279,48 @@ public class ClientEntityIntegrationTests {
     }
 
     @Test
+    public void Given_ClientWithApiKey_Expect_delete_To_DeleteBoth() throws ClientRepository.ClientNotFoundException {
+        ApiKey apiKey = new ApiKey(
+                ApiKeyId.generate(),
+                new PrettyName("Mat"),
+                new Text(
+                        "Api nyckel för mat",
+                        "Api key for mat"
+                ),
+                ApiKeyType.CLIENT,
+                ApiKeyToken.generate()
+        );
+
+        ClientUid uid = ClientUid.generate();
+        Client newClient = new Client(
+                uid,
+                ClientId.generate(),
+                ClientSecret.generate(),
+                new RedirectUrl("https://mat.chalmers.it"),
+                new PrettyName("Mat"),
+                new Text(
+                        "Klient för mat",
+                        "Client for mat"
+                ),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Optional.of(apiKey)
+        );
+
+        this.clientRepositoryAdapter.save(newClient);
+
+        assertThat(this.clientRepositoryAdapter.get(uid))
+                .get().isEqualTo(newClient);
+
+        this.clientRepositoryAdapter.delete(uid);
+        assertThat(this.clientRepositoryAdapter.get(uid))
+                .isEmpty();
+        assertThat(this.apiKeyRepository.getById(apiKey.id()))
+                .isEmpty();
+    }
+
+    @Test
     public void Given_InvalidClient_Expect_delete_To_Throw() {
         assertThatExceptionOfType(ClientRepository.ClientNotFoundException.class)
                 .isThrownBy(() -> this.clientRepositoryAdapter.delete(ClientUid.generate()));
@@ -275,6 +353,162 @@ public class ClientEntityIntegrationTests {
                 .isEqualTo(newClient);
     }
 
-    
+    @Test
+    public void Given_ClientWithApiKey_Expect_DeletingApiKey_To_Work() throws ApiKeyRepository.ApiKeyNotFoundException {
+        ApiKey apiKey = new ApiKey(
+                ApiKeyId.generate(),
+                new PrettyName("Mat"),
+                new Text(
+                        "Api nyckel för mat",
+                        "Api key for mat"
+                ),
+                ApiKeyType.CLIENT,
+                ApiKeyToken.generate()
+        );
+
+        ClientUid uid = ClientUid.generate();
+        Client newClient = new Client(
+                uid,
+                ClientId.generate(),
+                ClientSecret.generate(),
+                new RedirectUrl("https://mat.chalmers.it"),
+                new PrettyName("Mat"),
+                new Text(
+                        "Klient för mat",
+                        "Client for mat"
+                ),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Optional.of(apiKey)
+        );
+
+        this.clientRepositoryAdapter.save(newClient);
+
+        this.apiKeyRepository.delete(apiKey.id());
+
+        Client retrievedClient = this.clientRepositoryAdapter.get(uid).orElseThrow();
+
+        assertThat(retrievedClient.clientApiKey())
+                .isEmpty();
+        assertThat(apiKeyRepository.getById(apiKey.id()))
+                .isEmpty();
+    }
+
+    @Test
+    public void Given_ClientWithInvalidRestriction_Expect_save_To_Throw() {
+        Client newClient = new Client(
+                ClientUid.generate(),
+                ClientId.generate(),
+                ClientSecret.generate(),
+                new RedirectUrl("https://mat.chalmers.it"),
+                new PrettyName("Mat"),
+                new Text(
+                        "Klient för mat",
+                        "Client for mat"
+                ),
+                List.of(new AuthorityLevelName("test")),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Optional.empty()
+        );
+
+        assertThatExceptionOfType(ClientRepository.AuthorityLevelNotFoundRuntimeException.class)
+                .isThrownBy(() -> this.clientRepositoryAdapter.save(newClient));
+    }
+
+    @Test
+    public void Given_ClientWithInvalidUser_Expect_save_To_Throw() {
+        Client newClient = new Client(
+                ClientUid.generate(),
+                ClientId.generate(),
+                ClientSecret.generate(),
+                new RedirectUrl("https://mat.chalmers.it"),
+                new PrettyName("Mat"),
+                new Text(
+                        "Klient för mat",
+                        "Client for mat"
+                ),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                List.of(u1),
+                Optional.empty()
+        );
+
+        assertThatExceptionOfType(ClientRepository.UserNotFoundRuntimeException.class)
+                .isThrownBy(() -> clientRepositoryAdapter.save(newClient));
+    }
+
+    @Test
+    public void Given_SameClientId_Expect_save_To_Work() {
+        Client client = new Client(
+                ClientUid.generate(),
+                ClientId.generate(),
+                ClientSecret.generate(),
+                new RedirectUrl("https://mat.chalmers.it"),
+                new PrettyName("Mat"),
+                new Text(
+                        "Klient för mat",
+                        "Client for mat"
+                ),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                Optional.empty()
+        );
+
+        this.clientRepositoryAdapter.save(client);
+
+        assertThatExceptionOfType(ClientRepository.ClientIdAlreadyExistsRuntimeException.class)
+                .isThrownBy(() -> this.clientRepositoryAdapter.save(client.withClientUid(ClientUid.generate())));
+    }
+
+    @Test
+    public void Given_UserThatHasApprovedClients_Expect_getClientsByUserApproved_To_Work() {
+        this.userRepository.save(u1);
+
+        Client client = new Client(
+                ClientUid.generate(),
+                ClientId.generate(),
+                ClientSecret.generate(),
+                new RedirectUrl("https://mat.chalmers.it"),
+                new PrettyName("Mat"),
+                new Text(
+                        "Klient för mat",
+                        "Client for mat"
+                ),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                List.of(u1.withVersion(1)),
+                Optional.empty()
+        );
+
+        Client client2 = client.with()
+                .clientId(ClientId.generate())
+                .clientUid(ClientUid.generate())
+                .build();
+        Client client3 = client.with()
+                .clientId(ClientId.generate())
+                .clientUid(ClientUid.generate())
+                .approvedUsers(Collections.emptyList())
+                .build();
+        Client client4 = client.with()
+                .clientId(ClientId.generate())
+                .clientUid(ClientUid.generate())
+                .build();
+        Client client5 = client.with()
+                .clientId(ClientId.generate())
+                .clientUid(ClientUid.generate())
+                .build();
+
+        this.clientRepositoryAdapter.save(client);
+        this.clientRepositoryAdapter.save(client2);
+        this.clientRepositoryAdapter.save(client3);
+        this.clientRepositoryAdapter.save(client4);
+        this.clientRepositoryAdapter.save(client5);
+
+        assertThat(this.clientRepositoryAdapter.getClientsByUserApproved(u1.id()))
+                .containsExactlyInAnyOrder(client, client2, client4, client5);
+    }
 
 }

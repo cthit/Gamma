@@ -21,7 +21,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
     @Override
     public UserActivationToken createUserActivationCode(Cid cid) {
         UserActivationToken userActivationToken = UserActivationToken.generate();
-        this.userActivationJpaRepository.save(
+        this.userActivationJpaRepository.saveAndFlush(
                 new UserActivationEntity(
                         cid,
                         userActivationToken

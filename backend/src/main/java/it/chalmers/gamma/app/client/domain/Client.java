@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.client.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
@@ -32,6 +33,11 @@ public record Client(ClientUid clientUid,
         Objects.requireNonNull(scopes);
         Objects.requireNonNull(approvedUsers);
         Objects.requireNonNull(clientApiKey);
+
+
+        if (clientApiKey.isPresent() && clientApiKey.get().keyType() != ApiKeyType.CLIENT) {
+            throw new IllegalArgumentException("If a client has a ApiKey, then the type must be ApiKeyType.CLIENT");
+        }
     }
 
 }

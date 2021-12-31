@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
@@ -35,6 +34,7 @@ import java.util.List;
 
 import static it.chalmers.gamma.DomainUtils.addAll;
 import static it.chalmers.gamma.DomainUtils.alumni;
+import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.board;
 import static it.chalmers.gamma.DomainUtils.chair;
 import static it.chalmers.gamma.DomainUtils.committee;
@@ -73,6 +73,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ActiveProfiles("test")
 @DataJpaTest
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({AuthorityLevelRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SuperGroupEntityConverter.class,
@@ -87,8 +89,6 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         SuperGroupEntityConverter.class,
         UserEntityConverter.class,
         PostEntityConverter.class})
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AuthorityLevelEntityIntegrationTests {
 
     @Autowired
@@ -116,7 +116,7 @@ public class AuthorityLevelEntityIntegrationTests {
      * This is a very important test! If it fails, please stop.
      */
     @Test
-    public void getByUser_SuperTest() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void getByUser_SuperTest() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         addAll(userRepository, u0, u1, u2, u3, u4, u5, u6, u7, u8, u9, u10, u11);
         addAll(superGroupTypeRepository, committee, alumni, board);
         addAll(postRepository, chair, treasurer, member);
@@ -155,6 +155,10 @@ public class AuthorityLevelEntityIntegrationTests {
 
         this.authorityLevelRepositoryAdapter.create(glassName);
         this.authorityLevelRepositoryAdapter.save(glassLevel);
+
+        adminLevel = asSaved(adminLevel);
+        matLevel = asSaved(matLevel);
+        glassLevel = asSaved(glassLevel);
 
         assertThat(this.authorityLevelRepositoryAdapter.getAll())
                 .containsExactlyInAnyOrder(adminLevel, matLevel, glassLevel);
@@ -306,7 +310,7 @@ public class AuthorityLevelEntityIntegrationTests {
         AuthorityLevelName admin = new AuthorityLevelName("admin");
 
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.AuthorityLevelConstraintViolationRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.SuperGroupNotFoundRuntimeException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,
@@ -318,12 +322,34 @@ public class AuthorityLevelEntityIntegrationTests {
     }
 
     @Test
-    public void Given_AValidAuthorityLevel_Expect_save_With_AInvalidSuperGroupPost_To_Throw()
+    public void Given_AValidAuthorityLevel_Expect_save_With_AInvalidSuperGroupPost_Specifically_NoPost_To_Throw()
+            throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
+        AuthorityLevelName admin = new AuthorityLevelName("admin");
+
+        superGroupTypeRepository.add(digit.type());
+        superGroupRepository.save(digit);
+
+        authorityLevelRepositoryAdapter.create(admin);
+        assertThatExceptionOfType(AuthorityLevelRepository.SuperGroupPostNotFoundRuntimeException.class)
+                .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
+                        new AuthorityLevel(
+                                admin,
+                                List.of(new AuthorityLevel.SuperGroupPost(digit, chair)),
+                                Collections.emptyList(),
+                                Collections.emptyList()
+                        )
+                ));
+    }
+
+    @Test
+    public void Given_AValidAuthorityLevel_Expect_save_With_AInvalidSuperGroupPost_Specifically_NoSuperGroup_To_Throw()
             throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
         AuthorityLevelName admin = new AuthorityLevelName("admin");
 
+        postRepository.save(chair);
+
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.AuthorityLevelConstraintViolationRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.SuperGroupPostNotFoundRuntimeException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,
@@ -340,7 +366,7 @@ public class AuthorityLevelEntityIntegrationTests {
         AuthorityLevelName admin = new AuthorityLevelName("admin");
 
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.AuthorityLevelConstraintViolationRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.UserNotFoundRuntimeException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,
@@ -362,7 +388,7 @@ public class AuthorityLevelEntityIntegrationTests {
                                 List.of(new AuthorityLevel.SuperGroupPost(digit, chair)),
                                 List.of(digit),
                                 List.of(u1)
-                )));
+                        )));
     }
 
     @Test
@@ -380,49 +406,6 @@ public class AuthorityLevelEntityIntegrationTests {
 
         assertThatExceptionOfType(AuthorityLevelRepository.AuthorityLevelNotFoundException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.delete(admin));
-    }
-
-    @Test
-    public void TestAuthorityLevelEntityEqualsAndHashcode() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException, SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
-        AuthorityLevel a1 = new AuthorityLevel(
-                new AuthorityLevelName("admin"),
-                List.of(new AuthorityLevel.SuperGroupPost(digit, chair)),
-                List.of(sprit, emeritus),
-                List.of(u8, u9)
-        );
-
-        AuthorityLevel a2 = new AuthorityLevel(
-                new AuthorityLevelName("mat"),
-                Collections.emptyList(),
-                List.of(digit, didit),
-                List.of(u1, u2)
-        );
-
-        addAll(superGroupTypeRepository, committee, alumni);
-        addAll(superGroupRepository, digit, didit, sprit, emeritus);
-        addAll(userRepository, u1, u2, u8, u9);
-
-        postRepository.save(chair);
-
-        authorityLevelRepositoryAdapter.create(new AuthorityLevelName("admin"));
-        authorityLevelRepositoryAdapter.save(a1);
-
-        authorityLevelRepositoryAdapter.create(new AuthorityLevelName("mat"));
-        authorityLevelRepositoryAdapter.save(a2);
-
-        AuthorityLevelEntity e1 = authorityLevelEntityConverter.toEntity(a1);
-        AuthorityLevelEntity e2 = authorityLevelEntityConverter.toEntity(a1);
-        AuthorityLevelEntity e3 = authorityLevelEntityConverter.toEntity(a2);
-
-        assertThat(e1)
-                .isEqualTo(e2);
-        assertThat(e1)
-                .isNotEqualTo(e3);
-
-        assertThat(e1.hashCode())
-                .isEqualTo(e2.hashCode());
-        assertThat(e1.hashCode())
-                .isNotEqualTo(e3.hashCode());
     }
 
 }

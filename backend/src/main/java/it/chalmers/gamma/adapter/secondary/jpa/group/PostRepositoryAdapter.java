@@ -1,11 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.DataIntegrityErrorState;
-import it.chalmers.gamma.adapter.secondary.jpa.util.DataIntegrityViolationHelper;
+import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,20 +24,16 @@ public class PostRepositoryAdapter implements PostRepository {
 
     @Override
     public void save(Post post) {
-        try {
-            this.repository.save(this.postEntityConverter.toEntity(post));
-        } catch (DataIntegrityViolationException e) {
-            DataIntegrityErrorState state = DataIntegrityViolationHelper.getState(e);
-
-            System.out.println(state);
-
-            throw e;
-        }
+        this.repository.saveAndFlush(toEntity(post));
     }
 
     @Override
     public void delete(PostId postId) throws PostNotFoundException {
-        this.repository.deleteById(postId.value());
+        try {
+            this.repository.deleteById(postId.value());
+        } catch (EmptyResultDataAccessException e) {
+            throw new PostNotFoundException();
+        }
     }
 
     @Override
@@ -50,4 +45,24 @@ public class PostRepositoryAdapter implements PostRepository {
     public Optional<Post> get(PostId postId) {
         return this.repository.findById(postId.value()).map(this.postEntityConverter::toDomain);
     }
+
+    private PostEntity toEntity(Post post) {
+        PostEntity postEntity = this.repository.findById(post.id().value())
+                .orElse(new PostEntity());
+
+        postEntity.increaseVersion(post.version());
+
+        postEntity.id = post.id().value();
+        postEntity.emailPrefix = post.emailPrefix().value();
+
+        if (postEntity.postName == null) {
+            postEntity.postName = new TextEntity();
+        }
+
+        postEntity.postName.apply(post.name());
+
+        return postEntity;
+    }
+
+
 }

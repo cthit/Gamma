@@ -67,7 +67,7 @@ public class GroupFacadeUnitTest {
     private GroupFacade groupFacade;
 
     @Test
-    public void Given_ValidNewGroup_Expect_create_To_Work() throws GroupFacade.SuperGroupNotFoundRuntimeException, GroupFacade.GroupAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_ValidNewGroup_Expect_create_To_Work() throws GroupFacade.SuperGroupNotFoundRuntimeException, GroupFacade.GroupAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         UUID superGroupId = UUID.randomUUID();
         SuperGroup superGroup = new SuperGroup(
                 new SuperGroupId(superGroupId),
@@ -123,8 +123,8 @@ public class GroupFacadeUnitTest {
     }
 
     @Test
-    public void Given_GroupWithNameThatAlreadyExists_Expect_create_To_Throw() throws GroupRepository.GroupAlreadyExistsException {
-        doThrow(GroupRepository.GroupAlreadyExistsException.class)
+    public void Given_GroupWithNameThatAlreadyExists_Expect_create_To_Throw() throws GroupRepository.GroupNameAlreadyExistsException {
+        doThrow(GroupRepository.GroupNameAlreadyExistsException.class)
                 .when(this.groupRepository).save(any());
 
         UUID superGroupId = UUID.randomUUID();
@@ -170,7 +170,7 @@ public class GroupFacadeUnitTest {
     }
 
     @Test
-    public void Given_Group_Expect_update_To_Work() throws GroupFacade.SuperGroupNotFoundRuntimeException, GroupFacade.GroupNotFoundRuntimeException, GroupFacade.GroupAlreadyExistsException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_Group_Expect_update_To_Work() throws GroupFacade.SuperGroupNotFoundRuntimeException, GroupFacade.GroupNotFoundRuntimeException, GroupFacade.GroupAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         given(groupRepository.get(digit19.id()))
                 .willReturn(Optional.of(digit19));
 
@@ -250,7 +250,7 @@ public class GroupFacadeUnitTest {
     }
 
     @Test
-    public void Given_ValidGroup_Expect_setMembers_To_Work() throws GroupFacade.GroupNotFoundRuntimeException, GroupFacade.UserNotFoundRuntimeException, GroupFacade.PostNotFoundRuntimeException, GroupRepository.GroupAlreadyExistsException {
+    public void Given_ValidGroup_Expect_setMembers_To_Work() throws GroupFacade.GroupNotFoundRuntimeException, GroupFacade.UserNotFoundRuntimeException, GroupFacade.PostNotFoundRuntimeException, GroupRepository.GroupNameAlreadyExistsException {
         given(userRepository.get(u8.id()))
                 .willReturn(Optional.of(u8));
         given(userRepository.get(u9.id()))

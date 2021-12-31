@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -13,7 +14,7 @@ import javax.persistence.ManyToOne;
 public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
 
     @JoinColumn(name = "super_group_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     protected SuperGroupEntity superGroupEntity;
 
     @JoinColumn(name = "authority_level")

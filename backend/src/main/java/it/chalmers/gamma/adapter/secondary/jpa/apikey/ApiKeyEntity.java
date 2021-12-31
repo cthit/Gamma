@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
+import it.chalmers.gamma.adapter.secondary.jpa.client.ClientApiKeyEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
@@ -33,6 +34,14 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
         description = new TextEntity();
     }
 
+    public ApiKeyEntity(UUID id, String token, String prettyName, ApiKeyType keyType, TextEntity description) {
+        this.id = id;
+        this.token = token;
+        this.prettyName = prettyName;
+        this.keyType = keyType;
+        this.description = description;
+    }
+
     @Override
     public UUID getId() {
         return this.id;
@@ -57,4 +66,5 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
     public TextEntity getDescription() {
         return description;
     }
+
 }

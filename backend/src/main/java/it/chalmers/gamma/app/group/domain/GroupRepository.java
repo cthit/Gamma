@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface GroupRepository {
 
     void save(Group group)
-            throws GroupAlreadyExistsException, SuperGroupNotFoundRuntimeException,
+            throws GroupNameAlreadyExistsException, SuperGroupNotFoundRuntimeException,
             UserNotFoundRuntimeException, PostNotFoundRuntimeException;
     void delete(GroupId groupId) throws GroupNotFoundException;
 
@@ -24,7 +24,7 @@ public interface GroupRepository {
     Optional<Group> get(GroupId groupId);
 
     class GroupNotFoundException extends Exception { }
-    class GroupAlreadyExistsException extends Exception { }
+    class GroupNameAlreadyExistsException extends Exception { }
 
     class SuperGroupNotFoundRuntimeException extends RuntimeException { }
     class UserNotFoundRuntimeException extends RuntimeException { }

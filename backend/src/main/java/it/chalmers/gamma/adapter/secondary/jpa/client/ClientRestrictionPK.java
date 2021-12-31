@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -16,7 +17,7 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
     @JoinColumn(name = "client_uid")
     private ClientEntity client;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authority_level")
     private AuthorityLevelEntity authorityLevel;
 

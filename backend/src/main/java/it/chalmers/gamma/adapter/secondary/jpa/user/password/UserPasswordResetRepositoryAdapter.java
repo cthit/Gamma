@@ -23,7 +23,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     @Override
     public PasswordResetToken createNewToken(User user) {
         PasswordResetToken token = PasswordResetToken.generate();
-        userPasswordResetJpaRepository.save(new UserPasswordResetEntity(
+        userPasswordResetJpaRepository.saveAndFlush(new UserPasswordResetEntity(
                 user.id().value(),
                 Instant.now(),
                 token.value())

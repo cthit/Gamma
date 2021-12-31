@@ -53,4 +53,7 @@ public class ClientApiKeyEntity extends ImmutableEntity<UUID> {
         return this.apiKey;
     }
 
+    public void removeApiKey() {
+        this.apiKey = null;
+    }
 }

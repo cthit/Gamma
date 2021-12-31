@@ -54,7 +54,7 @@ public class ImageFacade extends Facade {
         ImageUri imageUri = this.imageService.saveImage(image);
         try {
             this.groupRepository.save(group.withBannerUri(Optional.of(imageUri)));
-        } catch (GroupRepository.GroupAlreadyExistsException e) {
+        } catch (GroupRepository.GroupNameAlreadyExistsException e) {
             e.printStackTrace();
         }
     }
@@ -75,7 +75,7 @@ public class ImageFacade extends Facade {
         ImageUri imageUri = this.imageService.saveImage(image);
         try {
             this.groupRepository.save(group.withAvatarUri(Optional.of(imageUri)));
-        } catch (GroupRepository.GroupAlreadyExistsException e) {
+        } catch (GroupRepository.GroupNameAlreadyExistsException e) {
             e.printStackTrace();
         }
     }

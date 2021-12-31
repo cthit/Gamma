@@ -26,7 +26,15 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
      * that is being tried to be converted is outdated.
      */
     public void increaseVersion(int currentVersion) {
-        if (this.version != currentVersion) {
+
+        /*
+         * If id is null, then currentVersion must be 0.
+         * If not, then something is trying to create a new
+         * entity that has been deleted.
+         */
+        if (this.getId() == null && currentVersion != 0) {
+            throw new StaleDomainObjectException();
+        } else if (this.version != currentVersion) {
             throw new StaleDomainObjectException();
         }
 
