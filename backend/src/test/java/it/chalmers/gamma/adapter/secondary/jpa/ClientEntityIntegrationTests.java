@@ -291,7 +291,7 @@ public class ClientEntityIntegrationTests {
         this.clientRepositoryAdapter.delete(uid);
 
         assertThat(this.clientRepositoryAdapter.getAll())
-                .isEmpty();
+                .isNotEmpty();
     }
 
     @Test
