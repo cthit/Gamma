@@ -2,14 +2,14 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
-import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.post.domain.PostId;
-import it.chalmers.gamma.app.group.domain.GroupRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
+import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
@@ -36,7 +36,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     private static final PersistenceErrorState SUPER_GROUP_NOT_FOUND = new PersistenceErrorState(
             "fkit_group_super_group_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState GROUP_NAME_ALREADY_EXISTS = new PersistenceErrorState(
@@ -46,12 +46,12 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     private static final PersistenceErrorState USER_NOT_FOUND = new PersistenceErrorState(
             "membership_user_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState POST_NOT_FOUND = new PersistenceErrorState(
             "membership_post_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     public GroupRepositoryAdapter(GroupJpaRepository groupJpaRepository,

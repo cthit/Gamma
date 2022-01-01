@@ -37,7 +37,7 @@ public class SettingsInfoSuperGroupTypePK extends PKId<SettingsInfoSuperGroupTyp
     public SettingsInfoSuperGroupTypePKDTO getValue() {
         return new SettingsInfoSuperGroupTypePKDTO(
                 settings.getId(),
-                superGroupType.get()
+                new SuperGroupType(superGroupType.get())
         );
     }
 

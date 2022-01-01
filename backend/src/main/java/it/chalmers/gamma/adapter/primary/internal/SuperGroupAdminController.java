@@ -2,9 +2,9 @@ package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
+import it.chalmers.gamma.util.response.BadRequestResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,7 +48,7 @@ public class SuperGroupAdminController {
                     )
             );
         } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
-            throw new SuperGroupDoesNotExistResponse();
+            throw new SuperGroupDoesNotFoundResponse();
         }
         return new SuperGroupCreatedResponse();
     }
@@ -57,10 +57,12 @@ public class SuperGroupAdminController {
     public SuperGroupDeletedResponse removeSuperGroup(@PathVariable("id") SuperGroupId id) {
         try {
             this.superGroupFacade.deleteSuperGroup(id);
-        } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
-            throw new SuperGroupDoesNotExistResponse();
+            return new SuperGroupDeletedResponse();
+        } catch (SuperGroupFacade.SuperGroupIsUsedException e) {
+            throw new SuperGroupIsUsedResponse();
+        } catch (SuperGroupFacade.SuperGroupNotFoundException e) {
+            throw new SuperGroupDoesNotFoundResponse();
         }
-        return new SuperGroupDeletedResponse();
     }
 
     private record EditSuperGroupRequest(int version,
@@ -88,7 +90,7 @@ public class SuperGroupAdminController {
                     )
             );
         } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
-            throw new SuperGroupDoesNotExistResponse();
+            throw new SuperGroupDoesNotFoundResponse();
         }
         return new SuperGroupUpdatedResponse();
     }
@@ -101,5 +103,8 @@ public class SuperGroupAdminController {
 
     private static class SuperGroupAlreadyExistsResponse extends AlreadyExistsResponse { }
 
-    private static class SuperGroupDoesNotExistResponse extends NotFoundResponse { }
+    private static class SuperGroupDoesNotFoundResponse extends NotFoundResponse { }
+
+    private static class SuperGroupIsUsedResponse extends BadRequestResponse { }
+
 }

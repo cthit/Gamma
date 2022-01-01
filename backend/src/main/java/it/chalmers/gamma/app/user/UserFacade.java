@@ -3,15 +3,17 @@ package it.chalmers.gamma.app.user;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.password.PasswordService;
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.authentication.ApiAuthenticated;
 import it.chalmers.gamma.app.authentication.AuthenticatedService;
-import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.group.domain.GroupRepository;
+import it.chalmers.gamma.app.password.PasswordService;
+import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
+import it.chalmers.gamma.app.settings.domain.Settings;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.FirstName;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
@@ -42,19 +44,22 @@ public class UserFacade extends Facade {
     private final PasswordService passwordService;
     private final GroupRepository groupRepository;
     private final SettingsUserAgreementChecker settingsUserAgreementChecker;
+    private final SettingsRepository settingsRepository;
 
     public UserFacade(AccessGuard accessGuard,
                       UserRepository userRepository,
                       AuthenticatedService authenticatedService,
                       PasswordService passwordService,
                       GroupRepository groupRepository,
-                      SettingsUserAgreementChecker settingsUserAgreementChecker) {
+                      SettingsUserAgreementChecker settingsUserAgreementChecker,
+                      SettingsRepository settingsRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
         this.passwordService = passwordService;
         this.groupRepository = groupRepository;
         this.settingsUserAgreementChecker = settingsUserAgreementChecker;
+        this.settingsRepository = settingsRepository;
     }
 
     public record UserDTO(String cid,
@@ -121,10 +126,13 @@ public class UserFacade extends Facade {
     public List<UserDTO> getAllByClientAccepting() {
         this.accessGuard.require(isClientApi());
 
+        Settings settings = settingsRepository.getSettings();
+
         if (authenticatedService.getAuthenticated() instanceof ApiAuthenticated apiAuthenticated) {
             Client client = apiAuthenticated.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()
+                    .filter(user -> this.settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user, settings))
                     .map(UserDTO::new)
                     .toList();
         }

@@ -33,12 +33,12 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
     private static final PersistenceErrorState authorityLevelNotFound = new PersistenceErrorState(
             "itclient_authority_level_restriction_authority_level_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
             "it_user_approval_user_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState clientIdAlreadyExists = new PersistenceErrorState(

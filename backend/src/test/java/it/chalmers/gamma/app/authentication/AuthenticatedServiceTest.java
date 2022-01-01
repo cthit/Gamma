@@ -10,11 +10,12 @@ import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.client.domain.RedirectUrl;
+import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -52,8 +53,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.mockito.BDDMockito.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
@@ -67,6 +68,9 @@ class AuthenticatedServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+
+    @Mock
+    private SettingsUserAgreementChecker settingsUserAgreementChecker;
 
     @InjectMocks
     private AuthenticatedService authenticatedService;
@@ -87,6 +91,11 @@ class AuthenticatedServiceTest {
             false,
             Optional.empty()
     );
+
+    private static final User lockedUser = normalUser.with()
+            .id(UserId.generate())
+            .locked(true)
+            .build();
 
     private static final ApiKey clientApiKey = new ApiKey(
             ApiKeyId.generate(),
@@ -128,9 +137,11 @@ class AuthenticatedServiceTest {
 
     @Test
     @WithMockInternalAuthenticated
-    public void Given_UserDetailsProxy_Expect_getAuthentication_ToReturn_InternalAuthenticated() {
+    public void Given_UserDetailsProxy_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
         given(userRepository.get(normalUser.id()))
                 .willReturn(Optional.of(normalUser));
+        given(settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(normalUser))
+                .willReturn(true);
 
         assertThat(this.authenticatedService.getAuthenticated())
                 .isInstanceOfSatisfying(
@@ -140,6 +151,39 @@ class AuthenticatedServiceTest {
                                         .isEqualTo(normalUser)
                 );
     }
+
+    @Test
+    @WithMockInternalAuthenticated
+    public void Given_UserDetailsProxyNotAcceptedUserAgreement_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
+        given(settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(normalUser))
+                .willReturn(false);
+        given(userRepository.get(normalUser.id()))
+                .willReturn(Optional.of(normalUser));
+
+        assertThat(this.authenticatedService.getAuthenticated())
+                .isInstanceOfSatisfying(
+                        LockedInternalUserAuthenticated.class,
+                        internal ->
+                                assertThat(internal.get())
+                                        .isEqualTo(normalUser)
+                );
+    }
+
+    @Test
+    @WithMockInternalAuthenticated(locked = true)
+    public void Given_UserDetailsProxyThatIsLocked_Expect_getAuthentication_ToReturn_LockedInternalUserAuthenticated() {
+        given(userRepository.get(lockedUser.id()))
+                .willReturn(Optional.of(lockedUser));
+
+        assertThat(this.authenticatedService.getAuthenticated())
+                .isInstanceOfSatisfying(
+                        LockedInternalUserAuthenticated.class,
+                        internal ->
+                                assertThat(internal.get())
+                                        .isEqualTo(lockedUser)
+                );
+    }
+
 
     @Test
     @WithMockExternalAuthenticated
@@ -209,14 +253,18 @@ class AuthenticatedServiceTest {
 
     @Retention(RetentionPolicy.RUNTIME)
     @WithSecurityContext(factory = WithInternalAuthenticatedSecurityContextFactory.class)
-    private @interface WithMockInternalAuthenticated { }
+    private @interface WithMockInternalAuthenticated {
+        boolean locked() default false;
+    }
 
     private static class WithInternalAuthenticatedSecurityContextFactory implements WithSecurityContextFactory<WithMockInternalAuthenticated> {
         @Override
         public SecurityContext createSecurityContext(WithMockInternalAuthenticated annotation) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(normalUser, Collections.emptyList());
+            User user = annotation.locked() ? lockedUser : normalUser;
+
+            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, Collections.emptyList());
             Authentication auth = new UsernamePasswordAuthenticationToken(
                     userDetailsProxy,
                     "password",

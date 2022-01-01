@@ -93,24 +93,16 @@ public class AuthorityLevelEntityIntegrationTests {
 
     @Autowired
     private AuthorityLevelRepositoryAdapter authorityLevelRepositoryAdapter;
-
     @Autowired
     private SuperGroupRepository superGroupRepository;
-
     @Autowired
     private SuperGroupTypeRepository superGroupTypeRepository;
-
     @Autowired
     private GroupRepository groupRepository;
-
     @Autowired
     private PostRepository postRepository;
-
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private AuthorityLevelEntityConverter authorityLevelEntityConverter;
 
     /**
      * This is a very important test! If it fails, please stop.

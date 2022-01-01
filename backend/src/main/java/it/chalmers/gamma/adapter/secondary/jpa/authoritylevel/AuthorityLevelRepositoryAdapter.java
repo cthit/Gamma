@@ -52,22 +52,22 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
 
     private static final PersistenceErrorState superGroupNotFound = new PersistenceErrorState(
             "authority_super_group_super_group_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState postSuperGroupNotFound = new PersistenceErrorState(
             "authority_post_super_group_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState postPostNotFound = new PersistenceErrorState(
             "authority_post_post_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
             "authority_user_user_id_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     public AuthorityLevelRepositoryAdapter(AuthorityLevelJpaRepository repository,

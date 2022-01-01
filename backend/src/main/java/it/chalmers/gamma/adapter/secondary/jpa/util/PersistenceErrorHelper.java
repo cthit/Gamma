@@ -15,7 +15,7 @@ public final class PersistenceErrorHelper {
     }
 
     //TODO: this can be refactored
-    // DataIntegrityViolationException?
+    // DataIntegrityViolationException, should not be Exception
     public static PersistenceErrorState getState(Exception e) {
 
         for (Throwable t = e.getCause(); t != null; t = t.getCause()) {

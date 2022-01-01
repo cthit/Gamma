@@ -1,4 +1,5 @@
 package it.chalmers.gamma.app.authentication;
+
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
@@ -10,8 +11,8 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.client.domain.RedirectUrl;
+import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -51,9 +52,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.*;
-import static org.mockito.BDDMockito.*;
-import static org.assertj.core.api.Assertions.*;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedInUserMemberOfGroup;
+import static it.chalmers.gamma.app.authentication.AccessGuard.passwordCheck;
+import static it.chalmers.gamma.app.authentication.AccessGuard.userHasAcceptedClient;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(SpringExtension.class)
@@ -293,6 +303,22 @@ class AccessGuardTest {
     }
 
     @Test
+    public void Given_AdminThatIsLocked_Expect_isAdmin_To_Throw() {
+        User lockedAdminUser = adminUser.with()
+                .id(UserId.generate())
+                .locked(true)
+                .build();
+
+        given(authenticatedService.getAuthenticated())
+                .willReturn((LockedInternalUserAuthenticated) () -> lockedAdminUser);
+        given(authorityLevelRepository.getByUser(lockedAdminUser.id()))
+                .willReturn(userAuthoritiesMap.get(lockedAdminUser.id()));
+
+        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+    }
+
+    @Test
     public void Given_NonAdmin_Expect_isAdmin_To_Throw() {
         given(authenticatedService.getAuthenticated())
                 .willReturn((InternalUserAuthenticated) () -> normalUser);
@@ -434,6 +460,20 @@ class AccessGuardTest {
                 .willReturn((InternalUserAuthenticated) () -> normalUser);
 
         assertThatNoException()
+                .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
+    }
+
+    @Test
+    public void Given_UserIsSignedInAndLocked_Expect_isSignedIn_To_NotThrow() {
+        User lockedUser = normalUser.with()
+                .id(UserId.generate())
+                .locked(true)
+                .build();
+
+        given(authenticatedService.getAuthenticated())
+                .willReturn((LockedInternalUserAuthenticated) () -> lockedUser);
+
+        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
     }
 

@@ -1,14 +1,15 @@
 package it.chalmers.gamma.app.authentication;
 
-import it.chalmers.gamma.app.user.userdetails.UserDetailsProxy;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
+import it.chalmers.gamma.app.client.domain.ClientRepository;
+import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.userdetails.UserDetailsProxy;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,13 +25,16 @@ public class AuthenticatedService {
     private final UserRepository userRepository;
     private final ApiKeyRepository apiKeyRepository;
     private final ClientRepository clientRepository;
+    private final SettingsUserAgreementChecker settingsUserAgreementChecker;
 
     public AuthenticatedService(UserRepository userRepository,
                                 ApiKeyRepository apiKeyRepository,
-                                ClientRepository clientRepository) {
+                                ClientRepository clientRepository,
+                                SettingsUserAgreementChecker settingsUserAgreementChecker) {
         this.userRepository = userRepository;
         this.apiKeyRepository = apiKeyRepository;
         this.clientRepository = clientRepository;
+        this.settingsUserAgreementChecker = settingsUserAgreementChecker;
     }
 
     public Authenticated getAuthenticated() {
@@ -43,6 +47,12 @@ public class AuthenticatedService {
         if (principal instanceof UserDetailsProxy userDetailsProxy) {
             User user = this.userRepository.get(new UserId(UUID.fromString(userDetailsProxy.getUsername())))
                     .orElseThrow(IllegalStateException::new);
+
+            // TODO: Optimize settings and cache settings
+            if (user.locked() || !settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user)) {
+                return (LockedInternalUserAuthenticated) () -> user;
+            }
+
             return (InternalUserAuthenticated) () -> user;
         }
 

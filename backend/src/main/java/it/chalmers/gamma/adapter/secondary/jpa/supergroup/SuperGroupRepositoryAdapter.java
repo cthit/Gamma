@@ -8,6 +8,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +23,17 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     private static final PersistenceErrorState typeNotFound = new PersistenceErrorState(
             "fkit_super_group_super_group_type_name_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     private static final PersistenceErrorState nameAlreadyExists = new PersistenceErrorState(
             "fkit_super_group_e_name_key",
             PersistenceErrorState.Type.NOT_UNIQUE
+    );
+
+    private static final PersistenceErrorState superGroupIsUsed = new PersistenceErrorState(
+            "fkit_group_super_group_id_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
     public SuperGroupRepositoryAdapter(SuperGroupJpaRepository repository,
@@ -56,8 +62,21 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
     }
 
     @Override
-    public void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException {
-        this.repository.deleteById(superGroupId.value());
+    public void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException, SuperGroupIsUsedException {
+        try {
+            this.repository.deleteById(superGroupId.value());
+            this.repository.flush();
+        } catch (EmptyResultDataAccessException e) {
+            throw new SuperGroupNotFoundException();
+        } catch (Exception e) {
+            PersistenceErrorState state = PersistenceErrorHelper.getState(e);
+
+            if (state.equals(superGroupIsUsed)) {
+                throw new SuperGroupIsUsedException();
+            }
+
+            throw e;
+        }
     }
 
     @Override
@@ -67,7 +86,7 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
     @Override
     public List<SuperGroup> getAllByType(SuperGroupType superGroupType) {
-        return this.repository.findAllBySuperGroupType(superGroupType.value())
+        return this.repository.findAllBySuperGroupType_Name(superGroupType.value())
                 .stream()
                 .map(this.superGroupEntityConverter::toDomain)
                 .toList();

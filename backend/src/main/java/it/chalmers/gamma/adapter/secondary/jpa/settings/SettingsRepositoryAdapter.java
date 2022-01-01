@@ -1,32 +1,26 @@
 package it.chalmers.gamma.adapter.secondary.jpa.settings;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.settings.domain.Settings;
-import org.springframework.dao.DataIntegrityViolationException;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 
 @Service
 public class SettingsRepositoryAdapter implements SettingsRepository {
 
     private final SettingsJpaRepository repository;
-    private final SuperGroupTypeJpaRepository superGroupTypeJpaRepository;
 
     private static final PersistenceErrorState superGroupTypeNotFound = new PersistenceErrorState(
             "settings_info_api_super_group_types_super_group_type_name_fkey",
-            PersistenceErrorState.Type.NOT_FOUND
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
-    public SettingsRepositoryAdapter(SettingsJpaRepository repository,
-                                     SuperGroupTypeJpaRepository superGroupTypeJpaRepository) {
+    public SettingsRepositoryAdapter(SettingsJpaRepository repository) {
         this.repository = repository;
-        this.superGroupTypeJpaRepository = superGroupTypeJpaRepository;
     }
 
     @Override

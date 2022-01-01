@@ -1,17 +1,18 @@
 package it.chalmers.gamma.app.user;
 
-import it.chalmers.gamma.app.authentication.ExternalUserAuthenticated;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.authentication.Authenticated;
 import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.authentication.ExternalUserAuthenticated;
 import it.chalmers.gamma.app.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.app.authentication.LockedInternalUserAuthenticated;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
+import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.password.PasswordService;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.user.domain.FirstName;
 import it.chalmers.gamma.app.user.domain.Language;
@@ -188,8 +189,8 @@ public class MeFacade extends Facade {
 
     public void acceptUserAgreement() {
         Authenticated authenticated = this.authenticatedService.getAuthenticated();
-        if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User oldMe = internalUserAuthenticated.get();
+        if (authenticated instanceof LockedInternalUserAuthenticated lockedInternalUserAuthenticated) {
+            User oldMe = lockedInternalUserAuthenticated.get();
             User newMe = oldMe.withLastAcceptedUserAgreement(Instant.now());
 
             this.userRepository.save(newMe);

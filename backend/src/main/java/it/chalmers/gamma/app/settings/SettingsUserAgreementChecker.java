@@ -16,6 +16,10 @@ public class SettingsUserAgreementChecker {
 
     public boolean hasAcceptedLatestUserAgreement(User user) {
         Settings settings = settingsRepository.getSettings();
+        return hasAcceptedLatestUserAgreement(user, settings);
+    }
+
+    public boolean hasAcceptedLatestUserAgreement(User user, Settings settings) {
         return settings.lastUpdatedUserAgreement().compareTo(user.lastAcceptedUserAgreement()) < 0;
     }
 

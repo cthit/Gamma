@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.whitelist;
 
-import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
+import it.chalmers.gamma.app.user.domain.Cid;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,13 +27,4 @@ public class WhitelistEntity extends SingleImmutableEntity<Cid> {
         return Cid.valueOf(this.cid);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }

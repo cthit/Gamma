@@ -107,10 +107,16 @@ public class SuperGroupFacade extends Facade {
         this.superGroupRepository.save(newSuperGroup);
     }
 
-    public void deleteSuperGroup(SuperGroupId superGroupId) throws SuperGroupRepository.SuperGroupNotFoundException {
+    public void deleteSuperGroup(SuperGroupId superGroupId) throws SuperGroupIsUsedException, SuperGroupNotFoundException {
         accessGuard.require(isAdmin());
 
-        this.superGroupRepository.delete(superGroupId);
+        try {
+            this.superGroupRepository.delete(superGroupId);
+        } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
+            throw new SuperGroupNotFoundException();
+        } catch (SuperGroupRepository.SuperGroupIsUsedException e) {
+            throw new SuperGroupIsUsedException();
+        }
     }
 
     public record SuperGroupDTO(UUID id,
@@ -153,5 +159,8 @@ public class SuperGroupFacade extends Facade {
     public Optional<SuperGroupDTO> get(UUID superGroupId) {
         return this.superGroupRepository.get(new SuperGroupId(superGroupId)).map(SuperGroupDTO::new);
     }
+
+    public static class SuperGroupNotFoundException extends Exception { }
+    public static class SuperGroupIsUsedException extends Exception { }
 
 }

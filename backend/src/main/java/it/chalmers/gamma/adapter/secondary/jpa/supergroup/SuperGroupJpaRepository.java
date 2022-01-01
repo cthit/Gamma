@@ -9,6 +9,6 @@ import java.util.UUID;
 @Repository
 public interface SuperGroupJpaRepository extends JpaRepository<SuperGroupEntity, UUID> {
 
-    List<SuperGroupEntity> findAllBySuperGroupType(String type);
+    List<SuperGroupEntity> findAllBySuperGroupType_Name(String type);
 
 }
