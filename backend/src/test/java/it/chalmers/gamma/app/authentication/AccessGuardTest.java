@@ -38,6 +38,7 @@ import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
+import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +46,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -83,36 +83,39 @@ class AccessGuardTest {
 
     private static final User adminUser = new User(
             UserId.generate(),
-            0,
-            new Cid("abcde"),
-            new Email("abcde@chalmers.it"),
-            Language.EN,
-            new Nick("TheAdmin"),
-            new Password("{noop}password123"),
-            new FirstName("Something"),
-            new LastName("Somethingsson"),
-            Instant.now(),
-            new AcceptanceYear(2021),
-            true,
-            false,
-            Optional.empty()
-    );
-
-    private static final User normalUser = new User(
-            UserId.generate(),
-            0,
             new Cid("edcba"),
-            new Email("edcba@chalmers.it"),
-            Language.EN,
-            new Nick("TheUser"),
-            new Password("{noop}password321"),
+            new Nick("TheAdmin"),
             new FirstName("Something1"),
             new LastName("Somethingsson1"),
-            Instant.now(),
             new AcceptanceYear(2021),
-            true,
-            false,
-            Optional.empty()
+            new UserExtended(
+                    new Email("edcba@chalmers.it"),
+                    0,
+                    Language.EN,
+                    new Password("{noop}password321"),
+                    true,
+                    false,
+                    false,
+                    null
+            )
+    );
+    private static final User normalUser = new User(
+            UserId.generate(),
+            new Cid("edcba"),
+            new Nick("TheUser"),
+            new FirstName("Something1"),
+            new LastName("Somethingsson1"),
+            new AcceptanceYear(2021),
+            new UserExtended(
+                    new Email("edcba@chalmers.it"),
+                    0,
+                    Language.EN,
+                    new Password("{noop}password321"),
+                    true,
+                    false,
+                    false,
+                    null
+            )
     );
 
     private static final Post member = new Post(
@@ -306,7 +309,7 @@ class AccessGuardTest {
     public void Given_AdminThatIsLocked_Expect_isAdmin_To_Throw() {
         User lockedAdminUser = adminUser.with()
                 .id(UserId.generate())
-                .locked(true)
+                .extended(adminUser.extended().withLocked(true))
                 .build();
 
         given(authenticatedService.getAuthenticated())
@@ -370,7 +373,7 @@ class AccessGuardTest {
                 .willReturn((InternalUserAuthenticated) () -> adminUser);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
-        given(passwordService.matches(new UnencryptedPassword(password), adminUser.password()))
+        given(passwordService.matches(new UnencryptedPassword(password), adminUser.extended().password()))
                 .willReturn(true);
 
         assertThatNoException()
@@ -388,7 +391,7 @@ class AccessGuardTest {
                 .willReturn((InternalUserAuthenticated) () -> adminUser);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
-        given(passwordService.matches(new UnencryptedPassword(password), adminUser.password()))
+        given(passwordService.matches(new UnencryptedPassword(password), adminUser.extended().password()))
                 .willReturn(false);
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
@@ -467,7 +470,7 @@ class AccessGuardTest {
     public void Given_UserIsSignedInAndLocked_Expect_isSignedIn_To_NotThrow() {
         User lockedUser = normalUser.with()
                 .id(UserId.generate())
-                .locked(true)
+                .extended(normalUser.extended().withLocked(true))
                 .build();
 
         given(authenticatedService.getAuthenticated())

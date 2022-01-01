@@ -18,9 +18,9 @@ public class UserDetailsProxy implements UserDetails {
     public UserDetailsProxy(User user,
                             List<GrantedAuthorityProxy> authorities) {
         this.id = user.id().value();
-        this.password = user.password().value();
+        this.password = user.extended().password().value();
         this.authorities = authorities;
-        this.userLocked = user.locked();
+        this.userLocked = user.extended().locked();
     }
 
     @Override

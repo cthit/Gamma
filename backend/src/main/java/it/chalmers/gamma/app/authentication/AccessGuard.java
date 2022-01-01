@@ -2,13 +2,13 @@ package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class AccessGuard {
         return (authenticatedService, passwordService, authorityLevelRepository) -> {
             if (authenticatedService.getAuthenticated() instanceof InternalUserAuthenticated userAuthenticated) {
                 User user = userAuthenticated.get();
-                return passwordService.matches(new UnencryptedPassword(password), user.password());
+                return passwordService.matches(new UnencryptedPassword(password), user.extended().password());
             }
 
             return false;

@@ -2,7 +2,11 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.password.PasswordService;
+import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
+import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -11,20 +15,15 @@ import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
-import it.chalmers.gamma.app.mail.domain.MailService;
-import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.Instant;
-import java.util.Optional;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
@@ -84,20 +83,21 @@ public class UserCreationFacade extends Facade {
         this.userRepository.save(
                 new User(
                         UserId.generate(),
-                        0,
                         new Cid(newUser.cid),
-                        new Email(newUser.email),
-                        Language.valueOf(newUser.language),
                         new Nick(newUser.nick),
-                        this.passwordService.encrypt(new UnencryptedPassword(newUser.password)),
                         new FirstName(newUser.firstName),
                         new LastName(newUser.lastName),
-                        Instant.ofEpochSecond(0),
                         new AcceptanceYear(newUser.acceptanceYear),
-                        false,
-                        false,
-                        Optional.empty()
-                )
+                        new UserExtended(
+                                new Email(newUser.email),
+                                0,
+                                Language.valueOf(newUser.language),
+                                this.passwordService.encrypt(new UnencryptedPassword(newUser.password)),
+                                false,
+                                false,
+                                false,
+                                null
+                        ))
         );
     }
 
@@ -115,19 +115,21 @@ public class UserCreationFacade extends Facade {
             this.userRepository.save(
                     new User(
                             UserId.generate(),
-                            0,
                             cid,
-                            new Email(data.email),
-                            Language.valueOf(data.language),
                             new Nick(data.nick),
-                            this.passwordService.encrypt(new UnencryptedPassword(data.password)),
                             new FirstName(data.firstName),
                             new LastName(data.lastName),
-                            Instant.now(),
                             new AcceptanceYear(data.acceptanceYear),
-                            false,
-                            false,
-                            Optional.empty()
+                            new UserExtended(
+                                    new Email(data.email),
+                                    0,
+                                    Language.valueOf(data.language),
+                                    this.passwordService.encrypt(new UnencryptedPassword(data.password)),
+                                    false,
+                                    false,
+                                    false,
+                                    null
+                            )
                     )
             );
 

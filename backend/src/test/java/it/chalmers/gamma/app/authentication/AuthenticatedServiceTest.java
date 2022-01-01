@@ -15,7 +15,6 @@ import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -24,6 +23,7 @@ import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.user.userdetails.UserDetailsProxy;
@@ -69,32 +69,32 @@ class AuthenticatedServiceTest {
     @Mock
     private ClientRepository clientRepository;
 
-    @Mock
-    private SettingsUserAgreementChecker settingsUserAgreementChecker;
-
     @InjectMocks
     private AuthenticatedService authenticatedService;
 
+
     private static final User normalUser = new User(
             UserId.generate(),
-            0,
             new Cid("edcba"),
-            new Email("edcba@chalmers.it"),
-            Language.EN,
             new Nick("TheUser"),
-            new Password("{noop}password321"),
             new FirstName("Something1"),
             new LastName("Somethingsson1"),
-            Instant.now(),
             new AcceptanceYear(2021),
-            true,
-            false,
-            Optional.empty()
+            new UserExtended(
+                    new Email("edcba@chalmers.it"),
+                    0,
+                    Language.EN,
+                    new Password("{noop}password321"),
+                    true,
+                    false,
+                    false,
+                    null
+            )
     );
 
     private static final User lockedUser = normalUser.with()
             .id(UserId.generate())
-            .locked(true)
+            .extended(normalUser.extended().withLocked(true))
             .build();
 
     private static final ApiKey clientApiKey = new ApiKey(
@@ -140,8 +140,6 @@ class AuthenticatedServiceTest {
     public void Given_UserDetailsProxy_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
         given(userRepository.get(normalUser.id()))
                 .willReturn(Optional.of(normalUser));
-        given(settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(normalUser))
-                .willReturn(true);
 
         assertThat(this.authenticatedService.getAuthenticated())
                 .isInstanceOfSatisfying(
@@ -155,17 +153,17 @@ class AuthenticatedServiceTest {
     @Test
     @WithMockInternalAuthenticated
     public void Given_UserDetailsProxyNotAcceptedUserAgreement_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
-        given(settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(normalUser))
-                .willReturn(false);
-        given(userRepository.get(normalUser.id()))
-                .willReturn(Optional.of(normalUser));
+        User notAcceptingUser = normalUser.withExtended(normalUser.extended().withAcceptedUserAgreement(false));
+
+        given(userRepository.get(notAcceptingUser.id()))
+                .willReturn(Optional.of(notAcceptingUser));
 
         assertThat(this.authenticatedService.getAuthenticated())
                 .isInstanceOfSatisfying(
                         LockedInternalUserAuthenticated.class,
                         internal ->
                                 assertThat(internal.get())
-                                        .isEqualTo(normalUser)
+                                        .isEqualTo(notAcceptingUser)
                 );
     }
 

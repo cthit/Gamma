@@ -2,11 +2,10 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.app.password.PasswordService;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -15,13 +14,14 @@ import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.Optional;
 
 @Component
@@ -65,21 +65,24 @@ public class EnsureAnAdminUserBootstrap {
 
             UserId adminId = UserId.generate();
             String name = "admin";
+
             User adminUser = new User(
                     adminId,
-                    0,
-                    Cid.valueOf(name),
-                    new Email(name + "@chalmers.it"),
-                    Language.EN,
+                    new Cid(name),
                     new Nick(name),
-                    this.passwordService.encrypt(new UnencryptedPassword("password")),
                     new FirstName(name),
                     new LastName(name),
-                    Instant.now(),
                     new AcceptanceYear(2018),
-                    true,
-                    false,
-                    Optional.empty()
+                    new UserExtended(
+                            new Email(name + "@chalmers.it"),
+                            0,
+                            Language.EN,
+                            this.passwordService.encrypt(new UnencryptedPassword("password")),
+                            true,
+                            true,
+                            false,
+                            null
+                    )
             );
 
             this.userRepository.save(adminUser);

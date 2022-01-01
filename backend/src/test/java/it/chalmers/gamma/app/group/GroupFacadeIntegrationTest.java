@@ -12,12 +12,14 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeReposito
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.authentication.UserExtendedGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
@@ -25,6 +27,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -39,6 +42,7 @@ import java.util.List;
 import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.chair;
 import static it.chalmers.gamma.DomainUtils.committee;
+import static it.chalmers.gamma.DomainUtils.defaultSettings;
 import static it.chalmers.gamma.DomainUtils.digit;
 import static it.chalmers.gamma.DomainUtils.digit18;
 import static it.chalmers.gamma.DomainUtils.gm;
@@ -57,7 +61,9 @@ import static org.assertj.core.api.Assertions.assertThat;
         GroupRepositoryAdapter.class,
         GroupEntityConverter.class,
         UserRepositoryAdapter.class,
+        UserExtendedGuard.class,
         UserEntityConverter.class,
+        UserExtendedGuard.class,
         PostRepositoryAdapter.class,
         PostEntityConverter.class,
         SuperGroupRepositoryAdapter.class,
@@ -81,6 +87,13 @@ public class GroupFacadeIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @BeforeEach
+    public void setSettings() {
+        this.settingsRepository.setSettings(defaultSettings);
+    }
 
     @Test
     public void Given_Group_Expect_create_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupFacade.GroupAlreadyExistsException, GroupFacade.SuperGroupNotFoundRuntimeException {
@@ -146,7 +159,7 @@ public class GroupFacadeIntegrationTest {
                                         .map(groupMember -> new GroupMember(
                                                 groupMember.post().withVersion(1),
                                                 groupMember.unofficialPostName(),
-                                                groupMember.user().withVersion(1))
+                                                asSaved(groupMember.user()))
                                         ).toList()
                                 )
                                 .build()

@@ -4,11 +4,13 @@ import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
+import it.chalmers.gamma.app.authentication.UserExtendedGuard;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
@@ -50,8 +52,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         GroupEntityConverter.class,
         UserRepositoryAdapter.class,
         UserEntityConverter.class,
+        UserExtendedGuard.class,
         PostRepositoryAdapter.class,
-        PostEntityConverter.class})
+        PostEntityConverter.class,
+        SettingsRepositoryAdapter.class
+})
 public class SuperGroupEntityIntegrationTests {
 
     @Autowired

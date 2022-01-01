@@ -2,10 +2,8 @@ package it.chalmers.gamma.app.user.userdetails;
 
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.user.FindUserByIdentifier;
-import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,8 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     //TODO: Check with patterns.
     @Override
     public UserDetails loadUserByUsername(String userIdentifier) {
-
-
         User user = this.findUserByIdentifier.toUser(userIdentifier)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 

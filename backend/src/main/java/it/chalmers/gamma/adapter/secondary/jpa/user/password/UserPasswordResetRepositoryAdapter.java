@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.password;
 
-import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
-import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

@@ -1,6 +1,7 @@
 package it.chalmers.gamma;
 
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
+import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -13,6 +14,7 @@ import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
@@ -27,10 +29,13 @@ import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +45,11 @@ import java.util.Set;
  * Helper functions
  */
 public final class DomainUtils {
+
+    public static final Settings defaultSettings = new Settings(
+            Instant.now().minus(1, ChronoUnit.DAYS),
+            Collections.emptyList()
+    );
 
     public static SuperGroup sg(String name, SuperGroupType type) {
         return new SuperGroup(
@@ -84,19 +94,21 @@ public final class DomainUtils {
     public static User u(String cid, boolean locked, boolean gdprTrained) {
         return new User(
                 UserId.generate(),
-                0,
                 new Cid(cid),
-                new Email(cid + "@chalmers.it"),
-                Language.SV,
                 new Nick("N-" + cid),
-                new Password("{noop}password"),
                 new FirstName("F-" + cid),
                 new LastName("L-" + cid),
-                Instant.now(),
                 new AcceptanceYear(2021),
-                gdprTrained,
-                locked,
-                Optional.empty()
+                new UserExtended(
+                        new Email(cid + "@chalmers.it"),
+                        0,
+                        Language.SV,
+                        new Password("{noop}password"),
+                        true,
+                        gdprTrained,
+                        locked,
+                        null
+                )
         );
     }
 
@@ -146,7 +158,7 @@ public final class DomainUtils {
 
     public static User u0 = u("abcaa");
     public static User u1 = u("abca");
-    public static User  u2 = u("abcb", true, true);
+    public static User u2 = u("abcb", true, true);
     public static User u3 = u("abcc", false, false);
     public static User u4 = u("abcd");
     public static User u5 = u("abce", false, false);
@@ -168,7 +180,8 @@ public final class DomainUtils {
     public static Group styrit19 = g("styrit19", styrit, List.of(gm(u10, chair), gm(u11, treasurer)));
 
     /**
-     * Basically adds 1 to each version since they all have been saved
+     * Basically adds 1 to each version since they all have been saved.
+     * Also removes extended.
      */
     public static Group asSaved(Group group) {
         return new Group(
@@ -182,11 +195,33 @@ public final class DomainUtils {
                         .map(groupMember -> new GroupMember(
                                 groupMember.post().withVersion(1),
                                 groupMember.unofficialPostName(),
-                                groupMember.user().withVersion(1)))
+                                removeUserExtended(groupMember.user())))
                         .toList(),
                 group.avatarUri(),
                 group.bannerUri()
         );
+    }
+
+    public static Client removeUserExtended(Client client) {
+        return client.withApprovedUsers(client.approvedUsers()
+                .stream()
+                .map(DomainUtils::removeUserExtended)
+                .toList());
+    }
+
+    public static Group removeUserExtended(Group group) {
+        return group.withGroupMembers(group.groupMembers()
+                .stream()
+                .map(groupMember -> groupMember.withUser(removeUserExtended(groupMember.user())))
+                .toList());
+    }
+
+    public static User removeUserExtended(User user) {
+        return user.withExtended(null);
+    }
+
+    public static User asSaved(User user) {
+        return user.withExtended(user.extended().withVersion(1));
     }
 
     public static AuthorityLevel asSaved(AuthorityLevel authorityLevel) {
@@ -205,7 +240,7 @@ public final class DomainUtils {
                         .toList(),
                 authorityLevel.users()
                         .stream()
-                        .map(user -> user.withVersion(1))
+                        .map(DomainUtils::removeUserExtended)
                         .toList()
         );
     }

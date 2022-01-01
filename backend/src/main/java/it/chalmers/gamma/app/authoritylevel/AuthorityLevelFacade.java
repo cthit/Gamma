@@ -1,21 +1,21 @@
 package it.chalmers.gamma.app.authoritylevel;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.post.domain.PostRepository;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -13,7 +13,6 @@ import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.password.PasswordService;
-import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.user.domain.FirstName;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
@@ -25,7 +24,6 @@ import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,7 +38,6 @@ public class MeFacade extends Facade {
     private final AuthorityLevelRepository authorityLevelRepository;
     private final GroupRepository groupRepository;
     private final PasswordService passwordService;
-    private final SettingsUserAgreementChecker settingsUserAgreementChecker;
 
     public MeFacade(AccessGuard accessGuard,
                     UserRepository userRepository,
@@ -48,8 +45,7 @@ public class MeFacade extends Facade {
                     ClientRepository clientRepository,
                     AuthorityLevelRepository authorityLevelRepository,
                     GroupRepository groupRepository,
-                    PasswordService passwordService,
-                    SettingsUserAgreementChecker settingsUserAgreementChecker) {
+                    PasswordService passwordService) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
@@ -57,7 +53,6 @@ public class MeFacade extends Facade {
         this.authorityLevelRepository = authorityLevelRepository;
         this.groupRepository = groupRepository;
         this.passwordService = passwordService;
-        this.settingsUserAgreementChecker = settingsUserAgreementChecker;
     }
 
     public record UserApprovedClientDTO(String prettyName,
@@ -100,19 +95,19 @@ public class MeFacade extends Facade {
                         List<UserMembership> groups,
                         List<MyAuthority> authorities,
                         String language) {
-        public MeDTO(User user, List<UserMembership> groups, List<UserAuthority> authorities, boolean userAgreement) {
+        public MeDTO(User user, List<UserMembership> groups, List<UserAuthority> authorities) {
             this(user.nick().value(),
                     user.firstName().value(),
                     user.lastName().value(),
                     user.cid().value(),
-                    user.email().value(),
+                    user.extended().email().value(),
                     user.id().value(),
                     user.acceptanceYear().value(),
-                    user.gdprTrained(),
-                    userAgreement,
+                    user.extended().gdprTrained(),
+                    user.extended().acceptedUserAgreement(),
                     groups,
                     authorities.stream().map(a -> new MyAuthority(a.authorityLevelName().value(), a.authorityType().name())).toList(),
-                    user.language().name()
+                    user.extended().language().name()
             );
         }
     }
@@ -134,7 +129,7 @@ public class MeFacade extends Facade {
         List<UserMembership> groups = this.groupRepository.getAllByUser(user.id());
         List<UserAuthority> authorities = this.authorityLevelRepository.getByUser(user.id());
 
-        return new MeDTO(user, groups, authorities, settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user));
+        return new MeDTO(user, groups, authorities);
     }
 
     public record UpdateMe(String nick,
@@ -152,8 +147,11 @@ public class MeFacade extends Facade {
                     .nick(new Nick(updateMe.nick))
                     .firstName(new FirstName(updateMe.firstName))
                     .lastName(new LastName(updateMe.lastName))
-                    .email(new Email(updateMe.email))
-                    .language(Language.valueOf(updateMe.language))
+                    .extended(oldMe.extended().with()
+                            .email(new Email(updateMe.email))
+                            .language(Language.valueOf(updateMe.language))
+                            .build()
+                    )
                     .build();
 
             this.userRepository.save(newMe);
@@ -166,8 +164,11 @@ public class MeFacade extends Facade {
         Authenticated authenticated = this.authenticatedService.getAuthenticated();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User oldMe = internalUserAuthenticated.get();
-            User newMe = oldMe
-                    .withPassword(this.passwordService.encrypt(new UnencryptedPassword(updatePassword.newPassword)));
+            User newMe = oldMe.withExtended(
+                    oldMe.extended().withPassword(
+                            this.passwordService.encrypt(new UnencryptedPassword(updatePassword.newPassword))
+                    )
+            );
 
             this.userRepository.save(newMe);
         }
@@ -177,7 +178,7 @@ public class MeFacade extends Facade {
         Authenticated authenticated = this.authenticatedService.getAuthenticated();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User me = internalUserAuthenticated.get();
-            if (this.passwordService.matches(new UnencryptedPassword(password), me.password())) {
+            if (this.passwordService.matches(new UnencryptedPassword(password), me.extended().password())) {
                 try {
                     this.userRepository.delete(me.id());
                 } catch (UserRepository.UserNotFoundException e) {
@@ -190,10 +191,11 @@ public class MeFacade extends Facade {
     public void acceptUserAgreement() {
         Authenticated authenticated = this.authenticatedService.getAuthenticated();
         if (authenticated instanceof LockedInternalUserAuthenticated lockedInternalUserAuthenticated) {
-            User oldMe = lockedInternalUserAuthenticated.get();
-            User newMe = oldMe.withLastAcceptedUserAgreement(Instant.now());
-
-            this.userRepository.save(newMe);
+            try {
+                this.userRepository.acceptUserAgreement(lockedInternalUserAuthenticated.get().id());
+            } catch (UserRepository.UserNotFoundException e) {
+                throw new IllegalStateException();
+            }
         }
     }
 }

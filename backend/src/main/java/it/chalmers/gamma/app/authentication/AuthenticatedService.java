@@ -5,7 +5,6 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -25,16 +24,13 @@ public class AuthenticatedService {
     private final UserRepository userRepository;
     private final ApiKeyRepository apiKeyRepository;
     private final ClientRepository clientRepository;
-    private final SettingsUserAgreementChecker settingsUserAgreementChecker;
 
     public AuthenticatedService(UserRepository userRepository,
                                 ApiKeyRepository apiKeyRepository,
-                                ClientRepository clientRepository,
-                                SettingsUserAgreementChecker settingsUserAgreementChecker) {
+                                ClientRepository clientRepository) {
         this.userRepository = userRepository;
         this.apiKeyRepository = apiKeyRepository;
         this.clientRepository = clientRepository;
-        this.settingsUserAgreementChecker = settingsUserAgreementChecker;
     }
 
     public Authenticated getAuthenticated() {
@@ -48,8 +44,7 @@ public class AuthenticatedService {
             User user = this.userRepository.get(new UserId(UUID.fromString(userDetailsProxy.getUsername())))
                     .orElseThrow(IllegalStateException::new);
 
-            // TODO: Optimize settings and cache settings
-            if (user.locked() || !settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user)) {
+            if (user.extended().locked() || !user.extended().acceptedUserAgreement()) {
                 return (LockedInternalUserAuthenticated) () -> user;
             }
 

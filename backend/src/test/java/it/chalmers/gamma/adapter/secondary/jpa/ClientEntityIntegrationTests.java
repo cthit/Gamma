@@ -7,6 +7,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepo
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
@@ -15,6 +16,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.authentication.UserExtendedGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
@@ -27,7 +29,9 @@ import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -41,6 +45,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static it.chalmers.gamma.DomainUtils.addAll;
+import static it.chalmers.gamma.DomainUtils.asSaved;
+import static it.chalmers.gamma.DomainUtils.defaultSettings;
+import static it.chalmers.gamma.DomainUtils.removeUserExtended;
 import static it.chalmers.gamma.DomainUtils.u1;
 import static it.chalmers.gamma.DomainUtils.u2;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,13 +59,15 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         ClientEntityConverter.class,
         UserRepositoryAdapter.class,
         UserEntityConverter.class,
+        UserExtendedGuard.class,
         ApiKeyRepositoryAdapter.class,
         ApiKeyEntityConverter.class,
         AuthorityLevelRepositoryAdapter.class,
         AuthorityLevelEntityConverter.class,
         SuperGroupEntityConverter.class,
         PostEntityConverter.class,
-        UserEntityConverter.class})
+        UserEntityConverter.class,
+        SettingsRepositoryAdapter.class})
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ClientEntityIntegrationTests {
@@ -71,6 +80,13 @@ public class ClientEntityIntegrationTests {
     private UserRepository userRepository;
     @Autowired
     private AuthorityLevelRepository authorityLevelRepository;
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @BeforeEach
+    public void setSettings() {
+        this.settingsRepository.setSettings(defaultSettings);
+    }
 
     @Test
     public void Given_AValidClient_Expect_save_To_Work() {
@@ -172,7 +188,7 @@ public class ClientEntityIntegrationTests {
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                List.of(u1.withVersion(1))
+                List.of(removeUserExtended(u1))
         ));
 
         ClientUid uid = ClientUid.generate();
@@ -203,7 +219,7 @@ public class ClientEntityIntegrationTests {
                         new AuthorityLevelName("admin"),
                         Collections.emptyList(),
                         Collections.emptyList(),
-                        List.of(u1.withVersion(1)))
+                        List.of(removeUserExtended(u1)))
                 );
 
     }
@@ -237,7 +253,7 @@ public class ClientEntityIntegrationTests {
         addAll(userRepository, u1, u2);
 
         Client newClient2 = newClient.withApprovedUsers(
-                List.of(u1.withVersion(1), u2.withVersion(1))
+                List.of(removeUserExtended(u1), removeUserExtended(u2))
         );
 
         this.clientRepositoryAdapter.save(newClient2);
@@ -479,7 +495,7 @@ public class ClientEntityIntegrationTests {
                 ),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                List.of(u1.withVersion(1)),
+                List.of(asSaved(u1)),
                 Optional.empty()
         );
 
@@ -508,7 +524,12 @@ public class ClientEntityIntegrationTests {
         this.clientRepositoryAdapter.save(client5);
 
         assertThat(this.clientRepositoryAdapter.getClientsByUserApproved(u1.id()))
-                .containsExactlyInAnyOrder(client, client2, client4, client5);
+                .containsExactlyInAnyOrder(
+                        removeUserExtended(client),
+                        removeUserExtended(client2),
+                        removeUserExtended(client4),
+                        removeUserExtended(client5)
+                );
     }
 
 }

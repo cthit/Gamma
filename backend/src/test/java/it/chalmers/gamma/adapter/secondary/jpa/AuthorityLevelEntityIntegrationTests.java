@@ -6,21 +6,25 @@ import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
+import it.chalmers.gamma.app.authentication.UserExtendedGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -38,6 +42,7 @@ import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.board;
 import static it.chalmers.gamma.DomainUtils.chair;
 import static it.chalmers.gamma.DomainUtils.committee;
+import static it.chalmers.gamma.DomainUtils.defaultSettings;
 import static it.chalmers.gamma.DomainUtils.didit;
 import static it.chalmers.gamma.DomainUtils.digit;
 import static it.chalmers.gamma.DomainUtils.digit18;
@@ -80,6 +85,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         SuperGroupEntityConverter.class,
         UserRepositoryAdapter.class,
         UserEntityConverter.class,
+        UserExtendedGuard.class,
         PostRepositoryAdapter.class,
         PostEntityConverter.class,
         GroupRepositoryAdapter.class,
@@ -88,7 +94,9 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         AuthorityLevelEntityConverter.class,
         SuperGroupEntityConverter.class,
         UserEntityConverter.class,
-        PostEntityConverter.class})
+        UserExtendedGuard.class,
+        PostEntityConverter.class,
+        SettingsRepositoryAdapter.class})
 public class AuthorityLevelEntityIntegrationTests {
 
     @Autowired
@@ -103,6 +111,13 @@ public class AuthorityLevelEntityIntegrationTests {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @BeforeEach
+    public void setSettings() {
+        this.settingsRepository.setSettings(defaultSettings);
+    }
 
     /**
      * This is a very important test! If it fails, please stop.

@@ -2,12 +2,12 @@ package it.chalmers.gamma.app.user.passwordreset;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.FindUserByIdentifier;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.app.mail.domain.MailService;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import org.slf4j.Logger;
@@ -83,9 +83,7 @@ public class UserResetPasswordFacade extends Facade {
         if (token.equals(inputToken)) {
             this.passwordResetRepository.removeToken(token);
             this.userRepository.save(
-                    user.withPassword(
-                            this.passwordService.encrypt(new UnencryptedPassword(newPassword))
-                    )
+                    user.withExtended(user.extended().withPassword(this.passwordService.encrypt(new UnencryptedPassword(newPassword))))
             );
         } else {
             LOGGER.debug("Incorrect password reset code for user " + user);
@@ -97,7 +95,7 @@ public class UserResetPasswordFacade extends Facade {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A password reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token.value();
-        this.mailService.sendMail(user.email().value(), subject, message);
+        this.mailService.sendMail(user.extended().email().value(), subject, message);
     }
 
     //Vague for security reasons

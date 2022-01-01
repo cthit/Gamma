@@ -5,12 +5,14 @@ import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
+import it.chalmers.gamma.app.authentication.UserExtendedGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
@@ -19,10 +21,12 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -37,6 +41,7 @@ import java.util.Optional;
 import static it.chalmers.gamma.DomainUtils.addAll;
 import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.chair;
+import static it.chalmers.gamma.DomainUtils.defaultSettings;
 import static it.chalmers.gamma.DomainUtils.didit;
 import static it.chalmers.gamma.DomainUtils.digit;
 import static it.chalmers.gamma.DomainUtils.digit17;
@@ -69,9 +74,11 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         UserEntityConverter.class,
         PostEntityConverter.class,
         UserRepositoryAdapter.class,
+        UserExtendedGuard.class,
         PostRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
-        SuperGroupTypeRepositoryAdapter.class})
+        SuperGroupTypeRepositoryAdapter.class,
+        SettingsRepositoryAdapter.class})
 public class GroupEntityIntegrationTests {
 
     @Autowired
@@ -84,6 +91,13 @@ public class GroupEntityIntegrationTests {
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @BeforeEach
+    public void setSettings() {
+        this.settingsRepository.setSettings(defaultSettings);
+    }
 
     @Test
     public void Given_ValidGroup_Expect_save_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {

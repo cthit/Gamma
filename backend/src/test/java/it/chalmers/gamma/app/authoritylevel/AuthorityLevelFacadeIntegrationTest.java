@@ -4,12 +4,16 @@ import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEnti
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.authentication.UserExtendedGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,6 +25,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.UUID;
 
+import static it.chalmers.gamma.DomainUtils.defaultSettings;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("test")
@@ -32,19 +37,27 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         AuthorityLevelEntityConverter.class,
         SuperGroupEntityConverter.class,
         UserEntityConverter.class,
+        UserExtendedGuard.class,
         PostEntityConverter.class,
         UserRepositoryAdapter.class,
         PostRepositoryAdapter.class,
-        SuperGroupRepositoryAdapter.class})
+        SuperGroupRepositoryAdapter.class,
+        SettingsRepositoryAdapter.class})
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AuthorityLevelFacadeIntegrationTest {
 
     @MockBean
     private AccessGuard accessGuard;
-
     @Autowired
     private AuthorityLevelFacade authorityLevelFacade;
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @BeforeEach
+    public void setSettings() {
+        this.settingsRepository.setSettings(defaultSettings);
+    }
 
     @Test
     public void Given_ValidAuthorityLevel_Expect_addUserToAuthorityLevel_With_InvalidUser_To_Throw()

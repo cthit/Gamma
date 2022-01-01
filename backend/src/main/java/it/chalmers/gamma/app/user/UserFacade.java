@@ -11,7 +11,6 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.app.settings.SettingsUserAgreementChecker;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -43,7 +42,6 @@ public class UserFacade extends Facade {
     private final AuthenticatedService authenticatedService;
     private final PasswordService passwordService;
     private final GroupRepository groupRepository;
-    private final SettingsUserAgreementChecker settingsUserAgreementChecker;
     private final SettingsRepository settingsRepository;
 
     public UserFacade(AccessGuard accessGuard,
@@ -51,14 +49,12 @@ public class UserFacade extends Facade {
                       AuthenticatedService authenticatedService,
                       PasswordService passwordService,
                       GroupRepository groupRepository,
-                      SettingsUserAgreementChecker settingsUserAgreementChecker,
                       SettingsRepository settingsRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
         this.passwordService = passwordService;
         this.groupRepository = groupRepository;
-        this.settingsUserAgreementChecker = settingsUserAgreementChecker;
         this.settingsRepository = settingsRepository;
     }
 
@@ -132,7 +128,7 @@ public class UserFacade extends Facade {
             Client client = apiAuthenticated.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()
-                    .filter(user -> this.settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user, settings))
+                    .filter(user -> user.extended().acceptedUserAgreement())
                     .map(UserDTO::new)
                     .toList();
         }
@@ -144,9 +140,11 @@ public class UserFacade extends Facade {
         accessGuard.require(isAdmin());
 
         User oldUser = this.userRepository.get(new UserId(id)).orElseThrow();
-        oldUser.withPassword(
-                this.passwordService.encrypt(new UnencryptedPassword(newPassword))
+        User newUser = oldUser.withExtended(oldUser.extended().withPassword(
+                this.passwordService.encrypt(new UnencryptedPassword(newPassword)))
         );
+
+        this.userRepository.save(newUser);
     }
 
     public void deleteUser(UUID id) {
@@ -172,19 +170,19 @@ public class UserFacade extends Facade {
                                   boolean userAgreement,
                                   String language) {
 
-        public UserExtendedDTO(User user, boolean userAgreement) {
+        public UserExtendedDTO(User user) {
             this(user.cid().value(),
                     user.nick().value(),
                     user.firstName().value(),
                     user.lastName().value(),
                     user.id().value(),
-                    user.version(),
+                    user.extended().version(),
                     user.acceptanceYear().value(),
-                    user.email().value(),
-                    user.gdprTrained(),
-                    user.locked(),
-                    userAgreement,
-                    user.language().name()
+                    user.extended().email().value(),
+                    user.extended().gdprTrained(),
+                    user.extended().locked(),
+                    user.extended().acceptedUserAgreement(),
+                    user.extended().language().name()
             );
         }
     }
@@ -195,12 +193,7 @@ public class UserFacade extends Facade {
 
         UserId userId = new UserId(id);
 
-        Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(
-                user -> new UserExtendedDTO(
-                        user,
-                        this.settingsUserAgreementChecker.hasAcceptedLatestUserAgreement(user)
-                )
-        );
+        Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
         if (maybeUser.isEmpty()) {
             return Optional.empty();
         }
@@ -229,8 +222,11 @@ public class UserFacade extends Facade {
                         .nick(new Nick(updateUser.nick))
                         .firstName(new FirstName(updateUser.firstName))
                         .lastName(new LastName(updateUser.lastName))
-                        .email(new Email(updateUser.email))
-                        .language(Language.valueOf(updateUser.language))
+                        .extended(oldUser.extended().with()
+                                .email(new Email(updateUser.email))
+                                .language(Language.valueOf(updateUser.language))
+                                .build()
+                        )
                         .build()
         );
     }

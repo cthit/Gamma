@@ -66,4 +66,8 @@ public class UserEntity extends MutableEntity<UUID> {
         return this.id;
     }
 
+    public void acceptUserAgreement() {
+        this.userAgreementAccepted = Instant.now();
+    }
+
 }

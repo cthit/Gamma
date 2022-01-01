@@ -2,12 +2,12 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
-import it.chalmers.gamma.app.group.domain.GroupId;
-import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.Name;
 import org.springframework.stereotype.Service;
 

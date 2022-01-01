@@ -96,7 +96,7 @@ public class ImageFacade extends Facade {
         if (authenticatedService.getAuthenticated() instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User user = internalUserAuthenticated.get();
             ImageUri imageUri = this.imageService.saveImage(image);
-            this.userRepository.save(user.withAvatarUri(Optional.of(imageUri)));
+            this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));
         }
     }
 
@@ -104,8 +104,9 @@ public class ImageFacade extends Facade {
         User user = this.userRepository.get(new UserId(userId)).orElseThrow();
         return new ImageDetails(
                 this.imageService.getImage(
-                        user.avatarUri().orElse(ImageUri.defaultUserAvatar())
-                )
+                        user.extended().avatarUri() == null
+                                ? ImageUri.defaultUserAvatar()
+                                : user.extended().avatarUri())
         );
     }
 

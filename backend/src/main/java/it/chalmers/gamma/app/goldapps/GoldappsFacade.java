@@ -58,7 +58,7 @@ public class GoldappsFacade extends Facade {
                                   String lastName,
                                   String nick) {
         public GoldappsUserDTO(User user) {
-            this(user.email().value(),
+            this(user.extended().email().value(),
                     user.cid().value(),
                     user.firstName().value(),
                     user.lastName().value(),
@@ -114,8 +114,8 @@ public class GoldappsFacade extends Facade {
                 .forEach(group -> {
                     List<GoldappsUserPostDTO> activeGroupMember = group.groupMembers()
                             .stream()
-                            .filter(groupMember -> !groupMember.user().locked())
-                            .filter(groupMember -> groupMember.user().gdprTrained())
+                            .filter(groupMember -> !groupMember.user().extended().locked())
+                            .filter(groupMember -> groupMember.user().extended().gdprTrained())
                             .map(GoldappsUserPostDTO::new)
                             .toList();
 
@@ -157,8 +157,8 @@ public class GoldappsFacade extends Facade {
                 .flatMap(group -> group.groupMembers().stream())
                 .map(GroupMember::user)
                 .distinct()
-                .filter(user -> !user.locked())
-                .filter(User::gdprTrained)
+                .filter(user -> !user.extended().locked())
+                .filter(user -> user.extended().gdprTrained())
                 .map(GoldappsUserDTO::new)
                 .toList();
     }

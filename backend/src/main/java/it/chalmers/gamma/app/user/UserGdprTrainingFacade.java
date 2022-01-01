@@ -35,7 +35,7 @@ public class UserGdprTrainingFacade extends Facade {
                     user.firstName().value(),
                     user.lastName().value(),
                     user.nick().value(),
-                    user.gdprTrained());
+                    user.extended().gdprTrained());
         }
     }
 
@@ -52,7 +52,9 @@ public class UserGdprTrainingFacade extends Facade {
         this.accessGuard.require(isAdmin());
 
         User oldUser = this.userRepository.get(new UserId(userId)).orElseThrow();
-        this.userRepository.save(oldUser.withGdprTrained(gdprTrained));
+        User newUser = oldUser.withExtended(oldUser.extended().withGdprTrained(gdprTrained));
+
+        this.userRepository.save(newUser);
     }
 
 }
