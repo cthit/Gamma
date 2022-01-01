@@ -99,10 +99,10 @@ public final class DomainUtils {
                 new FirstName("F-" + cid),
                 new LastName("L-" + cid),
                 new AcceptanceYear(2021),
+                Language.SV,
                 new UserExtended(
                         new Email(cid + "@chalmers.it"),
                         0,
-                        Language.SV,
                         new Password("{noop}password"),
                         true,
                         gdprTrained,

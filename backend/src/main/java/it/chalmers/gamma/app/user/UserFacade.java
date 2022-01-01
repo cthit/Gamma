@@ -182,7 +182,7 @@ public class UserFacade extends Facade {
                     user.extended().gdprTrained(),
                     user.extended().locked(),
                     user.extended().acceptedUserAgreement(),
-                    user.extended().language().name()
+                    user.language().name()
             );
         }
     }
@@ -222,9 +222,9 @@ public class UserFacade extends Facade {
                         .nick(new Nick(updateUser.nick))
                         .firstName(new FirstName(updateUser.firstName))
                         .lastName(new LastName(updateUser.lastName))
+                        .language(Language.valueOf(updateUser.language))
                         .extended(oldUser.extended().with()
                                 .email(new Email(updateUser.email))
-                                .language(Language.valueOf(updateUser.language))
                                 .build()
                         )
                         .build()

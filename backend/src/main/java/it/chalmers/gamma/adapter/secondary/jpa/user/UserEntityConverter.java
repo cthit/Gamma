@@ -41,7 +41,6 @@ public class UserEntityConverter {
             extended = new UserExtended(
                     new Email(userEntity.email),
                     userEntity.getVersion(),
-                    userEntity.language,
                     new Password(userEntity.password),
                     hasAcceptedLatestUserAgreement(userEntity.userAgreementAccepted, settings),
                     userEntity.gdprTraining,
@@ -57,6 +56,7 @@ public class UserEntityConverter {
                 new FirstName(userEntity.firstName),
                 new LastName(userEntity.lastName),
                 new AcceptanceYear(userEntity.acceptanceYear),
+                userEntity.language,
                 extended
         );
     }

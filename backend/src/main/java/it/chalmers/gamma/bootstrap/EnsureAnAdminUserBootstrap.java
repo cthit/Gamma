@@ -73,10 +73,10 @@ public class EnsureAnAdminUserBootstrap {
                     new FirstName(name),
                     new LastName(name),
                     new AcceptanceYear(2018),
+                    Language.EN,
                     new UserExtended(
                             new Email(name + "@chalmers.it"),
                             0,
-                            Language.EN,
                             this.passwordService.encrypt(new UnencryptedPassword("password")),
                             true,
                             true,

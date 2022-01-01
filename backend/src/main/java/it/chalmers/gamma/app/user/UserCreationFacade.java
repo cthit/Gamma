@@ -88,10 +88,10 @@ public class UserCreationFacade extends Facade {
                         new FirstName(newUser.firstName),
                         new LastName(newUser.lastName),
                         new AcceptanceYear(newUser.acceptanceYear),
+                        Language.valueOf(newUser.language),
                         new UserExtended(
                                 new Email(newUser.email),
                                 0,
-                                Language.valueOf(newUser.language),
                                 this.passwordService.encrypt(new UnencryptedPassword(newUser.password)),
                                 false,
                                 false,
@@ -120,10 +120,10 @@ public class UserCreationFacade extends Facade {
                             new FirstName(data.firstName),
                             new LastName(data.lastName),
                             new AcceptanceYear(data.acceptanceYear),
+                            Language.valueOf(data.language),
                             new UserExtended(
                                     new Email(data.email),
                                     0,
-                                    Language.valueOf(data.language),
                                     this.passwordService.encrypt(new UnencryptedPassword(data.password)),
                                     false,
                                     false,

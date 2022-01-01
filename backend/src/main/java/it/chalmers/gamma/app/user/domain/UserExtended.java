@@ -10,7 +10,6 @@ import java.util.Objects;
 @RecordBuilder
 public record UserExtended(Email email,
                            int version,
-                           Language language,
                            Password password,
                            boolean acceptedUserAgreement,
                            boolean gdprTrained,
@@ -19,7 +18,6 @@ public record UserExtended(Email email,
 
     public UserExtended {
         Objects.requireNonNull(email);
-        Objects.requireNonNull(language);
         Objects.requireNonNull(password);
     }
 

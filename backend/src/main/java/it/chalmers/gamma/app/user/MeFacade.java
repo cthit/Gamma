@@ -107,7 +107,7 @@ public class MeFacade extends Facade {
                     user.extended().acceptedUserAgreement(),
                     groups,
                     authorities.stream().map(a -> new MyAuthority(a.authorityLevelName().value(), a.authorityType().name())).toList(),
-                    user.extended().language().name()
+                    user.language().name()
             );
         }
     }
@@ -147,9 +147,9 @@ public class MeFacade extends Facade {
                     .nick(new Nick(updateMe.nick))
                     .firstName(new FirstName(updateMe.firstName))
                     .lastName(new LastName(updateMe.lastName))
+                    .language(Language.valueOf(updateMe.language))
                     .extended(oldMe.extended().with()
                             .email(new Email(updateMe.email))
-                            .language(Language.valueOf(updateMe.language))
                             .build()
                     )
                     .build();

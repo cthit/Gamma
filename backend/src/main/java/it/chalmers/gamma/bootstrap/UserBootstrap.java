@@ -55,10 +55,10 @@ public class UserBootstrap {
                         new FirstName(mockUser.firstName()),
                         new LastName(mockUser.lastName()),
                         new AcceptanceYear(mockUser.acceptanceYear()),
+                        Language.EN,
                         new UserExtended(
                                 new Email(mockUser.cid() + "@student.chalmers.it"),
                                 0,
-                                Language.EN,
                                 this.passwordService.encrypt(new UnencryptedPassword("password")),
                                 true,
                                 false,

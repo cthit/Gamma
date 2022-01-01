@@ -88,10 +88,10 @@ class AccessGuardTest {
             new FirstName("Something1"),
             new LastName("Somethingsson1"),
             new AcceptanceYear(2021),
+            Language.EN,
             new UserExtended(
                     new Email("edcba@chalmers.it"),
                     0,
-                    Language.EN,
                     new Password("{noop}password321"),
                     true,
                     false,
@@ -106,10 +106,10 @@ class AccessGuardTest {
             new FirstName("Something1"),
             new LastName("Somethingsson1"),
             new AcceptanceYear(2021),
+            Language.EN,
             new UserExtended(
                     new Email("edcba@chalmers.it"),
                     0,
-                    Language.EN,
                     new Password("{noop}password321"),
                     true,
                     false,

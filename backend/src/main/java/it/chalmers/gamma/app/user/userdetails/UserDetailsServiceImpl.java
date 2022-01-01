@@ -3,7 +3,6 @@ package it.chalmers.gamma.app.user.userdetails;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.user.FindUserByIdentifier;
 import it.chalmers.gamma.app.user.domain.User;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,14 +13,11 @@ import java.util.List;
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository repository;
     private final AuthorityLevelRepository authorityLevelRepository;
     private final FindUserByIdentifier findUserByIdentifier;
 
-    public UserDetailsServiceImpl(UserRepository repository,
-                                  AuthorityLevelRepository authorityLevelRepository,
+    public UserDetailsServiceImpl(AuthorityLevelRepository authorityLevelRepository,
                                   FindUserByIdentifier findUserByIdentifier) {
-        this.repository = repository;
         this.authorityLevelRepository = authorityLevelRepository;
         this.findUserByIdentifier = findUserByIdentifier;
     }

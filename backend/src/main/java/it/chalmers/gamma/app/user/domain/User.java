@@ -11,6 +11,7 @@ public record User(UserId id,
                    FirstName firstName,
                    LastName lastName,
                    AcceptanceYear acceptanceYear,
+                   Language language,
                    UserExtended extended) implements UserBuilder.With {
 
     public User {

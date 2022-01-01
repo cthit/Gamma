@@ -16,34 +16,30 @@ public class UserExtendedGuard {
         return isMe(userId) || isAdmin();
     }
 
-
     private boolean isMe(UserId userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return false;
-        }
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetailsProxy userDetailsProxy) {
+        if (getPrincipal() instanceof UserDetailsProxy userDetailsProxy) {
             return UserId.valueOf(userDetailsProxy.getUsername()).equals(userId);
         }
         return false;
     }
 
     private boolean isAdmin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return false;
-        }
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetailsProxy userDetailsProxy) {
+        if (getPrincipal() instanceof UserDetailsProxy userDetailsProxy) {
             return userDetailsProxy.getAuthorities().contains(
                     new GrantedAuthorityProxy(new AuthorityLevelName("admin"), AuthorityType.AUTHORITY)
             );
         }
 
         return false;
+    }
+
+    private Object getPrincipal() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

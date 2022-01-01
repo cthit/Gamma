@@ -92,7 +92,7 @@ public class UserRepositoryAdapter implements UserRepository {
         e.password = extended.password().value();
         e.gdprTraining = d.extended().gdprTrained();
         e.locked = d.extended().locked();
-        e.language = d.extended().language();
+        e.language = d.language();
 
         if (d.extended().avatarUri() != null) {
             e.userAvatar = this.userAvatarJpaRepository.findById(d.id().value())
