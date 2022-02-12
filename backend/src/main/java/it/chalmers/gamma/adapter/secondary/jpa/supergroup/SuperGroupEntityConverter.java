@@ -22,7 +22,7 @@ public class SuperGroupEntityConverter {
                 entity.getVersion(),
                 new Name(entity.name),
                 new PrettyName(entity.prettyName),
-                new SuperGroupType(entity.superGroupType.get()),
+                new SuperGroupType(entity.superGroupType.getId()),
                 entity.description.toDomain()
         );
     }

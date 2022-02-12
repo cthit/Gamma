@@ -1,12 +1,18 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
-import it.chalmers.gamma.adapter.secondary.jpa.client.ClientApiKeyEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity

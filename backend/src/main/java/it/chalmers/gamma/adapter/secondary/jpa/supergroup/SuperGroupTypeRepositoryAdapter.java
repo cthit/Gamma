@@ -60,7 +60,7 @@ public class SuperGroupTypeRepositoryAdapter implements SuperGroupTypeRepository
     public List<SuperGroupType> getAll() {
         return this.repository.findAll()
                 .stream()
-                .map(SuperGroupTypeEntity::get)
+                .map(SuperGroupTypeEntity::getId)
                 .map(SuperGroupType::new)
                 .toList();
     }

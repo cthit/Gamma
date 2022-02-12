@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.whitelist;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.AbstractEntity;
 import it.chalmers.gamma.app.user.domain.Cid;
 
 import javax.persistence.Column;
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "whitelist_cid")
-public class WhitelistEntity extends SingleImmutableEntity<Cid> {
+public class WhitelistEntity extends AbstractEntity<Cid> {
 
     @Id
     @Column(name = "cid")
@@ -23,8 +23,7 @@ public class WhitelistEntity extends SingleImmutableEntity<Cid> {
     }
 
     @Override
-    protected Cid get() {
-        return Cid.valueOf(this.cid);
+    public Cid getId() {
+        return new Cid(this.cid);
     }
-
 }

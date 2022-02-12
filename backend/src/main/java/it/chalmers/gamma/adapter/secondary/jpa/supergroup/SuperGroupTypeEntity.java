@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.supergroup;
 
-import it.chalmers.gamma.adapter.secondary.jpa.util.SingleImmutableEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.AbstractEntity;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 
 import javax.persistence.Column;
@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "super_group_type")
-public class SuperGroupTypeEntity extends SingleImmutableEntity<String> {
+public class SuperGroupTypeEntity extends AbstractEntity<String> {
 
     @Id
     @Column(name = "super_group_type_name")
@@ -23,7 +23,7 @@ public class SuperGroupTypeEntity extends SingleImmutableEntity<String> {
     }
 
     @Override
-    public String get() {
+    public String getId() {
         return this.name;
     }
 }
