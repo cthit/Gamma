@@ -1,11 +1,16 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.group.GroupFacade;
-
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
@@ -33,8 +38,6 @@ public final class GroupAdminController {
                             request.superGroup
                     )
             );
-        } catch (GroupFacade.SuperGroupNotFoundRuntimeException e) {
-            throw new SuperGroupNotFoundResponse();
         } catch (GroupFacade.GroupAlreadyExistsException e) {
             throw new GroupAlreadyExistsResponse();
         }

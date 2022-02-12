@@ -14,10 +14,11 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAd
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authentication.UserExtendedGuard;
+import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
+import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +45,19 @@ import static org.assertj.core.api.Assertions.assertThat;
         ApiKeyRepositoryAdapter.class,
         ApiKeyEntityConverter.class,
         UserRepositoryAdapter.class,
+        PasswordConfiguration.class,
         UserEntityConverter.class,
-        UserExtendedGuard.class,
+        UserAccessGuard.class,
         AuthorityLevelRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SuperGroupEntityConverter.class,
         AuthorityLevelEntityConverter.class,
         SuperGroupEntityConverter.class,
         UserEntityConverter.class,
-        UserExtendedGuard.class,
+        UserAccessGuard.class,
         PostEntityConverter.class,
         UserRepositoryAdapter.class,
+        PasswordConfiguration.class,
         PostRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SettingsRepositoryAdapter.class})

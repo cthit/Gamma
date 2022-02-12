@@ -3,7 +3,6 @@ package it.chalmers.gamma.app.user.passwordreset;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.mail.domain.MailService;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.FindUserByIdentifier;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
@@ -24,7 +23,6 @@ public class UserResetPasswordFacade extends Facade {
     private final MailService mailService;
     private final UserRepository userRepository;
     private final PasswordResetRepository passwordResetRepository;
-    private final PasswordService passwordService;
     private final FindUserByIdentifier findUserByIdentifier;
 
     private static Logger LOGGER = LoggerFactory.getLogger(UserResetPasswordFacade.class);
@@ -33,13 +31,11 @@ public class UserResetPasswordFacade extends Facade {
                                    MailService mailService,
                                    UserRepository userRepository,
                                    PasswordResetRepository passwordResetRepository,
-                                   PasswordService passwordService,
                                    FindUserByIdentifier findUserByIdentifier) {
         super(accessGuard);
         this.mailService = mailService;
         this.userRepository = userRepository;
         this.passwordResetRepository = passwordResetRepository;
-        this.passwordService = passwordService;
         this.findUserByIdentifier = findUserByIdentifier;
     }
 
@@ -49,7 +45,7 @@ public class UserResetPasswordFacade extends Facade {
         Optional<User> maybeUser = findUserByIdentifier.toUser(userIdentifier);
 
         if (maybeUser.isEmpty()) {
-            LOGGER.debug("Someone tried to reset the password for " + userIdentifier + " that doesn't exist");
+            LOGGER.debug("Someone tried to reset the value for " + userIdentifier + " that doesn't exist");
             throw new PasswordResetProcessException();
         }
 
@@ -65,7 +61,7 @@ public class UserResetPasswordFacade extends Facade {
         Optional<User> maybeUser = findUserByIdentifier.toUser(userIdentifier);
 
         if (maybeUser.isEmpty()) {
-            LOGGER.debug("Someone tried to finish the reset password process for " + userIdentifier + " that doesn't exist");
+            LOGGER.debug("Someone tried to finish the reset value process for " + userIdentifier + " that doesn't exist");
             throw new PasswordResetProcessException();
         }
 
@@ -82,18 +78,16 @@ public class UserResetPasswordFacade extends Facade {
 
         if (token.equals(inputToken)) {
             this.passwordResetRepository.removeToken(token);
-            this.userRepository.save(
-                    user.withExtended(user.extended().withPassword(this.passwordService.encrypt(new UnencryptedPassword(newPassword))))
-            );
+            this.userRepository.setPassword(user.id(), new UnencryptedPassword(newPassword));
         } else {
-            LOGGER.debug("Incorrect password reset code for user " + user);
+            LOGGER.debug("Incorrect value reset code for user " + user);
             throw new PasswordResetProcessException();
         }
     }
 
     private void sendPasswordResetTokenMail(User user, PasswordResetToken token) {
         String subject = "Password reset for Account at IT division of Chalmers";
-        String message = "A password reset have been requested for this account, if you have not requested "
+        String message = "A value reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token.value();
         this.mailService.sendMail(user.extended().email().value(), subject, message);
     }

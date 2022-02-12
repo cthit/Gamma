@@ -12,7 +12,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeReposito
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authentication.UserExtendedGuard;
+import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupMember;
@@ -27,6 +27,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
+import static it.chalmers.gamma.DomainUtils.addAll;
 import static it.chalmers.gamma.DomainUtils.asSaved;
 import static it.chalmers.gamma.DomainUtils.chair;
 import static it.chalmers.gamma.DomainUtils.committee;
@@ -61,9 +63,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         GroupRepositoryAdapter.class,
         GroupEntityConverter.class,
         UserRepositoryAdapter.class,
-        UserExtendedGuard.class,
+        PasswordConfiguration.class,
+        UserAccessGuard.class,
         UserEntityConverter.class,
-        UserExtendedGuard.class,
+        UserAccessGuard.class,
         PostRepositoryAdapter.class,
         PostEntityConverter.class,
         SuperGroupRepositoryAdapter.class,
@@ -156,6 +159,8 @@ public class GroupFacadeIntegrationTest {
                                 .version(2)
                                 .groupMembers(group.groupMembers()
                                         .stream()
+                                        //If the user is locked, remove
+                                        .filter(groupMember -> !(groupMember.user().extended().locked() || !groupMember.user().extended().acceptedUserAgreement()) )
                                         .map(groupMember -> new GroupMember(
                                                 groupMember.post().withVersion(1),
                                                 groupMember.unofficialPostName(),
@@ -164,13 +169,13 @@ public class GroupFacadeIntegrationTest {
                                 )
                                 .build()
                 ));
+
     }
 
     @Test
     public void Given_GroupWithNewMembers_Expect_setMembers_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
         postRepository.save(member);
-        userRepository.save(u3);
-        userRepository.save(u4);
+        addAll(userRepository, u3, u4);
         addGroup(digit18);
 
         List<GroupFacade.ShallowMember> newMembers = List.of(

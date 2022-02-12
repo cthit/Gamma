@@ -27,7 +27,7 @@ import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.Password;
+import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -103,7 +103,6 @@ public final class DomainUtils {
                 new UserExtended(
                         new Email(cid + "@chalmers.it"),
                         0,
-                        new Password("{noop}password"),
                         true,
                         gdprTrained,
                         locked,
@@ -202,6 +201,15 @@ public final class DomainUtils {
         );
     }
 
+    public static Group removeLockedUsers(Group group) {
+        return group.withGroupMembers(
+                group.groupMembers()
+                        .stream()
+                        .filter(groupMember -> !(groupMember.user().extended().locked() || !groupMember.user().extended().acceptedUserAgreement()))
+                        .toList()
+        );
+    }
+
     public static Client removeUserExtended(Client client) {
         return client.withApprovedUsers(client.approvedUsers()
                 .stream()
@@ -251,7 +259,7 @@ public final class DomainUtils {
 
     public static void addAll(UserRepository userRepository, List<User> users) {
         for (User user : users) {
-            userRepository.save(user);
+            userRepository.create(user, new UnencryptedPassword("password"));
         }
     }
 
@@ -315,7 +323,7 @@ public final class DomainUtils {
             postRepository.save(post);
         }
         for (User user : users) {
-            userRepository.save(user);
+            userRepository.create(user, new UnencryptedPassword("password"));
         }
         for (Group group : groups) {
             groupRepository.save(group);

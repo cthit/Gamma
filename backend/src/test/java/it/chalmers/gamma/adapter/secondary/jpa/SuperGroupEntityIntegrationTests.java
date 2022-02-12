@@ -10,13 +10,14 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAd
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
-import it.chalmers.gamma.app.authentication.UserExtendedGuard;
+import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -51,8 +52,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         GroupRepositoryAdapter.class,
         GroupEntityConverter.class,
         UserRepositoryAdapter.class,
+        PasswordConfiguration.class,
         UserEntityConverter.class,
-        UserExtendedGuard.class,
+        UserAccessGuard.class,
         PostRepositoryAdapter.class,
         PostEntityConverter.class,
         SettingsRepositoryAdapter.class

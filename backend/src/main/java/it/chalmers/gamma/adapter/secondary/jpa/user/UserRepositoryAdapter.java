@@ -2,10 +2,13 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
+import it.chalmers.gamma.app.user.domain.Password;
+import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,13 +21,25 @@ public class UserRepositoryAdapter implements UserRepository {
     private final UserJpaRepository repository;
     private final UserEntityConverter converter;
     private final UserAvatarJpaRepository userAvatarJpaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserRepositoryAdapter(UserJpaRepository repository,
                                  UserEntityConverter converter,
-                                 UserAvatarJpaRepository userAvatarJpaRepository) {
+                                 UserAvatarJpaRepository userAvatarJpaRepository,
+                                 PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.converter = converter;
         this.userAvatarJpaRepository = userAvatarJpaRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void create(User user, UnencryptedPassword password) {
+        if (user.extended() == null) {
+            throw new IllegalStateException();
+        }
+
+        this.save(toEntity(user, new Password(passwordEncoder.encode(password.value()))));
     }
 
     @Override
@@ -41,7 +56,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public void delete(UserId userId) throws UserNotFoundException {
+    public void delete(UserId userId) {
         this.repository.deleteById(userId.value());
     }
 
@@ -65,13 +80,26 @@ public class UserRepositoryAdapter implements UserRepository {
         return this.repository.findByEmail(email.value()).map(this.converter::toDomain);
     }
 
-    public void acceptUserAgreement(UserId userId) throws UserNotFoundException {
-        UserEntity userEntity = this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
+    @Override
+    public boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundRuntimeException {
+        return false;
+    }
+
+    @Override
+    public void setPassword(UserId userId, UnencryptedPassword newPassword) throws UserNotFoundRuntimeException {
+        UserEntity userEntity = this.repository.getById(userId.value());
+        userEntity.password = newPassword.value();
+        this.save(userEntity);
+    }
+
+    public void acceptUserAgreement(UserId userId) {
+        UserEntity userEntity = this.repository.findById(userId.value())
+                .orElseThrow(UserNotFoundRuntimeException::new);
         userEntity.acceptUserAgreement();
         save(userEntity);
     }
 
-    private UserEntity toEntity(User d) {
+    private UserEntity toEntity(User d, Password password) {
         UserEntity e = this.repository.findById(d.id().value())
                 .orElse(new UserEntity());
         UserExtended extended = d.extended();
@@ -89,10 +117,13 @@ public class UserRepositoryAdapter implements UserRepository {
         e.firstName = d.firstName().value();
         e.lastName = d.lastName().value();
         e.nick = d.nick().value();
-        e.password = extended.password().value();
         e.gdprTraining = d.extended().gdprTrained();
         e.locked = d.extended().locked();
         e.language = d.language();
+
+        if (password != null) {
+            e.password = password.value();
+        }
 
         if (d.extended().avatarUri() != null) {
             e.userAvatar = this.userAvatarJpaRepository.findById(d.id().value())
@@ -103,6 +134,10 @@ public class UserRepositoryAdapter implements UserRepository {
         }
 
         return e;
+    }
+
+    private UserEntity toEntity(User d) {
+        return toEntity(d, null);
     }
 
 }

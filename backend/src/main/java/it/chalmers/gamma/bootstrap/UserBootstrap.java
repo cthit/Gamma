@@ -1,7 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -28,16 +27,13 @@ public class UserBootstrap {
     private final MockData mockData;
     private final UserRepository userRepository;
     private final boolean mocking;
-    private final PasswordService passwordService;
 
     public UserBootstrap(MockData mockData,
                          UserRepository userRepository,
-                         @Value("${application.mocking}") boolean mocking,
-                         PasswordService passwordService) {
+                         @Value("${application.mocking}") boolean mocking) {
         this.mockData = mockData;
         this.userRepository = userRepository;
         this.mocking = mocking;
-        this.passwordService = passwordService;
     }
 
     public void createUsers() {
@@ -47,7 +43,7 @@ public class UserBootstrap {
 
         LOGGER.info("========== USER BOOTSTRAP ==========");
 
-        this.mockData.users().forEach(mockUser -> this.userRepository.save(
+        this.mockData.users().forEach(mockUser -> this.userRepository.create(
                 new User(
                         new UserId(mockUser.id()),
                         new Cid(mockUser.cid()),
@@ -59,13 +55,13 @@ public class UserBootstrap {
                         new UserExtended(
                                 new Email(mockUser.cid() + "@student.chalmers.it"),
                                 0,
-                                this.passwordService.encrypt(new UnencryptedPassword("password")),
                                 true,
                                 false,
                                 false,
                                 null
                         )
-                )
+                ),
+                new UnencryptedPassword("value")
         ));
 
         LOGGER.info("Generated the users: "
@@ -74,7 +70,7 @@ public class UserBootstrap {
                         .map(MockData.MockUser::cid)
                         .collect(Collectors.joining(", "))
         );
-        LOGGER.info("Use a cid from the row above and use the password: password to sign in");
+        LOGGER.info("Use a cid from the row above and use the value: value to sign in");
         LOGGER.info("==========                ==========");
     }
 }

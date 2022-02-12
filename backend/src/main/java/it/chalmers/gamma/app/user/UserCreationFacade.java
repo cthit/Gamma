@@ -4,7 +4,6 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
@@ -35,7 +34,6 @@ public class UserCreationFacade extends Facade {
     private final WhitelistRepository whitelistRepository;
     private final UserActivationRepository userActivationRepository;
     private final UserRepository userRepository;
-    private final PasswordService passwordService;
 
     private static final String MAIL_POSTFIX = "student.chalmers.se";
 
@@ -45,14 +43,12 @@ public class UserCreationFacade extends Facade {
                               MailService mailService,
                               WhitelistRepository whitelistRepository,
                               UserActivationRepository userActivationRepository,
-                              UserRepository userRepository,
-                              PasswordService passwordService) {
+                              UserRepository userRepository) {
         super(accessGuard);
         this.mailService = mailService;
         this.whitelistRepository = whitelistRepository;
         this.userActivationRepository = userActivationRepository;
         this.userRepository = userRepository;
-        this.passwordService = passwordService;
     }
 
     public void tryToActivateUser(String cidRaw) {
@@ -80,7 +76,7 @@ public class UserCreationFacade extends Facade {
     public void createUser(NewUser newUser) {
         this.accessGuard.require(isAdmin());
 
-        this.userRepository.save(
+        this.userRepository.create(
                 new User(
                         UserId.generate(),
                         new Cid(newUser.cid),
@@ -92,12 +88,12 @@ public class UserCreationFacade extends Facade {
                         new UserExtended(
                                 new Email(newUser.email),
                                 0,
-                                this.passwordService.encrypt(new UnencryptedPassword(newUser.password)),
                                 false,
                                 false,
                                 false,
                                 null
-                        ))
+                        )),
+                new UnencryptedPassword(newUser.password)
         );
     }
 
@@ -112,7 +108,7 @@ public class UserCreationFacade extends Facade {
         if (tokenCid.value().equals(data.cid)) {
             Cid cid = new Cid(data.cid);
 
-            this.userRepository.save(
+            this.userRepository.create(
                     new User(
                             UserId.generate(),
                             cid,
@@ -124,13 +120,13 @@ public class UserCreationFacade extends Facade {
                             new UserExtended(
                                     new Email(data.email),
                                     0,
-                                    this.passwordService.encrypt(new UnencryptedPassword(data.password)),
                                     false,
                                     false,
                                     false,
                                     null
                             )
-                    )
+                    ),
+                    new UnencryptedPassword(data.password)
             );
 
             this.userActivationRepository.removeActivation(cid);

@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.external.chalmersit;
+package it.chalmers.gamma.adapter.primary.external.info;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

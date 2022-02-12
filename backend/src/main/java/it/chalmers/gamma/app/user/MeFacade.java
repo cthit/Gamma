@@ -12,7 +12,6 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.FirstName;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
@@ -37,22 +36,19 @@ public class MeFacade extends Facade {
     private final ClientRepository clientRepository;
     private final AuthorityLevelRepository authorityLevelRepository;
     private final GroupRepository groupRepository;
-    private final PasswordService passwordService;
 
     public MeFacade(AccessGuard accessGuard,
                     UserRepository userRepository,
                     AuthenticatedService authenticatedService,
                     ClientRepository clientRepository,
                     AuthorityLevelRepository authorityLevelRepository,
-                    GroupRepository groupRepository,
-                    PasswordService passwordService) {
+                    GroupRepository groupRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
         this.clientRepository = clientRepository;
         this.authorityLevelRepository = authorityLevelRepository;
         this.groupRepository = groupRepository;
-        this.passwordService = passwordService;
     }
 
     public record UserApprovedClientDTO(String prettyName,
@@ -163,14 +159,10 @@ public class MeFacade extends Facade {
     public void updatePassword(UpdatePassword updatePassword) {
         Authenticated authenticated = this.authenticatedService.getAuthenticated();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User oldMe = internalUserAuthenticated.get();
-            User newMe = oldMe.withExtended(
-                    oldMe.extended().withPassword(
-                            this.passwordService.encrypt(new UnencryptedPassword(updatePassword.newPassword))
-                    )
-            );
-
-            this.userRepository.save(newMe);
+            User me = internalUserAuthenticated.get();
+            if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
+                this.userRepository.setPassword(me.id(), new UnencryptedPassword(updatePassword.newPassword));
+            }
         }
     }
 
@@ -178,10 +170,10 @@ public class MeFacade extends Facade {
         Authenticated authenticated = this.authenticatedService.getAuthenticated();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User me = internalUserAuthenticated.get();
-            if (this.passwordService.matches(new UnencryptedPassword(password), me.extended().password())) {
+            if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
                 try {
                     this.userRepository.delete(me.id());
-                } catch (UserRepository.UserNotFoundException e) {
+                } catch (UserRepository.UserNotFoundRuntimeException e) {
                     e.printStackTrace();
                 }
             }
@@ -193,7 +185,7 @@ public class MeFacade extends Facade {
         if (authenticated instanceof LockedInternalUserAuthenticated lockedInternalUserAuthenticated) {
             try {
                 this.userRepository.acceptUserAgreement(lockedInternalUserAuthenticated.get().id());
-            } catch (UserRepository.UserNotFoundException e) {
+            } catch (UserRepository.UserNotFoundRuntimeException e) {
                 throw new IllegalStateException();
             }
         }

@@ -16,7 +16,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.authentication.UserExtendedGuard;
+import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
@@ -31,6 +31,7 @@ import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,7 @@ import static it.chalmers.gamma.DomainUtils.defaultSettings;
 import static it.chalmers.gamma.DomainUtils.removeUserExtended;
 import static it.chalmers.gamma.DomainUtils.u1;
 import static it.chalmers.gamma.DomainUtils.u2;
+import static it.chalmers.gamma.DomainUtils.u4;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -58,8 +60,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @Import({ClientRepositoryAdapter.class,
         ClientEntityConverter.class,
         UserRepositoryAdapter.class,
+        PasswordConfiguration.class,
         UserEntityConverter.class,
-        UserExtendedGuard.class,
+        UserAccessGuard.class,
         ApiKeyRepositoryAdapter.class,
         ApiKeyEntityConverter.class,
         AuthorityLevelRepositoryAdapter.class,
@@ -182,7 +185,7 @@ public class ClientEntityIntegrationTests {
 
     @Test
     public void Given_AValidClientWithRestrictions_Expect_save_To_Work() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
-        userRepository.save(u1);
+        addAll(userRepository, u1);
         authorityLevelRepository.create(new AuthorityLevelName("admin"));
         authorityLevelRepository.save(new AuthorityLevel(
                 new AuthorityLevelName("admin"),
@@ -250,18 +253,19 @@ public class ClientEntityIntegrationTests {
         assertThat(savedClient)
                 .isEqualTo(newClient);
 
-        addAll(userRepository, u1, u2);
+        addAll(userRepository, u1, u2, u4);
 
         Client newClient2 = newClient.withApprovedUsers(
-                List.of(removeUserExtended(u1), removeUserExtended(u2))
+                List.of(removeUserExtended(u1), removeUserExtended(u2), removeUserExtended(u4))
         );
 
         this.clientRepositoryAdapter.save(newClient2);
 
         Client savedClient2 = this.clientRepositoryAdapter.get(uid).orElseThrow();
 
+        //No u2 since they are locked
         assertThat(savedClient2)
-                .isEqualTo(newClient2);
+                .isEqualTo(newClient2.withApprovedUsers(List.of(removeUserExtended(u1), removeUserExtended(u4))));
     }
 
     @Test
@@ -291,7 +295,7 @@ public class ClientEntityIntegrationTests {
         this.clientRepositoryAdapter.delete(uid);
 
         assertThat(this.clientRepositoryAdapter.getAll())
-                .isNotEmpty();
+                .isEmpty();
     }
 
     @Test
@@ -481,7 +485,7 @@ public class ClientEntityIntegrationTests {
 
     @Test
     public void Given_UserThatHasApprovedClients_Expect_getClientsByUserApproved_To_Work() {
-        this.userRepository.save(u1);
+        addAll(userRepository, u1);
 
         Client client = new Client(
                 ClientUid.generate(),

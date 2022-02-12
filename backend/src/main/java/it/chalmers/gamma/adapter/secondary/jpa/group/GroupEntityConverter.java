@@ -9,9 +9,11 @@ import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.Name;
+import it.chalmers.gamma.app.user.domain.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,11 +34,19 @@ public class GroupEntityConverter {
     public Group toDomain(GroupEntity entity) {
         List<GroupMember> members = entity.getMembers()
                 .stream()
-                .map(membershipEntity -> new GroupMember(
-                        this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
-                        new UnofficialPostName(membershipEntity.getUnofficialPostName()),
-                        this.userEntityConverter.toDomain(membershipEntity.getId().getUser())
-                ))
+                .map(membershipEntity -> {
+                    User user = this.userEntityConverter.toDomain(membershipEntity.getId().getUser());
+                    if (user == null) {
+                        return null;
+                    }
+
+                    return new GroupMember(
+                            this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
+                            new UnofficialPostName(membershipEntity.getUnofficialPostName()),
+                            user
+                    );
+                })
+                .filter(Objects::nonNull)
                 .toList();
 
         Optional<ImageUri> avatarUri = Optional.empty();

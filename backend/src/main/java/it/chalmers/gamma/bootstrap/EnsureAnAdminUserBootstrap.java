@@ -5,7 +5,6 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
@@ -32,15 +31,12 @@ public class EnsureAnAdminUserBootstrap {
     private final UserRepository userRepository;
     private final AuthorityLevelFacade authorityLevelFacade;
     private final AuthorityLevelRepository authorityLevelRepository;
-    private final PasswordService passwordService;
 
     public EnsureAnAdminUserBootstrap(AuthorityLevelFacade authorityLevelFacade,
                                       UserRepository userRepository,
-                                      AuthorityLevelRepository authorityLevelRepository,
-                                      PasswordService passwordService) {
+                                      AuthorityLevelRepository authorityLevelRepository) {
         this.authorityLevelFacade = authorityLevelFacade;
         this.authorityLevelRepository = authorityLevelRepository;
-        this.passwordService = passwordService;
         this.userRepository = userRepository;
     }
 
@@ -77,7 +73,6 @@ public class EnsureAnAdminUserBootstrap {
                     new UserExtended(
                             new Email(name + "@chalmers.it"),
                             0,
-                            this.passwordService.encrypt(new UnencryptedPassword("password")),
                             true,
                             true,
                             false,
@@ -85,11 +80,14 @@ public class EnsureAnAdminUserBootstrap {
                     )
             );
 
-            this.userRepository.save(adminUser);
+            this.userRepository.create(
+                    adminUser,
+                    new UnencryptedPassword("value")
+            );
 
             LOGGER.info("Admin user created!");
             LOGGER.info("cid: " + name);
-            LOGGER.info("password: " + password);
+            LOGGER.info("value: " + password);
 
             try {
                 this.authorityLevelFacade.addUserToAuthorityLevel(

@@ -26,12 +26,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.DomainUtils.*;
+import static it.chalmers.gamma.DomainUtils.chair;
+import static it.chalmers.gamma.DomainUtils.digit;
+import static it.chalmers.gamma.DomainUtils.dragit;
+import static it.chalmers.gamma.DomainUtils.drawit;
+import static it.chalmers.gamma.DomainUtils.emeritus;
+import static it.chalmers.gamma.DomainUtils.prit;
+import static it.chalmers.gamma.DomainUtils.styrit;
+import static it.chalmers.gamma.DomainUtils.u1;
+import static it.chalmers.gamma.DomainUtils.u2;
+import static it.chalmers.gamma.DomainUtils.u3;
+import static it.chalmers.gamma.DomainUtils.u4;
+import static it.chalmers.gamma.DomainUtils.u5;
+import static it.chalmers.gamma.DomainUtils.u6;
+import static it.chalmers.gamma.DomainUtils.u8;
+import static it.chalmers.gamma.DomainUtils.u9;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-
 import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNullPointerException;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.doThrow;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.inOrder;
+import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(SpringExtension.class)
 class AuthorityLevelFacadeUnitTest {
@@ -170,7 +191,7 @@ class AuthorityLevelFacadeUnitTest {
         ArgumentCaptor<AuthorityLevelName> captor = ArgumentCaptor.forClass(AuthorityLevelName.class);
         verify(authorityLevelRepository).get(captor.capture());
         AuthorityLevelName authorityLevelName = captor.getValue();
-
+        
         assertThat(authorityLevelName)
                 .isEqualTo(new AuthorityLevelName("admin"));
 

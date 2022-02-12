@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.goldapps;
 
+import it.chalmers.gamma.DomainUtils;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
@@ -73,7 +74,7 @@ class GoldappsFacadeUnitTest {
                 .toList();
 
         given(groupRepository.getAll())
-                .willReturn(testCase.groups);
+                .willReturn(testCase.groups.stream().map(DomainUtils::asSaved).toList());
 
         List<GoldappsFacade.GoldappsUserDTO> activeUsers = goldappsFacade.getActiveUsers(
                 List.of("committee", "board")

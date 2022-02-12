@@ -7,6 +7,8 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class AuthorityLevelEntityConverter {
 
@@ -41,6 +43,7 @@ public class AuthorityLevelEntityConverter {
                         .stream()
                         .map(AuthorityUserEntity::getUserEntity)
                         .map(this.userEntityConverter::toDomain)
+                        .filter(Objects::nonNull)
                         .toList()
         );
     }

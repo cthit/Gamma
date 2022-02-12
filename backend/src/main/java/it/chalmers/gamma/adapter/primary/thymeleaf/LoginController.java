@@ -32,7 +32,7 @@ public class LoginController {
         boolean isAuthorizing = authorizing != null;
 
         model.addAttribute("createAccountUrl", this.baseFrontendUrl + "/create-account");
-        model.addAttribute("forgotPasswordUrl", this.baseFrontendUrl + "/reset-password");
+        model.addAttribute("forgotPasswordUrl", this.baseFrontendUrl + "/reset-value");
         model.addAttribute("error", error);
         model.addAttribute("logout", logout);
         model.addAttribute("authorizing", isAuthorizing);

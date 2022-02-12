@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.external.chalmersit;
+package it.chalmers.gamma.adapter.primary.external.info;
 
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;

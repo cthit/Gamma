@@ -10,14 +10,14 @@ public record Password(String value) {
         if (value == null) {
             throw new IllegalArgumentException();
         } else if (!passwordStartPattern.matcher(value).matches()) {
-            throw new IllegalArgumentException("Password must start with what type the encoding of the password is," +
+            throw new IllegalArgumentException("Password must start with what type the encoding of the value is," +
                     "such as {bcrypt} or {noop}");
         }
     }
 
     @Override
     public String toString() {
-        return "<password redacted>";
+        return "<value redacted>";
     }
 }
 

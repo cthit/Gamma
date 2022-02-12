@@ -1,8 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
 
-import org.slf4j.LoggerFactory;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 

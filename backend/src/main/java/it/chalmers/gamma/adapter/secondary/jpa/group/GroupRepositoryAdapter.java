@@ -102,7 +102,10 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
     @Override
     public List<Group> getAll() {
-        return this.groupJpaRepository.findAll().stream().map(this.groupEntityConverter::toDomain).toList();
+        return this.groupJpaRepository.findAll()
+                .stream()
+                .map(this.groupEntityConverter::toDomain)
+                .toList();
     }
 
     @Override

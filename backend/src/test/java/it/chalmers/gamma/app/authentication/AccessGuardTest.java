@@ -21,7 +21,6 @@ import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
@@ -34,12 +33,12 @@ import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -73,7 +72,7 @@ class AccessGuardTest {
     private AuthenticatedService authenticatedService;
 
     @Mock
-    private PasswordService passwordService;
+    private UserRepository userRepository;
 
     @Mock
     private AuthorityLevelRepository authorityLevelRepository;
@@ -92,7 +91,6 @@ class AccessGuardTest {
             new UserExtended(
                     new Email("edcba@chalmers.it"),
                     0,
-                    new Password("{noop}password321"),
                     true,
                     false,
                     false,
@@ -110,7 +108,6 @@ class AccessGuardTest {
             new UserExtended(
                     new Email("edcba@chalmers.it"),
                     0,
-                    new Password("{noop}password321"),
                     true,
                     false,
                     false,
@@ -373,7 +370,7 @@ class AccessGuardTest {
                 .willReturn((InternalUserAuthenticated) () -> adminUser);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
-        given(passwordService.matches(new UnencryptedPassword(password), adminUser.extended().password()))
+        given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
                 .willReturn(true);
 
         assertThatNoException()
@@ -391,7 +388,7 @@ class AccessGuardTest {
                 .willReturn((InternalUserAuthenticated) () -> adminUser);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
-        given(passwordService.matches(new UnencryptedPassword(password), adminUser.extended().password()))
+        given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
                 .willReturn(false);
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
@@ -606,7 +603,7 @@ class AccessGuardTest {
                 .willReturn(clientApiAuthenticated);
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(passwordCheck("password")));
+                .isThrownBy(() -> this.accessGuard.require(passwordCheck("value")));
     }
 
     @Test

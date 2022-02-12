@@ -15,6 +15,7 @@ import it.chalmers.gamma.app.user.domain.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,7 @@ public class ClientEntityConverter {
                 .stream()
                 .map(UserApprovalEntity::getUserEntity)
                 .map(this.userEntityConverter::toDomain)
+                .filter(Objects::nonNull)
                 .toList();
 
         return new Client(

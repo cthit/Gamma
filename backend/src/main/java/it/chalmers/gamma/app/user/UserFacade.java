@@ -9,7 +9,6 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.password.PasswordService;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
@@ -40,20 +39,17 @@ public class UserFacade extends Facade {
 
     private final UserRepository userRepository;
     private final AuthenticatedService authenticatedService;
-    private final PasswordService passwordService;
     private final GroupRepository groupRepository;
     private final SettingsRepository settingsRepository;
 
     public UserFacade(AccessGuard accessGuard,
                       UserRepository userRepository,
                       AuthenticatedService authenticatedService,
-                      PasswordService passwordService,
                       GroupRepository groupRepository,
                       SettingsRepository settingsRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.authenticatedService = authenticatedService;
-        this.passwordService = passwordService;
         this.groupRepository = groupRepository;
         this.settingsRepository = settingsRepository;
     }
@@ -138,13 +134,7 @@ public class UserFacade extends Facade {
 
     public void setUserPassword(UUID id, String newPassword) {
         accessGuard.require(isAdmin());
-
-        User oldUser = this.userRepository.get(new UserId(id)).orElseThrow();
-        User newUser = oldUser.withExtended(oldUser.extended().withPassword(
-                this.passwordService.encrypt(new UnencryptedPassword(newPassword)))
-        );
-
-        this.userRepository.save(newUser);
+        this.userRepository.setPassword(new UserId(id), new UnencryptedPassword(newPassword));
     }
 
     public void deleteUser(UUID id) {
@@ -152,7 +142,7 @@ public class UserFacade extends Facade {
 
         try {
             this.userRepository.delete(new UserId(id));
-        } catch (UserRepository.UserNotFoundException e) {
+        } catch (UserRepository.UserNotFoundRuntimeException e) {
             e.printStackTrace();
         }
     }

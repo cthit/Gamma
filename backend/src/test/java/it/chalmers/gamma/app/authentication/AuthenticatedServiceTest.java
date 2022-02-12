@@ -21,14 +21,13 @@ import it.chalmers.gamma.app.user.domain.FirstName;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.app.user.userdetails.UserDetailsProxy;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.ApiKeyAuthentication;
+import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -84,7 +83,6 @@ class AuthenticatedServiceTest {
             new UserExtended(
                     new Email("edcba@chalmers.it"),
                     0,
-                    new Password("{noop}password321"),
                     true,
                     false,
                     false,
@@ -262,10 +260,10 @@ class AuthenticatedServiceTest {
 
             User user = annotation.locked() ? lockedUser : normalUser;
 
-            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, Collections.emptyList());
+            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, "{noop}value", Collections.emptyList());
             Authentication auth = new UsernamePasswordAuthenticationToken(
                     userDetailsProxy,
-                    "password",
+                    null,
                     userDetailsProxy.getAuthorities()
             );
             context.setAuthentication(auth);

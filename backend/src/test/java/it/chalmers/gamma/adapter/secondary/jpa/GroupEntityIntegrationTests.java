@@ -12,7 +12,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeReposito
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.authentication.UserExtendedGuard;
+import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
@@ -26,6 +26,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,7 @@ import static it.chalmers.gamma.DomainUtils.gm;
 import static it.chalmers.gamma.DomainUtils.member;
 import static it.chalmers.gamma.DomainUtils.prit18;
 import static it.chalmers.gamma.DomainUtils.prit19;
+import static it.chalmers.gamma.DomainUtils.removeLockedUsers;
 import static it.chalmers.gamma.DomainUtils.styrit18;
 import static it.chalmers.gamma.DomainUtils.styrit19;
 import static it.chalmers.gamma.DomainUtils.treasurer;
@@ -74,7 +76,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         UserEntityConverter.class,
         PostEntityConverter.class,
         UserRepositoryAdapter.class,
-        UserExtendedGuard.class,
+        PasswordConfiguration.class,
+        UserAccessGuard.class,
         PostRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SuperGroupTypeRepositoryAdapter.class,
@@ -108,7 +111,7 @@ public class GroupEntityIntegrationTests {
                 .orElseThrow();
 
         assertThat(savedGroup)
-                .isEqualTo(asSaved(groupToSave));
+                .isEqualTo(asSaved(removeLockedUsers(groupToSave)));
     }
 
     @Test
@@ -117,7 +120,9 @@ public class GroupEntityIntegrationTests {
                 .isThrownBy(() -> addGroup(digit18, digit18));
 
         assertThat(groupRepositoryAdapter.getAll())
-                .containsExactlyInAnyOrder(asSaved(digit18));
+                .containsExactlyInAnyOrder(
+                        asSaved(removeLockedUsers(digit18))
+                );
     }
 
     @Test
@@ -247,10 +252,10 @@ public class GroupEntityIntegrationTests {
 
         assertThat(groupRepositoryAdapter.getAll())
                 .containsExactlyInAnyOrder(
-                        asSaved(digit18),
-                        asSaved(digit19),
-                        asSaved(prit19),
-                        asSaved(styrit19)
+                        asSaved(removeLockedUsers(digit18)),
+                        asSaved(removeLockedUsers(digit19)),
+                        asSaved(removeLockedUsers(prit19)),
+                        asSaved(removeLockedUsers(styrit19))
                 );
     }
 
@@ -259,9 +264,9 @@ public class GroupEntityIntegrationTests {
         addGroup(digit17, digit18, digit19, prit18, prit19, styrit18, styrit19, drawit18);
 
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(digit.id()))
-                .containsExactlyInAnyOrder(asSaved(digit19));
+                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit19)));
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(didit.id()))
-                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit18));
+                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit17)), asSaved(removeLockedUsers(digit18)));
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(drawit.id()))
                 .isEmpty();
     }
@@ -271,9 +276,9 @@ public class GroupEntityIntegrationTests {
         addGroup(digit17, digit18, digit19, prit18);
 
         assertThat(groupRepositoryAdapter.getAllByPost(chair.id()))
-                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit18), asSaved(digit19), asSaved(prit18));
+                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit17)), asSaved(removeLockedUsers(digit18)), asSaved(removeLockedUsers(digit19)), asSaved(removeLockedUsers(prit18)));
         assertThat(groupRepositoryAdapter.getAllByPost(member.id()))
-                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit19), asSaved(prit18));
+                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit17)), asSaved(removeLockedUsers(digit19)), asSaved(removeLockedUsers(prit18)));
     }
 
     @Test
@@ -284,14 +289,14 @@ public class GroupEntityIntegrationTests {
                 .isEmpty();
         assertThat(groupRepositoryAdapter.getAllByUser(u1.id()))
                 .containsExactlyInAnyOrder(
-                        new UserMembership(chair.withVersion(1), asSaved(digit18), new UnofficialPostName("root")),
-                        new UserMembership(chair.withVersion(1), asSaved(prit18), new UnofficialPostName("ChefChef")),
-                        new UserMembership(treasurer.withVersion(1), asSaved(prit18), UnofficialPostName.none()),
-                        new UserMembership(chair.withVersion(1), asSaved(drawit19), UnofficialPostName.none())
+                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(digit18)), new UnofficialPostName("root")),
+                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(prit18)), new UnofficialPostName("ChefChef")),
+                        new UserMembership(treasurer.withVersion(1), asSaved(removeLockedUsers(prit18)), UnofficialPostName.none()),
+                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(drawit19)), UnofficialPostName.none())
                 );
         assertThat(groupRepositoryAdapter.getAllByUser(u3.id()))
                 .containsExactlyInAnyOrder(
-                        new UserMembership(chair.withVersion(1), asSaved(digit19), UnofficialPostName.none())
+                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(digit19)), UnofficialPostName.none())
                 );
     }
 

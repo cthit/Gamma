@@ -1,4 +1,4 @@
-package it.chalmers.gamma.app.user.userdetails;
+package it.chalmers.gamma.security.user;
 
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
@@ -6,16 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
 
-public class GrantedAuthorityProxy implements GrantedAuthority {
-
-    private final AuthorityLevelName authorityLevelName;
-    private final AuthorityType authorityType;
-
-    public GrantedAuthorityProxy(AuthorityLevelName authorityLevelName,
-                                 AuthorityType authorityType) {
-        this.authorityLevelName = authorityLevelName;
-        this.authorityType = authorityType;
-    }
+public record GrantedAuthorityProxy(AuthorityLevelName authorityLevelName,
+                                     AuthorityType authorityType) implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
@@ -44,3 +36,4 @@ public class GrantedAuthorityProxy implements GrantedAuthority {
         return Objects.hash(authorityLevelName, authorityType);
     }
 }
+
