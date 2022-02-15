@@ -51,7 +51,7 @@ public final class UserController {
     @PostMapping("/create")
     public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
         //TODO: Check userAgreement
-
+        //TODO: Check for any exceptions, and throw a generic error if something goes wrong
         this.userCreationFacade.createUserWithCode(
                 new UserCreationFacade.NewUser(
                         request.password,

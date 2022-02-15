@@ -1,11 +1,15 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.activation.domain.UserActivation;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,20 +18,35 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
     private final UserActivationJpaRepository userActivationJpaRepository;
 
+    private static final PersistenceErrorState cidNotWhitelisted = new PersistenceErrorState(
+            "user_activation_cid_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
+    );
+
     public UserActivationRepositoryAdapter(UserActivationJpaRepository userActivationJpaRepository) {
         this.userActivationJpaRepository = userActivationJpaRepository;
     }
 
     @Override
-    public UserActivationToken createUserActivationCode(Cid cid) {
-        UserActivationToken userActivationToken = UserActivationToken.generate();
-        this.userActivationJpaRepository.saveAndFlush(
-                new UserActivationEntity(
-                        cid,
-                        userActivationToken
-                )
-        );
-        return userActivationToken;
+    public UserActivationToken createActivationToken(Cid cid) throws CidNotWhitelistedException {
+        UserActivationEntity entity = this.userActivationJpaRepository.findById(cid.value())
+                .orElse(new UserActivationEntity(cid));
+
+        UserActivationToken token = UserActivationToken.generate();
+        entity.setToken(token);
+
+        try {
+            this.userActivationJpaRepository.saveAndFlush(entity);
+            return token;
+        } catch (DataIntegrityViolationException e) {
+            PersistenceErrorState state = PersistenceErrorHelper.getState(e);
+
+            if (state.equals(cidNotWhitelisted)) {
+                throw new CidNotWhitelistedException();
+            }
+
+            throw e;
+        }
     }
 
     @Override
@@ -46,11 +65,12 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
     @Override
     public Cid getByToken(UserActivationToken token) {
-        return this.userActivationJpaRepository.findByToken(token.value()).orElseThrow().getId();
+        return this.userActivationJpaRepository.findByToken(token.value())
+                .orElseThrow(TokenNotActivatedException::new).cid();
     }
 
     @Override
-    public void removeActivation(Cid cid) {
+    public void removeActivation(Cid cid) throws CidNotActivatedException {
         this.userActivationJpaRepository.deleteById(cid.value());
     }
 }

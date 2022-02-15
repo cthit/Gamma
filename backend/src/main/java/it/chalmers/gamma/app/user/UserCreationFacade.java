@@ -55,11 +55,11 @@ public class UserCreationFacade extends Facade {
         accessGuard.require(isNotSignedIn());
 
         Cid cid = new Cid(cidRaw);
-        if (this.whitelistRepository.isWhitelisted(cid)) {
-            UserActivationToken userActivationToken = this.userActivationRepository.createUserActivationCode(cid);
+        try {
+            UserActivationToken userActivationToken = this.userActivationRepository.createActivationToken(cid);
             sendEmail(cid, userActivationToken);
             LOGGER.info("Cid " + cid + " has been activated");
-        } else {
+        } catch (UserActivationRepository.CidNotWhitelistedException e) {
             LOGGER.info("Someone tried to activate the cid: " + cid);
         }
     }

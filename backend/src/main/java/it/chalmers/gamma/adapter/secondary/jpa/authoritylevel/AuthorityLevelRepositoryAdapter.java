@@ -97,7 +97,6 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         try {
             repository.saveAndFlush(new AuthorityLevelEntity(authorityLevelName.getValue()));
         } catch (Exception e) {
-            //TODO: Should be Persistence error state
             if (e.getCause() instanceof EntityExistsException) {
                 throw new AuthorityLevelRepository.AuthorityLevelAlreadyExistsException();
             }

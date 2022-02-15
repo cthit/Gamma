@@ -11,7 +11,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 
 @Entity
 @Table(name = "user_activation")
-public class UserActivationEntity extends ImmutableEntity<Cid> {
+public class UserActivationEntity extends ImmutableEntity<String> {
 
     @Id
     @Column(name = "cid")
@@ -25,9 +25,12 @@ public class UserActivationEntity extends ImmutableEntity<Cid> {
 
     protected UserActivationEntity() { }
 
-    protected UserActivationEntity(Cid cid, UserActivationToken token) {
+    protected UserActivationEntity(Cid cid) {
         this.createdAt = Instant.now();
         this.cid = cid.getValue();
+    }
+
+    public void setToken(UserActivationToken token) {
         this.token = token.value();
     }
 
@@ -40,7 +43,12 @@ public class UserActivationEntity extends ImmutableEntity<Cid> {
     }
 
     @Override
-    public Cid getId() {
+    public String getId() {
+        return this.cid;
+    }
+
+    public Cid cid() {
         return Cid.valueOf(this.cid);
     }
+
 }
