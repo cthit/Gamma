@@ -14,6 +14,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAd
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
@@ -32,7 +33,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Collections;
 import java.util.List;
 
-import static it.chalmers.gamma.DomainUtils.defaultSettings;
+import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")

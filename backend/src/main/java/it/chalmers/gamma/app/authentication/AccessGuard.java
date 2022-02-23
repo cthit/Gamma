@@ -20,7 +20,6 @@ import java.util.List;
 public class AccessGuard {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessGuard.class);
-    private static final AuthorityLevelName adminAuthority = new AuthorityLevelName("admin");
 
     private final AuthenticatedService authenticatedService;
     private final AuthorityLevelRepository authorityLevelRepository;
@@ -67,12 +66,7 @@ public class AccessGuard {
     public static AccessChecker isAdmin() {
         return (authenticatedService, authorityLevelRepository, userRepository) -> {
             if (authenticatedService.getAuthenticated() instanceof InternalUserAuthenticated userAuthenticated) {
-                User user = userAuthenticated.get();
-                List<AuthorityLevelName> authorities = authorityLevelRepository.getByUser(user.id())
-                        .stream()
-                        .map(UserAuthority::authorityLevelName)
-                        .toList();
-                return authorities.contains(adminAuthority);
+                return userAuthenticated.isAdmin();
             }
 
             return false;

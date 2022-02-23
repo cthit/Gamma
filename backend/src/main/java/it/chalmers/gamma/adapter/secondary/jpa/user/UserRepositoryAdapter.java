@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
@@ -35,20 +34,12 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public void create(User user, UnencryptedPassword password) {
-        if (user.extended() == null) {
-            throw new IllegalStateException();
-        }
-
-        this.save(toEntity(user, new Password(passwordEncoder.encode(password.value()))));
+        this.save(toEntity(user, password.value()));
     }
 
     @Override
     public void save(User user) {
-        if (user.extended() == null) {
-            throw new IllegalStateException();
-        }
-
-        this.save(toEntity(user));
+        this.save(toEntity(user, null));
     }
 
     private void save(UserEntity userEntity) {
@@ -81,33 +72,42 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundRuntimeException {
-        return false;
+    public boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException {
+        UserEntity entity = this.repository.findById(userId.value())
+                .orElseThrow(UserNotFoundException::new);
+        return passwordEncoder.matches(password.value(), entity.password);
     }
 
     @Override
-    public void setPassword(UserId userId, UnencryptedPassword newPassword) throws UserNotFoundRuntimeException {
-        UserEntity userEntity = this.repository.getById(userId.value());
-        userEntity.password = newPassword.value();
+    public void setPassword(UserId userId, UnencryptedPassword newPassword) throws UserNotFoundException {
+        UserEntity userEntity = this.repository.findById(userId.value())
+                .orElseThrow(UserNotFoundException::new);
+        userEntity.password = passwordEncoder.encode(newPassword.value());
         this.save(userEntity);
     }
 
+    @Override
     public void acceptUserAgreement(UserId userId) {
         UserEntity userEntity = this.repository.findById(userId.value())
-                .orElseThrow(UserNotFoundRuntimeException::new);
+                .orElseThrow(UserNotFoundException::new);
         userEntity.acceptUserAgreement();
         save(userEntity);
     }
 
-    private UserEntity toEntity(User d, Password password) {
+    private UserEntity toEntity(User d, String password) {
         UserEntity e = this.repository.findById(d.id().value())
                 .orElse(new UserEntity());
         UserExtended extended = d.extended();
 
         e.increaseVersion(extended.version());
 
-        if (e.userAgreementAccepted == null && d.extended().acceptedUserAgreement()) {
-            e.userAgreementAccepted = Instant.now();
+        //If you want to update when the user agreement has been updated, use acceptUserAgreement()
+        if (e.userAgreementAccepted == null) {
+            if (d.extended().acceptedUserAgreement()) {
+                e.userAgreementAccepted = Instant.now();
+            } else {
+                e.userAgreementAccepted = Instant.ofEpochSecond(0);
+            }
         }
 
         e.id = d.id().value();
@@ -122,7 +122,7 @@ public class UserRepositoryAdapter implements UserRepository {
         e.language = d.language();
 
         if (password != null) {
-            e.password = password.value();
+            e.password = passwordEncoder.encode(password);
         }
 
         if (d.extended().avatarUri() != null) {
@@ -134,10 +134,6 @@ public class UserRepositoryAdapter implements UserRepository {
         }
 
         return e;
-    }
-
-    private UserEntity toEntity(User d) {
-        return toEntity(d, null);
     }
 
 }

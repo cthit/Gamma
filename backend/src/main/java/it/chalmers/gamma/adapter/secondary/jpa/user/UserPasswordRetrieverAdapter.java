@@ -18,11 +18,8 @@ public class UserPasswordRetrieverAdapter implements UserPasswordRetriever {
 
     @Override
     public Password getPassword(UserId id) {
-        try {
-            UserEntity userEntity = this.userJpaRepository.getById(id.value());
-            return new Password(userEntity.password);
-        } catch (EntityNotFoundException e) {
-            return null;
-        }
+        UserEntity userEntity = this.userJpaRepository.findById(id.value())
+                .orElseThrow(UserNotFoundException::new);
+        return new Password(userEntity.password);
     }
 }

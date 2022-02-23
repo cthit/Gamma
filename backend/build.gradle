@@ -89,8 +89,8 @@ dependencies {
     testImplementation(
             "org.springframework.boot:spring-boot-starter-test:2.6.1",
             "org.springframework.security:spring-security-test:5.5.1",
-            "org.testcontainers:junit-jupiter:1.16.2",
-            "org.testcontainers:postgresql",
+            "org.testcontainers:junit-jupiter:1.16.3",
+            "org.testcontainers:postgresql:1.16.3",
             "com.tngtech.archunit:archunit:0.22.0",
             "org.flywaydb:flyway-core:7.14.1"
     )
@@ -98,7 +98,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        mavenBom "org.testcontainers:testcontainers-bom:1.16.2"
+        mavenBom "org.testcontainers:testcontainers-bom:1.16.3"
     }
 }
 

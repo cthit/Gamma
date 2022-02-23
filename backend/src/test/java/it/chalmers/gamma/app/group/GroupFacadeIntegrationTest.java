@@ -1,6 +1,10 @@
 package it.chalmers.gamma.app.group;
 
-import it.chalmers.gamma.DomainUtils;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.utils.DomainUtils;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
@@ -40,19 +44,20 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static it.chalmers.gamma.DomainUtils.addAll;
-import static it.chalmers.gamma.DomainUtils.asSaved;
-import static it.chalmers.gamma.DomainUtils.chair;
-import static it.chalmers.gamma.DomainUtils.committee;
-import static it.chalmers.gamma.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.DomainUtils.digit;
-import static it.chalmers.gamma.DomainUtils.digit18;
-import static it.chalmers.gamma.DomainUtils.gm;
-import static it.chalmers.gamma.DomainUtils.member;
-import static it.chalmers.gamma.DomainUtils.treasurer;
-import static it.chalmers.gamma.DomainUtils.u1;
-import static it.chalmers.gamma.DomainUtils.u3;
-import static it.chalmers.gamma.DomainUtils.u4;
+import static it.chalmers.gamma.utils.DomainUtils.addAll;
+import static it.chalmers.gamma.utils.DomainUtils.asSaved;
+import static it.chalmers.gamma.utils.DomainUtils.chair;
+import static it.chalmers.gamma.utils.DomainUtils.committee;
+import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
+import static it.chalmers.gamma.utils.DomainUtils.digit;
+import static it.chalmers.gamma.utils.DomainUtils.digit18;
+import static it.chalmers.gamma.utils.DomainUtils.gm;
+import static it.chalmers.gamma.utils.DomainUtils.member;
+import static it.chalmers.gamma.utils.DomainUtils.treasurer;
+import static it.chalmers.gamma.utils.DomainUtils.u1;
+import static it.chalmers.gamma.utils.DomainUtils.u3;
+import static it.chalmers.gamma.utils.DomainUtils.u4;
+import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
@@ -73,7 +78,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         SuperGroupEntityConverter.class,
         SuperGroupTypeRepositoryAdapter.class,
         SuperGroupEntityConverter.class,
-        SettingsRepositoryAdapter.class})
+        SettingsRepositoryAdapter.class,
+        AuthorityLevelRepositoryAdapter.class,
+        AuthorityLevelEntityConverter.class
+})
 public class GroupFacadeIntegrationTest {
 
     @MockBean
@@ -92,6 +100,8 @@ public class GroupFacadeIntegrationTest {
     private PostRepository postRepository;
     @Autowired
     private SettingsRepository settingsRepository;
+    @Autowired
+    private AuthorityLevelRepository authorityLevelRepository;
 
     @BeforeEach
     public void setSettings() {
@@ -131,6 +141,8 @@ public class GroupFacadeIntegrationTest {
 
     @Test
     public void Given_Group_Expect_update_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException, GroupFacade.GroupAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+
         Group group = digit18;
         SuperGroup newSuperGroup = digit;
 
@@ -160,7 +172,7 @@ public class GroupFacadeIntegrationTest {
                                 .groupMembers(group.groupMembers()
                                         .stream()
                                         //If the user is locked, remove
-                                        .filter(groupMember -> !(groupMember.user().extended().locked() || !groupMember.user().extended().acceptedUserAgreement()) )
+//                                        .filter(groupMember -> !(groupMember.user().extended().locked() || !groupMember.user().extended().acceptedUserAgreement()) )
                                         .map(groupMember -> new GroupMember(
                                                 groupMember.post().withVersion(1),
                                                 groupMember.unofficialPostName(),
@@ -174,6 +186,7 @@ public class GroupFacadeIntegrationTest {
 
     @Test
     public void Given_GroupWithNewMembers_Expect_setMembers_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
         postRepository.save(member);
         addAll(userRepository, u3, u4);
         addGroup(digit18);

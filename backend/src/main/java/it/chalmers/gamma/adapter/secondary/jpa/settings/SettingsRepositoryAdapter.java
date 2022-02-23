@@ -35,10 +35,7 @@ public class SettingsRepositoryAdapter implements SettingsRepository {
         } catch (Exception e) {
             PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 
-            System.out.println(state);
-
             if (state.equals(superGroupTypeNotFound)) {
-                System.out.println("LMAO");
                 throw new IllegalArgumentException();
             }
 

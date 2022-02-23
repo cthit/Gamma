@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static it.chalmers.gamma.DomainUtils.*;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;

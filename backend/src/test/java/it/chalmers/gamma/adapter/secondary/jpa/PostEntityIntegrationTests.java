@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static it.chalmers.gamma.DomainUtils.chair;
-import static it.chalmers.gamma.DomainUtils.treasurer;
+import static it.chalmers.gamma.utils.DomainUtils.chair;
+import static it.chalmers.gamma.utils.DomainUtils.treasurer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 

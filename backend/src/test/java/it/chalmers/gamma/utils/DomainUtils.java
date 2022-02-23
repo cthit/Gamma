@@ -1,4 +1,4 @@
-package it.chalmers.gamma;
+package it.chalmers.gamma.utils;
 
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.client.domain.Client;
@@ -194,7 +194,7 @@ public final class DomainUtils {
                         .map(groupMember -> new GroupMember(
                                 groupMember.post().withVersion(1),
                                 groupMember.unofficialPostName(),
-                                removeUserExtended(groupMember.user())))
+                                groupMember.user().withExtended(groupMember.user().extended().withVersion(1))))
                         .toList(),
                 group.avatarUri(),
                 group.bannerUri()
@@ -248,7 +248,7 @@ public final class DomainUtils {
                         .toList(),
                 authorityLevel.users()
                         .stream()
-                        .map(DomainUtils::removeUserExtended)
+                        .map(user -> user.withExtended(user.extended().withVersion(1)))
                         .toList()
         );
     }
@@ -265,7 +265,6 @@ public final class DomainUtils {
 
     public static void addAll(SuperGroupRepository superGroupRepository, SuperGroup... superGroups) {
         for (SuperGroup superGroup : superGroups) {
-            System.out.println(superGroup);
             superGroupRepository.save(superGroup);
         }
     }

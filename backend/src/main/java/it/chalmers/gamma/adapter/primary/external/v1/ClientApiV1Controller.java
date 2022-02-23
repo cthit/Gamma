@@ -23,7 +23,6 @@ public class ClientApiV1Controller {
 
     public static final String URI = "/external/client/v1";
 
-
     private final UserFacade userFacade;
     private final GroupFacade groupFacade;
     private final SuperGroupFacade superGroupFacade;

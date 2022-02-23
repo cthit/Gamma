@@ -22,27 +22,22 @@ import java.time.Instant;
 public class UserEntityConverter {
 
     private final UserAccessGuard userAccessGuard;
-    private final SettingsRepository SettingsRepository;
+    private final SettingsRepository settingsRepository;
 
     public UserEntityConverter(UserAccessGuard userAccessGuard,
                                SettingsRepository SettingsRepository) {
         this.userAccessGuard = userAccessGuard;
-        this.SettingsRepository = SettingsRepository;
+        this.settingsRepository = SettingsRepository;
     }
 
     @Nullable
     public User toDomain(UserEntity userEntity) {
-        Settings settings = this.SettingsRepository.getSettings();
+        Settings settings = this.settingsRepository.getSettings();
         UserId userId = new UserId(userEntity.id);
         boolean acceptedUserAgreement = hasAcceptedLatestUserAgreement(userEntity.userAgreementAccepted, settings);
 
-        /* If the user is locked or has not accepted the latest user agreement then nothing should be returned
-         * unless the signed-in user is the actual user being converted or if the signed-in user is an admin.
-         */
-        if (userEntity.locked || !acceptedUserAgreement) {
-            if (!(userAccessGuard.isMe(userId) || userAccessGuard.isAdmin())) {
-                return null;
-            }
+        if (!userAccessGuard.haveAccessToUser(userId, userEntity.locked, acceptedUserAgreement)) {
+            return null;
         }
 
         UserExtended extended = null;
@@ -72,5 +67,7 @@ public class UserEntityConverter {
     private boolean hasAcceptedLatestUserAgreement(Instant acceptedUserAgreement, Settings settings) {
         return settings.lastUpdatedUserAgreement().compareTo(acceptedUserAgreement) < 0;
     }
+
+    public static class NotAuthenticatedException extends RuntimeException { }
 
 }

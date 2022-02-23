@@ -1,6 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.DomainUtils;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.utils.DomainUtils;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
@@ -39,29 +43,29 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.DomainUtils.addAll;
-import static it.chalmers.gamma.DomainUtils.asSaved;
-import static it.chalmers.gamma.DomainUtils.chair;
-import static it.chalmers.gamma.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.DomainUtils.didit;
-import static it.chalmers.gamma.DomainUtils.digit;
-import static it.chalmers.gamma.DomainUtils.digit17;
-import static it.chalmers.gamma.DomainUtils.digit18;
-import static it.chalmers.gamma.DomainUtils.digit19;
-import static it.chalmers.gamma.DomainUtils.drawit;
-import static it.chalmers.gamma.DomainUtils.drawit18;
-import static it.chalmers.gamma.DomainUtils.drawit19;
-import static it.chalmers.gamma.DomainUtils.gm;
-import static it.chalmers.gamma.DomainUtils.member;
-import static it.chalmers.gamma.DomainUtils.prit18;
-import static it.chalmers.gamma.DomainUtils.prit19;
-import static it.chalmers.gamma.DomainUtils.removeLockedUsers;
-import static it.chalmers.gamma.DomainUtils.styrit18;
-import static it.chalmers.gamma.DomainUtils.styrit19;
-import static it.chalmers.gamma.DomainUtils.treasurer;
-import static it.chalmers.gamma.DomainUtils.u0;
-import static it.chalmers.gamma.DomainUtils.u1;
-import static it.chalmers.gamma.DomainUtils.u3;
+import static it.chalmers.gamma.utils.DomainUtils.addAll;
+import static it.chalmers.gamma.utils.DomainUtils.asSaved;
+import static it.chalmers.gamma.utils.DomainUtils.chair;
+import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
+import static it.chalmers.gamma.utils.DomainUtils.didit;
+import static it.chalmers.gamma.utils.DomainUtils.digit;
+import static it.chalmers.gamma.utils.DomainUtils.digit17;
+import static it.chalmers.gamma.utils.DomainUtils.digit18;
+import static it.chalmers.gamma.utils.DomainUtils.digit19;
+import static it.chalmers.gamma.utils.DomainUtils.drawit;
+import static it.chalmers.gamma.utils.DomainUtils.drawit18;
+import static it.chalmers.gamma.utils.DomainUtils.drawit19;
+import static it.chalmers.gamma.utils.DomainUtils.gm;
+import static it.chalmers.gamma.utils.DomainUtils.member;
+import static it.chalmers.gamma.utils.DomainUtils.prit18;
+import static it.chalmers.gamma.utils.DomainUtils.prit19;
+import static it.chalmers.gamma.utils.DomainUtils.styrit18;
+import static it.chalmers.gamma.utils.DomainUtils.styrit19;
+import static it.chalmers.gamma.utils.DomainUtils.treasurer;
+import static it.chalmers.gamma.utils.DomainUtils.u0;
+import static it.chalmers.gamma.utils.DomainUtils.u1;
+import static it.chalmers.gamma.utils.DomainUtils.u3;
+import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -81,7 +85,9 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         PostRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SuperGroupTypeRepositoryAdapter.class,
-        SettingsRepositoryAdapter.class})
+        SettingsRepositoryAdapter.class,
+        AuthorityLevelRepositoryAdapter.class,
+        AuthorityLevelEntityConverter.class})
 public class GroupEntityIntegrationTests {
 
     @Autowired
@@ -96,6 +102,8 @@ public class GroupEntityIntegrationTests {
     private PostRepository postRepository;
     @Autowired
     private SettingsRepository settingsRepository;
+    @Autowired
+    private AuthorityLevelRepository authorityLevelRepository;
 
     @BeforeEach
     public void setSettings() {
@@ -104,6 +112,7 @@ public class GroupEntityIntegrationTests {
 
     @Test
     public void Given_ValidGroup_Expect_save_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
         Group groupToSave = digit18;
         addGroup(groupToSave);
 
@@ -111,17 +120,19 @@ public class GroupEntityIntegrationTests {
                 .orElseThrow();
 
         assertThat(savedGroup)
-                .isEqualTo(asSaved(removeLockedUsers(groupToSave)));
+                .isEqualTo(asSaved(groupToSave));
     }
 
     @Test
     public void Given_SameGroupIdTwice_Expect_save_To_Throw() {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+
         assertThatExceptionOfType(MutableEntity.StaleDomainObjectException.class)
                 .isThrownBy(() -> addGroup(digit18, digit18));
 
         assertThat(groupRepositoryAdapter.getAll())
                 .containsExactlyInAnyOrder(
-                        asSaved(removeLockedUsers(digit18))
+                        asSaved(digit18)
                 );
     }
 
@@ -178,6 +189,8 @@ public class GroupEntityIntegrationTests {
 
     @Test
     public void Given_GroupWithInvalidVersion_Expect_save_To_Throw() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+
         superGroupTypeRepository.add(digit.type());
         superGroupRepository.save(digit);
 
@@ -248,55 +261,60 @@ public class GroupEntityIntegrationTests {
 
     @Test
     public void Given_MultipleValidGroups_Expect_getAll_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+
         addGroup(digit18, digit19, prit19, styrit19);
 
         assertThat(groupRepositoryAdapter.getAll())
                 .containsExactlyInAnyOrder(
-                        asSaved(removeLockedUsers(digit18)),
-                        asSaved(removeLockedUsers(digit19)),
-                        asSaved(removeLockedUsers(prit19)),
-                        asSaved(removeLockedUsers(styrit19))
+                        asSaved(digit18),
+                        asSaved(digit19),
+                        asSaved(prit19),
+                        asSaved(styrit19)
                 );
     }
 
     @Test
     public void Given_MultipleValidGroups_Expect_getAllBySuperGroup_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
         addGroup(digit17, digit18, digit19, prit18, prit19, styrit18, styrit19, drawit18);
 
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(digit.id()))
-                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit19)));
+                .containsExactlyInAnyOrder(asSaved(digit19));
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(didit.id()))
-                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit17)), asSaved(removeLockedUsers(digit18)));
+                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit18));
         assertThat(groupRepositoryAdapter.getAllBySuperGroup(drawit.id()))
                 .isEmpty();
     }
 
     @Test
     public void Given_MultipleValidGroups_Expect_getAllByPost_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
         addGroup(digit17, digit18, digit19, prit18);
 
         assertThat(groupRepositoryAdapter.getAllByPost(chair.id()))
-                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit17)), asSaved(removeLockedUsers(digit18)), asSaved(removeLockedUsers(digit19)), asSaved(removeLockedUsers(prit18)));
+                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit18), asSaved(digit19), asSaved(prit18));
         assertThat(groupRepositoryAdapter.getAllByPost(member.id()))
-                .containsExactlyInAnyOrder(asSaved(removeLockedUsers(digit17)), asSaved(removeLockedUsers(digit19)), asSaved(removeLockedUsers(prit18)));
+                .containsExactlyInAnyOrder(asSaved(digit17), asSaved(digit19), asSaved(prit18));
     }
 
     @Test
     public void Given_MultipleValidGroups_Expect_getAllByUser_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
         addGroup(digit17, digit18, digit19, prit18, prit19, styrit18, styrit19, drawit18, drawit19);
 
         assertThat(groupRepositoryAdapter.getAllByUser(u0.id()))
                 .isEmpty();
         assertThat(groupRepositoryAdapter.getAllByUser(u1.id()))
                 .containsExactlyInAnyOrder(
-                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(digit18)), new UnofficialPostName("root")),
-                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(prit18)), new UnofficialPostName("ChefChef")),
-                        new UserMembership(treasurer.withVersion(1), asSaved(removeLockedUsers(prit18)), UnofficialPostName.none()),
-                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(drawit19)), UnofficialPostName.none())
+                        new UserMembership(chair.withVersion(1), asSaved(digit18), new UnofficialPostName("root")),
+                        new UserMembership(chair.withVersion(1), asSaved(prit18), new UnofficialPostName("ChefChef")),
+                        new UserMembership(treasurer.withVersion(1), asSaved(prit18), UnofficialPostName.none()),
+                        new UserMembership(chair.withVersion(1), asSaved(drawit19), UnofficialPostName.none())
                 );
         assertThat(groupRepositoryAdapter.getAllByUser(u3.id()))
                 .containsExactlyInAnyOrder(
-                        new UserMembership(chair.withVersion(1), asSaved(removeLockedUsers(digit19)), UnofficialPostName.none())
+                        new UserMembership(chair.withVersion(1), asSaved(digit19), UnofficialPostName.none())
                 );
     }
 

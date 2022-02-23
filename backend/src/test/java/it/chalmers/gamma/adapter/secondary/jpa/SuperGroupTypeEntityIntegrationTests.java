@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static it.chalmers.gamma.DomainUtils.committee;
-import static it.chalmers.gamma.DomainUtils.digit;
+import static it.chalmers.gamma.utils.DomainUtils.committee;
+import static it.chalmers.gamma.utils.DomainUtils.digit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;

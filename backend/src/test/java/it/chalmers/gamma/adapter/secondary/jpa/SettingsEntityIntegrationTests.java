@@ -1,7 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.group.PostRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
@@ -19,8 +17,8 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
-import static it.chalmers.gamma.DomainUtils.board;
-import static it.chalmers.gamma.DomainUtils.committee;
+import static it.chalmers.gamma.utils.DomainUtils.board;
+import static it.chalmers.gamma.utils.DomainUtils.committee;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -80,7 +78,7 @@ public class SettingsEntityIntegrationTests {
         assertThat(settingsRepositoryAdapter.hasSettings())
                 .isTrue();
     }
-    
+
     @Test
     public void Given_InvalidSuperGroupTypes_Expect_setSettings_To_Throw() {
         Settings validSettings = new Settings(

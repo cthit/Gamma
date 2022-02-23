@@ -16,6 +16,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.authentication.AuthenticatedService;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
@@ -30,8 +31,10 @@ import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
+import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.user.PasswordConfiguration;
+import it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +48,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.DomainUtils.addAll;
-import static it.chalmers.gamma.DomainUtils.asSaved;
-import static it.chalmers.gamma.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.DomainUtils.removeUserExtended;
-import static it.chalmers.gamma.DomainUtils.u1;
-import static it.chalmers.gamma.DomainUtils.u2;
-import static it.chalmers.gamma.DomainUtils.u4;
+import static it.chalmers.gamma.utils.DomainUtils.addAll;
+import static it.chalmers.gamma.utils.DomainUtils.asSaved;
+import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
+import static it.chalmers.gamma.utils.DomainUtils.removeUserExtended;
+import static it.chalmers.gamma.utils.DomainUtils.u1;
+import static it.chalmers.gamma.utils.DomainUtils.u2;
+import static it.chalmers.gamma.utils.DomainUtils.u4;
+import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
+import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsClientWithApi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -185,8 +190,10 @@ public class ClientEntityIntegrationTests {
 
     @Test
     public void Given_AValidClientWithRestrictions_Expect_save_To_Work() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
-        addAll(userRepository, u1);
         authorityLevelRepository.create(new AuthorityLevelName("admin"));
+        setAuthenticatedAsAdminUser(userRepository, null);
+
+        addAll(userRepository, u1);
         authorityLevelRepository.save(new AuthorityLevel(
                 new AuthorityLevelName("admin"),
                 Collections.emptyList(),
@@ -217,18 +224,12 @@ public class ClientEntityIntegrationTests {
 
         assertThat(savedClient)
                 .isEqualTo(newClient);
-        assertThat(authorityLevelRepository.get(new AuthorityLevelName("admin")))
-                .get().isEqualTo(new AuthorityLevel(
-                        new AuthorityLevelName("admin"),
-                        Collections.emptyList(),
-                        Collections.emptyList(),
-                        List.of(removeUserExtended(u1)))
-                );
-
     }
 
     @Test
     public void Given_AValidClientWithApprovedUsers_Expect_save_To_Work() {
+        User user = setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+
         ClientUid uid = ClientUid.generate();
         Client newClient = new Client(
                 uid,
@@ -248,24 +249,30 @@ public class ClientEntityIntegrationTests {
 
         this.clientRepositoryAdapter.save(newClient);
 
+        setAuthenticatedAsClientWithApi(newClient);
+
         Client savedClient = this.clientRepositoryAdapter.get(uid).orElseThrow();
 
         assertThat(savedClient)
                 .isEqualTo(newClient);
 
+        setAuthenticatedAsAdminUser(user);
+
         addAll(userRepository, u1, u2, u4);
 
         Client newClient2 = newClient.withApprovedUsers(
-                List.of(removeUserExtended(u1), removeUserExtended(u2), removeUserExtended(u4))
+                List.of(u1, u2, u4)
         );
 
         this.clientRepositoryAdapter.save(newClient2);
+
+        setAuthenticatedAsClientWithApi(newClient);
 
         Client savedClient2 = this.clientRepositoryAdapter.get(uid).orElseThrow();
 
         //No u2 since they are locked
         assertThat(savedClient2)
-                .isEqualTo(newClient2.withApprovedUsers(List.of(removeUserExtended(u1), removeUserExtended(u4))));
+                .isEqualTo(newClient2.withApprovedUsers(List.of(u1, u4)));
     }
 
     @Test
@@ -485,6 +492,8 @@ public class ClientEntityIntegrationTests {
 
     @Test
     public void Given_UserThatHasApprovedClients_Expect_getClientsByUserApproved_To_Work() {
+        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+
         addAll(userRepository, u1);
 
         Client client = new Client(
@@ -529,10 +538,10 @@ public class ClientEntityIntegrationTests {
 
         assertThat(this.clientRepositoryAdapter.getClientsByUserApproved(u1.id()))
                 .containsExactlyInAnyOrder(
-                        removeUserExtended(client),
-                        removeUserExtended(client2),
-                        removeUserExtended(client4),
-                        removeUserExtended(client5)
+                        client,
+                        client2,
+                        client4,
+                        client5
                 );
     }
 

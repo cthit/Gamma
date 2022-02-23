@@ -173,7 +173,7 @@ public class MeFacade extends Facade {
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
                 try {
                     this.userRepository.delete(me.id());
-                } catch (UserRepository.UserNotFoundRuntimeException e) {
+                } catch (UserRepository.UserNotFoundException e) {
                     e.printStackTrace();
                 }
             }
@@ -185,7 +185,7 @@ public class MeFacade extends Facade {
         if (authenticated instanceof LockedInternalUserAuthenticated lockedInternalUserAuthenticated) {
             try {
                 this.userRepository.acceptUserAgreement(lockedInternalUserAuthenticated.get().id());
-            } catch (UserRepository.UserNotFoundRuntimeException e) {
+            } catch (UserRepository.UserNotFoundException e) {
                 throw new IllegalStateException();
             }
         }

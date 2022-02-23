@@ -22,6 +22,7 @@ public record Client(ClientUid clientUid,
                      List<AuthorityLevelName> restrictions,
                      List<Scope> scopes,
                      List<User> approvedUsers,
+                     //TODO: Don't use a optional
                      Optional<ApiKey> clientApiKey) implements ClientBuilder.With {
 
     public Client {

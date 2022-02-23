@@ -12,6 +12,7 @@ public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
     private final ApiKeyToken apiKeyToken;
 
+    //TODO: Why does it take in a collection of authorities? Api keys cannot use them.
     public ApiKeyAuthentication(ApiKeyToken apiKeyToken, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.apiKeyToken = apiKeyToken;

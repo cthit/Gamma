@@ -41,7 +41,6 @@ public final class PersistenceErrorHelper {
 
         }
 
-        System.out.println("Hmmm");
         e.printStackTrace();
 
         throw new UnknownDataIntegrityViolationException();

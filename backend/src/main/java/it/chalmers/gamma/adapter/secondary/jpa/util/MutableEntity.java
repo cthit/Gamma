@@ -24,18 +24,19 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
      * that is being tried to be converted is outdated.
      */
     public void increaseVersion(int currentVersion) {
-
         /*
-         * If id is null, then currentVersion must be 0.
-         * If not, then something is trying to create a new
-         * entity that has been deleted.
+         * If id is null, then currentVersion must be 0. This to indicate that the incoming entity is new.
+         * If not, then something is trying to save an entity that has been deleted.
          */
         if (this.getId() == null && currentVersion != 0) {
-            throw new StaleDomainObjectException();
-        } else if (this.version != currentVersion) {
+            throw new IllegalEntityStateException();
+        }
+        // Version has to match the current version.
+        else if (this.version != currentVersion) {
             throw new StaleDomainObjectException();
         }
 
+        // Checks passed, updating the version.
         this.version++;
     }
 
@@ -43,5 +44,6 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
         return this.version;
     }
 
+    public static class IllegalEntityStateException extends RuntimeException { }
     public static class StaleDomainObjectException extends RuntimeException { }
 }

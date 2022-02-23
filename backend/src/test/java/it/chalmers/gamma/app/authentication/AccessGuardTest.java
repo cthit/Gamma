@@ -291,10 +291,34 @@ class AccessGuardTest {
         }
     };
 
+    private static final InternalUserAuthenticated adminAuthenticated = new InternalUserAuthenticated() {
+        @Override
+        public User get() {
+            return adminUser;
+        }
+
+        @Override
+        public boolean isAdmin() {
+            return true;
+        }
+    };
+
+    private static final InternalUserAuthenticated normalUserAuthenticated = new InternalUserAuthenticated() {
+        @Override
+        public User get() {
+            return normalUser;
+        }
+
+        @Override
+        public boolean isAdmin() {
+            return false;
+        }
+    };
+
     @Test
     public void Given_Admin_Expect_isAdmin_To_NotThrow() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> adminUser);
+                .willReturn(adminAuthenticated);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
@@ -321,7 +345,7 @@ class AccessGuardTest {
     @Test
     public void Given_NonAdmin_Expect_isAdmin_To_Throw() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> normalUser);
+                .willReturn(normalUserAuthenticated);
         given(authorityLevelRepository.getByUser(normalUser.id()))
                 .willReturn(userAuthoritiesMap.get(normalUser.id()));
 
@@ -367,7 +391,7 @@ class AccessGuardTest {
         String password = "password";
 
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> adminUser);
+                .willReturn(adminAuthenticated);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
         given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
@@ -385,7 +409,7 @@ class AccessGuardTest {
         String password = "wrongpassword";
 
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> adminUser);
+                .willReturn(adminAuthenticated);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
         given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
@@ -439,7 +463,7 @@ class AccessGuardTest {
     @Test
     public void Given_UserIsSignedIn_Expect_isNotSignedIn_To_Throw() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> normalUser);
+                .willReturn(normalUserAuthenticated);
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isNotSignedIn()));
@@ -457,7 +481,7 @@ class AccessGuardTest {
     @Test
     public void Given_UserIsSignedIn_Expect_isSignedIn_To_NotThrow() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> normalUser);
+                .willReturn(normalUserAuthenticated);
 
         assertThatNoException()
                 .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
@@ -489,7 +513,7 @@ class AccessGuardTest {
     @Test
     public void Given_UserIsInGroup_Expect_isSignedInUserMemberOfGroup_To_NotThrow() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> normalUser);
+                .willReturn(normalUserAuthenticated);
 
         assertThatNoException()
                 .isThrownBy(() -> this.accessGuard.require(isSignedInUserMemberOfGroup(digIT18)));
@@ -498,7 +522,7 @@ class AccessGuardTest {
     @Test
     public void Given_UserIsNotInGroup_Expect_isSignedInUserMemberOfGroup_To_Throw() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> adminUser);
+                .willReturn(adminAuthenticated);
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isSignedInUserMemberOfGroup(digIT18)));
@@ -561,7 +585,7 @@ class AccessGuardTest {
     @Test
     public void Given_IsAdmin_Expect_isApi_To_Throw() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> adminUser);
+                .willReturn(adminAuthenticated);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
@@ -572,7 +596,7 @@ class AccessGuardTest {
     @Test
     public void Given_NeitherChecksIsValid_Expect_requireEither_To_Throw() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> normalUser);
+                .willReturn(normalUserAuthenticated);
         given(authorityLevelRepository.getByUser(normalUser.id()))
                 .willReturn(userAuthoritiesMap.get(normalUser.id()));
 
@@ -586,7 +610,7 @@ class AccessGuardTest {
     @Test
     public void Given_OneOfTwoChecksIsValid_Expect_requireEither_To_NotThrow() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> normalUser);
+                .willReturn(normalUserAuthenticated);
         given(authorityLevelRepository.getByUser(normalUser.id()))
                 .willReturn(userAuthoritiesMap.get(normalUser.id()));
 
@@ -609,7 +633,7 @@ class AccessGuardTest {
     @Test
     public void Given_IsAdmin_Expect_isClientApi_To_Throw() {
         given(authenticatedService.getAuthenticated())
-                .willReturn((InternalUserAuthenticated) () -> adminUser);
+                .willReturn(adminAuthenticated);
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
 

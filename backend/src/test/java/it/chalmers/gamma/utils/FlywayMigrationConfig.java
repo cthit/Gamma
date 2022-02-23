@@ -1,4 +1,4 @@
-package it.chalmers.gamma;
+package it.chalmers.gamma.utils;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;

@@ -142,7 +142,7 @@ public class UserFacade extends Facade {
 
         try {
             this.userRepository.delete(new UserId(id));
-        } catch (UserRepository.UserNotFoundRuntimeException e) {
+        } catch (UserRepository.UserNotFoundException e) {
             e.printStackTrace();
         }
     }
