@@ -39,10 +39,18 @@ import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.authentication.ApiAuthenticated;
+import it.chalmers.gamma.security.authentication.ExternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.LocalRunnerAuthenticated;
+import it.chalmers.gamma.security.authentication.LockedInternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.Unauthenticated;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
@@ -63,13 +71,11 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.userHasAcceptedCl
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mockStatic;
 
 
 @ExtendWith(SpringExtension.class)
 class AccessGuardTest {
-
-    @Mock
-    private AuthenticatedService authenticatedService;
 
     @Mock
     private UserRepository userRepository;
@@ -317,13 +323,15 @@ class AccessGuardTest {
 
     @Test
     public void Given_Admin_Expect_isAdmin_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(adminAuthenticated);
-        given(authorityLevelRepository.getByUser(adminUser.id()))
-                .willReturn(userAuthoritiesMap.get(adminUser.id()));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(adminAuthenticated);
+            given(authorityLevelRepository.getByUser(adminUser.id()))
+                    .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        }
     }
 
     @Test
@@ -333,33 +341,38 @@ class AccessGuardTest {
                 .extended(adminUser.extended().withLocked(true))
                 .build();
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn((LockedInternalUserAuthenticated) () -> lockedAdminUser);
-        given(authorityLevelRepository.getByUser(lockedAdminUser.id()))
-                .willReturn(userAuthoritiesMap.get(lockedAdminUser.id()));
-
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn((LockedInternalUserAuthenticated) () -> lockedAdminUser);
+            given(authorityLevelRepository.getByUser(lockedAdminUser.id()))
+                    .willReturn(userAuthoritiesMap.get(lockedAdminUser.id()));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        }
     }
 
     @Test
     public void Given_NonAdmin_Expect_isAdmin_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(normalUserAuthenticated);
-        given(authorityLevelRepository.getByUser(normalUser.id()))
-                .willReturn(userAuthoritiesMap.get(normalUser.id()));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(normalUserAuthenticated);
+            given(authorityLevelRepository.getByUser(normalUser.id()))
+                    .willReturn(userAuthoritiesMap.get(normalUser.id()));
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        }
     }
 
     @Test
     public void Given_Unauthenticated_Expect_isAdmin_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(new Unauthenticated() {});
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(new Unauthenticated() {});
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        }
     }
 
     /**
@@ -368,123 +381,144 @@ class AccessGuardTest {
      */
     @Test
     public void Given_ExternalAuthenticatedAdmin_Expect_isAdmin_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn((ExternalUserAuthenticated) () -> adminUser);
-        given(authorityLevelRepository.getByUser(adminUser.id()))
-                .willReturn(userAuthoritiesMap.get(adminUser.id()));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn((ExternalUserAuthenticated) () -> adminUser);
+            given(authorityLevelRepository.getByUser(adminUser.id()))
+                    .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        }
     }
 
     @Test
     public void Given_Api_Expect_isAdmin_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
-
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
+        }
     }
 
     @Test
     public void Given_AdminAndCorrectPassword_Expect_isAdmin_To_NotThrow() {
         String password = "password";
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(adminAuthenticated);
+            given(authorityLevelRepository.getByUser(adminUser.id()))
+                    .willReturn(userAuthoritiesMap.get(adminUser.id()));
+            given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
+                    .willReturn(true);
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn(adminAuthenticated);
-        given(authorityLevelRepository.getByUser(adminUser.id()))
-                .willReturn(userAuthoritiesMap.get(adminUser.id()));
-        given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
-                .willReturn(true);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.requireAll(
+                            isAdmin(),
+                            passwordCheck(password)
+                    ));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.requireAll(
-                        isAdmin(),
-                        passwordCheck(password)
-                ));
+
     }
 
     @Test
     public void Given_AdminAndIncorrectPassword_Expect_isAdmin_To_Throw() {
         String password = "wrongpassword";
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn(adminAuthenticated);
-        given(authorityLevelRepository.getByUser(adminUser.id()))
-                .willReturn(userAuthoritiesMap.get(adminUser.id()));
-        given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
-                .willReturn(false);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(adminAuthenticated);
+            given(authorityLevelRepository.getByUser(adminUser.id()))
+                    .willReturn(userAuthoritiesMap.get(adminUser.id()));
+            given(userRepository.checkPassword(adminUser.id(), new UnencryptedPassword(password)))
+                    .willReturn(false);
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.requireAll(
-                        isAdmin(),
-                        passwordCheck(password)
-                ));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.requireAll(
+                            isAdmin(),
+                            passwordCheck(password)
+                    ));
+        }
+
+
     }
 
     @Test
     public void Given_ClientApi_Expect_isClientApi_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
-
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isClientApi()));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isClientApi()));
+        }
     }
 
     @Test
     public void Given_ClientApiWithNormalUserApproved_Expect_userHasAcceptedClient_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.requireAll(
+                            isClientApi(),
+                            userHasAcceptedClient(normalUser.id())
+                    ));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.requireAll(
+                            isClientApi(),
+                            userHasAcceptedClient(adminUser.id())
+                    ));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.requireAll(
-                        isClientApi(),
-                        userHasAcceptedClient(normalUser.id())
-                ));
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.requireAll(
-                        isClientApi(),
-                        userHasAcceptedClient(adminUser.id())
-                ));
     }
 
     @Test
     public void Given_ClientApiWithNormalUserApproved_Expect_userHasAcceptedClient_With_AdminUser_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.requireAll(
+                            isClientApi(),
+                            userHasAcceptedClient(adminUser.id())
+                    ));
+        }
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.requireAll(
-                        isClientApi(),
-                        userHasAcceptedClient(adminUser.id())
-                ));
     }
 
     @Test
     public void Given_UserIsSignedIn_Expect_isNotSignedIn_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(normalUserAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(normalUserAuthenticated);
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isNotSignedIn()));
+        }
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isNotSignedIn()));
     }
 
     @Test
     public void Given_UserNotSignedIn_Expect_isNotSignedIn_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(new Unauthenticated() {});
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(new Unauthenticated() {});
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isNotSignedIn()));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isNotSignedIn()));
     }
 
     @Test
     public void Given_UserIsSignedIn_Expect_isSignedIn_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(normalUserAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(normalUserAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
     }
 
     @Test
@@ -494,35 +528,43 @@ class AccessGuardTest {
                 .extended(normalUser.extended().withLocked(true))
                 .build();
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn((LockedInternalUserAuthenticated) () -> lockedUser);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn((LockedInternalUserAuthenticated) () -> lockedUser);
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
+        }
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
     }
 
     @Test
     public void Given_UserNotSignedIn_Expect_isSignedIn_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(new Unauthenticated() {});
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(new Unauthenticated() {});
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
+        }
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
     }
 
     @Test
     public void Given_UserIsInGroup_Expect_isSignedInUserMemberOfGroup_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(normalUserAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(normalUserAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isSignedInUserMemberOfGroup(digIT18)));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isSignedInUserMemberOfGroup(digIT18)));
     }
 
     @Test
     public void Given_UserIsNotInGroup_Expect_isSignedInUserMemberOfGroup_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(adminAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(adminAuthenticated);
+        }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isSignedInUserMemberOfGroup(digIT18)));
@@ -530,53 +572,65 @@ class AccessGuardTest {
 
     @Test
     public void Given_CorrectApiType_Expect_isApi_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.CLIENT)));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.CLIENT)));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(chalmersitApiAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.INFO)));
+        }
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn(chalmersitApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(goldappsApiAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS)));
+        }
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.INFO)));
-
-        given(authenticatedService.getAuthenticated())
-                .willReturn(goldappsApiAuthenticated);
-
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS)));
-
-        given(authenticatedService.getAuthenticated())
-                .willReturn(whitelistApiAuthenticated);
-
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.WHITELIST)));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(whitelistApiAuthenticated);
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.WHITELIST)));
+        }
     }
 
     @Test
     public void Given_IncorrectApiType_Expect_isApi_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+        }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.WHITELIST)));
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn(chalmersitApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(chalmersitApiAuthenticated);
+        }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.CLIENT)));
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn(goldappsApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(goldappsApiAuthenticated);
+        }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.INFO)));
 
-        given(authenticatedService.getAuthenticated())
-                .willReturn(whitelistApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(whitelistApiAuthenticated);
+        }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS)));
@@ -584,8 +638,11 @@ class AccessGuardTest {
 
     @Test
     public void Given_IsAdmin_Expect_isApi_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(adminAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(adminAuthenticated);
+        }
+
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
@@ -595,8 +652,11 @@ class AccessGuardTest {
 
     @Test
     public void Given_NeitherChecksIsValid_Expect_requireEither_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(normalUserAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(normalUserAuthenticated);
+        }
+
         given(authorityLevelRepository.getByUser(normalUser.id()))
                 .willReturn(userAuthoritiesMap.get(normalUser.id()));
 
@@ -609,22 +669,25 @@ class AccessGuardTest {
 
     @Test
     public void Given_OneOfTwoChecksIsValid_Expect_requireEither_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(normalUserAuthenticated);
-        given(authorityLevelRepository.getByUser(normalUser.id()))
-                .willReturn(userAuthoritiesMap.get(normalUser.id()));
-
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.requireEither(
-                        isAdmin(),
-                        isSignedInUserMemberOfGroup(digIT18)
-                ));
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(normalUserAuthenticated);
+            given(authorityLevelRepository.getByUser(normalUser.id()))
+                    .willReturn(userAuthoritiesMap.get(normalUser.id()));
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.requireEither(
+                            isAdmin(),
+                            isSignedInUserMemberOfGroup(digIT18)
+                    ));
+        }
     }
 
     @Test
     public void Given_IsApi_Expect_passwordCheck_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(clientApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(clientApiAuthenticated);
+        }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(passwordCheck("value")));
@@ -632,8 +695,11 @@ class AccessGuardTest {
 
     @Test
     public void Given_IsAdmin_Expect_isClientApi_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(adminAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(adminAuthenticated);
+        }
+
         given(authorityLevelRepository.getByUser(adminUser.id()))
                 .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
@@ -643,8 +709,11 @@ class AccessGuardTest {
 
     @Test
     public void Given_ExternalUser_Expect_isSignedInUserMemberOfGroup_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn((ExternalUserAuthenticated) () -> normalUser);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn((ExternalUserAuthenticated) () -> normalUser);
+        }
+
         given(authorityLevelRepository.getByUser(normalUser.id()))
                 .willReturn(userAuthoritiesMap.get(normalUser.id()));
 
@@ -654,20 +723,26 @@ class AccessGuardTest {
 
     @Test
     public void Given_IsChalmersITApi_Expect_userHasAcceptedClient_To_Throw() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(chalmersitApiAuthenticated);
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(chalmersitApiAuthenticated);
 
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(userHasAcceptedClient(adminUser.id())));
+            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
+                    .isThrownBy(() -> this.accessGuard.require(userHasAcceptedClient(adminUser.id())));
+        }
+
     }
 
     @Test
     public void Given_BootstrapAuthenticatedAdmin_Expect_isLocalRunner_To_NotThrow() {
-        given(authenticatedService.getAuthenticated())
-                .willReturn(new LocalRunnerAuthenticated() { });
+        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
+            mocked.when(GammaSecurityContextUtils::getAuthentication)
+                    .thenReturn(new LocalRunnerAuthenticated() { });
 
-        assertThatNoException()
-                .isThrownBy(() -> this.accessGuard.require(isLocalRunner()));
+            assertThatNoException()
+                    .isThrownBy(() -> this.accessGuard.require(isLocalRunner()));
+        }
+
     }
 
 }

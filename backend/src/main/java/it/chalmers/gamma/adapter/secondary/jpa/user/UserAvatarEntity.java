@@ -33,8 +33,4 @@ public class UserAvatarEntity extends MutableEntity<UUID> {
         return this.user.getId();
     }
 
-    protected String getAvatarUri() {
-        return this.avatarUri;
-    }
-
 }

@@ -1,45 +1,23 @@
 package it.chalmers.gamma.adapter.primary.external.info;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
+import it.chalmers.gamma.GammaApplication;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@Testcontainers
+@SpringBootTest(classes = GammaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class InfoApiControllerTest {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @BeforeEach
-    void setUp() {
-    }
-
-//    @Test
-    void getGroups() {
-        // given
-//        given(superHeroRepository.getSuperHero(2))
-//                .willReturn(new SuperHero("Rob", "Mannon", "RobotMan"));
-
-        record ExpectedGroup(String name) {
-
-        }
-
-        record ExpectedResponse(List<ExpectedGroup> groups) {
-
-        }
-
-        // when
-        ResponseEntity<ExpectedResponse> response = restTemplate
-                .getForEntity(
-                        "/api/external/chalmersit/groups",
-                        ExpectedResponse.class
-                );
-
-        System.out.println(response);
+    @Test
+    public void test() {
+        System.out.println("hello");
     }
 
 }

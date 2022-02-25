@@ -1,4 +1,4 @@
-package it.chalmers.gamma.app.authentication;
+package it.chalmers.gamma.security.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.client.domain.Client;

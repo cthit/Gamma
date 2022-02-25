@@ -73,32 +73,36 @@ public class UserCreationFacade extends Facade {
                                   String cid,
                                   String language) { }
 
-    public void createUser(NewUser newUser) {
+    public void createUser(NewUser newUser) throws SomePropertyNotUniqueException {
         this.accessGuard.require(isAdmin());
 
-        this.userRepository.create(
-                new User(
-                        UserId.generate(),
-                        new Cid(newUser.cid),
-                        new Nick(newUser.nick),
-                        new FirstName(newUser.firstName),
-                        new LastName(newUser.lastName),
-                        new AcceptanceYear(newUser.acceptanceYear),
-                        Language.valueOf(newUser.language),
-                        new UserExtended(
-                                new Email(newUser.email),
-                                0,
-                                false,
-                                false,
-                                false,
-                                null
-                        )),
-                new UnencryptedPassword(newUser.password)
-        );
+        try {
+            this.userRepository.create(
+                    new User(
+                            UserId.generate(),
+                            new Cid(newUser.cid),
+                            new Nick(newUser.nick),
+                            new FirstName(newUser.firstName),
+                            new LastName(newUser.lastName),
+                            new AcceptanceYear(newUser.acceptanceYear),
+                            Language.valueOf(newUser.language),
+                            new UserExtended(
+                                    new Email(newUser.email),
+                                    0,
+                                    false,
+                                    false,
+                                    false,
+                                    null
+                            )),
+                    new UnencryptedPassword(newUser.password)
+            );
+        } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
+            throw new SomePropertyNotUniqueException();
+        }
     }
 
     @Transactional
-    public void createUserWithCode(NewUser data, String token) {
+    public void createUserWithCode(NewUser data, String token) throws SomePropertyNotUniqueException {
         this.accessGuard.require(isNotSignedIn());
 
         Cid tokenCid = this.userActivationRepository.getByToken(new UserActivationToken(token));
@@ -108,26 +112,30 @@ public class UserCreationFacade extends Facade {
         if (tokenCid.value().equals(data.cid)) {
             Cid cid = new Cid(data.cid);
 
-            this.userRepository.create(
-                    new User(
-                            UserId.generate(),
-                            cid,
-                            new Nick(data.nick),
-                            new FirstName(data.firstName),
-                            new LastName(data.lastName),
-                            new AcceptanceYear(data.acceptanceYear),
-                            Language.valueOf(data.language),
-                            new UserExtended(
-                                    new Email(data.email),
-                                    0,
-                                    false,
-                                    false,
-                                    false,
-                                    null
-                            )
-                    ),
-                    new UnencryptedPassword(data.password)
-            );
+            try {
+                this.userRepository.create(
+                        new User(
+                                UserId.generate(),
+                                cid,
+                                new Nick(data.nick),
+                                new FirstName(data.firstName),
+                                new LastName(data.lastName),
+                                new AcceptanceYear(data.acceptanceYear),
+                                Language.valueOf(data.language),
+                                new UserExtended(
+                                        new Email(data.email),
+                                        0,
+                                        false,
+                                        false,
+                                        false,
+                                        null
+                                )
+                        ),
+                        new UnencryptedPassword(data.password)
+                );
+            } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
+                throw new SomePropertyNotUniqueException();
+            }
 
             this.userActivationRepository.removeActivation(cid);
         }
@@ -139,4 +147,7 @@ public class UserCreationFacade extends Facade {
         String message = "Your code to Gamma is: " + code;
         this.mailService.sendMail(to, "Gamma activation code", message);
     }
+
+    public class SomePropertyNotUniqueException extends Exception { }
+
 }

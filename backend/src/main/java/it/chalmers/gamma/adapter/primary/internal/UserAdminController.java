@@ -65,18 +65,22 @@ public final class UserAdminController {
 
     @PostMapping()
     public UserCreatedResponse addUser(@RequestBody AdminViewCreateUserRequest request) {
-        this.userCreationFacade.createUser(
-            new UserCreationFacade.NewUser(
-                    request.password,
-                    request.nick,
-                    request.firstName,
-                    request.email,
-                    request.lastName,
-                    request.acceptanceYear,
-                    request.cid,
-                    request.language
-            )
-        );
+        try {
+            this.userCreationFacade.createUser(
+                new UserCreationFacade.NewUser(
+                        request.password,
+                        request.nick,
+                        request.firstName,
+                        request.email,
+                        request.lastName,
+                        request.acceptanceYear,
+                        request.cid,
+                        request.language
+                )
+            );
+        } catch (UserCreationFacade.SomePropertyNotUniqueException e) {
+            e.printStackTrace();
+        }
         return new UserCreatedResponse();
     }
 

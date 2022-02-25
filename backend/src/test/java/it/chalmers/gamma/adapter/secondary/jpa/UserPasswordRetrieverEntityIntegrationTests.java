@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
 import it.chalmers.gamma.utils.PasswordEncoderTestConfiguration;
 import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
@@ -61,7 +60,7 @@ public class UserPasswordRetrieverEntityIntegrationTests {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    public void Given_ValidUser_Expect_getPassword_To_Work() {
+    public void Given_ValidUser_Expect_getPassword_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         settingsRepository.setSettings(new Settings(
                 Instant.now(),
                 Collections.emptyList()

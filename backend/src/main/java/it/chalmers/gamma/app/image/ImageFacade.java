@@ -2,8 +2,8 @@ package it.chalmers.gamma.app.image;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
-import it.chalmers.gamma.app.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
@@ -27,18 +27,15 @@ public class ImageFacade extends Facade {
     private final ImageService imageService;
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
-    private final AuthenticatedService authenticatedService;
 
     public ImageFacade(AccessGuard accessGuard,
                        ImageService imageService,
                        UserRepository userRepository,
-                       GroupRepository groupRepository,
-                       AuthenticatedService authenticatedService) {
+                       GroupRepository groupRepository) {
         super(accessGuard);
         this.imageService = imageService;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
-        this.authenticatedService = authenticatedService;
     }
 
     public record ImageDetails(byte[] data,
@@ -93,7 +90,7 @@ public class ImageFacade extends Facade {
     //TODO: Implement admin and users to be able to remove group images and me avatar.
 
     public void setMeAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
-        if (authenticatedService.getAuthenticated() instanceof InternalUserAuthenticated internalUserAuthenticated) {
+        if (GammaSecurityContextUtils.getAuthentication() instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User user = internalUserAuthenticated.get();
             ImageUri imageUri = this.imageService.saveImage(image);
             this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));

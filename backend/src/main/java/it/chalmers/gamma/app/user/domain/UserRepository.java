@@ -7,7 +7,8 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    void create(User user, UnencryptedPassword password);
+    void create(User user, UnencryptedPassword password)
+            throws UserAlreadyExistsException, CidAlreadyInUseException, EmailAlreadyInUseException;
     void save(User user);
     void delete(UserId userId) throws UserNotFoundException;
 
@@ -21,5 +22,13 @@ public interface UserRepository {
     void acceptUserAgreement(UserId userId) throws UserNotFoundException;
 
     class UserNotFoundException extends RuntimeException { }
+
+    /**
+     * A user with the given id already exists. Use save instead.
+     */
+    class UserAlreadyExistsException extends RuntimeException { }
+
+    class CidAlreadyInUseException extends Exception { }
+    class EmailAlreadyInUseException extends Exception { }
 
 }

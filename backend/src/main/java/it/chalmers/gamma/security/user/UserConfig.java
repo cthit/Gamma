@@ -52,11 +52,9 @@ public class UserConfig {
 
             Password password = userPasswordRetriever.getPassword(user.id());
 
-            return new UserDetailsProxy(
-                    user,
-                    password == null ? null : password.value(),
-                    authorities
-            );
+            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user.id().value());
+            userDetailsProxy.set(user, authorities, password.value());
+            return userDetailsProxy;
         }
 
     }

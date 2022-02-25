@@ -10,7 +10,6 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAd
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;

@@ -21,10 +21,12 @@ import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,6 +72,11 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
+    private static final PersistenceErrorState nameAlreadyExists = new PersistenceErrorState(
+            "authority_level_pkey",
+            PersistenceErrorState.Type.NOT_UNIQUE
+    );
+
     public AuthorityLevelRepositoryAdapter(AuthorityLevelJpaRepository repository,
                                            AuthorityPostJpaRepository authorityPostRepository,
                                            AuthoritySuperGroupJpaRepository authoritySuperGroupRepository,
@@ -92,16 +99,14 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.superGroupEntityConverter = superGroupEntityConverter;
     }
 
+    @Transactional
     @Override
     public void create(AuthorityLevelName authorityLevelName) throws AuthorityLevelAlreadyExistsException {
-        try {
-            repository.saveAndFlush(new AuthorityLevelEntity(authorityLevelName.getValue()));
-        } catch (Exception e) {
-            if (e.getCause() instanceof EntityExistsException) {
-                throw new AuthorityLevelRepository.AuthorityLevelAlreadyExistsException();
-            }
-            throw e;
+        if (repository.existsById(authorityLevelName.value())) {
+            throw new AuthorityLevelAlreadyExistsException();
         }
+
+        repository.save(new AuthorityLevelEntity(authorityLevelName.getValue()));
     }
 
     @Override

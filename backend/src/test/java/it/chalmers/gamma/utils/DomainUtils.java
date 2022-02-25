@@ -259,7 +259,11 @@ public final class DomainUtils {
 
     public static void addAll(UserRepository userRepository, List<User> users) {
         for (User user : users) {
-            userRepository.create(user, new UnencryptedPassword("password"));
+            try {
+                userRepository.create(user, new UnencryptedPassword("password"));
+            } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -322,7 +326,11 @@ public final class DomainUtils {
             postRepository.save(post);
         }
         for (User user : users) {
-            userRepository.create(user, new UnencryptedPassword("password"));
+            try {
+                userRepository.create(user, new UnencryptedPassword("password"));
+            } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
+                e.printStackTrace();
+            }
         }
         for (Group group : groups) {
             groupRepository.save(group);

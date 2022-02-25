@@ -26,8 +26,8 @@ public class SecurityFiltersConfig {
         http
                 //Either /internal/**, /login or /logout
                 .regexMatcher("^\\/internal.+|\\/login.*|\\/logout")
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests
+                .authorizeHttpRequests(authorization ->
+                        authorization
                                 .antMatchers("/login").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -51,9 +51,7 @@ public class SecurityFiltersConfig {
         http
                 .regexMatcher("^\\/external.+")
                 .addFilterBefore(apiKeyAuthenticationFilter, BasicAuthenticationFilter.class)
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -68,8 +66,8 @@ public class SecurityFiltersConfig {
     SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .regexMatcher("^\\/images.+")
-                .authorizeRequests(authorizeRequests ->
-                        authorizeRequests.anyRequest().permitAll()
+                .authorizeHttpRequests(authorization ->
+                        authorization.anyRequest().permitAll()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

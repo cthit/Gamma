@@ -80,10 +80,14 @@ public class EnsureAnAdminUserBootstrap {
                     )
             );
 
-            this.userRepository.create(
-                    adminUser,
-                    new UnencryptedPassword("value")
-            );
+            try {
+                this.userRepository.create(
+                        adminUser,
+                        new UnencryptedPassword("password")
+                );
+            } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
+                return;
+            }
 
             LOGGER.info("Admin user created!");
             LOGGER.info("cid: " + name);
@@ -95,7 +99,7 @@ public class EnsureAnAdminUserBootstrap {
                         adminUser.id().value()
                 );
             } catch (AuthorityLevelFacade.UserNotFoundException | AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
-                e.printStackTrace();
+                return;
             }
 
             LOGGER.info("==========                           ==========");

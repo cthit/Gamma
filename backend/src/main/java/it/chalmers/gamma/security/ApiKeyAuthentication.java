@@ -1,21 +1,31 @@
 package it.chalmers.gamma.security;
 
+import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.app.client.domain.Client;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.Transient;
+import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Transient
 public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
-    private final ApiKeyToken apiKeyToken;
+    private final ApiKeyPrincipal principal;
 
-    //TODO: Why does it take in a collection of authorities? Api keys cannot use them.
-    public ApiKeyAuthentication(ApiKeyToken apiKeyToken, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.apiKeyToken = apiKeyToken;
+    public record ApiKeyPrincipal(ApiKey apiKey, Client client) { }
+
+
+    public ApiKeyAuthentication(ApiKey apiKey) {
+        this(apiKey, null);
+    }
+
+    public ApiKeyAuthentication(ApiKey apiKey, Client client) {
+        super(AuthorityUtils.NO_AUTHORITIES);
+        this.principal = new ApiKeyPrincipal(apiKey, client);
         setAuthenticated(true);
     }
 
@@ -25,7 +35,7 @@ public class ApiKeyAuthentication extends AbstractAuthenticationToken {
     }
 
     @Override
-    public ApiKeyToken getPrincipal() {
-        return apiKeyToken;
+    public ApiKeyPrincipal getPrincipal() {
+        return this.principal;
     }
 }

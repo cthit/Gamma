@@ -2,11 +2,11 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authentication.Authenticated;
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
-import it.chalmers.gamma.app.authentication.ExternalUserAuthenticated;
-import it.chalmers.gamma.app.authentication.InternalUserAuthenticated;
-import it.chalmers.gamma.app.authentication.LockedInternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.Authenticated;
+import it.chalmers.gamma.security.authentication.ExternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.LockedInternalUserAuthenticated;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -27,25 +27,23 @@ import java.util.List;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
+import static it.chalmers.gamma.security.authentication.GammaSecurityContextUtils.getAuthentication;
 
 @Service
 public class MeFacade extends Facade {
 
     private final UserRepository userRepository;
-    private final AuthenticatedService authenticatedService;
     private final ClientRepository clientRepository;
     private final AuthorityLevelRepository authorityLevelRepository;
     private final GroupRepository groupRepository;
 
     public MeFacade(AccessGuard accessGuard,
                     UserRepository userRepository,
-                    AuthenticatedService authenticatedService,
                     ClientRepository clientRepository,
                     AuthorityLevelRepository authorityLevelRepository,
                     GroupRepository groupRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
-        this.authenticatedService = authenticatedService;
         this.clientRepository = clientRepository;
         this.authorityLevelRepository = authorityLevelRepository;
         this.groupRepository = groupRepository;
@@ -64,7 +62,7 @@ public class MeFacade extends Facade {
     public List<UserApprovedClientDTO> getSignedInUserApprovals() {
         this.accessGuard.require(isSignedIn());
 
-        if (authenticatedService.getAuthenticated() instanceof InternalUserAuthenticated internalUserAuthenticated) {
+        if (getAuthentication() instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User user = internalUserAuthenticated.get();
             return this.clientRepository.getClientsByUserApproved(user.id())
                     .stream()
@@ -75,9 +73,7 @@ public class MeFacade extends Facade {
         }
     }
 
-    public record MyAuthority(String authority, String type) {
-
-    }
+    public record MyAuthority(String authority, String type) { }
 
     public record MeDTO(String nick,
                         String firstName,
@@ -110,7 +106,7 @@ public class MeFacade extends Facade {
 
 
     public MeDTO getMe() {
-        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
         User user = null;
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             user = internalUserAuthenticated.get();
@@ -136,7 +132,7 @@ public class MeFacade extends Facade {
 
 
     public void updateMe(UpdateMe updateMe) {
-        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User oldMe = internalUserAuthenticated.get();
             User newMe = oldMe.with()
@@ -157,7 +153,7 @@ public class MeFacade extends Facade {
     public record UpdatePassword(String oldPassword, String newPassword) { }
 
     public void updatePassword(UpdatePassword updatePassword) {
-        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User me = internalUserAuthenticated.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
@@ -167,7 +163,7 @@ public class MeFacade extends Facade {
     }
 
     public void deleteMe(String password) {
-        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
         if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
             User me = internalUserAuthenticated.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
@@ -181,7 +177,7 @@ public class MeFacade extends Facade {
     }
 
     public void acceptUserAgreement() {
-        Authenticated authenticated = this.authenticatedService.getAuthenticated();
+        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
         if (authenticated instanceof LockedInternalUserAuthenticated lockedInternalUserAuthenticated) {
             try {
                 this.userRepository.acceptUserAgreement(lockedInternalUserAuthenticated.get().id());

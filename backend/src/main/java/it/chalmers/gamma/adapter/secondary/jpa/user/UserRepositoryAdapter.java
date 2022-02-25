@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
+import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
@@ -7,6 +9,7 @@ import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,16 @@ public class UserRepositoryAdapter implements UserRepository {
     private final UserAvatarJpaRepository userAvatarJpaRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final PersistenceErrorState cidNotUnique = new PersistenceErrorState(
+            "ituser_cid_key",
+            PersistenceErrorState.Type.NOT_UNIQUE
+    );
+
+    private final PersistenceErrorState emailNotUnique = new PersistenceErrorState(
+            "ituser_email_key",
+            PersistenceErrorState.Type.NOT_UNIQUE
+    );
+
     public UserRepositoryAdapter(UserJpaRepository repository,
                                  UserEntityConverter converter,
                                  UserAvatarJpaRepository userAvatarJpaRepository,
@@ -33,8 +46,21 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public void create(User user, UnencryptedPassword password) {
-        this.save(toEntity(user, password.value()));
+    public void create(User user, UnencryptedPassword password)
+            throws CidAlreadyInUseException, EmailAlreadyInUseException{
+        try {
+            this.save(toEntity(user, password.value()));
+        } catch (DataIntegrityViolationException e) {
+            PersistenceErrorState state = PersistenceErrorHelper.getState(e);
+
+            if (cidNotUnique.equals(state)) {
+                throw new CidAlreadyInUseException();
+            } else if (emailNotUnique.equals(state)) {
+                throw new EmailAlreadyInUseException();
+            }
+
+            throw e;
+        }
     }
 
     @Override

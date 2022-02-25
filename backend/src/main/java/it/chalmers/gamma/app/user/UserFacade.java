@@ -3,8 +3,7 @@ package it.chalmers.gamma.app.user;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authentication.ApiAuthenticated;
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.security.authentication.ApiAuthenticated;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
@@ -21,6 +20,7 @@ import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -38,18 +38,15 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.userHasAcceptedCl
 public class UserFacade extends Facade {
 
     private final UserRepository userRepository;
-    private final AuthenticatedService authenticatedService;
     private final GroupRepository groupRepository;
     private final SettingsRepository settingsRepository;
 
     public UserFacade(AccessGuard accessGuard,
                       UserRepository userRepository,
-                      AuthenticatedService authenticatedService,
                       GroupRepository groupRepository,
                       SettingsRepository settingsRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
-        this.authenticatedService = authenticatedService;
         this.groupRepository = groupRepository;
         this.settingsRepository = settingsRepository;
     }
@@ -120,7 +117,7 @@ public class UserFacade extends Facade {
 
         Settings settings = settingsRepository.getSettings();
 
-        if (authenticatedService.getAuthenticated() instanceof ApiAuthenticated apiAuthenticated) {
+        if (GammaSecurityContextUtils.getAuthentication() instanceof ApiAuthenticated apiAuthenticated) {
             Client client = apiAuthenticated.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()

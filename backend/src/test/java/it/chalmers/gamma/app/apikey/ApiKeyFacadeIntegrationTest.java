@@ -2,8 +2,6 @@ package it.chalmers.gamma.app.apikey;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyRepositoryAdapter;
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -52,18 +52,22 @@ public final class UserController {
     public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
         //TODO: Check userAgreement
         //TODO: Check for any exceptions, and throw a generic error if something goes wrong
-        this.userCreationFacade.createUserWithCode(
-                new UserCreationFacade.NewUser(
-                        request.password,
-                        request.nick,
-                        request.firstName,
-                        request.email,
-                        request.lastName,
-                        request.acceptanceYear,
-                        request.cid,
-                        request.language
-                ), request.code
-        );
+        try {
+            this.userCreationFacade.createUserWithCode(
+                    new UserCreationFacade.NewUser(
+                            request.password,
+                            request.nick,
+                            request.firstName,
+                            request.email,
+                            request.lastName,
+                            request.acceptanceYear,
+                            request.cid,
+                            request.language
+                    ), request.code
+            );
+        } catch (UserCreationFacade.SomePropertyNotUniqueException e) {
+            e.printStackTrace();
+        }
         return new UserCreatedResponse();
     }
 

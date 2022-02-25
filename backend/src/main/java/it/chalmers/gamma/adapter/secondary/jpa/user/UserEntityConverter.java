@@ -68,6 +68,4 @@ public class UserEntityConverter {
         return settings.lastUpdatedUserAgreement().compareTo(acceptedUserAgreement) < 0;
     }
 
-    public static class NotAuthenticatedException extends RuntimeException { }
-
 }

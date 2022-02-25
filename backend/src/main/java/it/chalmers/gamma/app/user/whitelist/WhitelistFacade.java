@@ -40,7 +40,7 @@ public class WhitelistFacade extends Facade {
         this.whitelistRepository.whitelist(new Cid(cid));
     }
 
-    public void removeFromWhitelist(String cid) throws WhitelistRepository.CidIsNotWhitelistedException {
+    public void removeFromWhitelist(String cid) throws WhitelistRepository.NotWhitelistedException {
         this.accessGuard.requireEither(
                 isAdmin(),
                 isApi(ApiKeyType.WHITELIST)

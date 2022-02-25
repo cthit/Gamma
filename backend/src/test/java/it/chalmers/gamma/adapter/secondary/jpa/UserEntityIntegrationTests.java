@@ -1,14 +1,19 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.GammaApplication;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.user.domain.Cid;
+import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.Language;
+import it.chalmers.gamma.app.user.domain.LastName;
+import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.utils.PasswordEncoderTestConfiguration;
 import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
@@ -25,8 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -35,6 +38,7 @@ import java.time.Instant;
 import java.util.Collections;
 
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.DEFAULT_USER;
+import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsNormalUser;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedUser;
 import static org.assertj.core.api.Assertions.*;
@@ -108,7 +112,7 @@ public class UserEntityIntegrationTests {
     }
 
     @Test
-    public void Given_UserWithNewUserId_Expect_save_To_Throw() {
+    public void Given_UserWithNewUserId_Expect_save_To_Throw() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         User user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
         this.userRepositoryAdapter.create(user, new UnencryptedPassword("password"));
         User loadedUser = this.userRepositoryAdapter.get(user.id()).orElseThrow();
@@ -136,7 +140,7 @@ public class UserEntityIntegrationTests {
     }
 
     @Test
-    public void Given_User_Expect_setPassword_and_checkPassword_To_Work() {
+    public void Given_User_Expect_setPassword_and_checkPassword_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         User user = DEFAULT_USER;
         this.userRepositoryAdapter.create(user, new UnencryptedPassword("password"));
         assertThat(this.userRepositoryAdapter.checkPassword(user.id(), new UnencryptedPassword("password")))
@@ -148,7 +152,7 @@ public class UserEntityIntegrationTests {
     }
 
     @Test
-    public void Given_User_Expect_setPassword_and_wrong_checkPassword_To_Return_False() {
+    public void Given_User_Expect_setPassword_and_wrong_checkPassword_To_Return_False() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         User user = DEFAULT_USER;
         this.userRepositoryAdapter.create(user, new UnencryptedPassword("password"));
         assertThat(this.userRepositoryAdapter.checkPassword(user.id(), new UnencryptedPassword("_password")))
@@ -178,6 +182,155 @@ public class UserEntityIntegrationTests {
         updatedUser = this.userRepositoryAdapter.get(user.id()).orElseThrow();
         assertThat(updatedUser.extended().acceptedUserAgreement())
                 .isTrue();
+    }
+
+    @Test
+    public void Given_OneUserTryingToAccessLockedUser_Expect_get_To_Return_Null() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
+        setAuthenticatedAsNormalUser(userRepositoryAdapter);
+
+        User lockedUser = new User(
+                UserId.generate(),
+                new Cid("hmmm"),
+                new Nick("SomethinG"),
+                new FirstName("Smurf"),
+                new LastName("Smurfsson"),
+                new AcceptanceYear(2018),
+                Language.EN,
+                new UserExtended(
+                        new Email("somthing@chalmers.it"),
+                        0,
+                        true,
+                        false,
+                        true,
+                        ImageUri.defaultUserAvatar()
+                )
+        );
+
+        this.userRepositoryAdapter.create(lockedUser, new UnencryptedPassword("password"));
+
+        assertThat(this.userRepositoryAdapter.get(lockedUser.id()))
+                .isEmpty();
+    }
+
+    @Test
+    public void Given_OneUserTryingToAccessUserThatHaveNotAcceptedUserAgreement_Expect_get_To_Return_Null() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
+        setAuthenticatedAsNormalUser(userRepositoryAdapter);
+
+        User userThatHasNotAcceptedUserAgreement = new User(
+                UserId.generate(),
+                new Cid("hmmm"),
+                new Nick("SomethinG"),
+                new FirstName("Smurf"),
+                new LastName("Smurfsson"),
+                new AcceptanceYear(2018),
+                Language.EN,
+                new UserExtended(
+                        new Email("somthing@chalmers.it"),
+                        0,
+                        false,
+                        false,
+                        false,
+                        ImageUri.defaultUserAvatar()
+                )
+        );
+
+        this.userRepositoryAdapter.create(userThatHasNotAcceptedUserAgreement, new UnencryptedPassword("password"));
+
+        assertThat(this.userRepositoryAdapter.get(userThatHasNotAcceptedUserAgreement.id()))
+                .isEmpty();
+    }
+
+    @Test
+    public void Given_AdminTryingToAccessUserThatHaveNotAcceptedUserAgreement_Expect_get_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
+        setAuthenticatedAsAdminUser(userRepositoryAdapter, authorityLevelRepositoryAdapter);
+
+        User userThatHasNotAcceptedUserAgreement = new User(
+                UserId.generate(),
+                new Cid("hmmm"),
+                new Nick("SomethinG"),
+                new FirstName("Smurf"),
+                new LastName("Smurfsson"),
+                new AcceptanceYear(2018),
+                Language.EN,
+                new UserExtended(
+                        new Email("somthing@chalmers.it"),
+                        0,
+                        false,
+                        false,
+                        false,
+                        ImageUri.defaultUserAvatar()
+                )
+        );
+
+        this.userRepositoryAdapter.create(userThatHasNotAcceptedUserAgreement, new UnencryptedPassword("password"));
+
+        assertThat(this.userRepositoryAdapter.get(userThatHasNotAcceptedUserAgreement.id()))
+                .get().isEqualTo(
+                        userThatHasNotAcceptedUserAgreement
+                                .withExtended(userThatHasNotAcceptedUserAgreement.extended().withVersion(1))
+                );
+    }
+
+    @Test
+    public void Given_AdminTryingToAccessLockedUser_Expect_get_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
+        setAuthenticatedAsAdminUser(userRepositoryAdapter, authorityLevelRepositoryAdapter);
+
+        User lockedUser = new User(
+                UserId.generate(),
+                new Cid("hmmm"),
+                new Nick("SomethinG"),
+                new FirstName("Smurf"),
+                new LastName("Smurfsson"),
+                new AcceptanceYear(2018),
+                Language.EN,
+                new UserExtended(
+                        new Email("somthing@chalmers.it"),
+                        0,
+                        true,
+                        false,
+                        true,
+                        ImageUri.defaultUserAvatar()
+                )
+        );
+
+        this.userRepositoryAdapter.create(lockedUser, new UnencryptedPassword("password"));
+
+        assertThat(this.userRepositoryAdapter.get(lockedUser.id()))
+                .get().isEqualTo(
+                        lockedUser
+                                .withExtended(lockedUser.extended().withVersion(1))
+                );
+    }
+
+    @Test
+    public void Given_TwoUsersWithSameCid_Expect_create_To_Throw() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
+        this.userRepositoryAdapter.create(DEFAULT_USER, new UnencryptedPassword("password"));
+
+        assertThatExceptionOfType(UserRepository.CidAlreadyInUseException.class)
+                .isThrownBy(() -> this.userRepositoryAdapter.create(
+                        DEFAULT_USER.with()
+                                .id(UserId.generate())
+                                .extended(DEFAULT_USER.extended().with()
+                                        .email(new Email("lmao@chalmers.it"))
+                                        .build()
+                                )
+                                .build(),
+                        new UnencryptedPassword("password")
+                ));
+    }
+
+    @Test
+    public void Given_TwoUsersWithSameEmail_Expect_create_To_Throw() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
+        this.userRepositoryAdapter.create(DEFAULT_USER, new UnencryptedPassword("password"));
+
+        assertThatExceptionOfType(UserRepository.EmailAlreadyInUseException.class)
+                .isThrownBy(() -> this.userRepositoryAdapter.create(
+                        DEFAULT_USER.with()
+                                .id(UserId.generate())
+                                .cid(new Cid("somethi"))
+                                .build(),
+                        new UnencryptedPassword("password")
+                ));
     }
 
 }

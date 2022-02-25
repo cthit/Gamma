@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState.Type.NOT_UNIQUE;
+
 public final class PersistenceErrorHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceErrorHelper.class);
@@ -18,6 +23,7 @@ public final class PersistenceErrorHelper {
     //TODO: this can be refactored
     // DataIntegrityViolationException, should not be Exception
     public static PersistenceErrorState getState(Exception e) {
+        List<PersistenceErrorState> states = new ArrayList<>();
 
         for (Throwable t = e.getCause(); t != null; t = t.getCause()) {
 
@@ -33,10 +39,8 @@ public final class PersistenceErrorHelper {
                 }
             }
 
-            //TODO: This should not happen, use lazy loading instead and get a PSQLException instead.
-            if (t instanceof EntityNotFoundException e1) {
-                e1.printStackTrace();
-                return null;
+            if (t instanceof EntityExistsException e1) {
+                return new PersistenceErrorState(null, NOT_UNIQUE);
             }
 
         }

@@ -27,6 +27,13 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.ApiKeyAuthentication;
+import it.chalmers.gamma.security.authentication.ApiAuthenticated;
+import it.chalmers.gamma.security.authentication.ExternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.LocalRunnerAuthenticated;
+import it.chalmers.gamma.security.authentication.LockedInternalUserAuthenticated;
+import it.chalmers.gamma.security.authentication.Unauthenticated;
 import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,10 +74,6 @@ class AuthenticatedServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
-
-    @InjectMocks
-    private AuthenticatedService authenticatedService;
-
 
     private static final User normalUser = new User(
             UserId.generate(),
@@ -139,7 +142,7 @@ class AuthenticatedServiceTest {
         given(userRepository.get(normalUser.id()))
                 .willReturn(Optional.of(normalUser));
 
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOfSatisfying(
                         InternalUserAuthenticated.class,
                         internal ->
@@ -156,7 +159,7 @@ class AuthenticatedServiceTest {
         given(userRepository.get(notAcceptingUser.id()))
                 .willReturn(Optional.of(notAcceptingUser));
 
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOfSatisfying(
                         LockedInternalUserAuthenticated.class,
                         internal ->
@@ -171,7 +174,7 @@ class AuthenticatedServiceTest {
         given(userRepository.get(lockedUser.id()))
                 .willReturn(Optional.of(lockedUser));
 
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOfSatisfying(
                         LockedInternalUserAuthenticated.class,
                         internal ->
@@ -187,7 +190,7 @@ class AuthenticatedServiceTest {
         given(userRepository.get(normalUser.id()))
                 .willReturn(Optional.of(normalUser));
 
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOfSatisfying(
                         ExternalUserAuthenticated.class,
                         external ->
@@ -204,7 +207,7 @@ class AuthenticatedServiceTest {
         given(this.clientRepository.getByApiKey(clientApiKey.apiKeyToken()))
                 .willReturn(Optional.of(client));
 
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOfSatisfying(
                         ApiAuthenticated.class,
                         api -> {
@@ -223,7 +226,7 @@ class AuthenticatedServiceTest {
         given(this.apiKeyRepository.getByToken(chalmersitApi.apiKeyToken()))
                 .willReturn(Optional.of(chalmersitApi));
 
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOfSatisfying(
                         ApiAuthenticated.class,
                         api -> {
@@ -236,14 +239,14 @@ class AuthenticatedServiceTest {
     @Test
     @WithMockBootstrapAuthenticated
     public void Given_BootstrapAuthenticated_Expect_getAuthentication_ToReturn_LocalRunnerAuthenticated() {
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOf(LocalRunnerAuthenticated.class);
     }
 
     @Test
     @WithAnonymousUser
     public void Given_AnonymousUser_Expect_getAuthentication_ToReturn_Unauthenticated() {
-        assertThat(this.authenticatedService.getAuthenticated())
+        assertThat(GammaSecurityContextUtils.getAuthentication())
                 .isInstanceOf(Unauthenticated.class);
     }
 
@@ -260,7 +263,8 @@ class AuthenticatedServiceTest {
 
             User user = annotation.locked() ? lockedUser : normalUser;
 
-            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, "{noop}value", Collections.emptyList());
+            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user.id().value());
+            userDetailsProxy.set(user, Collections.emptyList(), "{noop}value");
             Authentication auth = new UsernamePasswordAuthenticationToken(
                     userDetailsProxy,
                     null,
@@ -309,17 +313,13 @@ class AuthenticatedServiceTest {
         public SecurityContext createSecurityContext(WithMockApiAuthenticated annotation) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-            ApiKeyToken token = switch (annotation.value()) {
-                case "chalmersit" -> chalmersitApi.apiKeyToken();
-                case "client" -> clientApiKey.apiKeyToken();
+            ApiKey apiKey = switch (annotation.value()) {
+                case "chalmersit" -> chalmersitApi;
+                case "client" -> clientApiKey;
                 default -> throw new IllegalStateException();
             };
 
-            ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(
-                    token,
-                    AuthorityUtils.NO_AUTHORITIES
-            );
-
+            ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(apiKey, client);
             context.setAuthentication(apiKeyAuthentication);
 
             return context;

@@ -5,11 +5,14 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "authority_level")
@@ -19,22 +22,22 @@ public class AuthorityLevelEntity extends ImmutableEntity<String> {
     @Column(name = "authority_level")
     private String authorityLevel;
 
-    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<AuthorityPostEntity> postEntityList;
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<AuthorityPostEntity> postEntityList;
 
-    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<AuthorityUserEntity> userEntityList;
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<AuthorityUserEntity> userEntityList;
 
-    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<AuthoritySuperGroupEntity> superGroupEntityList;
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<AuthoritySuperGroupEntity> superGroupEntityList;
 
     protected AuthorityLevelEntity() {}
 
     public AuthorityLevelEntity(String name) {
         this.authorityLevel = name;
-        this.postEntityList = new ArrayList<>();
-        this.userEntityList = new ArrayList<>();
-        this.superGroupEntityList = new ArrayList<>();
+        this.postEntityList = new HashSet<>();
+        this.userEntityList = new HashSet<>();
+        this.superGroupEntityList = new HashSet<>();
     }
 
     @Override
@@ -47,14 +50,14 @@ public class AuthorityLevelEntity extends ImmutableEntity<String> {
     }
 
     public List<AuthorityPostEntity> getPosts() {
-        return postEntityList;
+        return postEntityList.stream().toList();
     }
 
     public List<AuthorityUserEntity> getUsers() {
-        return userEntityList;
+        return userEntityList.stream().toList();
     }
 
     public List<AuthoritySuperGroupEntity> getSuperGroups() {
-        return superGroupEntityList;
+        return superGroupEntityList.stream().toList();
     }
 }

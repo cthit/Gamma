@@ -67,7 +67,7 @@ public class UserAccessGuard {
             return true;
         }
 
-        // If a client is trying to access an user that have approved the client, then approve
+        // If a client is trying to access a user that have approved the client, then approve
         if (haveAcceptedClient(userId)) {
             return true;
         }

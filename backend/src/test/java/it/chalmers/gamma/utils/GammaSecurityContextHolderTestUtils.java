@@ -115,7 +115,11 @@ public class GammaSecurityContextHolderTestUtils {
         String password = "password";
 
         if (userRepository != null) {
-            userRepository.create(user, new UnencryptedPassword(password));
+            try {
+                userRepository.create(user, new UnencryptedPassword(password));
+            } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
+                e.printStackTrace();
+            }
         }
 
         List<GrantedAuthorityProxy> authorities = new ArrayList<>();
@@ -142,11 +146,9 @@ public class GammaSecurityContextHolderTestUtils {
             authorities.add(new GrantedAuthorityProxy(admin, AuthorityType.AUTHORITY));
         }
 
-        UserDetailsProxy userDetailsProxy = new UserDetailsProxy(
-                user,
-                "{noop}" + password,
-                authorities
-        );
+        UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user.id().value());
+        userDetailsProxy.set(user, authorities, "{noop}" + password);
+
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 userDetailsProxy,
                 null,
@@ -173,8 +175,8 @@ public class GammaSecurityContextHolderTestUtils {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(
-                DEFAULT_CLIENT.clientApiKey().get().apiKeyToken(),
-                AuthorityUtils.NO_AUTHORITIES
+                DEFAULT_CLIENT_API_KEY,
+                DEFAULT_CLIENT
         );
 
         context.setAuthentication(apiKeyAuthentication);

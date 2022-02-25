@@ -10,17 +10,26 @@ import java.util.UUID;
 public final class UserDetailsProxy implements UserDetails {
 
     private final UUID id;
-    private final String password;
-    private final List<GrantedAuthorityProxy> authorities;
-    private final boolean userLocked;
 
-    public UserDetailsProxy(User user,
-                            String password,
-                            List<GrantedAuthorityProxy> authorities) {
-        this.id = user.id().value();
-        this.password = password;
+    // Will be removed before saving the session.
+    private User user;
+    private String password;
+    private List<GrantedAuthorityProxy> authorities;
+
+    public UserDetailsProxy(UUID id) {
+        this.id = id;
+    }
+
+    public void set(User user, List<GrantedAuthorityProxy> authorities, String password) {
+        this.user = user;
         this.authorities = authorities;
-        this.userLocked = user.extended().locked();
+        this.password = password;
+    }
+
+    public void remove() {
+        this.user = null;
+        this.password = null;
+        this.authorities = null;
     }
 
     @Override
@@ -46,7 +55,7 @@ public final class UserDetailsProxy implements UserDetails {
     //TODO: Investigate more what this means.
     @Override
     public boolean isAccountNonLocked() {
-        return !this.userLocked;
+        return !this.user.extended().locked();
     }
 
     @Override
@@ -59,5 +68,8 @@ public final class UserDetailsProxy implements UserDetails {
         return true;
     }
 
+    public User getUser() {
+        return user;
+    }
 }
 

@@ -45,7 +45,7 @@ public class SuperGroupTypeRepositoryAdapter implements SuperGroupTypeRepository
             this.repository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new SuperGroupTypeNotFoundException();
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
             PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 
             if (state.equals(typeIsUsed)) {

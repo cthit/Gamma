@@ -1,9 +1,6 @@
-package it.chalmers.gamma.app.authentication;
+package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.user.domain.User;
-
-import java.util.List;
 
 /**
  * Only used when interacting with the Gamma Client.

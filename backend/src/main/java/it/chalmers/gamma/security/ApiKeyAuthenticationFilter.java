@@ -8,11 +8,11 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 
+import it.chalmers.gamma.app.client.domain.ClientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -29,13 +29,15 @@ public class ApiKeyAuthenticationFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyAuthenticationFilter.class);
 
     private final ApiKeyRepository apiKeyRepository;
+    private final ClientRepository clientRepository;
 
     // For example, that all URI:s start with /api
     private final String contextPath;
 
     public ApiKeyAuthenticationFilter(ApiKeyRepository apiKeyRepository,
-                                      @Value("${server.servlet.context-path}") String contextPath) {
+                                      ClientRepository clientRepository, @Value("${server.servlet.context-path}") String contextPath) {
         this.apiKeyRepository = apiKeyRepository;
+        this.clientRepository = clientRepository;
         this.contextPath = contextPath;
     }
 
@@ -66,8 +68,14 @@ public class ApiKeyAuthenticationFilter implements Filter {
                         throw new AccessDeniedException("Api key type not valid for this endpoint");
                     }
 
-                    ApiKeyAuthentication apiToken = new ApiKeyAuthentication(maybeApiKey.get().apiKeyToken(), AuthorityUtils.NO_AUTHORITIES);
-                    SecurityContextHolder.getContext().setAuthentication(apiToken);
+                    ApiKey apiKey = maybeApiKey.get();
+
+                    ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(
+                            apiKey,
+                            clientRepository.getByApiKey(apiKey.apiKeyToken())
+                                    .orElse(null)
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(apiKeyAuthentication);
                     //Make sure that this isn't saved in redis
                     //https://github.com/cthit/Gamma/pull/776/files#diff-18e124ccd254a048c4f9a8ab52caae88e7229c007468b1264c07427fbe9e930eR51
                 } else {

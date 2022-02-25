@@ -2,7 +2,6 @@ package it.chalmers.gamma.app.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
-import it.chalmers.gamma.app.authentication.AuthenticatedService;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.utils.DomainUtils;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;

@@ -60,7 +60,7 @@ public final class WhitelistAdminController {
     public CidRemovedFromWhitelistResponse removeWhitelist(@PathVariable("cid") String cid) {
         try {
             this.whitelistFacade.removeFromWhitelist(cid);
-        } catch (WhitelistRepository.CidIsNotWhitelistedException e) {
+        } catch (WhitelistRepository.NotWhitelistedException e) {
             throw new CidNotWhitelistedResponse();
         }
         return new CidRemovedFromWhitelistResponse();
