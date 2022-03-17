@@ -2,11 +2,11 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.security.authentication.Authenticated;
-import it.chalmers.gamma.security.authentication.ExternalUserAuthenticated;
-import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
-import it.chalmers.gamma.security.authentication.LockedInternalUserAuthenticated;
+import it.chalmers.gamma.security.principal.GammaPrincipal;
+import it.chalmers.gamma.security.principal.ExternalUserPrincipal;
+import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
-import static it.chalmers.gamma.security.authentication.GammaSecurityContextUtils.getAuthentication;
+import static it.chalmers.gamma.security.principal.GammaSecurityContextUtils.getPrincipal;
 
 @Service
 public class MeFacade extends Facade {
@@ -62,8 +62,8 @@ public class MeFacade extends Facade {
     public List<UserApprovedClientDTO> getSignedInUserApprovals() {
         this.accessGuard.require(isSignedIn());
 
-        if (getAuthentication() instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User user = internalUserAuthenticated.get();
+        if (getPrincipal() instanceof InternalUserPrincipal internalUserPrincipal) {
+            User user = internalUserPrincipal.get();
             return this.clientRepository.getClientsByUserApproved(user.id())
                     .stream()
                     .map(UserApprovedClientDTO::new)
@@ -106,12 +106,12 @@ public class MeFacade extends Facade {
 
 
     public MeDTO getMe() {
-        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
+        GammaPrincipal authenticated = GammaSecurityContextUtils.getPrincipal();
         User user = null;
-        if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            user = internalUserAuthenticated.get();
-        } else if (authenticated instanceof ExternalUserAuthenticated externalUserAuthenticated) {
-            user = externalUserAuthenticated.get();
+        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
+            user = internalUserPrincipal.get();
+        } else if (authenticated instanceof ExternalUserPrincipal externalUserPrincipal) {
+            user = externalUserPrincipal.get();
         }
 
         if (user == null) {
@@ -132,9 +132,9 @@ public class MeFacade extends Facade {
 
 
     public void updateMe(UpdateMe updateMe) {
-        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
-        if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User oldMe = internalUserAuthenticated.get();
+        GammaPrincipal authenticated = getPrincipal();
+        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
+            User oldMe = internalUserPrincipal.get();
             User newMe = oldMe.with()
                     .nick(new Nick(updateMe.nick))
                     .firstName(new FirstName(updateMe.firstName))
@@ -153,9 +153,9 @@ public class MeFacade extends Facade {
     public record UpdatePassword(String oldPassword, String newPassword) { }
 
     public void updatePassword(UpdatePassword updatePassword) {
-        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
-        if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User me = internalUserAuthenticated.get();
+        GammaPrincipal authenticated = getPrincipal();
+        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
+            User me = internalUserPrincipal.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
                 this.userRepository.setPassword(me.id(), new UnencryptedPassword(updatePassword.newPassword));
             }
@@ -163,9 +163,9 @@ public class MeFacade extends Facade {
     }
 
     public void deleteMe(String password) {
-        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
-        if (authenticated instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User me = internalUserAuthenticated.get();
+        GammaPrincipal authenticated = getPrincipal();
+        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
+            User me = internalUserPrincipal.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
                 try {
                     this.userRepository.delete(me.id());
@@ -176,11 +176,13 @@ public class MeFacade extends Facade {
         }
     }
 
+    //TODO: Should only locked user be able to accept user agreement?
+    //TODO: I guess you cannot accept a user agreement if you already have accepted it.
     public void acceptUserAgreement() {
-        Authenticated authenticated = GammaSecurityContextUtils.getAuthentication();
-        if (authenticated instanceof LockedInternalUserAuthenticated lockedInternalUserAuthenticated) {
+        GammaPrincipal authenticated = getPrincipal();
+        if (authenticated instanceof LockedInternalUserPrincipal lockedInternalUserPrincipal) {
             try {
-                this.userRepository.acceptUserAgreement(lockedInternalUserAuthenticated.get().id());
+                this.userRepository.acceptUserAgreement(lockedInternalUserPrincipal.get().id());
             } catch (UserRepository.UserNotFoundException e) {
                 throw new IllegalStateException();
             }

@@ -9,6 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static io.restassured.RestAssured.*;
+import static io.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
 @ActiveProfiles("test")
 @Testcontainers
 @SpringBootTest(classes = GammaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -17,7 +20,9 @@ class InfoApiControllerTest {
 
     @Test
     public void test() {
-        System.out.println("hello");
+//        get("/lotto")
+//                .then()
+//                .body("lotto.lottoId", equalTo(5));
     }
 
 }

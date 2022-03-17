@@ -1,4 +1,4 @@
-package it.chalmers.gamma.security.authentication;
+package it.chalmers.gamma.security.principal;
 
 import it.chalmers.gamma.app.user.domain.User;
 
@@ -7,6 +7,6 @@ import it.chalmers.gamma.app.user.domain.User;
  * - locked is true
  * - has not accepted the latest user agreement for Gamma
  */
-public non-sealed interface LockedInternalUserAuthenticated extends Authenticated {
+public non-sealed interface LockedInternalUserPrincipal extends GammaPrincipal {
     User get();
 }

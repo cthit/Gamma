@@ -1,11 +1,11 @@
-package it.chalmers.gamma.security.authentication;
+package it.chalmers.gamma.security.principal;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.client.domain.Client;
 
 import java.util.Optional;
 
-public non-sealed interface ApiAuthenticated extends Authenticated {
+public non-sealed interface ApiPrincipal extends GammaPrincipal {
     ApiKey get();
 
     /**

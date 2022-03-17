@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -25,17 +26,14 @@ public class SuperGroupTypeRepositoryAdapter implements SuperGroupTypeRepository
         this.repository = repository;
     }
 
+    @Transactional
     @Override
     public void add(SuperGroupType superGroupType) throws SuperGroupTypeAlreadyExistsException {
-        try {
-            this.repository.saveAndFlush(new SuperGroupTypeEntity(superGroupType));
-        } catch (DataIntegrityViolationException e) {
-            if (e.getCause() instanceof EntityExistsException) {
-                throw new SuperGroupTypeAlreadyExistsException();
-            }
-
-            throw e;
+        if (this.repository.existsById(superGroupType.value())) {
+            throw new SuperGroupTypeAlreadyExistsException();
         }
+
+        this.repository.save(new SuperGroupTypeEntity(superGroupType));
     }
 
     @Override

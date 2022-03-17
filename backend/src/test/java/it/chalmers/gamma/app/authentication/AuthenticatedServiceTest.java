@@ -26,22 +26,20 @@ import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
-import it.chalmers.gamma.security.ApiKeyAuthentication;
-import it.chalmers.gamma.security.authentication.ApiAuthenticated;
-import it.chalmers.gamma.security.authentication.ExternalUserAuthenticated;
-import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
-import it.chalmers.gamma.security.authentication.LocalRunnerAuthenticated;
-import it.chalmers.gamma.security.authentication.LockedInternalUserAuthenticated;
-import it.chalmers.gamma.security.authentication.Unauthenticated;
+import it.chalmers.gamma.security.ApiAuthenticationToken;
+import it.chalmers.gamma.security.principal.ApiPrincipal;
+import it.chalmers.gamma.security.principal.ExternalUserPrincipal;
+import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
+import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
+import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
 import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -142,9 +140,9 @@ class AuthenticatedServiceTest {
         given(userRepository.get(normalUser.id()))
                 .willReturn(Optional.of(normalUser));
 
-        assertThat(GammaSecurityContextUtils.getAuthentication())
+        assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        InternalUserAuthenticated.class,
+                        InternalUserPrincipal.class,
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(normalUser)
@@ -159,9 +157,9 @@ class AuthenticatedServiceTest {
         given(userRepository.get(notAcceptingUser.id()))
                 .willReturn(Optional.of(notAcceptingUser));
 
-        assertThat(GammaSecurityContextUtils.getAuthentication())
+        assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        LockedInternalUserAuthenticated.class,
+                        LockedInternalUserPrincipal.class,
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(notAcceptingUser)
@@ -174,9 +172,9 @@ class AuthenticatedServiceTest {
         given(userRepository.get(lockedUser.id()))
                 .willReturn(Optional.of(lockedUser));
 
-        assertThat(GammaSecurityContextUtils.getAuthentication())
+        assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        LockedInternalUserAuthenticated.class,
+                        LockedInternalUserPrincipal.class,
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(lockedUser)
@@ -190,9 +188,9 @@ class AuthenticatedServiceTest {
         given(userRepository.get(normalUser.id()))
                 .willReturn(Optional.of(normalUser));
 
-        assertThat(GammaSecurityContextUtils.getAuthentication())
+        assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        ExternalUserAuthenticated.class,
+                        ExternalUserPrincipal.class,
                         external ->
                                 assertThat(external.get())
                                         .isEqualTo(normalUser)
@@ -207,9 +205,9 @@ class AuthenticatedServiceTest {
         given(this.clientRepository.getByApiKey(clientApiKey.apiKeyToken()))
                 .willReturn(Optional.of(client));
 
-        assertThat(GammaSecurityContextUtils.getAuthentication())
+        assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        ApiAuthenticated.class,
+                        ApiPrincipal.class,
                         api -> {
                             assertThat(api.get())
                                     .isEqualTo(clientApiKey);
@@ -226,9 +224,9 @@ class AuthenticatedServiceTest {
         given(this.apiKeyRepository.getByToken(chalmersitApi.apiKeyToken()))
                 .willReturn(Optional.of(chalmersitApi));
 
-        assertThat(GammaSecurityContextUtils.getAuthentication())
+        assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        ApiAuthenticated.class,
+                        ApiPrincipal.class,
                         api -> {
                             assertThat(api.get())
                                     .isEqualTo(chalmersitApi);
@@ -239,15 +237,15 @@ class AuthenticatedServiceTest {
     @Test
     @WithMockBootstrapAuthenticated
     public void Given_BootstrapAuthenticated_Expect_getAuthentication_ToReturn_LocalRunnerAuthenticated() {
-        assertThat(GammaSecurityContextUtils.getAuthentication())
-                .isInstanceOf(LocalRunnerAuthenticated.class);
+        assertThat(GammaSecurityContextUtils.getPrincipal())
+                .isInstanceOf(LocalRunnerPrincipal.class);
     }
 
     @Test
     @WithAnonymousUser
     public void Given_AnonymousUser_Expect_getAuthentication_ToReturn_Unauthenticated() {
-        assertThat(GammaSecurityContextUtils.getAuthentication())
-                .isInstanceOf(Unauthenticated.class);
+        assertThat(GammaSecurityContextUtils.getPrincipal())
+                .isInstanceOf(UnauthenticatedPrincipal.class);
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -263,8 +261,7 @@ class AuthenticatedServiceTest {
 
             User user = annotation.locked() ? lockedUser : normalUser;
 
-            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user.id().value());
-            userDetailsProxy.set(user, Collections.emptyList(), "{noop}value");
+            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, Collections.emptyList(), "{noop}value");
             Authentication auth = new UsernamePasswordAuthenticationToken(
                     userDetailsProxy,
                     null,
@@ -319,8 +316,8 @@ class AuthenticatedServiceTest {
                 default -> throw new IllegalStateException();
             };
 
-            ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(apiKey, client);
-            context.setAuthentication(apiKeyAuthentication);
+            ApiAuthenticationToken apiAuthenticationToken = new ApiAuthenticationToken(apiKey, client);
+            context.setAuthentication(apiAuthenticationToken);
 
             return context;
         }

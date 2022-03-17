@@ -95,7 +95,11 @@ public class GroupBootstrap {
                                     mockMembership.unofficialPostName() == null
                                             ? UnofficialPostName.none()
                                             : new UnofficialPostName(mockMembership.unofficialPostName()),
-                                    userRepository.get(new UserId(mockMembership.userId())).orElseThrow()
+                                    userRepository.get(new UserId(mockMembership.userId()))
+                                            .orElseThrow(() -> {
+                                                System.out.println("Hjälp: " + mockMembership.userId());
+                                                return new IllegalArgumentException();
+                                            })
                             ))
                             .toList(),
                     Optional.empty(),

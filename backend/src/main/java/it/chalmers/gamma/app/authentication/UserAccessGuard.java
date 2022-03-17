@@ -1,21 +1,16 @@
 package it.chalmers.gamma.app.authentication;
 
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
 import it.chalmers.gamma.security.user.UserDetailsProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /*
  * One could think that using AuthenticatedService would be a great idea.
@@ -24,8 +19,10 @@ import java.util.Optional;
 @Service
 public class UserAccessGuard {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAccessGuard.class);
+
     public boolean accessToExtended(UserId userId) {
-        return isMe(userId) || isAdmin();
+        return isMe(userId) || isAdmin() || isLocalRunnerAuthenticated();
     }
 
     public boolean isMe(UserId userId) {
@@ -72,12 +69,23 @@ public class UserAccessGuard {
             return true;
         }
 
+        // If it's a local runner, then approve
+        if (isLocalRunnerAuthenticated()) {
+            return true;
+        }
+
+        LOGGER.error("tried to access the user: " + userId + "; ");
+
         //Return false by default
         return false;
     }
 
     private boolean isInternalAuthenticated() {
         return getPrincipal() instanceof UserDetailsProxy;
+    }
+
+    private boolean isLocalRunnerAuthenticated() {
+        return SecurityContextHolder.getContext().getAuthentication() instanceof BootstrapAuthenticated;
     }
 
     //If the client tries to access a user that have not accepted the client, then return null.

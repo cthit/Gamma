@@ -59,7 +59,9 @@ public class UserEntity extends MutableEntity<UUID> {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     protected UserAvatarEntity userAvatar;
 
-    protected UserEntity() { }
+    protected UserEntity() {
+        userAgreementAccepted = Instant.ofEpochSecond(0);
+    }
 
     @Override
     public UUID getId() {

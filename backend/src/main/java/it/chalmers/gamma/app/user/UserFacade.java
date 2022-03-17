@@ -3,7 +3,7 @@ package it.chalmers.gamma.app.user;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.security.authentication.ApiAuthenticated;
+import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
@@ -20,7 +20,7 @@ import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -117,8 +117,8 @@ public class UserFacade extends Facade {
 
         Settings settings = settingsRepository.getSettings();
 
-        if (GammaSecurityContextUtils.getAuthentication() instanceof ApiAuthenticated apiAuthenticated) {
-            Client client = apiAuthenticated.getClient().orElseThrow();
+        if (GammaSecurityContextUtils.getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+            Client client = apiPrincipal.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()
                     .filter(user -> user.extended().acceptedUserAgreement())

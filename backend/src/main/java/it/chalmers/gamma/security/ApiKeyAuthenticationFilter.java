@@ -70,12 +70,12 @@ public class ApiKeyAuthenticationFilter implements Filter {
 
                     ApiKey apiKey = maybeApiKey.get();
 
-                    ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(
+                    ApiAuthenticationToken apiAuthenticationToken = new ApiAuthenticationToken(
                             apiKey,
                             clientRepository.getByApiKey(apiKey.apiKeyToken())
                                     .orElse(null)
                     );
-                    SecurityContextHolder.getContext().setAuthentication(apiKeyAuthentication);
+                    SecurityContextHolder.getContext().setAuthentication(apiAuthenticationToken);
                     //Make sure that this isn't saved in redis
                     //https://github.com/cthit/Gamma/pull/776/files#diff-18e124ccd254a048c4f9a8ab52caae88e7229c007468b1264c07427fbe9e930eR51
                 } else {

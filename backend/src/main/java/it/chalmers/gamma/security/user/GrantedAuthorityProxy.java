@@ -9,6 +9,11 @@ import java.util.Objects;
 public record GrantedAuthorityProxy(AuthorityLevelName authorityLevelName,
                                      AuthorityType authorityType) implements GrantedAuthority {
 
+    public static final GrantedAuthorityProxy admin = new GrantedAuthorityProxy(
+            new AuthorityLevelName("admin"),
+            AuthorityType.AUTHORITY
+    );
+
     @Override
     public String getAuthority() {
         return this.authorityLevelName.getValue();

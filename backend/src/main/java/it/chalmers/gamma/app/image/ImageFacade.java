@@ -2,8 +2,8 @@ package it.chalmers.gamma.app.image;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.security.authentication.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.authentication.InternalUserAuthenticated;
+import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.principal.InternalUserPrincipal;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
@@ -90,8 +90,8 @@ public class ImageFacade extends Facade {
     //TODO: Implement admin and users to be able to remove group images and me avatar.
 
     public void setMeAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
-        if (GammaSecurityContextUtils.getAuthentication() instanceof InternalUserAuthenticated internalUserAuthenticated) {
-            User user = internalUserAuthenticated.get();
+        if (GammaSecurityContextUtils.getPrincipal() instanceof InternalUserPrincipal internalUserPrincipal) {
+            User user = internalUserPrincipal.get();
             ImageUri imageUri = this.imageService.saveImage(image);
             this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));
         }

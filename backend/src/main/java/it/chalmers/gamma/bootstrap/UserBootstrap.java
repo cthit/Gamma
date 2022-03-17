@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,7 +38,7 @@ public class UserBootstrap {
     }
 
     public void createUsers() {
-        if (!this.mocking || this.userRepository.getAll().stream().anyMatch(user -> !user.cid().getValue().contains("admin"))) {
+        if (!this.mocking || this.userRepository.getAll().size() > 1) {
             return;
         }
 
@@ -63,7 +64,7 @@ public class UserBootstrap {
                                         null
                                 )
                         ),
-                        new UnencryptedPassword("value")
+                        new UnencryptedPassword("password")
                 );
             } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
                 e.printStackTrace();

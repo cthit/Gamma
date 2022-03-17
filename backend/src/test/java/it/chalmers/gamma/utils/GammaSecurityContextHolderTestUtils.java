@@ -2,7 +2,6 @@ package it.chalmers.gamma.utils;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
@@ -30,19 +29,17 @@ import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.ApiKeyAuthentication;
+import it.chalmers.gamma.security.ApiAuthenticationToken;
 import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
 import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class GammaSecurityContextHolderTestUtils {
@@ -146,8 +143,7 @@ public class GammaSecurityContextHolderTestUtils {
             authorities.add(new GrantedAuthorityProxy(admin, AuthorityType.AUTHORITY));
         }
 
-        UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user.id().value());
-        userDetailsProxy.set(user, authorities, "{noop}" + password);
+        UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, authorities, "{noop}" + password);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 userDetailsProxy,
@@ -174,12 +170,12 @@ public class GammaSecurityContextHolderTestUtils {
     public static void setAuthenticatedAsClientWithApi(Client client) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        ApiKeyAuthentication apiKeyAuthentication = new ApiKeyAuthentication(
+        ApiAuthenticationToken apiAuthenticationToken = new ApiAuthenticationToken(
                 DEFAULT_CLIENT_API_KEY,
                 DEFAULT_CLIENT
         );
 
-        context.setAuthentication(apiKeyAuthentication);
+        context.setAuthentication(apiAuthenticationToken);
     }
 
 }
