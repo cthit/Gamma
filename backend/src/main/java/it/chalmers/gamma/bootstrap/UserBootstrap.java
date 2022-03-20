@@ -4,11 +4,11 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,7 +46,7 @@ public class UserBootstrap {
         this.mockData.users().forEach(mockUser -> {
             try {
                 this.userRepository.create(
-                        new User(
+                        new GammaUser(
                                 new UserId(mockUser.id()),
                                 new Cid(mockUser.cid()),
                                 new Nick(mockUser.nick()),

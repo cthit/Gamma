@@ -4,8 +4,8 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
@@ -76,7 +76,7 @@ public class AccessGuard {
     public static AccessChecker passwordCheck(String password) {
         return (authorityLevelRepository, userRepository) -> {
             if (getPrincipal() instanceof UserPrincipal userAuthenticated) {
-                User user = userAuthenticated.get();
+                GammaUser user = userAuthenticated.get();
                 return userRepository.checkPassword(user.id(), new UnencryptedPassword(password));
             }
 
@@ -107,7 +107,7 @@ public class AccessGuard {
     public static AccessChecker isSignedInUserMemberOfGroup(Group group) {
         return (authorityLevelRepository, userRepository) -> {
             if (getPrincipal() instanceof UserPrincipal userPrincipal) {
-                User user = userPrincipal.get();
+                GammaUser user = userPrincipal.get();
                 return group.groupMembers().stream().anyMatch(groupMember -> groupMember.user().equals(user));
             }
 

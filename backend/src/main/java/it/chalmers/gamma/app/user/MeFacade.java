@@ -2,10 +2,11 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.security.principal.GammaPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.UserPrincipal;
-import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
+import it.chalmers.gamma.security.principal.LockedUserPrincipal;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -16,7 +17,6 @@ import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -62,7 +62,7 @@ public class MeFacade extends Facade {
         this.accessGuard.require(isSignedIn());
 
         if (getPrincipal() instanceof UserPrincipal userPrincipal) {
-            User user = userPrincipal.get();
+            GammaUser user = userPrincipal.get();
             return this.clientRepository.getClientsByUserApproved(user.id())
                     .stream()
                     .map(UserApprovedClientDTO::new)
@@ -86,7 +86,7 @@ public class MeFacade extends Facade {
                         List<UserMembership> groups,
                         List<MyAuthority> authorities,
                         String language) {
-        public MeDTO(User user, List<UserMembership> groups, List<UserAuthority> authorities) {
+        public MeDTO(GammaUser user, List<UserMembership> groups, List<UserAuthority> authorities) {
             this(user.nick().value(),
                     user.firstName().value(),
                     user.lastName().value(),
@@ -106,7 +106,7 @@ public class MeFacade extends Facade {
 
     public MeDTO getMe() {
         GammaPrincipal authenticated = GammaSecurityContextUtils.getPrincipal();
-        User user = null;
+        GammaUser user = null;
         if (authenticated instanceof UserPrincipal userPrincipal) {
             user = userPrincipal.get();
         }
@@ -131,8 +131,8 @@ public class MeFacade extends Facade {
     public void updateMe(UpdateMe updateMe) {
         GammaPrincipal authenticated = getPrincipal();
         if (authenticated instanceof UserPrincipal userPrincipal) {
-            User oldMe = userPrincipal.get();
-            User newMe = oldMe.with()
+            GammaUser oldMe = userPrincipal.get();
+            GammaUser newMe = oldMe.with()
                     .nick(new Nick(updateMe.nick))
                     .firstName(new FirstName(updateMe.firstName))
                     .lastName(new LastName(updateMe.lastName))
@@ -152,7 +152,7 @@ public class MeFacade extends Facade {
     public void updatePassword(UpdatePassword updatePassword) {
         GammaPrincipal authenticated = getPrincipal();
         if (authenticated instanceof UserPrincipal userPrincipal) {
-            User me = userPrincipal.get();
+            GammaUser me = userPrincipal.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
                 this.userRepository.setPassword(me.id(), new UnencryptedPassword(updatePassword.newPassword));
             }
@@ -162,7 +162,7 @@ public class MeFacade extends Facade {
     public void deleteMe(String password) {
         GammaPrincipal authenticated = getPrincipal();
         if (authenticated instanceof UserPrincipal userPrincipal) {
-            User me = userPrincipal.get();
+            GammaUser me = userPrincipal.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
                 try {
                     this.userRepository.delete(me.id());
@@ -177,9 +177,9 @@ public class MeFacade extends Facade {
     //TODO: I guess you cannot accept a user agreement if you already have accepted it.
     public void acceptUserAgreement() {
         GammaPrincipal authenticated = getPrincipal();
-        if (authenticated instanceof LockedInternalUserPrincipal lockedInternalUserPrincipal) {
+        if (authenticated instanceof LockedUserPrincipal lockedUserPrincipal) {
             try {
-                this.userRepository.acceptUserAgreement(lockedInternalUserPrincipal.get().id());
+                this.userRepository.acceptUserAgreement(lockedUserPrincipal.get().id());
             } catch (UserRepository.UserNotFoundException e) {
                 throw new IllegalStateException();
             }

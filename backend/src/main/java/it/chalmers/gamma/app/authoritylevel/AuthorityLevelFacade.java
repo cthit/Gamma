@@ -13,7 +13,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.slf4j.Logger;
@@ -146,8 +146,8 @@ public class AuthorityLevelFacade extends Facade {
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
                 .orElseThrow(AuthorityLevelNotFoundException::new);
 
-        List<User> newUsersList = new ArrayList<>(authorityLevel.users());
-        User newUser = this.userRepository.get(new UserId(userId))
+        List<GammaUser> newUsersList = new ArrayList<>(authorityLevel.users());
+        GammaUser newUser = this.userRepository.get(new UserId(userId))
                 .orElseThrow(UserNotFoundException::new);
         newUsersList.add(newUser);
 
@@ -201,7 +201,7 @@ public class AuthorityLevelFacade extends Facade {
         AuthorityLevel authorityLevel = this.authorityLevelRepository.get(new AuthorityLevelName(name))
                 .orElseThrow(AuthorityLevelNotFoundException::new);
 
-        List<User> newUsers = new ArrayList<>(authorityLevel.users());
+        List<GammaUser> newUsers = new ArrayList<>(authorityLevel.users());
         for (int i = 0; i < newUsers.size(); i++) {
             if (newUsers.get(i).id().value().equals(userId)) {
                 newUsers.remove(i);

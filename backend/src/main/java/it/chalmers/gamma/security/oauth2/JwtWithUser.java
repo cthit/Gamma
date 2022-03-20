@@ -1,16 +1,13 @@
 package it.chalmers.gamma.security.oauth2;
 
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.security.oauth2.jwt.Jwt;
-
-import java.time.Instant;
-import java.util.Map;
 
 public class JwtWithUser extends Jwt {
 
-    private User user;
+    private GammaUser user;
 
-    public JwtWithUser(Jwt jwt, User user) {
+    public JwtWithUser(Jwt jwt, GammaUser user) {
         super(jwt.getTokenValue(),
                 jwt.getIssuedAt(),
                 jwt.getExpiresAt(),
@@ -20,7 +17,7 @@ public class JwtWithUser extends Jwt {
         this.user = user;
     }
 
-    public User getUser() {
+    public GammaUser getUser() {
         return user;
     }
 }

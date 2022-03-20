@@ -6,10 +6,10 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
-import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 /*
@@ -26,15 +26,15 @@ public class UserAccessGuard {
     }
 
     public boolean isMe(UserId userId) {
-        if (getPrincipal() instanceof UserDetailsProxy userDetailsProxy) {
-            return UserId.valueOf(userDetailsProxy.getUsername()).equals(userId);
+        if (getPrincipal() instanceof User user) {
+            return UserId.valueOf(user.getUsername()).equals(userId);
         }
         return false;
     }
 
     public boolean isAdmin() {
-        if (getPrincipal() instanceof UserDetailsProxy userDetailsProxy) {
-            return userDetailsProxy.getAuthorities().contains(
+        if (getPrincipal() instanceof User user) {
+            return user.getAuthorities().contains(
                     new GrantedAuthorityProxy(new AuthorityLevelName("admin"), AuthorityType.AUTHORITY)
             );
         }
@@ -81,7 +81,7 @@ public class UserAccessGuard {
     }
 
     private boolean isInternalAuthenticated() {
-        return getPrincipal() instanceof UserDetailsProxy;
+        return getPrincipal() instanceof User;
     }
 
     private boolean isLocalRunnerAuthenticated() {

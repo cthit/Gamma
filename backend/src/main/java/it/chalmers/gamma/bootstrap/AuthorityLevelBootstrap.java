@@ -5,7 +5,7 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.post.domain.PostRepository;
@@ -90,7 +90,7 @@ public class AuthorityLevelBootstrap {
 
         // Make sure admin user isn't overwritten
         if (authorityLevelMap.containsKey(new AuthorityLevelName("admin"))) {
-            User adminUser = this.userRepository.get(new Cid("admin")).orElseThrow();
+            GammaUser adminUser = this.userRepository.get(new Cid("admin")).orElseThrow();
             authorityLevelMap.get(new AuthorityLevelName("admin")).users.add(adminUser.id());
         }
 

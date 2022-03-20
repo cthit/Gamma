@@ -2,7 +2,7 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserIdentifier;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -24,7 +24,7 @@ public class FindUserByIdentifier {
      * @param possibleIdentifier Can be a id, email or cid. Checks in that order.
      * @return A user if it can be found with the first valid object.
      */
-    public Optional<User> toUser(String possibleIdentifier) {
+    public Optional<GammaUser> toUser(String possibleIdentifier) {
         UserIdentifier ui;
         if (isValidUserId(possibleIdentifier)) {
             ui = UserId.valueOf(possibleIdentifier);
@@ -39,8 +39,8 @@ public class FindUserByIdentifier {
         return toUser(ui);
     }
 
-    public Optional<User> toUser(UserIdentifier userIdentifier) {
-        Optional<User> user = Optional.empty();
+    public Optional<GammaUser> toUser(UserIdentifier userIdentifier) {
+        Optional<GammaUser> user = Optional.empty();
         if (userIdentifier instanceof UserId userId) {
             user = this.userRepository.get(userId);
         } else if (userIdentifier instanceof Email email) {

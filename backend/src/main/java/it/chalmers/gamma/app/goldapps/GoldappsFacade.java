@@ -8,7 +8,7 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class GoldappsFacade extends Facade {
                                   String firstName,
                                   String lastName,
                                   String nick) {
-        public GoldappsUserDTO(User user) {
+        public GoldappsUserDTO(GammaUser user) {
             this(user.extended().email().value(),
                     user.cid().value(),
                     user.firstName().value(),

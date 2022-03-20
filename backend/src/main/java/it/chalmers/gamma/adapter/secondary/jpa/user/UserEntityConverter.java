@@ -8,9 +8,9 @@ import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.springframework.lang.Nullable;
@@ -31,7 +31,7 @@ public class UserEntityConverter {
     }
 
     @Nullable
-    public User toDomain(UserEntity userEntity) {
+    public GammaUser toDomain(UserEntity userEntity) {
         Settings settings = this.settingsRepository.getSettings();
         UserId userId = new UserId(userEntity.id);
         boolean acceptedUserAgreement = hasAcceptedLatestUserAgreement(userEntity.userAgreementAccepted, settings);
@@ -52,7 +52,7 @@ public class UserEntityConverter {
             );
         }
 
-        return new User(
+        return new GammaUser(
                 userId,
                 new Cid(userEntity.cid),
                 new Nick(userEntity.nick),

@@ -2,7 +2,7 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class UserGdprTrainingFacade extends Facade {
                                      String lastName,
                                      String nick,
                                      boolean gdpr) {
-        public UserGdprTrainedDTO(User user) {
+        public UserGdprTrainedDTO(GammaUser user) {
             this(user.cid().value(),
                     user.id().value(),
                     user.firstName().value(),
@@ -51,8 +51,8 @@ public class UserGdprTrainingFacade extends Facade {
     public void updateGdprTrainedStatus(UUID userId, boolean gdprTrained) {
         this.accessGuard.require(isAdmin());
 
-        User oldUser = this.userRepository.get(new UserId(userId)).orElseThrow();
-        User newUser = oldUser.withExtended(oldUser.extended().withGdprTrained(gdprTrained));
+        GammaUser oldUser = this.userRepository.get(new UserId(userId)).orElseThrow();
+        GammaUser newUser = oldUser.withExtended(oldUser.extended().withGdprTrained(gdprTrained));
 
         this.userRepository.save(newUser);
     }

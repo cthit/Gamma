@@ -9,7 +9,7 @@ import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.Name;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class GroupEntityConverter {
         List<GroupMember> members = entity.getMembers()
                 .stream()
                 .map(membershipEntity -> {
-                    User user = this.userEntityConverter.toDomain(membershipEntity.getId().getUser());
+                    GammaUser user = this.userEntityConverter.toDomain(membershipEntity.getId().getUser());
                     if (user == null) {
                         return null;
                     }

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.utils.PasswordEncoderTestConfiguration;
 import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
@@ -18,7 +19,6 @@ import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.Password;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -68,7 +68,7 @@ public class UserPasswordRetrieverEntityIntegrationTests {
 
         UserId userId = UserId.generate();
         this.userRepository.create(
-                new User(
+                new GammaUser(
                         userId,
                         new Cid("asdf"),
                         new Nick("RandoM"),

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.password;
 
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
@@ -21,7 +21,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     }
 
     @Override
-    public PasswordResetToken createNewToken(User user) {
+    public PasswordResetToken createNewToken(GammaUser user) {
         PasswordResetToken token = PasswordResetToken.generate();
         userPasswordResetJpaRepository.saveAndFlush(new UserPasswordResetEntity(
                 user.id().value(),

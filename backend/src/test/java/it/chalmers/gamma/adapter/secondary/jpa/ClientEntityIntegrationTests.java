@@ -30,7 +30,7 @@ import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -226,7 +226,7 @@ public class ClientEntityIntegrationTests {
 
     @Test
     public void Given_AValidClientWithApprovedUsers_Expect_save_To_Work() {
-        User user = setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+        GammaUser user = setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
 
         ClientUid uid = ClientUid.generate();
         Client newClient = new Client(

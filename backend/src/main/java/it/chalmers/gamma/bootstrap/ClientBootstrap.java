@@ -14,7 +14,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientSecret;
 
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class ClientBootstrap {
         ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-code");
         PrettyName prettyName = new PrettyName("test-client");
 
-        List<User> allUsers = this.userRepository.getAll();
+        List<GammaUser> allUsers = this.userRepository.getAll();
 
         this.clientRepository.save(
                 new Client(

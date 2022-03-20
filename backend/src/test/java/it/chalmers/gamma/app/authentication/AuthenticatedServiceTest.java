@@ -18,10 +18,10 @@ import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -31,9 +31,8 @@ import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
-import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
+import it.chalmers.gamma.security.principal.LockedUserPrincipal;
 import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
-import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -41,6 +40,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -72,7 +72,7 @@ class AuthenticatedServiceTest {
     @Mock
     private ClientRepository clientRepository;
 
-    private static final User normalUser = new User(
+    private static final GammaUser normalUser = new GammaUser(
             UserId.generate(),
             new Cid("edcba"),
             new Nick("TheUser"),
@@ -90,7 +90,7 @@ class AuthenticatedServiceTest {
             )
     );
 
-    private static final User lockedUser = normalUser.with()
+    private static final GammaUser lockedUser = normalUser.with()
             .id(UserId.generate())
             .extended(normalUser.extended().withLocked(true))
             .build();
@@ -151,14 +151,14 @@ class AuthenticatedServiceTest {
     @Test
     @WithMockInternalAuthenticated
     public void Given_UserDetailsProxyNotAcceptedUserAgreement_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
-        User notAcceptingUser = normalUser.withExtended(normalUser.extended().withAcceptedUserAgreement(false));
+        GammaUser notAcceptingUser = normalUser.withExtended(normalUser.extended().withAcceptedUserAgreement(false));
 
         given(userRepository.get(notAcceptingUser.id()))
                 .willReturn(Optional.of(notAcceptingUser));
 
         assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        LockedInternalUserPrincipal.class,
+                        LockedUserPrincipal.class,
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(notAcceptingUser)
@@ -173,7 +173,7 @@ class AuthenticatedServiceTest {
 
         assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        LockedInternalUserPrincipal.class,
+                        LockedUserPrincipal.class,
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(lockedUser)
@@ -242,13 +242,13 @@ class AuthenticatedServiceTest {
         public SecurityContext createSecurityContext(WithMockInternalAuthenticated annotation) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-            User user = annotation.locked() ? lockedUser : normalUser;
+            GammaUser gammaUser = annotation.locked() ? lockedUser : normalUser;
 
-            UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, Collections.emptyList(), "{noop}value");
+            User user = new User(gammaUser.id().value().toString(), "{noop}value", Collections.emptyList());
             Authentication auth = new UsernamePasswordAuthenticationToken(
-                    userDetailsProxy,
+                    user,
                     null,
-                    userDetailsProxy.getAuthorities()
+                    user.getAuthorities()
             );
             context.setAuthentication(auth);
             return context;

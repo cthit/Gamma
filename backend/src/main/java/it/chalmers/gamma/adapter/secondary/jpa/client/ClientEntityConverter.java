@@ -11,7 +11,7 @@ import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.RedirectUrl;
 import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class ClientEntityConverter {
                 .map(ClientScopeEntity::getScope)
                 .toList();
 
-        List<User> users = clientEntity.approvals
+        List<GammaUser> users = clientEntity.approvals
                 .stream()
                 .map(UserApprovalEntity::getUserEntity)
                 .map(this.userEntityConverter::toDomain)

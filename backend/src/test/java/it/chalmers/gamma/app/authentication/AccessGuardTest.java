@@ -29,12 +29,12 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -43,7 +43,7 @@ import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
-import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
+import it.chalmers.gamma.security.principal.LockedUserPrincipal;
 import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,7 +85,7 @@ class AccessGuardTest {
     @InjectMocks
     private AccessGuard accessGuard;
 
-    private static final User adminUser = new User(
+    private static final GammaUser adminUser = new GammaUser(
             UserId.generate(),
             new Cid("edcba"),
             new Nick("TheAdmin"),
@@ -102,7 +102,7 @@ class AccessGuardTest {
                     null
             )
     );
-    private static final User normalUser = new User(
+    private static final GammaUser normalUser = new GammaUser(
             UserId.generate(),
             new Cid("edcba"),
             new Nick("TheUser"),
@@ -298,7 +298,7 @@ class AccessGuardTest {
 
     private static final UserPrincipal adminAuthenticated = new UserPrincipal() {
         @Override
-        public User get() {
+        public GammaUser get() {
             return adminUser;
         }
 
@@ -310,7 +310,7 @@ class AccessGuardTest {
 
     private static final UserPrincipal normalUserAuthenticated = new UserPrincipal() {
         @Override
-        public User get() {
+        public GammaUser get() {
             return normalUser;
         }
 
@@ -335,14 +335,14 @@ class AccessGuardTest {
 
     @Test
     public void Given_AdminThatIsLocked_Expect_isAdmin_To_Throw() {
-        User lockedAdminUser = adminUser.with()
+        GammaUser lockedAdminUser = adminUser.with()
                 .id(UserId.generate())
                 .extended(adminUser.extended().withLocked(true))
                 .build();
 
         try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
             mocked.when(GammaSecurityContextUtils::getPrincipal)
-                    .thenReturn((LockedInternalUserPrincipal) () -> lockedAdminUser);
+                    .thenReturn((LockedUserPrincipal) () -> lockedAdminUser);
             given(authorityLevelRepository.getByUser(lockedAdminUser.id()))
                     .willReturn(userAuthoritiesMap.get(lockedAdminUser.id()));
             assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
@@ -505,14 +505,14 @@ class AccessGuardTest {
 
     @Test
     public void Given_UserIsSignedInAndLocked_Expect_isSignedIn_To_NotThrow() {
-        User lockedUser = normalUser.with()
+        GammaUser lockedUser = normalUser.with()
                 .id(UserId.generate())
                 .extended(normalUser.extended().withLocked(true))
                 .build();
 
         try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
             mocked.when(GammaSecurityContextUtils::getPrincipal)
-                    .thenReturn((LockedInternalUserPrincipal) () -> lockedUser);
+                    .thenReturn((LockedUserPrincipal) () -> lockedUser);
             assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                     .isThrownBy(() -> this.accessGuard.require(isSignedIn()));
         }

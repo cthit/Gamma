@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.image;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.app.group.domain.Group;
@@ -10,7 +11,6 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.stereotype.Service;
@@ -91,14 +91,14 @@ public class ImageFacade extends Facade {
 
     public void setMeAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
         if (GammaSecurityContextUtils.getPrincipal() instanceof UserPrincipal userPrincipal) {
-            User user = userPrincipal.get();
+            GammaUser user = userPrincipal.get();
             ImageUri imageUri = this.imageService.saveImage(image);
             this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));
         }
     }
 
     public ImageDetails getAvatar(UUID userId) {
-        User user = this.userRepository.get(new UserId(userId)).orElseThrow();
+        GammaUser user = this.userRepository.get(new UserId(userId)).orElseThrow();
         return new ImageDetails(
                 this.imageService.getImage(
                         user.extended().avatarUri() == null

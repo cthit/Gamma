@@ -1,7 +1,6 @@
 package it.chalmers.gamma.security.oauth2;
 
-import it.chalmers.gamma.app.user.MeFacade;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +35,7 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
     public OidcUserInfo apply(OidcUserInfoAuthenticationContext context) {
         OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
         JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
-        User me = this.userRepository.get(UserId.valueOf(principal.getName()))
+        GammaUser me = this.userRepository.get(UserId.valueOf(principal.getName()))
                 .orElseThrow();
 
         /*

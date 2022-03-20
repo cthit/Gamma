@@ -5,16 +5,16 @@ import io.soabase.recordbuilder.core.RecordBuilder;
 import java.util.Objects;
 
 @RecordBuilder
-public record User(UserId id,
-                   Cid cid,
-                   Nick nick,
-                   FirstName firstName,
-                   LastName lastName,
-                   AcceptanceYear acceptanceYear,
-                   Language language,
-                   UserExtended extended) implements UserBuilder.With {
+public record GammaUser(UserId id,
+                        Cid cid,
+                        Nick nick,
+                        FirstName firstName,
+                        LastName lastName,
+                        AcceptanceYear acceptanceYear,
+                        Language language,
+                        UserExtended extended) implements GammaUserBuilder.With {
 
-    public User {
+    public GammaUser {
         Objects.requireNonNull(id);
         Objects.requireNonNull(cid);
         Objects.requireNonNull(nick);

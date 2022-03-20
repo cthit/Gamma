@@ -23,12 +23,12 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -75,11 +75,11 @@ public final class DomainUtils {
         );
     }
 
-    public static GroupMember gm(User u, Post p) {
+    public static GroupMember gm(GammaUser u, Post p) {
         return gm(u, p, UnofficialPostName.none());
     }
 
-    public static GroupMember gm(User u, Post p, UnofficialPostName unofficialPostName) {
+    public static GroupMember gm(GammaUser u, Post p, UnofficialPostName unofficialPostName) {
         return new GroupMember(
                 p,
                 unofficialPostName,
@@ -87,12 +87,12 @@ public final class DomainUtils {
         );
     }
 
-    public static User u(String cid) {
+    public static GammaUser u(String cid) {
         return u(cid, false, true);
     }
 
-    public static User u(String cid, boolean locked, boolean gdprTrained) {
-        return new User(
+    public static GammaUser u(String cid, boolean locked, boolean gdprTrained) {
+        return new GammaUser(
                 UserId.generate(),
                 new Cid(cid),
                 new Nick("N-" + cid),
@@ -155,18 +155,18 @@ public final class DomainUtils {
     public static SuperGroup styrit = sg("styrit", board);
     public static SuperGroup emeritus = sg("emeritus", alumni);
 
-    public static User u0 = u("abcaa");
-    public static User u1 = u("abca");
-    public static User u2 = u("abcb", true, true);
-    public static User u3 = u("abcc", false, false);
-    public static User u4 = u("abcd");
-    public static User u5 = u("abce", false, false);
-    public static User u6 = u("abcf");
-    public static User u7 = u("abcg", true, true);
-    public static User u8 = u("abch");
-    public static User u9 = u("abci");
-    public static User u10 = u("abcj");
-    public static User u11 = u("abck");
+    public static GammaUser u0 = u("abcaa");
+    public static GammaUser u1 = u("abca");
+    public static GammaUser u2 = u("abcb", true, true);
+    public static GammaUser u3 = u("abcc", false, false);
+    public static GammaUser u4 = u("abcd");
+    public static GammaUser u5 = u("abce", false, false);
+    public static GammaUser u6 = u("abcf");
+    public static GammaUser u7 = u("abcg", true, true);
+    public static GammaUser u8 = u("abch");
+    public static GammaUser u9 = u("abci");
+    public static GammaUser u10 = u("abcj");
+    public static GammaUser u11 = u("abck");
 
     public static Group digit17 = g("digit17", didit, List.of(gm(u11, chair), gm(u2, treasurer), gm(u4, member)));
     public static Group digit18 = g("digit18", didit, List.of(gm(u1, chair, new UnofficialPostName("root")), gm(u2, treasurer)));
@@ -224,11 +224,11 @@ public final class DomainUtils {
                 .toList());
     }
 
-    public static User removeUserExtended(User user) {
+    public static GammaUser removeUserExtended(GammaUser user) {
         return user.withExtended(null);
     }
 
-    public static User asSaved(User user) {
+    public static GammaUser asSaved(GammaUser user) {
         return user.withExtended(user.extended().withVersion(1));
     }
 
@@ -253,12 +253,12 @@ public final class DomainUtils {
         );
     }
 
-    public static void addAll(UserRepository userRepository, User... users) {
+    public static void addAll(UserRepository userRepository, GammaUser... users) {
         addAll(userRepository, List.of(users));
     }
 
-    public static void addAll(UserRepository userRepository, List<User> users) {
-        for (User user : users) {
+    public static void addAll(UserRepository userRepository, List<GammaUser> users) {
+        for (GammaUser user : users) {
             try {
                 userRepository.create(user, new UnencryptedPassword("password"));
             } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
@@ -305,7 +305,7 @@ public final class DomainUtils {
         Set<SuperGroupType> types = new HashSet<>();
         Set<SuperGroup> superGroups = new HashSet<>();
         Set<Post> posts = new HashSet<>();
-        Set<User> users = new HashSet<>();
+        Set<GammaUser> users = new HashSet<>();
 
         for (Group group : groups) {
             types.add(group.superGroup().type());
@@ -325,7 +325,7 @@ public final class DomainUtils {
         for (Post post : posts) {
             postRepository.save(post);
         }
-        for (User user : users) {
+        for (GammaUser user : users) {
             try {
                 userRepository.create(user, new UnencryptedPassword("password"));
             } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {

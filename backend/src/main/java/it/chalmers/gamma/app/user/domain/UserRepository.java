@@ -7,15 +7,15 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    void create(User user, UnencryptedPassword password)
+    void create(GammaUser user, UnencryptedPassword password)
             throws UserAlreadyExistsException, CidAlreadyInUseException, EmailAlreadyInUseException;
-    void save(User user);
+    void save(GammaUser user);
     void delete(UserId userId) throws UserNotFoundException;
 
-    List<User> getAll();
-    Optional<User> get(UserId userId);
-    Optional<User> get(Cid cid);
-    Optional<User> get(Email email);
+    List<GammaUser> getAll();
+    Optional<GammaUser> get(UserId userId);
+    Optional<GammaUser> get(Cid cid);
+    Optional<GammaUser> get(Email email);
 
     boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException;
     void setPassword(UserId userId, UnencryptedPassword newPassword) throws UserNotFoundException;

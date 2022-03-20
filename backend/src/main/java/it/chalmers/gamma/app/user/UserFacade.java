@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.user;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
@@ -16,7 +17,6 @@ import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -58,7 +58,7 @@ public class UserFacade extends Facade {
                           UUID id,
                           int acceptanceYear) {
 
-        public UserDTO(User user) {
+        public UserDTO(GammaUser user) {
             this(user.cid().value(),
                     user.nick().value(),
                     user.firstName().value(),
@@ -157,7 +157,7 @@ public class UserFacade extends Facade {
                                   boolean userAgreement,
                                   String language) {
 
-        public UserExtendedDTO(User user) {
+        public UserExtendedDTO(GammaUser user) {
             this(user.cid().value(),
                     user.nick().value(),
                     user.firstName().value(),
@@ -203,7 +203,7 @@ public class UserFacade extends Facade {
     public void updateUser(UpdateUser updateUser) {
         accessGuard.require(isAdmin());
 
-        User oldUser = this.userRepository.get(new UserId(updateUser.id)).orElseThrow();
+        GammaUser oldUser = this.userRepository.get(new UserId(updateUser.id)).orElseThrow();
         this.userRepository.save(
                 oldUser.with()
                         .nick(new Nick(updateUser.nick))

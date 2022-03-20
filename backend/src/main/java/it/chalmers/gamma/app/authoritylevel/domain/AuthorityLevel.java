@@ -4,7 +4,7 @@ package it.chalmers.gamma.app.authoritylevel.domain;
 import io.soabase.recordbuilder.core.RecordBuilder;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.Objects;
 public record AuthorityLevel(AuthorityLevelName name,
                              List<SuperGroupPost> posts,
                              List<SuperGroup> superGroups,
-                             List<User> users) implements AuthorityLevelBuilder.With {
+                             List<GammaUser> users) implements AuthorityLevelBuilder.With {
 
     public AuthorityLevel {
         Objects.requireNonNull(name);

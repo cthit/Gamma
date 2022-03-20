@@ -4,8 +4,8 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.user.FindUserByIdentifier;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
@@ -42,14 +42,14 @@ public class UserResetPasswordFacade extends Facade {
     public void startResetPasswordProcess(String userIdentifier) throws PasswordResetProcessException {
         this.accessGuard.require(isNotSignedIn());
 
-        Optional<User> maybeUser = findUserByIdentifier.toUser(userIdentifier);
+        Optional<GammaUser> maybeUser = findUserByIdentifier.toUser(userIdentifier);
 
         if (maybeUser.isEmpty()) {
             LOGGER.debug("Someone tried to reset the value for " + userIdentifier + " that doesn't exist");
             throw new PasswordResetProcessException();
         }
 
-        User user = maybeUser.get();
+        GammaUser user = maybeUser.get();
 
         PasswordResetToken token = this.passwordResetRepository.createNewToken(user);
         sendPasswordResetTokenMail(user, token);
@@ -58,14 +58,14 @@ public class UserResetPasswordFacade extends Facade {
     public void finishResetPasswordProcess(String userIdentifier, String inputTokenRaw, String newPassword) throws PasswordResetProcessException {
         this.accessGuard.require(isNotSignedIn());
 
-        Optional<User> maybeUser = findUserByIdentifier.toUser(userIdentifier);
+        Optional<GammaUser> maybeUser = findUserByIdentifier.toUser(userIdentifier);
 
         if (maybeUser.isEmpty()) {
             LOGGER.debug("Someone tried to finish the reset value process for " + userIdentifier + " that doesn't exist");
             throw new PasswordResetProcessException();
         }
 
-        User user = maybeUser.get();
+        GammaUser user = maybeUser.get();
         Optional<PasswordResetToken> maybeToken = this.passwordResetRepository.getToken(user.id());
 
         if (maybeToken.isEmpty()) {
@@ -85,7 +85,7 @@ public class UserResetPasswordFacade extends Facade {
         }
     }
 
-    private void sendPasswordResetTokenMail(User user, PasswordResetToken token) {
+    private void sendPasswordResetTokenMail(GammaUser user, PasswordResetToken token) {
         String subject = "Password reset for Account at IT division of Chalmers";
         String message = "A value reset have been requested for this account, if you have not requested "
                 + "this mail, feel free to ignore it. \n Your reset code : " + token.value();

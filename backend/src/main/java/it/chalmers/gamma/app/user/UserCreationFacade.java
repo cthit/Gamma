@@ -13,7 +13,7 @@ import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -78,7 +78,7 @@ public class UserCreationFacade extends Facade {
 
         try {
             this.userRepository.create(
-                    new User(
+                    new GammaUser(
                             UserId.generate(),
                             new Cid(newUser.cid),
                             new Nick(newUser.nick),
@@ -114,7 +114,7 @@ public class UserCreationFacade extends Facade {
 
             try {
                 this.userRepository.create(
-                        new User(
+                        new GammaUser(
                                 UserId.generate(),
                                 cid,
                                 new Nick(data.nick),

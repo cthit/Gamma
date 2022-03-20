@@ -8,11 +8,11 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -62,7 +62,7 @@ public class EnsureAnAdminUserBootstrap {
             UserId adminId = UserId.generate();
             String name = "admin";
 
-            User adminUser = new User(
+            GammaUser adminUser = new GammaUser(
                     adminId,
                     new Cid(name),
                     new Nick(name),

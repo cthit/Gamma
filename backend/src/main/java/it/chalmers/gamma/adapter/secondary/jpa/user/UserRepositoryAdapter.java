@@ -5,7 +5,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -46,7 +46,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public void create(User user, UnencryptedPassword password)
+    public void create(GammaUser user, UnencryptedPassword password)
             throws CidAlreadyInUseException, EmailAlreadyInUseException{
         try {
             this.save(toEntity(user, password.value()));
@@ -64,7 +64,7 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public void save(User user) {
+    public void save(GammaUser user) {
         this.save(toEntity(user, null));
     }
 
@@ -78,22 +78,22 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<GammaUser> getAll() {
         return this.repository.findAll().stream().map(this.converter::toDomain).toList();
     }
 
     @Override
-    public Optional<User> get(UserId userId) {
+    public Optional<GammaUser> get(UserId userId) {
         return this.repository.findById(userId.getValue()).map(this.converter::toDomain);
     }
 
     @Override
-    public Optional<User> get(Cid cid) {
+    public Optional<GammaUser> get(Cid cid) {
         return this.repository.findByCid(cid.getValue()).map(this.converter::toDomain);
     }
 
     @Override
-    public Optional<User> get(Email email) {
+    public Optional<GammaUser> get(Email email) {
         return this.repository.findByEmail(email.value()).map(this.converter::toDomain);
     }
 
@@ -120,7 +120,7 @@ public class UserRepositoryAdapter implements UserRepository {
         save(userEntity);
     }
 
-    private UserEntity toEntity(User d, String password) {
+    private UserEntity toEntity(GammaUser d, String password) {
         UserEntity e = this.repository.findById(d.id().value())
                 .orElse(new UserEntity());
         UserExtended extended = d.extended();

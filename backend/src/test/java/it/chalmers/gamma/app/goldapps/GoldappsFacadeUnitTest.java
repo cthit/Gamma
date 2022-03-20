@@ -4,7 +4,7 @@ import it.chalmers.gamma.utils.DomainUtils;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -112,7 +112,7 @@ class GoldappsFacadeUnitTest {
     }
 
     private record ActiveUsersTestCase(List<Group> groups,
-                                       List<User> expectedActive) { }
+                                       List<GammaUser> expectedActive) { }
 
     private ActiveUsersTestCase getActiveUsersTestCase() {
         var digit = sg("digit", committee);

@@ -9,6 +9,7 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.UserExtended;
@@ -24,7 +25,6 @@ import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public class UserEntityIntegrationTests {
 
     @Test
     public void Given_ValidNewUser_Expect_create_To_Work() {
-        User user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
+        GammaUser user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
 
         assertThat(this.userRepositoryAdapter.get(user.id()))
                 .get()
@@ -85,7 +85,7 @@ public class UserEntityIntegrationTests {
 
     @Test
     public void Given_UserWithoutExtended_Expect_create_To_Throw() {
-        User user = DEFAULT_USER.withExtended(null);
+        GammaUser user = DEFAULT_USER.withExtended(null);
 
         assertThatIllegalStateException()
                 .isThrownBy(() -> this.userRepositoryAdapter.create(
@@ -97,9 +97,9 @@ public class UserEntityIntegrationTests {
     @Test
     public void Given_ValidUser_Expect_save_To_Work() {
         //Will save the user
-        User user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
+        GammaUser user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
 
-        User newUser = user.with()
+        GammaUser newUser = user.with()
                 .nick(new Nick("Smurf_RandoM"))
                 .acceptanceYear(new AcceptanceYear(2020))
                 .build();
@@ -113,9 +113,9 @@ public class UserEntityIntegrationTests {
 
     @Test
     public void Given_UserWithNewUserId_Expect_save_To_Throw() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
-        User user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
+        GammaUser user = setAuthenticatedAsNormalUser(userRepositoryAdapter);
         this.userRepositoryAdapter.create(user, new UnencryptedPassword("password"));
-        User loadedUser = this.userRepositoryAdapter.get(user.id()).orElseThrow();
+        GammaUser loadedUser = this.userRepositoryAdapter.get(user.id()).orElseThrow();
         assertThatExceptionOfType(MutableEntity.IllegalEntityStateException.class)
                 .isThrownBy(() -> this.userRepositoryAdapter.save(loadedUser.withId(UserId.generate())));
     }
@@ -123,14 +123,14 @@ public class UserEntityIntegrationTests {
     @Test
     public void Given_ValidUser_Expect_get_To_HaveAUpdatedVersion() {
         UserId userId = setAuthenticatedAsNormalUser(userRepositoryAdapter).id();
-        User loadedUser = this.userRepositoryAdapter.get(userId).orElseThrow();
+        GammaUser loadedUser = this.userRepositoryAdapter.get(userId).orElseThrow();
         assertThat(loadedUser.extended().version())
                 .isEqualTo(1);
     }
 
     @Test
     public void Given_UserWithoutExtended_Expect_save_To_Throw() {
-        User user = DEFAULT_USER.withExtended(null);
+        GammaUser user = DEFAULT_USER.withExtended(null);
 
         assertThatIllegalStateException()
                 .isThrownBy(() -> this.userRepositoryAdapter.create(
@@ -141,7 +141,7 @@ public class UserEntityIntegrationTests {
 
     @Test
     public void Given_User_Expect_setPassword_and_checkPassword_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
-        User user = DEFAULT_USER;
+        GammaUser user = DEFAULT_USER;
         this.userRepositoryAdapter.create(user, new UnencryptedPassword("password"));
         assertThat(this.userRepositoryAdapter.checkPassword(user.id(), new UnencryptedPassword("password")))
                 .isTrue();
@@ -153,7 +153,7 @@ public class UserEntityIntegrationTests {
 
     @Test
     public void Given_User_Expect_setPassword_and_wrong_checkPassword_To_Return_False() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
-        User user = DEFAULT_USER;
+        GammaUser user = DEFAULT_USER;
         this.userRepositoryAdapter.create(user, new UnencryptedPassword("password"));
         assertThat(this.userRepositoryAdapter.checkPassword(user.id(), new UnencryptedPassword("_password")))
                 .isFalse();
@@ -165,7 +165,7 @@ public class UserEntityIntegrationTests {
 
     @Test
     public void Given_ValidUser_Expect_acceptUserAgreement_To_Work() {
-        User user = DEFAULT_USER.withExtended(DEFAULT_USER.extended().withAcceptedUserAgreement(false));
+        GammaUser user = DEFAULT_USER.withExtended(DEFAULT_USER.extended().withAcceptedUserAgreement(false));
 
         setAuthenticatedUser(
                 userRepositoryAdapter,
@@ -174,7 +174,7 @@ public class UserEntityIntegrationTests {
                 false
         );
 
-        User updatedUser = this.userRepositoryAdapter.get(user.id()).orElseThrow();
+        GammaUser updatedUser = this.userRepositoryAdapter.get(user.id()).orElseThrow();
         assertThat(updatedUser.extended().acceptedUserAgreement())
                 .isFalse();
 
@@ -188,7 +188,7 @@ public class UserEntityIntegrationTests {
     public void Given_OneUserTryingToAccessLockedUser_Expect_get_To_Return_Null() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         setAuthenticatedAsNormalUser(userRepositoryAdapter);
 
-        User lockedUser = new User(
+        GammaUser lockedUser = new GammaUser(
                 UserId.generate(),
                 new Cid("hmmm"),
                 new Nick("SomethinG"),
@@ -216,7 +216,7 @@ public class UserEntityIntegrationTests {
     public void Given_OneUserTryingToAccessUserThatHaveNotAcceptedUserAgreement_Expect_get_To_Return_Null() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         setAuthenticatedAsNormalUser(userRepositoryAdapter);
 
-        User userThatHasNotAcceptedUserAgreement = new User(
+        GammaUser userThatHasNotAcceptedUserAgreement = new GammaUser(
                 UserId.generate(),
                 new Cid("hmmm"),
                 new Nick("SomethinG"),
@@ -244,7 +244,7 @@ public class UserEntityIntegrationTests {
     public void Given_AdminTryingToAccessUserThatHaveNotAcceptedUserAgreement_Expect_get_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         setAuthenticatedAsAdminUser(userRepositoryAdapter, authorityLevelRepositoryAdapter);
 
-        User userThatHasNotAcceptedUserAgreement = new User(
+        GammaUser userThatHasNotAcceptedUserAgreement = new GammaUser(
                 UserId.generate(),
                 new Cid("hmmm"),
                 new Nick("SomethinG"),
@@ -275,7 +275,7 @@ public class UserEntityIntegrationTests {
     public void Given_AdminTryingToAccessLockedUser_Expect_get_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         setAuthenticatedAsAdminUser(userRepositoryAdapter, authorityLevelRepositoryAdapter);
 
-        User lockedUser = new User(
+        GammaUser lockedUser = new GammaUser(
                 UserId.generate(),
                 new Cid("hmmm"),
                 new Nick("SomethinG"),

@@ -21,21 +21,21 @@ import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.User;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.ApiAuthenticationToken;
 import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
-import it.chalmers.gamma.security.user.UserDetailsProxy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +44,7 @@ import java.util.Optional;
 
 public class GammaSecurityContextHolderTestUtils {
 
-    public static final User DEFAULT_USER = new User(
+    public static final GammaUser DEFAULT_USER = new GammaUser(
             //Same as in the default for WithUser
             UserId.valueOf("e3404d7e-bd03-43ec-ba74-67054fa70d94"),
             new Cid("asdf"),
@@ -90,30 +90,30 @@ public class GammaSecurityContextHolderTestUtils {
             Optional.of(DEFAULT_CLIENT_API_KEY)
     );
 
-    public static User setAuthenticatedAsNormalUser(UserRepository userRepository) {
+    public static GammaUser setAuthenticatedAsNormalUser(UserRepository userRepository) {
         setAuthenticatedUser(userRepository, null, DEFAULT_USER, false);
         return DEFAULT_USER.withExtended(DEFAULT_USER.extended().withVersion(1));
     }
 
-    public static User setAuthenticatedAsAdminUser(UserRepository userRepository, AuthorityLevelRepository authorityLevelRepository) {
+    public static GammaUser setAuthenticatedAsAdminUser(UserRepository userRepository, AuthorityLevelRepository authorityLevelRepository) {
         setAuthenticatedUser(userRepository, authorityLevelRepository, DEFAULT_USER, true);
         return DEFAULT_USER.withExtended(DEFAULT_USER.extended().withVersion(1));
     }
 
-    public static void setAuthenticatedAsAdminUser(User user) {
+    public static void setAuthenticatedAsAdminUser(GammaUser user) {
         setAuthenticatedUser(null, null, user, true);
     }
 
     public static void setAuthenticatedUser(UserRepository userRepository,
                                             AuthorityLevelRepository authorityLevelRepository,
-                                            User user,
+                                            GammaUser gammaUser,
                                             boolean isAdmin) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         String password = "password";
 
         if (userRepository != null) {
             try {
-                userRepository.create(user, new UnencryptedPassword(password));
+                userRepository.create(gammaUser, new UnencryptedPassword(password));
             } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
                 e.printStackTrace();
             }
@@ -131,7 +131,7 @@ public class GammaSecurityContextHolderTestUtils {
                             admin,
                             new ArrayList<>(),
                             new ArrayList<>(),
-                            List.of(user)
+                            List.of(gammaUser)
                     ));
                 }
             } catch (AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
@@ -143,12 +143,12 @@ public class GammaSecurityContextHolderTestUtils {
             authorities.add(new GrantedAuthorityProxy(admin, AuthorityType.AUTHORITY));
         }
 
-        UserDetailsProxy userDetailsProxy = new UserDetailsProxy(user, authorities, "{noop}" + password);
+        User user = new User(gammaUser.id().value().toString(), "{noop}" + password, authorities);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
-                userDetailsProxy,
+                user,
                 null,
-                userDetailsProxy.getAuthorities()
+                user.getAuthorities()
         );
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);

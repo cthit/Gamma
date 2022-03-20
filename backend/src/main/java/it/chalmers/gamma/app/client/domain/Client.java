@@ -6,7 +6,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +21,7 @@ public record Client(ClientUid clientUid,
                      Text description,
                      List<AuthorityLevelName> restrictions,
                      List<Scope> scopes,
-                     List<User> approvedUsers,
+                     List<GammaUser> approvedUsers,
                      //TODO: Don't use a optional
                      Optional<ApiKey> clientApiKey) implements ClientBuilder.With {
 

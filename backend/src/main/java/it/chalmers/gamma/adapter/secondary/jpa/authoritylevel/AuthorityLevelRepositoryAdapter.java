@@ -16,16 +16,14 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -233,7 +231,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     }
 
 
-    private UserEntity toEntity(User user) {
+    private UserEntity toEntity(GammaUser user) {
         return this.userJpaRepository.getById(user.id().getValue());
     }
 

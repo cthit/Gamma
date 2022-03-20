@@ -3,10 +3,11 @@ package it.chalmers.gamma.security.user;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.user.FindUserByIdentifier;
 import it.chalmers.gamma.app.user.domain.Password;
-import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,7 +41,7 @@ public class UserConfig {
 
         @Override
         public UserDetails loadUserByUsername(String userIdentifier) {
-            User user = this.findUserByIdentifier.toUser(userIdentifier)
+            GammaUser user = this.findUserByIdentifier.toUser(userIdentifier)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
             List<GrantedAuthorityProxy> authorities = this.authorityLevelRepository.getByUser(user.id())
@@ -52,7 +53,7 @@ public class UserConfig {
 
             Password password = userPasswordRetriever.getPassword(user.id());
 
-            return new UserDetailsProxy(user, authorities, password.value());
+            return new User(user.id().value().toString(), password.value(), authorities);
         }
 
     }
