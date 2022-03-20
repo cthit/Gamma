@@ -1,6 +1,9 @@
 package it.chalmers.gamma.security.oauth2;
 
 import it.chalmers.gamma.app.user.MeFacade;
+import it.chalmers.gamma.app.user.domain.User;
+import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -17,12 +20,14 @@ import java.util.function.Function;
 @Component
 public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
-    private final MeFacade meFacade;
+    private final UserRepository userRepository;
     private final String baseUrl;
     private final String contextPath;
 
-    public UserInfoMapper(MeFacade meFacade, @Value("${application.base-uri}") String baseUrl, @Value("${server.servlet.context-path}") String contextPath) {
-        this.meFacade = meFacade;
+    public UserInfoMapper(UserRepository userRepository,
+                          @Value("${application.base-uri}") String baseUrl,
+                          @Value("${server.servlet.context-path}") String contextPath) {
+        this.userRepository = userRepository;
         this.baseUrl = baseUrl;
         this.contextPath = contextPath;
     }
@@ -31,7 +36,8 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
     public OidcUserInfo apply(OidcUserInfoAuthenticationContext context) {
         OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
         JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
-        MeFacade.MeDTO me = meFacade.getMe();
+        User me = this.userRepository.get(UserId.valueOf(principal.getName()))
+                .orElseThrow();
 
         /*
          * Available scopes are profile, email.
@@ -50,7 +56,7 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
                 claims.put("given_name", me.firstName());
                 claims.put("family_name", me.lastName());
                 claims.put("nickname", me.nick());
-                claims.put("locale", me.language().toLowerCase());
+                claims.put("locale", me.language().toString().toLowerCase());
 
                 //TODO: Should the avatar uri be a final variable
                 claims.put("picture", this.baseUrl
@@ -61,9 +67,12 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
 
                 // Non-standard claims.
                 claims.put("cid", me.cid());
-                claims.put("authorities", me.authorities());
+
+
+                // To make sure that authorities are up-to-date, maybe this should be a separate thing
+//                claims.put("authorities", me.authorities());
             } else if (scope.getAuthority().equals(EMAIL_SCOPE)) {
-                claims.put("email", me.email());
+                claims.put("email", me.extended().email().value());
             }
         }
 

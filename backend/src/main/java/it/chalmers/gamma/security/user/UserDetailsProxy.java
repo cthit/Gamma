@@ -1,12 +1,12 @@
 package it.chalmers.gamma.security.user;
 
 import it.chalmers.gamma.app.user.domain.User;
-import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.UserPrincipal;
 
 import java.util.Collection;
 import java.util.List;
 
-public final class UserDetailsProxy implements InternalUserPrincipal {
+public final class UserDetailsProxy implements UserPrincipal {
 
     // Will be removed before saving the session.
     private User user;

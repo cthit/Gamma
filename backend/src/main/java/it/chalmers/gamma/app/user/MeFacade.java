@@ -3,9 +3,8 @@ package it.chalmers.gamma.app.user;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.security.principal.GammaPrincipal;
-import it.chalmers.gamma.security.principal.ExternalUserPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
@@ -62,8 +61,8 @@ public class MeFacade extends Facade {
     public List<UserApprovedClientDTO> getSignedInUserApprovals() {
         this.accessGuard.require(isSignedIn());
 
-        if (getPrincipal() instanceof InternalUserPrincipal internalUserPrincipal) {
-            User user = internalUserPrincipal.get();
+        if (getPrincipal() instanceof UserPrincipal userPrincipal) {
+            User user = userPrincipal.get();
             return this.clientRepository.getClientsByUserApproved(user.id())
                     .stream()
                     .map(UserApprovedClientDTO::new)
@@ -108,10 +107,8 @@ public class MeFacade extends Facade {
     public MeDTO getMe() {
         GammaPrincipal authenticated = GammaSecurityContextUtils.getPrincipal();
         User user = null;
-        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
-            user = internalUserPrincipal.get();
-        } else if (authenticated instanceof ExternalUserPrincipal externalUserPrincipal) {
-            user = externalUserPrincipal.get();
+        if (authenticated instanceof UserPrincipal userPrincipal) {
+            user = userPrincipal.get();
         }
 
         if (user == null) {
@@ -133,8 +130,8 @@ public class MeFacade extends Facade {
 
     public void updateMe(UpdateMe updateMe) {
         GammaPrincipal authenticated = getPrincipal();
-        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
-            User oldMe = internalUserPrincipal.get();
+        if (authenticated instanceof UserPrincipal userPrincipal) {
+            User oldMe = userPrincipal.get();
             User newMe = oldMe.with()
                     .nick(new Nick(updateMe.nick))
                     .firstName(new FirstName(updateMe.firstName))
@@ -154,8 +151,8 @@ public class MeFacade extends Facade {
 
     public void updatePassword(UpdatePassword updatePassword) {
         GammaPrincipal authenticated = getPrincipal();
-        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
-            User me = internalUserPrincipal.get();
+        if (authenticated instanceof UserPrincipal userPrincipal) {
+            User me = userPrincipal.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
                 this.userRepository.setPassword(me.id(), new UnencryptedPassword(updatePassword.newPassword));
             }
@@ -164,8 +161,8 @@ public class MeFacade extends Facade {
 
     public void deleteMe(String password) {
         GammaPrincipal authenticated = getPrincipal();
-        if (authenticated instanceof InternalUserPrincipal internalUserPrincipal) {
-            User me = internalUserPrincipal.get();
+        if (authenticated instanceof UserPrincipal userPrincipal) {
+            User me = userPrincipal.get();
             if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
                 try {
                     this.userRepository.delete(me.id());

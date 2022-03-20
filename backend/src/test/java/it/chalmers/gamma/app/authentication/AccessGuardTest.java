@@ -40,9 +40,8 @@ import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
-import it.chalmers.gamma.security.principal.ExternalUserPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
 import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
 import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
@@ -297,7 +296,7 @@ class AccessGuardTest {
         }
     };
 
-    private static final InternalUserPrincipal adminAuthenticated = new InternalUserPrincipal() {
+    private static final UserPrincipal adminAuthenticated = new UserPrincipal() {
         @Override
         public User get() {
             return adminUser;
@@ -309,7 +308,7 @@ class AccessGuardTest {
         }
     };
 
-    private static final InternalUserPrincipal normalUserAuthenticated = new InternalUserPrincipal() {
+    private static final UserPrincipal normalUserAuthenticated = new UserPrincipal() {
         @Override
         public User get() {
             return normalUser;
@@ -369,23 +368,6 @@ class AccessGuardTest {
         try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
             mocked.when(GammaSecurityContextUtils::getPrincipal)
                     .thenReturn(new UnauthenticatedPrincipal() {});
-
-            assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                    .isThrownBy(() -> this.accessGuard.require(isAdmin()));
-        }
-    }
-
-    /**
-     * External authenticated admins should not be able to be abused by a client
-     * to do admin stuff.
-     */
-    @Test
-    public void Given_ExternalAuthenticatedAdmin_Expect_isAdmin_To_Throw() {
-        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
-            mocked.when(GammaSecurityContextUtils::getPrincipal)
-                    .thenReturn((ExternalUserPrincipal) () -> adminUser);
-            given(authorityLevelRepository.getByUser(adminUser.id()))
-                    .willReturn(userAuthoritiesMap.get(adminUser.id()));
 
             assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                     .isThrownBy(() -> this.accessGuard.require(isAdmin()));
@@ -705,20 +687,6 @@ class AccessGuardTest {
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                 .isThrownBy(() -> this.accessGuard.require(isClientApi()));
-    }
-
-    @Test
-    public void Given_ExternalUser_Expect_isSignedInUserMemberOfGroup_To_Throw() {
-        try (MockedStatic<GammaSecurityContextUtils> mocked = mockStatic(GammaSecurityContextUtils.class)) {
-            mocked.when(GammaSecurityContextUtils::getPrincipal)
-                    .thenReturn((ExternalUserPrincipal) () -> normalUser);
-        }
-
-        given(authorityLevelRepository.getByUser(normalUser.id()))
-                .willReturn(userAuthoritiesMap.get(normalUser.id()));
-
-        assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isSignedInUserMemberOfGroup(digIT18)));
     }
 
     @Test

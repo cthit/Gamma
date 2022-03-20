@@ -7,16 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-/**
- * Only used when interacting with the Gamma Client.
- * Gives more access such as editing your own profile and doing other stuff.
- * Difference between this and ExternalUserAuthenticated is that ExternalUserAuthenticated
- * is created when another website has been authorized by the user to access the users' information.
- *
- * Separating these two scenarios helps the domain to guarantee that an external client cannot act as the user and edit
- * their information for example.
- */
-public non-sealed interface InternalUserPrincipal extends GammaPrincipal, UserDetails {
+// This UserPrincipal is only used when authentication with UsernamePasswordAuthenticationToken
+public non-sealed interface UserPrincipal extends GammaPrincipal, UserDetails {
     User get();
     boolean isAdmin();
 

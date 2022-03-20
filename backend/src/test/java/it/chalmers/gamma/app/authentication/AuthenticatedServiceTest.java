@@ -28,9 +28,8 @@ import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.ApiAuthenticationToken;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
-import it.chalmers.gamma.security.principal.ExternalUserPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
 import it.chalmers.gamma.security.principal.LockedInternalUserPrincipal;
 import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
@@ -142,7 +141,7 @@ class AuthenticatedServiceTest {
 
         assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOfSatisfying(
-                        InternalUserPrincipal.class,
+                        UserPrincipal.class,
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(normalUser)
@@ -178,22 +177,6 @@ class AuthenticatedServiceTest {
                         internal ->
                                 assertThat(internal.get())
                                         .isEqualTo(lockedUser)
-                );
-    }
-
-
-    @Test
-    @WithMockExternalAuthenticated
-    public void Given_Jwt_Expect_getAuthentication_ToReturn_ExternalAuthenticated() {
-        given(userRepository.get(normalUser.id()))
-                .willReturn(Optional.of(normalUser));
-
-        assertThat(GammaSecurityContextUtils.getPrincipal())
-                .isInstanceOfSatisfying(
-                        ExternalUserPrincipal.class,
-                        external ->
-                                assertThat(external.get())
-                                        .isEqualTo(normalUser)
                 );
     }
 

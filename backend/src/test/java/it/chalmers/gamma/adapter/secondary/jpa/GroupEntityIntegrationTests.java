@@ -58,6 +58,7 @@ import static it.chalmers.gamma.utils.DomainUtils.gm;
 import static it.chalmers.gamma.utils.DomainUtils.member;
 import static it.chalmers.gamma.utils.DomainUtils.prit18;
 import static it.chalmers.gamma.utils.DomainUtils.prit19;
+import static it.chalmers.gamma.utils.DomainUtils.removeLockedUsers;
 import static it.chalmers.gamma.utils.DomainUtils.styrit18;
 import static it.chalmers.gamma.utils.DomainUtils.styrit19;
 import static it.chalmers.gamma.utils.DomainUtils.treasurer;

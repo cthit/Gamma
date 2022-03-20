@@ -10,7 +10,7 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.InternalUserPrincipal;
+import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
 import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
 import org.slf4j.Logger;
@@ -65,7 +65,7 @@ public class AccessGuard {
 
     public static AccessChecker isAdmin() {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof InternalUserPrincipal userAuthenticated) {
+            if (getPrincipal() instanceof UserPrincipal userAuthenticated) {
                 return userAuthenticated.isAdmin();
             }
 
@@ -75,7 +75,7 @@ public class AccessGuard {
 
     public static AccessChecker passwordCheck(String password) {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof InternalUserPrincipal userAuthenticated) {
+            if (getPrincipal() instanceof UserPrincipal userAuthenticated) {
                 User user = userAuthenticated.get();
                 return userRepository.checkPassword(user.id(), new UnencryptedPassword(password));
             }
@@ -106,8 +106,8 @@ public class AccessGuard {
 
     public static AccessChecker isSignedInUserMemberOfGroup(Group group) {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof InternalUserPrincipal internalUserPrincipal) {
-                User user = internalUserPrincipal.get();
+            if (getPrincipal() instanceof UserPrincipal userPrincipal) {
+                User user = userPrincipal.get();
                 return group.groupMembers().stream().anyMatch(groupMember -> groupMember.user().equals(user));
             }
 
@@ -117,7 +117,7 @@ public class AccessGuard {
 
     public static AccessChecker isSignedIn() {
         return (authorityLevelRepository, userRepository)
-                -> getPrincipal() instanceof InternalUserPrincipal;
+                -> getPrincipal() instanceof UserPrincipal;
     }
 
     public static AccessChecker isNotSignedIn() {
