@@ -21,13 +21,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({SuperGroupTypeRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SuperGroupEntityConverter.class})
-public class SuperGroupTypeEntityIntegrationTests {
+public class SuperGroupTypeEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private SuperGroupTypeRepositoryAdapter superGroupTypeRepositoryAdapter;

@@ -18,7 +18,7 @@ public class SettingsInfoSuperGroupTypePK extends PKId<SettingsInfoSuperGroupTyp
     @JoinColumn(name = "settings_id")
     private SettingsEntity settings;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "super_group_type_name")
     private SuperGroupTypeEntity superGroupType;
 

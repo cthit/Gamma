@@ -23,11 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("test")
-@DataJpaTest
 @Import({ApiKeyRepositoryAdapter.class, ApiKeyEntityConverter.class})
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ApiKeyEntityIntegrationTests {
+class ApiKeyEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private ApiKeyRepositoryAdapter apiKeyRepositoryAdapter;

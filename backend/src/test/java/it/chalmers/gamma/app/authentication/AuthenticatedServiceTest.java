@@ -29,18 +29,13 @@ import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.ApiAuthenticationToken;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
-import it.chalmers.gamma.security.principal.LockedUserPrincipal;
 import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -134,53 +129,6 @@ class AuthenticatedServiceTest {
     );
 
     @Test
-    @WithMockInternalAuthenticated
-    public void Given_UserDetailsProxy_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
-        given(userRepository.get(normalUser.id()))
-                .willReturn(Optional.of(normalUser));
-
-        assertThat(GammaSecurityContextUtils.getPrincipal())
-                .isInstanceOfSatisfying(
-                        UserPrincipal.class,
-                        internal ->
-                                assertThat(internal.get())
-                                        .isEqualTo(normalUser)
-                );
-    }
-
-    @Test
-    @WithMockInternalAuthenticated
-    public void Given_UserDetailsProxyNotAcceptedUserAgreement_Expect_getAuthentication_ToReturn_InternalUserAuthenticated() {
-        GammaUser notAcceptingUser = normalUser.withExtended(normalUser.extended().withAcceptedUserAgreement(false));
-
-        given(userRepository.get(notAcceptingUser.id()))
-                .willReturn(Optional.of(notAcceptingUser));
-
-        assertThat(GammaSecurityContextUtils.getPrincipal())
-                .isInstanceOfSatisfying(
-                        LockedUserPrincipal.class,
-                        internal ->
-                                assertThat(internal.get())
-                                        .isEqualTo(notAcceptingUser)
-                );
-    }
-
-    @Test
-    @WithMockInternalAuthenticated(locked = true)
-    public void Given_UserDetailsProxyThatIsLocked_Expect_getAuthentication_ToReturn_LockedInternalUserAuthenticated() {
-        given(userRepository.get(lockedUser.id()))
-                .willReturn(Optional.of(lockedUser));
-
-        assertThat(GammaSecurityContextUtils.getPrincipal())
-                .isInstanceOfSatisfying(
-                        LockedUserPrincipal.class,
-                        internal ->
-                                assertThat(internal.get())
-                                        .isEqualTo(lockedUser)
-                );
-    }
-
-    @Test
     @WithMockApiAuthenticated("client")
     public void Given_ClientApiKeyToken_Expect_getAuthentication_ToReturn_ApiKeyAuthenticated() {
         given(this.apiKeyRepository.getByToken(clientApiKey.apiKeyToken()))
@@ -229,30 +177,6 @@ class AuthenticatedServiceTest {
     public void Given_AnonymousUser_Expect_getAuthentication_ToReturn_Unauthenticated() {
         assertThat(GammaSecurityContextUtils.getPrincipal())
                 .isInstanceOf(UnauthenticatedPrincipal.class);
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @WithSecurityContext(factory = WithInternalAuthenticatedSecurityContextFactory.class)
-    private @interface WithMockInternalAuthenticated {
-        boolean locked() default false;
-    }
-
-    private static class WithInternalAuthenticatedSecurityContextFactory implements WithSecurityContextFactory<WithMockInternalAuthenticated> {
-        @Override
-        public SecurityContext createSecurityContext(WithMockInternalAuthenticated annotation) {
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-
-            GammaUser gammaUser = annotation.locked() ? lockedUser : normalUser;
-
-            User user = new User(gammaUser.id().value().toString(), "{noop}value", Collections.emptyList());
-            Authentication auth = new UsernamePasswordAuthenticationToken(
-                    user,
-                    null,
-                    user.getAuthorities()
-            );
-            context.setAuthentication(auth);
-            return context;
-        }
     }
 
     @Retention(RetentionPolicy.RUNTIME)

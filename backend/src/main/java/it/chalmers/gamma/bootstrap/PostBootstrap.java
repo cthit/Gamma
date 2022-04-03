@@ -7,7 +7,6 @@ import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.post.domain.PostId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,18 +16,18 @@ public class PostBootstrap {
 
     private final MockData mockData;
     private final PostRepository postRepository;
-    private final boolean mocking;
+    private final BootstrapSettings bootstrapSettings;
 
     public PostBootstrap(MockData mockData,
                          PostRepository postRepository,
-                         @Value("${application.mocking}") boolean mocking) {
+                         BootstrapSettings bootstrapSettings) {
         this.mockData = mockData;
         this.postRepository = postRepository;
-        this.mocking = mocking;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void createPosts() {
-        if (!this.mocking || !this.postRepository.getAll().isEmpty()) {
+        if (!this.bootstrapSettings.mocking() || !this.postRepository.getAll().isEmpty()) {
             return;
         }
 

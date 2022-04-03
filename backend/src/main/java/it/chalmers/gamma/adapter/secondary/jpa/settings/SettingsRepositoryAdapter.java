@@ -29,6 +29,11 @@ public class SettingsRepositoryAdapter implements SettingsRepository {
     }
 
     @Override
+    public void setSettings(UpdateSettings updateSettings) {
+        setSettings(updateSettings.updateSettings(getSettings()));
+    }
+
+    @Override
     public void setSettings(Settings settings) {
         try {
             this.repository.saveAndFlush(toEntity(settings));

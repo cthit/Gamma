@@ -59,7 +59,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("test")
-@DataJpaTest
 @Import({ClientRepositoryAdapter.class,
         ClientEntityConverter.class,
         UserRepositoryAdapter.class,
@@ -74,9 +73,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         PostEntityConverter.class,
         UserEntityConverter.class,
         SettingsRepositoryAdapter.class})
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ClientEntityIntegrationTests {
+public class ClientEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private ClientRepositoryAdapter clientRepositoryAdapter;

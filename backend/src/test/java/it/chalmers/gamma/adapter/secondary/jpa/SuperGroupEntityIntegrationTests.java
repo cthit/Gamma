@@ -43,9 +43,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({SuperGroupRepositoryAdapter.class,
         SuperGroupEntityConverter.class,
         SuperGroupTypeRepositoryAdapter.class,
@@ -59,7 +56,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
         PostEntityConverter.class,
         SettingsRepositoryAdapter.class
 })
-public class SuperGroupEntityIntegrationTests {
+public class SuperGroupEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private SuperGroupRepositoryAdapter superGroupRepositoryAdapter;

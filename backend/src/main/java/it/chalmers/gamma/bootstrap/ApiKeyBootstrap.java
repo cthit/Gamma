@@ -9,7 +9,6 @@ import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,16 +17,16 @@ public class ApiKeyBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyBootstrap.class);
 
     private final ApiKeyRepository apiKeyRepository;
-    private final boolean mocking;
+    private final BootstrapSettings bootstrapSettings;
 
     public ApiKeyBootstrap(ApiKeyRepository apiKeyRepository,
-                           @Value("${application.mocking}") boolean mocking) {
+                           BootstrapSettings bootstrapSettings) {
         this.apiKeyRepository = apiKeyRepository;
-        this.mocking = mocking;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void ensureApiKeys() {
-        if (!mocking || !this.apiKeyRepository.getAll().isEmpty()) {
+        if (!this.bootstrapSettings.mocking() || this.apiKeyRepository.getAll().size() != 1) {
             return;
         }
 

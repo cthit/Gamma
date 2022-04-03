@@ -79,6 +79,7 @@ application:
   standard-admin-account:
     password: ${ADMIN_PASSWORD:password}
   mocking: ${IS_MOCKING:true}
+  admin-setup: ${ADMIN_SETUP:true}
   default-oauth2-client:
     client-name: ${DEFAULT_CLIENT_NAME:type}
     client-id: ${DEFAULT_CLIENT_ID:id}

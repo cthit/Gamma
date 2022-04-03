@@ -1,7 +1,9 @@
 package it.chalmers.gamma.security.principal;
 
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 public final class GammaSecurityContextUtils {
 
@@ -15,11 +17,6 @@ public final class GammaSecurityContextUtils {
                 || (authentication.getPrincipal() instanceof String s && s.equals("anonymous"))) {
             return new UnauthenticatedPrincipal() {};
         }
-
-        System.out.println(authentication);
-
-        System.out.println("hej");
-        System.out.println(authentication.getPrincipal());
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return (GammaPrincipal) principal;

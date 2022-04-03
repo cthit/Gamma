@@ -20,12 +20,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({UserActivationRepositoryAdapter.class,
         WhitelistRepositoryAdapter.class})
-public class UserActivationEntityIntegrationTests {
+public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private UserActivationRepositoryAdapter userActivationRepositoryAdapter;

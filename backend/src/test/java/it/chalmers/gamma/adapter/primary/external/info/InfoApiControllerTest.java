@@ -1,28 +1,42 @@
 package it.chalmers.gamma.adapter.primary.external.info;
 
-import it.chalmers.gamma.GammaApplication;
+import it.chalmers.gamma.adapter.primary.AbstractApiControllerTest;
+import it.chalmers.gamma.adapter.primary.ApiTest;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
-@ActiveProfiles("test")
-@Testcontainers
-@SpringBootTest(classes = GammaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class InfoApiControllerTest {
+
+@ActiveProfiles("test-with-mock")
+class InfoApiControllerTest extends AbstractApiControllerTest {
+
+    @Autowired
+    private SettingsRepository settingsRepository;
+
+    @Autowired
+    private SuperGroupTypeRepository superGroupTypeRepository;
 
     @Test
     public void test() {
-//        get("/lotto")
-//                .then()
-//                .body("lotto.lottoId", equalTo(5));
+        settingsRepository.setSettings(
+                settings -> settings.withInfoSuperGroupTypes(
+                        List.of(new SuperGroupType("committee"))
+                ));
+
+        given()
+                .filter(apiAuthFilter("INFO-super-secret-code"))
+        .and()
+                .get("/api/external/info/groups")
+                .prettyPeek()
+                .then()
+                .body("lotto.lottoId", equalTo(5));
     }
 
 }

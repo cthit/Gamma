@@ -31,16 +31,24 @@ public class EnsureAnAdminUserBootstrap {
     private final UserRepository userRepository;
     private final AuthorityLevelFacade authorityLevelFacade;
     private final AuthorityLevelRepository authorityLevelRepository;
+    private final BootstrapSettings bootstrapSettings;
 
     public EnsureAnAdminUserBootstrap(AuthorityLevelFacade authorityLevelFacade,
                                       UserRepository userRepository,
-                                      AuthorityLevelRepository authorityLevelRepository) {
+                                      AuthorityLevelRepository authorityLevelRepository,
+                                      BootstrapSettings bootstrapSettings) {
         this.authorityLevelFacade = authorityLevelFacade;
         this.authorityLevelRepository = authorityLevelRepository;
         this.userRepository = userRepository;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void ensureAnAdminUser() {
+        if (!this.bootstrapSettings.adminSetup()) {
+            LOGGER.info("Admin setup is disabled. I hope you know what you're doing...");
+            return;
+        }
+
         String admin = "admin";
         AuthorityLevelName adminAuthorityLevel = AuthorityLevelName.valueOf(admin);
 
@@ -99,7 +107,7 @@ public class EnsureAnAdminUserBootstrap {
                         adminUser.id().value()
                 );
             } catch (AuthorityLevelFacade.UserNotFoundException | AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
-                return;
+                LOGGER.error("Failed to add user to authority level", e);
             }
 
             LOGGER.info("==========                           ==========");

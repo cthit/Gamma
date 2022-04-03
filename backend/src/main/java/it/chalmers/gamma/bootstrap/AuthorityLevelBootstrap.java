@@ -12,7 +12,6 @@ import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.jboss.logging.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,25 +29,25 @@ public class AuthorityLevelBootstrap {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final MockData mockData;
-    private final boolean mocking;
+    private final BootstrapSettings bootstrapSettings;
 
     public AuthorityLevelBootstrap(AuthorityLevelRepository authorityLevelRepository,
                                    SuperGroupRepository superGroupRepository,
                                    PostRepository postRepository,
                                    UserRepository userRepository,
                                    MockData mockData,
-                                   @Value("${application.mocking}") boolean mocking) {
+                                   BootstrapSettings bootstrapSettings) {
         this.authorityLevelRepository = authorityLevelRepository;
         this.superGroupRepository = superGroupRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.mockData = mockData;
-        this.mocking = mocking;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void createAuthorities() {
         //!= 1 implies that admin isn't the only authority level
-        if (!this.mocking || this.authorityLevelRepository.getAll().size() != 1) {
+        if (!this.bootstrapSettings.mocking() || this.authorityLevelRepository.getAll().size() != 1) {
             return;
         }
 
@@ -96,6 +95,9 @@ public class AuthorityLevelBootstrap {
 
         authorityLevelMap.forEach((authorityLevelName, authorities) -> {
             try {
+                if (!authorityLevelName.value().equals("admin")) {
+                    this.authorityLevelRepository.create(authorityLevelName);
+                }
                 this.authorityLevelRepository.save(
                         new AuthorityLevel(
                                 authorityLevelName,
@@ -115,7 +117,7 @@ public class AuthorityLevelBootstrap {
                                         .toList()
                         )
                 );
-            } catch (AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException e) {
+            } catch (AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException | AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
                 e.printStackTrace();
             }
         });

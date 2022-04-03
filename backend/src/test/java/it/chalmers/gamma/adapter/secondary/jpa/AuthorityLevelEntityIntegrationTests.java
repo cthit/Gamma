@@ -79,9 +79,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({AuthorityLevelRepositoryAdapter.class,
         SuperGroupRepositoryAdapter.class,
         SuperGroupEntityConverter.class,
@@ -100,7 +97,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         UserAccessGuard.class,
         PostEntityConverter.class,
         SettingsRepositoryAdapter.class})
-public class AuthorityLevelEntityIntegrationTests {
+public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private AuthorityLevelRepositoryAdapter authorityLevelRepositoryAdapter;

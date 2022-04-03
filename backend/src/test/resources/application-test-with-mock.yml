@@ -21,6 +21,7 @@ spring:
 logging:
   level:
     it.chalmers.gamma: TRACE
+
 application:
-  mocking: false
-  admin-setup: false
+  mocking: true
+  admin-setup: true

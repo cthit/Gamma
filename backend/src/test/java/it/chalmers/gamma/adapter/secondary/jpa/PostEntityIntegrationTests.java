@@ -19,12 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({PostRepositoryAdapter.class,
         PostEntityConverter.class})
-public class PostEntityIntegrationTests {
+public class PostEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private PostRepositoryAdapter postRepositoryAdapter;

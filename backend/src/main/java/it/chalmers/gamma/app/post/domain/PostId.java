@@ -2,9 +2,14 @@ package it.chalmers.gamma.app.post.domain;
 
 import it.chalmers.gamma.app.common.Id;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public record PostId(UUID value) implements Id<UUID> {
+
+    public PostId {
+        Objects.requireNonNull(value);
+    }
 
     public static PostId generate() {
         return new PostId(UUID.randomUUID());

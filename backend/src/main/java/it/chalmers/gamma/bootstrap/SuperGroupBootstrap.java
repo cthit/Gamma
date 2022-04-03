@@ -2,7 +2,6 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
@@ -11,7 +10,6 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.domain.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,20 +20,20 @@ public class SuperGroupBootstrap {
     private final MockData mockData;
     private final SuperGroupTypeRepository superGroupTypeRepository;
     private final SuperGroupRepository superGroupRepository;
-    private final boolean mocking;
+    private final BootstrapSettings bootstrapSettings;
 
     public SuperGroupBootstrap(MockData mockData,
                                SuperGroupTypeRepository superGroupTypeRepository,
                                SuperGroupRepository superGroupRepository,
-                               @Value("${application.mocking}") boolean mocking) {
+                               BootstrapSettings bootstrapSettings) {
         this.mockData = mockData;
         this.superGroupTypeRepository = superGroupTypeRepository;
         this.superGroupRepository = superGroupRepository;
-        this.mocking = mocking;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void createSuperGroups() {
-        if (!this.mocking || !this.superGroupRepository.getAll().isEmpty()) {
+        if (!this.bootstrapSettings.mocking() || !this.superGroupRepository.getAll().isEmpty()) {
             return;
         }
 

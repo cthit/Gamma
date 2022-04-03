@@ -2,9 +2,14 @@ package it.chalmers.gamma.app.apikey.domain;
 
 import it.chalmers.gamma.app.common.Id;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public record ApiKeyId(UUID value) implements Id<UUID> {
+
+    public ApiKeyId {
+        Objects.requireNonNull(value);
+    }
 
     public ApiKeyId(String value) {
         this(UUID.fromString(value));

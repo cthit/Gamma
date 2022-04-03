@@ -14,7 +14,6 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -26,18 +25,18 @@ public class UserBootstrap {
 
     private final MockData mockData;
     private final UserRepository userRepository;
-    private final boolean mocking;
+    private final BootstrapSettings bootstrapSettings;
 
     public UserBootstrap(MockData mockData,
                          UserRepository userRepository,
-                         @Value("${application.mocking}") boolean mocking) {
+                         BootstrapSettings bootstrapSettings) {
         this.mockData = mockData;
         this.userRepository = userRepository;
-        this.mocking = mocking;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void createUsers() {
-        if (!this.mocking || this.userRepository.getAll().size() > 1) {
+        if (!this.bootstrapSettings.mocking() || this.userRepository.getAll().size() > 1) {
             return;
         }
 

@@ -44,9 +44,6 @@ import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAut
 import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({UserRepositoryAdapter.class,
         UserEntityConverter.class,
         UserAccessGuard.class,
@@ -56,7 +53,7 @@ import static org.assertj.core.api.Assertions.*;
         PostEntityConverter.class,
         SettingsRepositoryAdapter.class,
         PasswordEncoderTestConfiguration.class})
-public class UserEntityIntegrationTests {
+public class UserEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private UserRepositoryAdapter userRepositoryAdapter;

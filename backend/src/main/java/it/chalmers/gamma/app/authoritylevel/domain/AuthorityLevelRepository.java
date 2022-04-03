@@ -19,7 +19,11 @@ public interface AuthorityLevelRepository {
 
     Optional<AuthorityLevel> get(AuthorityLevelName authorityLevelName);
 
-    class AuthorityLevelAlreadyExistsException extends Exception { }
+    class AuthorityLevelAlreadyExistsException extends Exception {
+        public AuthorityLevelAlreadyExistsException(String value) {
+            super("Authority level: " + value + " already exists");
+        }
+    }
     class AuthorityLevelNotFoundException extends Exception { }
 
     class AuthorityLevelNotFoundRuntimeException extends RuntimeException { }

@@ -1,27 +1,20 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAdapter;
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.whitelist.WhitelistRepositoryAdapter;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({WhitelistRepositoryAdapter.class})
-public class WhitelistEntityIntegrationTests {
+public class WhitelistEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private WhitelistRepositoryAdapter whitelistRepositoryAdapter;

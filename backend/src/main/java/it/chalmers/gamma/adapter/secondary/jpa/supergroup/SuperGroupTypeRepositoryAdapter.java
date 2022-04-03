@@ -30,10 +30,10 @@ public class SuperGroupTypeRepositoryAdapter implements SuperGroupTypeRepository
     @Override
     public void add(SuperGroupType superGroupType) throws SuperGroupTypeAlreadyExistsException {
         if (this.repository.existsById(superGroupType.value())) {
-            throw new SuperGroupTypeAlreadyExistsException();
+            throw new SuperGroupTypeAlreadyExistsException(superGroupType.value());
         }
 
-        this.repository.save(new SuperGroupTypeEntity(superGroupType));
+        this.repository.saveAndFlush(new SuperGroupTypeEntity(superGroupType));
     }
 
     @Override

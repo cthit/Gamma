@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Transactional
 @Service
 public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository {
 
@@ -97,14 +98,13 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         this.superGroupEntityConverter = superGroupEntityConverter;
     }
 
-    @Transactional
     @Override
     public void create(AuthorityLevelName authorityLevelName) throws AuthorityLevelAlreadyExistsException {
         if (repository.existsById(authorityLevelName.value())) {
-            throw new AuthorityLevelAlreadyExistsException();
+            throw new AuthorityLevelAlreadyExistsException(authorityLevelName.value());
         }
 
-        repository.save(new AuthorityLevelEntity(authorityLevelName.getValue()));
+        repository.saveAndFlush(new AuthorityLevelEntity(authorityLevelName.getValue()));
     }
 
     @Override

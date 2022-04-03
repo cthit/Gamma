@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -41,19 +42,29 @@ public class UserConfig {
 
         @Override
         public UserDetails loadUserByUsername(String userIdentifier) {
-            GammaUser user = this.findUserByIdentifier.toUser(userIdentifier)
+            GammaUser gammaUser = this.findUserByIdentifier.toUser(userIdentifier)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-            List<GrantedAuthorityProxy> authorities = this.authorityLevelRepository.getByUser(user.id())
-                    .stream()
-                    .map(userAuthority -> new GrantedAuthorityProxy(
-                            userAuthority.authorityLevelName(),
-                            userAuthority.authorityType()
-                    )).toList();
+//            List<GrantedAuthorityProxy> authorities = this.authorityLevelRepository.getByUser(gammaUser.id())
+//                    .stream()
+//                    .map(userAuthority -> new GrantedAuthorityProxy(
+//                            userAuthority.authorityLevelName(),
+//                            userAuthority.authorityType()
+//                    )).toList();
 
-            Password password = userPasswordRetriever.getPassword(user.id());
+            Password password = userPasswordRetriever.getPassword(gammaUser.id());
 
-            return new User(user.id().value().toString(), password.value(), authorities);
+            return new User(
+                    gammaUser.id().value().toString(),
+                    password.value(),
+                    true,
+                    false,
+                    false,
+                    gammaUser.extended().locked()
+                            || !gammaUser.extended().acceptedUserAgreement(),
+                    // Authorities will be loaded by UpdateUserPrincipalFilter
+                    Collections.emptyList()
+            );
         }
 
     }

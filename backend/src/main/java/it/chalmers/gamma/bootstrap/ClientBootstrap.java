@@ -31,23 +31,24 @@ public class ClientBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrap.class);
 
+    private final BootstrapSettings bootstrapSettings;
     private final String redirectUrl;
     private final UserRepository userRepository;
-    private final boolean mocking;
     private final ClientRepository clientRepository;
 
-    public ClientBootstrap(@Value("${application.mocking}") boolean mocking,
+
+    public ClientBootstrap(BootstrapSettings bootstrapSettings,
                            @Value("${application.default-oauth2-client.redirect-url}") String redirectUrl,
                            UserRepository userRepository,
                            ClientRepository clientRepository) {
+        this.bootstrapSettings = bootstrapSettings;
         this.redirectUrl = redirectUrl;
-        this.mocking = mocking;
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
     }
 
     public void runOauthClient() {
-        if(!this.mocking || !this.clientRepository.getAll().isEmpty()) {
+        if(!this.bootstrapSettings.mocking() || !this.clientRepository.getAll().isEmpty()) {
             return;
         }
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");

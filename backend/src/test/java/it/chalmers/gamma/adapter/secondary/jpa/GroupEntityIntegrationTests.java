@@ -36,9 +36,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,9 +73,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({GroupRepositoryAdapter.class,
         GroupEntityConverter.class,
         SuperGroupEntityConverter.class,
@@ -88,7 +87,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
         SettingsRepositoryAdapter.class,
         AuthorityLevelRepositoryAdapter.class,
         AuthorityLevelEntityConverter.class})
-public class GroupEntityIntegrationTests {
+public class GroupEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private GroupRepositoryAdapter groupRepositoryAdapter;

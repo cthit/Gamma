@@ -30,7 +30,7 @@ public class SettingsFacade extends Facade {
         );
 
         this.settingsRepository.setSettings(
-                settingsRepository.getSettings().withLastUpdatedUserAgreement(Instant.now())
+                settings -> settings.withLastUpdatedUserAgreement(Instant.now())
         );
     }
 
@@ -39,7 +39,7 @@ public class SettingsFacade extends Facade {
         this.accessGuard.require(isAdmin());
 
         this.settingsRepository.setSettings(
-                this.settingsRepository.getSettings().withInfoSuperGroupTypes(
+                settings -> settings.withInfoSuperGroupTypes(
                         superGroupTypes
                                 .stream()
                                 .map(SuperGroupType::new)

@@ -37,18 +37,14 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.*;
 
-
 @ActiveProfiles("test")
-@DataJpaTest
-@Testcontainers
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({UserPasswordRetrieverAdapter.class,
         UserRepositoryAdapter.class,
         UserEntityConverter.class,
         UserAccessGuard.class,
         SettingsRepositoryAdapter.class,
         PasswordEncoderTestConfiguration.class})
-public class UserPasswordRetrieverEntityIntegrationTests {
+public class UserPasswordRetrieverEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private UserPasswordRetrieverAdapter userPasswordRetrieverAdapter;

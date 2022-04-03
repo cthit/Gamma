@@ -1,16 +1,20 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
+import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+
+import static it.chalmers.gamma.security.principal.GammaSecurityContextUtils.getPrincipal;
 
 /*
  * One could think that using AuthenticatedService would be a great idea.
@@ -69,6 +73,10 @@ public class UserAccessGuard {
             return true;
         }
 
+        if (apiKeyWithAccess()) {
+            return true;
+        }
+
         // If it's a local runner, then approve
         if (isLocalRunnerAuthenticated()) {
             return true;
@@ -90,8 +98,32 @@ public class UserAccessGuard {
 
     //If the client tries to access a user that have not accepted the client, then return null.
     private boolean haveAcceptedClient(UserId userId) {
-        if (getPrincipal() instanceof ApiKeyToken apiKeyToken) {
+        if (getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+            ApiKeyType apiKeyType = apiPrincipal.get().keyType();
+            if (apiKeyType.equals(ApiKeyType.CLIENT)) {
+                if (apiPrincipal.getClient().isEmpty()) {
+                    throw new IllegalStateException(
+                            "An api key that is of type CLIENT must have a client connected to them; "
+                            + apiPrincipal.get()
+                    );
+                }
 
+                return apiPrincipal.getClient().get().approvedUsers()
+                        .stream()
+                        .anyMatch(gammaUser -> gammaUser.id().equals(userId));
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Api Key with type INFO or GOLDAPPS have access to user information.
+     */
+    private boolean apiKeyWithAccess() {
+        if (getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+            ApiKeyType apiKeyType = apiPrincipal.get().keyType();
+            return apiKeyType.equals(ApiKeyType.INFO) || apiKeyType.equals(ApiKeyType.GOLDAPPS);
         }
 
         return false;

@@ -16,7 +16,7 @@ public class AuthorityUserPK extends PKId<AuthorityUserPK.AuthorityUserPKRecord>
     protected record AuthorityUserPKRecord(UserId userId, AuthorityLevelName authorityLevelName) { }
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity userEntity;
 
     @JoinColumn(name = "authority_level")

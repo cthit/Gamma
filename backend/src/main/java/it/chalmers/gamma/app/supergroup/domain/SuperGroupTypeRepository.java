@@ -9,7 +9,11 @@ public interface SuperGroupTypeRepository {
 
     List<SuperGroupType> getAll();
 
-    class SuperGroupTypeAlreadyExistsException extends Exception { }
+    class SuperGroupTypeAlreadyExistsException extends Exception {
+        public SuperGroupTypeAlreadyExistsException(String value) {
+            super("Super group type: " + value + " already exists");
+        }
+    }
     class SuperGroupTypeNotFoundException extends Exception { }
     class SuperGroupTypeHasUsagesException extends Exception { }
 

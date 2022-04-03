@@ -34,26 +34,31 @@ public class BootstrapRunner {
                                           SuperGroupBootstrap superGroupBootstrap,
                                           UserBootstrap userBootstrap) {
         return (args) -> {
-            SecurityContextHolder.createEmptyContext();
-            SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
+            try {
+                SecurityContextHolder.createEmptyContext();
+                SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
 
-            miscBootstrap.runImageBootstrap();
+                miscBootstrap.runImageBootstrap();
 
-            ensureSettingsBootstrap.ensureAppSettings();
+                ensureSettingsBootstrap.ensureAppSettings();
 
-            adminAuthorityLevelBootstrap.ensureAdminAuthorityLevel();
-            ensureAnAdminUserBootstrap.ensureAnAdminUser();
+                adminAuthorityLevelBootstrap.ensureAdminAuthorityLevel();
+                ensureAnAdminUserBootstrap.ensureAnAdminUser();
 
-            userBootstrap.createUsers();
-            postBootstrap.createPosts();
-            superGroupBootstrap.createSuperGroups();
-            groupBootstrap.createGroups();
-            authorityLevelBootstrap.createAuthorities();
+                userBootstrap.createUsers();
+                postBootstrap.createPosts();
+                superGroupBootstrap.createSuperGroups();
+                groupBootstrap.createGroups();
+                authorityLevelBootstrap.createAuthorities();
 
-            clientBootstrap.runOauthClient();
-            apiKeyBootstrap.ensureApiKeys();
+                clientBootstrap.runOauthClient();
+                apiKeyBootstrap.ensureApiKeys();
 
-            SecurityContextHolder.clearContext();
+                SecurityContextHolder.clearContext();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                System.exit(1);
+            }
         };
     }
 

@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 
@@ -22,10 +23,12 @@ public class SecurityFiltersConfig {
     @Bean
     SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
                                                     CsrfTokenRepository csrfTokenRepository,
-                                                    GammaRequestCache requestCache) throws Exception {
+                                                    GammaRequestCache requestCache,
+                                                    UpdateUserPrincipalFilter updateUserPrincipalFilter) throws Exception {
         http
                 //Either /internal/**, /login or /logout
                 .regexMatcher("^\\/internal.+|\\/login.*|\\/logout")
+                .addFilterAfter(updateUserPrincipalFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
                         authorization
                                 .antMatchers("/login").permitAll()

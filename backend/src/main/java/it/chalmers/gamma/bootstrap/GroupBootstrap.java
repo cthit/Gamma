@@ -15,7 +15,6 @@ import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -36,24 +35,24 @@ public class GroupBootstrap {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final SuperGroupRepository superGroupRepository;
-    private final boolean mocking;
+    private final BootstrapSettings bootstrapSettings;
 
     public GroupBootstrap(MockData mockData,
                           GroupRepository groupRepository,
                           PostRepository postRepository,
                           UserRepository userRepository,
                           SuperGroupRepository superGroupRepository,
-                          @Value("${application.mocking}") boolean mocking) {
+                          BootstrapSettings bootstrapSettings) {
         this.mockData = mockData;
         this.groupRepository = groupRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.superGroupRepository = superGroupRepository;
-        this.mocking = mocking;
+        this.bootstrapSettings = bootstrapSettings;
     }
 
     public void createGroups() {
-        if (!this.mocking || !this.groupRepository.getAll().isEmpty()) {
+        if (!this.bootstrapSettings.mocking() || !this.groupRepository.getAll().isEmpty()) {
             return;
         }
 
