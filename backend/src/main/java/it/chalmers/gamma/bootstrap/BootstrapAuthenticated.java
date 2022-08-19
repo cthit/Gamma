@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
+import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.time.Instant;
@@ -9,14 +9,14 @@ import static org.springframework.security.core.authority.AuthorityUtils.NO_AUTH
 
 public class BootstrapAuthenticated  extends AbstractAuthenticationToken {
 
-    private final LocalRunnerPrincipal localRunnerPrincipal;
+    private final LocalRunnerAuthenticationDetails localRunnerPrincipal;
 
     public BootstrapAuthenticated() {
         super(NO_AUTHORITIES);
         setAuthenticated(true);
 
         final String instantiatedAt = "Local runner instantiated at" + Instant.now();
-        localRunnerPrincipal = new LocalRunnerPrincipal() {
+        localRunnerPrincipal = new LocalRunnerAuthenticationDetails() {
             @Override
             public String toString() {
                 return instantiatedAt;

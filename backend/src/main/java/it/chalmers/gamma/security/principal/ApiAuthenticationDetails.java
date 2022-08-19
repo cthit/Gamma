@@ -5,7 +5,7 @@ import it.chalmers.gamma.app.client.domain.Client;
 
 import java.util.Optional;
 
-public non-sealed interface ApiPrincipal extends GammaPrincipal {
+public non-sealed interface ApiAuthenticationDetails extends GammaAuthenticationDetails {
     ApiKey get();
 
     /**

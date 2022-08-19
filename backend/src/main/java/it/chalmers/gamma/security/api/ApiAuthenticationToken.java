@@ -1,7 +1,6 @@
 package it.chalmers.gamma.security.api;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.security.principal.ApiPrincipal;
+import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Transient;
 
@@ -11,17 +10,17 @@ import static org.springframework.security.core.authority.AuthorityUtils.NO_AUTH
 public class ApiAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String apiKeyToken;
-    private final ApiPrincipal apiPrincipal;
+    private final ApiAuthenticationDetails apiPrincipal;
 
     public static ApiAuthenticationToken fromApiKeyToken(String apiKeyToken) {
         return new ApiAuthenticationToken(apiKeyToken);
     }
 
-    public static ApiAuthenticationToken fromAuthenticatedApiKey(ApiPrincipal apiPrincipal) {
+    public static ApiAuthenticationToken fromAuthenticatedApiKey(ApiAuthenticationDetails apiPrincipal) {
         return new ApiAuthenticationToken(apiPrincipal);
     }
 
-    private ApiAuthenticationToken(ApiPrincipal apiPrincipal) {
+    private ApiAuthenticationToken(ApiAuthenticationDetails apiPrincipal) {
         super(NO_AUTHORITIES);
         this.apiKeyToken = null;
         this.apiPrincipal = apiPrincipal;
@@ -46,7 +45,7 @@ public class ApiAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public ApiPrincipal getPrincipal() {
+    public ApiAuthenticationDetails getPrincipal() {
         return this.apiPrincipal;
     }
 }

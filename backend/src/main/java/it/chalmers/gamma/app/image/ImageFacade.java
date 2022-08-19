@@ -2,17 +2,17 @@ package it.chalmers.gamma.app.image;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.UserPrincipal;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
+import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -90,7 +90,7 @@ public class ImageFacade extends Facade {
     //TODO: Implement admin and users to be able to remove group images and me avatar.
 
     public void setMeAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
-        if (GammaSecurityContextUtils.getPrincipal() instanceof UserPrincipal userPrincipal) {
+        if (GammaSecurityContextUtils.getAuthenticationDetails() instanceof UserAuthenticationDetails userPrincipal) {
             GammaUser user = userPrincipal.get();
             ImageUri imageUri = this.imageService.saveImage(image);
             this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));

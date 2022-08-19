@@ -1,35 +1,24 @@
 package it.chalmers.gamma.security.principal;
 
-import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 
 public final class GammaSecurityContextUtils {
 
     private GammaSecurityContextUtils() {}
 
-    public static GammaPrincipal getPrincipal() {
+    public static GammaAuthenticationDetails getAuthenticationDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null
                 || !authentication.isAuthenticated()
                 // In case of anonymous authentication
                 || (authentication.getPrincipal() instanceof String s && s.equals("anonymous"))) {
-            return new UnauthenticatedPrincipal() {};
+            return new UnauthenticatedAuthenticationDetails() {};
         }
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object details = SecurityContextHolder.getContext().getAuthentication().getDetails();
 
-        //TODO: TEMP
-        if (principal instanceof GammaPrincipal gammaPrincipal) {
-            return gammaPrincipal;
-        } else {
-            return new LocalRunnerPrincipal() {
-            };
-        }
-
-
-//        return (GammaPrincipal) principal;
+        return (GammaAuthenticationDetails) details;
     }
 
 }

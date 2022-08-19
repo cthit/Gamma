@@ -1,18 +1,15 @@
 package it.chalmers.gamma.security;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.user.FindUserByIdentifier;
-import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
-import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
-import it.chalmers.gamma.security.user.UserDetailsServiceImplementation;
-import it.chalmers.gamma.security.user.UserPasswordRetriever;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,11 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-
-import static org.springframework.http.HttpMethod.GET;
 
 @Configuration
 public class SecurityFiltersConfig {
@@ -37,23 +31,24 @@ public class SecurityFiltersConfig {
     SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
                                                     CsrfTokenRepository csrfTokenRepository,
                                                     GammaRequestCache requestCache,
-                                                    UpdateUserPrincipalFilter updateUserPrincipalFilter,
                                                     PasswordEncoder passwordEncoder,
-                                                    FindUserByIdentifier findUserByIdentifier,
-                                                    UserPasswordRetriever userPasswordRetriever) throws Exception {
+                                                    UserJpaRepository userJpaRepository,
+                                                    SettingsRepository settingsRepository,
+                                                    AuthorityLevelRepository authorityLevelRepository) throws Exception {
+
+        TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
+                userJpaRepository,
+                settingsRepository
+        );
 
         DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
-        userAuthenticationProvider.setUserDetailsService(new UserDetailsServiceImplementation(
-                        findUserByIdentifier,
-                        userPasswordRetriever
-                )
-        );
+        userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
         userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
         http
                 //Either /internal/**, /login or /logout
                 .regexMatcher("\\/internal.+|\\/login.*|\\/logout")
-                .addFilterAfter(updateUserPrincipalFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, authorityLevelRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
                         authorization
                                 .antMatchers("/login").permitAll()

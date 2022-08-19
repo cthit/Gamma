@@ -26,11 +26,10 @@ import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
-import it.chalmers.gamma.security.api.ApiAuthenticationToken;
-import it.chalmers.gamma.security.principal.ApiPrincipal;
+import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
-import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
+import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
+import it.chalmers.gamma.security.principal.UnauthenticatedAuthenticationDetails;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -136,9 +135,9 @@ class AuthenticatedServiceTest {
         given(this.clientRepository.getByApiKey(clientApiKey.apiKeyToken()))
                 .willReturn(Optional.of(client));
 
-        assertThat(GammaSecurityContextUtils.getPrincipal())
+        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
                 .isInstanceOfSatisfying(
-                        ApiPrincipal.class,
+                        ApiAuthenticationDetails.class,
                         api -> {
                             assertThat(api.get())
                                     .isEqualTo(clientApiKey);
@@ -155,9 +154,9 @@ class AuthenticatedServiceTest {
         given(this.apiKeyRepository.getByToken(chalmersitApi.apiKeyToken()))
                 .willReturn(Optional.of(chalmersitApi));
 
-        assertThat(GammaSecurityContextUtils.getPrincipal())
+        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
                 .isInstanceOfSatisfying(
-                        ApiPrincipal.class,
+                        ApiAuthenticationDetails.class,
                         api -> {
                             assertThat(api.get())
                                     .isEqualTo(chalmersitApi);
@@ -168,15 +167,15 @@ class AuthenticatedServiceTest {
     @Test
     @WithMockBootstrapAuthenticated
     public void Given_BootstrapAuthenticated_Expect_getAuthentication_ToReturn_LocalRunnerAuthenticated() {
-        assertThat(GammaSecurityContextUtils.getPrincipal())
-                .isInstanceOf(LocalRunnerPrincipal.class);
+        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
+                .isInstanceOf(LocalRunnerAuthenticationDetails.class);
     }
 
     @Test
     @WithAnonymousUser
     public void Given_AnonymousUser_Expect_getAuthentication_ToReturn_Unauthenticated() {
-        assertThat(GammaSecurityContextUtils.getPrincipal())
-                .isInstanceOf(UnauthenticatedPrincipal.class);
+        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
+                .isInstanceOf(UnauthenticatedAuthenticationDetails.class);
     }
 
     @Retention(RetentionPolicy.RUNTIME)

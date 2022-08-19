@@ -5,7 +5,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.security.principal.ApiPrincipal;
+import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -35,7 +35,7 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
                 .orElseThrow(ApiAuthenticationException::new);
         final Optional<Client> maybeClient = this.clientRepository.getByApiKey(apiKey.apiKeyToken());
 
-        return ApiAuthenticationToken.fromAuthenticatedApiKey(new ApiPrincipal() {
+        return ApiAuthenticationToken.fromAuthenticatedApiKey(new ApiAuthenticationDetails() {
             @Override
             public ApiKey get() {
                 return apiKey;

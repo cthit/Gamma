@@ -8,16 +8,16 @@ import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.ApiPrincipal;
+import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.UserPrincipal;
-import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
-import it.chalmers.gamma.security.principal.UnauthenticatedPrincipal;
+import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
+import it.chalmers.gamma.security.principal.UnauthenticatedAuthenticationDetails;
+import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import static it.chalmers.gamma.security.principal.GammaSecurityContextUtils.getPrincipal;
+import static it.chalmers.gamma.security.principal.GammaSecurityContextUtils.getAuthenticationDetails;
 
 @Service
 public class AccessGuard {
@@ -65,7 +65,7 @@ public class AccessGuard {
 
     public static AccessChecker isAdmin() {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof UserPrincipal userAuthenticated) {
+            if (getAuthenticationDetails() instanceof UserAuthenticationDetails userAuthenticated) {
                 return userAuthenticated.isAdmin();
             }
 
@@ -75,7 +75,7 @@ public class AccessGuard {
 
     public static AccessChecker passwordCheck(String password) {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof UserPrincipal userAuthenticated) {
+            if (getAuthenticationDetails() instanceof UserAuthenticationDetails userAuthenticated) {
                 GammaUser user = userAuthenticated.get();
                 return userRepository.checkPassword(user.id(), new UnencryptedPassword(password));
             }
@@ -86,7 +86,7 @@ public class AccessGuard {
 
     public static AccessChecker isApi(ApiKeyType apiKeyType) {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+            if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
                 return apiPrincipal.get().keyType() == apiKeyType;
             }
 
@@ -96,7 +96,7 @@ public class AccessGuard {
 
     public static AccessChecker isClientApi() {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+            if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
                 return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
             }
 
@@ -106,7 +106,7 @@ public class AccessGuard {
 
     public static AccessChecker isSignedInUserMemberOfGroup(Group group) {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof UserPrincipal userPrincipal) {
+            if (getAuthenticationDetails() instanceof UserAuthenticationDetails userPrincipal) {
                 GammaUser user = userPrincipal.get();
                 return group.groupMembers().stream().anyMatch(groupMember -> groupMember.user().equals(user));
             }
@@ -117,17 +117,17 @@ public class AccessGuard {
 
     public static AccessChecker isSignedIn() {
         return (authorityLevelRepository, userRepository)
-                -> getPrincipal() instanceof UserPrincipal;
+                -> getAuthenticationDetails() instanceof UserAuthenticationDetails;
     }
 
     public static AccessChecker isNotSignedIn() {
         return (authorityLevelRepository, userRepository) ->
-                getPrincipal() instanceof UnauthenticatedPrincipal;
+                getAuthenticationDetails() instanceof UnauthenticatedAuthenticationDetails;
     }
 
     public static AccessChecker userHasAcceptedClient(UserId id) {
         return (authorityLevelRepository, userRepository) -> {
-            if (getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+            if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
                 if (apiPrincipal.getClient().isPresent()) {
                     Client client = apiPrincipal.getClient().get();
                     return client.approvedUsers().stream().anyMatch(user -> user.id().equals(id));
@@ -143,7 +143,7 @@ public class AccessGuard {
      */
     public static AccessChecker isLocalRunner() {
         return (authorityLevelRepository, userRepository) ->
-                GammaSecurityContextUtils.getPrincipal() instanceof LocalRunnerPrincipal;
+                GammaSecurityContextUtils.getAuthenticationDetails() instanceof LocalRunnerAuthenticationDetails;
     }
 
     public interface AccessChecker {

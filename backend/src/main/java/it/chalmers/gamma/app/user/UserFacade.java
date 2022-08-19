@@ -3,8 +3,6 @@ package it.chalmers.gamma.app.user;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
@@ -13,6 +11,7 @@ import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.FirstName;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
@@ -20,6 +19,7 @@ import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import org.springframework.stereotype.Component;
 
@@ -117,7 +117,7 @@ public class UserFacade extends Facade {
 
         Settings settings = settingsRepository.getSettings();
 
-        if (GammaSecurityContextUtils.getPrincipal() instanceof ApiPrincipal apiPrincipal) {
+        if (GammaSecurityContextUtils.getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
             Client client = apiPrincipal.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()
