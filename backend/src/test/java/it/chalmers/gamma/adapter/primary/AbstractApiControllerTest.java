@@ -2,6 +2,8 @@ package it.chalmers.gamma.adapter.primary;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.FilterContext;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -21,12 +22,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public abstract class AbstractApiControllerTest {
 
     @LocalServerPort
-    private int port;
+    protected int port;
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
         RestAssured.defaultParser = Parser.JSON;
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
     }
 
     protected AuthFilter apiAuthFilter(String apiKey) {

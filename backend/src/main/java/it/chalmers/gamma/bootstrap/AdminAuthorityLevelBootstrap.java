@@ -21,7 +21,6 @@ public class AdminAuthorityLevelBootstrap {
     }
 
     public void ensureAdminAuthorityLevel() {
-        System.out.println("PLZ: " + this.bootstrapSettings);
         if (!this.bootstrapSettings.adminSetup()) {
             LOGGER.info("Admin setup is disabled. I hope you know what you're doing...");
             return;

@@ -38,7 +38,7 @@ public class InfoApiController {
     }
 
     @GetMapping("/groups")
-    GroupsResponse getGroups() {
+    public GroupsResponse getGroups() {
         return new GroupsResponse(this.groupFacade.getAllForInfoApi());
     }
 

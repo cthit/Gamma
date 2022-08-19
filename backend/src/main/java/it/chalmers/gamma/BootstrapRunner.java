@@ -57,7 +57,6 @@ public class BootstrapRunner {
                 SecurityContextHolder.clearContext();
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
-                System.exit(1);
             }
         };
     }

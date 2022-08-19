@@ -17,7 +17,7 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
     @JoinColumn(name = "client_uid")
     private ClientEntity client;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "authority_level")
     private AuthorityLevelEntity authorityLevel;
 

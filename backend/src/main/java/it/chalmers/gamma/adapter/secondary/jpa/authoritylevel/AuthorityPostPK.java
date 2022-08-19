@@ -16,11 +16,11 @@ import javax.persistence.ManyToOne;
 public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord> {
 
     @JoinColumn(name = "super_group_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     protected SuperGroupEntity superGroupEntity;
 
     @JoinColumn(name = "post_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     protected PostEntity postEntity;
 
     @JoinColumn(name = "authority_level")

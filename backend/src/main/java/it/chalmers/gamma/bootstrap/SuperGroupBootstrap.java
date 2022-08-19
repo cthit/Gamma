@@ -39,7 +39,7 @@ public class SuperGroupBootstrap {
 
         LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
 
-        mockData.superGroups().stream().map(MockData.MockSuperGroup::type).forEach(type -> {
+        mockData.superGroups().stream().map(MockData.MockSuperGroup::type).distinct().forEach(type -> {
             try {
                 this.superGroupTypeRepository.add(new SuperGroupType(type));
             } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {

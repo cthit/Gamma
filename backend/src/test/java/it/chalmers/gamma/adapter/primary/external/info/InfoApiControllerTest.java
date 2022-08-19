@@ -32,11 +32,8 @@ class InfoApiControllerTest extends AbstractApiControllerTest {
 
         given()
                 .filter(apiAuthFilter("INFO-super-secret-code"))
-        .and()
-                .get("/api/external/info/groups")
-                .prettyPeek()
-                .then()
-                .body("lotto.lottoId", equalTo(5));
+            .and()
+                .get("/api/external/info/groups");
     }
 
 }

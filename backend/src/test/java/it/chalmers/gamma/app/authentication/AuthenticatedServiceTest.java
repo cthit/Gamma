@@ -26,7 +26,7 @@ import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
-import it.chalmers.gamma.security.ApiAuthenticationToken;
+import it.chalmers.gamma.security.api.ApiAuthenticationToken;
 import it.chalmers.gamma.security.principal.ApiPrincipal;
 import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.LocalRunnerPrincipal;
@@ -223,10 +223,11 @@ class AuthenticatedServiceTest {
                 default -> throw new IllegalStateException();
             };
 
-            ApiAuthenticationToken apiAuthenticationToken = new ApiAuthenticationToken(apiKey, client);
-            context.setAuthentication(apiAuthenticationToken);
-
-            return context;
+//            ApiAuthenticationToken apiAuthenticationToken = new ApiAuthenticationToken(apiKey, client);
+//            context.setAuthentication(apiAuthenticationToken);
+//
+//            return context;
+            throw new UnsupportedOperationException("Not supported yet with api refactor");
         }
     }
 

@@ -59,7 +59,7 @@ server:
 
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:INFO}
+    root: ${ROOT_DEBUG_LEVEL:DEBUG}
     org.springframework.security: INFO
     org.springframework.security.access: INFO
     org.springframework.security.oauth2.server.authorization: INFO

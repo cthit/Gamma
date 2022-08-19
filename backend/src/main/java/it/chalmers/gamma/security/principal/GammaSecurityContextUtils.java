@@ -19,7 +19,17 @@ public final class GammaSecurityContextUtils {
         }
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (GammaPrincipal) principal;
+
+        //TODO: TEMP
+        if (principal instanceof GammaPrincipal gammaPrincipal) {
+            return gammaPrincipal;
+        } else {
+            return new LocalRunnerPrincipal() {
+            };
+        }
+
+
+//        return (GammaPrincipal) principal;
     }
 
 }

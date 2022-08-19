@@ -29,7 +29,7 @@ import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.ApiAuthenticationToken;
+import it.chalmers.gamma.security.api.ApiAuthenticationToken;
 import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -170,12 +170,7 @@ public class GammaSecurityContextHolderTestUtils {
     public static void setAuthenticatedAsClientWithApi(Client client) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        ApiAuthenticationToken apiAuthenticationToken = new ApiAuthenticationToken(
-                DEFAULT_CLIENT_API_KEY,
-                DEFAULT_CLIENT
-        );
-
-        context.setAuthentication(apiAuthenticationToken);
+        throw new UnsupportedOperationException("Not done with refactoring of Api Keys yet");
     }
 
 }
