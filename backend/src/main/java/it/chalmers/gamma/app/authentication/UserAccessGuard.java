@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 /*
@@ -25,9 +26,18 @@ public class UserAccessGuard {
     }
 
     public boolean isMe(UserId userId) {
-        if (getAuthenticationDetails() instanceof User user) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return false;
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof User user) {
             return UserId.valueOf(user.getUsername()).equals(userId);
         }
+
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            return UserId.valueOf(jwtAuthenticationToken.getName()).equals(userId);
+        }
+
         return false;
     }
 
@@ -43,6 +53,11 @@ public class UserAccessGuard {
      * This may be slow, but in the name of security...
      */
     public boolean haveAccessToUser(UserId userId, boolean userLocked, boolean acceptedUserAgreement) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null
+                || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            return false;
+        }
+
         //Always access to yourself
         if (isMe(userId)) {
             return true;
@@ -91,17 +106,17 @@ public class UserAccessGuard {
 
     //If the client tries to access a user that have not accepted the client, then return null.
     private boolean haveAcceptedClient(UserId userId) {
-        if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
-            ApiKeyType apiKeyType = apiPrincipal.get().keyType();
+        if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiAuthenticationDetails) {
+            ApiKeyType apiKeyType = apiAuthenticationDetails.get().keyType();
             if (apiKeyType.equals(ApiKeyType.CLIENT)) {
-                if (apiPrincipal.getClient().isEmpty()) {
+                if (apiAuthenticationDetails.getClient().isEmpty()) {
                     throw new IllegalStateException(
                             "An api key that is of type CLIENT must have a client connected to them; "
-                            + apiPrincipal.get()
+                            + apiAuthenticationDetails.get()
                     );
                 }
 
-                return apiPrincipal.getClient().get().approvedUsers()
+                return apiAuthenticationDetails.getClient().get().approvedUsers()
                         .stream()
                         .anyMatch(gammaUser -> gammaUser.id().equals(userId));
             }
@@ -114,8 +129,8 @@ public class UserAccessGuard {
      * Api Key with type INFO or GOLDAPPS have access to user information.
      */
     private boolean apiKeyWithAccess() {
-        if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
-            ApiKeyType apiKeyType = apiPrincipal.get().keyType();
+        if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiAuthenticationDetails) {
+            ApiKeyType apiKeyType = apiAuthenticationDetails.get().keyType();
             return apiKeyType.equals(ApiKeyType.INFO) || apiKeyType.equals(ApiKeyType.GOLDAPPS);
         }
 
@@ -123,6 +138,9 @@ public class UserAccessGuard {
     }
 
     private Object getAuthenticationDetails() {
-        return SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            return SecurityContextHolder.getContext().getAuthentication().getDetails();
+        }
+        return null;
     }
 }
