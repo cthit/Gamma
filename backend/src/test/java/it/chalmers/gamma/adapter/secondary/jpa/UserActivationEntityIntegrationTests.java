@@ -7,17 +7,18 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @ActiveProfiles("test")
 @Import({UserActivationRepositoryAdapter.class,
@@ -29,6 +30,12 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
 
     @Autowired
     private WhitelistRepository whitelistRepository;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @Test
     void Given_ValidCid_Expect_createActivationToken_To_CreateAValidUserActivationToken() throws WhitelistRepository.AlreadyWhitelistedException {

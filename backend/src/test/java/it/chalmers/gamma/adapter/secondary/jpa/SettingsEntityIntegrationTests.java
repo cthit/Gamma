@@ -5,13 +5,12 @@ import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapte
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -35,6 +34,12 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
 
     @Autowired
     private SuperGroupTypeRepository superGroupTypeRepository;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @Test
     public void Given_Settings_Expect_setSettings_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {

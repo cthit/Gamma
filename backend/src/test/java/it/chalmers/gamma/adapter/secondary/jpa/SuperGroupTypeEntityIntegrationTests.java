@@ -6,13 +6,12 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeReposito
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static it.chalmers.gamma.utils.DomainUtils.committee;
 import static it.chalmers.gamma.utils.DomainUtils.digit;
@@ -30,6 +29,12 @@ public class SuperGroupTypeEntityIntegrationTests extends AbstractEntityIntegrat
     private SuperGroupTypeRepositoryAdapter superGroupTypeRepositoryAdapter;
     @Autowired
     private SuperGroupRepository superGroupRepository;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @Test
     public void Given_ValidType_Expect_save_To_Work() {

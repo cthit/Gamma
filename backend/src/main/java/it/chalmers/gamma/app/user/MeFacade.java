@@ -17,16 +17,14 @@ import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.principal.GammaAuthenticationDetails;
-import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
-import it.chalmers.gamma.security.principal.LockedUserAuthenticationDetails;
 import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
-import static it.chalmers.gamma.security.principal.GammaSecurityContextUtils.getAuthenticationDetails;
 
 @Service
 public class MeFacade extends Facade {
@@ -61,7 +59,7 @@ public class MeFacade extends Facade {
     public List<UserApprovedClientDTO> getSignedInUserApprovals() {
         this.accessGuard.require(isSignedIn());
 
-        if (getAuthenticationDetails() instanceof UserAuthenticationDetails userPrincipal) {
+        if (SecurityContextHolder.getContext().getAuthentication().getDetails() instanceof UserAuthenticationDetails userPrincipal) {
             GammaUser user = userPrincipal.get();
             return this.clientRepository.getClientsByUserApproved(user.id())
                     .stream()
@@ -105,7 +103,7 @@ public class MeFacade extends Facade {
 
 
     public MeDTO getMe() {
-        GammaAuthenticationDetails authenticated = GammaSecurityContextUtils.getAuthenticationDetails();
+        GammaAuthenticationDetails authenticated = getAuthenticationDetails();
         GammaUser user = null;
         if (authenticated instanceof UserAuthenticationDetails userPrincipal) {
             user = userPrincipal.get();
@@ -177,12 +175,18 @@ public class MeFacade extends Facade {
     //TODO: I guess you cannot accept a user agreement if you already have accepted it.
     public void acceptUserAgreement() {
         GammaAuthenticationDetails authenticated = getAuthenticationDetails();
-        if (authenticated instanceof LockedUserAuthenticationDetails lockedUserPrincipal) {
+        if (authenticated instanceof UserAuthenticationDetails userAuthenticationDetails
+                && userAuthenticationDetails.get().extended().locked()) {
             try {
-                this.userRepository.acceptUserAgreement(lockedUserPrincipal.get().id());
+                this.userRepository.acceptUserAgreement(userAuthenticationDetails.get().id());
             } catch (UserRepository.UserNotFoundException e) {
                 throw new IllegalStateException();
             }
         }
     }
+
+    private GammaAuthenticationDetails getAuthenticationDetails() {
+        return (GammaAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+    }
+
 }

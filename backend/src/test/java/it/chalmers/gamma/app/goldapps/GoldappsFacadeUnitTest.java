@@ -1,20 +1,23 @@
 package it.chalmers.gamma.app.goldapps;
 
-import it.chalmers.gamma.utils.DomainUtils;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
+import it.chalmers.gamma.utils.DomainUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 import static it.chalmers.gamma.utils.DomainUtils.alumni;
 import static it.chalmers.gamma.utils.DomainUtils.board;
 import static it.chalmers.gamma.utils.DomainUtils.chair;
@@ -34,7 +37,6 @@ import static it.chalmers.gamma.utils.DomainUtils.styrit18;
 import static it.chalmers.gamma.utils.DomainUtils.styrit19;
 import static it.chalmers.gamma.utils.DomainUtils.treasurer;
 import static it.chalmers.gamma.utils.DomainUtils.u;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
@@ -52,18 +54,24 @@ class GoldappsFacadeUnitTest {
     @InjectMocks
     private GoldappsFacade goldappsFacade;
 
-//    @Test
-//    public void getActiveSuperGroupsTest() throws JSONException {
-//        ActiveSuperGroupsTestCase testCase = getActiveSuperGroupTestCase();
-//        given(groupRepository.getAll())
-//                .willReturn(testCase.groups);
-//
-//        List<GoldappsFacade.GoldappsSuperGroupDTO> activeSuperGroups = goldappsFacade.getActiveSuperGroups(
-//                List.of("committee", "board")
-//        );
-//
-//        assertThat(false).isTrue();
-//    }
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
+
+    @Test
+    public void getActiveSuperGroupsTest() {
+        ActiveSuperGroupsTestCase testCase = getActiveSuperGroupTestCase();
+        given(groupRepository.getAll())
+                .willReturn(testCase.groups);
+
+        List<GoldappsFacade.GoldappsSuperGroupDTO> activeSuperGroups = goldappsFacade.getActiveSuperGroups(
+                List.of("committee", "board")
+        );
+
+        assertThat(false).isTrue();
+    }
 
     @Test
     public void getActiveUsersTest() {

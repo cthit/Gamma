@@ -14,12 +14,14 @@ import it.chalmers.gamma.app.client.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
@@ -28,7 +30,10 @@ import java.util.Optional;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.doThrow;
+import static org.mockito.BDDMockito.inOrder;
+import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(SpringExtension.class)
 class ClientFacadeUnitTest {
@@ -41,6 +46,12 @@ class ClientFacadeUnitTest {
 
     @InjectMocks
     private ClientFacade clientFacade;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @Test
     public void Given_AValidClientWithoutApiKey_Expect_create_To_ReturnValidSecrets() {

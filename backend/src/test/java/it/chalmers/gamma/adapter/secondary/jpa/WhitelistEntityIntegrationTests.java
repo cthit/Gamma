@@ -3,9 +3,11 @@ package it.chalmers.gamma.adapter.secondary.jpa;
 import it.chalmers.gamma.adapter.secondary.jpa.whitelist.WhitelistRepositoryAdapter;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +20,11 @@ public class WhitelistEntityIntegrationTests extends AbstractEntityIntegrationTe
 
     @Autowired
     private WhitelistRepositoryAdapter whitelistRepositoryAdapter;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     public void Given_Cid_Expect_whitelist_To_Work() {

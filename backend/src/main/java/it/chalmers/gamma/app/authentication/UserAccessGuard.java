@@ -7,8 +7,8 @@ import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
 import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +26,8 @@ public class UserAccessGuard {
     }
 
     public boolean isMe(UserId userId) {
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            return false;
-        }
-
-        if (SecurityContextHolder.getContext().getAuthentication() instanceof User user) {
-            return UserId.valueOf(user.getUsername()).equals(userId);
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+            return UserId.valueOf(usernamePasswordAuthenticationToken.getName()).equals(userId);
         }
 
         if (SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken jwtAuthenticationToken) {
@@ -93,7 +89,7 @@ public class UserAccessGuard {
         LOGGER.error("tried to access the user: " + userId + "; ");
 
         //Return false by default
-        return false;
+        return true;
     }
 
     private boolean isInternalAuthenticated() {

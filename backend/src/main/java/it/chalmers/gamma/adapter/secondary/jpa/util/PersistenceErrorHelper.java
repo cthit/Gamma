@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION;
 import static it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState.Type.NOT_UNIQUE;
 
 public final class PersistenceErrorHelper {
@@ -39,8 +39,12 @@ public final class PersistenceErrorHelper {
                 }
             }
 
-            if (t instanceof EntityExistsException e1) {
+            if (t instanceof EntityExistsException) {
                 return new PersistenceErrorState(null, NOT_UNIQUE);
+            }
+
+            if (t instanceof EntityNotFoundException) {
+                return new PersistenceErrorState(null, FOREIGN_KEY_VIOLATION);
             }
 
         }

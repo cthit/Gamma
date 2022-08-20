@@ -51,30 +51,11 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     private final AuthorityLevelEntityConverter authorityLevelEntityConverter;
     private final SuperGroupEntityConverter superGroupEntityConverter;
 
-    private static final PersistenceErrorState superGroupNotFound = new PersistenceErrorState(
-            "authority_super_group_super_group_id_fkey",
+    private static final PersistenceErrorState notFoundError = new PersistenceErrorState(
+            null,
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
 
-    private static final PersistenceErrorState postSuperGroupNotFound = new PersistenceErrorState(
-            "authority_post_super_group_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState postPostNotFound = new PersistenceErrorState(
-            "authority_post_post_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
-            "authority_user_user_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState nameAlreadyExists = new PersistenceErrorState(
-            "authority_level_pkey",
-            PersistenceErrorState.Type.NOT_UNIQUE
-    );
 
     public AuthorityLevelRepositoryAdapter(AuthorityLevelJpaRepository repository,
                                            AuthorityPostJpaRepository authorityPostRepository,
@@ -126,13 +107,8 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
         } catch (Exception e) {
             PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 
-            if (state.equals(superGroupNotFound)) {
-                throw new SuperGroupNotFoundRuntimeException();
-            } else if (state.equals(userNotFound)) {
-                throw new UserNotFoundRuntimeException();
-            } else if (state.equals(postSuperGroupNotFound)
-                    || state.equals(postPostNotFound)) {
-                throw new SuperGroupPostNotFoundRuntimeException();
+            if (state.equals(notFoundError)) {
+                throw new NotCompleteAuthorityLevelException();
             }
 
             throw e;
@@ -212,7 +188,7 @@ public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository
     private AuthorityLevelEntity toEntity(AuthorityLevel authorityLevel) throws AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException {
         String name = authorityLevel.name().getValue();
         AuthorityLevelEntity authorityLevelEntity = this.repository.findById(name)
-                .orElseThrow(AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException::new);
+                .orElseThrow(AuthorityLevelNotFoundRuntimeException::new);
 
         List<AuthorityUserEntity> users = authorityLevel.users().stream().map(user -> new AuthorityUserEntity(toEntity(user), authorityLevelEntity)).toList();
         List<AuthorityPostEntity> posts = authorityLevel.posts().stream().map(post -> new AuthorityPostEntity(toEntity(post.superGroup()), toEntity(post.post()), authorityLevelEntity)).toList();

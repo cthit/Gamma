@@ -26,13 +26,12 @@ import it.chalmers.gamma.app.user.domain.Language;
 import it.chalmers.gamma.app.user.domain.LastName;
 import it.chalmers.gamma.app.user.domain.Nick;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
+import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.api.ApiAuthenticationToken;
-import it.chalmers.gamma.security.user.GrantedAuthorityProxy;
+import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -119,7 +118,7 @@ public class GammaSecurityContextHolderTestUtils {
             }
         }
 
-        List<GrantedAuthorityProxy> authorities = new ArrayList<>();
+        List<UserAuthority> authorities = new ArrayList<>();
         AuthorityLevelName admin = new AuthorityLevelName("admin");
 
         if (authorityLevelRepository != null) {
@@ -140,18 +139,30 @@ public class GammaSecurityContextHolderTestUtils {
         }
 
         if (isAdmin) {
-            authorities.add(new GrantedAuthorityProxy(admin, AuthorityType.AUTHORITY));
+            authorities.add(new UserAuthority(new AuthorityLevelName("admin"), AuthorityType.AUTHORITY));
         }
 
-        User user = new User(gammaUser.id().value().toString(), "{noop}" + password, authorities);
+        User user = new User(gammaUser.id().value().toString(), "{noop}" + password, Collections.emptyList());
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                 user,
                 null,
-                user.getAuthorities()
+                Collections.emptyList()
         );
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);
+
+        auth.setDetails(new UserAuthenticationDetails() {
+            @Override
+            public GammaUser get() {
+                return gammaUser;
+            }
+
+            @Override
+            public List<UserAuthority> getAuthorities() {
+                return authorities;
+            }
+        });
     }
 
     public record ClientWithApiKey(Client client, ApiKey apiKey) { }

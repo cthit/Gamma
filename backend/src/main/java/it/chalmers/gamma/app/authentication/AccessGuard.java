@@ -9,15 +9,12 @@ import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
-import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
-import it.chalmers.gamma.security.principal.UnauthenticatedAuthenticationDetails;
 import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import static it.chalmers.gamma.security.principal.GammaSecurityContextUtils.getAuthenticationDetails;
 
 @Service
 public class AccessGuard {
@@ -122,7 +119,7 @@ public class AccessGuard {
 
     public static AccessChecker isNotSignedIn() {
         return (authorityLevelRepository, userRepository) ->
-                getAuthenticationDetails() instanceof UnauthenticatedAuthenticationDetails;
+                getAuthenticationDetails() == null;
     }
 
     public static AccessChecker userHasAcceptedClient(UserId id) {
@@ -143,7 +140,7 @@ public class AccessGuard {
      */
     public static AccessChecker isLocalRunner() {
         return (authorityLevelRepository, userRepository) ->
-                GammaSecurityContextUtils.getAuthenticationDetails() instanceof LocalRunnerAuthenticationDetails;
+                getAuthenticationDetails() instanceof LocalRunnerAuthenticationDetails;
     }
 
     public interface AccessChecker {
@@ -151,6 +148,14 @@ public class AccessGuard {
     }
 
     public static class AccessDeniedException extends RuntimeException { }
+
+    private static Object getAuthenticationDetails() {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return null;
+        }
+
+        return SecurityContextHolder.getContext().getAuthentication().getDetails();
+    }
 
 }
 

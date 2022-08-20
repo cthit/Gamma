@@ -27,9 +27,8 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
-import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
 import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
-import it.chalmers.gamma.security.principal.UnauthenticatedAuthenticationDetails;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -37,7 +36,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithSecurityContext;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 import org.springframework.test.context.ContextConfiguration;
@@ -65,6 +63,11 @@ class AuthenticatedServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
 
     private static final GammaUser normalUser = new GammaUser(
             UserId.generate(),
@@ -135,7 +138,7 @@ class AuthenticatedServiceTest {
         given(this.clientRepository.getByApiKey(clientApiKey.apiKeyToken()))
                 .willReturn(Optional.of(client));
 
-        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getDetails())
                 .isInstanceOfSatisfying(
                         ApiAuthenticationDetails.class,
                         api -> {
@@ -154,7 +157,7 @@ class AuthenticatedServiceTest {
         given(this.apiKeyRepository.getByToken(chalmersitApi.apiKeyToken()))
                 .willReturn(Optional.of(chalmersitApi));
 
-        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getDetails())
                 .isInstanceOfSatisfying(
                         ApiAuthenticationDetails.class,
                         api -> {
@@ -167,15 +170,8 @@ class AuthenticatedServiceTest {
     @Test
     @WithMockBootstrapAuthenticated
     public void Given_BootstrapAuthenticated_Expect_getAuthentication_ToReturn_LocalRunnerAuthenticated() {
-        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
+        assertThat(SecurityContextHolder.getContext().getAuthentication().getDetails())
                 .isInstanceOf(LocalRunnerAuthenticationDetails.class);
-    }
-
-    @Test
-    @WithAnonymousUser
-    public void Given_AnonymousUser_Expect_getAuthentication_ToReturn_Unauthenticated() {
-        assertThat(GammaSecurityContextUtils.getAuthenticationDetails())
-                .isInstanceOf(UnauthenticatedAuthenticationDetails.class);
     }
 
     @Retention(RetentionPolicy.RUNTIME)

@@ -24,7 +24,7 @@ public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord>
     protected PostEntity postEntity;
 
     @JoinColumn(name = "authority_level")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     protected AuthorityLevelEntity authorityLevel;
 
     protected AuthorityPostPK() {}

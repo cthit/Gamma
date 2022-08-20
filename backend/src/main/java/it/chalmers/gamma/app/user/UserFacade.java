@@ -20,7 +20,7 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
-import it.chalmers.gamma.security.principal.GammaSecurityContextUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -117,7 +117,7 @@ public class UserFacade extends Facade {
 
         Settings settings = settingsRepository.getSettings();
 
-        if (GammaSecurityContextUtils.getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
+        if (SecurityContextHolder.getContext().getAuthentication().getDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
             Client client = apiPrincipal.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()

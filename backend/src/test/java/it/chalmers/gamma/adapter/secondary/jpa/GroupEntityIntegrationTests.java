@@ -2,8 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa;
 
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.utils.DomainUtils;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
@@ -16,6 +14,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupId;
@@ -30,17 +29,14 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.user.PasswordConfiguration;
+import it.chalmers.gamma.utils.DomainUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +56,6 @@ import static it.chalmers.gamma.utils.DomainUtils.gm;
 import static it.chalmers.gamma.utils.DomainUtils.member;
 import static it.chalmers.gamma.utils.DomainUtils.prit18;
 import static it.chalmers.gamma.utils.DomainUtils.prit19;
-import static it.chalmers.gamma.utils.DomainUtils.removeLockedUsers;
 import static it.chalmers.gamma.utils.DomainUtils.styrit18;
 import static it.chalmers.gamma.utils.DomainUtils.styrit19;
 import static it.chalmers.gamma.utils.DomainUtils.treasurer;
@@ -103,6 +98,12 @@ public class GroupEntityIntegrationTests extends AbstractEntityIntegrationTests 
     private SettingsRepository settingsRepository;
     @Autowired
     private AuthorityLevelRepository authorityLevelRepository;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @BeforeEach
     public void setSettings() {

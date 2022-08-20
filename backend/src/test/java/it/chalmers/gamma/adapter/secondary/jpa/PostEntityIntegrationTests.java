@@ -5,13 +5,12 @@ import it.chalmers.gamma.adapter.secondary.jpa.group.PostRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static it.chalmers.gamma.utils.DomainUtils.chair;
 import static it.chalmers.gamma.utils.DomainUtils.treasurer;
@@ -25,6 +24,12 @@ public class PostEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private PostRepositoryAdapter postRepositoryAdapter;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @Test
     public void Given_ValidPost_Expect_save_To_Work() {

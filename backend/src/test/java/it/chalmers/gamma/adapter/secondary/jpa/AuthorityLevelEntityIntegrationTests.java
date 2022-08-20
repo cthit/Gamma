@@ -28,15 +28,16 @@ import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Collections;
 import java.util.List;
 
+import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.AUTHORITY;
+import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.GROUP;
+import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.SUPERGROUP;
 import static it.chalmers.gamma.utils.DomainUtils.addAll;
 import static it.chalmers.gamma.utils.DomainUtils.alumni;
 import static it.chalmers.gamma.utils.DomainUtils.asSaved;
@@ -70,9 +71,6 @@ import static it.chalmers.gamma.utils.DomainUtils.u6;
 import static it.chalmers.gamma.utils.DomainUtils.u7;
 import static it.chalmers.gamma.utils.DomainUtils.u8;
 import static it.chalmers.gamma.utils.DomainUtils.u9;
-import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.AUTHORITY;
-import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.GROUP;
-import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.SUPERGROUP;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -117,6 +115,11 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
     @BeforeEach
     public void setSettings() {
         this.settingsRepository.setSettings(defaultSettings);
+    }
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
     }
 
     /**
@@ -319,7 +322,7 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
         AuthorityLevelName admin = new AuthorityLevelName("admin");
 
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.SuperGroupNotFoundRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.NotCompleteAuthorityLevelException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,
@@ -339,7 +342,7 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
         superGroupRepository.save(digit);
 
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.SuperGroupPostNotFoundRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.NotCompleteAuthorityLevelException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,
@@ -358,7 +361,7 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
         postRepository.save(chair);
 
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.SuperGroupPostNotFoundRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.NotCompleteAuthorityLevelException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,
@@ -375,7 +378,7 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
         AuthorityLevelName admin = new AuthorityLevelName("admin");
 
         authorityLevelRepositoryAdapter.create(admin);
-        assertThatExceptionOfType(AuthorityLevelRepository.UserNotFoundRuntimeException.class)
+        assertThatExceptionOfType(AuthorityLevelRepository.NotCompleteAuthorityLevelException.class)
                 .isThrownBy(() -> authorityLevelRepositoryAdapter.save(
                         new AuthorityLevel(
                                 admin,

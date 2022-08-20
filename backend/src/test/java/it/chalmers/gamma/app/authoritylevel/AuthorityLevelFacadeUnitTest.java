@@ -14,18 +14,22 @@ import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
 import static it.chalmers.gamma.utils.DomainUtils.chair;
 import static it.chalmers.gamma.utils.DomainUtils.digit;
 import static it.chalmers.gamma.utils.DomainUtils.dragit;
@@ -41,8 +45,6 @@ import static it.chalmers.gamma.utils.DomainUtils.u5;
 import static it.chalmers.gamma.utils.DomainUtils.u6;
 import static it.chalmers.gamma.utils.DomainUtils.u8;
 import static it.chalmers.gamma.utils.DomainUtils.u9;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -74,6 +76,12 @@ class AuthorityLevelFacadeUnitTest {
 
     @InjectMocks
     private AuthorityLevelFacade authorityLevelFacade;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
+
 
     @Test
     public void Given_AValidName_Expect_create_To_CreateValidAuthorityLevel() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {

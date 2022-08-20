@@ -1,9 +1,7 @@
 package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
@@ -16,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class UpdateUserPrincipalFilter implements Filter {
 
@@ -35,6 +34,7 @@ public class UpdateUserPrincipalFilter implements Filter {
             }
 
             final GammaUser gammaUser = userDetailsRepository.getGammaUserByUser();
+            final List<UserAuthority> authorities = this.authorityLevelRepository.getByUser(gammaUser.id());
 
             UserAuthenticationDetails userPrincipal = new UserAuthenticationDetails() {
                 @Override
@@ -43,8 +43,8 @@ public class UpdateUserPrincipalFilter implements Filter {
                 }
 
                 @Override
-                public boolean isAdmin() {
-                    return authorityLevelRepository.getByUser(gammaUser.id()).contains(new UserAuthority(new AuthorityLevelName("admin"), AuthorityType.AUTHORITY));
+                public List<UserAuthority> getAuthorities() {
+                    return authorities;
                 }
             };
 
